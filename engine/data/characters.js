@@ -5671,5 +5671,328 @@ const DataCharacters = {
         }
       }
     }
+  },
+  yu_ang: {
+    id: "yu_ang",
+    name: "宇昂",
+    title: "穆氏修炼疯子",
+    description: "穆卓云的养子，对穆卓云唯命是从，让他杀人都不犹豫的修炼疯子。常年有星尘魔器温养，修为远超同龄学生。18岁时将与莫凡进行魔法决斗。",
+    avatar: "assets/images/characters/yu_ang.jpg",
+    location: "mu_estate",
+    element: "ice",
+    level: 10,
+    personality: ["冷酷", "偏执", "唯命是从", "修炼狂"],
+    baseStats: { hp: 400, mp: 250, attack: 60, defense: 35, speed: 25 },
+    skills: ["basic_attack", "ice_spike", "ice_shield"],
+    faction: "mu_family",
+    factionRank: "养子",
+    relationships: {
+      mu_zhuoyun: { opinion: 100, trust: 100, type: "family", label: "养父" },
+      mu_he: { opinion: 70, trust: 60, type: "acquaintance", label: "长辈" },
+      mu_bai: { opinion: 50, trust: 40, type: "acquaintance", label: "族弟" },
+      mo_fan: { opinion: -50, trust: -30, type: "rival", label: "决斗对手" }
+    },
+    giftPreferences: {
+      loved: ["ice_crystal", "demon_core"],
+      liked: ["magic_stone", "super_mana_potion"],
+      disliked: [],
+      baseOpinionGain: 1,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.2,
+      dislikedMultiplier: 0.3,
+      dailyGiftLimit: 1
+    },
+    dialogueTree: {
+      npcId: "yu_ang",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["……", "有事？"],
+          choices: [
+            { text: "你就是宇昂？", next: "about_self", condition: { minOpinion: -100 } },
+            { text: "18岁的决斗，我等着。", next: "about_duel", condition: { minOpinion: -100 } },
+            { text: "告辞。", next: "default", action: "back" }
+          ]
+        },
+        about_self: {
+          id: "about_self",
+          texts: ["是又如何。", "穆家收养我，给我资源，我替穆家做事。"],
+          effects: { familiarity: 2 },
+          choices: [{ text: "原来如此。", next: "default", action: "back" }]
+        },
+        about_duel: {
+          id: "about_duel",
+          texts: ["哼，嘴硬。", "到时候，我会让你知道，世家培养的弟子和平民的差距。"],
+          effects: { opinion: -5 },
+          choices: [{ text: "拭目以待。", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  zhan_kong: {
+    id: "zhan_kong",
+    name: "斩空",
+    title: "雪峰山驿站总教官",
+    description: "雪峰山驿站总教官，胡渣大叔，火系强者，驿站屠妖魔数最高的人。性格散漫又严厉，军法师出身，与妖魔厮杀后的气息让学生不敢造次。天澜高中历练的总教官，给出了'完成悬赏否则全部不合格'的不可能任务。",
+    avatar: "assets/images/characters/zhan_kong.jpg",
+    location: "xuefeng_station",
+    element: "fire",
+    level: 15,
+    personality: ["严厉", "散漫", "实战派", "护短", "毒舌"],
+    baseStats: { hp: 600, mp: 350, attack: 90, defense: 60, speed: 50 },
+    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst"],
+    faction: "military",
+    factionRank: "总教官",
+    relationships: {
+      deng_kai: { opinion: 70, trust: 65, type: "friend", label: "老友" },
+      luo_yunbo: { opinion: 80, trust: 75, type: "subordinate", label: "下属" },
+      pan_lijun: { opinion: 75, trust: 70, type: "subordinate", label: "下属" }
+    },
+    giftPreferences: {
+      loved: ["demon_core", "fire_essence"],
+      liked: ["magic_stone", "full_potion", "stamina_potion"],
+      disliked: [],
+      baseOpinionGain: 3,
+      lovedMultiplier: 2.5,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 2
+    },
+    dialogueTree: {
+      npcId: "zhan_kong",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["哦？学生？", "有事就说，我忙着呢。"],
+          choices: [
+            { text: "教官，关于历练任务...", next: "about_training" },
+            { text: "您杀过多少妖魔？", next: "about_demon" },
+            { text: "告辞。", next: "default", action: "back" }
+          ]
+        },
+        about_training: {
+          id: "about_training",
+          texts: ["历练？哼，你们这群温室里的花朵。", "完成悬赏就全部A，完不成就全部不合格。", "别觉得我苛刻，野外的妖魔可不会跟你讲道理。"],
+          effects: { familiarity: 3 },
+          choices: [{ text: "我们会完成的。", next: "default", action: "back" }]
+        },
+        about_demon: {
+          id: "about_demon",
+          texts: ["多少？记不清了。", "奴仆级的蝼蚁不算数，战将级的倒是有几十只。", "年轻人，想杀妖魔，先活下来再说。"],
+          effects: { opinion: 2 },
+          choices: [{ text: "受教了。", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  luo_yunbo: {
+    id: "luo_yunbo",
+    name: "罗云波",
+    title: "猎者小队队长",
+    description: "三组猎者小队队长，皮肤黝黑英俊，雪峰山驿站的带队教官之一。经验丰富，负责带领学生在野外历练。",
+    avatar: "assets/images/characters/luo_yunbo.jpg",
+    location: "xuefeng_station",
+    element: "earth",
+    level: 9,
+    personality: ["稳重", "经验丰富", "负责", "黝黑英俊"],
+    baseStats: { hp: 350, mp: 200, attack: 45, defense: 40, speed: 20 },
+    skills: ["basic_attack", "earth_shield", "earth_spike"],
+    faction: "hunter_alliance",
+    factionRank: "小队长",
+    relationships: {
+      zhan_kong: { opinion: 85, trust: 80, type: "superior", label: "上司" },
+      pan_lijun: { opinion: 70, trust: 65, type: "colleague", label: "同事" }
+    },
+    giftPreferences: {
+      loved: ["earth_crystal", "demon_core"],
+      liked: ["magic_stone", "health_potion"],
+      disliked: [],
+      baseOpinionGain: 4,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 2
+    },
+    dialogueTree: {
+      npcId: "luo_yunbo",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["你好，我是罗云波，三组猎者小队队长。", "有什么事吗？"],
+          choices: [
+            { text: "野外历练需要注意什么？", next: "about_field" },
+            { text: "雪峰山有哪些妖魔？", next: "about_demon" },
+            { text: "告辞。", next: "default", action: "back" }
+          ]
+        },
+        about_field: {
+          id: "about_field",
+          texts: ["野外最重要的是冷静。", "遇到打不过的妖魔，跑！活着比什么都重要。", "跟紧队伍，不要单独行动。"],
+          effects: { familiarity: 3, opinion: 2 },
+          choices: [{ text: "记住了。", next: "default", action: "back" }]
+        },
+        about_demon: {
+          id: "about_demon",
+          texts: ["雪峰山一带常见的有独眼魔狼、暗影怪。", "深处还有更危险的，不要乱跑。", "驿站是安全区，出了驿站就要小心。"],
+          effects: { familiarity: 2 },
+          choices: [{ text: "多谢提醒。", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  pan_lijun: {
+    id: "pan_lijun",
+    name: "潘丽君",
+    title: "女副教官",
+    description: "雪峰山驿站的女副教官，皮肤黝黑精悍，性格干练。崇拜斩空总教官，对学生要求严格。",
+    avatar: "assets/images/characters/pan_lijun.jpg",
+    location: "xuefeng_station",
+    element: "wind",
+    level: 8,
+    personality: ["干练", "严格", "精悍", "崇拜强者"],
+    baseStats: { hp: 280, mp: 180, attack: 38, defense: 25, speed: 35 },
+    skills: ["basic_attack", "wind_blade", "wind_speed"],
+    faction: "hunter_alliance",
+    factionRank: "副教官",
+    relationships: {
+      zhan_kong: { opinion: 90, trust: 80, type: "idol", label: "崇拜的总教官" },
+      luo_yunbo: { opinion: 65, trust: 60, type: "colleague", label: "同事" }
+    },
+    giftPreferences: {
+      loved: ["wind_crystal", "demon_core"],
+      liked: ["magic_stone", "stamina_potion"],
+      disliked: [],
+      baseOpinionGain: 3,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 2
+    },
+    dialogueTree: {
+      npcId: "pan_lijun",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["我是潘丽君，副教官。", "历练期间，听从指挥，不要自作主张。"],
+          choices: [
+            { text: "教官好。", next: "about_greeting" },
+            { text: "斩空教官很厉害吗？", next: "about_zhankong" },
+            { text: "告辞。", next: "default", action: "back" }
+          ]
+        },
+        about_greeting: {
+          id: "about_greeting",
+          texts: ["嗯。", "好好表现，历练成绩占高考20%。"],
+          effects: { familiarity: 2 },
+          choices: [{ text: "我会努力的。", next: "default", action: "back" }]
+        },
+        about_zhankong: {
+          id: "about_zhankong",
+          texts: ["斩空总教官当然厉害！", "驿站屠妖魔数最高，军法师出身。", "能跟着他历练是你们的运气。"],
+          effects: { opinion: 3, familiarity: 2 },
+          choices: [{ text: "确实令人敬佩。", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  wang_sanpang: {
+    id: "wang_sanpang",
+    name: "王三胖",
+    title: "天澜高中学生",
+    description: "天澜魔法高中尖子班学生，体型偏胖，口无遮拦，经常说一些不合时宜的话。历练时质疑教官实力，被潘丽君冷笑回应。",
+    avatar: "",
+    location: "tianlan_school",
+    element: "water",
+    level: 2,
+    personality: ["口无遮拦", "胆小", "爱抱怨", "体型偏胖"],
+    baseStats: { hp: 80, mp: 55, attack: 8, defense: 8, speed: 6 },
+    skills: ["basic_attack", "water_heal"],
+    relationships: {},
+    giftPreferences: {
+      loved: ["full_potion", "stamina_potion"],
+      liked: ["health_potion", "mana_potion"],
+      disliked: [],
+      baseOpinionGain: 5,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 3
+    },
+    dialogueTree: {
+      npcId: "wang_sanpang",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["嘿，你也是尖子班的？", "听说历练要去雪峰山，那边有妖魔啊，怕不怕？"],
+          choices: [
+            { text: "不怕，正好历练。", next: "brave" },
+            { text: "有点担心...", next: "scared" },
+            { text: "告辞。", next: "default", action: "back" }
+          ]
+        },
+        brave: {
+          id: "brave",
+          texts: ["厉害厉害！", "到时候跟着你混了啊！"],
+          effects: { opinion: 5 },
+          choices: [{ text: "好说。", next: "default", action: "back" }]
+        },
+        scared: {
+          id: "scared",
+          texts: ["我也怕啊...", "要不咱们跟教官说别去了？"],
+          effects: { opinion: 2 },
+          choices: [{ text: "还是去吧。", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  er_tuzi: {
+    id: "er_tuzi",
+    name: "二秃子",
+    title: "驿站小贩",
+    description: "雪峰山驿站的小贩，光头，在主道摆摊卖魔法师战斗修炼用品。专卖履魔具，用奔妖后肢皮制作，附魔风轨法纹，风石提供能量。",
+    avatar: "",
+    location: "xuefeng_station",
+    element: "neutral",
+    level: 3,
+    personality: ["精明", "能说会道", "生意人", "光头"],
+    baseStats: { hp: 60, mp: 30, attack: 5, defense: 5, speed: 8 },
+    skills: ["basic_attack"],
+    relationships: {},
+    giftPreferences: {
+      loved: ["magic_stone", "demon_core"],
+      liked: ["mana_potion", "health_potion"],
+      disliked: [],
+      baseOpinionGain: 3,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.3,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 5
+    },
+    dialogueTree: {
+      npcId: "er_tuzi",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["客官，看看我的货！", "履魔具，奔妖皮做的，穿上跑得比独眼魔狼还快！"],
+          choices: [
+            { text: "履魔具多少钱？", next: "about_shoes" },
+            { text: "还有别的吗？", next: "about_other" },
+            { text: "告辞。", next: "default", action: "back" }
+          ]
+        },
+        about_shoes: {
+          id: "about_shoes",
+          texts: ["不贵不贵，只要500金币！", "野外遇到打不过的妖魔，穿上这个就能跑。", "保命的东西，值！"],
+          effects: { familiarity: 2 },
+          choices: [{ text: "我考虑考虑。", next: "default", action: "back" }]
+        },
+        about_other: {
+          id: "about_other",
+          texts: ["还有魔石，各种元素的都有。", "可以镶嵌在魔器魔具上提供能量。", "要看看吗？"],
+          effects: { familiarity: 2 },
+          choices: [{ text: "下次吧。", next: "default", action: "back" }]
+        }
+      }
+    }
   }
 };

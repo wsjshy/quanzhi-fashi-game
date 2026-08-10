@@ -647,5 +647,98 @@ const DataLocations = {
       "shadow_creature"
     ],
     enemyRate: 0.05
+  },
+  xuefeng_station: {
+    id: "xuefeng_station",
+    name: "雪峰山驿站",
+    description: "猎者联盟猎者与博城物资联系的重要小寨，建在雪峰山与雷雨山屏之间的山谷中。不是简陋村庄，两边百米陡峭山崖形成天然壁障，前后两大巨石之门锁住，是卡在山谷中的堡垒小镇。守护石门由博城有名土系魔法师兼建造师张玉恒所做，中阶以下魔法无法撼动，坚固不逊钢铁。驿站是安全区域边界，驿站外妖魔可能出没，没足够能力别走出安界。",
+    backgroundColor: "#2a3a2a",
+    unlocked: false,
+    unlockCondition: {
+      minLevel: 5,
+      questCompleted: "quest_hunt_demon"
+    },
+    actions: [
+      {
+        id: "explore",
+        name: "探索驿站",
+        description: "在驿站内探索，熟悉环境，可能遇到猎者或商贩",
+        icon: "🏘️",
+        timeCost: 2,
+        staminaCost: 10,
+        effects: {
+          exp: 5
+        },
+        eventChance: 0.3,
+        events: [
+          "event_meet_hunter",
+          "event_beautiful_view",
+          "event_merchant_encounter"
+        ]
+      },
+      {
+        id: "shop",
+        name: "逛商铺",
+        description: "驿站主道有商铺小摊，卖魔法师战斗修炼用品，包括履魔具、魔石等",
+        icon: "🛒",
+        timeCost: 1,
+        staminaCost: 5,
+        effects: {}
+      },
+      {
+        id: "talk_hunter",
+        name: "与猎者交流",
+        description: "与驿站的猎者交流，获取野外经验和情报",
+        icon: "💬",
+        timeCost: 2,
+        staminaCost: 10,
+        effects: {
+          exp: 8
+        },
+        eventChance: 0.4,
+        events: [
+          "event_hunter_advice",
+          "event_hunter_story"
+        ]
+      },
+      {
+        id: "rest",
+        name: "驿站休息",
+        description: "在驿站安全区域休息，恢复体力",
+        icon: "😴",
+        timeCost: 2,
+        staminaCost: -30,
+        effects: {
+          hp: 20,
+          mp: 20
+        }
+      },
+      {
+        id: "enter_mountain",
+        name: "进入雪峰山",
+        description: "离开驿站安界，进入雪峰山野外区域",
+        icon: "⛰️",
+        timeCost: 1,
+        staminaCost: 10,
+        effects: {}
+      }
+    ],
+    connectedLocations: [
+      "xuefeng_mountain",
+      "city_street"
+    ],
+    npcs: [
+      "zhan_kong",
+      "luo_yunbo",
+      "pan_lijun",
+      "er_tuzi"
+    ],
+    npcRate: 0.5,
+    enemies: [],
+    enemyRate: 0,
+    isSafeZone: true,
+    shops: [
+      "station_shop"
+    ]
   }
 };

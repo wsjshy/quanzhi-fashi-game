@@ -774,5 +774,53 @@ const DataEnemies = {
       }
     ],
     locations: ["city_street", "bo_city_outskirts"]
+  },
+  evil_eye_swamp_demon: {
+    id: "evil_eye_swamp_demon",
+    name: "邪眼沼妖",
+    title: "奴仆级妖魔",
+    description: "潜伏在人类城市中的妖魔，拥有邪眼可以中邪蛊惑人心，还能释放沼毒。猎者联盟长期追踪的危险妖魔，发现后会发布浅色警戒，示意市民不要外出到深山。",
+    elements: ["dark", "water"],
+    level: 5,
+    maxHp: 180,
+    maxMp: 80,
+    attack: 16,
+    defense: 8,
+    speed: 10,
+    skills: ["basic_attack", "dark_bolt", "water_chain"],
+    spriteColor: "#556b2f",
+    isEnemy: true,
+    expReward: 150,
+    goldReward: 100,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.9, min: 1, max: 2 },
+      { itemId: "magic_stone", chance: 0.5, min: 1, max: 2 },
+      { itemId: "evil_eye", chance: 0.3, min: 1, max: 1 }
+    ],
+    locations: ["city_street", "bo_city_outskirts", "xuefeng_mountain"]
+  },
+  running_demon: {
+    id: "running_demon",
+    name: "奔妖",
+    title: "奴仆级妖魔",
+    description: "速度极快的妖魔，后肢力量惊人，是制作履魔具的上等材料。奔妖后肢皮附魔风轨法纹，配合风石提供能量，可以让穿戴者跑得比独眼魔狼还快。",
+    elements: ["wind"],
+    level: 4,
+    maxHp: 100,
+    maxMp: 30,
+    attack: 14,
+    defense: 4,
+    speed: 22,
+    skills: ["basic_attack", "wind_blade", "wind_speed"],
+    spriteColor: "#8fbc8f",
+    isEnemy: true,
+    expReward: 120,
+    goldReward: 70,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.7, min: 1, max: 1 },
+      { itemId: "running_demon_hide", chance: 0.6, min: 1, max: 1 },
+      { itemId: "wind_stone", chance: 0.4, min: 1, max: 1 }
+    ],
+    locations: ["xuefeng_mountain", "xuefeng_deep", "bo_city_outskirts"]
   }
 };
