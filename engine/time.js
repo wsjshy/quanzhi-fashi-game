@@ -413,7 +413,8 @@ const TimeSystem = {
     restUntilMorning() {
         const events = [];
         
-        // 直接跳到第二天早上
+        // 直接跳到第二天早上6点
+        Player.hour = 6;
         Player.timeOfDay = 'morning';
         this.advanceDay();
         
@@ -449,7 +450,8 @@ const TimeSystem = {
             night: '🌙'
         };
         const icon = icons[period.id] || '⏰';
-        return `${icon} 第 ${Player.day} 天 · ${period.name}`;
+        const hourStr = Player.hour.toString().padStart(2, '0');
+        return `${icon} 第 ${Player.day} 天 · ${period.name} ${hourStr}:00`;
     },
     
     /**
@@ -467,14 +469,14 @@ const TimeSystem = {
     },
 
     /**
-     * 检查是否是夜晚
+     * 检查是否是夜晚（包括傍晚和深夜）
      */
     isNight() {
-        return Player.timeOfDay === 'night';
+        return Player.timeOfDay === 'night' || Player.timeOfDay === 'evening';
     },
 
     /**
-     * 检查是否是白天
+     * 检查是否是白天（早上和下午）
      */
     isDaytime() {
         return Player.timeOfDay === 'morning' || Player.timeOfDay === 'afternoon';
