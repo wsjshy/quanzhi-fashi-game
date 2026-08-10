@@ -95,6 +95,7 @@ const Game = {
 
     // 执行地点行动
     performAction(actionId) {
+        try {
         // 检查逃课惩罚（有课时不上课）
         const location = DataManager.getLocation(Player.currentLocation);
         const currentClass = TimeSystem.getCurrentClass(location);
@@ -207,6 +208,15 @@ const Game = {
             UI.showMessage(`🎉 解锁新地点：${names}！`);
             // 再次刷新界面
             UI.renderMapScreen();
+        }
+        } catch (e) {
+            console.error('行动出错:', e);
+            const debugDiv = document.getElementById('debug-error');
+            if (debugDiv) {
+                debugDiv.style.display = 'block';
+                debugDiv.textContent = '行动错误: ' + e.message + '\n堆栈: ' + e.stack;
+            }
+            UI.showMessage('行动失败：' + e.message);
         }
     },
 
@@ -643,6 +653,10 @@ const Game = {
 
     // ========== NPC 对话 ==========
     showNPCList(npcs, unavailableNpcs = []) {
+        // 参数校验
+        if (!npcs) npcs = [];
+        if (!Array.isArray(npcs)) npcs = [];
+        
         // 创建 NPC 选择弹窗
         const dialog = document.createElement('div');
         dialog.style.cssText = `

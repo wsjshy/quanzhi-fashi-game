@@ -137,6 +137,9 @@ const QuestSystem = {
         const quest = this.getQuest(questId);
         if (!quest) return { success: false, message: '任务不存在' };
 
+        // 先标记任务完成（从activeQuests中移除），防止发放奖励时触发无限递归
+        Player.completeQuest(questId);
+
         // 发放奖励
         const rewards = quest.rewards || {};
         const rewardMessages = [];
@@ -171,9 +174,6 @@ const QuestSystem = {
                 rewardMessages.push(`${faction ? faction.name : factionId} 声望 ${amount >= 0 ? '+' : ''}${amount}（${repLevel.name}）`);
             }
         }
-
-        // 标记任务完成
-        Player.completeQuest(questId);
 
         // 解锁内容
         if (rewards.unlocks && rewards.unlocks.length > 0) {

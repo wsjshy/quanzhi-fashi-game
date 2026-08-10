@@ -29,6 +29,7 @@ const UI = {
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
             cursor: pointer;
+            pointer-events: auto;
         `;
 
         // 创建消息框
@@ -52,15 +53,35 @@ const UI = {
             box-shadow: 0 0 30px rgba(100, 100, 255, 0.3);
             white-space: pre-line;
             cursor: pointer;
+            pointer-events: auto;
         `;
         msgBox.textContent = text;
 
-        // 点击关闭（仅点击消息框关闭，不点击遮罩层，防止误触底层按钮）
+        // 关闭消息函数
+        let closed = false;
         const closeMessage = () => {
+            if (closed) return;
+            closed = true;
+            
+            // 先创建阻止点击穿透的遮罩层
+            const blocker = document.createElement('div');
+            blocker.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999999;pointer-events:auto;background:transparent;';
+            document.body.appendChild(blocker);
+            
             overlay.remove();
             msgBox.remove();
+            
+            setTimeout(() => blocker.remove(), 500);
         };
-        msgBox.addEventListener('click', (e) => {
+        
+        // 点击遮罩层或消息框都关闭
+        overlay.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeMessage();
+        });
+        msgBox.addEventListener('mousedown', (e) => {
+            e.preventDefault();
             e.stopPropagation();
             closeMessage();
         });
@@ -70,6 +91,11 @@ const UI = {
 
         // 3秒后自动消失
         setTimeout(() => {
+            if (closed) return;
+            closed = true;
+            const blocker = document.createElement('div');
+            blocker.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999999;pointer-events:auto;background:transparent;';
+            document.body.appendChild(blocker);
             msgBox.style.transition = 'opacity 0.5s';
             overlay.style.transition = 'opacity 0.5s';
             msgBox.style.opacity = '0';
@@ -77,6 +103,7 @@ const UI = {
             setTimeout(() => {
                 overlay.remove();
                 msgBox.remove();
+                setTimeout(() => blocker.remove(), 500);
             }, 500);
         }, 3000);
     },
@@ -105,10 +132,11 @@ const UI = {
                     background: url('assets/images/effects/thunder_magic.jpg') center/cover;
                     opacity: 0.15;
                     filter: blur(3px);
+                    pointer-events: none;
                 "></div>
                 
                 <!-- 魔法粒子效果 -->
-                <div id="particles" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+                <div id="particles" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
                 
                 <h1 style="
                     font-size: 72px;
@@ -121,6 +149,7 @@ const UI = {
                     letter-spacing: 12px;
                     font-weight: bold;
                     z-index: 10;
+                    position: relative;
                 ">全职法师</h1>
                 
                 <div style="
@@ -129,9 +158,10 @@ const UI = {
                     margin-bottom: 80px;
                     letter-spacing: 6px;
                     z-index: 10;
+                    position: relative;
                 ">魔法觉醒 · 开放世界</div>
                 
-                <div style="display: flex; flex-direction: column; gap: 15px; z-index: 10;">
+                <div style="display: flex; flex-direction: column; gap: 15px; z-index: 99998; position: relative;">
                     <button onclick="Game.startNewGame()" style="
                         width: 280px;
                         padding: 18px 32px;
@@ -171,7 +201,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.3.2 · 开放世界版</div>
+                ">v0.4.0 · 开放世界版</div>
             </div>
         `;
 

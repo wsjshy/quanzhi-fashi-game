@@ -4,8 +4,8 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.3.2';
-const SAVE_VERSION = '0.3.2';
+const GAME_VERSION = '0.4.0';
+const SAVE_VERSION = '0.4.0';
 
 const Player = {
     // 基础信息
@@ -117,6 +117,7 @@ const Player = {
             speed: this.speed,
             maxHp: this.maxHp,
             maxMp: this.maxMp,
+            maxStamina: this.maxStamina,
             critRate: 0.05,
             hitRate: 0.95
         };
