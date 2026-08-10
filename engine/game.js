@@ -187,13 +187,15 @@ const Game = {
             return;
         }
 
-        if (result.npcs !== undefined) {
+        if (result.npcs != null) {
             // 显示 NPC 列表，选择对话对象
-            if (result.npcs.length === 0 && (result.unavailableNpcs || []).length === 0) {
+            const npcs = result.npcs || [];
+            const unavailableNpcs = result.unavailableNpcs || [];
+            if (npcs.length === 0 && unavailableNpcs.length === 0) {
                 UI.showMessage('这里现在没有人...');
                 return;
             }
-            this.showNPCList(result.npcs, result.unavailableNpcs || []);
+            this.showNPCList(npcs, unavailableNpcs);
             return;
         }
 
