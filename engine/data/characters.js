@@ -5558,5 +5558,118 @@ const DataCharacters = {
         }
       }
     }
+  },
+  mu_zhuoyun: {
+    id: "mu_zhuoyun",
+    name: "穆卓云",
+    title: "穆氏族长",
+    description: "穆氏世家族长，穆宁雪的父亲，冰系高阶魔法师。发鬓白色，中年英气十足，身材魁梧高大。跺跺脚能让整个博城震一震的人物，博城的土皇帝。势利但爱才，三年前打压过莫凡家，年度考核后想招纳莫凡被拒，暴怒时仅凭气息冻结整个操场。",
+    avatar: "assets/images/characters/mu_zhuoyun.jpg",
+    location: "mu_estate",
+    element: "ice",
+    level: 18,
+    personality: ["威严", "势利", "爱才", "控制欲强"],
+    baseStats: { hp: 800, mp: 500, attack: 120, defense: 80, speed: 60 },
+    skills: ["ice_shield", "ice_storm"],
+    faction: "mu_family",
+    factionRank: "族长",
+    relationships: {
+      mu_ningxue: { opinion: 100, trust: 90, type: "family", label: "女儿" },
+      mu_he: { opinion: 70, trust: 60, type: "family", label: "兄弟" },
+      mu_bai: { opinion: 60, trust: 50, type: "family", label: "旁系侄子" },
+      mu_jiangming: { opinion: 90, trust: 85, type: "family", label: "长子" },
+      mo_fan: { opinion: -30, trust: -20, type: "enemy", label: "拒绝招纳" },
+      deng_kai: { opinion: 60, trust: 50, type: "acquaintance", label: "平辈" }
+    },
+    giftPreferences: {
+      loved: ["ice_crystal", "demon_core"],
+      liked: ["magic_stone", "super_mana_potion"],
+      disliked: ["fire_essence"],
+      baseOpinionGain: 2,
+      lovedMultiplier: 3,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.3,
+      dailyGiftLimit: 1
+    },
+    dialogueTree: {
+      npcId: "mu_zhuoyun",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["你是何人？找我穆氏世家有何事？", "这里是穆家庄园，不是什么人都能进来的。"],
+          choices: [
+            { text: "久仰穆族长大名。", next: "about_family", condition: { minOpinion: 0 } },
+            { text: "我想了解穆氏世家。", next: "about_mu" },
+            { text: "告辞。", next: "default", action: "back" }
+          ]
+        },
+        about_family: {
+          id: "about_family",
+          texts: ["哼，算你有眼光。我穆氏世家传承百年，冰系一脉在博城无人能及。", "宁雪是我的骄傲，15岁便入了帝都苍明学府。"],
+          effects: { opinion: 2 },
+          choices: [{ text: "穆小姐确实是天才。", next: "default", action: "back" }]
+        },
+        about_mu: {
+          id: "about_mu",
+          texts: ["穆氏世家，贵族上百人，佣人上千，以前这整个城区都是我们穆家的。", "年轻一辈要靠家族贡献和修炼成绩获得资源，不是什么阿猫阿狗都能进核心的。"],
+          choices: [{ text: "受教了。", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  deng_kai: {
+    id: "deng_kai",
+    name: "邓铠",
+    title: "猎者联盟高层 / 校董",
+    description: "猎者联盟中的高层，同时也是天澜魔法高中的校董，算是所有校董之中修为最高、实力最强的人。正义感强，在穆卓云暴怒时站出来挡在学生面前，保护没有防御能力的学生。为人稳重，说话有分量。",
+    avatar: "assets/images/characters/deng_kai.jpg",
+    location: "hunter_guild",
+    element: "neutral",
+    level: 16,
+    personality: ["正义", "稳重", "有实力", "护短"],
+    baseStats: { hp: 700, mp: 400, attack: 100, defense: 90, speed: 70 },
+    skills: ["basic_attack"],
+    faction: "hunter_alliance",
+    factionRank: "高层",
+    relationships: {
+      mu_zhuoyun: { opinion: 60, trust: 50, type: "acquaintance", label: "平辈" },
+      tang_yue: { opinion: 70, trust: 65, type: "colleague", label: "同事" },
+      hunter_li: { opinion: 80, trust: 75, type: "colleague", label: "下属" }
+    },
+    giftPreferences: {
+      loved: ["demon_core", "hunter_medal"],
+      liked: ["magic_stone", "stamina_potion"],
+      disliked: [],
+      baseOpinionGain: 3,
+      lovedMultiplier: 2.5,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 2
+    },
+    dialogueTree: {
+      npcId: "deng_kai",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["年轻人，找我有什么事？", "猎者联盟的事，或者学校的事，都可以说。"],
+          choices: [
+            { text: "我想加入猎者联盟。", next: "about_hunter" },
+            { text: "您认识穆卓云族长吗？", next: "about_mu" },
+            { text: "告辞。", next: "default", action: "back" }
+          ]
+        },
+        about_hunter: {
+          id: "about_hunter",
+          texts: ["想加入猎者联盟？好志气！", "不过猎魔不是儿戏，城市之外的妖魔可不是学校里的实践课。", "先提升实力，多猎杀几只奴仆级妖魔，再来找我。"],
+          effects: { opinion: 3, faction: { hunter_alliance: 5 } },
+          choices: [{ text: "我会努力的！", next: "default", action: "back" }]
+        },
+        about_mu: {
+          id: "about_mu",
+          texts: ["卓云啊，老相识了。实力确实强，冰系高阶在博城没几个对手。", "就是脾气大了点，有时候控制不住情绪。上次在学校差点出事，还是我挡下来的。", "年轻人，在博城混，最好不要得罪穆氏世家。"],
+          choices: [{ text: "多谢提醒。", next: "default", action: "back" }]
+        }
+      }
+    }
   }
 };

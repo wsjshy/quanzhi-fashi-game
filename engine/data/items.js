@@ -367,5 +367,31 @@ const DataItems = {
     },
     requiredLevel: 1,
     rarity: "优秀"
+  },
+  dark_stone: {
+    id: "dark_stone",
+    name: "暗石",
+    description: "一种特殊的黑色石头，能够吸收星感石散发出的光辉能量，让星感石的光芒黯然下去。穆白和穆贺曾用它在年度考核中陷害莫凡，将C级成绩拉到D甚至更低。考试包庇陷害是大罪。",
+    type: "special",
+    icon: "🖤",
+    price: 0,
+    stackable: false,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    lore: "年度考核暗石陷害事件的关键道具。放在星感石下方，悄无声息地吸走光芒能量。"
+  },
+  star_sense_stone: {
+    id: "star_sense_stone",
+    name: "星感石",
+    description: "年度考核最重要的仪器，看上去像黑色的鹅卵石，西瓜那么大，被石墩托起在训练场前端。学生将手掌放在上面，集中精神进入冥修，星感石会根据星尘光辉强弱印射出光芒，考官通过亮度判断修炼成果。每个学生有三次机会，取最强一次。",
+    type: "special",
+    icon: "🔮",
+    price: 0,
+    stackable: false,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "传说",
+    lore: "天澜魔法高中年度考核的核心仪器。光芒外溢是S级成绩的标志，极为罕见。"
   }
 };
