@@ -4402,6 +4402,20 @@ const GameData = {
                     }
                 },
                 {
+                    id: 'library',
+                    name: '图书馆',
+                    description: '去图书馆看书（半天），学习魔法知识，有概率领悟新技能或获得情报',
+                    icon: '📖',
+                    timeCost: 4,
+                    staminaCost: 15,
+                    effects: {
+                        exp: 30,
+                        mp: -10
+                    },
+                    eventChance: 0.4,
+                    events: ['event_library_learn', 'event_library_skill', 'event_library_info', 'event_library_meet']
+                },
+                {
                     id: 'shop',
                     name: '小卖部',
                     description: '学校的小卖部，购买药水和基础物品',
@@ -6526,6 +6540,111 @@ const GameData = {
                         exp: 10
                     },
                     resultText: '你冒雨继续前进，虽然淋成了落汤鸡，但也锻炼了意志。（HP减少，获得经验）'
+                }
+            ]
+        },
+
+        // 图书馆事件：学到新知识
+        event_library_learn: {
+            id: 'event_library_learn',
+            name: '学到新知识',
+            description: '你在图书馆学到了很多新知识',
+            trigger: 'exploring',
+            chance: 0.3,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '继续深入学习',
+                    effects: {
+                        exp: 30,
+                        mp: -15
+                    },
+                    resultText: '你继续深入学习，收获颇丰！（获得大量经验）'
+                },
+                {
+                    text: '休息一下',
+                    effects: {
+                        exp: 15,
+                        stamina: 10
+                    },
+                    resultText: '你休息了一下，整理学到的知识。（获得经验，恢复体力）'
+                }
+            ]
+        },
+
+        // 图书馆事件：领悟新技能
+        event_library_skill: {
+            id: 'event_library_skill',
+            name: '领悟技能',
+            description: '你在看书时忽然领悟了一个新技能！',
+            trigger: 'exploring',
+            chance: 0.1,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '仔细研究',
+                    effects: {
+                        exp: 20,
+                        addItem: { itemId: 'magic_herb', count: 1 }
+                    },
+                    resultText: '你仔细研究了这个技能，虽然还没完全学会，但收获了不少。（获得经验和1株魔法草药）'
+                }
+            ]
+        },
+
+        // 图书馆事件：获得情报
+        event_library_info: {
+            id: 'event_library_info',
+            name: '发现秘闻',
+            description: '你在一本旧书里发现了一些有趣的秘闻',
+            trigger: 'exploring',
+            chance: 0.15,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '认真阅读',
+                    effects: {
+                        exp: 25
+                    },
+                    resultText: '你认真阅读了这些秘闻，学到了很多东西。（获得经验）'
+                },
+                {
+                    text: '记下来以后再看',
+                    effects: {
+                        exp: 10
+                    },
+                    resultText: '你把这些内容记了下来，以后慢慢研究。（获得少量经验）'
+                }
+            ]
+        },
+
+        // 图书馆事件：遇到同学
+        event_library_meet: {
+            id: 'event_library_meet',
+            name: '遇到同学',
+            description: '你在图书馆遇到了也来看书的同学',
+            trigger: 'exploring',
+            chance: 0.2,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '一起学习',
+                    effects: {
+                        exp: 20,
+                        stamina: -5
+                    },
+                    resultText: '你和同学一起学习，互相交流了心得。（获得经验）'
+                },
+                {
+                    text: '打个招呼就继续看自己的',
+                    effects: {
+                        exp: 10
+                    },
+                    resultText: '你打了个招呼就继续看自己的书了。（获得少量经验）'
                 }
             ]
         },
