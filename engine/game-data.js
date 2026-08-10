@@ -4357,8 +4357,8 @@ const GameData = {
                         exp: 25,
                         mp: -5
                     },
-                    eventChance: 0.25,
-                    events: ['event_breakthrough', 'event_classmate_chat', 'event_mo_fan_scolded', 'event_zhao_manyan_showoff', 'event_mu_ningxue_gossip']
+                    eventChance: 0.3,
+                    events: ['event_breakthrough', 'event_classmate_chat', 'event_mo_fan_scolded', 'event_zhao_manyan_showoff', 'event_mu_ningxue_gossip', 'event_zhang_xiaohou_find', 'event_zhou_min_question', 'event_xu_zhaoting_showoff']
                 },
                 {
                     id: 'train',
@@ -6118,6 +6118,89 @@ const GameData = {
                         hp: -10
                     },
                     resultText: '你加入了讨论，聊得很开心。不过你总觉得背后有点冷... 好像被冰系魔法瞄了一眼。（HP减少）'
+                }
+            ]
+        },
+
+        // 学校事件：张小侯找你
+        event_zhang_xiaohou_find: {
+            id: 'event_zhang_xiaohou_find',
+            name: '张小侯找你',
+            description: '张小侯兴冲冲地跑来找你',
+            trigger: 'training',
+            chance: 0.08,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '和他一起玩',
+                    effects: {
+                        exp: 3,
+                        stamina: 5
+                    },
+                    resultText: '你和张小侯聊了一会儿，他给你讲了很多有趣的事情，心情变好了。（恢复少量体力）'
+                },
+                {
+                    text: '婉拒，继续学习',
+                    effects: {
+                        exp: 8
+                    },
+                    resultText: '你婉拒了张小侯，继续专心学习。张小侯有点失望，但也理解。（获得经验）'
+                }
+            ]
+        },
+
+        // 学校事件：周敏问问题
+        event_zhou_min_question: {
+            id: 'event_zhou_min_question',
+            name: '周敏问问题',
+            description: '周敏过来问你一个修炼上的问题',
+            trigger: 'training',
+            chance: 0.08,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '认真解答',
+                    effects: {
+                        exp: 10,
+                        mp: -5
+                    },
+                    resultText: '你认真地给周敏讲解了问题，在讲解的过程中你自己也有了新的理解。（获得经验）'
+                },
+                {
+                    text: '说你也不会',
+                    effects: {
+                        exp: 2
+                    },
+                    resultText: '你说你也不太懂，周敏有点失望地走开了。'
+                }
+            ]
+        },
+
+        // 学校事件：许昭霆炫耀
+        event_xu_zhaoting_showoff: {
+            id: 'event_xu_zhaoting_showoff',
+            name: '许昭霆炫耀',
+            description: '许昭霆又在炫耀他的雷系魔法',
+            trigger: 'training',
+            chance: 0.08,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '夸他厉害',
+                    effects: {
+                        exp: 3
+                    },
+                    resultText: '你夸了许昭霆几句，他更得意了，给你演示了几个小技巧。（获得少量经验）'
+                },
+                {
+                    text: '不以为然',
+                    effects: {
+                        exp: 5
+                    },
+                    resultText: '你表现得不以为然，许昭霆有些不服气，非要和你比试一下。你勉强应付了过去，也学到了点东西。（获得经验）'
                 }
             ]
         },
