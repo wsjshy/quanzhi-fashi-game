@@ -1170,5 +1170,105 @@ const DataQuests = {
     dialogueStart: "冒险的时候装备很重要。我建议你去市里的魔法商店买一把法杖和一件法袍，这样能大大提升你的战斗力。",
     dialogueInProgress: "买到合适的装备了吗？如果钱不够，可以先做些任务攒钱。",
     dialogueComplete: "不错，有了这些装备，你的安全更有保障了。记住，装备只是辅助，自身的修炼才是根本。"
+  },
+  quest_training_camp: {
+    id: "quest_training_camp",
+    name: "雪峰山历练",
+    description: "斩空总教官组织的雪峰山野外历练，表面上没有老师保护，实际上老师们都在暗中跟随计分。完成悬赏任务可得A评分，打伤召唤兽可得S评分。",
+    giver: "zhan_kong",
+    type: "story",
+    objectives: [
+      {
+        type: "reach",
+        locationId: "xuefeng_station",
+        count: 1,
+        description: "前往雪峰山驿站集合"
+      },
+      {
+        type: "reach",
+        locationId: "baicao_valley",
+        count: 1,
+        description: "进入百草谷历练区域"
+      },
+      {
+        type: "collect",
+        itemId: "magic_herb",
+        count: 3,
+        description: "在百草谷采集3株魔法草药"
+      },
+      {
+        type: "kill",
+        enemyId: "demon_vine",
+        count: 1,
+        description: "击败1只妖藤"
+      }
+    ],
+    rewards: {
+      exp: 300,
+      gold: 200,
+      items: [
+        {
+          itemId: "health_potion",
+          count: 3
+        },
+        {
+          itemId: "mana_potion",
+          count: 3
+        }
+      ],
+      reputation: {
+        tianlan_school: 20
+      }
+    },
+    prerequisites: [
+      "quest_hunt_demon"
+    ],
+    nextQuest: "quest_wolf_beast_challenge",
+    isMainQuest: true,
+    autoStart: false,
+    dialogueStart: "小子，准备好参加雪峰山历练了吗？这次历练表面上没有老师保护，但我们都在暗中跟着。记住，实战和理论完全不同，面对真妖魔别吓傻了。",
+    dialogueInProgress: "历练进行得怎么样？百草谷的草药资源很丰富，但也要小心妖藤和幽狼兽。记住，用脑子战斗，而不是只靠蛮力。",
+    dialogueComplete: "不错，你完成了历练的基本目标。能在实战中释放魔法，已经能得A了。如果你能打伤幽狼兽，那就是S评分！"
+  },
+  quest_wolf_beast_challenge: {
+    id: "quest_wolf_beast_challenge",
+    name: "挑战幽狼兽",
+    description: "白阳老师的召唤兽幽狼兽在百草谷活动，如果你能打伤它，就能获得S级历练评分。但要小心，幽狼兽发狂后非常危险！",
+    giver: "bai_yang",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "demon_wolf",
+        count: 1,
+        description: "击败幽狼兽（或用智慧重创它）"
+      }
+    ],
+    rewards: {
+      exp: 500,
+      gold: 300,
+      items: [
+        {
+          itemId: "wolf_fang",
+          count: 2
+        },
+        {
+          itemId: "stardust_device_mortal",
+          count: 1
+        }
+      ],
+      reputation: {
+        tianlan_school: 30
+      }
+    },
+    prerequisites: [
+      "quest_training_camp"
+    ],
+    nextQuest: null,
+    isMainQuest: true,
+    autoStart: false,
+    dialogueStart: "你想挑战我的幽狼兽？有勇气！不过我提醒你，它比普通妖魔强得多，受刺激还会发狂。你可以正面战斗，也可以用环境智取。",
+    dialogueInProgress: "幽狼兽的弱点是眼睛和腹部，发狂时会失去理智，这时候可以利用地形。钟乳石洞穴那种地方，就很适合用智商碾压。",
+    dialogueComplete: "竟然真的做到了！不管是正面击败还是用智慧重创，都很了不起。S评分给你！这颗星尘魔器是斩空总教官让我给你的奖励。"
   }
 };

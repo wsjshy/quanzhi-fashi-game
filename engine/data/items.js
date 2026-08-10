@@ -537,5 +537,19 @@ const DataItems = {
     usableOutOfBattle: false,
     rarity: "普通",
     element: "fire"
+  },
+  vine_fiber: {
+    id: "vine_fiber",
+    name: "藤蔓纤维",
+    description: "从妖藤身上获取的坚韧纤维，韧性极强，是制作绳索和防具的上等材料。",
+    type: "material",
+    icon: "🌿",
+    price: 25,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "普通",
+    element: "earth"
   }
 };

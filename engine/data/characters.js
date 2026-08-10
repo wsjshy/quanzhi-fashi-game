@@ -1,4 +1,4 @@
-﻿/**
+/**
  * NPC/角色数据
  * 从 game-data.js 拆分而来
  */
@@ -5102,6 +5102,75 @@ const DataCharacters = {
           texts: ["还有魔石，各种元素的都有。", "可以镶嵌在魔器魔具上提供能量。", "要看看吗？"],
           effects: { familiarity: 2 },
           choices: [{ text: "下次吧。", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  bai_yang: {
+    id: "bai_yang",
+    name: "白阳",
+    title: "召唤系法师",
+    description: "天澜魔法高中的召唤系老师，幽狼兽的召唤师。在雪峰山历练中负责留守巢穴，召唤兽失控后精神受到重创。",
+    avatar: "",
+    location: "baicao_valley",
+    element: "summon",
+    level: 10,
+    personality: ["沉稳", "专业", "责任心强", "召唤系"],
+    baseStats: { hp: 200, mp: 150, attack: 25, defense: 15, speed: 12 },
+    skills: ["basic_attack", "summon_wolf_beast"],
+    faction: "tianlan_school",
+    factionRank: "teacher",
+    relationships: {
+      zhan_kong: { type: "colleague", opinion: 60 },
+      luo_yunbo: { type: "colleague", opinion: 50 },
+      pan_lijun: { type: "colleague", opinion: 50 }
+    },
+    giftPreferences: {
+      loved: ["soul_essence", "magic_stone"],
+      liked: ["mana_potion", "demon_core"],
+      disliked: [],
+      baseOpinionGain: 3,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.3,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 5
+    },
+    dialogueTree: {
+      npcId: "bai_yang",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["你好，我是白阳，召唤系老师。", "我的召唤兽幽狼兽在附近活动，小心点。", "召唤系法师与召唤兽心灵相通，它受伤我也会痛。"],
+          choices: [
+            { text: "召唤系是什么？", next: "about_summon" },
+            { text: "幽狼兽厉害吗？", next: "about_wolf" },
+            { text: "历练的事...", next: "about_training" },
+            { text: "告辞。", next: "default", action: "back" }
+          ]
+        },
+        about_summon: {
+          id: "about_summon",
+          texts: ["召唤系可以召唤异世界的生物为己所用。", "召唤师与召唤兽心灵感应，共享感知。", "召唤兽死亡，召唤师也会受到严重的精神创伤。"],
+          effects: { familiarity: 3, intelligence: 5 },
+          choices: [{ text: "原来如此。", next: "default", action: "back" }]
+        },
+        about_wolf: {
+          id: "about_wolf",
+          texts: ["幽狼兽是奴仆级召唤兽，绿色汗毛，锯齿獠牙。", "比普通独眼魔狼要强一些，速度很快。", "但它受强刺激会发狂，眼睛变红，战斗力翻倍。"],
+          effects: { familiarity: 3 },
+          choices: [{ text: "发狂了怎么办？", next: "about_rage" }]
+        },
+        about_rage: {
+          id: "about_rage",
+          texts: ["发狂的召唤兽很难控制，连我也可能被攻击。", "最好的办法是用环境限制它，或者一击重创。", "钟乳石洞穴那种地形，就很适合用智商碾压。"],
+          effects: { familiarity: 5, intelligence: 10 },
+          choices: [{ text: "受教了。", next: "default", action: "back" }]
+        },
+        about_training: {
+          id: "about_training",
+          texts: ["这次历练是斩空老师设计的，表面上没有老师保护。", "实际上我们都在暗中跟随，计分并随时准备救援。", "释放魔法得A，打伤召唤兽得S，加油吧。"],
+          effects: { familiarity: 5 },
+          choices: [{ text: "明白了。", next: "default", action: "back" }]
         }
       }
     }

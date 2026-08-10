@@ -551,5 +551,113 @@ const DataSkills = {
         }
       }
     ]
+  },
+  fire_burn_bone: {
+    id: "fire_burn_bone",
+    name: "火滋·焚骨",
+    description: "初阶火系二级魔法，火焰侵入敌人体内燃烧骨骼，造成高额持续伤害，可穿透皮毛防御。",
+    element: "fire",
+    type: "damage",
+    mpCost: 18,
+    baseDamage: 45,
+    damageMultiplier: 1.5,
+    hitRate: 0.9,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    ignoreDefense: 0.3,
+    statusEffects: [
+      {
+        name: "焚骨",
+        type: "poison",
+        dotDamage: 15,
+        duration: 3,
+        chance: 0.7
+      }
+    ]
+  },
+  earth_shift: {
+    id: "earth_shift",
+    name: "地波·挪移",
+    description: "初阶土系魔法，地面产生涟漪，使用者可短距离瞬移，躲避攻击。",
+    element: "earth",
+    type: "buff",
+    mpCost: 15,
+    targetType: "self",
+    cooldown: 2,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "挪移",
+        type: "evasion_up",
+        duration: 2,
+        chance: 1,
+        statModifiers: {
+          speed: 10
+        }
+      }
+    ]
+  },
+  wild_charge: {
+    id: "wild_charge",
+    name: "狂野冲撞",
+    description: "幽狼兽的狂暴冲撞技能，高速冲向敌人造成重创，有几率击晕。",
+    element: "neutral",
+    type: "damage",
+    mpCost: 10,
+    baseDamage: 30,
+    damageMultiplier: 1.3,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "击晕",
+        type: "stun",
+        duration: 1,
+        chance: 0.3
+      }
+    ]
+  },
+  vine_bind: {
+    id: "vine_bind",
+    name: "藤蔓缠绕",
+    description: "妖藤的藤蔓捆绑技能，束缚敌人使其无法行动，持续造成伤害。",
+    element: "earth",
+    type: "damage",
+    mpCost: 12,
+    baseDamage: 15,
+    damageMultiplier: 1.0,
+    hitRate: 0.8,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "缠绕",
+        type: "stun",
+        duration: 2,
+        chance: 0.6
+      }
+    ]
+  },
+  thorn_shot: {
+    id: "thorn_shot",
+    name: "荆棘射击",
+    description: "妖藤发射尖锐荆棘，远程攻击敌人。",
+    element: "earth",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 18,
+    damageMultiplier: 1.1,
+    hitRate: 0.9,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 1,
+    tier: "初阶"
   }
 };

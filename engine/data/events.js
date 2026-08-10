@@ -1240,5 +1240,220 @@ const DataEvents = {
         resultText: "你不想浪费时间，继续探索驿站。"
       }
     ]
+  },
+  event_herb_discovery: {
+    id: "event_herb_discovery",
+    name: "发现草药",
+    description: "在百草谷中发现了珍贵的魔法草药",
+    trigger: "exploring",
+    chance: 0.3,
+    conditions: [{ type: "location", value: "baicao_valley" }],
+    once: false,
+    choices: [
+      {
+        text: "小心采集",
+        effects: {
+          addItem: { itemId: "magic_herb", count: 2 },
+          exp: 10
+        },
+        resultText: "你小心翼翼地采集了2株魔法草药，品质上乘。"
+      },
+      {
+        text: "深入寻找更多",
+        effects: {
+          stamina: -10,
+          addItem: { itemId: "magic_herb", count: 3 },
+          exp: 15
+        },
+        resultText: "你深入谷中，又找到了3株草药，但消耗了不少体力。"
+      }
+    ]
+  },
+  event_demon_vine_encounter: {
+    id: "event_demon_vine_encounter",
+    name: "妖藤袭击",
+    description: "地面突然伸出藤蔓，向你袭来！",
+    trigger: "exploring",
+    chance: 0.25,
+    conditions: [{ type: "location", value: "baicao_valley" }],
+    once: false,
+    choices: [
+      {
+        text: "用火系魔法焚烧",
+        effects: {
+          mp: -15,
+          exp: 30,
+          addItem: { itemId: "vine_fiber", count: 2 }
+        },
+        resultText: "你释放火系魔法，妖藤遇火即燃，很快化为灰烬。你获得了2份藤蔓纤维。"
+      },
+      {
+        text: "拔刀斩断",
+        effects: {
+          stamina: -15,
+          hp: -10,
+          exp: 20,
+          addItem: { itemId: "vine_fiber", count: 1 }
+        },
+        resultText: "你用武器斩断藤蔓，但被荆棘划伤，损失了一些HP。获得1份藤蔓纤维。"
+      },
+      {
+        text: "快速逃离",
+        effects: {
+          stamina: -20
+        },
+        resultText: "你迅速逃离了妖藤的攻击范围，虽然没受伤但消耗了大量体力。"
+      }
+    ]
+  },
+  event_wolf_beast_battle: {
+    id: "event_wolf_beast_battle",
+    name: "幽狼兽出现",
+    description: "一只绿色汗毛的幽狼兽挡住了去路，它是白阳老师的召唤兽！",
+    trigger: "exploring",
+    chance: 0.2,
+    conditions: [{ type: "location", value: "baicao_valley" }],
+    once: false,
+    choices: [
+      {
+        text: "正面迎战",
+        effects: {
+          triggerBattle: "demon_wolf",
+          exp: 50
+        },
+        resultText: "你决定正面迎战幽狼兽！进入战斗！"
+      },
+      {
+        text: "用环境智取",
+        effects: {
+          intelligence: 10,
+          exp: 40,
+          stamina: -10
+        },
+        resultText: "你观察周围环境，利用地形与幽狼兽周旋，虽然没有正面战斗，但学到了很多实战经验。"
+      },
+      {
+        text: "撤退报告老师",
+        effects: {
+          stamina: -15
+        },
+        resultText: "你选择撤退，去找白阳老师报告情况。安全第一。"
+      }
+    ]
+  },
+  event_stalactite_tactics: {
+    id: "event_stalactite_tactics",
+    name: "钟乳石智商碾压",
+    description: "洞穴中，幽狼兽发狂追来。你看到头顶的钟乳石，心生一计！",
+    trigger: "exploring",
+    chance: 0.15,
+    conditions: [{ type: "location", value: "baicao_valley" }],
+    once: true,
+    choices: [
+      {
+        text: "攻击钟乳石砸向幽狼兽",
+        effects: {
+          mp: -20,
+          exp: 100,
+          intelligence: 20,
+          addItem: { itemId: "wolf_fang", count: 2 }
+        },
+        resultText: "你精准地攻击钟乳石的支撑点，巨大的钟乳石砸向幽狼兽，将其重创！这就是智商碾压！获得2颗狼牙。"
+      },
+      {
+        text: "引幽狼兽撞向石壁",
+        effects: {
+          stamina: -20,
+          exp: 80,
+          intelligence: 15
+        },
+        resultText: "你引诱发狂的幽狼兽撞向坚硬的石壁，它被撞得头晕目眩。你趁机逃脱。"
+      }
+    ]
+  },
+  event_river_cross_success: {
+    id: "event_river_cross_success",
+    name: "成功跨越河谷",
+    description: "你成功跨越了10米宽的河谷悬崖！",
+    trigger: "exploring",
+    chance: 0.5,
+    conditions: [{ type: "location", value: "baicao_valley" }],
+    once: false,
+    choices: [
+      {
+        text: "继续前进",
+        effects: {
+          exp: 30,
+          stamina: -10
+        },
+        resultText: "你成功跨越河谷，对岸的风景更加壮丽。继续探索吧！"
+      }
+    ]
+  },
+  event_river_cross_fail: {
+    id: "event_river_cross_fail",
+    name: "跨越失败",
+    description: "你尝试跨越河谷，但差了一点，掉了下去！",
+    trigger: "exploring",
+    chance: 0.5,
+    conditions: [{ type: "location", value: "baicao_valley" }],
+    once: false,
+    choices: [
+      {
+        text: "爬回岸边",
+        effects: {
+          hp: -20,
+          stamina: -25
+        },
+        resultText: "你掉进了河谷，虽然抓住了藤蔓爬了上来，但受了不少伤。下次还是找风系法师帮忙吧。"
+      }
+    ]
+  },
+  event_valley_view: {
+    id: "event_valley_view",
+    name: "百草谷风光",
+    description: "站在高处俯瞰百草谷，掌状湖泊尽收眼底，美不胜收。",
+    trigger: "exploring",
+    chance: 0.15,
+    conditions: [{ type: "location", value: "baicao_valley" }],
+    once: true,
+    choices: [
+      {
+        text: "欣赏风景",
+        effects: {
+          stamina: 10,
+          exp: 5
+        },
+        resultText: "你被眼前的美景震撼，心情愉悦，体力恢复了一些。魔法世界的自然风光真是令人陶醉。"
+      }
+    ]
+  },
+  event_cave_explore: {
+    id: "event_cave_explore",
+    name: "洞穴探索",
+    description: "你进入了独眼魔狼的旧巢穴，洞穴内有钟乳石和泉池，似乎藏着什么。",
+    trigger: "exploring",
+    chance: 0.3,
+    conditions: [{ type: "location", value: "baicao_valley" }],
+    once: false,
+    choices: [
+      {
+        text: "搜索泉池附近",
+        effects: {
+          addItem: { itemId: "magic_stone", count: 1 },
+          exp: 15,
+          stamina: -10
+        },
+        resultText: "你在泉池边发现了一颗魔法石，似乎是之前的猎者遗失的。"
+      },
+      {
+        text: "深入洞穴",
+        effects: {
+          stamina: -15,
+          exp: 20
+        },
+        resultText: "你深入洞穴，发现了一些妖魔活动的痕迹，看来这里并不安全。"
+      }
+    ]
   }
 };

@@ -54,31 +54,40 @@ const DataEnemies = {
   demon_wolf: {
     id: "demon_wolf",
     name: "幽狼兽",
-    title: "奴仆级妖魔",
-    description: "生活在雪峰山的低级妖魔，群居，速度很快。",
+    title: "奴仆级召唤兽",
+    description: "召唤系法师白阳的召唤兽，绿色汗毛锯齿獠牙，比普通独眼魔狼更强。受强刺激会发狂，眼睛变红，战斗力大幅提升。",
     elements: [
       "dark"
     ],
-    level: 3,
-    maxHp: 120,
-    maxMp: 30,
-    attack: 15,
-    defense: 5,
-    speed: 14,
+    level: 5,
+    maxHp: 200,
+    maxMp: 50,
+    attack: 22,
+    defense: 8,
+    speed: 18,
     skills: [
       "basic_attack",
-      "dark_bolt"
+      "dark_bolt",
+      "wild_charge"
     ],
-    spriteColor: "#663399",
+    spriteColor: "#4a7c3f",
     isEnemy: true,
-    expReward: 80,
-    goldReward: 40,
+    isSummon: true,
+    canEnrage: true,
+    expReward: 150,
+    goldReward: 80,
     dropItems: [
       {
         itemId: "demon_core",
-        chance: 0.7,
+        chance: 0.8,
         min: 1,
-        max: 1
+        max: 2
+      },
+      {
+        itemId: "wolf_fang",
+        chance: 0.6,
+        min: 1,
+        max: 2
       },
       {
         itemId: "magic_stone",
@@ -88,7 +97,8 @@ const DataEnemies = {
       }
     ],
     locations: [
-      "xuefeng_mountain"
+      "xuefeng_mountain",
+      "baicao_valley"
     ]
   },
   shadow_creature: {
@@ -822,5 +832,32 @@ const DataEnemies = {
       { itemId: "wind_stone", chance: 0.4, min: 1, max: 1 }
     ],
     locations: ["xuefeng_mountain", "xuefeng_deep", "bo_city_outskirts"]
+  },
+  demon_vine: {
+    id: "demon_vine",
+    name: "妖藤",
+    title: "奴仆级植物妖魔",
+    description: "生长在百草谷的植物系妖魔，藤蔓带荆棘倒刺，能捆绑敌人。怕火，对雷系有较强抗性。",
+    elements: ["earth", "neutral"],
+    level: 3,
+    maxHp: 150,
+    maxMp: 40,
+    attack: 12,
+    defense: 10,
+    speed: 6,
+    skills: ["basic_attack", "vine_bind", "thorn_shot"],
+    spriteColor: "#228b22",
+    isEnemy: true,
+    isPlant: true,
+    fireWeakness: 1.8,
+    thunderResistance: 0.5,
+    expReward: 100,
+    goldReward: 50,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.5, min: 1, max: 1 },
+      { itemId: "vine_fiber", chance: 0.7, min: 1, max: 2 },
+      { itemId: "magic_herb", chance: 0.4, min: 1, max: 1 }
+    ],
+    locations: ["baicao_valley", "xuefeng_mountain"]
   }
 };

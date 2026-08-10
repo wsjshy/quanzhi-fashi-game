@@ -366,7 +366,9 @@ const DataLocations = {
       }
     ],
     connectedLocations: [
-      "city_street"
+      "city_street",
+      "xuefeng_station",
+      "baicao_valley"
     ],
     enemies: [
       "demon_wolf",
@@ -740,7 +742,8 @@ const DataLocations = {
     ],
     connectedLocations: [
       "xuefeng_mountain",
-      "city_street"
+      "city_street",
+      "baicao_valley"
     ],
     npcs: [
       "zhan_kong",
@@ -755,5 +758,110 @@ const DataLocations = {
     shops: [
       "station_shop"
     ]
+  },
+  baicao_valley: {
+    id: "baicao_valley",
+    name: "百草谷",
+    description: "雪峰山深处的山谷，因形似掌状的湖泊而得名，北面山口是历练最终关卡。谷中生长着大量魔法草药，也潜伏着妖藤等植物系妖魔。",
+    backgroundColor: "#1a3a1a",
+    unlockLevel: 3,
+    unlockQuest: "quest_training_camp",
+    actions: [
+      {
+        id: "explore",
+        name: "探索百草谷",
+        description: "在谷中探索，可能遇到妖魔或发现珍贵草药",
+        icon: "🌿",
+        timeCost: 2,
+        staminaCost: 15,
+        effects: {
+          exp: 15
+        },
+        eventChance: 0.4,
+        events: ["event_herb_discovery", "event_demon_vine_encounter", "event_valley_view"]
+      },
+      {
+        id: "collect_herbs",
+        name: "采集草药",
+        description: "在百草谷采集魔法草药，这里草药资源丰富",
+        icon: "🌱",
+        timeCost: 2,
+        staminaCost: 12,
+        effects: {
+          exp: 10
+        },
+        eventChance: 0.3,
+        events: ["event_herb_discovery", "event_demon_vine_encounter"]
+      },
+      {
+        id: "cross_river",
+        name: "跨越河谷",
+        description: "尝试跨越10米宽的河谷悬崖，需要风系魔法或绳索",
+        icon: "🌊",
+        timeCost: 1,
+        staminaCost: 20,
+        effects: {
+          exp: 20
+        },
+        eventChance: 0.5,
+        events: ["event_river_cross_success", "event_river_cross_fail"]
+      },
+      {
+        id: "enter_cave",
+        name: "进入旧巢穴",
+        description: "进入独眼魔狼的旧巢穴，洞穴内有钟乳石和泉池，危险但可能有宝藏",
+        icon: "🕳️",
+        timeCost: 2,
+        staminaCost: 15,
+        effects: {
+          exp: 25
+        },
+        eventChance: 0.6,
+        events: ["event_cave_explore", "event_wolf_beast_battle", "event_stalactite_tactics"]
+      },
+      {
+        id: "rest",
+        name: "谷中休息",
+        description: "在安全的湖边休息，恢复体力",
+        icon: "😴",
+        timeCost: 2,
+        staminaCost: -25,
+        effects: {
+          hp: 15,
+          mp: 15
+        }
+      },
+      {
+        id: "talk",
+        name: "与同学交流",
+        description: "与一同历练的同学交流",
+        icon: "💬",
+        timeCost: 1,
+        staminaCost: 5,
+        effects: {},
+        npcs: ["bai_yang", "mu_bai", "zhou_min", "xu_zhaoting", "wang_sanpang", "zhang_xiaohou"]
+      }
+    ],
+    connectedLocations: [
+      "xuefeng_mountain",
+      "xuefeng_station"
+    ],
+    npcs: [
+      "bai_yang",
+      "mu_bai",
+      "zhou_min",
+      "xu_zhaoting",
+      "wang_sanpang",
+      "zhang_xiaohou"
+    ],
+    npcRate: 0.4,
+    enemies: [
+      "demon_vine",
+      "demon_wolf",
+      "one_eye_wolf"
+    ],
+    enemyRate: 0.35,
+    isSafeZone: false,
+    shops: []
   }
 };
