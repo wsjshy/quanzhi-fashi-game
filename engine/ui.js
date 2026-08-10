@@ -16,8 +16,34 @@ const UI = {
         this.elements.gameContainer = document.getElementById('game-container');
     },
 
-    // 显示消息提示
+    // 消息队列（避免多条消息重叠）
+    _messageQueue: [],
+    _isMessageShowing: false,
+
+    // 显示消息提示（带队列，同一时间只显示一条）
     showMessage(text) {
+        // 加入队列
+        this._messageQueue.push(text);
+        // 如果当前没有显示消息，立即处理
+        if (!this._isMessageShowing) {
+            this._processNextMessage();
+        }
+    },
+
+    // 处理队列中的下一条消息
+    _processNextMessage() {
+        if (this._messageQueue.length === 0) {
+            this._isMessageShowing = false;
+            return;
+        }
+        this._isMessageShowing = true;
+        const text = this._messageQueue.shift();
+        this._showSingleMessage(text);
+    },
+
+    // 显示单条消息（内部方法）
+    _showSingleMessage(text) {
+        const ui = this;
         // 创建遮罩层
         const overlay = document.createElement('div');
         overlay.style.cssText = `
@@ -72,6 +98,9 @@ const UI = {
             msgBox.remove();
             
             setTimeout(() => blocker.remove(), 500);
+            
+            // 处理下一条消息
+            ui._processNextMessage();
         };
         
         // 点击遮罩层或消息框都关闭
@@ -104,6 +133,8 @@ const UI = {
                 overlay.remove();
                 msgBox.remove();
                 setTimeout(() => blocker.remove(), 500);
+                // 处理下一条消息
+                ui._processNextMessage();
             }, 500);
         }, 3000);
     },
