@@ -1,0 +1,438 @@
+/**
+ * 对话树系统
+ * 管理多层对话、条件选项、对话效果
+ */
+
+const DialogueTree = {
+    // 对话数据缓存
+    _dialogueData: {},
+
+    // 当前对话状态
+    currentNPC: null,
+    currentNode: null,
+    dialogueHistory: [],
+
+    // 初始化
+    init() {
+        this._dialogueData = {};
+        this.currentNPC = null;
+        this.currentNode = null;
+        this.dialogueHistory = [];
+        console.log('对话树系统初始化完成');
+    },
+
+    // ========== 对话数据加载 ==========
+
+    /**
+     * 获取 NPC 的对话数据
+     */
+    getDialogueData(npcId) {
+        if (this._dialogueData[npcId]) {
+            return this._dialogueData[npcId];
+        }
+
+        // 从 DataManager 加载
+        const npcData = DataManager.getCharacter(npcId);
+        if (npcData && npcData.dialogueTree) {
+            this._dialogueData[npcId] = npcData.dialogueTree;
+            return this._dialogueData[npcId];
+        }
+
+        // 没有对话树，生成默认的
+        this._dialogueData[npcId] = this._generateDefaultDialogue(npcData);
+        return this._dialogueData[npcId];
+    },
+
+    /**
+     * 生成默认对话（没有对话树数据时用）
+     */
+    _generateDefaultDialogue(npcData) {
+        const name = npcData?.name || 'NPC';
+        
+        return {
+            npcId: npcData?.id || 'unknown',
+            nodes: {
+                default: {
+                    id: 'default',
+                    texts: [
+                        `你好，我是${name}。`,
+                        `有什么事吗？`,
+                        `...`
+                    ],
+                    choices: [
+                        {
+                            id: 'leave',
+                            text: '没什么事，先走了',
+                            effects: {},
+                            nextNode: null
+                        }
+                    ]
+                }
+            }
+        };
+    },
+
+    // ========== 开始对话 ==========
+
+    /**
+     * 开始与 NPC 对话
+     */
+    startDialogue(npcId) {
+        const dialogueData = this.getDialogueData(npcId);
+        if (!dialogueData) return null;
+
+        this.currentNPC = npcId;
+        this.currentNode = 'default';
+        this.dialogueHistory = [];
+
+        // 标记见过玩家
+        NPCStateSystem.setNPCFlag(npcId, 'has_met_player', true);
+
+        // 增加一点熟悉度
+        NPCStateSystem.changeOpinion(npcId, 1, '见面打招呼');
+
+        return this.getCurrentNodeData();
+    },
+
+    /**
+     * 获取当前对话节点数据
+     */
+    getCurrentNodeData() {
+        if (!this.currentNPC || !this.currentNode) return null;
+
+        const dialogueData = this.getDialogueData(this.currentNPC);
+        const node = dialogueData.nodes[this.currentNode];
+        if (!node) return null;
+
+        // 随机选一条文本
+        const texts = node.texts || ['...'];
+        const text = texts[Math.floor(Math.random() * texts.length)];
+
+        // 过滤可用的选项
+        const availableChoices = this._filterChoices(node.choices || []);
+        
+        // 给选项加上 id（如果没有的话就用索引），并统一 next/nextNode
+        const processedChoices = availableChoices.map((choice, index) => {
+            return {
+                ...choice,
+                id: choice.id || `choice_${index}`,
+                next: choice.next || choice.nextNode
+            };
+        });
+
+        return {
+            npcId: this.currentNPC,
+            nodeId: this.currentNode,
+            text: text,
+            mood: node.mood || this._getMood(),
+            choices: processedChoices
+        };
+    },
+
+    /**
+     * 过滤选项（根据条件）
+     */
+    _filterChoices(choices) {
+        return choices.filter(choice => {
+            // 检查条件
+            if (choice.condition) {
+                return this._checkCondition(choice.condition);
+            }
+            return true;
+        });
+    },
+
+    /**
+     * 检查条件
+     */
+    _checkCondition(condition) {
+        const npcId = this.currentNPC;
+        const npcState = NPCStateSystem.getNPCState(npcId);
+
+        // 好感度条件
+        if (condition.minOpinion && npcState.opinion < condition.minOpinion) {
+            return false;
+        }
+        if (condition.maxOpinion && npcState.opinion > condition.maxOpinion) {
+            return false;
+        }
+
+        // 信任度条件
+        if (condition.minTrust && npcState.trust < condition.minTrust) {
+            return false;
+        }
+
+        // 熟悉度条件
+        if (condition.minFamiliarity && npcState.familiarity < condition.minFamiliarity) {
+            return false;
+        }
+
+        // NPC 标记
+        if (condition.npcFlags) {
+            for (const [flag, value] of Object.entries(condition.npcFlags)) {
+                if (NPCStateSystem.getNPCFlag(npcId, flag) !== value) {
+                    return false;
+                }
+            }
+        }
+
+        if (condition.notNpcFlags) {
+            for (const flag of condition.notNpcFlags) {
+                if (NPCStateSystem.getNPCFlag(npcId, flag)) {
+                    return false;
+                }
+            }
+        }
+
+        // 世界状态条件
+        if (!WorldState.checkConditions(condition)) {
+            return false;
+        }
+
+        return true;
+    },
+
+    /**
+     * 获取对话语气
+     */
+    _getMood() {
+        if (!this.currentNPC) return 'neutral';
+        return NPCStateSystem.getDialogueMood(this.currentNPC);
+    },
+
+    // ========== 选择选项 ==========
+
+    /**
+     * 选择对话选项
+     */
+    selectChoice(choiceId) {
+        if (!this.currentNPC || !this.currentNode) return null;
+
+        const dialogueData = this.getDialogueData(this.currentNPC);
+        const node = dialogueData.nodes[this.currentNode];
+        if (!node) return null;
+
+        // 先过滤可用选项
+        const availableChoices = this._filterChoices(node.choices || []);
+        
+        // 查找选项：先按 id 找，找不到就按索引找
+        let choice = availableChoices.find(c => c.id === choiceId);
+        if (!choice && typeof choiceId === 'number') {
+            choice = availableChoices[choiceId];
+        }
+        if (!choice && choiceId?.startsWith?.('choice_')) {
+            const index = parseInt(choiceId.replace('choice_', ''));
+            choice = availableChoices[index];
+        }
+        if (!choice) return null;
+
+        // 记录历史
+        this.dialogueHistory.push({
+            nodeId: this.currentNode,
+            choiceId: choiceId,
+            timestamp: Date.now()
+        });
+
+        // 应用效果
+        this._applyEffects(choice.effects || {});
+
+        // 执行特殊动作
+        if (choice.action) {
+            this._executeAction(choice.action, choice.actionData);
+        }
+
+        // 跳转到下一个节点
+        if (choice.next || choice.nextNode) {
+            this.currentNode = choice.next || choice.nextNode;
+            return this.getCurrentNodeData();
+        } else {
+            // 结束对话
+            return this.endDialogue();
+        }
+    },
+
+    /**
+     * 应用对话效果
+     */
+    _applyEffects(effects) {
+        const npcId = this.currentNPC;
+
+        // 好感度
+        if (effects.opinion) {
+            NPCStateSystem.changeOpinion(npcId, effects.opinion, effects.opinionReason || '');
+        }
+
+        // 信任度
+        if (effects.trust) {
+            NPCStateSystem.changeTrust(npcId, effects.trust, effects.trustReason || '');
+        }
+
+        // 敬重度
+        if (effects.respect) {
+            NPCStateSystem.changeRespect(npcId, effects.respect, effects.respectReason || '');
+        }
+
+        // 畏惧度
+        if (effects.fear) {
+            NPCStateSystem.changeFear(npcId, effects.fear, effects.fearReason || '');
+        }
+
+        // 经验
+        if (effects.exp) {
+            Player.gainExp(effects.exp);
+        }
+
+        // 金币
+        if (effects.gold) {
+            if (effects.gold > 0) {
+                Player.gainGold(effects.gold);
+            } else {
+                Player.spendGold(-effects.gold);
+            }
+        }
+
+        // 物品
+        if (effects.addItem) {
+            Inventory.addItem(effects.addItem.itemId, effects.addItem.count || 1);
+        }
+        if (effects.removeItem) {
+            Inventory.removeItem(effects.removeItem.itemId, effects.removeItem.count || 1);
+        }
+
+        // 全局标记
+        if (effects.flags) {
+            for (const [flag, value] of Object.entries(effects.flags)) {
+                WorldState.setFlag(flag, value);
+            }
+        }
+
+        // NPC 标记
+        if (effects.npcFlags) {
+            for (const [flag, value] of Object.entries(effects.npcFlags)) {
+                NPCStateSystem.setNPCFlag(npcId, flag, value);
+            }
+        }
+
+        // 获得信息
+        if (effects.giveInfo) {
+            const infos = Array.isArray(effects.giveInfo) ? effects.giveInfo : [effects.giveInfo];
+            infos.forEach(infoId => {
+                WorldState.gainInfo(infoId);
+            });
+        }
+
+        // 声望
+        if (effects.reputation) {
+            for (const [factionId, amount] of Object.entries(effects.reputation)) {
+                WorldState.changeReputation(factionId, amount);
+            }
+        }
+
+        // 开始任务
+        if (effects.startQuest) {
+            QuestSystem.acceptQuest(effects.startQuest);
+        }
+
+        // 完成任务
+        if (effects.completeQuest) {
+            QuestSystem.completeQuest(effects.completeQuest);
+        }
+
+        // 添加记忆
+        if (effects.addMemory) {
+            NPCStateSystem.addMemory(npcId, effects.addMemory);
+        }
+    },
+
+    /**
+     * 执行特殊动作
+     */
+    _executeAction(action, actionData) {
+        switch (action) {
+            case 'start_battle':
+                // 开始战斗
+                if (actionData && actionData.enemyId) {
+                    // 延迟一下，让对话结束
+                    setTimeout(() => {
+                        Game.startBattle(actionData.enemyId);
+                    }, 500);
+                }
+                break;
+
+            case 'open_shop':
+                // 打开商店
+                if (actionData && actionData.shopId) {
+                    setTimeout(() => {
+                        Game.openShop(actionData.shopId);
+                    }, 500);
+                }
+                break;
+
+            case 'close_dialogue':
+                // 关闭对话
+                this.endDialogue();
+                break;
+
+            default:
+                console.log('未知对话动作:', action);
+        }
+    },
+
+    // ========== 结束对话 ==========
+
+    /**
+     * 结束对话
+     */
+    endDialogue() {
+        const result = {
+            ended: true,
+            npcId: this.currentNPC,
+            history: this.dialogueHistory
+        };
+
+        this.currentNPC = null;
+        this.currentNode = null;
+        this.dialogueHistory = [];
+
+        return result;
+    },
+
+    /**
+     * 是否正在对话
+     */
+    isInDialogue() {
+        return this.currentNPC !== null;
+    },
+
+    // ========== 辅助功能 ==========
+
+    /**
+     * 获取 NPC 的可用话题（用于显示"聊点什么"列表）
+     */
+    getAvailableTopics(npcId) {
+        const dialogueData = this.getDialogueData(npcId);
+        if (!dialogueData || !dialogueData.nodes.default) return [];
+
+        const defaultNode = dialogueData.nodes.default;
+        const choices = this._filterChoices(defaultNode.choices || []);
+
+        return choices.map(c => ({
+            id: c.id,
+            text: c.text,
+            icon: c.icon || '💬'
+        }));
+    },
+
+    /**
+     * 跳转到指定话题
+     */
+    goToTopic(topicId) {
+        if (!this.currentNPC) return null;
+
+        const dialogueData = this.getDialogueData(this.currentNPC);
+        if (!dialogueData.nodes[topicId]) return null;
+
+        this.currentNode = topicId;
+        return this.getCurrentNodeData();
+    }
+};

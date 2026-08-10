@@ -1,0 +1,59 @@
+{
+  "vs_mubai": {
+    "id": "vs_mubai",
+    "name": "莫凡 VS 慕白",
+    "description": "年度考核后的切磋比试",
+    "enemyId": "mu_bai",
+    "enemyLevel": 2,
+    "rewards": {
+      "exp": 50,
+      "gold": 0
+    },
+    "onVictory": {
+      "nextStory": null,
+      "message": "你赢得了比试！慕白垂头丧气地离开了。"
+    },
+    "onDefeat": {
+      "nextStory": null,
+      "message": "你输了比试。看来还需要更多的修炼。"
+    }
+  },
+  "vs_low_demon": {
+    "id": "vs_low_demon",
+    "name": "初战妖魔",
+    "description": "在雪峰山遇到的第一只低级妖魔",
+    "enemyId": "low_demon",
+    "enemyLevel": 2,
+    "rewards": {
+      "exp": 30,
+      "gold": 10
+    },
+    "onVictory": {
+      "nextStory": "chapter2_xuefeng.after_first_battle",
+      "message": "你击败了低级妖魔！获得了一颗妖魔晶核。"
+    },
+    "onDefeat": {
+      "nextStory": null,
+      "message": "你被妖魔击败了...幸好有路过的猎法师救了你。"
+    }
+  },
+  "vs_demon_wolf": {
+    "id": "vs_demon_wolf",
+    "name": "激战幽狼兽",
+    "description": "雪峰山的奴仆级妖魔，非常危险！",
+    "enemyId": "demon_wolf",
+    "enemyLevel": 4,
+    "rewards": {
+      "exp": 150,
+      "gold": 50
+    },
+    "onVictory": {
+      "nextStory": "chapter2_xuefeng.after_wolf_battle",
+      "message": "你击败了幽狼兽！这可是奴仆级的妖魔啊！"
+    },
+    "onDefeat": {
+      "nextStory": null,
+      "message": "你被幽狼兽击败了...意识渐渐模糊..."
+    }
+  }
+}

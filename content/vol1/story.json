@@ -1,0 +1,930 @@
+{
+  "prologue": {
+    "id": "prologue",
+    "name": "序章：世界大变",
+    "startNode": "start",
+    "nodes": {
+      "start": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "水兰中学外，小雨淅沥沥的下着。校门外，挤满了撑着雨伞的家长，他们被雨水淋湿的脸上满是期望。"
+          },
+          {
+            "narration": true,
+            "text": "今天可是孩子们的升学大事啊，能不能上天澜魔法高中，能不能将来考上一个好大学，就看今日的表现了！"
+          },
+          {
+            "narration": true,
+            "text": "你没看错。就是魔法高中！这个社会，魔法为尊！"
+          },
+          {
+            "speaker": "旁白",
+            "speakerColor": "#aaaaaa",
+            "text": "所有的孩子都需要接受九年义务魔法教育，学完九年魔法基础理论与魔法生活技能之后，都将接受和中考一样的考试。"
+          },
+          {
+            "speaker": "旁白",
+            "speakerColor": "#aaaaaa",
+            "text": "考试过的人，才能够进入魔法高中，成为一名真正的魔法师！"
+          }
+        ],
+        "next": "school_road"
+      },
+      "school_road": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "桂花被雨水打落在校园笔直的道路上，铃声响起之后，学生们蜂拥而出。"
+          },
+          {
+            "speaker": "男生甲",
+            "text": "喂，慕白，元素魔法的七系，冰系、火系、土系、水系、风系、光系、雷系，这道题你们做出来了吗？"
+          },
+          {
+            "speaker": "慕白",
+            "speakerColor": "#ff6666",
+            "text": "完美解答！"
+          },
+          {
+            "speaker": "赵坤三",
+            "text": "不愧是我们的尖子生，这么难的混系问题都能够做出来……咦，那不是模拟考上只考了个6分的莫凡吗？"
+          },
+          {
+            "speaker": "慕白",
+            "speakerColor": "#ff6666",
+            "text": "这家伙马上要跟他老爸一样，当一个破皮卡车采购员了。"
+          },
+          {
+            "speaker": "赵坤三",
+            "text": "那不就是你们穆家的仆人了吗，哈哈哈！"
+          },
+          {
+            "narration": true,
+            "text": "这三人说话很放肆，根本就不怕旁边的那个叫做莫凡的少年听见。嘲笑完之后，这三人自顾大摇大摆的离开了。"
+          }
+        ],
+        "next": "mo_fan_thought"
+      },
+      "mo_fan_thought": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "打着一把黑色的黄飞鸿伞，莫凡自顾走出了校门外去。回头望了一眼这个即将告别的校园，莫凡千言万语化作两个字：坑爹！"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "能不坑爹吗？我本来不属于这个世界，我是一个天才学生，对平日里的考试其实压根不屑，从来都是交白卷。"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "被同学、老师们认为是学渣很正常，就像一个大学生没有理由要为了那小红花而浪费一个多小时时间在那里干坐着。"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "原本，我就打算中考的时候再稍稍认真点，随随便便拿个全校第一、第二，用最打脸的姿态踩着慕白那种傻X到全城最好的高中……"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "谁知意外发生了。自己一个大好学生，在学校后山睡了一觉，尼玛忽然间跑到了这个世界来！"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "魔法！！身边的同学、老师、老爹、妹妹都没有变，尼玛变得是整个世界。"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "自己那崇尚科学的世界，在自己一觉醒来变成了魔法为尊。神马数理化，变成了黑魔法、白魔法、异次元魔法！神马学系，变成了火系冰系大雷系！"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "你变就变吧，我其实一点都不抵触这魔法，甚至知道魔法真正存在，整个人都斯巴达了，偏偏就要在我快考试的时候世界大变。搞得我对魔法知识一窍不通！"
+          },
+          {
+            "narration": true,
+            "text": "于是，从一个想要扮猪吃虎的学神一下子变成了真学渣，受尽了嘲讽、耻笑啊！"
+          }
+        ],
+        "next": "awakening_hope"
+      },
+      "awakening_hope": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "唯一值得庆幸的是：这九年义务魔法，学的都是一些杂七杂八的理论知识，只是一些魔法与生活息息相关的东西，真正的魔法要到高中才会接触。"
+          },
+          {
+            "narration": true,
+            "text": "成为真正的魔法师，必须经过一个重要的步骤，那就是——魔法觉醒！"
+          },
+          {
+            "narration": true,
+            "text": "魔法觉醒会在高中开学典礼上，全校领导老师见证下开启，那个时候哪怕你前面的理论没有学，一样是有可能开启属于自己的系！"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "我是真的喜欢魔法，这对我来说无疑是一次完美的奇幻重生。我也想要成为一个能够傲立高楼穹顶上方舞火唤雷的至高法师！"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "偏偏，这次考试……唉，走一步算一步吧，先看看能不能进天澜魔法高中再说。"
+          }
+        ],
+        "next": "high_school"
+      },
+      "high_school": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "三个月后——天澜魔法高中。"
+          },
+          {
+            "narration": true,
+            "text": "莫凡凭借着过人的记忆力和临时抱佛脚，竟然真的考上了天澜魔法高中。虽然成绩只是吊车尾，但至少，他站在了魔法觉醒的门槛前。"
+          },
+          {
+            "narration": true,
+            "text": "开学典礼上，全校师生齐聚礼堂。校长、教导主任、各班导师悉数到场，空气中弥漫着紧张又兴奋的气息。"
+          },
+          {
+            "speaker": "校长",
+            "speakerColor": "#66aaff",
+            "text": "同学们，欢迎来到天澜魔法高中！今天，你们将迎来人生中最重要的时刻——魔法觉醒！"
+          },
+          {
+            "speaker": "校长",
+            "speakerColor": "#66aaff",
+            "text": "从今天起，你们将告别普通人的身份，有机会成为一名真正的魔法师！"
+          },
+          {
+            "speaker": "校长",
+            "speakerColor": "#66aaff",
+            "text": "元素魔法共有七系：火系、冰系、雷系、水系、土系、风系、光系。你们每个人都有机会觉醒其中一系。"
+          },
+          {
+            "speaker": "校长",
+            "speakerColor": "#66aaff",
+            "text": "觉醒的系别决定了你们未来的道路。雷系攻击力最强，火系爆发力惊人，冰系控制出色，土系防御坚固，风系速度最快，水系最为全面，光系则最为稀有。"
+          }
+        ],
+        "next": "awakening_ceremony"
+      },
+      "awakening_ceremony": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "觉醒仪式开始了。学生们一个接一个走上台，将手放在觉醒石上。"
+          },
+          {
+            "narration": true,
+            "text": "有的觉醒了火系，红光闪耀；有的觉醒了冰系，寒气逼人；有的觉醒了土系，厚重沉稳……"
+          },
+          {
+            "speaker": "同学A",
+            "text": "哇！是火系！好厉害！"
+          },
+          {
+            "speaker": "同学B",
+            "text": "冰系也不错啊，控制能力超强的！"
+          },
+          {
+            "narration": true,
+            "text": "终于，轮到莫凡了。他深吸一口气，走上台，将右手放在了觉醒石上。"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "来吧！不管是什么系，只要能让我成为魔法师就行！"
+          },
+          {
+            "narration": true,
+            "text": "觉醒石微微发光……忽然，一道紫色的雷光猛地从觉醒石中迸发出来！"
+          },
+          {
+            "speaker": "全场哗然",
+            "speakerColor": "#ff6666",
+            "text": "雷——雷系！！！"
+          },
+          {
+            "speaker": "校长（震惊）",
+            "speakerColor": "#66aaff",
+            "text": "竟然是雷系！这一届新生里竟然有雷系觉醒者！"
+          }
+        ],
+        "next": "thunder_awakening"
+      },
+      "thunder_awakening": {
+        "onEnter": [
+          { "type": "awakenElement", "element": "thunder" },
+          { "type": "learnSkill", "skillId": "thunder_bolt" }
+        ],
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "紫色的雷光在莫凡的掌心跳动，发出滋滋的声响。整个礼堂都沸腾了！"
+          },
+          {
+            "speaker": "教导主任",
+            "speakerColor": "#ffaa00",
+            "text": "雷系！是雷系啊！我们学校多少年没出过雷系新生了！"
+          },
+          {
+            "speaker": "慕白（震惊）",
+            "speakerColor": "#ff6666",
+            "text": "不可能……这个学渣怎么可能觉醒雷系？！"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "雷系？竟然是雷系！攻击力最强的雷系！哈哈哈，老子果然是天才！"
+          },
+          {
+            "narration": true,
+            "text": "就在莫凡兴奋不已的时候，他忽然感觉到左手也传来一阵异样的灼热感……"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "嗯？左手怎么回事？"
+          },
+          {
+            "narration": true,
+            "text": "莫凡下意识地抬起左手，只见一团赤红色的火焰正在他的掌心燃烧！"
+          },
+          {
+            "speaker": "全场死寂",
+            "speakerColor": "#ffffff",
+            "text": "……"
+          },
+          {
+            "speaker": "校长（声音颤抖）",
+            "speakerColor": "#66aaff",
+            "text": "双……双系？！天生双系？！！"
+          }
+        ],
+        "next": "double_element"
+      },
+      "double_element": {
+        "onEnter": [
+          { "type": "awakenElement", "element": "fire" },
+          { "type": "learnSkill", "skillId": "fire_bolt" }
+        ],
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "整个礼堂陷入了死一般的寂静。所有人都瞪大了眼睛，看着台上那个左右手分别跳动着雷光和火焰的少年。"
+          },
+          {
+            "narration": true,
+            "text": "天生双系！这是只存在于传说中的天赋！历史上每一个天生双系的魔法师，最后都成为了叱咤风云的大人物！"
+          },
+          {
+            "speaker": "校长（激动得语无伦次）",
+            "speakerColor": "#66aaff",
+            "text": "奇迹……这是奇迹啊！我们天澜魔法高中竟然出了一个天生双系的天才！！"
+          },
+          {
+            "speaker": "慕白（脸色铁青）",
+            "speakerColor": "#ff6666",
+            "text": "不……不可能……这个家伙怎么可能……"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "天生双系？原来我这么牛逼的吗？哈哈哈！这下赚大了！雷系+火系，两大攻击系！老子以后要无敌了！"
+          },
+          {
+            "narration": true,
+            "text": "莫凡强压着内心的激动，尽量让自己表现得平静一些。但微微颤抖的双手还是出卖了他的心情。"
+          },
+          {
+            "speaker": "校长",
+            "speakerColor": "#66aaff",
+            "text": "莫凡同学！你……你叫莫凡是吧？太好了！从今天起，你就是我们学校的重点培养对象！"
+          },
+          {
+            "speaker": "校长",
+            "speakerColor": "#66aaff",
+            "text": "各位同学，记住这一天！记住这个名字！因为他，很可能就是未来的魔法大师！"
+          }
+        ],
+        "next": "after_awakening"
+      },
+      "after_awakening": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "觉醒仪式结束后，莫凡成了全校的焦点。无数人围过来，有羡慕的，有嫉妒的，有想结交的……"
+          },
+          {
+            "narration": true,
+            "text": "但莫凡很清楚，觉醒只是开始。真正的道路还很长。他需要修炼，需要变强，需要在这个魔法世界站稳脚跟。"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "等着吧，这个世界。我莫凡来了！"
+          },
+          {
+            "narration": true,
+            "text": "【序章·完】"
+          },
+          {
+            "narration": true,
+            "text": "你觉醒了雷系与火系，获得了技能【雷印·蟒痕】和【火滋·灼烧】。"
+          },
+          {
+            "narration": true,
+            "text": "接下来，你将开始你的魔法高中生活。修炼、战斗、成长……你的传奇，才刚刚开始。"
+          }
+        ],
+        "end": true
+      }
+    }
+  },
+  "chapter1_training": {
+    "id": "chapter1_training",
+    "name": "第1章：修炼与考核",
+    "startNode": "start",
+    "nodes": {
+      "start": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "觉醒仪式已经过去一个月了。莫凡的生活发生了翻天覆地的变化。"
+          },
+          {
+            "narration": true,
+            "text": "从一个人人嘲笑的学渣，变成了全校瞩目的天才。老师们对他寄予厚望，同学们对他既羡慕又嫉妒。"
+          },
+          {
+            "narration": true,
+            "text": "但莫凡很清楚，天赋只是基础。想要真正变强，还需要刻苦的修炼。"
+          },
+          {
+            "speaker": "唐月老师",
+            "speakerColor": "#ff99cc",
+            "text": "莫凡，你的天赋是我见过最好的。但天赋不等于实力，想要成为真正的强者，你还需要更多的努力。"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "我知道的，唐月老师。我会努力的。"
+          },
+          {
+            "speaker": "唐月老师",
+            "speakerColor": "#ff99cc",
+            "text": "嗯。下周就是年度魔法考核了，我很期待你的表现。对了，慕白也一直在刻苦修炼，他似乎把你当成了竞争对手。"
+          }
+        ],
+        "next": "mu_bai_challenge"
+      },
+      "mu_bai_challenge": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "正说着，慕白走了过来，脸上带着一丝挑衅的笑容。"
+          },
+          {
+            "speaker": "慕白",
+            "speakerColor": "#ff6666",
+            "text": "莫凡，听说你觉醒了双系很了不起啊？不过觉醒得好不一定修炼得好。下周的考核，敢不敢跟我比一比？"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "比就比，谁怕谁？"
+          },
+          {
+            "speaker": "慕白",
+            "speakerColor": "#ff6666",
+            "text": "好！有骨气。那就让我看看，你这个天生双系的天才，到底有几分本事！"
+          },
+          {
+            "narration": true,
+            "text": "慕白冷哼一声，转身离开了。"
+          },
+          {
+            "speaker": "唐月老师",
+            "speakerColor": "#ff99cc",
+            "text": "莫凡，慕白的火系修炼得很不错，你不要大意。不过……我相信你。"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "放心吧唐月老师，我不会让你失望的。"
+          }
+        ],
+        "next": "exam_day"
+      },
+      "exam_day": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "一周后，年度魔法考核正式开始。"
+          },
+          {
+            "narration": true,
+            "text": "考核内容是魔法释放——学生需要在考核场上释放自己的魔法，击打魔法傀儡，根据威力和完成度评分。"
+          },
+          {
+            "speaker": "考核官",
+            "speakerColor": "#66aaff",
+            "text": "下一位，慕白！"
+          },
+          {
+            "narration": true,
+            "text": "慕白走上考核场，深吸一口气，掌心燃起赤红色的火焰。"
+          },
+          {
+            "speaker": "慕白",
+            "speakerColor": "#ff6666",
+            "text": "火滋·灼烧！"
+          },
+          {
+            "narration": true,
+            "text": "一枚火焰弹呼啸而出，狠狠砸在魔法傀儡上，爆发出耀眼的火光。"
+          },
+          {
+            "speaker": "考核官",
+            "speakerColor": "#66aaff",
+            "text": "慕白，火系初阶，释放完成度——B级！不错！"
+          },
+          {
+            "speaker": "同学们",
+            "text": "哇！B级！好厉害啊！"
+          },
+          {
+            "speaker": "慕白（得意）",
+            "speakerColor": "#ff6666",
+            "text": "莫凡，轮到你了。让我看看你这个双系天才能拿什么成绩。"
+          }
+        ],
+        "next": "mo_fan_exam"
+      },
+      "mo_fan_exam": {
+        "dialogs": [
+          {
+            "speaker": "考核官",
+            "speakerColor": "#66aaff",
+            "text": "下一位，莫凡！"
+          },
+          {
+            "narration": true,
+            "text": "莫凡走上考核场，看了一眼远处的魔法傀儡，又看了看台下一脸挑衅的慕白。"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "哼，想跟我比？那就让你开开眼界。"
+          },
+          {
+            "narration": true,
+            "text": "莫凡抬起右手，紫色的雷光在掌心滋滋作响。"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "雷印·蟒痕！"
+          },
+          {
+            "narration": true,
+            "text": "一道粗壮的雷电猛地劈出，重重地轰在魔法傀儡上！"
+          },
+          {
+            "narration": true,
+            "text": "轰——！！"
+          },
+          {
+            "narration": true,
+            "text": "魔法傀儡剧烈地颤抖着，表面都出现了裂痕！"
+          },
+          {
+            "speaker": "考核官（震惊）",
+            "speakerColor": "#66aaff",
+            "text": "这……这威力……S级！竟然是S级！！"
+          },
+          {
+            "speaker": "全场哗然",
+            "speakerColor": "#ff6666",
+            "text": "S级？！我的天！！"
+          },
+          {
+            "speaker": "慕白（脸色惨白）",
+            "speakerColor": "#ff6666",
+            "text": "不可能……这不可能……"
+          }
+        ],
+        "next": "exam_result"
+      },
+      "exam_result": {
+        "dialogs": [
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "怎么样，慕白？还比吗？"
+          },
+          {
+            "speaker": "慕白（咬牙切齿）",
+            "speakerColor": "#ff6666",
+            "text": "你……你别得意！这只是理论考核！有本事跟我实战打一场！"
+          },
+          {
+            "speaker": "唐月老师",
+            "speakerColor": "#ff99cc",
+            "text": "好了好了，切磋可以，但要注意安全。这样吧，你们两个到训练场上点到为止，我来做裁判。"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "好啊，正合我意。"
+          },
+          {
+            "speaker": "慕白",
+            "speakerColor": "#ff6666",
+            "text": "哼，我会让你知道，天赋不代表一切！"
+          }
+        ],
+        "next": "battle_mubai"
+      },
+      "battle_mubai": {
+        "onEnter": [
+          { "type": "startBattle", "battleId": "vs_mubai" }
+        ],
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "训练场上，莫凡与慕白相对而立。一场天才之间的对决，即将开始！"
+          }
+        ],
+        "end": true
+      }
+    }
+  },
+  "chapter2_xuefeng": {
+    "id": "chapter2_xuefeng",
+    "name": "第2章：雪峰山历练",
+    "startNode": "start",
+    "nodes": {
+      "start": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "与慕白的切磋以莫凡的胜利告终。从那以后，慕白老实了很多，但看莫凡的眼神里总是带着不甘。"
+          },
+          {
+            "narration": true,
+            "text": "时间过得很快，转眼就到了学期末。按照惯例，天澜魔法高中的新生要进行一次野外历练。"
+          },
+          {
+            "speaker": "总教官·斩空",
+            "speakerColor": "#ff9900",
+            "text": "听好了，小子们！这次历练的地点是雪峰山驿站！你们将在那里进行为期一周的野外生存训练！"
+          },
+          {
+            "speaker": "总教官·斩空",
+            "speakerColor": "#ff9900",
+            "text": "我知道，你们当中很多人觉得自己是天才，觉得自己很了不起。但我告诉你们——在真正的妖魔面前，你们连屁都不是！"
+          },
+          {
+            "speaker": "总教官·斩空",
+            "speakerColor": "#ff9900",
+            "text": "这次历练，我只要求你们一件事：活着回来！"
+          }
+        ],
+        "next": "arrive_station"
+      },
+      "arrive_station": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "经过几个小时的车程，学生们抵达了雪峰山驿站。"
+          },
+          {
+            "narration": true,
+            "text": "这是一个建造在山谷中的小寨，四周是高耸的山脉，空气中弥漫着一股肃杀的气息。"
+          },
+          {
+            "speaker": "罗云波教官",
+            "speakerColor": "#66ccff",
+            "text": "同学们，这里就是雪峰山驿站了。看到那边的石门了吗？那是安界的入口，也是我们最后的防线。"
+          },
+          {
+            "speaker": "罗云波教官",
+            "speakerColor": "#66ccff",
+            "text": "安界之外，就是妖魔的地盘。你们的任务，就是在安界边缘猎杀低级妖魔，收集它们的晶核。"
+          },
+          {
+            "speaker": "罗云波教官",
+            "speakerColor": "#66ccff",
+            "text": "记住，绝对不要深入！遇到危险立刻撤回驿站！明白了吗？"
+          },
+          {
+            "speaker": "同学们",
+            "text": "明白了！"
+          }
+        ],
+        "next": "first_hunt"
+      },
+      "first_hunt": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "第二天，历练正式开始。学生们分成小组，进入安界边缘猎杀妖魔。"
+          },
+          {
+            "narration": true,
+            "text": "莫凡一个人行动。他对自己的实力很有信心，而且他更喜欢独来独往。"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "雪峰山……听说这里有不少妖魔。正好，让我试试这段时间修炼的成果。"
+          },
+          {
+            "narration": true,
+            "text": "正走着，莫凡忽然感觉到前方有动静。他立刻警觉起来，小心翼翼地靠近。"
+          },
+          {
+            "narration": true,
+            "text": "只见一只低级妖魔正在啃食什么东西，听到动静后猛地抬起头，露出了狰狞的面孔。"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "来得正好！就拿你练练手！"
+          }
+        ],
+        "next": "battle_low_demon"
+      },
+      "battle_low_demon": {
+        "onEnter": [
+          { "type": "startBattle", "battleId": "vs_low_demon" }
+        ],
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "莫凡与低级妖魔的战斗开始了！"
+          }
+        ],
+        "end": true
+      },
+      "after_first_battle": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "战斗结束。莫凡看着地上的妖魔尸体，微微喘着气。"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "呼……看来我的实力还不错嘛。这只低级妖魔根本不是我的对手。"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "不过，这只是最低级的妖魔。听说雪峰山深处还有更强大的存在……真想见识一下啊。"
+          },
+          {
+            "narration": true,
+            "text": "就在这时，远处忽然传来一声凄厉的惨叫！"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "嗯？什么声音？"
+          },
+          {
+            "narration": true,
+            "text": "莫凡脸色一变，立刻朝着声音传来的方向跑去。"
+          }
+        ],
+        "next": "find_danger"
+      },
+      "find_danger": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "穿过一片树林，莫凡看到了惊人的一幕——"
+          },
+          {
+            "narration": true,
+            "text": "一只体型巨大的幽狼兽正站在空地上，它的面前，几个学生瘫坐在地上，吓得浑身发抖。"
+          },
+          {
+            "speaker": "学生A",
+            "text": "救……救命啊！！"
+          },
+          {
+            "speaker": "学生B",
+            "text": "是幽狼兽！奴仆级的妖魔！我们死定了！"
+          },
+          {
+            "narration": true,
+            "text": "幽狼兽发出低沉的咆哮，一步步逼近那几个学生。腥臭的口水从它的獠牙边滴落，看起来恐怖至极。"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "幽狼兽？！奴仆级的妖魔？这不是我们这些新生能对付的啊！"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "可是……难道就这么看着他们被杀吗？"
+          },
+          {
+            "narration": true,
+            "text": "莫凡咬了咬牙。"
+          }
+        ],
+        "choices": [
+          {
+            "text": "冲上去救人！",
+            "next": "save_students"
+          },
+          {
+            "text": "回去找教官帮忙",
+            "next": "get_help"
+          }
+        ]
+      },
+      "save_students": {
+        "dialogs": [
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "妈的，拼了！"
+          },
+          {
+            "narration": true,
+            "text": "莫凡猛地从树后冲了出来，右手雷光闪烁！"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "喂！大狼狗！看这边！"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "雷印·蟒痕！"
+          },
+          {
+            "narration": true,
+            "text": "一道雷电猛地劈向幽狼兽！"
+          },
+          {
+            "narration": true,
+            "text": "幽狼兽吃痛，怒吼一声，转过身来，猩红的眼睛死死盯着莫凡。"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "你们几个快走！我来拖住它！"
+          },
+          {
+            "speaker": "学生A",
+            "text": "谢……谢谢你！"
+          },
+          {
+            "narration": true,
+            "text": "几个学生连滚带爬地跑了。"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "好了，现在轮到我了……这玩意儿看起来很不好惹啊。"
+          },
+          {
+            "speaker": "幽狼兽",
+            "speakerColor": "#9966ff",
+            "text": "嗷呜——！！"
+          }
+        ],
+        "next": "battle_wolf"
+      },
+      "get_help": {
+        "dialogs": [
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "不行，幽狼兽太强了，我一个人对付不了。得赶紧回去找教官！"
+          },
+          {
+            "narration": true,
+            "text": "莫凡转身就往驿站的方向跑。但没跑几步，他就听到身后传来一声惨叫……"
+          },
+          {
+            "speaker": "莫凡（内心）",
+            "speakerColor": "#ffcc00",
+            "text": "该死！来不及了吗？"
+          },
+          {
+            "narration": true,
+            "text": "莫凡停下脚步，咬了咬牙。"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "妈的，不管了！就算打不过，也得试试！"
+          },
+          {
+            "narration": true,
+            "text": "莫凡转身冲了回去。"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "喂！大狼狗！你的对手是我！"
+          },
+          {
+            "narration": true,
+            "text": "幽狼兽转过头，猩红的眼睛死死盯着莫凡。"
+          }
+        ],
+        "next": "battle_wolf"
+      },
+      "battle_wolf": {
+        "onEnter": [
+          { "type": "startBattle", "battleId": "vs_demon_wolf" }
+        ],
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "一场恶战开始了！莫凡 VS 幽狼兽！"
+          }
+        ],
+        "end": true
+      },
+      "after_wolf_battle": {
+        "dialogs": [
+          {
+            "narration": true,
+            "text": "战斗结束。莫凡浑身是伤地站在原地，大口喘着气。"
+          },
+          {
+            "narration": true,
+            "text": "幽狼兽倒在地上，已经没了气息。"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "呼……差点就挂了……这玩意儿真够强的……"
+          },
+          {
+            "narration": true,
+            "text": "就在这时，一阵急促的脚步声传来。斩空总教官带着几个猎法师赶到了。"
+          },
+          {
+            "speaker": "斩空（震惊）",
+            "speakerColor": "#ff9900",
+            "text": "这是……你杀的？"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "啊……算是吧。"
+          },
+          {
+            "speaker": "斩空",
+            "speakerColor": "#ff9900",
+            "text": "了不起！一个新生竟然能单杀幽狼兽！小子，你叫什么名字？"
+          },
+          {
+            "speaker": "莫凡",
+            "speakerColor": "#ffcc00",
+            "text": "莫凡。"
+          },
+          {
+            "speaker": "斩空",
+            "speakerColor": "#ff9900",
+            "text": "莫凡……好，我记住你了。你很有潜力。好好修炼，将来一定能成为了不起的法师。"
+          },
+          {
+            "narration": true,
+            "text": "【第2章·完】"
+          },
+          {
+            "narration": true,
+            "text": "雪峰山历练让你收获颇丰。你不仅实力得到了提升，还得到了斩空总教官的赏识。"
+          },
+          {
+            "narration": true,
+            "text": "你的魔法之路，才刚刚开始……"
+          }
+        ],
+        "end": true
+      }
+    }
+  }
+}
