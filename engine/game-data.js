@@ -4363,35 +4363,49 @@ const GameData = {
                 {
                     id: 'train',
                     name: '修炼魔法',
-                    description: '实战修炼魔法（半天），获得大量经验，有概率突破或失败受伤',
+                    description: '实战修炼魔法（2小时），获得经验，有概率突破或失败受伤',
                     icon: '✨',
-                    timeCost: 4,
-                    staminaCost: 35,
+                    timeCost: 2,
+                    staminaCost: 25,
                     effects: {
-                        exp: 40,
-                        hp: -10,
-                        mp: -25
+                        exp: 25,
+                        hp: -5,
+                        mp: -15
                     },
                     eventChance: 0.2,
                     events: ['event_breakthrough', 'event_training_fail']
                 },
                 {
+                    id: 'meditate',
+                    name: '冥修',
+                    description: '静心冥修（2小时），恢复MP，小概率突破',
+                    icon: '🧘',
+                    timeCost: 2,
+                    staminaCost: 10,
+                    effects: {
+                        exp: 10,
+                        mp: 30
+                    },
+                    eventChance: 0.15,
+                    events: ['event_breakthrough']
+                },
+                {
                     id: 'rest',
                     name: '休息',
-                    description: '在宿舍休息一会儿，恢复 HP、MP 和部分体力',
+                    description: '在宿舍休息一会儿（1小时），恢复 HP、MP 和部分体力',
                     icon: '😴',
-                    timeCost: 2,
+                    timeCost: 1,
                     staminaCost: 0,
                     effects: {
-                        hp: 30,
-                        mp: 20,
-                        stamina: 30
+                        hp: 20,
+                        mp: 15,
+                        stamina: 20
                     }
                 },
                 {
                     id: 'sleep',
                     name: '睡觉',
-                    description: '好好睡一觉（8小时），完全恢复体力，时间来到第二天早上',
+                    description: '好好睡一觉（到第二天早上），恢复体力，22点前睡觉效果最好',
                     icon: '🌙',
                     timeCost: 8,
                     staminaCost: 0,
@@ -4404,13 +4418,13 @@ const GameData = {
                 {
                     id: 'library',
                     name: '图书馆',
-                    description: '去图书馆看书（半天），学习魔法知识，有概率领悟新技能或获得情报',
+                    description: '去图书馆看书（2小时），学习魔法知识，有概率领悟新技能或获得情报',
                     icon: '📖',
-                    timeCost: 4,
-                    staminaCost: 15,
+                    timeCost: 2,
+                    staminaCost: 10,
                     effects: {
-                        exp: 30,
-                        mp: -10
+                        exp: 15,
+                        mp: -5
                     },
                     eventChance: 0.4,
                     events: ['event_library_learn', 'event_library_skill', 'event_library_info', 'event_library_meet']
@@ -4429,7 +4443,7 @@ const GameData = {
                     name: '找人聊天',
                     description: '和学校里的 NPC 对话，可能接任务或获得信息',
                     icon: '💬',
-                    timeCost: 2,
+                    timeCost: 1,
                     staminaCost: 5,
                     npcs: ['mo_fan', 'zhang_xiaohou', 'zhao_manyan', 'mu_ningxue', 'tang_yue', 'xiao_principal', 'xue_musheng', 'zhou_min', 'xu_zhaoting', 'he_yu']
                 }

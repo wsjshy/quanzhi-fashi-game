@@ -5,13 +5,24 @@
  */
 
 const TimeSystem = {
-    // 时段定义（起始小时）
+    // 时段定义（起始小时）- v0.4 8时段制
     TIME_PERIODS: [
-        { id: 'morning', name: '早上', startHour: 6, icon: '🌅' },
-        { id: 'afternoon', name: '下午', startHour: 12, icon: '☀️' },
-        { id: 'evening', name: '傍晚', startHour: 18, icon: '🌆' },
-        { id: 'night', name: '夜晚', startHour: 22, icon: '🌙' }
+        { id: 'dawn', name: '清晨', startHour: 6, icon: '🌅', duration: 2 },
+        { id: 'morning', name: '上午', startHour: 8, icon: '📚', duration: 4 },
+        { id: 'noon', name: '中午', startHour: 12, icon: '🍱', duration: 2 },
+        { id: 'afternoon', name: '下午', startHour: 14, icon: '⚔️', duration: 4 },
+        { id: 'evening', name: '傍晚', startHour: 18, icon: '🌆', duration: 2 },
+        { id: 'night', name: '夜晚', startHour: 20, icon: '🌙', duration: 4 },
+        { id: 'late_night', name: '深夜', startHour: 0, icon: '🌃', duration: 3 },
+        { id: 'sleep', name: '睡眠', startHour: 3, icon: '😴', duration: 3 }
     ],
+
+    // 强制昏睡时间
+    FORCE_SLEEP_HOUR: 3,
+    // 正常睡觉截止时间
+    NORMAL_SLEEP_HOUR: 22,
+    // 晚睡截止时间
+    LATE_SLEEP_HOUR: 24,
 
     /**
      * 推进时间
@@ -42,10 +53,34 @@ const TimeSystem = {
             events.push({ type: 'period_change', period: newPeriod });
         }
         
+        // 检查是否到了强制昏睡时间
+        if (Player.hour >= this.FORCE_SLEEP_HOUR && Player.hour < 6) {
+            events.push({ type: 'force_sleep' });
+            this.forceSleep();
+        }
+        
         // 检查定时大事件
         this.checkScheduledEvents();
         
         return events;
+    },
+
+    /**
+     * 强制昏睡（凌晨3点还没睡觉）
+     */
+    forceSleep() {
+        // 直接跳到第二天早上6点
+        Player.hour = 6;
+        Player.timeOfDay = 'dawn';
+        this.advanceDay();
+        
+        // 体力只恢复50%
+        const stats = Player.getTotalStats();
+        Player.stamina = Math.floor(stats.maxStamina * 0.5);
+        Player.hp = Math.min(Player.hp + Math.floor(stats.maxHp * 0.3), stats.maxHp);
+        Player.mp = Math.min(Player.mp + Math.floor(stats.maxMp * 0.3), stats.maxMp);
+        
+        console.log('[时间系统] 强制昏睡，体力只恢复50%');
     },
 
     /**
@@ -54,10 +89,14 @@ const TimeSystem = {
      */
     getCurrentPeriod() {
         const hour = Player.hour;
-        if (hour >= 22 || hour < 6) return 'night';
-        if (hour >= 18) return 'evening';
-        if (hour >= 12) return 'afternoon';
-        return 'morning';
+        if (hour >= 3 && hour < 6) return 'sleep';
+        if (hour >= 6 && hour < 8) return 'dawn';
+        if (hour >= 8 && hour < 12) return 'morning';
+        if (hour >= 12 && hour < 14) return 'noon';
+        if (hour >= 14 && hour < 18) return 'afternoon';
+        if (hour >= 18 && hour < 20) return 'evening';
+        if (hour >= 20 && hour < 24) return 'night';
+        return 'late_night'; // 0:00-3:00
     },
     
     /**
@@ -409,23 +448,46 @@ const TimeSystem = {
 
     /**
      * 休息（睡觉）到第二天早上
+     * 根据睡觉时间决定恢复效果
      */
     restUntilMorning() {
         const events = [];
+        const sleepHour = Player.hour;
         
         // 直接跳到第二天早上6点
         Player.hour = 6;
-        Player.timeOfDay = 'morning';
+        Player.timeOfDay = 'dawn';
         this.advanceDay();
         
-        // 完全恢复
+        // 根据睡觉时间决定恢复量
         const stats = Player.getTotalStats();
-        Player.hp = stats.maxHp;
-        Player.mp = stats.maxMp;
-        Player.fullRestoreStamina();
+        let staminaRatio = 1.0;
+        let hpRatio = 1.0;
+        let mpRatio = 1.0;
+        
+        if (sleepHour >= this.NORMAL_SLEEP_HOUR && sleepHour < this.LATE_SLEEP_HOUR) {
+            // 22:00-24:00睡觉，正常恢复
+            staminaRatio = 1.0;
+            hpRatio = 1.0;
+            mpRatio = 1.0;
+        } else if (sleepHour >= this.LATE_SLEEP_HOUR || sleepHour < 3) {
+            // 24:00后睡觉，恢复80%
+            staminaRatio = 0.8;
+            hpRatio = 0.8;
+            mpRatio = 0.8;
+        } else {
+            // 22:00前睡觉，额外加成
+            staminaRatio = 1.0;
+            hpRatio = 1.0;
+            mpRatio = 1.0;
+        }
+        
+        Player.hp = Math.min(Math.floor(stats.maxHp * hpRatio), stats.maxHp);
+        Player.mp = Math.min(Math.floor(stats.maxMp * mpRatio), stats.maxMp);
+        Player.stamina = Math.min(Math.floor(stats.maxStamina * staminaRatio), stats.maxStamina);
         
         events.push({ type: 'new_day', day: Player.day });
-        events.push({ type: 'full_rest' });
+        events.push({ type: 'full_rest', staminaRatio: staminaRatio });
         
         return events;
     },
@@ -469,16 +531,39 @@ const TimeSystem = {
     },
 
     /**
-     * 检查是否是夜晚（包括傍晚和深夜）
+     * 检查是否是夜晚（包括傍晚、夜晚、深夜）
      */
     isNight() {
-        return Player.timeOfDay === 'night' || Player.timeOfDay === 'evening';
+        const period = this.getCurrentPeriod();
+        return period === 'evening' || period === 'night' || period === 'late_night';
     },
 
     /**
-     * 检查是否是白天（早上和下午）
+     * 检查是否是白天（清晨、上午、中午、下午）
      */
     isDaytime() {
-        return Player.timeOfDay === 'morning' || Player.timeOfDay === 'afternoon';
+        const period = this.getCurrentPeriod();
+        return period === 'dawn' || period === 'morning' || period === 'noon' || period === 'afternoon';
+    },
+
+    /**
+     * 检查是否是深夜（有熬夜惩罚）
+     */
+    isLateNight() {
+        return this.getCurrentPeriod() === 'late_night';
+    },
+
+    /**
+     * 检查是否是睡眠时间（强制昏睡）
+     */
+    isSleepTime() {
+        return this.getCurrentPeriod() === 'sleep';
+    },
+
+    /**
+     * 获取体力消耗倍率（深夜翻倍）
+     */
+    getStaminaMultiplier() {
+        return this.isLateNight() ? 2 : 1;
     }
 };
