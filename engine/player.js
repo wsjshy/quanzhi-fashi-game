@@ -7,6 +7,50 @@
 const GAME_VERSION = '0.4.0';
 const SAVE_VERSION = '0.4.0';
 
+// 技能解锁表：按元素和等级定义可解锁的技能
+const SKILL_UNLOCK_TABLE = {
+    fire: {
+        1: ['fire_bolt'],
+        3: ['fire_rain'],
+        5: ['fire_burst']
+    },
+    ice: {
+        1: ['ice_spike'],
+        3: ['ice_shield'],
+        5: ['ice_storm']
+    },
+    thunder: {
+        1: ['thunder_bolt'],
+        3: ['thunder_chain'],
+        5: ['thunder_strike']
+    },
+    earth: {
+        1: ['earth_shield'],
+        3: ['earth_spike'],
+        5: ['earth_quake']
+    },
+    wind: {
+        1: ['wind_blade'],
+        3: ['wind_speed'],
+        5: ['wind_tornado']
+    },
+    water: {
+        1: ['water_heal'],
+        3: ['water_chain'],
+        5: ['water_wave']
+    },
+    light: {
+        1: ['light_ray'],
+        3: ['light_shield'],
+        5: ['light_judgment']
+    },
+    dark: {
+        1: ['dark_bolt'],
+        3: ['dark_cloak'],
+        5: ['dark_curse']
+    }
+};
+
 const Player = {
     // 基础信息
     name: '冒险者',
@@ -149,18 +193,21 @@ const Player = {
 
     /**
      * 获得经验
+     * 返回 { levelUps: [], newSkills: [] }
      */
     gainExp(amount) {
         this.exp += amount;
         const levelUps = [];
+        const allNewSkills = [];
         
         while (this.exp >= this.expToNext) {
             this.exp -= this.expToNext;
-            this.levelUp();
+            const newSkills = this.levelUp();
             levelUps.push(this.level);
+            allNewSkills.push(...newSkills);
         }
         
-        return levelUps;
+        return { levelUps, newSkills: allNewSkills };
     },
 
     /**
@@ -182,6 +229,36 @@ const Player = {
         // 满血满蓝
         this.hp = this.maxHp;
         this.mp = this.maxMp;
+        
+        // 检查并解锁新技能
+        const newSkills = this.checkSkillUnlocks();
+        return newSkills;
+    },
+
+    /**
+     * 检查当前等级可解锁的技能
+     * 返回新解锁的技能ID列表
+     */
+    checkSkillUnlocks() {
+        const newSkills = [];
+        this.elements.forEach(element => {
+            const unlockTable = SKILL_UNLOCK_TABLE[element];
+            if (!unlockTable) return;
+            
+            // 检查所有小于等于当前等级的解锁项
+            Object.keys(unlockTable).forEach(levelStr => {
+                const unlockLevel = parseInt(levelStr);
+                if (unlockLevel <= this.level) {
+                    unlockTable[unlockLevel].forEach(skillId => {
+                        if (!this.skills.includes(skillId) && SkillSystem.getSkill(skillId)) {
+                            this.skills.push(skillId);
+                            newSkills.push(skillId);
+                        }
+                    });
+                }
+            });
+        });
+        return newSkills;
     },
 
     /**

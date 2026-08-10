@@ -707,9 +707,10 @@ const BattleSystem = {
         }
 
         // 应用奖励
-        const levelUps = Player.gainExp(rewards.exp);
+        const expResult = Player.gainExp(rewards.exp);
         Player.gainGold(rewards.gold);
-        rewards.levelUps = levelUps;
+        rewards.levelUps = expResult.levelUps;
+        rewards.newSkills = expResult.newSkills;
 
         // 更新任务进度
         const completedQuests = QuestSystem.updateProgress('kill', this.enemy.id, 1);
@@ -720,8 +721,16 @@ const BattleSystem = {
                 this.addLog(`获得 ${item.name} x${item.count}`, 'system');
             });
         }
-        if (levelUps.length > 0) {
-            this.addLog(`升级了！当前等级 ${Player.level}`, 'system');
+        if (expResult.levelUps.length > 0) {
+            this.addLog(`🎉 升级了！当前等级 ${Player.level}，获得3点属性点`, 'system');
+        }
+        if (expResult.newSkills.length > 0) {
+            expResult.newSkills.forEach(skillId => {
+                const skill = SkillSystem.getSkill(skillId);
+                if (skill) {
+                    this.addLog(`✨ 学会了新技能：${skill.name}！`, 'system');
+                }
+            });
         }
 
         // 显示任务完成奖励

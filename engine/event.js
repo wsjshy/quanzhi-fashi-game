@@ -183,10 +183,13 @@ const EventSystem = {
         }
 
         if (effects.exp) {
-            const levelUps = Player.gainExp(effects.exp);
+            const expResult = Player.gainExp(effects.exp);
             result.exp = effects.exp;
-            if (levelUps.length > 0) {
-                result.levelUps = levelUps;
+            if (expResult.levelUps.length > 0) {
+                result.levelUps = expResult.levelUps;
+            }
+            if (expResult.newSkills.length > 0) {
+                result.newSkills = expResult.newSkills;
             }
         }
 

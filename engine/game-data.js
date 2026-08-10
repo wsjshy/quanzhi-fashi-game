@@ -330,6 +330,243 @@ const GameData = {
                     chance: 0.5
                 }
             ]
+        },
+
+        // 光系3级
+        light_shield: {
+            id: 'light_shield',
+            name: '光系·圣盾',
+            description: '初阶光系防御魔法，用圣光凝聚护盾，提升防御并恢复少量生命',
+            element: 'light',
+            type: 'buff',
+            mpCost: 12,
+            hitRate: 1.0,
+            critRate: 0,
+            targetType: 'self',
+            cooldown: 3,
+            tier: '初阶',
+            statusEffects: [
+                {
+                    name: '圣盾',
+                    type: 'defense_up',
+                    duration: 3,
+                    chance: 1.0,
+                    statModifiers: { defense: 10 }
+                }
+            ]
+        },
+
+        // 暗影系3级
+        dark_cloak: {
+            id: 'dark_cloak',
+            name: '暗影·潜行',
+            description: '初阶暗影系辅助魔法，用暗影包裹自身，提升闪避和暴击',
+            element: 'dark',
+            type: 'buff',
+            mpCost: 10,
+            hitRate: 1.0,
+            critRate: 0,
+            targetType: 'self',
+            cooldown: 3,
+            tier: '初阶',
+            statusEffects: [
+                {
+                    name: '暗影潜行',
+                    type: 'crit_up',
+                    duration: 3,
+                    chance: 1.0,
+                    statModifiers: { critRate: 0.15 }
+                }
+            ]
+        },
+
+        // ===== 5级技能（初阶二级魔法）=====
+
+        fire_burst: {
+            id: 'fire_burst',
+            name: '火滋·爆裂',
+            description: '初阶火系三级魔法，火球爆炸造成大范围伤害，高灼烧概率',
+            element: 'fire',
+            type: 'damage',
+            mpCost: 22,
+            baseDamage: 45,
+            damageMultiplier: 1.4,
+            hitRate: 0.85,
+            critRate: 0.12,
+            targetType: 'enemy',
+            cooldown: 0,
+            tier: '初阶',
+            statusEffects: [
+                {
+                    name: '灼烧',
+                    type: 'burn',
+                    dotDamage: 10,
+                    duration: 4,
+                    chance: 0.7
+                }
+            ]
+        },
+
+        ice_storm: {
+            id: 'ice_storm',
+            name: '冰蔓·冰封',
+            description: '初阶冰系三级魔法，召唤冰风暴，高伤害并有几率冻结',
+            element: 'ice',
+            type: 'damage',
+            mpCost: 20,
+            baseDamage: 38,
+            damageMultiplier: 1.3,
+            hitRate: 0.88,
+            critRate: 0.08,
+            targetType: 'enemy',
+            cooldown: 0,
+            tier: '初阶',
+            statusEffects: [
+                {
+                    name: '冻结',
+                    type: 'paralyze',
+                    duration: 1,
+                    chance: 0.4
+                }
+            ]
+        },
+
+        thunder_strike: {
+            id: 'thunder_strike',
+            name: '雷印·怒击',
+            description: '初阶雷系三级魔法，强力雷击，极高暴击率',
+            element: 'thunder',
+            type: 'damage',
+            mpCost: 25,
+            baseDamage: 50,
+            damageMultiplier: 1.35,
+            hitRate: 0.85,
+            critRate: 0.25,
+            targetType: 'enemy',
+            cooldown: 0,
+            tier: '初阶',
+            statusEffects: [
+                {
+                    name: '麻痹',
+                    type: 'paralyze',
+                    duration: 2,
+                    chance: 0.4
+                }
+            ]
+        },
+
+        earth_quake: {
+            id: 'earth_quake',
+            name: '土系·震裂',
+            description: '初阶土系三级魔法，引发地震，造成伤害并降低敌人速度',
+            element: 'earth',
+            type: 'damage',
+            mpCost: 18,
+            baseDamage: 35,
+            damageMultiplier: 1.25,
+            hitRate: 0.9,
+            critRate: 0.06,
+            targetType: 'enemy',
+            cooldown: 0,
+            tier: '初阶',
+            statusEffects: [
+                {
+                    name: '震荡',
+                    type: 'slow',
+                    duration: 2,
+                    chance: 0.5,
+                    statModifiers: { speed: -4 }
+                }
+            ]
+        },
+
+        wind_tornado: {
+            id: 'wind_tornado',
+            name: '风轨·龙卷',
+            description: '初阶风系三级魔法，召唤龙卷风，高命中多段伤害',
+            element: 'wind',
+            type: 'damage',
+            mpCost: 20,
+            baseDamage: 40,
+            damageMultiplier: 1.25,
+            hitRate: 0.95,
+            critRate: 0.1,
+            targetType: 'enemy',
+            cooldown: 0,
+            tier: '初阶'
+        },
+
+        water_wave: {
+            id: 'water_wave',
+            name: '水系·巨浪',
+            description: '初阶水系三级魔法，巨浪冲击造成伤害并恢复自身生命',
+            element: 'water',
+            type: 'damage',
+            mpCost: 18,
+            baseDamage: 30,
+            damageMultiplier: 1.2,
+            hitRate: 0.9,
+            critRate: 0.05,
+            targetType: 'enemy',
+            cooldown: 0,
+            tier: '初阶',
+            statusEffects: [
+                {
+                    name: '水之祝福',
+                    type: 'regen',
+                    dotDamage: -15,
+                    duration: 3,
+                    chance: 1.0
+                }
+            ]
+        },
+
+        light_judgment: {
+            id: 'light_judgment',
+            name: '光系·裁决',
+            description: '初阶光系三级魔法，圣光裁决，对暗影和妖魔系有巨额伤害',
+            element: 'light',
+            type: 'damage',
+            mpCost: 22,
+            baseDamage: 42,
+            damageMultiplier: 1.35,
+            hitRate: 0.92,
+            critRate: 0.1,
+            targetType: 'enemy',
+            cooldown: 0,
+            tier: '初阶'
+        },
+
+        dark_curse: {
+            id: 'dark_curse',
+            name: '暗影·诅咒',
+            description: '初阶暗影系三级魔法，暗影诅咒，持续削弱敌人',
+            element: 'dark',
+            type: 'damage',
+            mpCost: 20,
+            baseDamage: 35,
+            damageMultiplier: 1.2,
+            hitRate: 0.88,
+            critRate: 0.12,
+            targetType: 'enemy',
+            cooldown: 0,
+            tier: '初阶',
+            statusEffects: [
+                {
+                    name: '诅咒',
+                    type: 'poison',
+                    dotDamage: 12,
+                    duration: 4,
+                    chance: 0.8
+                },
+                {
+                    name: '虚弱',
+                    type: 'attack_down',
+                    duration: 3,
+                    chance: 0.6,
+                    statModifiers: { attack: -5 }
+                }
+            ]
         }
     },
 
@@ -4999,6 +5236,41 @@ const GameData = {
             },
             rarity: '稀有'
         },
+
+        // 体力恢复药水
+        stamina_potion: {
+            id: 'stamina_potion',
+            name: '体力药水',
+            description: '恢复 40 点体力，适合长时间探索',
+            type: 'consumable',
+            icon: '⚡',
+            price: 35,
+            stackable: true,
+            maxStack: 99,
+            usableInBattle: false,
+            usableOutOfBattle: true,
+            effects: {
+                stamina: 40
+            }
+        },
+
+        // 全恢复药水
+        full_potion: {
+            id: 'full_potion',
+            name: '万能药水',
+            description: '完全恢复HP和MP，珍贵的高级药水',
+            type: 'consumable',
+            icon: '✨',
+            price: 200,
+            stackable: true,
+            maxStack: 99,
+            usableInBattle: true,
+            usableOutOfBattle: true,
+            effects: {
+                hp: 9999,
+                mp: 9999
+            }
+        },
         
         // 猎魔匕首
         hunter_knife: {
@@ -5982,6 +6254,140 @@ const GameData = {
             dialogueStart: '不好了！根据最新的情报，黑教廷正在雪峰山深处进行一个召唤仪式！如果让他们成功，后果不堪设想！你能去阻止他们吗？一定要小心，那里会有黑教廷的执事级成员把守。',
             dialogueInProgress: '仪式还在进行吗？时间不多了，一定要尽快阻止他们！',
             dialogueComplete: '太好了！你成功阻止了他们！你救了很多人！不过...我担心这只是开始，黑教廷可能还有更大的阴谋...'
+        },
+
+        // 支线任务：图书馆义工
+        quest_library_volunteer: {
+            id: 'quest_library_volunteer',
+            name: '图书馆义工',
+            description: '图书馆管理员需要人帮忙整理书籍，作为回报会教你一些魔法知识。',
+            giver: 'book_shop_owner',
+            type: 'side',
+            objectives: [
+                {
+                    type: 'reach',
+                    locationId: 'tianlan_school',
+                    count: 3,
+                    description: '在天澜魔法高中活动 3 次'
+                }
+            ],
+            rewards: {
+                exp: 150,
+                gold: 50,
+                items: [
+                    { itemId: 'mana_potion', count: 2 }
+                ],
+                reputation: {
+                    tianlan_school: 5
+                }
+            },
+            prerequisites: ['quest_intro'],
+            nextQuest: null,
+            isMainQuest: false,
+            autoStart: false,
+            dialogueStart: '同学，能帮我整理一下书籍吗？作为回报，我可以让你免费看一些珍贵的魔法书籍。',
+            dialogueInProgress: '整理得怎么样了？慢慢来，不着急。',
+            dialogueComplete: '谢谢你的帮助！这些魔法知识送给你，希望对你有帮助。'
+        },
+
+        // 支线任务：收集魔石
+        quest_collect_magic_stones: {
+            id: 'quest_collect_magic_stones',
+            name: '收集魔石',
+            description: '魔法协会的研究员需要一些魔石来做研究，他们愿意高价收购。',
+            giver: 'magic_association_chairman',
+            type: 'collect',
+            objectives: [
+                {
+                    type: 'collect',
+                    itemId: 'magic_stone',
+                    count: 5,
+                    description: '收集 5 块魔石'
+                }
+            ],
+            rewards: {
+                exp: 200,
+                gold: 150,
+                items: [
+                    { itemId: 'health_potion', count: 3 }
+                ],
+                reputation: {
+                    magic_association: 10
+                }
+            },
+            prerequisites: ['quest_intro'],
+            nextQuest: null,
+            isMainQuest: false,
+            autoStart: false,
+            dialogueStart: '你好，我是魔法协会的研究员。我正在做一项研究，需要一些魔石。你能帮我收集一些吗？',
+            dialogueInProgress: '魔石收集得怎么样了？雪峰山的妖魔身上经常会有魔石。',
+            dialogueComplete: '太好了！这些魔石正是我需要的！这是你的报酬，以后有需要可以再来找我。'
+        },
+
+        // 支线任务：猎魔新手
+        quest_hunter_novice: {
+            id: 'quest_hunter_novice',
+            name: '猎魔新手',
+            description: '猎魔者公会的前辈想考验一下你的实力，让你去猎杀几只低级妖魔。',
+            giver: 'hunter_li',
+            type: 'hunt',
+            objectives: [
+                {
+                    type: 'kill',
+                    enemyId: 'shadow_creature',
+                    count: 3,
+                    description: '击败 3 只暗影怪'
+                }
+            ],
+            rewards: {
+                exp: 250,
+                gold: 120,
+                items: [
+                    { itemId: 'stamina_potion', count: 2 },
+                    { itemId: 'hunter_knife', count: 1 }
+                ],
+                reputation: {
+                    hunter_guild: 15
+                }
+            },
+            prerequisites: ['quest_hunt_demon'],
+            nextQuest: null,
+            isMainQuest: false,
+            autoStart: false,
+            dialogueStart: '听说你已经猎杀过幽狼兽了？不错嘛。要不要接受猎魔者公会的正式考验？去击败几只暗影怪，证明你的实力。',
+            dialogueInProgress: '暗影怪擅长偷袭，要小心它们的暗影魔法。',
+            dialogueComplete: '干得漂亮！你已经具备了成为猎魔者的潜质。这把猎魔匕首送给你，以后可以来公会接更多任务。'
+        },
+
+        // 支线任务：装备准备
+        quest_equipment_prep: {
+            id: 'quest_equipment_prep',
+            name: '装备准备',
+            description: '唐月老师建议你去商店买一套基础装备，为后续的冒险做准备。',
+            giver: 'tang_yue',
+            type: 'side',
+            objectives: [
+                {
+                    type: 'reach',
+                    locationId: 'city_street',
+                    count: 1,
+                    description: '去博城市街的商店购买装备'
+                }
+            ],
+            rewards: {
+                exp: 100,
+                gold: 80,
+                items: [
+                    { itemId: 'health_potion', count: 2 }
+                ]
+            },
+            prerequisites: ['quest_intro'],
+            nextQuest: null,
+            isMainQuest: false,
+            autoStart: false,
+            dialogueStart: '冒险的时候装备很重要。我建议你去市里的魔法商店买一把法杖和一件法袍，这样能大大提升你的战斗力。',
+            dialogueInProgress: '买到合适的装备了吗？如果钱不够，可以先做些任务攒钱。',
+            dialogueComplete: '不错，有了这些装备，你的安全更有保障了。记住，装备只是辅助，自身的修炼才是根本。'
         }
     },
 
@@ -7161,6 +7567,7 @@ const GameData = {
             items: [
                 { itemId: 'health_potion', price: 30, stock: -1 },
                 { itemId: 'mana_potion', price: 40, stock: -1 },
+                { itemId: 'stamina_potion', price: 35, stock: -1 },
                 { itemId: 'magic_herb', price: 20, stock: 20 },
                 { itemId: 'basic_staff', price: 120, stock: 5 },
                 { itemId: 'basic_robe', price: 100, stock: 5 },
@@ -7175,7 +7582,10 @@ const GameData = {
             items: [
                 { itemId: 'health_potion', price: 28, stock: -1 },
                 { itemId: 'mana_potion', price: 38, stock: -1 },
+                { itemId: 'stamina_potion', price: 32, stock: -1 },
                 { itemId: 'super_health_potion', price: 100, stock: 10 },
+                { itemId: 'super_mana_potion', price: 110, stock: 10 },
+                { itemId: 'full_potion', price: 200, stock: 3 },
                 { itemId: 'basic_staff', price: 110, stock: 10 },
                 { itemId: 'flame_staff', price: 320, stock: 3 },
                 { itemId: 'basic_robe', price: 90, stock: 10 },

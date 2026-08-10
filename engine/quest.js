@@ -145,10 +145,18 @@ const QuestSystem = {
         const rewardMessages = [];
 
         if (rewards.exp) {
-            const levelUps = Player.gainExp(rewards.exp);
+            const expResult = Player.gainExp(rewards.exp);
             rewardMessages.push(`获得 ${rewards.exp} 经验`);
-            if (levelUps.length > 0) {
-                rewardMessages.push(`升级了！当前等级 ${Player.level}`);
+            if (expResult.levelUps.length > 0) {
+                rewardMessages.push(`🎉 升级了！当前等级 ${Player.level}，获得3点属性点`);
+            }
+            if (expResult.newSkills.length > 0) {
+                expResult.newSkills.forEach(skillId => {
+                    const skill = SkillSystem.getSkill(skillId);
+                    if (skill) {
+                        rewardMessages.push(`✨ 学会了新技能：${skill.name}！`);
+                    }
+                });
             }
         }
 

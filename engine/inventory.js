@@ -147,6 +147,11 @@ const Inventory = {
                 result.effects.mp = item.effects.mp;
                 result.message += `恢复了 ${item.effects.mp} 点魔法值 `;
             }
+            if (item.effects.stamina) {
+                Player.stamina = Math.min(Player.maxStamina, Player.stamina + item.effects.stamina);
+                result.effects.stamina = item.effects.stamina;
+                result.message += `恢复了 ${item.effects.stamina} 点体力 `;
+            }
         }
 
         if (!result.message) {
