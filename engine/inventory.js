@@ -55,6 +55,11 @@ const Inventory = {
                 this.items.push({ itemId, count: 1 });
             }
         }
+
+        // 更新任务进度（采集物品）
+        if (typeof QuestSystem !== 'undefined') {
+            QuestSystem.updateProgress('collect', itemId, count);
+        }
         
         return true;
     },

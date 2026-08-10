@@ -102,11 +102,23 @@ const Game = {
             return;
         }
 
+        // 更新任务进度（在当前地点执行行动，视为到达该地点）
+        const completedQuests = QuestSystem.updateProgress('reach', Player.currentLocation, 1);
+        
         // 保存游戏
         Player.save();
         
         // 先刷新界面，确保数据更新
         UI.renderMapScreen();
+        
+        // 显示任务完成奖励
+        if (completedQuests && completedQuests.length > 0) {
+            completedQuests.forEach(q => {
+                if (q.rewards && q.rewards.length > 0) {
+                    UI.showMessage(`🎉 ${q.message}\n${q.rewards.join('\n')}`);
+                }
+            });
+        }
         
         // 显示效果消息
         let message = '';
@@ -175,8 +187,20 @@ const Game = {
                 return;
             }
 
+            // 更新任务进度（到达新地点）
+            const completedQuests = QuestSystem.updateProgress('reach', locationId, 1);
+
             // 保存游戏
             Player.save();
+
+            // 显示任务完成奖励
+            if (completedQuests && completedQuests.length > 0) {
+                completedQuests.forEach(q => {
+                    if (q.rewards && q.rewards.length > 0) {
+                        UI.showMessage(`🎉 ${q.message}\n${q.rewards.join('\n')}`);
+                    }
+                });
+            }
 
             // 处理结果
             if (result.randomBattle) {

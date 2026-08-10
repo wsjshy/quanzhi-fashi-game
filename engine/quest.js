@@ -69,6 +69,7 @@ const QuestSystem = {
      * @param {string} type - 进度类型：kill/collect/talk/reach
      * @param {string} targetId - 目标ID
      * @param {number} amount - 数量
+     * @returns {Array} 完成的任务列表（含奖励信息）
      */
     updateProgress(type, targetId, amount = 1) {
         const completedQuests = [];
@@ -98,9 +99,12 @@ const QuestSystem = {
                 );
             });
 
-            // 检查是否完成
+            // 检查是否完成，如果完成则自动交付
             if (this.isQuestFullyCompleted(activeQuest.questId)) {
-                completedQuests.push(activeQuest.questId);
+                const result = this.completeQuest(activeQuest.questId);
+                if (result.success) {
+                    completedQuests.push(result);
+                }
             }
         });
 
@@ -178,11 +182,22 @@ const QuestSystem = {
             });
         }
 
+        // 自动接取下一个任务（如果有）
+        let nextQuestAccepted = null;
+        if (quest.nextQuest) {
+            const acceptResult = this.acceptQuest(quest.nextQuest);
+            if (acceptResult.success) {
+                nextQuestAccepted = acceptResult.quest;
+                rewardMessages.push(`📜 自动接取新任务：${acceptResult.quest.name}`);
+            }
+        }
+
         return {
             success: true,
             message: `任务完成：${quest.name}`,
             rewards: rewardMessages,
-            nextQuest: quest.nextQuest || null
+            nextQuest: quest.nextQuest || null,
+            nextQuestAccepted: nextQuestAccepted
         };
     },
 

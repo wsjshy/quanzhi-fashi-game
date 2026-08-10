@@ -712,7 +712,7 @@ const BattleSystem = {
         rewards.levelUps = levelUps;
 
         // 更新任务进度
-        QuestSystem.updateProgress('kill', this.enemy.id, 1);
+        const completedQuests = QuestSystem.updateProgress('kill', this.enemy.id, 1);
 
         this.addLog(`获得 ${rewards.exp} 经验，${rewards.gold} 金币`, 'system');
         if (rewards.items.length > 0) {
@@ -722,6 +722,16 @@ const BattleSystem = {
         }
         if (levelUps.length > 0) {
             this.addLog(`升级了！当前等级 ${Player.level}`, 'system');
+        }
+
+        // 显示任务完成奖励
+        if (completedQuests && completedQuests.length > 0) {
+            completedQuests.forEach(q => {
+                this.addLog(`🎉 ${q.message}`, 'system');
+                if (q.rewards) {
+                    q.rewards.forEach(r => this.addLog(r, 'system'));
+                }
+            });
         }
 
         this.rewards = rewards;
