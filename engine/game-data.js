@@ -4443,7 +4443,7 @@ const GameData = {
                         exp: 5
                     },
                     eventChance: 0.3,
-                    events: ['event_find_money', 'event_meet_stranger', 'event_shop_discount']
+                    events: ['event_find_money', 'event_meet_stranger', 'event_shop_discount', 'event_street_performer', 'event_pickpocket', 'event_drunk_hunter']
                 },
                 {
                     id: 'shop',
@@ -6272,6 +6272,94 @@ const GameData = {
                         gold: 20
                     },
                     resultText: '你发现商店真的在打折，还送了优惠券！（获得 20 金币）'
+                }
+            ]
+        },
+
+        // 街市事件：街头卖艺
+        event_street_performer: {
+            id: 'event_street_performer',
+            name: '街头卖艺',
+            description: '你看到一个法师在街头表演魔法',
+            trigger: 'exploring',
+            chance: 0.1,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '停下来观看',
+                    effects: {
+                        exp: 10,
+                        gold: -5
+                    },
+                    resultText: '你停下来看了一会儿表演，学到了一些小技巧，还打赏了5金币。（获得经验，消耗5金币）'
+                },
+                {
+                    text: '匆匆走过',
+                    effects: {},
+                    resultText: '你匆匆走过，没有停下脚步。'
+                }
+            ]
+        },
+
+        // 街市事件：遇到小偷
+        event_pickpocket: {
+            id: 'event_pickpocket',
+            name: '遇到小偷',
+            description: '你感觉有人在摸你的口袋！',
+            trigger: 'exploring',
+            chance: 0.08,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '立刻抓住他',
+                    effects: {
+                        hp: -10,
+                        exp: 15
+                    },
+                    resultText: '你立刻抓住了小偷，和他扭打了几下，小偷跑掉了，但你保住了钱包。（HP减少，获得经验）'
+                },
+                {
+                    text: '赶紧捂住口袋',
+                    effects: {
+                        gold: -10
+                    },
+                    resultText: '你赶紧捂住口袋，但还是被偷走了10金币。（损失10金币）'
+                }
+            ]
+        },
+
+        // 街市事件：喝醉的猎人
+        event_drunk_hunter: {
+            id: 'event_drunk_hunter',
+            name: '喝醉的猎人',
+            description: '一个喝醉的猎人在酒馆门口吹牛',
+            trigger: 'exploring',
+            chance: 0.08,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '听他讲故事',
+                    effects: {
+                        exp: 8,
+                        stamina: -5
+                    },
+                    resultText: '你听猎人讲了很多猎魔的故事，虽然大部分是吹的，但也学到了一些东西。（获得经验，消耗体力）'
+                },
+                {
+                    text: '请他喝一杯',
+                    effects: {
+                        gold: -20,
+                        exp: 15
+                    },
+                    resultText: '你请猎人喝了一杯，他很高兴，给你讲了很多真正的猎魔技巧。（获得经验，消耗20金币）'
+                },
+                {
+                    text: '走开',
+                    effects: {},
+                    resultText: '你觉得他在吹牛，就走开了。'
                 }
             ]
         },
