@@ -73,6 +73,9 @@ const Game = {
         // 初始化地图
         MapSystem.init();
         
+        // 自动接取新手引导任务
+        QuestSystem.acceptQuest('quest_intro');
+        
         // 保存游戏
         Player.save();
         
@@ -80,8 +83,8 @@ const Game = {
         this.state = 'map';
         UI.renderMapScreen();
         
-        // 显示欢迎消息
-        UI.showMessage(`欢迎来到全职法师的世界，${name}！\n你觉醒了${SkillSystem.getElementName(element)}，开始你的冒险吧！`);
+        // 显示欢迎消息和新手引导
+        UI.showMessage(`欢迎来到全职法师的世界，${name}！\n你觉醒了${SkillSystem.getElementName(element)}，开始你的冒险吧！\n\n【新手引导】已自动接取任务「初识魔法」，去修炼场感受魔法的力量吧！`);
     },
 
     // ========== 地图界面 ==========

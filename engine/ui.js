@@ -55,13 +55,15 @@ const UI = {
         `;
         msgBox.textContent = text;
 
-        // 点击关闭
+        // 点击关闭（仅点击消息框关闭，不点击遮罩层，防止误触底层按钮）
         const closeMessage = () => {
             overlay.remove();
             msgBox.remove();
         };
-        overlay.addEventListener('click', closeMessage);
-        msgBox.addEventListener('click', closeMessage);
+        msgBox.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeMessage();
+        });
 
         document.body.appendChild(overlay);
         document.body.appendChild(msgBox);
@@ -316,7 +318,7 @@ const UI = {
                     ${elementsHtml}
                 </div>
                 
-                <button onclick="confirmCreate()" style="
+                <div onclick="confirmCreate()" style="
                     padding: 15px 50px;
                     font-size: 20px;
                     background: linear-gradient(135deg, #2a2a6a, #4a4aaa);
@@ -327,15 +329,17 @@ const UI = {
                     transition: all 0.3s;
                     letter-spacing: 4px;
                     opacity: 0.5;
-                " id="confirm-btn" disabled>
+                    display: inline-block;
+                " id="confirm-btn">
                     确认创建
-                </button>
+                </div>
                 </div>
             </div>
         `;
 
         // 全局函数
         window.selectedElement = null;
+        window.confirmEnabled = false;
         window.selectElement = (elem) => {
             // 移除其他选中
             document.querySelectorAll('.element-card').forEach(card => {
@@ -351,15 +355,15 @@ const UI = {
             card.style.boxShadow = `0 0 25px ${elementColors[elem]}60`;
             
             window.selectedElement = elem;
+            window.confirmEnabled = true;
             
             // 启用确认按钮
             const btn = document.getElementById('confirm-btn');
-            btn.disabled = false;
             btn.style.opacity = '1';
         };
 
         window.confirmCreate = () => {
-            if (!window.selectedElement) return;
+            if (!window.confirmEnabled || !window.selectedElement) return;
             const name = document.getElementById('char-name').value || '冒险者';
             Game.createCharacter(name, window.selectedElement);
         };
@@ -1016,7 +1020,7 @@ const UI = {
                     </div>
                     ` : ''}
                     
-                    <button onclick="Game.closeScheduledEvent()" style="
+                    <div onclick="Game.closeScheduledEvent()" style="
                         width: 100%;
                         padding: 15px 25px;
                         background: linear-gradient(135deg, ${success ? '#2a5a2a' : '#5a2a2a'}, ${success ? '#4aaa4a' : '#aa4a4a'});
@@ -1026,9 +1030,11 @@ const UI = {
                         cursor: pointer;
                         font-size: 18px;
                         transition: all 0.3s;
+                        box-sizing: border-box;
+                        text-align: center;
                     " onmouseover="this.style.boxShadow='0 0 20px ${success ? 'rgba(100, 255, 100, 0.5)' : 'rgba(255, 100, 100, 0.5)'}" onmouseout="this.style.boxShadow='none'">
                         确认
-                    </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -1084,7 +1090,7 @@ const UI = {
                     </h2>
                     <div style="display: flex; gap: 20px; align-items: center;">
                         <span style="color: #ffd700; font-size: 18px;">💰 ${Player.gold} 金币</span>
-                        <button onclick="Game.closeShop()" style="
+                        <div onclick="Game.closeShop()" style="
                             padding: 10px 20px;
                             background: #553333;
                             border: 1px solid #775555;
@@ -1092,7 +1098,8 @@ const UI = {
                             color: #ffcccc;
                             cursor: pointer;
                             font-size: 15px;
-                        ">离开商店</button>
+                            display: inline-block;
+                        ">离开商店</div>
                     </div>
                 </div>
                 
@@ -1122,8 +1129,7 @@ const UI = {
                                             💰 ${item.actualPrice}
                                             ${item.hasDiscount ? `<span style="text-decoration: line-through; color: #888; font-size: 12px; margin-left: 5px;">${item.originalPrice}</span>` : ''}
                                         </span>
-                                        <button onclick="Game.buyItem('${item.itemId}')" 
-                                                ${!item.canAfford ? 'disabled' : ''}
+                                        <div onclick="${item.canAfford ? `Game.buyItem('${item.itemId}')` : ''}" 
                                                 style="
                                             padding: 6px 15px;
                                             background: ${item.canAfford ? 'linear-gradient(135deg, #335533, #447744)' : '#444'};
@@ -1132,7 +1138,8 @@ const UI = {
                                             color: ${item.canAfford ? '#ccffcc' : '#888'};
                                             cursor: ${item.canAfford ? 'pointer' : 'not-allowed'};
                                             font-size: 14px;
-                                        ">购买</button>
+                                            display: inline-block;
+                                        ">购买</div>
                                     </div>
                                 </div>
                             `;
@@ -1158,7 +1165,7 @@ const UI = {
                                 ">
                                     <span>${itemData.icon || '📦'} ${itemData.name} x${item.count}</span>
                                     <span style="color: #ffd700;">💰 ${sellPrice}</span>
-                                    <button onclick="Game.sellItem('${item.itemId}')" style="
+                                    <div onclick="Game.sellItem('${item.itemId}')" style="
                                         padding: 4px 10px;
                                         background: #554433;
                                         border: 1px solid #776655;
@@ -1166,7 +1173,8 @@ const UI = {
                                         color: #ffddaa;
                                         cursor: pointer;
                                         font-size: 12px;
-                                    ">出售</button>
+                                        display: inline-block;
+                                    ">出售</div>
                                 </div>
                             `;
                         }).join('') || '<p style="color: #888;">背包里没有可出售的物品</p>'}
@@ -1211,7 +1219,7 @@ const UI = {
                     z-index: 1;
                 ">
                     <h2 style="color: #ffd700; font-size: 26px;">🎒 背包</h2>
-                    <button onclick="Game.closeInventory()" style="
+                    <div onclick="Game.closeInventory()" style="
                         padding: 10px 20px;
                         background: #553333;
                         border: 1px solid #775555;
@@ -1219,7 +1227,8 @@ const UI = {
                         color: #ffcccc;
                         cursor: pointer;
                         font-size: 15px;
-                    ">关闭</button>
+                        display: inline-block;
+                    ">关闭</div>
                 </div>
                 
                 <div style="flex: 1; display: flex; overflow: hidden; position: relative; z-index: 1;">
@@ -1250,7 +1259,7 @@ const UI = {
                                                 return `${statNames[k] || k}: +${typeof v === 'number' && v < 1 ? (v * 100).toFixed(0) + '%' : v}`;
                                             }).join(' | ')}
                                         </div>
-                                        <button onclick="Game.unequipItem('${slot}')" style="
+                                        <div onclick="Game.unequipItem('${slot}')" style="
                                             margin-top: 8px;
                                             padding: 5px 12px;
                                             background: #554433;
@@ -1259,7 +1268,8 @@ const UI = {
                                             color: #ffddaa;
                                             cursor: pointer;
                                             font-size: 12px;
-                                        ">卸下</button>
+                                            display: inline-block;
+                                        ">卸下</div>
                                     ` : `
                                         <div style="font-size: 14px; color: #667788;">空</div>
                                     `}
@@ -1283,7 +1293,7 @@ const UI = {
                             ].map(cat => {
                                 const isActive = this.inventoryFilter === cat.key;
                                 return `
-                                    <button onclick="UI.setInventoryFilter('${cat.key}')" style="
+                                    <div onclick="UI.setInventoryFilter('${cat.key}')" style="
                                         padding: 8px 16px;
                                         background: ${isActive ? 'rgba(100, 150, 200, 0.5)' : 'rgba(40, 50, 60, 0.8)'};
                                         border: 2px solid ${isActive ? '#6699cc' : '#556677'};
@@ -1292,7 +1302,8 @@ const UI = {
                                         cursor: pointer;
                                         font-size: 14px;
                                         transition: all 0.2s;
-                                    ">${cat.icon} ${cat.name}</button>
+                                        display: inline-block;
+                                    ">${cat.icon} ${cat.name}</div>
                                 `;
                             }).join('')}
                         </div>
@@ -1329,7 +1340,7 @@ const UI = {
                                         </div>
                                         <div style="display: flex; gap: 8px;">
                                             ${canUse ? `
-                                                <button onclick="Game.useItem('${item.itemId}')" style="
+                                                <div onclick="Game.useItem('${item.itemId}')" style="
                                                     flex: 1;
                                                     padding: 5px;
                                                     background: #335544;
@@ -1338,10 +1349,11 @@ const UI = {
                                                     color: #aaffcc;
                                                     cursor: pointer;
                                                     font-size: 12px;
-                                                ">使用</button>
+                                                    text-align: center;
+                                                ">使用</div>
                                             ` : ''}
                                             ${isEquip ? `
-                                                <button onclick="Game.equipItem('${item.itemId}')" style="
+                                                <div onclick="Game.equipItem('${item.itemId}')" style="
                                                     flex: 1;
                                                     padding: 5px;
                                                     background: #445533;
@@ -1350,7 +1362,8 @@ const UI = {
                                                     color: #ccffaa;
                                                     cursor: pointer;
                                                     font-size: 12px;
-                                                ">装备</button>
+                                                    text-align: center;
+                                                ">装备</div>
                                             ` : ''}
                                         </div>
                                     </div>
@@ -1404,7 +1417,7 @@ const UI = {
                     z-index: 1;
                 ">
                     <h2 style="color: #ffd700; font-size: 26px;">📜 任务日志</h2>
-                    <button onclick="Game.closeQuestLog()" style="
+                    <div onclick="Game.closeQuestLog()" style="
                         padding: 10px 20px;
                         background: #553333;
                         border: 1px solid #775555;
@@ -1412,7 +1425,8 @@ const UI = {
                         color: #ffcccc;
                         cursor: pointer;
                         font-size: 15px;
-                    ">关闭</button>
+                        display: inline-block;
+                    ">关闭</div>
                 </div>
                 
                 <div style="flex: 1; padding: 30px; overflow-y: auto; position: relative; z-index: 1;">
@@ -1519,7 +1533,7 @@ const UI = {
                     <h2 style="color: #ffd700; font-size: 26px;">🔍 情报收集</h2>
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <span style="color: #aaa; font-size: 14px;">已收集: ${knownInfo.length} 条</span>
-                        <button onclick="Game.closeIntelPanel()" style="
+                        <div onclick="Game.closeIntelPanel()" style="
                             padding: 10px 20px;
                             background: #553333;
                             border: 1px solid #775555;
@@ -1527,7 +1541,8 @@ const UI = {
                             color: #ffcccc;
                             cursor: pointer;
                             font-size: 15px;
-                        ">关闭</button>
+                            display: inline-block;
+                        ">关闭</div>
                     </div>
                 </div>
                 
@@ -1617,7 +1632,7 @@ const UI = {
                     <h2 style="color: #ffd700; font-size: 26px;">⭐ 势力声望</h2>
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <span style="color: #aaa; font-size: 14px;">共 ${factionList.length} 个势力</span>
-                        <button onclick="Game.closeReputationPanel()" style="
+                        <div onclick="Game.closeReputationPanel()" style="
                             padding: 10px 20px;
                             background: #553333;
                             border: 1px solid #775555;
@@ -1625,7 +1640,8 @@ const UI = {
                             color: #ffcccc;
                             cursor: pointer;
                             font-size: 15px;
-                        ">关闭</button>
+                            display: inline-block;
+                        ">关闭</div>
                     </div>
                 </div>
                 
@@ -1719,7 +1735,7 @@ const UI = {
                     z-index: 1;
                 ">
                     <h2 style="color: #ffd700; font-size: 26px;">❓ 游戏帮助</h2>
-                    <button onclick="Game.closeHelpPanel()" style="
+                    <div onclick="Game.closeHelpPanel()" style="
                         padding: 10px 20px;
                         background: #553333;
                         border: 1px solid #775555;
@@ -1727,7 +1743,8 @@ const UI = {
                         color: #ffcccc;
                         cursor: pointer;
                         font-size: 15px;
-                    ">关闭</button>
+                        display: inline-block;
+                    ">关闭</div>
                 </div>
                 
                 <div style="flex: 1; padding: 30px; overflow-y: auto; position: relative; z-index: 1;">
@@ -1866,7 +1883,7 @@ const UI = {
                     border-bottom: 2px solid #447766;
                 ">
                     <h2 style="color: #ffd700; font-size: 26px;">👤 角色属性</h2>
-                    <button onclick="Game.closeCharacterPanel()" style="
+                    <div onclick="Game.closeCharacterPanel()" style="
                         padding: 10px 20px;
                         background: #553333;
                         border: 1px solid #775555;
@@ -1874,6 +1891,8 @@ const UI = {
                         color: #ffcccc;
                         cursor: pointer;
                         font-size: 15px;
+                        display: inline-block;
+                    ">关闭</div>
                     ">关闭</button>
                 </div>
                 
@@ -2001,7 +2020,7 @@ const UI = {
                         ${value}${max ? ' / ' + max : ''}
                     </span>
                     ${canAdd ? `
-                        <button onclick="Game.addAttribute('${attrKey}')" style="
+                        <div onclick="Game.addAttribute('${attrKey}')" style="
                             width: 30px;
                             height: 30px;
                             background: #44aa44;
@@ -2011,7 +2030,11 @@ const UI = {
                             cursor: pointer;
                             font-size: 18px;
                             font-weight: bold;
-                        ">+</button>
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            line-height: 1;
+                        ">+</div>
                     ` : ''}
                 </div>
             </div>
@@ -2055,7 +2078,7 @@ const UI = {
                         const quest = QuestSystem.getQuest(questId);
                         if (!quest) return '';
                         return `
-                            <button onclick="acceptQuestFromDialog('${questId}')" style="
+                            <div onclick="acceptQuestFromDialog('${questId}')" style="
                                 display: block;
                                 width: 100%;
                                 padding: 10px 15px;
@@ -2069,21 +2092,22 @@ const UI = {
                                 font-size: 14px;
                             ">
                                 📜 ${quest.name}
-                            </button>
+                            </div>
                         `;
                     }).join('')}
                 </div>
             ` : ''}
             <div style="text-align: right;">
-                <button onclick="this.parentElement.parentElement.remove()" style="
+                <div onclick="this.parentElement.parentElement.remove()" style="
                     padding: 8px 25px;
                     background: #444477;
                     border: 1px solid #666699;
                     border-radius: 8px;
                     color: #ccccff;
                     cursor: pointer;
+                    display: inline-block;
                     font-size: 14px;
-                ">关闭</button>
+                ">关闭</div>
             </div>
         `;
         
