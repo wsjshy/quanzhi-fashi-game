@@ -164,29 +164,34 @@ const Game = {
 
     // 移动到地点
     travelTo(locationId) {
-        const result = MapSystem.travelTo(locationId);
-        
-        if (!result.success) {
-            UI.showMessage(result.message);
-            return;
+        try {
+            const result = MapSystem.travelTo(locationId);
+            
+            if (!result.success) {
+                UI.showMessage(result.message);
+                return;
+            }
+
+            // 保存游戏
+            Player.save();
+
+            // 处理结果
+            if (result.randomBattle) {
+                this.startBattle(result.randomBattle.enemy);
+                return;
+            }
+
+            if (result.travelEvent) {
+                this.showEvent(result.travelEvent);
+                return;
+            }
+
+            UI.renderMapScreen();
+            UI.showMessage(`来到了 ${result.location.name}`);
+        } catch (e) {
+            console.error('移动出错:', e);
+            UI.showMessage('移动失败：' + e.message);
         }
-
-        // 保存游戏
-        Player.save();
-
-        // 处理结果
-        if (result.randomBattle) {
-            this.startBattle(result.randomBattle.enemy);
-            return;
-        }
-
-        if (result.travelEvent) {
-            this.showEvent(result.travelEvent);
-            return;
-        }
-
-        UI.renderMapScreen();
-        UI.showMessage(`来到了 ${result.location.name}`);
     },
     
     // 等待到指定时段
@@ -550,10 +555,15 @@ const Game = {
 
     // 购买物品
     buyItem(itemId, count = 1) {
-        const result = ShopSystem.buyItem(itemId, count);
-        UI.showMessage(result.message);
-        UI.updateShopScreen();
-        Player.save();
+        try {
+            const result = ShopSystem.buyItem(itemId, count);
+            UI.showMessage(result.message);
+            UI.updateShopScreen();
+            Player.save();
+        } catch (e) {
+            console.error('购买物品出错:', e);
+            UI.showMessage('购买失败：' + e.message);
+        }
     },
 
     // 出售物品
@@ -588,7 +598,7 @@ const Game = {
             max-width: 500px;
             max-height: 80vh;
             overflow-y: auto;
-            z-index: 1000;
+            z-index: 99999;
             box-shadow: 0 0 40px rgba(100, 100, 255, 0.3);
         `;
         
@@ -599,7 +609,7 @@ const Game = {
             
             if (canTalk) {
                 return `
-                    <button onclick="talkToNPC('${npc.id}')" style="
+                    <div onclick="talkToNPC('${npc.id}')" style="
                         padding: 15px 20px;
                         background: rgba(40, 40, 80, 0.8);
                         border: 2px solid #444477;
@@ -612,7 +622,7 @@ const Game = {
                     " onmouseover="this.style.borderColor='#7777bb'; this.style.background='rgba(60, 60, 120, 0.8)'" onmouseout="this.style.borderColor='#444477'; this.style.background='rgba(40, 40, 80, 0.8)'">
                         <div style="font-weight: bold; font-size: 17px;">${npc.name}</div>
                         <div style="font-size: 13px; color: #999; margin-top: 3px;">${npc.title || ''}</div>
-                    </button>
+                    </div>
                 `;
             } else {
                 return `
@@ -698,7 +708,8 @@ const Game = {
                 ` : ''}
             </div>
             <div style="text-align: right; margin-top: 20px;">
-                <button onclick="this.parentElement.parentElement.remove()" style="
+                <div onclick="this.parentElement.parentElement.remove()" style="
+                    display: inline-block;
                     padding: 8px 25px;
                     background: #444477;
                     border: 1px solid #666699;
@@ -706,7 +717,7 @@ const Game = {
                     color: #ccccff;
                     cursor: pointer;
                     font-size: 14px;
-                ">取消</button>
+                ">取消</div>
             </div>
         `;
         
@@ -877,7 +888,7 @@ const Game = {
                 <!-- 选项列表 -->
                 <div id="dialogue-choices" style="display: flex; flex-direction: column; gap: 8px;">
                     ${dialogueData.choices.map((choice, index) => `
-                        <button onclick="Game.selectDialogueChoice('${choice.id}')" style="
+                        <div onclick="Game.selectDialogueChoice('${choice.id}')" style="
                             padding: 12px 20px;
                             background: rgba(40, 40, 80, 0.8);
                             border: 2px solid #444477;
@@ -890,7 +901,7 @@ const Game = {
                         " onmouseover="this.style.borderColor='#7777bb'; this.style.background='rgba(60, 60, 120, 0.8)'" onmouseout="this.style.borderColor='#444477'; this.style.background='rgba(40, 40, 80, 0.8)'">
                             <span style="color: #ffd700; margin-right: 10px;">${index + 1}.</span>
                             ${choice.text}
-                        </button>
+                        </div>
                     `).join('')}
                 </div>
             </div>
@@ -932,7 +943,7 @@ const Game = {
 
         if (choicesEl) {
             choicesEl.innerHTML = dialogueData.choices.map((choice, index) => `
-                <button onclick="Game.selectDialogueChoice('${choice.id}')" style="
+                <div onclick="Game.selectDialogueChoice('${choice.id}')" style="
                     padding: 12px 20px;
                     background: rgba(40, 40, 80, 0.8);
                     border: 2px solid #444477;
@@ -945,7 +956,7 @@ const Game = {
                 " onmouseover="this.style.borderColor='#7777bb'; this.style.background='rgba(60, 60, 120, 0.8)'" onmouseout="this.style.borderColor='#444477'; this.style.background='rgba(40, 40, 80, 0.8)'">
                     <span style="color: #ffd700; margin-right: 10px;">${index + 1}.</span>
                     ${choice.text}
-                </button>
+                </div>
             `).join('');
         }
 
@@ -1000,10 +1011,15 @@ const Game = {
 
     // 使用物品
     useItem(itemId) {
-        const result = Inventory.useItem(itemId, false);
-        UI.showMessage(result.message);
-        UI.updateInventoryScreen();
-        Player.save();
+        try {
+            const result = Inventory.useItem(itemId, false);
+            UI.showMessage(result.message);
+            UI.updateInventoryScreen();
+            Player.save();
+        } catch (e) {
+            console.error('使用物品出错:', e);
+            UI.showMessage('使用失败：' + e.message);
+        }
     },
 
     // 装备物品

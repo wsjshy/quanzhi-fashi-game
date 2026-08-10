@@ -24,6 +24,14 @@
 - ✅ 执行行动后右上角数据不更新的 bug（UI 刷新移到前面）
 - ✅ 按钮上显示的体力消耗也有同样 bug
 - ✅ 时间不流逝的严重 bug（小于 6 小时的时间完全不累积）
+- ✅ 版本号不一致（统一为 v0.3.2）
+- ✅ 存档迁移 unlockedLocations 默认值过少（旧存档只有天澜魔法高中，导致地图移动按钮 disabled）
+- ✅ 消息弹窗点击穿透（添加半透明遮罩层，支持点击关闭，自动消失时间改为 3 秒）
+- ✅ 关键方法缺少错误处理（buyItem/travelTo/useItem 添加 try-catch）
+- ✅ 商店背景图片 div 遮挡点击（z-index 改为 -1，添加 pointer-events:none）
+- ✅ 所有 z-index:0 元素统一添加 pointer-events:none
+- ✅ 弹窗中 button 元素点击无反应问题（对话选择窗口、对话界面、事件界面的 button 改为 div）
+- ✅ 清理调试代码（test-output div、地图调试信息、按钮调试消息）
 
 ### 优化
 - ✅ 时间系统重写：基于具体小时数计算，时间精确到小时

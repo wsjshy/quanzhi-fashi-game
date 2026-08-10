@@ -4,8 +4,8 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.3.1';
-const SAVE_VERSION = '0.3.1';
+const GAME_VERSION = '0.3.2';
+const SAVE_VERSION = '0.3.2';
 
 const Player = {
     // 基础信息
@@ -466,7 +466,7 @@ const Player = {
             this.hour = data.hour || 8;  // 默认早上8点
             this.timeOfDay = data.timeOfDay || 'morning';
             this.flags = data.flags || {};
-            this.unlockedLocations = data.unlockedLocations || ['tianlan_school'];
+            this.unlockedLocations = data.unlockedLocations || ['tianlan_school', 'city_street', 'xuefeng_mountain'];
             
             // 加载背包
             if (data.inventory) {
@@ -564,7 +564,7 @@ const Player = {
             migrated.stamina = 100;
             // 添加更多默认值
             if (!migrated.unlockedLocations) {
-                migrated.unlockedLocations = ['tianlan_school'];
+                migrated.unlockedLocations = ['tianlan_school', 'city_street', 'xuefeng_mountain'];
             }
         }
         

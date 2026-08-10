@@ -18,6 +18,19 @@ const UI = {
 
     // 显示消息提示
     showMessage(text) {
+        // 创建遮罩层
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            cursor: pointer;
+        `;
+
         // 创建消息框
         const msgBox = document.createElement('div');
         msgBox.style.cssText = `
@@ -35,18 +48,35 @@ const UI = {
             text-align: center;
             z-index: 1000;
             min-width: 300px;
+            max-width: 500px;
             box-shadow: 0 0 30px rgba(100, 100, 255, 0.3);
             white-space: pre-line;
+            cursor: pointer;
         `;
         msgBox.textContent = text;
+
+        // 点击关闭
+        const closeMessage = () => {
+            overlay.remove();
+            msgBox.remove();
+        };
+        overlay.addEventListener('click', closeMessage);
+        msgBox.addEventListener('click', closeMessage);
+
+        document.body.appendChild(overlay);
         document.body.appendChild(msgBox);
 
-        // 2秒后消失
+        // 3秒后自动消失
         setTimeout(() => {
             msgBox.style.transition = 'opacity 0.5s';
+            overlay.style.transition = 'opacity 0.5s';
             msgBox.style.opacity = '0';
-            setTimeout(() => msgBox.remove(), 500);
-        }, 2000);
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.remove();
+                msgBox.remove();
+            }, 500);
+        }, 3000);
     },
 
     // ========== 标题界面 ==========
@@ -139,7 +169,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.3.1 · 开放世界版</div>
+                ">v0.3.2 · 开放世界版</div>
             </div>
         `;
 
@@ -248,6 +278,7 @@ const UI = {
                     opacity: 0.12;
                     filter: blur(3px);
                     z-index: 0;
+                    pointer-events: none;
                 "></div>
                 
                 <div style="position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center;">
@@ -359,6 +390,7 @@ const UI = {
                     opacity: 0.1;
                     filter: blur(2px);
                     z-index: 0;
+                    pointer-events: none;
                 "></div>
                 ` : ''}
                 
@@ -616,6 +648,7 @@ const UI = {
                     opacity: 0.12;
                     filter: blur(2px);
                     z-index: 0;
+                    pointer-events: none;
                 "></div>
                 
                 <!-- 战斗场地 -->
@@ -855,6 +888,7 @@ const UI = {
                     opacity: 0.1;
                     filter: blur(3px);
                     z-index: 0;
+                    pointer-events: none;
                 "></div>
                 
                 <div style="
@@ -877,7 +911,7 @@ const UI = {
                     
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         ${event.choices.map((choice, index) => `
-                            <button onclick="Game.selectEventChoice(${index})" style="
+                            <div onclick="Game.selectEventChoice(${index})" style="
                                 padding: 15px 25px;
                                 background: linear-gradient(135deg, #2a2a5a, #3a3a7a);
                                 border: 2px solid #555599;
@@ -889,7 +923,7 @@ const UI = {
                                 transition: all 0.3s;
                             " onmouseover="this.style.borderColor='#7777bb'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#555599'; this.style.transform='translateX(0)'">
                                 ▶ ${choice.text}
-                            </button>
+                            </div>
                         `).join('')}
                     </div>
                 </div>
@@ -936,6 +970,7 @@ const UI = {
                     opacity: 0.08;
                     filter: blur(3px);
                     z-index: 0;
+                    pointer-events: none;
                 "></div>
                 
                 <!-- 背景特效 -->
@@ -945,6 +980,7 @@ const UI = {
                     width: 100%; height: 100%;
                     background: radial-gradient(circle at center, ${success ? 'rgba(100, 255, 100, 0.1)' : 'rgba(255, 100, 100, 0.1)'} 0%, transparent 70%);
                     z-index: 0;
+                    pointer-events: none;
                 "></div>
                 
                 <div style="
@@ -1028,7 +1064,8 @@ const UI = {
                     background: url('assets/images/backgrounds/bo_city_view.jpg') center/cover;
                     opacity: 0.08;
                     filter: blur(2px);
-                    z-index: 0;
+                    z-index: -1;
+                    pointer-events: none;
                 "></div>
                 
                 <!-- 顶部 -->
@@ -1067,11 +1104,12 @@ const UI = {
                             const itemData = item.itemData;
                             if (!itemData) return '';
                             return `
-                                <div style="
+                                <div onclick="Game.buyItem('${item.itemId}')" style="
                                     padding: 15px;
                                     background: rgba(40, 40, 60, 0.8);
                                     border: 2px solid #555577;
                                     border-radius: 10px;
+                                    cursor: ${item.canAfford ? 'pointer' : 'not-allowed'};
                                 ">
                                     <div style="font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 5px;">
                                         ${itemData.icon || '📦'} ${itemData.name}
@@ -1159,6 +1197,7 @@ const UI = {
                     opacity: 0.08;
                     filter: blur(3px);
                     z-index: 0;
+                    pointer-events: none;
                 "></div>
                 
                 <div style="
@@ -1351,6 +1390,7 @@ const UI = {
                     opacity: 0.08;
                     filter: blur(3px);
                     z-index: 0;
+                    pointer-events: none;
                 "></div>
                 
                 <div style="
@@ -1463,6 +1503,7 @@ const UI = {
                     opacity: 0.06;
                     filter: blur(3px);
                     z-index: 0;
+                    pointer-events: none;
                 "></div>
                 
                 <div style="
@@ -1560,6 +1601,7 @@ const UI = {
                     opacity: 0.06;
                     filter: blur(3px);
                     z-index: 0;
+                    pointer-events: none;
                 "></div>
                 
                 <div style="
@@ -1663,6 +1705,7 @@ const UI = {
                     opacity: 0.06;
                     filter: blur(3px);
                     z-index: 0;
+                    pointer-events: none;
                 "></div>
                 
                 <div style="
@@ -2055,21 +2098,15 @@ const UI = {
 
 // 初始化
 window.addEventListener('DOMContentLoaded', () => {
-    const testOutput = document.getElementById('test-output');
-    if (testOutput) {
-        testOutput.textContent = 'DOM 加载完成，开始初始化...';
-    }
-    
     try {
         UI.init();
-        if (testOutput) testOutput.textContent += '\nUI 初始化完成';
-        
         Game.init();
-        if (testOutput) testOutput.textContent += '\nGame 初始化完成';
     } catch (e) {
-        if (testOutput) {
-            testOutput.textContent += '\n错误: ' + e.message + '\n' + e.stack;
-        }
-        console.error(e);
+        console.error('游戏初始化失败:', e);
+        // 在页面上显示错误
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = 'position:fixed;top:0;left:0;width:100%;padding:20px;background:#300;color:#faa;font-family:monospace;z-index:9999;';
+        errorDiv.textContent = '游戏初始化失败: ' + e.message;
+        document.body.appendChild(errorDiv);
     }
 });
