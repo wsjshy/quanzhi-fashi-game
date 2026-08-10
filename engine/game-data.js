@@ -614,6 +614,18 @@ const GameData = {
                 curious: 0.7
             },
             
+            // 礼物偏好
+            giftPreferences: {
+                loved: ['demon_core', 'magic_stone', 'super_mana_potion'],  // 喜欢：修炼资源
+                liked: ['health_potion', 'mana_potion', 'magic_herb'],       // 一般喜欢
+                disliked: [],                                                  // 不喜欢
+                baseOpinionGain: 5,                                            // 基础好感度增加
+                lovedMultiplier: 3,                                            // 喜欢的物品倍率
+                likedMultiplier: 1.5,                                          // 一般喜欢倍率
+                dislikedMultiplier: 0.5,                                       // 不喜欢倍率
+                dailyGiftLimit: 3                                              // 每天送礼次数上限
+            },
+            
             // 关系上限
             relationshipCap: {
                 maxOpinion: 100,

@@ -1227,5 +1227,84 @@ const Game = {
         UI.showMessage(result.message);
         Player.save();
         UI.renderMapScreen();
-    }
+    },
+
+    // 给NPC送礼
+    giveGift(npcId, itemId) {
+        try {
+            const npc = DataManager.getCharacter(npcId);
+            if (!npc) {
+                UI.showMessage('NPC不存在');
+                return { success: false };
+            }
+
+            // 检查玩家是否有该物品
+            const item = Player.inventory.find(i => i.itemId === itemId);
+            if (!item || item.count <= 0) {
+                UI.showMessage('你没有这个物品');
+                return { success: false };
+            }
+
+            const itemData = DataManager.getItem(itemId);
+            if (!itemData) {
+                UI.showMessage('物品数据不存在');
+                return { success: false };
+            }
+
+            // 获取礼物偏好
+            const giftPrefs = npc.giftPreferences || {};
+            const dailyLimit = giftPrefs.dailyGiftLimit || 3;
+            const baseGain = giftPrefs.baseOpinionGain || 5;
+
+            // 检查今日送礼次数（使用world-state的flags记录）
+            const todayKey = `gift_${npcId}_day_${Player.day}`;
+            const todayGifts = WorldStateSystem.getFlag(todayKey) || 0;
+            if (todayGifts >= dailyLimit) {
+                UI.showMessage(`今天已经给${npc.name}送过${dailyLimit}次礼物了，明天再来吧`);
+                return { success: false };
+            }
+
+            // 计算好感度变化
+            let multiplier = 1;
+            let reaction = '';
+            const loved = giftPrefs.loved || [];
+            const liked = giftPrefs.liked || [];
+            const disliked = giftPrefs.disliked || [];
+
+            if (loved.includes(itemId)) {
+                multiplier = giftPrefs.lovedMultiplier || 3;
+                reaction = `${npc.name}非常喜欢这个礼物！`;
+            } else if (liked.includes(itemId)) {
+                multiplier = giftPrefs.likedMultiplier || 1.5;
+                reaction = `${npc.name}觉得这个礼物不错。`;
+            } else if (disliked.includes(itemId)) {
+                multiplier = giftPrefs.dislikedMultiplier || 0.5;
+                reaction = `${npc.name}不太喜欢这个礼物...`;
+            } else {
+                reaction = `${npc.name}收下了你的礼物。`;
+            }
+
+            const opinionGain = Math.floor(baseGain * multiplier);
+
+            // 移除物品
+            Inventory.removeItem(itemId, 1);
+
+            // 增加好感度
+            NPCStateSystem.changeOpinion(npcId, opinionGain, '送礼');
+
+            // 记录今日送礼次数
+            WorldStateSystem.setFlag(todayKey, todayGifts + 1);
+
+            // 显示结果
+            const currentOpinion = NPCStateSystem.getNPCState(npcId)?.opinion || 0;
+            UI.showMessage(`${reaction}\n好感度 +${opinionGain}（当前：${currentOpinion}）`);
+
+            Player.save();
+            return { success: true, opinionGain };
+        } catch (e) {
+            console.error('送礼出错:', e);
+            UI.showMessage('送礼失败：' + e.message);
+            return { success: false };
+        }
+    },
 };
