@@ -4499,7 +4499,7 @@ const GameData = {
                         mp: -10
                     },
                     eventChance: 0.3,
-                    events: ['event_find_herb', 'event_find_treasure', 'event_trap', 'event_find_demon_tracks', 'event_find_demon_clue']
+                    events: ['event_find_herb', 'event_find_treasure', 'event_trap', 'event_find_demon_tracks', 'event_find_demon_clue', 'event_meet_hunter', 'event_beautiful_view', 'event_rain']
                 },
                 {
                     id: 'hunt',
@@ -6444,6 +6444,88 @@ const GameData = {
                         hp: -30
                     },
                     resultText: '你强行挣脱了陷阱，但受了不少伤。（-30 HP）'
+                }
+            ]
+        },
+
+        // 雪峰山事件：遇到猎魔者
+        event_meet_hunter: {
+            id: 'event_meet_hunter',
+            name: '遇到猎魔者',
+            description: '你遇到了一个正在休息的猎魔者',
+            trigger: 'exploring',
+            chance: 0.1,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '上去打招呼',
+                    effects: {
+                        exp: 15,
+                        stamina: 10
+                    },
+                    resultText: '你上去和猎魔者打了个招呼，他给你分享了一些猎魔经验，还分给你一些食物。（获得经验，恢复体力）'
+                },
+                {
+                    text: '悄悄走开',
+                    effects: {},
+                    resultText: '你不想打扰对方，悄悄走开了。'
+                }
+            ]
+        },
+
+        // 雪峰山事件：美丽的风景
+        event_beautiful_view: {
+            id: 'event_beautiful_view',
+            name: '美丽的风景',
+            description: '你发现了一处美丽的风景',
+            trigger: 'exploring',
+            chance: 0.1,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '停下来欣赏',
+                    effects: {
+                        stamina: 20,
+                        mp: 10
+                    },
+                    resultText: '你停下来欣赏美丽的风景，心情变好了，精神也恢复了。（恢复体力和MP）'
+                },
+                {
+                    text: '继续前进',
+                    effects: {
+                        exp: 5
+                    },
+                    resultText: '你看了一眼就继续前进了，不能因为风景耽误修炼。（获得少量经验）'
+                }
+            ]
+        },
+
+        // 雪峰山事件：突然下雨
+        event_rain: {
+            id: 'event_rain',
+            name: '突然下雨',
+            description: '天突然下起了大雨！',
+            trigger: 'exploring',
+            chance: 0.1,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '找地方躲雨',
+                    effects: {
+                        stamina: -10
+                    },
+                    resultText: '你找了个地方躲雨，等了好久雨才停。（消耗体力）'
+                },
+                {
+                    text: '冒雨前进',
+                    effects: {
+                        hp: -15,
+                        exp: 10
+                    },
+                    resultText: '你冒雨继续前进，虽然淋成了落汤鸡，但也锻炼了意志。（HP减少，获得经验）'
                 }
             ]
         },
