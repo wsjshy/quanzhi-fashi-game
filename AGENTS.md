@@ -143,9 +143,9 @@ cd C:\Users\22210\Desktop\quanzhi-fashi-game-master
 | 文件 | 内容 | 数据量 |
 |------|------|--------|
 | `skills.js` | 技能数据（各系初阶/中阶技能） | 25项 |
-| `characters.js` | NPC/角色数据（含对话树、性格、关系） | 22项 |
+| `characters.js` | NPC/角色数据（含对话树、性格、关系） | 24项 |
 | `locations.js` | 地点数据（含行动、事件、NPC分布） | 7项 |
-| `items.js` | 物品+装备数据（消耗品、材料、武器、护甲、饰品） | 20项 |
+| `items.js` | 物品+装备数据（消耗品、材料、武器、护甲、饰品） | 22项 |
 | `quests.js` | 任务数据（主线、支线、新手引导） | 29项 |
 | `events.js` | 随机事件数据（修炼、探索、战斗等触发） | 42项 |
 | `shops.js` | 商店数据（商品列表、声望折扣） | 4项 |
@@ -240,6 +240,28 @@ cd C:\Users\22210\Desktop\quanzhi-fashi-game-master
 - 版本号在player.js顶部：GAME_VERSION和SAVE_VERSION
 - 存档自动迁移系统在player.js的load方法中
 - 旧存档使用4时段ID，新系统使用8时段ID，迁移时注意兼容
+
+### 5.7 文件读取经验（避免重复踩坑）
+
+#### Read工具offset是token偏移量，不是行号
+- **坑**：误以为offset是行号，连续试3500/2500/1800等都返回空，因为文件实际只有2000-3000 token
+- **正确做法**：
+  1. 先用 `Get-Content "文件" | Measure-Object -Line` 确认行数
+  2. 读取全文用 `offset=0` 配合 `limit`（默认4000，大文件可设更大）
+  3. 读取末尾用 Bash：`Get-Content "文件" -Tail N`（N为行数）
+  4. 读取特定行范围用 Bash：`Get-Content "文件" | Select-Object -Skip M -First N`
+  5. 中文文件每行约10-20 token，可据此估算offset
+- **经验**：不确定文件大小时，直接用offset=0读取，不要猜offset
+
+#### Edit工具匹配失败的常见原因
+- **编码问题**：Bash输出中文可能显示乱码，但文件实际是UTF-8。用Read工具读取才能看到准确文本
+- **空格/缩进差异**：Edit要求old_string完全匹配，包括空格和缩进。用Read工具确认准确文本后再Edit
+- **非唯一匹配**：如果old_string在文件中出现多次，会匹配失败。需要提供更多上下文使其唯一
+
+#### 大文件处理建议
+- 小说文件（23MB）不要用Read直接读全文，用Bash提取特定章节后再读
+- 数据模块文件（characters.js 136KB等）可用Read读取，offset从0开始
+- 读取文件末尾优先用 `Get-Content -Tail N`，比猜offset高效
 
 ---
 
