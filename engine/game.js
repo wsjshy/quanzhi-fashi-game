@@ -101,6 +101,23 @@ const Game = {
 
         // 保存游戏
         Player.save();
+        
+        // 先刷新界面，确保数据更新
+        UI.renderMapScreen();
+        
+        // 显示效果消息
+        let message = '';
+        if (result.effects) {
+            if (result.effects.exp) message += `获得 ${result.effects.exp} 经验\n`;
+            if (result.effects.hp) message += result.effects.hp > 0 ? `恢复 ${result.effects.hp} HP\n` : `损失 ${-result.effects.hp} HP\n`;
+            if (result.effects.mp) message += result.effects.mp > 0 ? `恢复 ${result.effects.mp} MP\n` : `损失 ${-result.effects.mp} MP\n`;
+            if (result.effects.stamina) message += result.effects.stamina > 0 ? `恢复 ${result.effects.stamina} 体力\n` : `消耗 ${-result.effects.stamina} 体力\n`;
+            if (result.effects.levelUps) message += `升级了！当前等级 ${Player.level}\n`;
+        }
+        
+        if (message) {
+            UI.showMessage(message.trim());
+        }
 
         // 处理结果
         if (result.battle) {
@@ -140,23 +157,8 @@ const Game = {
         if (newlyUnlocked.length > 0) {
             const names = newlyUnlocked.map(loc => loc.name).join('、');
             UI.showMessage(`🎉 解锁新地点：${names}！`);
-        }
-
-        // 刷新界面
-        UI.renderMapScreen();
-        
-        // 显示效果消息
-        let message = '';
-        if (result.effects) {
-            if (result.effects.exp) message += `获得 ${result.effects.exp} 经验\n`;
-            if (result.effects.hp) message += result.effects.hp > 0 ? `恢复 ${result.effects.hp} HP\n` : `损失 ${-result.effects.hp} HP\n`;
-            if (result.effects.mp) message += result.effects.mp > 0 ? `恢复 ${result.effects.mp} MP\n` : `损失 ${-result.effects.mp} MP\n`;
-            if (result.effects.stamina) message += result.effects.stamina > 0 ? `恢复 ${result.effects.stamina} 体力\n` : `消耗 ${-result.effects.stamina} 体力\n`;
-            if (result.effects.levelUps) message += `升级了！当前等级 ${Player.level}\n`;
-        }
-        
-        if (message) {
-            UI.showMessage(message.trim());
+            // 再次刷新界面
+            UI.renderMapScreen();
         }
     },
 

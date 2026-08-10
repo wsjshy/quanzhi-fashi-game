@@ -205,7 +205,7 @@ const MapSystem = {
         }
 
         // 检查体力
-        const staminaCost = action.staminaCost || 10;
+        const staminaCost = action.staminaCost !== undefined ? action.staminaCost : 10;
         if (Player.stamina < staminaCost) {
             return { 
                 success: false, 

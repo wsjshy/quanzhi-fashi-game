@@ -407,7 +407,7 @@ const UI = {
                                         ${action.icon || '🔹'} ${action.name}
                                         <span style="font-size: 13px; color: #888; float: right;">
                                             ⏱️ ${action.timeCost}小时 
-                                            <span style="color: #66ffaa;">⚡${action.staminaCost || 10}</span>
+                                            <span style="color: #66ffaa;">⚡${action.staminaCost !== undefined ? action.staminaCost : 10}</span>
                                         </span>
                                     </div>
                                     <div style="font-size: 13px; color: #999;">${action.description}</div>

@@ -1,83 +1,118 @@
 /**
  * 时间系统
  * 管理游戏内时间流逝、日夜循环、定时事件
+ * 基于具体小时数计算，时间精确到小时
  */
 
 const TimeSystem = {
-    // 时段定义
+    // 时段定义（起始小时）
     TIME_PERIODS: [
-        { id: 'morning', name: '早上', hours: 6 },
-        { id: 'afternoon', name: '下午', hours: 12 },
-        { id: 'evening', name: '傍晚', hours: 18 },
-        { id: 'night', name: '夜晚', hours: 22 }
+        { id: 'morning', name: '早上', startHour: 6, icon: '🌅' },
+        { id: 'afternoon', name: '下午', startHour: 12, icon: '☀️' },
+        { id: 'evening', name: '傍晚', startHour: 18, icon: '🌆' },
+        { id: 'night', name: '夜晚', startHour: 22, icon: '🌙' }
     ],
 
     /**
      * 推进时间
      * @param {number} hours - 推进的小时数
+     * @returns {Array} 事件列表
      */
     advanceTime(hours) {
         const events = [];
-        let hoursLeft = hours;
-
-        while (hoursLeft > 0) {
-            const currentIndex = this.TIME_PERIODS.findIndex(p => p.id === Player.timeOfDay);
-            const hoursToNextPeriod = this.getHoursToNextPeriod(currentIndex);
-            
-            if (hoursLeft >= hoursToNextPeriod) {
-                // 推进到下一个时段
-                hoursLeft -= hoursToNextPeriod;
-                const nextIndex = (currentIndex + 1) % this.TIME_PERIODS.length;
-                Player.timeOfDay = this.TIME_PERIODS[nextIndex].id;
-                
-                // 如果跨过了夜晚，进入新的一天
-                if (nextIndex === 0) {
-                    this.advanceDay();
-                    events.push({ type: 'new_day', day: Player.day });
-                }
-                
-                events.push({ type: 'period_change', period: Player.timeOfDay });
-            } else {
-                // 在当前时段内
-                hoursLeft = 0;
-            }
+        const oldPeriod = this.getCurrentPeriod();
+        const oldDay = Player.day;
+        
+        // 增加小时数
+        Player.hour += hours;
+        
+        // 处理跨天
+        while (Player.hour >= 24) {
+            Player.hour -= 24;
+            this.advanceDay();
+            events.push({ type: 'new_day', day: Player.day });
         }
-
+        
+        // 更新当前时段
+        const newPeriod = this.getCurrentPeriod();
+        Player.timeOfDay = newPeriod;
+        
+        // 如果时段变了，添加事件
+        if (oldPeriod !== newPeriod) {
+            events.push({ type: 'period_change', period: newPeriod });
+        }
+        
+        // 检查定时大事件
+        this.checkScheduledEvents();
+        
         return events;
     },
 
     /**
-     * 获取到下一个时段的小时数
+     * 获取当前时段
+     * @returns {string} 时段ID
      */
-    getHoursToNextPeriod(currentIndex) {
-        // 简化处理：每个时段大约 6 小时
-        return 6;
+    getCurrentPeriod() {
+        const hour = Player.hour;
+        if (hour >= 22 || hour < 6) return 'night';
+        if (hour >= 18) return 'evening';
+        if (hour >= 12) return 'afternoon';
+        return 'morning';
     },
     
+    /**
+     * 获取时段名称
+     * @returns {string} 时段名称
+     */
+    getPeriodName() {
+        const period = this.TIME_PERIODS.find(p => p.id === this.getCurrentPeriod());
+        return period ? period.name : '未知';
+    },
+    
+    /**
+     * 获取时段图标
+     * @returns {string} 时段图标
+     */
+    getPeriodIcon() {
+        const period = this.TIME_PERIODS.find(p => p.id === this.getCurrentPeriod());
+        return period ? period.icon : '⏰';
+    },
+    
+    /**
+     * 获取时间描述
+     * @returns {string} 时间描述
+     */
+    getTimeDescription() {
+        const period = this.TIME_PERIODS.find(p => p.id === this.getCurrentPeriod());
+        const icon = period ? period.icon : '⏰';
+        const name = period ? period.name : '未知';
+        return `${icon} 第${Player.day}天 ${name} ${Player.hour}:00`;
+    },
+
     /**
      * 等待到指定时段
      * @param {string} targetPeriod - 目标时段
      * @returns {Object} 结果
      */
     waitUntil(targetPeriod) {
-        const currentIndex = this.TIME_PERIODS.findIndex(p => p.id === Player.timeOfDay);
-        const targetIndex = this.TIME_PERIODS.findIndex(p => p.id === targetPeriod);
-        
-        if (currentIndex === -1 || targetIndex === -1) {
+        const targetPeriodData = this.TIME_PERIODS.find(p => p.id === targetPeriod);
+        if (!targetPeriodData) {
             return { success: false, message: '时段错误' };
         }
         
-        // 计算需要等待的小时数
+        const targetHour = targetPeriodData.startHour;
         let hoursToWait;
-        if (targetIndex > currentIndex) {
-            hoursToWait = (targetIndex - currentIndex) * 6;
+        
+        if (Player.hour < targetHour) {
+            // 今天就能等到
+            hoursToWait = targetHour - Player.hour;
         } else {
-            // 跨天
-            hoursToWait = (this.TIME_PERIODS.length - currentIndex + targetIndex) * 6;
+            // 要等到明天
+            hoursToWait = 24 - Player.hour + targetHour;
         }
         
         // 等待消耗少量体力
-        const staminaCost = Math.floor(hoursToWait * 0.5);
+        const staminaCost = Math.max(1, Math.floor(hoursToWait * 0.3));
         if (Player.stamina < staminaCost) {
             return { 
                 success: false, 

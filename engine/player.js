@@ -48,6 +48,7 @@ const Player = {
     // 进度
     currentLocation: 'tianlan_school',
     day: 1,
+    hour: 8,  // 当前小时（0-23）
     timeOfDay: 'morning',  // morning/afternoon/evening/night
     flags: {},
     unlockedLocations: ['tianlan_school', 'city_street', 'xuefeng_mountain'],
@@ -82,6 +83,7 @@ const Player = {
         this.completedQuests = [];
         this.currentLocation = 'tianlan_school';
         this.day = 1;
+        this.hour = 8;  // 初始时间：早上8点
         this.timeOfDay = 'morning';
         this.flags = {};
         this.unlockedLocations = ['tianlan_school', 'city_street', 'xuefeng_mountain'];
@@ -394,6 +396,7 @@ const Player = {
             completedQuests: this.completedQuests,
             currentLocation: this.currentLocation,
             day: this.day,
+            hour: this.hour,
             timeOfDay: this.timeOfDay,
             flags: this.flags,
             unlockedLocations: this.unlockedLocations,
@@ -460,6 +463,7 @@ const Player = {
             this.completedQuests = data.completedQuests || [];
             this.currentLocation = data.currentLocation || 'tianlan_school';
             this.day = data.day || 1;
+            this.hour = data.hour || 8;  // 默认早上8点
             this.timeOfDay = data.timeOfDay || 'morning';
             this.flags = data.flags || {};
             this.unlockedLocations = data.unlockedLocations || ['tianlan_school'];
