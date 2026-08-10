@@ -124,7 +124,7 @@ const MapSystem = {
         if (condition.minOpinion) {
             const npcId = condition.minOpinion.npcId;
             const minValue = condition.minOpinion.value;
-            const npcState = WorldState.getNPCState(npcId);
+            const npcState = NPCStateSystem.getNPCState(npcId);
             if (!npcState || npcState.opinion < minValue) {
                 return false;
             }
