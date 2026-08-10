@@ -5076,5 +5076,487 @@ const DataCharacters = {
         }
       }
     }
+  },
+  ye_xinxia: {
+    id: "ye_xinxia",
+    name: "叶心夏",
+    title: "温柔的邻家妹妹",
+    description: "莫凡没有血缘关系的妹妹，寄养在姑姑莫青家。双腿残疾需要坐轮椅，但性格温柔乖巧、懂事体贴，是莫凡最重要的亲人。后文觉醒治愈系。",
+    elements: [],
+    level: 0,
+    maxHp: 50,
+    maxMp: 30,
+    attack: 2,
+    defense: 2,
+    speed: 1,
+    skills: ["basic_attack"],
+    spriteColor: "#ffb6c1",
+    image: "",
+    location: "mo_fan_home",
+    availableTimes: ["morning", "noon", "afternoon", "evening", "night"],
+    dialogue: [
+      { trigger: "default", text: "莫凡哥哥，你来了。今天修炼还顺利吗？" },
+      { trigger: "low_stamina", text: "莫凡哥哥看起来很累了，要好好休息呀。" }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.3,
+      kind: 0.95,
+      honest: 0.9,
+      impulsive: 0.1,
+      loyal: 0.9,
+      arrogant: 0.0,
+      greedy: 0.0,
+      curious: 0.5
+    },
+    giftPreferences: {
+      loved: ["magic_herb", "health_potion"],
+      liked: ["mana_potion", "stamina_potion"],
+      disliked: [],
+      baseOpinionGain: 8,
+      lovedMultiplier: 3,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 5
+    },
+    relationshipCap: {
+      maxOpinion: 100,
+      maxTrust: 100,
+      canRomance: false,
+      canBeMentor: false,
+      canBeRival: false
+    },
+    relationships: {
+      mo_fan: { opinion: 95, trust: 98, type: "family", label: "哥哥" },
+      mo_jiaxing: { opinion: 90, trust: 90, type: "family", label: "莫叔叔" },
+      mo_qing: { opinion: 80, trust: 85, type: "family", label: "姑姑" }
+    },
+    dialogueTree: {
+      npcId: "ye_xinxia",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["莫凡哥哥，你来了。", "今天修炼还顺利吗？要注意身体哦。"],
+          choices: [
+            { text: "心夏，最近有人欺负你吗？", next: "about_bullies" },
+            { text: "姑姑身体还好吗？", next: "about_aunt" },
+            { text: "我先走了，好好休息。", next: "default", action: "back" }
+          ]
+        },
+        about_bullies: {
+          id: "about_bullies",
+          texts: ["没...没有的，莫凡哥哥不要担心。", "你已经帮我赶走那些坏人了，他们不敢再来了。"],
+          effects: { opinion: 3, trust: 5 },
+          choices: [{ text: "有事一定要告诉我。", next: "default", action: "back" }]
+        },
+        about_aunt: {
+          id: "about_aunt",
+          texts: ["姑姑身体还是老样子，在医院后勤部工作。", "她总是念叨让你好好学习，成为初阶魔法师就光宗耀祖了。"],
+          effects: { familiarity: 3 },
+          choices: [{ text: "我会努力的。", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  mu_he: {
+    id: "mu_he",
+    name: "穆贺",
+    title: "天澜高中校董",
+    description: "穆白的叔叔，天澜魔法高中校董，穆氏世家旁系成员。表面慷慨激昂，实则势利阴险，看不起平民，认为穷和无能世代相传。博城灾难的关键人物。",
+    elements: [],
+    level: 5,
+    maxHp: 80,
+    maxMp: 50,
+    attack: 10,
+    defense: 8,
+    speed: 8,
+    skills: ["basic_attack"],
+    spriteColor: "#8b0000",
+    image: "",
+    location: "mu_family_estate",
+    availableTimes: ["morning", "afternoon"],
+    dialogue: [
+      { trigger: "default", text: "你是哪个家族的子弟？有什么事吗？" },
+      { trigger: "low_reputation", text: "平民子弟就该有平民的觉悟，不要浪费资源。" }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.4,
+      kind: 0.1,
+      honest: 0.2,
+      impulsive: 0.3,
+      loyal: 0.5,
+      arrogant: 0.9,
+      greedy: 0.7,
+      curious: 0.3
+    },
+    giftPreferences: {
+      loved: ["magic_stone", "demon_core"],
+      liked: ["super_mana_potion", "full_potion"],
+      disliked: ["magic_herb", "health_potion"],
+      baseOpinionGain: 2,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.2,
+      dislikedMultiplier: 0.3,
+      dailyGiftLimit: 1
+    },
+    relationshipCap: {
+      maxOpinion: 60,
+      maxTrust: 30,
+      canRomance: false,
+      canBeMentor: false,
+      canBeRival: true
+    },
+    relationships: {
+      mu_bai: { opinion: 80, trust: 70, type: "family", label: "侄子" },
+      mu_ningxue: { opinion: 60, trust: 40, type: "family", label: "族中天才" },
+      mo_jiaxing: { opinion: -20, trust: -10, type: "enemy", label: "杂役" },
+      mo_fan: { opinion: -30, trust: -20, type: "enemy", label: "杂役之子" }
+    },
+    dialogueTree: {
+      npcId: "mu_he",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["你是哪个家族的子弟？", "有事就说，我很忙。"],
+          choices: [
+            { text: "关于年度考核...", next: "about_exam" },
+            { text: "穆宁雪学姐今天会来吗？", next: "about_ningxue" },
+            { text: "告辞。", next: "default", action: "back" }
+          ]
+        },
+        about_exam: {
+          id: "about_exam",
+          texts: ["年度考核是公正的，不合格的学生自然会被请离学校。", "学校资源有限，必须留给有天赋的学生。"],
+          effects: { opinion: -2 },
+          choices: [{ text: "我明白了。", next: "default", action: "back" }]
+        },
+        about_ningxue: {
+          id: "about_ningxue",
+          texts: ["宁雪是我们穆氏的骄傲，博城的旗帜。", "她今天会来观看年度考核，你们好好表现。"],
+          effects: { familiarity: 2 },
+          choices: [{ text: "多谢告知。", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  zhou_min: {
+    id: "zhou_min",
+    name: "周敏",
+    title: "火系尖子生",
+    description: "天澜高中学生，火系天赋很好的女孩，脸上带着英气。性格好强不服输，看不起不上进的人，崇拜强者。一开始看不起莫凡，后来态度可能转变。",
+    elements: ["fire"],
+    level: 2,
+    maxHp: 70,
+    maxMp: 60,
+    attack: 12,
+    defense: 5,
+    speed: 10,
+    skills: ["basic_attack", "fire_bolt"],
+    spriteColor: "#ff6633",
+    image: "",
+    location: "tianlan_school",
+    availableTimes: ["morning", "afternoon", "evening"],
+    dialogue: [
+      { trigger: "default", text: "你就是那个火系天赋很好却不用功的莫凡？真浪费。" },
+      { trigger: "high_level", text: "没想到你居然...是我小看你了。" }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.7,
+      kind: 0.5,
+      honest: 0.8,
+      impulsive: 0.6,
+      loyal: 0.7,
+      arrogant: 0.5,
+      greedy: 0.1,
+      curious: 0.6
+    },
+    giftPreferences: {
+      loved: ["fire_type_book", "super_mana_potion"],
+      liked: ["mana_potion", "magic_stone"],
+      disliked: [],
+      baseOpinionGain: 4,
+      lovedMultiplier: 2.5,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 2
+    },
+    relationshipCap: {
+      maxOpinion: 80,
+      maxTrust: 70,
+      canRomance: true,
+      canBeMentor: false,
+      canBeRival: true
+    },
+    relationships: {
+      tang_yue: { opinion: 90, trust: 85, type: "mentor", label: "崇拜的导师" },
+      mo_fan: { opinion: -10, trust: 0, type: "rival", label: "看不起的同学" },
+      mu_bai: { opinion: 30, trust: 20, type: "acquaintance", label: "同学" }
+    },
+    dialogueTree: {
+      npcId: "zhou_min",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["你就是莫凡？", "明明火系天赋很好，却那么不用功，真浪费。"],
+          choices: [
+            { text: "唐月老师的课讲得真好。", next: "about_tangyue" },
+            { text: "年度考核你准备得怎么样？", next: "about_exam" },
+            { text: "我会证明给你看的。", next: "prove" }
+          ]
+        },
+        about_tangyue: {
+          id: "about_tangyue",
+          texts: ["唐月老师真的很厉害，无论是气场还是准度。", "我妈妈也是导师，但根本做不到唐月老师那样。"],
+          effects: { opinion: 2, familiarity: 3 },
+          choices: [{ text: "确实很强。", next: "default", action: "back" }]
+        },
+        about_exam: {
+          id: "about_exam",
+          texts: ["我当然没问题，已经能释放火滋了。", "倒是你，再不努力就要被请离学校了。"],
+          effects: { opinion: -1 },
+          choices: [{ text: "走着瞧。", next: "default", action: "back" }]
+        },
+        prove: {
+          id: "prove",
+          texts: ["哼，光说没用。", "年度考核上见真章吧。"],
+          effects: { opinion: 1 },
+          choices: [{ text: "一定。", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  xu_zhaoting: {
+    id: "xu_zhaoting",
+    name: "许照庭",
+    title: "七班雷系学神",
+    description: "天澜高中七班学生，雷系天赋很高，被张建国老师炫耀为得意门生。修为与穆白齐平，是莫凡的潜在竞争对手。自信傲冷。",
+    elements: ["thunder"],
+    level: 2,
+    maxHp: 75,
+    maxMp: 55,
+    attack: 14,
+    defense: 5,
+    speed: 11,
+    skills: ["basic_attack", "thunder_bolt"],
+    spriteColor: "#9933ff",
+    image: "",
+    location: "tianlan_school",
+    availableTimes: ["morning", "afternoon"],
+    dialogue: [
+      { trigger: "default", text: "你是八班的？有什么事吗？" }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.7,
+      kind: 0.4,
+      honest: 0.6,
+      impulsive: 0.3,
+      loyal: 0.6,
+      arrogant: 0.7,
+      greedy: 0.2,
+      curious: 0.4
+    },
+    giftPreferences: {
+      loved: ["thunder_type_book", "magic_stone"],
+      liked: ["super_mana_potion", "mana_potion"],
+      disliked: [],
+      baseOpinionGain: 3,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.3,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 2
+    },
+    relationshipCap: {
+      maxOpinion: 70,
+      maxTrust: 50,
+      canRomance: false,
+      canBeMentor: false,
+      canBeRival: true
+    },
+    relationships: {
+      zhang_jianguo: { opinion: 80, trust: 70, type: "mentor", label: "班主任" },
+      mu_bai: { opinion: 30, trust: 20, type: "rival", label: "竞争对手" }
+    },
+    dialogueTree: {
+      npcId: "xu_zhaoting",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["你是八班的？", "找我有什么事？"],
+          choices: [
+            { text: "听说你雷系很强？", next: "about_thunder" },
+            { text: "年度考核加油。", next: "default", action: "back" }
+          ]
+        },
+        about_thunder: {
+          id: "about_thunder",
+          texts: ["雷系是初阶元素系之首，优势很大。", "不过修炼也很难，星子太活跃了。"],
+          effects: { familiarity: 2 },
+          choices: [{ text: "受教了。", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  mo_qing: {
+    id: "mo_qing",
+    name: "莫青",
+    title: "莫凡的小姑",
+    description: "莫凡的小姑，在医院后勤部工作。身瘦面黄，人很好，爱听八卦。知道很多医院里的奇闻异事，包括妖魔潜伏的消息。",
+    elements: [],
+    level: 0,
+    maxHp: 40,
+    maxMp: 20,
+    attack: 2,
+    defense: 2,
+    speed: 3,
+    skills: ["basic_attack"],
+    spriteColor: "#cc9966",
+    image: "",
+    location: "mo_fan_home",
+    availableTimes: ["evening", "night"],
+    dialogue: [
+      { trigger: "default", text: "莫凡来了啊，快吃饭。你爸又去山里送物资了，真让人担心。" }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.3,
+      kind: 0.8,
+      honest: 0.7,
+      impulsive: 0.2,
+      loyal: 0.8,
+      arrogant: 0.0,
+      greedy: 0.1,
+      curious: 0.9
+    },
+    giftPreferences: {
+      loved: ["health_potion", "magic_herb"],
+      liked: ["food_item"],
+      disliked: [],
+      baseOpinionGain: 6,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.3,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 3
+    },
+    relationshipCap: {
+      maxOpinion: 100,
+      maxTrust: 90,
+      canRomance: false,
+      canBeMentor: false,
+      canBeRival: false
+    },
+    relationships: {
+      mo_fan: { opinion: 85, trust: 80, type: "family", label: "侄子" },
+      mo_jiaxing: { opinion: 80, trust: 75, type: "family", label: "哥哥" },
+      ye_xinxia: { opinion: 75, trust: 70, type: "family", label: "侄女" }
+    },
+    dialogueTree: {
+      npcId: "mo_qing",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["莫凡来了啊，快吃饭。", "你爸又去山里送物资了，真让人担心。"],
+          choices: [
+            { text: "最近城里有什么新鲜事吗？", next: "about_gossip" },
+            { text: "心夏还好吗？", next: "about_xinxia" },
+            { text: "我先走了。", next: "default", action: "back" }
+          ]
+        },
+        about_gossip: {
+          id: "about_gossip",
+          texts: ["你还别说，最近医院送来几个中邪的人。", "听说是邪眼沼妖干的，猎者联盟已经在查了。", "城外都发浅色警戒了，你可别乱跑。"],
+          effects: { familiarity: 5 },
+          choices: [{ text: "知道了，谢谢姑姑。", next: "default", action: "back" }]
+        },
+        about_xinxia: {
+          id: "about_xinxia",
+          texts: ["心夏这孩子乖巧，都快中午了也舍不得叫你起床。", "她总说要好好学习，帮家里分忧。"],
+          effects: { opinion: 2 },
+          choices: [{ text: "我会照顾好她的。", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  xu_bing: {
+    id: "xu_bing",
+    name: "徐兵",
+    title: "青熊帮头目",
+    description: "广池区地痞组织青熊帮的头目，脖子有青色纹身，穿短夹克。给附近富家少女做打手，看谁不顺眼就踩。曾骚扰叶心夏，被莫凡用雷印教训。",
+    elements: [],
+    level: 1,
+    maxHp: 60,
+    maxMp: 10,
+    attack: 8,
+    defense: 4,
+    speed: 6,
+    skills: ["basic_attack"],
+    spriteColor: "#4a4a4a",
+    image: "",
+    location: "city_street",
+    availableTimes: ["afternoon", "evening", "night"],
+    dialogue: [
+      { trigger: "default", text: "你谁啊？找我有事？" },
+      { trigger: "after_defeat", text: "大...大哥，我再也不敢了，求您放过我！" }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.4,
+      kind: 0.1,
+      honest: 0.2,
+      impulsive: 0.7,
+      loyal: 0.3,
+      arrogant: 0.6,
+      greedy: 0.6,
+      curious: 0.3
+    },
+    giftPreferences: {
+      loved: [],
+      liked: ["gold"],
+      disliked: [],
+      baseOpinionGain: 1,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.3,
+      dailyGiftLimit: 1
+    },
+    relationshipCap: {
+      maxOpinion: 40,
+      maxTrust: 20,
+      canRomance: false,
+      canBeMentor: false,
+      canBeRival: true
+    },
+    relationships: {
+      ye_xinxia: { opinion: -10, trust: 0, type: "enemy", label: "骚扰对象" },
+      mo_fan: { opinion: -50, trust: -30, type: "enemy", label: "被教训过" },
+      zhao_kunsan: { opinion: 40, trust: 30, type: "acquaintance", label: "雇主" }
+    },
+    dialogueTree: {
+      npcId: "xu_bing",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["你谁啊？", "找我有事？没事别挡道。"],
+          choices: [
+            { text: "听说你在这一片很罩得住？", next: "about_power" },
+            { text: "离叶心夏远点。", next: "warn" }
+          ]
+        },
+        about_power: {
+          id: "about_power",
+          texts: ["那是，广池区这一片谁不给我徐兵面子。", "怎么，想跟我混？"],
+          effects: { opinion: 1 },
+          choices: [{ text: "没兴趣。", next: "default", action: "back" }]
+        },
+        warn: {
+          id: "warn",
+          texts: ["你...你是那个魔法师？", "我知道了，我再也不敢了！"],
+          effects: { opinion: -5 },
+          choices: [{ text: "最好是这样。", next: "default", action: "back" }]
+        }
+      }
+    }
   }
 };

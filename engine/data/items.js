@@ -330,5 +330,42 @@ const DataItems = {
     },
     requiredLevel: 8,
     rarity: "史诗"
+  },
+  stardust_relic: {
+    id: "stardust_relic",
+    name: "星尘魔器",
+    description: "魔法师梦寐以求的修炼神器，能够缩短冥修疲劳期，加长每天的冥修时间。世家核心弟子才能分配到，平民魔法师一辈子都不可能获得。",
+    type: "accessory",
+    icon: "🌟",
+    price: 2000,
+    stackable: false,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    equipSlot: "accessory",
+    equipStats: {
+      maxMp: 50,
+      maxStamina: 20,
+      spirit: 5
+    },
+    requiredLevel: 3,
+    rarity: "传说"
+  },
+  spirit_pendant: {
+    id: "spirit_pendant",
+    name: "温养灵坠",
+    description: "带有魔法力量的配饰，可以温养精神力，魔二代从小佩戴。效果比星尘魔器弱，但胜在可以日常佩戴。",
+    type: "accessory",
+    icon: "📿",
+    price: 300,
+    stackable: false,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    equipSlot: "accessory",
+    equipStats: {
+      maxMp: 20,
+      spirit: 2
+    },
+    requiredLevel: 1,
+    rarity: "优秀"
   }
 };

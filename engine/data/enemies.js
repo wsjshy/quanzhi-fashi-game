@@ -735,5 +735,44 @@ const DataEnemies = {
       }
     ],
     locations: []
+  },
+  evil_eye_swamp_demon: {
+    id: "evil_eye_swamp_demon",
+    name: "邪眼沼妖",
+    title: "奴仆级妖魔",
+    description: "潜伏在人类城市附近的妖魔，拥有邪眼可以蛊惑人心，使人神情呆滞。其沼毒与普通水毒不同，需要治疗系法师才能分辨。猎者联盟经常追踪此类妖魔。",
+    elements: ["dark", "water"],
+    level: 5,
+    maxHp: 180,
+    maxMp: 80,
+    attack: 14,
+    defense: 8,
+    speed: 10,
+    skills: ["basic_attack", "dark_bolt", "water_heal"],
+    spriteColor: "#4a7c59",
+    isEnemy: true,
+    expReward: 150,
+    goldReward: 80,
+    dropItems: [
+      {
+        itemId: "demon_core",
+        chance: 0.9,
+        min: 1,
+        max: 2
+      },
+      {
+        itemId: "magic_stone",
+        chance: 0.5,
+        min: 1,
+        max: 2
+      },
+      {
+        itemId: "mana_potion",
+        chance: 0.3,
+        min: 1,
+        max: 1
+      }
+    ],
+    locations: ["city_street", "bo_city_outskirts"]
   }
 };
