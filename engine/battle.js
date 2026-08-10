@@ -119,7 +119,9 @@ const BattleSystem = {
             1.0,
             this.player.critRate,
             this.player.hitRate,
-            'physical'
+            'physical',
+            null,
+            this.enemy
         );
 
         // 应用伤害
@@ -208,7 +210,9 @@ const BattleSystem = {
                 1.0,
                 casterData.critRate || 0.05,
                 skill.hitRate || 0.9,
-                skill.element
+                skill.element,
+                targetData.elements?.[0] || 'neutral',
+                targetData
             );
 
             this.applyDamage(targetData, damage);
@@ -354,6 +358,14 @@ const BattleSystem = {
     enemyTurn() {
         if (!this.active || this.result) return;
 
+        // 检查眩晕/冻结状态，跳过回合
+        if (this.isStunned(this.enemy)) {
+            const stunEffect = this.enemy.statusEffects.find(e => e.type === 'stun' || e.type === 'frozen');
+            this.addLog(`${this.enemy.name} 被${stunEffect.name}，无法行动！`, 'system');
+            this.endEnemyTurn();
+            return;
+        }
+
         // 处理敌人引导中的魔法
         if (this.enemyCasting) {
             this.enemyCasting.progress++;
@@ -377,7 +389,9 @@ const BattleSystem = {
                 1.0,
                 0.05,
                 0.9,
-                'physical'
+                'physical',
+                null,
+                this.player
             );
 
             // 防御减伤
@@ -464,6 +478,17 @@ const BattleSystem = {
         this.turn++;
         this.isPlayerTurn = true;
         this.player.isDefending = false;
+
+        // 玩家被眩晕/冻结，自动跳过回合
+        if (this.isStunned(this.player)) {
+            const stunEffect = this.player.statusEffects.find(e => e.type === 'stun' || e.type === 'frozen');
+            this.addLog(`你被${stunEffect.name}，无法行动！`, 'system');
+            setTimeout(() => {
+                this.isPlayerTurn = false;
+                this.enemyTurn();
+            }, 1000);
+            return;
+        }
         
         // 更新UI
         if (typeof UI !== 'undefined') {
@@ -474,7 +499,7 @@ const BattleSystem = {
     /**
      * 计算伤害
      */
-    calculateDamage(attack, defense, multiplier, critRate, hitRate, element, targetElement) {
+    calculateDamage(attack, defense, multiplier, critRate, hitRate, element, targetElement, target) {
         const result = {
             amount: 0,
             isCrit: false,
@@ -483,8 +508,13 @@ const BattleSystem = {
             elementEffect: null  // 'super' | 'weak' | 'normal'
         };
 
-        // 命中判定
-        if (Math.random() > hitRate) {
+        // 命中判定（考虑目标闪避修正）
+        let evasion = 0;
+        if (target) {
+            const mods = this.getStatusModifiers(target);
+            evasion = mods.evasionMod;
+        }
+        if (Math.random() > (hitRate - evasion)) {
             result.isMiss = true;
             return result;
         }
@@ -504,6 +534,14 @@ const BattleSystem = {
             } else if (counterResult.effect === 'resist') {
                 damage *= 0.8; // 同系抗性：伤害-20%
             }
+        }
+
+        // 元素特性伤害加成（基于目标状态）
+        if (target) {
+            const mods = this.getStatusModifiers(target);
+            if (element === 'fire') damage *= mods.fireDamageMod;
+            if (element === 'thunder') damage *= mods.thunderDamageMod;
+            if (element === 'ice') damage *= mods.iceDamageMod;
         }
 
         // 随机浮动 ±15%
@@ -561,7 +599,24 @@ const BattleSystem = {
      * 应用伤害
      */
     applyDamage(target, damage) {
-        target.hp = Math.max(0, target.hp - damage.amount);
+        let amount = damage.amount;
+        
+        // 护盾吸收
+        const shield = target.statusEffects.find(e => e.type === 'shield');
+        if (shield && shield.value > 0) {
+            const absorbed = Math.min(shield.value, amount);
+            shield.value -= absorbed;
+            amount -= absorbed;
+            if (absorbed > 0) {
+                const targetName = target === this.player ? '你' : this.enemy.name;
+                this.addLog(`${targetName} 的护盾吸收了 ${absorbed} 点伤害`, 'buff');
+            }
+            if (shield.value <= 0) {
+                target.statusEffects = target.statusEffects.filter(e => e.type !== 'shield');
+            }
+        }
+
+        target.hp = Math.max(0, target.hp - amount);
         
         // 同步到玩家数据
         if (target === this.player) {
@@ -597,48 +652,212 @@ const BattleSystem = {
     /**
      * 应用状态效果
      */
+    /**
+     * 施加状态效果
+     * 支持层数叠加(stacks)、数值累积(value)、特殊类型
+     */
     applyStatusEffects(target, effects, isPlayerTarget) {
         const targetName = isPlayerTarget ? '你' : this.enemy.name;
 
         effects.forEach(effect => {
             if (Math.random() < (effect.chance || 1.0)) {
-                // 检查是否已有同类型效果
                 const existing = target.statusEffects.find(e => e.type === effect.type);
+                
                 if (existing) {
-                    // 刷新持续时间
-                    existing.duration = Math.max(existing.duration, effect.duration);
+                    // 层数叠加型（燃烧、诅咒等）
+                    if (effect.stacks || existing.stacks) {
+                        const maxStacks = effect.maxStacks || existing.maxStacks || 3;
+                        existing.stacks = Math.min(maxStacks, (existing.stacks || 1) + (effect.stacks || 1));
+                        existing.duration = Math.max(existing.duration, effect.duration);
+                        this.addLog(`${targetName} 的 ${effect.name} 叠加到 ${existing.stacks} 层！`, 'debuff');
+                    }
+                    // 数值累积型（冻结值、护盾值等）
+                    else if (effect.value !== undefined || existing.value !== undefined) {
+                        existing.value = (existing.value || 0) + (effect.value || 0);
+                        existing.duration = Math.max(existing.duration, effect.duration);
+                        // 冻结值达到阈值则冻结
+                        if (effect.type === 'freeze' && existing.value >= 100) {
+                            existing.type = 'frozen';
+                            existing.name = '冻结';
+                            existing.duration = 1;
+                            existing.value = 0;
+                            this.addLog(`${targetName} 被冻结了！`, 'debuff');
+                        }
+                    }
+                    // 普通刷新持续时间
+                    else {
+                        existing.duration = Math.max(existing.duration, effect.duration);
+                        this.addLog(`${targetName} 的 ${effect.name} 持续时间刷新了`, 'system');
+                    }
                 } else {
-                    target.statusEffects.push({ ...effect });
+                    // 新效果
+                    const newEffect = { ...effect };
+                    if (effect.stacks && !newEffect.stacks) newEffect.stacks = 1;
+                    target.statusEffects.push(newEffect);
+                    
+                    // 特殊效果提示
+                    if (effect.type === 'stun' || effect.type === 'frozen') {
+                        this.addLog(`${targetName} 被${effect.name}了！`, 'debuff');
+                    } else if (effect.type === 'shield') {
+                        this.addLog(`${targetName} 获得了 ${effect.value} 点护盾！`, 'buff');
+                    } else if (effect.type === 'wet') {
+                        this.addLog(`${targetName} 被水浸湿了`, 'debuff');
+                    } else if (effect.type === 'evasion_up') {
+                        this.addLog(`${targetName} 闪避率提升！`, 'buff');
+                    } else {
+                        this.addLog(`${targetName} 陷入了 ${effect.name} 状态！`, 'debuff');
+                    }
                 }
 
-                this.addLog(`${targetName} 陷入了 ${effect.name} 状态！`, 'debuff');
+                // 元素组合反应检查
+                this.checkElementReactions(target, effect, isPlayerTarget);
             }
         });
     },
 
     /**
+     * 元素组合反应检查
+     * 两种元素状态相遇时产生特殊效果
+     */
+    checkElementReactions(target, newEffect, isPlayerTarget) {
+        const targetName = isPlayerTarget ? '你' : this.enemy.name;
+        const effects = target.statusEffects;
+
+        // 雷 + 湿润 = 感电
+        if (newEffect.type === 'paralysis' || newEffect.element === 'thunder') {
+            const wet = effects.find(e => e.type === 'wet');
+            if (wet) {
+                wet.type = 'electrified';
+                wet.name = '感电';
+                wet.dotDamage = (wet.dotDamage || 0) + 15;
+                wet.duration = Math.max(wet.duration, 2);
+                this.addLog(`⚡ 感电反应！${targetName} 全身通电，持续受到伤害！`, 'magic');
+            }
+        }
+
+        // 火 + 冻结 = 融化
+        if ((newEffect.type === 'burn' || newEffect.element === 'fire') && newEffect.type !== 'freeze') {
+            const frozen = effects.find(e => e.type === 'frozen');
+            if (frozen) {
+                target.statusEffects = target.statusEffects.filter(e => e.type !== 'frozen');
+                this.addLog(`🔥 融化反应！冻结被解除，火系伤害提升！`, 'magic');
+                // 标记本回合火系伤害加成
+                target._meltBonus = 1.5;
+            }
+        }
+
+        // 火 + 湿润 = 蒸汽（命中率降低）
+        if ((newEffect.type === 'burn' || newEffect.element === 'fire') && newEffect.type !== 'wet') {
+            const wet = effects.find(e => e.type === 'wet');
+            if (wet && wet.type === 'wet') {
+                target.statusEffects = target.statusEffects.filter(e => e.type !== 'wet');
+                const steam = { type: 'steam', name: '蒸汽', duration: 2, hitRateMod: -0.3 };
+                target.statusEffects.push(steam);
+                this.addLog(`💨 蒸汽反应！${targetName} 被蒸汽笼罩，命中率降低！`, 'magic');
+            }
+        }
+
+        // 土 + 湿润 = 泥泞（速度降低）
+        if (newEffect.element === 'earth' || newEffect.type === 'mud') {
+            const wet = effects.find(e => e.type === 'wet');
+            if (wet) {
+                wet.type = 'mud';
+                wet.name = '泥泞';
+                wet.speedMod = -0.5;
+                wet.duration = Math.max(wet.duration, 2);
+                this.addLog(`🪨 泥泞反应！${targetName} 陷入泥泞，速度大减！`, 'magic');
+            }
+        }
+    },
+
+    /**
      * 状态效果每回合结算
+     */
+    /**
+     * 状态效果每回合结算
+     * 支持层数DOT、眩晕跳过、护盾保留等
      */
     tickStatusEffects(target, isPlayer) {
         const targetName = isPlayer ? '你' : this.enemy.name;
 
         target.statusEffects = target.statusEffects.filter(effect => {
+            // 护盾不随时间消失（被打掉才消失）
+            if (effect.type === 'shield') {
+                if ((effect.value || 0) <= 0) return false;
+                return true;
+            }
+
             effect.duration--;
 
-            // DOT伤害
+            // DOT伤害（按层数计算）
             if (effect.dotDamage) {
-                const damage = { amount: effect.dotDamage, isCrit: false, isMiss: false };
+                const stacks = effect.stacks || 1;
+                const damage = { amount: Math.floor(effect.dotDamage * stacks), isCrit: false, isMiss: false };
                 this.applyDamage(target, damage);
-                this.addLog(`${targetName} 受到 ${effect.name} 伤害 ${effect.dotDamage} 点`, 'damage');
+                this.addLog(`${targetName} 受到 ${effect.name} 伤害 ${damage.amount} 点（${stacks}层）`, 'damage');
             }
 
             // 效果结束
             if (effect.duration <= 0) {
-                this.addLog(`${targetName} 的 ${effect.name} 效果消失了`, 'system');
+                if (effect.type !== 'shield') {
+                    this.addLog(`${targetName} 的 ${effect.name} 效果消失了`, 'system');
+                }
                 return false;
             }
             return true;
         });
+
+        // 清除融化加成标记
+        if (target._meltBonus) delete target._meltBonus;
+    },
+
+    /**
+     * 检查目标是否被眩晕/冻结，应跳过回合
+     */
+    isStunned(target) {
+        return target.statusEffects.some(e => e.type === 'stun' || e.type === 'frozen');
+    },
+
+    /**
+     * 获取目标的状态效果修正值
+     */
+    getStatusModifiers(target) {
+        const mods = {
+            attackMod: 0,
+            defenseMod: 0,
+            speedMod: 0,
+            hitRateMod: 0,
+            evasionMod: 0,
+            fireDamageMod: 1,
+            thunderDamageMod: 1,
+            iceDamageMod: 1
+        };
+
+        target.statusEffects.forEach(effect => {
+            if (effect.statModifiers) {
+                mods.attackMod += effect.statModifiers.attack || 0;
+                mods.defenseMod += effect.statModifiers.defense || 0;
+                mods.speedMod += effect.statModifiers.speed || 0;
+            }
+            if (effect.speedMod) mods.speedMod += effect.speedMod;
+            if (effect.hitRateMod) mods.hitRateMod += effect.hitRateMod;
+            if (effect.evasionMod) mods.evasionMod += effect.evasionMod;
+            // 湿润状态受雷系伤害×2
+            if (effect.type === 'wet' || effect.type === 'electrified') {
+                mods.thunderDamageMod *= 2;
+            }
+            // 冻结状态受火系伤害×2
+            if (effect.type === 'frozen') {
+                mods.fireDamageMod *= 2;
+            }
+        });
+
+        // 融化加成
+        if (target._meltBonus) {
+            mods.fireDamageMod *= target._meltBonus;
+        }
+
+        return mods;
     },
 
     /**

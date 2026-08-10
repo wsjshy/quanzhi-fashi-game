@@ -22,7 +22,7 @@ const DataSkills = {
   fire_bolt: {
     id: "fire_bolt",
     name: "火滋·灼烧",
-    description: "初阶火系魔法，发射一枚火球，有几率造成灼烧",
+    description: "初阶火系魔法，发射一枚火球，造成燃烧效果（可叠加3层，层数越高持续伤害越高）",
     element: "fire",
     type: "damage",
     mpCost: 8,
@@ -35,11 +35,14 @@ const DataSkills = {
     tier: "初阶",
     statusEffects: [
       {
-        name: "灼烧",
+        name: "燃烧",
         type: "burn",
-        dotDamage: 5,
+        element: "fire",
+        dotDamage: 6,
         duration: 3,
-        chance: 0.4
+        chance: 0.8,
+        stacks: 1,
+        maxStacks: 3
       }
     ]
   },
@@ -70,7 +73,7 @@ const DataSkills = {
   ice_spike: {
     id: "ice_spike",
     name: "冰蔓·冻结",
-    description: "初阶冰系魔法，发射冰刺，有几率减速敌人",
+    description: "初阶冰系魔法，发射冰刺，累积冻结值。冻结值满100时敌人被冻结1回合，冻结中受火系伤害×2",
     element: "ice",
     type: "damage",
     mpCost: 8,
@@ -83,13 +86,12 @@ const DataSkills = {
     tier: "初阶",
     statusEffects: [
       {
-        name: "减速",
-        type: "slow",
-        duration: 2,
-        chance: 0.5,
-        statModifiers: {
-          speed: -3
-        }
+        name: "冰冻",
+        type: "freeze",
+        element: "ice",
+        value: 35,
+        duration: 3,
+        chance: 1.0
       }
     ]
   },
@@ -120,7 +122,7 @@ const DataSkills = {
   thunder_bolt: {
     id: "thunder_bolt",
     name: "雷印·蟒痕",
-    description: "初阶雷系魔法，释放雷电，高暴击，有几率麻痹",
+    description: "初阶雷系魔法，释放雷电，高暴击，有几率麻痹敌人使其跳过回合。对湿润目标伤害×2（感电）",
     element: "thunder",
     type: "damage",
     mpCost: 10,
@@ -134,9 +136,10 @@ const DataSkills = {
     statusEffects: [
       {
         name: "麻痹",
-        type: "paralyze",
+        type: "stun",
+        element: "thunder",
         duration: 1,
-        chance: 0.25
+        chance: 0.3
       }
     ]
   },
@@ -166,7 +169,7 @@ const DataSkills = {
   earth_shield: {
     id: "earth_shield",
     name: "土系·岩盾",
-    description: "初阶土系防御魔法，召唤岩石护盾，大幅提升防御",
+    description: "初阶土系防御魔法，召唤岩石护盾，吸收50点伤害。护盾存在时防御翻倍",
     element: "earth",
     type: "buff",
     mpCost: 8,
@@ -178,11 +181,19 @@ const DataSkills = {
     statusEffects: [
       {
         name: "岩盾",
+        type: "shield",
+        element: "earth",
+        value: 50,
+        duration: 99,
+        chance: 1
+      },
+      {
+        name: "岩盾防御",
         type: "defense_up",
         duration: 3,
         chance: 1,
         statModifiers: {
-          defense: 12
+          defense: 10
         }
       }
     ]
@@ -220,7 +231,7 @@ const DataSkills = {
   wind_speed: {
     id: "wind_speed",
     name: "风轨·飘影",
-    description: "初阶风系辅助魔法，提升自身速度",
+    description: "初阶风系辅助魔法，提升自身速度和闪避率，风系法师的核心生存技能",
     element: "wind",
     type: "buff",
     mpCost: 8,
@@ -238,6 +249,13 @@ const DataSkills = {
         statModifiers: {
           speed: 8
         }
+      },
+      {
+        name: "风之闪避",
+        type: "evasion_up",
+        duration: 3,
+        chance: 1,
+        evasionMod: 0.25
       }
     ]
   },
@@ -259,7 +277,7 @@ const DataSkills = {
   water_chain: {
     id: "water_chain",
     name: "水系·水锁",
-    description: "初阶水系控制魔法，用水链束缚敌人",
+    description: "初阶水系控制魔法，用水链束缚敌人并使其湿润。湿润目标受雷系伤害×2（感电）",
     element: "water",
     type: "damage",
     mpCost: 8,
@@ -271,6 +289,13 @@ const DataSkills = {
     cooldown: 0,
     tier: "初阶",
     statusEffects: [
+      {
+        name: "湿润",
+        type: "wet",
+        element: "water",
+        duration: 3,
+        chance: 1.0
+      },
       {
         name: "束缚",
         type: "slow",
