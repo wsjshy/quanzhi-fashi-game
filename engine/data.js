@@ -88,7 +88,7 @@ const DataManager = {
      * 获取所有地点
      */
     getAllLocations() {
-        return this._locations;
+        return Object.values(this._locations);
     },
 
     /**
