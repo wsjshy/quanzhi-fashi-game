@@ -409,7 +409,15 @@ const UI = {
                 ">
                     <div style="display: flex; gap: 30px; align-items: center;">
                         <div style="color: #ffd700; font-size: 20px; font-weight: bold;">${location?.name || '未知地点'}</div>
-                        <div style="color: #aaa; font-size: 14px;">${TimeSystem.getTimeDescription()}</div>
+                        <div style="color: #aaa; font-size: 14px;">${TimeSystem.getTimeDescription()} ${TimeSystem.getDayOfWeekName()}</div>
+                        ${(() => {
+                            const currentClass = TimeSystem.getCurrentClass(location);
+                            if (currentClass) {
+                                const teacher = DataManager.getCharacter(currentClass.teacher);
+                                return `<div style="color: #66ccff; font-size: 13px; background: rgba(50, 80, 120, 0.5); padding: 4px 10px; border-radius: 10px;">📚 正在上：${currentClass.name}（${teacher?.name || '未知老师'}）</div>`;
+                            }
+                            return '';
+                        })()}
                         ${TimeSystem.isNight() ? `
                             <div style="color: #ff9966; font-size: 13px; background: rgba(100, 50, 50, 0.5); padding: 4px 10px; border-radius: 10px;">
                                 🌙 夜晚：敌人更强，奖励 +30%
@@ -436,7 +444,22 @@ const UI = {
                     <div style="flex: 2; padding: 30px; overflow-y: auto;">
                         <h3 style="color: #ffd700; margin-bottom: 20px; font-size: 22px;">📍 可执行的行动</h3>
                         <div style="display: flex; flex-direction: column; gap: 12px;">
-                            ${(location?.actions || []).map(action => `
+                            ${(location?.actions || []).map(action => {
+                                // 课程行动动态显示
+                                let actionName = action.name;
+                                let actionDesc = action.description;
+                                if (action.isClassAction) {
+                                    const currentClass = TimeSystem.getCurrentClass(location);
+                                    if (currentClass) {
+                                        const teacher = DataManager.getCharacter(currentClass.teacher);
+                                        actionName = `上课：${currentClass.name}`;
+                                        actionDesc = `${teacher?.name || '未知老师'}主讲，获得${currentClass.exp}经验${currentClass.injuryChance ? '，有受伤风险' : ''}`;
+                                    } else {
+                                        actionName = '自习';
+                                        actionDesc = '当前没有课程，自由自习获得少量经验';
+                                    }
+                                }
+                                return `
                                 <button onclick="Game.performAction('${action.id}')" style="
                                     padding: 18px 25px;
                                     background: linear-gradient(135deg, rgba(40, 40, 80, 0.8), rgba(60, 60, 120, 0.8));
@@ -449,15 +472,15 @@ const UI = {
                                     font-size: 16px;
                                 " onmouseover="this.style.borderColor='#7777bb'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#444477'; this.style.transform='translateX(0)'">
                                     <div style="font-size: 18px; margin-bottom: 5px;">
-                                        ${action.icon || '🔹'} ${action.name}
+                                        ${action.icon || '🔹'} ${actionName}
                                         <span style="font-size: 13px; color: #888; float: right;">
                                             ⏱️ ${action.timeCost}小时 
                                             <span style="color: #66ffaa;">⚡${action.staminaCost !== undefined ? action.staminaCost : 10}</span>
                                         </span>
                                     </div>
-                                    <div style="font-size: 13px; color: #999;">${action.description}</div>
+                                    <div style="font-size: 13px; color: #999;">${actionDesc}</div>
                                 </button>
-                            `).join('')}
+                            `}).join('')}
                         </div>
                         
                         <!-- 等待时间 -->

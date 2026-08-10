@@ -95,11 +95,44 @@ const Game = {
 
     // 执行地点行动
     performAction(actionId) {
+        // 检查逃课惩罚（有课时不上课）
+        const location = DataManager.getLocation(Player.currentLocation);
+        const currentClass = TimeSystem.getCurrentClass(location);
+        const action = location?.actions?.find(a => a.id === actionId);
+        
+        if (currentClass && action && !action.isClassAction && actionId !== 'sleep' && actionId !== 'rest') {
+            // 有课但选择其他行动，逃课惩罚
+            if (!Player.flags['skipped_class_' + Player.day + '_' + TimeSystem.getCurrentPeriod()]) {
+                Player.flags['skipped_class_' + Player.day + '_' + TimeSystem.getCurrentPeriod()] = true;
+                WorldState.changeReputation('school', -5);
+                UI.showMessage(`⚠️ 你逃课了！班级声望 -5\n（当前有${currentClass.name}，老师${DataManager.getCharacter(currentClass.teacher)?.name || '未知'}）`);
+            }
+        }
+
         const result = MapSystem.performAction(actionId);
         
         if (!result.success) {
             UI.showMessage(result.message);
             return;
+        }
+
+        // 如果是上课行动，根据课程表动态调整奖励
+        if (action && action.isClassAction && currentClass) {
+            result.effects = result.effects || {};
+            result.effects.exp = currentClass.exp || result.effects.exp;
+            if (currentClass.mpCost) result.effects.mp = -currentClass.mpCost;
+            if (currentClass.hpCost) result.effects.hp = -(currentClass.hpCost);
+            
+            // 实践课有受伤概率
+            if (currentClass.injuryChance && Math.random() < currentClass.injuryChance) {
+                const injury = Math.floor(Player.maxHp * 0.2);
+                Player.hp = Math.max(1, Player.hp - injury);
+                result.effects.hp = (result.effects.hp || 0) - injury;
+                UI.showMessage(`💥 实践课上不小心受伤了，损失 ${injury} HP！`);
+            }
+            
+            // 标记已上课
+            Player.flags['attended_class_' + Player.day + '_' + TimeSystem.getCurrentPeriod()] = true;
         }
 
         // 更新任务进度（在当前地点执行行动，视为到达该地点）

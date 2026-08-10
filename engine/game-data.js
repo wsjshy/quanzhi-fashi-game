@@ -4345,11 +4345,34 @@ const GameData = {
             description: '博城最好的公立魔法高中，培养了无数优秀的法师。',
             backgroundColor: '#2a3a5a',
             unlocked: true,
+            // 课程表（0=周日, 1=周一, ..., 6=周六）
+            classSchedule: {
+                // 上午课程（8:00-12:00）
+                morning: {
+                    1: { subject: 'magic_theory', name: '魔法理论', teacher: 'xue_musheng', exp: 25, mpCost: 5 },
+                    2: { subject: 'star_path', name: '星轨课', teacher: 'tang_yue', exp: 30, mpCost: 10 },
+                    3: { subject: 'demonology', name: '妖魔课', teacher: 'wei_suo', exp: 20, mpCost: 0 },
+                    4: { subject: 'magic_theory', name: '魔法理论', teacher: 'xue_musheng', exp: 25, mpCost: 5 },
+                    5: { subject: 'star_path', name: '星轨课', teacher: 'tang_yue', exp: 30, mpCost: 10 },
+                    6: null, // 周六上午自习
+                    0: null  // 周日休息
+                },
+                // 下午课程（14:00-18:00）
+                afternoon: {
+                    1: { subject: 'practice', name: '实践课', teacher: 'tang_yue', exp: 40, hpCost: 10, mpCost: 15, injuryChance: 0.2 },
+                    2: { subject: 'magic_equipment', name: '魔器课', teacher: 'lao_li', exp: 20, mpCost: 0 },
+                    3: { subject: 'materials', name: '材料课', teacher: 'lao_li', exp: 20, mpCost: 0 },
+                    4: { subject: 'practice', name: '实践课', teacher: 'tang_yue', exp: 40, hpCost: 10, mpCost: 15, injuryChance: 0.2 },
+                    5: { subject: 'demonology', name: '妖魔课', teacher: 'wei_suo', exp: 20, mpCost: 0 },
+                    6: null, // 周六下午自由
+                    0: null  // 周日自由
+                }
+            },
             actions: [
                 {
                     id: 'study',
                     name: '上课学习',
-                    description: '学习魔法理论（半天），稳定获得经验，有小概率领悟突破',
+                    description: '参加当前时段的课程，获得经验和知识',
                     icon: '📚',
                     timeCost: 4,
                     staminaCost: 20,
@@ -4358,7 +4381,9 @@ const GameData = {
                         mp: -5
                     },
                     eventChance: 0.3,
-                    events: ['event_breakthrough', 'event_classmate_chat', 'event_mo_fan_scolded', 'event_zhao_manyan_showoff', 'event_mu_ningxue_gossip', 'event_zhang_xiaohou_find', 'event_zhou_min_question', 'event_xu_zhaoting_showoff']
+                    events: ['event_breakthrough', 'event_classmate_chat', 'event_mo_fan_scolded', 'event_zhao_manyan_showoff', 'event_mu_ningxue_gossip', 'event_zhang_xiaohou_find', 'event_zhou_min_question', 'event_xu_zhaoting_showoff'],
+                    // 标记为课程行动，会根据课程表动态调整
+                    isClassAction: true
                 },
                 {
                     id: 'train',

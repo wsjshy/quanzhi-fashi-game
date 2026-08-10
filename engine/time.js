@@ -447,6 +447,52 @@ const TimeSystem = {
     },
 
     /**
+     * 获取当前星期几（0=周日, 1=周一, ..., 6=周六）
+     */
+    getDayOfWeek() {
+        // 第1天是周一
+        return ((Player.day - 1) % 7 + 1) % 7;
+    },
+
+    /**
+     * 获取星期几名称
+     */
+    getDayOfWeekName() {
+        const names = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+        return names[this.getDayOfWeek()];
+    },
+
+    /**
+     * 获取当前时段的课程（如果在学校）
+     * @param {Object} location - 地点数据
+     * @returns {Object|null} 课程数据
+     */
+    getCurrentClass(location) {
+        if (!location || !location.classSchedule) return null;
+
+        const dayOfWeek = this.getDayOfWeek();
+        const period = this.getCurrentPeriod();
+
+        if (period === 'morning' && location.classSchedule.morning) {
+            return location.classSchedule.morning[dayOfWeek] || null;
+        }
+        if (period === 'afternoon' && location.classSchedule.afternoon) {
+            return location.classSchedule.afternoon[dayOfWeek] || null;
+        }
+
+        return null;
+    },
+
+    /**
+     * 检查当前是否有课
+     * @param {Object} location - 地点数据
+     * @returns {boolean}
+     */
+    hasClassNow(location) {
+        return this.getCurrentClass(location) !== null;
+    },
+
+    /**
      * 休息（睡觉）到第二天早上
      * 根据睡觉时间决定恢复效果
      */
