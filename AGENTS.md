@@ -21,7 +21,7 @@
 1. **打开游戏玩一遍**：双击 `index.html`，了解当前游戏状态
 2. **阅读本文档**：了解文档体系和开发规范
 3. **查看TODO.md**：了解待办事项和优先级
-4. **查看game-data.js**：了解数据结构（所有内容数据都在这里）
+4. **查看 engine/data/ 下的数据模块**：了解数据结构（所有内容数据已拆分为多个模块文件）
 5. **开始开发**
 
 ---
@@ -78,7 +78,7 @@
 ### 3.1 基本规范
 1. **直接在master分支开发**，不创建feature分支
 2. **每次完成一个功能就git commit**，commit message要清晰描述改动
-3. **新增内容先加到game-data.js**，数据驱动，尽量不改代码
+3. **新增内容加到 engine/data/ 下对应的数据模块文件**，数据驱动，尽量不改代码（NPC→characters.js，敌人→enemies.js，任务→quests.js，物品→items.js，地点→locations.js，事件→events.js）
 4. **重要设计要写文档到docs/**，保持文档与代码同步
 5. **测试直接打开index.html**，不需要HTTP服务器
 6. **更新代码时同步更新相关文档**，保持一致性
@@ -121,7 +121,7 @@ cd C:\Users\22210\Desktop\quanzhi-fashi-game-master
 | 文件 | 用途 | 关键方法/位置 |
 |------|------|-------------|
 | `game.js` | 主控制器 | performAction(97行), travelTo(215行), showNPCList(655行) |
-| `game-data.js` | **所有游戏内容数据** | skills(9行), characters(574行), locations(4579行), items(5025行), quests(5363行), events(6261行), shops(7393行), enemies(7463行) |
+| `data/` | **游戏内容数据（已拆分）** | 见下方4.2数据模块索引 |
 | `player.js` | 玩家系统 | SKILL_UNLOCK_TABLE(10行), init(106行), gainExp(197行), levelUp(220行), checkSkillUnlocks(245行) |
 | `battle.js` | 战斗系统 | 掉落逻辑(688行), 胜利奖励(710行) |
 | `quest.js` | 任务系统 | updateProgress(74行), completeQuest(132行) |
@@ -135,16 +135,25 @@ cd C:\Users\22210\Desktop\quanzhi-fashi-game-master
 | `world-state.js` | 世界状态 | 声望，标记，事件链 |
 | `npc-state.js` | NPC状态 | 好感，性格，关系 |
 | `dialogue-tree.js` | 对话树 | 多层对话，条件，效果 |
+| `data.js` | 数据管理器 | DataManager，加载和访问GameData |
 
-### 4.2 数据文件位置速查
-- **技能数据**：game-data.js 第9行起（skills对象）
-- **NPC数据**：game-data.js 第574行起（characters对象）
-- **地点数据**：game-data.js 第4579行起（locations对象）
-- **物品数据**：game-data.js 第5025行起（items对象）
-- **任务数据**：game-data.js 第5363行起（quests对象）
-- **事件数据**：game-data.js 第6261行起（events对象）
-- **商店数据**：game-data.js 第7393行起（shops对象）
-- **敌人数据**：game-data.js 第7463行起（enemies对象）
+### 4.2 数据模块索引（engine/data/）
+> v0.4.0 起，原 game-data.js（9200+行）已拆分为以下模块。新增内容请修改对应模块文件，不要修改已废弃的 game-data.legacy.js。
+
+| 文件 | 内容 | 数据量 |
+|------|------|--------|
+| `skills.js` | 技能数据（各系初阶/中阶技能） | 25项 |
+| `characters.js` | NPC/角色数据（含对话树、性格、关系） | 22项 |
+| `locations.js` | 地点数据（含行动、事件、NPC分布） | 7项 |
+| `items.js` | 物品+装备数据（消耗品、材料、武器、护甲、饰品） | 20项 |
+| `quests.js` | 任务数据（主线、支线、新手引导） | 29项 |
+| `events.js` | 随机事件数据（修炼、探索、战斗等触发） | 42项 |
+| `shops.js` | 商店数据（商品列表、声望折扣） | 4项 |
+| `enemies.js` | 敌人/妖魔数据（属性、掉落、出现地点） | 17项 |
+| `world.js` | 势力、情报库、预定事件、事件链 | 4大类 |
+| `index.js` | 数据入口，合并所有模块为 GameData | - |
+
+**数据拆分工具**：`tools/split-game-data.js`（重新拆分）、`tools/verify-split.js`（验证一致性）
 
 ---
 
@@ -299,24 +308,25 @@ A：可能是以下原因：
 
 ### Q2：如何快速测试新功能？
 A：
-1. 直接修改game-data.js添加数据
+1. 直接修改 engine/data/ 下对应的数据模块文件添加数据
 2. 刷新浏览器页面（Ctrl+R）
 3. 如果需要新存档，在标题界面点"开始新游戏"
-4. 用node --check检查语法：`node --check engine/xxx.js`
+4. 用node --check检查语法：`node --check engine/data/xxx.js`
 
 ### Q3：添加新内容需要改代码吗？
-A：大部分不需要。数据驱动架构，新增NPC/地点/任务/事件/物品/敌人只需在game-data.js中添加数据。只有新增系统功能时才需要改代码。
+A：大部分不需要。数据驱动架构，新增NPC/地点/任务/事件/物品/敌人只需在 engine/data/ 下对应模块文件中添加数据。只有新增系统功能时才需要改代码。
 
 ### Q4：如何查看当前有哪些数据？
-A：直接打开game-data.js，搜索对应对象名：
-- 技能：`skills: {`
-- NPC：`characters: {`
-- 地点：`locations: {`
-- 物品：`items: {`
-- 任务：`quests: {`
-- 事件：`events: {`
-- 商店：`shops: {`
-- 敌人：`enemies: {`
+A：直接打开 engine/data/ 下对应的模块文件：
+- 技能：`engine/data/skills.js`
+- NPC：`engine/data/characters.js`
+- 地点：`engine/data/locations.js`
+- 物品：`engine/data/items.js`
+- 任务：`engine/data/quests.js`
+- 事件：`engine/data/events.js`
+- 商店：`engine/data/shops.js`
+- 敌人：`engine/data/enemies.js`
+- 势力/情报：`engine/data/world.js`
 
 ### Q5：Git提交报错怎么办？
 A：

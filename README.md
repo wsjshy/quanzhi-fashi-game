@@ -189,37 +189,43 @@ python -m http.server 8000
 
 ```
 quanzhi-fashi-game/
-├── index.html              # 游戏入口
+├── index.html              # 游戏入口（双击即玩）
 ├── README.md               # 说明文档
+├── AGENTS.md               # 开发主入口文档（开发者必读）
 ├── engine/                 # 游戏引擎
 │   ├── game.js             # 游戏主控制器
-│   ├── data.js             # 数据管理器
+│   ├── data.js             # 数据管理器（逻辑代码）
 │   ├── player.js           # 玩家系统
 │   ├── inventory.js        # 背包系统
 │   ├── skill.js            # 技能系统
 │   ├── battle.js           # 战斗系统
 │   ├── quest.js            # 任务系统
 │   ├── event.js            # 事件系统
-│   ├── time.js             # 时间系统
+│   ├── time.js             # 时间系统（8时段制）
 │   ├── shop.js             # 商店系统
 │   ├── map.js              # 地图系统
 │   ├── ui.js               # UI 渲染器
-│   ├── game-data.js        # 内嵌游戏数据
 │   ├── world-state.js      # 世界状态系统
 │   ├── npc-state.js        # NPC 状态与关系系统
-│   └── dialogue-tree.js    # 对话树系统
+│   ├── dialogue-tree.js    # 对话树系统
+│   └── data/               # 游戏内容数据（已拆分）
+│       ├── index.js        # 数据入口，合并为 GameData
+│       ├── skills.js       # 技能数据
+│       ├── characters.js   # NPC/角色数据
+│       ├── locations.js    # 地点数据
+│       ├── items.js        # 物品+装备数据
+│       ├── quests.js       # 任务数据
+│       ├── events.js       # 随机事件数据
+│       ├── shops.js        # 商店数据
+│       ├── enemies.js      # 敌人/妖魔数据
+│       └── world.js        # 势力、情报、事件链
 ├── assets/                 # 素材资源
 │   └── images/
 │       ├── characters/     # 角色立绘
 │       ├── backgrounds/    # 场景背景
 │       └── effects/        # 特效图片
-├── content/                # 游戏内容（数据已内嵌，此为结构参考）
-│   ├── characters/         # NPC 数据
-│   ├── locations/          # 地点数据
-│   ├── enemies/            # 妖魔/敌人数据
-│   ├── items/              # 道具装备数据
-│   ├── quests/             # 任务数据
-│   └── events/             # 随机事件数据
+├── tests/                  # 测试和调试页面
+├── tools/                  # 开发工具脚本
 └── docs/                   # 开发文档
     ├── 架构说明.md
     ├── 内容扩展指南.md
@@ -227,7 +233,8 @@ quanzhi-fashi-game/
     ├── 世界状态与关系网系统设计.md
     ├── 对话树与剧情连锁系统设计.md
     ├── NPC性格与AI设计.md
-    └── 小说内容转化指南.md
+    ├── 小说内容转化指南.md
+    └── 小说内容逐章拆解工作流.md
 ```
 
 ## 扩展开发
@@ -235,7 +242,7 @@ quanzhi-fashi-game/
 详细的扩展开发指南请查看 `docs/` 目录下的文档。
 
 ### 添加新 NPC
-1. 在 `game-data.js` 的 `characters` 中添加 NPC 数据
+1. 在 `engine/data/characters.js` 中添加 NPC 数据
 2. 添加性格设定、对话树、关系数据
 3. 无需修改代码，数据驱动自动生效
 
@@ -245,7 +252,7 @@ quanzhi-fashi-game/
 3. 详细格式见 `docs/对话树与剧情连锁系统设计.md`
 
 ### 添加新地点
-1. 在 `game-data.js` 的 `locations` 中添加地点数据
+1. 在 `engine/data/locations.js` 中添加地点数据
 2. 添加行动列表、遇敌概率等
 3. 详细格式见 `docs/数据格式规范.md`
 

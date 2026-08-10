@@ -21,6 +21,7 @@ test*.js
 
 # 旧版本备份
 content-legacy/
+engine/game-data*.legacy.js
 engine/game-data-legacy.js
 engine/character.js
 engine/story.js

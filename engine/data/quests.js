@@ -1,0 +1,1174 @@
+/**
+ * 任务数据
+ * 从 game-data.js 拆分而来
+ */
+
+const DataQuests = {
+  quest_intro: {
+    id: "quest_intro",
+    name: "初识魔法",
+    description: "唐月老师让你去修炼场熟悉一下魔法的使用。",
+    giver: "tang_yue",
+    type: "story",
+    objectives: [
+      {
+        type: "reach",
+        locationId: "tianlan_school",
+        count: 1,
+        description: "在学校修炼一次"
+      }
+    ],
+    rewards: {
+      exp: 50,
+      gold: 30,
+      items: [
+        {
+          itemId: "health_potion",
+          count: 3
+        }
+      ]
+    },
+    prerequisites: [],
+    nextQuest: "quest_collect_herbs",
+    isMainQuest: true,
+    dialogueStart: "你好，新来的同学。作为第一次修炼，先去修炼场感受一下魔法吧。",
+    dialogueInProgress: "怎么样，感受到魔法的力量了吗？",
+    dialogueComplete: "很好，看来你很有天赋呢！"
+  },
+  quest_collect_herbs: {
+    id: "quest_collect_herbs",
+    name: "采集草药",
+    description: "唐月老师需要一些魔法草药，去雪峰山采集5株回来。",
+    giver: "tang_yue",
+    type: "collect",
+    objectives: [
+      {
+        type: "collect",
+        itemId: "magic_herb",
+        count: 5,
+        description: "采集 5 株魔法草药"
+      }
+    ],
+    rewards: {
+      exp: 100,
+      gold: 80,
+      items: [
+        {
+          itemId: "mana_potion",
+          count: 3
+        }
+      ],
+      unlocks: []
+    },
+    prerequisites: [
+      "quest_intro"
+    ],
+    nextQuest: "quest_hunt_demon",
+    isMainQuest: true,
+    dialogueStart: "我需要一些魔法草药做研究，你能帮我去雪峰山采集一些吗？",
+    dialogueInProgress: "草药采得怎么样了？小心山上的妖魔哦。",
+    dialogueComplete: "太谢谢你了！这些草药正好够用。"
+  },
+  quest_hunt_demon: {
+    id: "quest_hunt_demon",
+    name: "猎杀妖魔",
+    description: "莫凡说雪峰山有一只幽狼兽在作乱，去把它解决掉！",
+    giver: "mo_fan",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "demon_wolf",
+        count: 1,
+        description: "击败 1 只幽狼兽"
+      }
+    ],
+    rewards: {
+      exp: 200,
+      gold: 150,
+      items: [
+        {
+          itemId: "basic_staff",
+          count: 1
+        }
+      ]
+    },
+    prerequisites: [
+      "quest_collect_herbs"
+    ],
+    nextQuest: null,
+    isMainQuest: true,
+    dialogueStart: "嘿，雪峰山最近有只幽狼兽很嚣张，敢不敢去把它干掉？",
+    dialogueInProgress: "怎么样，那只幽狼兽解决了吗？小心点，那家伙可不弱。",
+    dialogueComplete: "可以啊你！居然真的干掉了幽狼兽，有点本事！"
+  },
+  quest_hunt_wolf_pack: {
+    id: "quest_hunt_wolf_pack",
+    name: "猎杀狼群",
+    description: "学校附近出现了一群幽狼兽，威胁到了学生的安全。去雪峰山击败 3 只幽狼兽。",
+    giver: "tang_yue",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "demon_wolf",
+        count: 3,
+        description: "击败 3 只幽狼兽"
+      }
+    ],
+    rewards: {
+      exp: 300,
+      gold: 200,
+      items: [
+        {
+          itemId: "health_potion",
+          count: 5
+        },
+        {
+          itemId: "mana_potion",
+          count: 3
+        }
+      ],
+      reputation: {
+        tianlan_school: 10
+      }
+    },
+    prerequisites: [
+      "quest_hunt_demon"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "最近雪峰山的幽狼兽越来越多了，已经威胁到学校的安全了。你能帮忙清理一下吗？",
+    dialogueInProgress: "狼群清理得怎么样了？一定要注意安全。",
+    dialogueComplete: "太感谢你了！学校的安全有保障了。你在学校的声望也提高了。"
+  },
+  quest_collect_more_herbs: {
+    id: "quest_collect_more_herbs",
+    name: "更多草药",
+    description: "唐月老师需要更多的魔法草药做实验。去雪峰山采集 10 株回来。",
+    giver: "tang_yue",
+    type: "collect",
+    objectives: [
+      {
+        type: "collect",
+        itemId: "magic_herb",
+        count: 10,
+        description: "采集 10 株魔法草药"
+      }
+    ],
+    rewards: {
+      exp: 250,
+      gold: 150,
+      items: [
+        {
+          itemId: "super_health_potion",
+          count: 2
+        }
+      ],
+      reputation: {
+        tianlan_school: 5
+      }
+    },
+    prerequisites: [
+      "quest_collect_herbs"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "我的实验还需要更多的魔法草药，你能再帮我采集一些吗？",
+    dialogueInProgress: "草药采得怎么样了？慢慢来，不用着急。",
+    dialogueComplete: "太好了，这些草药足够我做实验了。谢谢你的帮助！"
+  },
+  quest_hunt_shadow: {
+    id: "quest_hunt_shadow",
+    name: "暗影威胁",
+    description: "猎魔者公会发布了任务，雪峰山的暗影怪越来越多了。去击败 2 只暗影怪。",
+    giver: "mo_fan",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "shadow_creature",
+        count: 2,
+        description: "击败 2 只暗影怪"
+      }
+    ],
+    rewards: {
+      exp: 280,
+      gold: 180,
+      items: [
+        {
+          itemId: "demon_core",
+          count: 3
+        }
+      ],
+      reputation: {
+        hunter_guild: 15
+      }
+    },
+    prerequisites: [
+      "quest_hunt_demon"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "听说猎魔者公会最近在悬赏暗影怪，那东西很狡猾，你敢去试试吗？",
+    dialogueInProgress: "暗影怪解决了吗？那家伙藏在阴影里，很难对付。",
+    dialogueComplete: "厉害啊！暗影怪都被你干掉了，猎魔者公会那边应该会给你记一功。"
+  },
+  quest_hunt_stone: {
+    id: "quest_hunt_stone",
+    name: "石怪威胁",
+    description: "雪峰山的石怪越来越多了，挡住了采药人的路。去击败 2 只石怪。",
+    giver: "mo_fan",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "stone_monster",
+        count: 2,
+        description: "击败 2 只石怪"
+      }
+    ],
+    rewards: {
+      exp: 350,
+      gold: 220,
+      items: [
+        {
+          itemId: "magic_stone",
+          count: 3
+        }
+      ],
+      reputation: {
+        hunter_guild: 10
+      }
+    },
+    prerequisites: [
+      "quest_hunt_shadow"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "雪峰山的石怪最近很嚣张，很多采药人都不敢上山了。你能去清理一下吗？",
+    dialogueInProgress: "石怪清理得怎么样了？那家伙皮糙肉厚，很难对付。",
+    dialogueComplete: "可以啊！石怪都被你干掉了，采药人们又能上山了。猎魔者公会的声望又涨了！"
+  },
+  quest_explore_mountain: {
+    id: "quest_explore_mountain",
+    name: "探索雪峰山",
+    description: "学校需要了解雪峰山的最新情况，去雪峰山探索一下。",
+    giver: "tang_yue",
+    type: "explore",
+    objectives: [
+      {
+        type: "reach",
+        locationId: "snow_peak_mountain",
+        count: 1,
+        description: "到达雪峰山"
+      }
+    ],
+    rewards: {
+      exp: 150,
+      gold: 80,
+      items: [
+        {
+          itemId: "health_potion",
+          count: 3
+        }
+      ],
+      reputation: {
+        tianlan_school: 5
+      }
+    },
+    prerequisites: [
+      "quest_intro"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "学校想了解一下雪峰山的情况，你能去探索一下吗？注意安全。",
+    dialogueInProgress: "雪峰山探索得怎么样了？有没有发现什么异常？",
+    dialogueComplete: "辛苦了！你带回来的信息很有价值。学校会记住你的贡献的。"
+  },
+  quest_hunt_thunder: {
+    id: "quest_hunt_thunder",
+    name: "雷兽的威胁",
+    description: "雪峰山出现了雷兽，威力强大，很多猎人都吃亏了。去击败 2 只雷兽。",
+    giver: "hunter_li",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "thunder_beast",
+        count: 2,
+        description: "击败 2 只雷兽"
+      }
+    ],
+    rewards: {
+      exp: 400,
+      gold: 300,
+      items: [
+        {
+          itemId: "demon_core",
+          count: 5
+        },
+        {
+          itemId: "super_health_potion",
+          count: 3
+        }
+      ],
+      reputation: {
+        hunter_guild: 20
+      }
+    },
+    prerequisites: [
+      "quest_hunt_stone"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "最近山里出现了雷兽，那家伙厉害得很，好几个猎人都受伤了。你敢去试试吗？",
+    dialogueInProgress: "雷兽解决了吗？那家伙的雷电魔法很厉害，小心被麻痹了。",
+    dialogueComplete: "厉害啊！雷兽都被你干掉了，你在猎魔者公会的声望可是大涨啊！"
+  },
+  quest_book_shop_request: {
+    id: "quest_book_shop_request",
+    name: "书店的请求",
+    description: "陈老板需要一些妖魔精核来做研究，去雪峰山收集 5 颗妖魔精核。",
+    giver: "book_shop_owner",
+    type: "collect",
+    objectives: [
+      {
+        type: "collect",
+        itemId: "demon_core",
+        count: 5,
+        description: "收集 5 颗妖魔精核"
+      }
+    ],
+    rewards: {
+      exp: 300,
+      gold: 250,
+      items: [
+        {
+          itemId: "mana_potion",
+          count: 5
+        },
+        {
+          itemId: "super_health_potion",
+          count: 2
+        }
+      ],
+      reputation: {
+        tianlan_school: 5
+      }
+    },
+    prerequisites: [
+      "quest_collect_herbs"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "我最近在研究妖魔的生态，需要一些妖魔精核做实验。你能帮我收集一些吗？",
+    dialogueInProgress: "妖魔精核收集得怎么样了？慢慢来，不用着急。",
+    dialogueComplete: "太好了！这些妖魔精核正好够用。谢谢你的帮助！"
+  },
+  quest_magic_association_request: {
+    id: "quest_magic_association_request",
+    name: "魔法协会的委托",
+    description: "魔法协会需要调查雪峰山的妖魔异动，去击败 5 只不同种类的妖魔。",
+    giver: "magic_association_chairman",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "demon_wolf",
+        count: 1,
+        description: "击败 1 只幽狼兽"
+      },
+      {
+        type: "kill",
+        enemyId: "shadow_creature",
+        count: 1,
+        description: "击败 1 只暗影怪"
+      },
+      {
+        type: "kill",
+        enemyId: "stone_monster",
+        count: 1,
+        description: "击败 1 只石怪"
+      },
+      {
+        type: "kill",
+        enemyId: "thunder_beast",
+        count: 1,
+        description: "击败 1 只雷兽"
+      },
+      {
+        type: "kill",
+        enemyId: "wind_bird",
+        count: 1,
+        description: "击败 1 只风翼鸟"
+      }
+    ],
+    rewards: {
+      exp: 600,
+      gold: 500,
+      items: [
+        {
+          itemId: "super_health_potion",
+          count: 5
+        },
+        {
+          itemId: "mana_potion",
+          count: 5
+        },
+        {
+          itemId: "magic_stone",
+          count: 10
+        }
+      ],
+      reputation: {
+        magic_association: 20
+      }
+    },
+    prerequisites: [
+      "quest_hunt_thunder"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "魔法协会需要调查雪峰山的妖魔异动，你能帮我们收集一些样本吗？",
+    dialogueInProgress: "调查得怎么样了？一定要注意安全，这次的任务可不简单。",
+    dialogueComplete: "做得好！你带回来的信息很有价值。魔法协会会记住你的贡献的。"
+  },
+  quest_mysterious_test: {
+    id: "quest_mysterious_test",
+    name: "神秘人的考验",
+    description: "那个神秘的流浪法师说要考验一下你的实力，去雪峰山击败 3 只暗影怪。",
+    giver: "mysterious_mage",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "shadow_creature",
+        count: 3,
+        description: "击败 3 只暗影怪"
+      }
+    ],
+    rewards: {
+      exp: 350,
+      gold: 100,
+      items: [
+        {
+          itemId: "demon_core",
+          count: 5
+        }
+      ],
+      reputation: {}
+    },
+    prerequisites: [
+      "quest_hunt_shadow"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "...想知道更多秘密？先证明一下你的实力吧。去击败 3 只暗影怪。",
+    dialogueInProgress: "...怎么样，暗影怪解决了吗？",
+    dialogueComplete: "...不错，有点意思。我可以告诉你更多了。"
+  },
+  quest_zhao_manyan_request: {
+    id: "quest_zhao_manyan_request",
+    name: "赵满延的请求",
+    description: "赵满延说他丢了一件重要的东西，可能在雪峰山，帮他找回来。",
+    giver: "zhao_manyan",
+    type: "explore",
+    objectives: [
+      {
+        type: "reach",
+        locationId: "snow_peak_mountain",
+        count: 3,
+        description: "在雪峰山探索 3 次"
+      }
+    ],
+    rewards: {
+      exp: 200,
+      gold: 300,
+      items: [
+        {
+          itemId: "health_potion",
+          count: 5
+        },
+        {
+          itemId: "mana_potion",
+          count: 5
+        }
+      ],
+      reputation: {}
+    },
+    prerequisites: [
+      "quest_intro"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "兄弟，帮我个忙呗！我上次去雪峰山玩的时候丢了一件重要的东西，你能帮我找回来吗？",
+    dialogueInProgress: "找到了吗？那东西对我很重要的！",
+    dialogueComplete: "太好了！终于找到了！兄弟你太够意思了！走，我请你喝酒！"
+  },
+  quest_zhang_xiaohou_favor: {
+    id: "quest_zhang_xiaohou_favor",
+    name: "张小侯的委托",
+    description: "张小侯说他有件事想请你帮忙，去和他聊聊吧。",
+    giver: "zhang_xiaohou",
+    type: "favor",
+    objectives: [
+      {
+        type: "talk",
+        npcId: "zhang_xiaohou",
+        count: 1,
+        description: "和张小侯对话"
+      },
+      {
+        type: "collect",
+        itemId: "magic_herb",
+        count: 3,
+        description: "帮张小侯采集 3 株魔法草药"
+      }
+    ],
+    rewards: {
+      exp: 150,
+      gold: 50,
+      items: [
+        {
+          itemId: "health_potion",
+          count: 3
+        }
+      ],
+      reputation: {
+        tianlan_school: 5
+      }
+    },
+    prerequisites: [
+      "quest_intro"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "那个... 你能帮我个忙吗？我想采点草药给我奶奶，但是我不敢一个人去山里...",
+    dialogueInProgress: "草药采得怎么样了？谢谢你啊，你真是个好人！",
+    dialogueComplete: "太谢谢你了！你真是我最好的朋友！以后有什么事尽管找我！"
+  },
+  quest_book_shop_secret: {
+    id: "quest_book_shop_secret",
+    name: "书店的秘密",
+    description: "陈老板说他知道一些关于穆氏家族的秘密，帮他收集 5 颗妖魔精核，他就告诉你。",
+    giver: "book_shop_owner",
+    type: "collect",
+    objectives: [
+      {
+        type: "collect",
+        itemId: "demon_core",
+        count: 5,
+        description: "收集 5 颗妖魔精核"
+      }
+    ],
+    rewards: {
+      exp: 300,
+      gold: 200,
+      items: [
+        {
+          itemId: "super_health_potion",
+          count: 3
+        }
+      ],
+      reputation: {}
+    },
+    prerequisites: [
+      "quest_collect_herbs"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "呵呵，年轻人，想知道一些穆氏家族的秘密吗？帮我收集 5 颗妖魔精核，我就告诉你一些有趣的事。",
+    dialogueInProgress: "妖魔精核收集得怎么样了？这可是很稀有的材料哦。",
+    dialogueComplete: "不错不错！既然你这么有诚意，那我就告诉你一个秘密... 穆宁雪那丫头，她的身世可不简单啊..."
+  },
+  quest_hunter_guild_trial: {
+    id: "quest_hunter_guild_trial",
+    name: "猎魔者公会的试炼",
+    description: "老李说如果你能证明自己的实力，就推荐你加入猎魔者公会。去雪峰山击败 5 只不同的妖魔。",
+    giver: "hunter_li",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "demon_wolf",
+        count: 1,
+        description: "击败 1 只幽狼兽"
+      },
+      {
+        type: "kill",
+        enemyId: "shadow_creature",
+        count: 1,
+        description: "击败 1 只暗影怪"
+      },
+      {
+        type: "kill",
+        enemyId: "stone_monster",
+        count: 1,
+        description: "击败 1 只石怪"
+      },
+      {
+        type: "kill",
+        enemyId: "thunder_beast",
+        count: 1,
+        description: "击败 1 只雷兽"
+      },
+      {
+        type: "kill",
+        enemyId: "ice_toad",
+        count: 1,
+        description: "击败 1 只冰蟾"
+      }
+    ],
+    rewards: {
+      exp: 800,
+      gold: 600,
+      items: [
+        {
+          itemId: "super_health_potion",
+          count: 5
+        },
+        {
+          itemId: "mana_potion",
+          count: 5
+        },
+        {
+          itemId: "demon_core",
+          count: 10
+        }
+      ],
+      reputation: {
+        hunter_guild: 25
+      }
+    },
+    prerequisites: [
+      "quest_hunt_thunder"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "小子，想加入猎魔者公会吗？那就证明你的实力！去雪峰山击败 5 种不同的妖魔，我就推荐你入会。",
+    dialogueInProgress: "怎么样，猎魔的感觉如何？记住，猎魔不是儿戏，一定要小心谨慎。",
+    dialogueComplete: "好小子！果然有两下子！从今天起，你就是猎魔者公会的一员了！"
+  },
+  quest_hunter_daily_wolf: {
+    id: "quest_hunter_daily_wolf",
+    name: "日常任务：清剿狼群",
+    description: "猎魔者公会的日常任务，清剿雪峰山附近的幽狼兽。",
+    giver: "hunter_receptionist",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "demon_wolf",
+        count: 3,
+        description: "击败 3 只幽狼兽"
+      }
+    ],
+    rewards: {
+      exp: 150,
+      gold: 100,
+      items: [
+        {
+          itemId: "health_potion",
+          count: 2
+        }
+      ],
+      reputation: {
+        hunter_guild: 5
+      }
+    },
+    prerequisites: [
+      "quest_hunter_guild_trial"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    repeatable: true,
+    dialogueStart: "这是今天的日常任务，去雪峰山清剿几只幽狼兽吧。",
+    dialogueInProgress: "加油哦，注意安全！",
+    dialogueComplete: "做得不错！这是你的奖励。"
+  },
+  quest_hunter_elite: {
+    id: "quest_hunter_elite",
+    name: "精英任务：战将级妖魔",
+    description: "雪峰山深处出现了战将级妖魔，公会需要高手去处理。",
+    giver: "hunter_receptionist",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "giant_eye_rat",
+        count: 1,
+        description: "击败 1 只巨眼猩鼠"
+      }
+    ],
+    rewards: {
+      exp: 500,
+      gold: 300,
+      items: [
+        {
+          itemId: "super_health_potion",
+          count: 3
+        },
+        {
+          itemId: "demon_core",
+          count: 5
+        }
+      ],
+      reputation: {
+        hunter_guild: 15
+      }
+    },
+    prerequisites: [
+      "quest_hunter_guild_trial"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    requiredLevel: 6,
+    dialogueStart: "雪峰山深处出现了战将级妖魔，你敢去挑战吗？",
+    dialogueInProgress: "战将级妖魔很危险，一定要小心！",
+    dialogueComplete: "太厉害了！你居然能击败战将级妖魔！"
+  },
+  quest_mu_family_test: {
+    id: "quest_mu_family_test",
+    name: "穆家的考验",
+    description: "穆家想测试你的实力，如果你能通过考验，就能获得穆家的认可。",
+    giver: "mu_butler",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "ice_toad",
+        count: 3,
+        description: "击败 3 只冰蟾"
+      }
+    ],
+    rewards: {
+      exp: 300,
+      gold: 200,
+      items: [
+        {
+          itemId: "mana_potion",
+          count: 3
+        }
+      ],
+      reputation: {
+        mu_family: 10
+      }
+    },
+    prerequisites: [],
+    nextQuest: "quest_mu_family_elite",
+    isMainQuest: false,
+    requiredLevel: 5,
+    dialogueStart: "穆家想邀请你参加一个小考验，通过的话就能获得穆家的认可。你愿意试试吗？",
+    dialogueInProgress: "怎么样，考验还顺利吗？穆家从不亏待有实力的人。",
+    dialogueComplete: "不错不错！你通过了考验。从今天起，你就是穆家的朋友了。"
+  },
+  quest_mu_family_elite: {
+    id: "quest_mu_family_elite",
+    name: "穆家的委托",
+    description: "穆家有一个重要的委托，需要高手去雪峰山深处处理一个麻烦的妖魔。",
+    giver: "mu_butler",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "bone_spike_zheng",
+        count: 1,
+        description: "击败 1 只骨刺狰"
+      }
+    ],
+    rewards: {
+      exp: 600,
+      gold: 500,
+      items: [
+        {
+          itemId: "ice_staff",
+          count: 1
+        },
+        {
+          itemId: "super_health_potion",
+          count: 5
+        }
+      ],
+      reputation: {
+        mu_family: 20
+      }
+    },
+    prerequisites: [
+      "quest_mu_family_test"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    requiredLevel: 8,
+    dialogueStart: "穆家有一个重要委托，雪峰山深处出现了一只骨刺狰，很是麻烦。你能帮忙处理一下吗？",
+    dialogueInProgress: "骨刺狰防御力极高，一定要小心！",
+    dialogueComplete: "了不起！居然能击败骨刺狰！穆家欠你一个人情。"
+  },
+  quest_magic_association_trial: {
+    id: "quest_magic_association_trial",
+    name: "魔法协会的试炼",
+    description: "魔法协会的试炼，通过的话可以成为协会的外围成员。",
+    giver: "magic_association_chairman",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "thunder_beast",
+        count: 2,
+        description: "击败 2 只雷兽"
+      },
+      {
+        type: "kill",
+        enemyId: "stone_monster",
+        count: 2,
+        description: "击败 2 只石怪"
+      }
+    ],
+    rewards: {
+      exp: 400,
+      gold: 300,
+      items: [
+        {
+          itemId: "magic_ring",
+          count: 1
+        }
+      ],
+      reputation: {
+        magic_association: 15
+      }
+    },
+    prerequisites: [],
+    nextQuest: "quest_magic_association_elite",
+    isMainQuest: false,
+    requiredLevel: 6,
+    dialogueStart: "年轻人，想加入魔法协会吗？先通过我的试炼吧。",
+    dialogueInProgress: "试炼进行得如何？魔法协会只认可有实力的人。",
+    dialogueComplete: "不错！你通过了试炼。从今天起，你就是魔法协会的外围成员了。"
+  },
+  quest_magic_association_elite: {
+    id: "quest_magic_association_elite",
+    name: "魔法协会的委托",
+    description: "魔法协会有一个紧急委托，需要调查雪峰山的妖魔异动原因。",
+    giver: "magic_association_chairman",
+    type: "investigate",
+    objectives: [
+      {
+        type: "reach",
+        locationId: "xuefeng_mountain_deep",
+        count: 3,
+        description: "深入雪峰山 3 次，调查妖魔异动"
+      }
+    ],
+    rewards: {
+      exp: 500,
+      gold: 400,
+      items: [
+        {
+          itemId: "super_mana_potion",
+          count: 3
+        },
+        {
+          itemId: "demon_core",
+          count: 5
+        }
+      ],
+      reputation: {
+        magic_association: 20,
+        hunter_guild: 10
+      }
+    },
+    prerequisites: [
+      "quest_magic_association_trial"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    requiredLevel: 8,
+    dialogueStart: "最近雪峰山的妖魔异动很不正常，协会需要有人去深入调查一下。你愿意帮忙吗？",
+    dialogueInProgress: "调查得怎么样了？一定要注意安全，事情可能不简单。",
+    dialogueComplete: "辛苦了！这些情报很重要。魔法协会会记住你的贡献。"
+  },
+  quest_investigate_suspicious: {
+    id: "quest_investigate_suspicious",
+    name: "调查可疑人物",
+    description: "唐月老师说最近雪峰山附近出现了一些可疑人物，让你去调查一下。",
+    giver: "tang_yue",
+    type: "investigate",
+    objectives: [
+      {
+        type: "reach",
+        locationId: "xuefeng_mountain",
+        count: 5,
+        description: "在雪峰山探索 5 次，寻找可疑人物的踪迹"
+      }
+    ],
+    rewards: {
+      exp: 300,
+      gold: 150,
+      items: [
+        {
+          itemId: "health_potion",
+          count: 3
+        },
+        {
+          itemId: "mana_potion",
+          count: 3
+        }
+      ],
+      reputation: {
+        tianlan_school: 10
+      }
+    },
+    prerequisites: [
+      "quest_collect_more_herbs"
+    ],
+    nextQuest: "quest_black_church_clues",
+    isMainQuest: true,
+    dialogueStart: "最近我收到一些报告，说雪峰山附近出现了一些穿着黑色长袍的可疑人物。你能帮我去调查一下吗？一定要小心。",
+    dialogueInProgress: "调查得怎么样了？有没有发现什么可疑的情况？记住，安全第一。",
+    dialogueComplete: "谢谢你的调查！这些信息很重要。我感觉事情可能比我们想象的更严重..."
+  },
+  quest_black_church_clues: {
+    id: "quest_black_church_clues",
+    name: "黑教廷的线索",
+    description: "唐月老师怀疑那些可疑人物和黑教廷有关，让你收集更多相关的情报。",
+    giver: "tang_yue",
+    type: "investigate",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "black_church_acolyte",
+        count: 3,
+        description: "击败 3 名黑教廷教徒"
+      }
+    ],
+    rewards: {
+      exp: 500,
+      gold: 250,
+      items: [
+        {
+          itemId: "super_health_potion",
+          count: 2
+        },
+        {
+          itemId: "mana_potion",
+          count: 3
+        },
+        {
+          itemId: "demon_core",
+          count: 3
+        }
+      ],
+      reputation: {
+        tianlan_school: 15,
+        magic_association: 10
+      }
+    },
+    prerequisites: [
+      "quest_investigate_suspicious"
+    ],
+    nextQuest: "quest_stop_ritual",
+    isMainQuest: true,
+    dialogueStart: "你的调查证实了我的猜测...那些人很可能是黑教廷的成员。黑教廷是一个非常危险的邪恶组织，你要小心。能帮我收集更多证据吗？",
+    dialogueInProgress: "黑教廷的人很危险，你确定要和他们作对吗？记住，如果遇到危险，一定要先保证自己的安全。",
+    dialogueComplete: "你做得很好！这些证据足以证明黑教廷确实在博城活动。我会向魔法协会报告这件事的。"
+  },
+  quest_stop_ritual: {
+    id: "quest_stop_ritual",
+    name: "阻止黑教廷仪式",
+    description: "据情报显示，黑教廷正在雪峰山深处进行一个危险的仪式，必须阻止他们！",
+    giver: "tang_yue",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "black_church_deacon",
+        count: 1,
+        description: "击败黑教廷执事，阻止仪式"
+      }
+    ],
+    rewards: {
+      exp: 1000,
+      gold: 500,
+      items: [
+        {
+          itemId: "super_health_potion",
+          count: 5
+        },
+        {
+          itemId: "mana_potion",
+          count: 5
+        },
+        {
+          itemId: "demon_core",
+          count: 10
+        },
+        {
+          itemId: "flame_staff",
+          count: 1
+        }
+      ],
+      reputation: {
+        tianlan_school: 25,
+        magic_association: 20,
+        hunter_guild: 15
+      }
+    },
+    prerequisites: [
+      "quest_black_church_clues"
+    ],
+    nextQuest: null,
+    isMainQuest: true,
+    dialogueStart: "不好了！根据最新的情报，黑教廷正在雪峰山深处进行一个召唤仪式！如果让他们成功，后果不堪设想！你能去阻止他们吗？一定要小心，那里会有黑教廷的执事级成员把守。",
+    dialogueInProgress: "仪式还在进行吗？时间不多了，一定要尽快阻止他们！",
+    dialogueComplete: "太好了！你成功阻止了他们！你救了很多人！不过...我担心这只是开始，黑教廷可能还有更大的阴谋..."
+  },
+  quest_library_volunteer: {
+    id: "quest_library_volunteer",
+    name: "图书馆义工",
+    description: "图书馆管理员需要人帮忙整理书籍，作为回报会教你一些魔法知识。",
+    giver: "book_shop_owner",
+    type: "side",
+    objectives: [
+      {
+        type: "reach",
+        locationId: "tianlan_school",
+        count: 3,
+        description: "在天澜魔法高中活动 3 次"
+      }
+    ],
+    rewards: {
+      exp: 150,
+      gold: 50,
+      items: [
+        {
+          itemId: "mana_potion",
+          count: 2
+        }
+      ],
+      reputation: {
+        tianlan_school: 5
+      }
+    },
+    prerequisites: [
+      "quest_intro"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    autoStart: false,
+    dialogueStart: "同学，能帮我整理一下书籍吗？作为回报，我可以让你免费看一些珍贵的魔法书籍。",
+    dialogueInProgress: "整理得怎么样了？慢慢来，不着急。",
+    dialogueComplete: "谢谢你的帮助！这些魔法知识送给你，希望对你有帮助。"
+  },
+  quest_collect_magic_stones: {
+    id: "quest_collect_magic_stones",
+    name: "收集魔石",
+    description: "魔法协会的研究员需要一些魔石来做研究，他们愿意高价收购。",
+    giver: "magic_association_chairman",
+    type: "collect",
+    objectives: [
+      {
+        type: "collect",
+        itemId: "magic_stone",
+        count: 5,
+        description: "收集 5 块魔石"
+      }
+    ],
+    rewards: {
+      exp: 200,
+      gold: 150,
+      items: [
+        {
+          itemId: "health_potion",
+          count: 3
+        }
+      ],
+      reputation: {
+        magic_association: 10
+      }
+    },
+    prerequisites: [
+      "quest_intro"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    autoStart: false,
+    dialogueStart: "你好，我是魔法协会的研究员。我正在做一项研究，需要一些魔石。你能帮我收集一些吗？",
+    dialogueInProgress: "魔石收集得怎么样了？雪峰山的妖魔身上经常会有魔石。",
+    dialogueComplete: "太好了！这些魔石正是我需要的！这是你的报酬，以后有需要可以再来找我。"
+  },
+  quest_hunter_novice: {
+    id: "quest_hunter_novice",
+    name: "猎魔新手",
+    description: "猎魔者公会的前辈想考验一下你的实力，让你去猎杀几只低级妖魔。",
+    giver: "hunter_li",
+    type: "hunt",
+    objectives: [
+      {
+        type: "kill",
+        enemyId: "shadow_creature",
+        count: 3,
+        description: "击败 3 只暗影怪"
+      }
+    ],
+    rewards: {
+      exp: 250,
+      gold: 120,
+      items: [
+        {
+          itemId: "stamina_potion",
+          count: 2
+        },
+        {
+          itemId: "hunter_knife",
+          count: 1
+        }
+      ],
+      reputation: {
+        hunter_guild: 15
+      }
+    },
+    prerequisites: [
+      "quest_hunt_demon"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    autoStart: false,
+    dialogueStart: "听说你已经猎杀过幽狼兽了？不错嘛。要不要接受猎魔者公会的正式考验？去击败几只暗影怪，证明你的实力。",
+    dialogueInProgress: "暗影怪擅长偷袭，要小心它们的暗影魔法。",
+    dialogueComplete: "干得漂亮！你已经具备了成为猎魔者的潜质。这把猎魔匕首送给你，以后可以来公会接更多任务。"
+  },
+  quest_equipment_prep: {
+    id: "quest_equipment_prep",
+    name: "装备准备",
+    description: "唐月老师建议你去商店买一套基础装备，为后续的冒险做准备。",
+    giver: "tang_yue",
+    type: "side",
+    objectives: [
+      {
+        type: "reach",
+        locationId: "city_street",
+        count: 1,
+        description: "去博城市街的商店购买装备"
+      }
+    ],
+    rewards: {
+      exp: 100,
+      gold: 80,
+      items: [
+        {
+          itemId: "health_potion",
+          count: 2
+        }
+      ]
+    },
+    prerequisites: [
+      "quest_intro"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    autoStart: false,
+    dialogueStart: "冒险的时候装备很重要。我建议你去市里的魔法商店买一把法杖和一件法袍，这样能大大提升你的战斗力。",
+    dialogueInProgress: "买到合适的装备了吗？如果钱不够，可以先做些任务攒钱。",
+    dialogueComplete: "不错，有了这些装备，你的安全更有保障了。记住，装备只是辅助，自身的修炼才是根本。"
+  }
+};
