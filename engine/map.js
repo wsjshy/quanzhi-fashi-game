@@ -259,9 +259,26 @@ const MapSystem = {
             result.shop = ShopSystem.openShop(action.shopId);
         }
 
-        // NPC列表
+        // NPC列表（根据时间过滤）
         if (action.npcs) {
-            result.npcs = action.npcs.map(npcId => DataManager.getCharacter(npcId)).filter(Boolean);
+            const currentPeriod = TimeSystem.getCurrentPeriod();
+            result.npcs = action.npcs
+                .map(npcId => DataManager.getCharacter(npcId))
+                .filter(npc => {
+                    if (!npc) return false;
+                    // 如果NPC没有设置可用时间，默认所有时间都可以找到
+                    if (!npc.availableTimes) return true;
+                    // 检查当前时段是否在NPC的可用时间内
+                    return npc.availableTimes.includes(currentPeriod);
+                });
+            // 记录不可用的NPC，用于显示提示
+            result.unavailableNpcs = action.npcs
+                .map(npcId => DataManager.getCharacter(npcId))
+                .filter(npc => {
+                    if (!npc) return false;
+                    if (!npc.availableTimes) return false;
+                    return !npc.availableTimes.includes(currentPeriod);
+                });
         }
 
         return result;

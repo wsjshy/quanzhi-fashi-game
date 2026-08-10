@@ -374,6 +374,15 @@ const UI = {
                     <div style="display: flex; gap: 30px; align-items: center;">
                         <div style="color: #ffd700; font-size: 20px; font-weight: bold;">${location?.name || '未知地点'}</div>
                         <div style="color: #aaa; font-size: 14px;">${TimeSystem.getTimeDescription()}</div>
+                        ${TimeSystem.isNight() ? `
+                            <div style="color: #ff9966; font-size: 13px; background: rgba(100, 50, 50, 0.5); padding: 4px 10px; border-radius: 10px;">
+                                🌙 夜晚：敌人更强，奖励 +30%
+                            </div>
+                        ` : `
+                            <div style="color: #66ff99; font-size: 13px; background: rgba(50, 100, 50, 0.5); padding: 4px 10px; border-radius: 10px;">
+                                ☀️ 白天：安全探索时间
+                            </div>
+                        `}
                     </div>
                     <div style="display: flex; gap: 20px; align-items: center;">
                         <span style="color: #ffd700;">💰 ${Player.gold}</span>

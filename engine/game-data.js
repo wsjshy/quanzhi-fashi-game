@@ -351,6 +351,8 @@ const GameData = {
             spriteColor: '#6633cc',
             image: 'assets/images/characters/mo_fan.jpg',
             location: 'tianlan_school',
+            // 可用时间：白天在学校，晚上要修炼或回家
+            availableTimes: ['morning', 'afternoon', 'evening'],
             dialogue: [
                 {
                     trigger: 'default',
@@ -900,6 +902,8 @@ const GameData = {
             skills: ['basic_attack', 'wind_blade'],
             spriteColor: '#99ff99',
             location: 'tianlan_school',
+            // 可用时间：学生，白天在学校
+            availableTimes: ['morning', 'afternoon', 'evening'],
             dialogue: [
                 {
                     trigger: 'default',
@@ -1144,6 +1148,8 @@ const GameData = {
             skills: ['basic_attack', 'light_ray'],
             spriteColor: '#ffff99',
             location: 'tianlan_school',
+            // 可用时间：富二代，白天在学校，傍晚可能出去玩
+            availableTimes: ['morning', 'afternoon', 'evening'],
             dialogue: [
                 {
                     trigger: 'default',
@@ -1426,6 +1432,8 @@ const GameData = {
             spriteColor: '#66ccff',
             image: 'assets/images/characters/mu_ningxue.jpg',
             location: 'tianlan_school',
+            // 可用时间：穆家千金，白天在学校，傍晚就回家了
+            availableTimes: ['morning', 'afternoon'],
             dialogue: [
                 {
                     trigger: 'default',
@@ -1626,6 +1634,8 @@ const GameData = {
             spriteColor: '#ff6633',
             image: 'assets/images/characters/tang_yue.jpg',
             location: 'tianlan_school',
+            // 可用时间：白天在学校，晚上可能有其他事
+            availableTimes: ['morning', 'afternoon', 'evening'],
             dialogue: [
                 {
                     trigger: 'default',
@@ -1888,6 +1898,8 @@ const GameData = {
             skills: ['basic_attack'],
             spriteColor: '#cc9966',
             location: 'tianlan_school',
+            // 可用时间：小卖部白天开门，晚上关门
+            availableTimes: ['morning', 'afternoon', 'evening'],
             dialogue: [
                 {
                     trigger: 'default',
@@ -2108,6 +2120,8 @@ const GameData = {
             skills: ['basic_attack', 'wind_blade', 'wind_speed'],
             spriteColor: '#99ff99',
             location: 'city_street',
+            // 可用时间：白天在公会，晚上可能出任务或喝酒
+            availableTimes: ['morning', 'afternoon', 'evening'],
             dialogue: [
                 {
                     trigger: 'default',
@@ -2315,6 +2329,8 @@ const GameData = {
             skills: ['basic_attack', 'water_heal'],
             spriteColor: '#66aaff',
             location: 'city_street',
+            // 可用时间：书店白天开门，晚上关门
+            availableTimes: ['morning', 'afternoon', 'evening'],
             dialogue: [
                 {
                     trigger: 'default',
@@ -2731,6 +2747,8 @@ const GameData = {
             skills: ['basic_attack', 'dark_bolt'],
             spriteColor: '#993399',
             location: 'city_street',
+            // 可用时间：只有晚上才出现，神秘人嘛
+            availableTimes: ['night', 'evening'],
             dialogue: [
                 {
                     trigger: 'default',
@@ -3848,6 +3866,474 @@ const GameData = {
                     }
                 }
             }
+        },
+        
+        // 穆贺（黑教廷卧底）
+        mu_he: {
+            id: 'mu_he',
+            name: '穆贺',
+            title: '穆家执事',
+            description: '穆卓云的弟弟，穆家的执事，表面上温文尔雅，实际上是黑教廷的卧底。',
+            elements: ['dark', 'ice'],
+            level: 12,
+            maxHp: 600,
+            maxMp: 350,
+            attack: 45,
+            defense: 25,
+            speed: 16,
+            skills: ['basic_attack', 'dark_bolt', 'ice_spike', 'ice_shield'],
+            spriteColor: '#444466',
+            isNPC: true,
+            location: 'mu_manor',
+            
+            // 性格（表面）
+            personality: {
+                brave: 0.6,
+                kind: 0.4,
+                honest: 0.2,
+                impulsive: 0.3,
+                loyal: 0.3,
+                arrogant: 0.5,
+                greedy: 0.7,
+                curious: 0.6
+            },
+            
+            // 关系上限
+            relationshipCaps: {
+                canRomance: false,
+                canBeMentor: false,
+                canBeRival: true
+            },
+            
+            // 对话条件
+            dialogueRequirements: {
+                minLevel: 4,
+                minReputation: { mu_family: 5 }
+            },
+            
+            // 初始关系
+            initialRelationships: {
+                mu_zhuoyun: { opinion: 60, trust: 65, type: 'friend', label: '哥哥' },
+                mu_ningxue: { opinion: 30, trust: 20, type: 'acquaintance', label: '侄女' },
+                black_church_blue_deacon: { opinion: 80, trust: 85, type: 'friend', label: '同谋' }
+            },
+            
+            // 对话树
+            dialogueTree: {
+                startNode: 'default',
+                nodes: {
+                    default: {
+                        id: 'default',
+                        texts: [
+                            '哦？你是来找谁的？',
+                            '年轻人，有什么事吗？',
+                            '我是穆家的执事穆贺，有什么可以帮你的？'
+                        ],
+                        mood: 'polite',
+                        choices: [
+                            { text: '穆执事您好', next: 'polite_greeting', condition: { minOpinion: 0 } },
+                            { text: '我想了解一下穆家', next: 'about_mu_family', condition: { minOpinion: 10 } },
+                            { text: '听说最近山里不太平', next: 'about_demons', condition: { minDay: 25, minOpinion: 15 } },
+                            { text: '（试探）关于黑教廷...', next: 'about_black_church', condition: { minDay: 35, minOpinion: 25, hasInfo: 'black_church_intel' } },
+                            { text: '打扰了，告辞', next: null, action: 'close' }
+                        ]
+                    },
+                    
+                    polite_greeting: {
+                        id: 'polite_greeting',
+                        texts: [
+                            '嗯，还算懂礼貌。你是天澜魔法高中的学生吧？',
+                            '年轻人，好好修炼，将来会有出息的。',
+                            '穆家欢迎有天赋的年轻人。'
+                        ],
+                        effects: {
+                            opinion: 2,
+                            familiarity: 2
+                        },
+                        choices: [
+                            { text: '多谢穆执事夸奖', next: 'default', action: 'back' }
+                        ]
+                    },
+                    
+                    about_mu_family: {
+                        id: 'about_mu_family',
+                        texts: [
+                            '穆家是博城的老牌家族，传承了几百年，以冰系魔法闻名。',
+                            '穆家在博城势力很大，不是什么人都能随便进来的。',
+                            '你问这些做什么？难道想加入穆家？'
+                        ],
+                        effects: {
+                            familiarity: 3
+                        },
+                        choices: [
+                            { text: '只是好奇问问', next: 'default', action: 'back' }
+                        ]
+                    },
+                    
+                    about_demons: {
+                        id: 'about_demons',
+                        texts: [
+                            '山里的事...我也听说了一些。确实不太太平啊。',
+                            '这种事情，自然有猎魔者公会和魔法协会去管，我们这些人就别操心了。',
+                            '年轻人，管好自己就行了，别管那么多闲事。'
+                        ],
+                        effects: {
+                            opinion: -1
+                        },
+                        choices: [
+                            { text: '穆执事说得是', next: 'default', action: 'back' }
+                        ]
+                    },
+                    
+                    about_black_church: {
+                        id: 'about_black_church',
+                        texts: [
+                            '黑教廷？那是什么东西？我没听说过。',
+                            '年轻人，不要听信那些谣言，什么黑教廷，都是骗人的。',
+                            '...你怎么知道这些的？你调查过我？'
+                        ],
+                        effects: {
+                            opinion: -5,
+                            giveInfo: 'black_church_intel'
+                        },
+                        choices: [
+                            { text: '我只是随便问问', next: 'default', action: 'back' },
+                            { text: '穆执事，你是不是知道些什么？', next: 'suspicious', condition: { minOpinion: -10 } }
+                        ]
+                    },
+                    
+                    suspicious: {
+                        id: 'suspicious',
+                        texts: [
+                            '哼，年轻人，有些事情，知道太多对你没好处。',
+                            '我劝你，最好把今天的话都忘掉，就当什么都没发生过。',
+                            '...不然的话，后果自负。'
+                        ],
+                        effects: {
+                            opinion: -10,
+                            giveInfo: 'black_church_clue'
+                        },
+                        choices: [
+                            { text: '（赶紧离开）', next: null, action: 'close' },
+                            { text: '你果然是黑教廷的人！', next: 'reveal', condition: { minLevel: 8, hasInfo: 'black_church_intel' } }
+                        ]
+                    },
+                    
+                    reveal: {
+                        id: 'reveal',
+                        texts: [
+                            '...既然你都知道了，那我就不装了。',
+                            '没错，我就是黑教廷的人。可惜啊，你知道得太晚了。',
+                            '博城的灾难，很快就要开始了...而你，什么也阻止不了。'
+                        ],
+                        effects: {
+                            opinion: -30,
+                            giveInfo: 'black_church_intel',
+                            setFlag: 'mu_he_revealed'
+                        },
+                        choices: [
+                            { text: '我要阻止你们！', next: 'fight', condition: { minLevel: 10 } },
+                            { text: '（先撤退，从长计议）', next: null, action: 'close' }
+                        ]
+                    },
+                    
+                    fight: {
+                        id: 'fight',
+                        texts: [
+                            '阻止我们？就凭你？',
+                            '哼，不知天高地厚的小子，让我来教训教训你！',
+                            '记住，下辈子别这么多管闲事！'
+                        ],
+                        action: 'battle',
+                        battleEnemy: 'black_church_blue_deacon',
+                        choices: []
+                    }
+                }
+            }
+        },
+        
+        // 猎魔者公会接待员
+        hunter_receptionist: {
+            id: 'hunter_receptionist',
+            name: '小雨',
+            title: '猎魔者公会接待员',
+            description: '猎魔者公会的接待员，负责登记任务和管理会员。性格温柔，做事认真。',
+            elements: ['water'],
+            level: 5,
+            maxHp: 100,
+            maxMp: 100,
+            attack: 8,
+            defense: 8,
+            speed: 10,
+            skills: ['basic_attack', 'water_heal'],
+            spriteColor: '#88ddff',
+            isNPC: true,
+            location: 'city_street',
+            
+            // 性格
+            personality: {
+                brave: 0.5,
+                kind: 0.9,
+                honest: 0.9,
+                impulsive: 0.2,
+                loyal: 0.8,
+                arrogant: 0.1,
+                greedy: 0.2,
+                curious: 0.7
+            },
+            
+            // 关系上限
+            relationshipCaps: {
+                canRomance: true,
+                canBeMentor: false,
+                canBeRival: false
+            },
+            
+            // 对话条件
+            dialogueRequirements: {
+                minLevel: 2
+            },
+            
+            // 初始关系
+            initialRelationships: {
+                hunter_li: { opinion: 60, trust: 50, type: 'friend', label: '前辈' },
+                magic_association_chairman: { opinion: 40, trust: 35, type: 'acquaintance', label: '会长' }
+            },
+            
+            // 对话树
+            dialogueTree: {
+                startNode: 'default',
+                nodes: {
+                    default: {
+                        id: 'default',
+                        texts: [
+                            '你好，欢迎来到猎魔者公会！',
+                            '请问有什么可以帮你的吗？',
+                            '是来接任务的，还是来买东西的？'
+                        ],
+                        mood: 'friendly',
+                        choices: [
+                            { text: '我想看看公会商店', next: 'shop', condition: { minReputation: { hunter_guild: 0 } } },
+                            { text: '有什么任务可以接吗？', next: 'quests', condition: { minLevel: 3 } },
+                            { text: '请问猎魔者公会是什么？', next: 'about_guild', condition: { minOpinion: 0 } },
+                            { text: '你叫什么名字？', next: 'intro', condition: { minOpinion: 10 } },
+                            { text: '打扰了，再见', next: null, action: 'close' }
+                        ]
+                    },
+                    
+                    shop: {
+                        id: 'shop',
+                        texts: [
+                            '好的，公会商店在这里，请随便看！',
+                            '我们这里有很多猎魔专用的装备和药水哦。',
+                            '会员还可以享受折扣呢！'
+                        ],
+                        action: 'shop',
+                        shopId: 'hunter_shop',
+                        choices: [
+                            { text: '谢谢', next: 'default', action: 'back' }
+                        ]
+                    },
+                    
+                    quests: {
+                        id: 'quests',
+                        texts: [
+                            '最近的任务有很多哦，你想接哪一类的？',
+                            '猎魔任务的奖励都很丰厚，不过也很危险。',
+                            '一定要小心安全哦！'
+                        ],
+                        effects: {
+                            opinion: 2,
+                            familiarity: 2
+                        },
+                        choices: [
+                            { text: '我去找老李问问', next: 'default', action: 'back' }
+                        ]
+                    },
+                    
+                    about_guild: {
+                        id: 'about_guild',
+                        texts: [
+                            '猎魔者公会是专门负责猎魔任务的组织哦。',
+                            '我们接受各种猎魔委托，从清除低级妖魔到调查异常事件都有。',
+                            '加入公会的话，接任务可以获得更多奖励，还能享受商店折扣呢！'
+                        ],
+                        effects: {
+                            familiarity: 3
+                        },
+                        choices: [
+                            { text: '原来如此', next: 'default', action: 'back' }
+                        ]
+                    },
+                    
+                    intro: {
+                        id: 'intro',
+                        texts: [
+                            '我叫小雨，是公会的接待员。',
+                            '我在这里工作已经两年了，每天都能见到各种各样的猎人。',
+                            '你呢？你叫什么名字？是新来的猎人吗？'
+                        ],
+                        effects: {
+                            opinion: 3,
+                            familiarity: 5
+                        },
+                        choices: [
+                            { text: '我叫...（自我介绍）', next: 'chat', condition: { minOpinion: 20 } },
+                            { text: '我只是个普通学生', next: 'default', action: 'back' }
+                        ]
+                    },
+                    
+                    chat: {
+                        id: 'chat',
+                        texts: [
+                            '很高兴认识你！',
+                            '以后常来公会玩哦，我给你打折！',
+                            '有什么不懂的都可以问我。'
+                        ],
+                        effects: {
+                            opinion: 5,
+                            familiarity: 5
+                        },
+                        choices: [
+                            { text: '好的，谢谢', next: 'default', action: 'back' }
+                        ]
+                    }
+                }
+            }
+        },
+        
+        // 穆家管家
+        mu_butler: {
+            id: 'mu_butler',
+            name: '福伯',
+            title: '穆家管家',
+            description: '穆家的老管家，在穆家工作了几十年，忠心耿耿，做事一丝不苟。',
+            elements: ['ice'],
+            level: 10,
+            maxHp: 300,
+            maxMp: 200,
+            attack: 25,
+            defense: 20,
+            speed: 10,
+            skills: ['basic_attack', 'ice_spike', 'ice_shield'],
+            spriteColor: '#aaddff',
+            isNPC: true,
+            location: 'mu_manor',
+            
+            // 性格
+            personality: {
+                brave: 0.6,
+                kind: 0.7,
+                honest: 0.95,
+                impulsive: 0.1,
+                loyal: 0.95,
+                arrogant: 0.3,
+                greedy: 0.1,
+                curious: 0.4
+            },
+            
+            // 关系上限
+            relationshipCaps: {
+                canRomance: false,
+                canBeMentor: false,
+                canBeRival: false
+            },
+            
+            // 对话条件
+            dialogueRequirements: {
+                minLevel: 4,
+                minReputation: { mu_family: 5 }
+            },
+            
+            // 初始关系
+            initialRelationships: {
+                mu_zhuoyun: { opinion: 90, trust: 95, type: 'best_friend', label: '家主' },
+                mu_he: { opinion: 60, trust: 50, type: 'friend', label: '二老爷' },
+                mu_ningxue: { opinion: 80, trust: 75, type: 'close_friend', label: '大小姐' }
+            },
+            
+            // 对话树
+            dialogueTree: {
+                startNode: 'default',
+                nodes: {
+                    default: {
+                        id: 'default',
+                        texts: [
+                            '这位客人，请问有什么事吗？',
+                            '我是穆家的管家福伯，有什么可以帮您的？',
+                            '穆家欢迎有身份的客人。'
+                        ],
+                        mood: 'polite',
+                        choices: [
+                            { text: '我想看看穆家的宝库', next: 'shop', condition: { minReputation: { mu_family: 10 } } },
+                            { text: '请问穆家主在吗？', next: 'about_master', condition: { minOpinion: 10 } },
+                            { text: '关于穆宁雪小姐...', next: 'about_ningxue', condition: { minOpinion: 20 } },
+                            { text: '听说最近山里不太平', next: 'about_demons', condition: { minDay: 30, minOpinion: 15 } },
+                            { text: '打扰了，告辞', next: null, action: 'close' }
+                        ]
+                    },
+                    
+                    shop: {
+                        id: 'shop',
+                        texts: [
+                            '好的，客人请随我来。',
+                            '穆家宝库收藏了不少好东西，客人请慢慢看。',
+                            '这些都是穆家多年的珍藏，品质有保证。'
+                        ],
+                        action: 'shop',
+                        shopId: 'mu_family_shop',
+                        choices: [
+                            { text: '多谢', next: 'default', action: 'back' }
+                        ]
+                    },
+                    
+                    about_master: {
+                        id: 'about_master',
+                        texts: [
+                            '家主大人平时很忙，一般不见外客。',
+                            '如果您有什么事，可以先跟我说，我会转达给家主。',
+                            '家主大人是穆家的顶梁柱，很了不起的。'
+                        ],
+                        effects: {
+                            familiarity: 2
+                        },
+                        choices: [
+                            { text: '明白了', next: 'default', action: 'back' }
+                        ]
+                    },
+                    
+                    about_ningxue: {
+                        id: 'about_ningxue',
+                        texts: [
+                            '宁雪小姐是穆家的天才，从小就很厉害。',
+                            '小姐性格比较冷淡，但人其实很好的。',
+                            '...您问这个做什么？'
+                        ],
+                        effects: {
+                            opinion: -1,
+                            familiarity: 3
+                        },
+                        choices: [
+                            { text: '只是好奇问问', next: 'default', action: 'back' }
+                        ]
+                    },
+                    
+                    about_demons: {
+                        id: 'about_demons',
+                        texts: [
+                            '山里的事...我也听说了一些。',
+                            '穆家已经加强了防备，应该不会有问题的。',
+                            '客人也请多注意安全。'
+                        ],
+                        effects: {
+                            familiarity: 2
+                        },
+                        choices: [
+                            { text: '多谢关心', next: 'default', action: 'back' }
+                        ]
+                    }
+                }
+            }
         }
     },
 
@@ -3863,12 +4349,12 @@ const GameData = {
                 {
                     id: 'study',
                     name: '上课学习',
-                    description: '学习魔法理论，稳定获得经验，有小概率领悟突破',
+                    description: '学习魔法理论（半天），稳定获得经验，有小概率领悟突破',
                     icon: '📚',
-                    timeCost: 2,
+                    timeCost: 4,
                     staminaCost: 20,
                     effects: {
-                        exp: 15,
+                        exp: 25,
                         mp: -5
                     },
                     eventChance: 0.15,
@@ -3877,12 +4363,12 @@ const GameData = {
                 {
                     id: 'train',
                     name: '修炼魔法',
-                    description: '实战修炼魔法，获得大量经验，有概率突破或失败受伤',
+                    description: '实战修炼魔法（半天），获得大量经验，有概率突破或失败受伤',
                     icon: '✨',
-                    timeCost: 3,
-                    staminaCost: 30,
+                    timeCost: 4,
+                    staminaCost: 35,
                     effects: {
-                        exp: 25,
+                        exp: 40,
                         hp: -10,
                         mp: -25
                     },
@@ -3892,7 +4378,7 @@ const GameData = {
                 {
                     id: 'rest',
                     name: '休息',
-                    description: '在宿舍休息，恢复 HP、MP 和部分体力',
+                    description: '在宿舍休息一会儿，恢复 HP、MP 和部分体力',
                     icon: '😴',
                     timeCost: 2,
                     staminaCost: 0,
@@ -3903,12 +4389,25 @@ const GameData = {
                     }
                 },
                 {
+                    id: 'sleep',
+                    name: '睡觉',
+                    description: '好好睡一觉（8小时），完全恢复体力，时间来到第二天早上',
+                    icon: '🌙',
+                    timeCost: 8,
+                    staminaCost: 0,
+                    effects: {
+                        hp: 50,
+                        mp: 50,
+                        stamina: 100
+                    }
+                },
+                {
                     id: 'shop',
                     name: '小卖部',
                     description: '学校的小卖部，购买药水和基础物品',
                     icon: '🛒',
                     timeCost: 1,
-                    staminaCost: 10,
+                    staminaCost: 5,
                     shopId: 'school_shop'
                 },
                 {
@@ -3916,8 +4415,8 @@ const GameData = {
                     name: '找人聊天',
                     description: '和学校里的 NPC 对话，可能接任务或获得信息',
                     icon: '💬',
-                    timeCost: 1,
-                    staminaCost: 10,
+                    timeCost: 2,
+                    staminaCost: 5,
                     npcs: ['mo_fan', 'zhang_xiaohou', 'zhao_manyan', 'mu_ningxue', 'tang_yue', 'xiao_principal', 'xue_musheng', 'zhou_min', 'xu_zhaoting', 'he_yu']
                 }
             ],
@@ -3972,7 +4471,7 @@ const GameData = {
                     icon: '💬',
                     timeCost: 1,
                     staminaCost: 10,
-                    npcs: ['hunter_li', 'book_shop_owner', 'magic_association_chairman', 'mysterious_mage']
+                    npcs: ['hunter_li', 'book_shop_owner', 'magic_association_chairman', 'mysterious_mage', 'hunter_receptionist']
                 }
             ],
             connectedLocations: ['tianlan_school', 'xuefeng_mountain'],
@@ -4175,8 +4674,58 @@ const GameData = {
                 }
             ],
             connectedLocations: ['bo_city'],
-            npcs: ['mu_ningxue', 'mu_zhuoyun'],
+            npcs: ['mu_ningxue', 'mu_zhuoyun', 'mu_he', 'mu_butler'],
             npcRate: 0.3
+        },
+        
+        // 博城北门
+        bo_north_gate: {
+            id: 'bo_north_gate',
+            name: '博城北门',
+            description: '博城的北城门，通往外面的世界。城门守卫森严，平时有士兵把守。',
+            backgroundColor: '#3a4a3a',
+            unlocked: false,
+            unlockCondition: {
+                minLevel: 5,
+                hint: '需要等级 5 才能去北门'
+            },
+            actions: [
+                {
+                    id: 'watch_gate',
+                    name: '查看城门',
+                    description: '看看城门的情况，了解一下外面的消息',
+                    icon: '🏯',
+                    timeCost: 1,
+                    staminaCost: 5,
+                    effects: {
+                        exp: 3
+                    },
+                    eventChance: 0.3,
+                    events: ['event_gate_news', 'event_guard_chat']
+                },
+                {
+                    id: 'patrol',
+                    name: '帮忙巡逻',
+                    description: '帮守卫巡逻，获得一些报酬和声望',
+                    icon: '🛡️',
+                    timeCost: 3,
+                    staminaCost: 25,
+                    condition: {
+                        minLevel: 6
+                    },
+                    effects: {
+                        exp: 20,
+                        gold: 30
+                    },
+                    eventChance: 0.2,
+                    events: ['event_patrol_find', 'event_patrol_attack']
+                }
+            ],
+            connectedLocations: ['city_street', 'xuefeng_mountain'],
+            npcs: [],
+            npcRate: 0.1,
+            enemies: ['demon_wolf', 'shadow_creature'],
+            enemyRate: 0.05
         }
     },
 
@@ -4379,6 +4928,109 @@ const GameData = {
             },
             requiredLevel: 2,
             rarity: '优秀'
+        },
+        
+        // 高级魔力药水
+        super_mana_potion: {
+            id: 'super_mana_potion',
+            name: '高级魔力药水',
+            description: '恢复大量MP的高级药水',
+            type: 'consumable',
+            icon: '💙',
+            price: 100,
+            stackable: true,
+            usableInBattle: true,
+            usableOutOfBattle: true,
+            effects: {
+                mp: 80
+            },
+            rarity: '稀有'
+        },
+        
+        // 猎魔匕首
+        hunter_knife: {
+            id: 'hunter_knife',
+            name: '猎魔匕首',
+            description: '猎魔者专用的匕首，对妖魔有额外伤害',
+            type: 'weapon',
+            icon: '🗡️',
+            price: 180,
+            stackable: false,
+            usableInBattle: false,
+            usableOutOfBattle: true,
+            equipSlot: 'weapon',
+            equipStats: {
+                attack: 12,
+                speed: 3,
+                critRate: 0.05
+            },
+            requiredLevel: 3,
+            rarity: '优秀'
+        },
+        
+        // 冰系法杖
+        ice_staff: {
+            id: 'ice_staff',
+            name: '寒冰法杖',
+            description: '蕴含冰系魔力的法杖，冰系法师的最爱',
+            type: 'weapon',
+            icon: '❄️',
+            price: 500,
+            stackable: false,
+            usableInBattle: false,
+            usableOutOfBattle: true,
+            equipSlot: 'weapon',
+            equipStats: {
+                attack: 25,
+                mp: 30,
+                critRate: 0.05
+            },
+            requiredLevel: 6,
+            rarity: '稀有'
+        },
+        
+        // 冰系护甲
+        ice_armor: {
+            id: 'ice_armor',
+            name: '冰蚕护甲',
+            description: '用冰蚕丝织成的护甲，轻盈且坚固',
+            type: 'armor',
+            icon: '🧥',
+            price: 600,
+            stackable: false,
+            usableInBattle: false,
+            usableOutOfBattle: true,
+            equipSlot: 'armor',
+            equipStats: {
+                defense: 20,
+                hp: 50,
+                mp: 20
+            },
+            requiredLevel: 6,
+            rarity: '稀有'
+        },
+        
+        // 穆家戒指
+        mu_family_ring: {
+            id: 'mu_family_ring',
+            name: '穆家传家戒指',
+            description: '穆氏家族的传家戒指，蕴含着强大的冰系魔力',
+            type: 'accessory',
+            icon: '💍',
+            price: 800,
+            stackable: false,
+            usableInBattle: false,
+            usableOutOfBattle: true,
+            equipSlot: 'accessory',
+            equipStats: {
+                attack: 10,
+                defense: 8,
+                hp: 30,
+                mp: 50,
+                critRate: 0.05
+            },
+            requiredLevel: 8,
+            rarity: '史诗'
         }
     },
 
@@ -4955,6 +5607,328 @@ const GameData = {
             dialogueStart: '小子，想加入猎魔者公会吗？那就证明你的实力！去雪峰山击败 5 种不同的妖魔，我就推荐你入会。',
             dialogueInProgress: '怎么样，猎魔的感觉如何？记住，猎魔不是儿戏，一定要小心谨慎。',
             dialogueComplete: '好小子！果然有两下子！从今天起，你就是猎魔者公会的一员了！'
+        },
+        
+        // 猎魔者公会日常任务：清剿狼群
+        quest_hunter_daily_wolf: {
+            id: 'quest_hunter_daily_wolf',
+            name: '日常任务：清剿狼群',
+            description: '猎魔者公会的日常任务，清剿雪峰山附近的幽狼兽。',
+            giver: 'hunter_receptionist',
+            type: 'hunt',
+            objectives: [
+                {
+                    type: 'kill',
+                    enemyId: 'demon_wolf',
+                    count: 3,
+                    description: '击败 3 只幽狼兽'
+                }
+            ],
+            rewards: {
+                exp: 150,
+                gold: 100,
+                items: [
+                    { itemId: 'health_potion', count: 2 }
+                ],
+                reputation: {
+                    hunter_guild: 5
+                }
+            },
+            prerequisites: ['quest_hunter_guild_trial'],
+            nextQuest: null,
+            isMainQuest: false,
+            repeatable: true,
+            dialogueStart: '这是今天的日常任务，去雪峰山清剿几只幽狼兽吧。',
+            dialogueInProgress: '加油哦，注意安全！',
+            dialogueComplete: '做得不错！这是你的奖励。'
+        },
+        
+        // 猎魔者公会任务：精英狩猎
+        quest_hunter_elite: {
+            id: 'quest_hunter_elite',
+            name: '精英任务：战将级妖魔',
+            description: '雪峰山深处出现了战将级妖魔，公会需要高手去处理。',
+            giver: 'hunter_receptionist',
+            type: 'hunt',
+            objectives: [
+                {
+                    type: 'kill',
+                    enemyId: 'giant_eye_rat',
+                    count: 1,
+                    description: '击败 1 只巨眼猩鼠'
+                }
+            ],
+            rewards: {
+                exp: 500,
+                gold: 300,
+                items: [
+                    { itemId: 'super_health_potion', count: 3 },
+                    { itemId: 'demon_core', count: 5 }
+                ],
+                reputation: {
+                    hunter_guild: 15
+                }
+            },
+            prerequisites: ['quest_hunter_guild_trial'],
+            nextQuest: null,
+            isMainQuest: false,
+            requiredLevel: 6,
+            dialogueStart: '雪峰山深处出现了战将级妖魔，你敢去挑战吗？',
+            dialogueInProgress: '战将级妖魔很危险，一定要小心！',
+            dialogueComplete: '太厉害了！你居然能击败战将级妖魔！'
+        },
+        
+        // 穆家任务：穆家的考验
+        quest_mu_family_test: {
+            id: 'quest_mu_family_test',
+            name: '穆家的考验',
+            description: '穆家想测试你的实力，如果你能通过考验，就能获得穆家的认可。',
+            giver: 'mu_butler',
+            type: 'hunt',
+            objectives: [
+                {
+                    type: 'kill',
+                    enemyId: 'ice_toad',
+                    count: 3,
+                    description: '击败 3 只冰蟾'
+                }
+            ],
+            rewards: {
+                exp: 300,
+                gold: 200,
+                items: [
+                    { itemId: 'mana_potion', count: 3 }
+                ],
+                reputation: {
+                    mu_family: 10
+                }
+            },
+            prerequisites: [],
+            nextQuest: 'quest_mu_family_elite',
+            isMainQuest: false,
+            requiredLevel: 5,
+            dialogueStart: '穆家想邀请你参加一个小考验，通过的话就能获得穆家的认可。你愿意试试吗？',
+            dialogueInProgress: '怎么样，考验还顺利吗？穆家从不亏待有实力的人。',
+            dialogueComplete: '不错不错！你通过了考验。从今天起，你就是穆家的朋友了。'
+        },
+        
+        // 穆家任务：穆家的委托
+        quest_mu_family_elite: {
+            id: 'quest_mu_family_elite',
+            name: '穆家的委托',
+            description: '穆家有一个重要的委托，需要高手去雪峰山深处处理一个麻烦的妖魔。',
+            giver: 'mu_butler',
+            type: 'hunt',
+            objectives: [
+                {
+                    type: 'kill',
+                    enemyId: 'bone_spike_zheng',
+                    count: 1,
+                    description: '击败 1 只骨刺狰'
+                }
+            ],
+            rewards: {
+                exp: 600,
+                gold: 500,
+                items: [
+                    { itemId: 'ice_staff', count: 1 },
+                    { itemId: 'super_health_potion', count: 5 }
+                ],
+                reputation: {
+                    mu_family: 20
+                }
+            },
+            prerequisites: ['quest_mu_family_test'],
+            nextQuest: null,
+            isMainQuest: false,
+            requiredLevel: 8,
+            dialogueStart: '穆家有一个重要委托，雪峰山深处出现了一只骨刺狰，很是麻烦。你能帮忙处理一下吗？',
+            dialogueInProgress: '骨刺狰防御力极高，一定要小心！',
+            dialogueComplete: '了不起！居然能击败骨刺狰！穆家欠你一个人情。'
+        },
+        
+        // 魔法协会任务：协会的试炼
+        quest_magic_association_trial: {
+            id: 'quest_magic_association_trial',
+            name: '魔法协会的试炼',
+            description: '魔法协会的试炼，通过的话可以成为协会的外围成员。',
+            giver: 'magic_association_chairman',
+            type: 'hunt',
+            objectives: [
+                {
+                    type: 'kill',
+                    enemyId: 'thunder_beast',
+                    count: 2,
+                    description: '击败 2 只雷兽'
+                },
+                {
+                    type: 'kill',
+                    enemyId: 'stone_monster',
+                    count: 2,
+                    description: '击败 2 只石怪'
+                }
+            ],
+            rewards: {
+                exp: 400,
+                gold: 300,
+                items: [
+                    { itemId: 'magic_ring', count: 1 }
+                ],
+                reputation: {
+                    magic_association: 15
+                }
+            },
+            prerequisites: [],
+            nextQuest: 'quest_magic_association_elite',
+            isMainQuest: false,
+            requiredLevel: 6,
+            dialogueStart: '年轻人，想加入魔法协会吗？先通过我的试炼吧。',
+            dialogueInProgress: '试炼进行得如何？魔法协会只认可有实力的人。',
+            dialogueComplete: '不错！你通过了试炼。从今天起，你就是魔法协会的外围成员了。'
+        },
+        
+        // 魔法协会任务：协会的委托
+        quest_magic_association_elite: {
+            id: 'quest_magic_association_elite',
+            name: '魔法协会的委托',
+            description: '魔法协会有一个紧急委托，需要调查雪峰山的妖魔异动原因。',
+            giver: 'magic_association_chairman',
+            type: 'investigate',
+            objectives: [
+                {
+                    type: 'reach',
+                    locationId: 'xuefeng_mountain_deep',
+                    count: 3,
+                    description: '深入雪峰山 3 次，调查妖魔异动'
+                }
+            ],
+            rewards: {
+                exp: 500,
+                gold: 400,
+                items: [
+                    { itemId: 'super_mana_potion', count: 3 },
+                    { itemId: 'demon_core', count: 5 }
+                ],
+                reputation: {
+                    magic_association: 20,
+                    hunter_guild: 10
+                }
+            },
+            prerequisites: ['quest_magic_association_trial'],
+            nextQuest: null,
+            isMainQuest: false,
+            requiredLevel: 8,
+            dialogueStart: '最近雪峰山的妖魔异动很不正常，协会需要有人去深入调查一下。你愿意帮忙吗？',
+            dialogueInProgress: '调查得怎么样了？一定要注意安全，事情可能不简单。',
+            dialogueComplete: '辛苦了！这些情报很重要。魔法协会会记住你的贡献。'
+        },
+        
+        // 主线任务：调查可疑人物
+        quest_investigate_suspicious: {
+            id: 'quest_investigate_suspicious',
+            name: '调查可疑人物',
+            description: '唐月老师说最近雪峰山附近出现了一些可疑人物，让你去调查一下。',
+            giver: 'tang_yue',
+            type: 'investigate',
+            objectives: [
+                {
+                    type: 'reach',
+                    locationId: 'xuefeng_mountain',
+                    count: 5,
+                    description: '在雪峰山探索 5 次，寻找可疑人物的踪迹'
+                }
+            ],
+            rewards: {
+                exp: 300,
+                gold: 150,
+                items: [
+                    { itemId: 'health_potion', count: 3 },
+                    { itemId: 'mana_potion', count: 3 }
+                ],
+                reputation: {
+                    tianlan_school: 10
+                }
+            },
+            prerequisites: ['quest_collect_more_herbs'],
+            nextQuest: 'quest_black_church_clues',
+            isMainQuest: true,
+            dialogueStart: '最近我收到一些报告，说雪峰山附近出现了一些穿着黑色长袍的可疑人物。你能帮我去调查一下吗？一定要小心。',
+            dialogueInProgress: '调查得怎么样了？有没有发现什么可疑的情况？记住，安全第一。',
+            dialogueComplete: '谢谢你的调查！这些信息很重要。我感觉事情可能比我们想象的更严重...'
+        },
+        
+        // 主线任务：黑教廷的线索
+        quest_black_church_clues: {
+            id: 'quest_black_church_clues',
+            name: '黑教廷的线索',
+            description: '唐月老师怀疑那些可疑人物和黑教廷有关，让你收集更多相关的情报。',
+            giver: 'tang_yue',
+            type: 'investigate',
+            objectives: [
+                {
+                    type: 'kill',
+                    enemyId: 'black_church_acolyte',
+                    count: 3,
+                    description: '击败 3 名黑教廷教徒'
+                }
+            ],
+            rewards: {
+                exp: 500,
+                gold: 250,
+                items: [
+                    { itemId: 'super_health_potion', count: 2 },
+                    { itemId: 'mana_potion', count: 3 },
+                    { itemId: 'demon_core', count: 3 }
+                ],
+                reputation: {
+                    tianlan_school: 15,
+                    magic_association: 10
+                }
+            },
+            prerequisites: ['quest_investigate_suspicious'],
+            nextQuest: 'quest_stop_ritual',
+            isMainQuest: true,
+            dialogueStart: '你的调查证实了我的猜测...那些人很可能是黑教廷的成员。黑教廷是一个非常危险的邪恶组织，你要小心。能帮我收集更多证据吗？',
+            dialogueInProgress: '黑教廷的人很危险，你确定要和他们作对吗？记住，如果遇到危险，一定要先保证自己的安全。',
+            dialogueComplete: '你做得很好！这些证据足以证明黑教廷确实在博城活动。我会向魔法协会报告这件事的。'
+        },
+        
+        // 主线任务：阻止仪式
+        quest_stop_ritual: {
+            id: 'quest_stop_ritual',
+            name: '阻止黑教廷仪式',
+            description: '据情报显示，黑教廷正在雪峰山深处进行一个危险的仪式，必须阻止他们！',
+            giver: 'tang_yue',
+            type: 'hunt',
+            objectives: [
+                {
+                    type: 'kill',
+                    enemyId: 'black_church_deacon',
+                    count: 1,
+                    description: '击败黑教廷执事，阻止仪式'
+                }
+            ],
+            rewards: {
+                exp: 1000,
+                gold: 500,
+                items: [
+                    { itemId: 'super_health_potion', count: 5 },
+                    { itemId: 'mana_potion', count: 5 },
+                    { itemId: 'demon_core', count: 10 },
+                    { itemId: 'flame_staff', count: 1 }
+                ],
+                reputation: {
+                    tianlan_school: 25,
+                    magic_association: 20,
+                    hunter_guild: 15
+                }
+            },
+            prerequisites: ['quest_black_church_clues'],
+            nextQuest: null,
+            isMainQuest: true,
+            dialogueStart: '不好了！根据最新的情报，黑教廷正在雪峰山深处进行一个召唤仪式！如果让他们成功，后果不堪设想！你能去阻止他们吗？一定要小心，那里会有黑教廷的执事级成员把守。',
+            dialogueInProgress: '仪式还在进行吗？时间不多了，一定要尽快阻止他们！',
+            dialogueComplete: '太好了！你成功阻止了他们！你救了很多人！不过...我担心这只是开始，黑教廷可能还有更大的阴谋...'
         }
     },
 
@@ -5305,6 +6279,311 @@ const GameData = {
                 }
             ]
         },
+        
+        // 遇到黑教廷教徒
+        event_black_church_encounter: {
+            id: 'event_black_church_encounter',
+            name: '可疑的黑衣人',
+            description: '你在山里遇到了几个穿着黑色长袍的可疑人物',
+            trigger: 'exploring',
+            chance: 0.15,
+            conditions: [
+                { type: 'minDay', value: 20 },
+                { type: 'minLevel', value: 3 }
+            ],
+            once: false,
+            choices: [
+                {
+                    text: '悄悄绕开',
+                    effects: {
+                        giveInfo: 'black_church_clue'
+                    },
+                    resultText: '你小心翼翼地绕开了他们。虽然没看清他们在做什么，但你感觉这些人很危险...（获得线索：可疑的黑衣人）'
+                },
+                {
+                    text: '上前质问',
+                    effects: {
+                        startBattle: 'black_church_acolyte'
+                    },
+                    resultText: '你上前质问他们是谁。那些人转过头来，眼睛里闪烁着诡异的光芒...'
+                }
+            ]
+        },
+        
+        // 发现黑教廷仪式
+        event_black_church_ritual: {
+            id: 'event_black_church_ritual',
+            name: '神秘的仪式',
+            description: '你发现了一个神秘的仪式现场',
+            trigger: 'exploring',
+            chance: 0.08,
+            conditions: [
+                { type: 'minDay', value: 30 },
+                { type: 'minLevel', value: 5 }
+            ],
+            once: true,
+            choices: [
+                {
+                    text: '偷偷观察',
+                    effects: {
+                        giveInfo: 'black_church_intel',
+                        exp: 50
+                    },
+                    resultText: '你躲在暗处偷偷观察。那些黑衣人似乎在进行某种召唤仪式，嘴里念着诡异的咒语...你悄悄离开了，这个发现太重要了！（获得情报：黑教廷的阴谋，50经验）'
+                },
+                {
+                    text: '冲出去阻止',
+                    effects: {
+                        startBattle: 'black_church_deacon',
+                        giveInfo: 'black_church_intel'
+                    },
+                    resultText: '你勇敢地冲出去阻止他们！仪式被打断了，为首的黑衣人愤怒地向你攻来...'
+                },
+                {
+                    text: '赶紧离开',
+                    effects: {},
+                    resultText: '你感觉这里太危险了，赶紧离开了现场。有些事情，还是不要掺和的好...'
+                }
+            ]
+        },
+        
+        // 隐藏事件：神秘的宝箱
+        event_mysterious_chest: {
+            id: 'event_mysterious_chest',
+            name: '神秘的宝箱',
+            description: '你在一个隐蔽的角落发现了一个古老的宝箱',
+            trigger: 'exploring',
+            chance: 0.05,
+            conditions: [
+                { type: 'minLevel', value: 3 }
+            ],
+            once: true,
+            choices: [
+                {
+                    text: '打开看看',
+                    effects: {
+                        gold: 200,
+                        exp: 100,
+                        giveItem: { itemId: 'demon_core', count: 5 }
+                    },
+                    resultText: '你小心翼翼地打开了宝箱。里面有一些金币、几颗妖魔精核，还有一本破旧的笔记。看来这是某个前辈法师留下的东西！（获得 200 金币，100 经验，5 颗妖魔精核）'
+                },
+                {
+                    text: '可能有陷阱，别动',
+                    effects: {},
+                    resultText: '你觉得宝箱可能有陷阱，决定不动它。有时候，谨慎才是明智的选择。'
+                }
+            ]
+        },
+        
+        // 隐藏事件：古老的石碑
+        event_ancient_stele: {
+            id: 'event_ancient_stele',
+            name: '古老的石碑',
+            description: '你发现了一块刻满神秘符文的古老石碑',
+            trigger: 'exploring',
+            chance: 0.03,
+            conditions: [
+                { type: 'minLevel', value: 5 }
+            ],
+            once: true,
+            choices: [
+                {
+                    text: '仔细研究符文',
+                    effects: {
+                        exp: 150,
+                        spirit: 2
+                    },
+                    resultText: '你仔细研究石碑上的符文，虽然大部分都看不懂，但你隐约感觉到了一些魔法的奥秘。你的精神力似乎提升了！（获得 150 经验，精神力 +2）'
+                },
+                {
+                    text: '看不懂，走吧',
+                    effects: {},
+                    resultText: '这些符文太复杂了，你完全看不懂。也许以后有机会再来研究吧。'
+                }
+            ]
+        },
+        
+        // 彩蛋：迷路的小猫
+        event_lost_cat: {
+            id: 'event_lost_cat',
+            name: '迷路的小猫',
+            description: '你遇到了一只迷路的小黑猫',
+            trigger: 'exploring',
+            chance: 0.08,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '喂它点吃的',
+                    effects: {
+                        gold: -10,
+                        exp: 20
+                    },
+                    resultText: '你拿出一些食物喂小猫。它吃得很开心，吃完后蹭了蹭你的腿，然后跑走了。也许它会给你带来好运吧...（花费 10 金币，获得 20 经验）'
+                },
+                {
+                    text: '摸摸它',
+                    effects: {
+                        exp: 10
+                    },
+                    resultText: '你蹲下来摸了摸小猫。它似乎很享受，发出了呼噜呼噜的声音。心情变好了呢！（获得 10 经验）'
+                },
+                {
+                    text: '不理它',
+                    effects: {},
+                    resultText: '你没有理会小猫，继续前进。'
+                }
+            ]
+        },
+        
+        // 彩蛋：神秘的流浪商人
+        event_mysterious_merchant: {
+            id: 'event_mysterious_merchant',
+            name: '神秘的流浪商人',
+            description: '你遇到了一个神秘的流浪商人，他卖的东西很特别',
+            trigger: 'exploring',
+            chance: 0.05,
+            conditions: [
+                { type: 'minLevel', value: 4 },
+                { type: 'minGold', value: 100 }
+            ],
+            once: false,
+            choices: [
+                {
+                    text: '买一瓶神秘药水（100金币）',
+                    effects: {
+                        gold: -100,
+                        giveItem: { itemId: 'super_health_potion', count: 2 }
+                    },
+                    resultText: '你花100金币买了一瓶神秘药水。商人神神秘秘地说这是好东西... 嗯，好像就是高级药水？（获得 2 瓶高级药水）'
+                },
+                {
+                    text: '买一块魔法石（200金币）',
+                    effects: {
+                        gold: -200,
+                        giveItem: { itemId: 'magic_stone', count: 10 }
+                    },
+                    resultText: '你花200金币买了一块魔法石。商人说这是从很远的地方带来的... 看起来确实不错！（获得 10 块魔法石）'
+                },
+                {
+                    text: '太贵了，不买',
+                    effects: {},
+                    resultText: '你觉得价格太贵了，决定不买。商人耸耸肩，消失在了迷雾中...'
+                }
+            ]
+        },
+        
+        // 北门事件：城门消息
+        event_gate_news: {
+            id: 'event_gate_news',
+            name: '城门消息',
+            description: '你在城门听到了一些消息',
+            trigger: 'exploring',
+            chance: 0.5,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '仔细听听',
+                    effects: {
+                        giveInfo: 'demon_rumor_1'
+                    },
+                    resultText: '你听到守卫们在议论，说最近山里不太太平，有猎人看到了很多妖魔...（获得情报：山里最近不太平）'
+                },
+                {
+                    text: '没兴趣，走开',
+                    effects: {},
+                    resultText: '你对这些消息没什么兴趣，走开了。'
+                }
+            ]
+        },
+        
+        // 北门事件：守卫聊天
+        event_guard_chat: {
+            id: 'event_guard_chat',
+            name: '守卫聊天',
+            description: '守卫们正在聊天',
+            trigger: 'exploring',
+            chance: 0.4,
+            conditions: [
+                { type: 'minLevel', value: 4 }
+            ],
+            once: false,
+            choices: [
+                {
+                    text: '上去搭话',
+                    effects: {
+                        exp: 10,
+                        giveInfo: 'demon_rumor_2'
+                    },
+                    resultText: '你上去和守卫们搭话。他们告诉你最近药草涨价了，因为受伤的猎人越来越多...（获得 10 经验，获得情报：药草涨价）'
+                },
+                {
+                    text: '远远看着',
+                    effects: {},
+                    resultText: '你远远地看着守卫们聊天，没有上前打扰。'
+                }
+            ]
+        },
+        
+        // 北门事件：巡逻发现
+        event_patrol_find: {
+            id: 'event_patrol_find',
+            name: '巡逻发现',
+            description: '你在巡逻时发现了一些东西',
+            trigger: 'exploring',
+            chance: 0.3,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '捡起来看看',
+                    effects: {
+                        gold: 20,
+                        giveItem: { itemId: 'health_potion', count: 1 }
+                    },
+                    resultText: '你在路边捡到了一个小袋子，里面有 20 金币和一瓶药水！（获得 20 金币，获得治愈药水 x1）'
+                },
+                {
+                    text: '不捡，继续巡逻',
+                    effects: {
+                        exp: 5
+                    },
+                    resultText: '你没有捡，继续认真巡逻。守卫们对你的态度更好了。（获得 5 经验）'
+                }
+            ]
+        },
+        
+        // 北门事件：巡逻遇袭
+        event_patrol_attack: {
+            id: 'event_patrol_attack',
+            name: '巡逻遇袭',
+            description: '你在巡逻时遇到了妖魔',
+            trigger: 'exploring',
+            chance: 0.2,
+            conditions: [
+                { type: 'minLevel', value: 5 }
+            ],
+            once: false,
+            choices: [
+                {
+                    text: '迎战！',
+                    effects: {
+                        startBattle: 'demon_wolf'
+                    },
+                    resultText: '一只幽狼兽从草丛里扑了出来！你拔出武器，准备战斗！'
+                },
+                {
+                    text: '快跑！',
+                    effects: {
+                        hp: -20,
+                        stamina: -10
+                    },
+                    resultText: '你转身就跑，虽然被妖魔抓伤了，但好歹逃掉了。（损失 20 HP，损失 10 体力）'
+                }
+            ]
+        },
 
         // 酒馆事件
         event_tavern_quest: {
@@ -5391,6 +6670,40 @@ const GameData = {
                 { itemId: 'speed_boots', price: 280, stock: 3 },
                 { itemId: 'magic_stone', price: 25, stock: -1 },
                 { itemId: 'demon_core', price: 60, stock: -1 }
+            ]
+        },
+        
+        hunter_shop: {
+            id: 'hunter_shop',
+            name: '猎魔者公会商店',
+            factionId: 'hunter_guild',
+            description: '猎魔者公会的专属商店，只有会员才能享受折扣',
+            items: [
+                { itemId: 'health_potion', price: 25, stock: -1 },
+                { itemId: 'mana_potion', price: 35, stock: -1 },
+                { itemId: 'super_health_potion', price: 90, stock: 15 },
+                { itemId: 'super_mana_potion', price: 120, stock: 10 },
+                { itemId: 'leather_armor', price: 200, stock: 8 },
+                { itemId: 'speed_boots', price: 250, stock: 5 },
+                { itemId: 'hunter_knife', price: 180, stock: 5 },
+                { itemId: 'magic_stone', price: 22, stock: -1 },
+                { itemId: 'demon_core', price: 55, stock: -1 }
+            ]
+        },
+        
+        mu_family_shop: {
+            id: 'mu_family_shop',
+            name: '穆家宝库',
+            factionId: 'mu_family',
+            description: '穆氏家族的宝库，只有获得穆家信任的人才能进入',
+            items: [
+                { itemId: 'super_health_potion', price: 80, stock: 20 },
+                { itemId: 'super_mana_potion', price: 100, stock: 15 },
+                { itemId: 'ice_staff', price: 500, stock: 2 },
+                { itemId: 'ice_armor', price: 600, stock: 2 },
+                { itemId: 'mu_family_ring', price: 800, stock: 1 },
+                { itemId: 'magic_stone', price: 20, stock: -1 },
+                { itemId: 'demon_core', price: 50, stock: -1 }
             ]
         }
     },
@@ -5861,6 +7174,138 @@ const GameData = {
                 }
             ],
             locations: ['xuefeng_deep']
+        },
+        
+        // ========== 人类敌人 ==========
+        
+        // 黑教廷低阶成员
+        black_church_acolyte: {
+            id: 'black_church_acolyte',
+            name: '黑教廷教徒',
+            title: '黑教廷低阶成员',
+            description: '黑教廷的底层成员，穿着黑色长袍，实力一般，但行踪诡秘。',
+            elements: ['dark'],
+            level: 4,
+            maxHp: 120,
+            maxMp: 60,
+            attack: 14,
+            defense: 6,
+            speed: 12,
+            skills: ['basic_attack', 'dark_bolt'],
+            spriteColor: '#330033',
+            isEnemy: true,
+            enemyType: 'human',
+            faction: 'black_church',
+            expReward: 80,
+            goldReward: 50,
+            dropItems: [
+                {
+                    itemId: 'magic_stone',
+                    chance: 0.5,
+                    min: 1,
+                    max: 3
+                },
+                {
+                    itemId: 'health_potion',
+                    chance: 0.3,
+                    min: 1,
+                    max: 2
+                }
+            ],
+            locations: ['xuefeng_mountain', 'xuefeng_deep']
+        },
+        
+        // 黑教廷中阶成员
+        black_church_deacon: {
+            id: 'black_church_deacon',
+            name: '黑教廷执事',
+            title: '黑教廷中阶成员',
+            description: '黑教廷的执事级成员，实力较强，精通暗影魔法，非常危险。',
+            elements: ['dark', 'fire'],
+            level: 7,
+            maxHp: 250,
+            maxMp: 150,
+            attack: 28,
+            defense: 12,
+            speed: 16,
+            skills: ['basic_attack', 'dark_bolt', 'fire_bolt'],
+            spriteColor: '#440044',
+            isEnemy: true,
+            enemyType: 'human',
+            faction: 'black_church',
+            expReward: 200,
+            goldReward: 150,
+            dropItems: [
+                {
+                    itemId: 'demon_core',
+                    chance: 0.3,
+                    min: 1,
+                    max: 2
+                },
+                {
+                    itemId: 'magic_stone',
+                    chance: 0.8,
+                    min: 2,
+                    max: 5
+                },
+                {
+                    itemId: 'super_health_potion',
+                    chance: 0.2,
+                    min: 1,
+                    max: 1
+                }
+            ],
+            locations: ['xuefeng_deep']
+        },
+        
+        // 黑教廷蓝衣执事（BOSS级）
+        black_church_blue_deacon: {
+            id: 'black_church_blue_deacon',
+            name: '蓝衣执事',
+            title: '黑教廷蓝衣执事',
+            description: '黑教廷的蓝衣执事，实力强大，是博城灾难的幕后黑手之一。',
+            elements: ['dark', 'ice'],
+            level: 10,
+            maxHp: 500,
+            maxMp: 300,
+            attack: 45,
+            defense: 20,
+            speed: 18,
+            skills: ['basic_attack', 'dark_bolt', 'ice_spike', 'ice_shield'],
+            spriteColor: '#000066',
+            isEnemy: true,
+            enemyType: 'human',
+            faction: 'black_church',
+            isBoss: true,
+            expReward: 500,
+            goldReward: 500,
+            dropItems: [
+                {
+                    itemId: 'demon_core',
+                    chance: 1.0,
+                    min: 3,
+                    max: 5
+                },
+                {
+                    itemId: 'magic_stone',
+                    chance: 1.0,
+                    min: 5,
+                    max: 10
+                },
+                {
+                    itemId: 'super_health_potion',
+                    chance: 0.8,
+                    min: 2,
+                    max: 3
+                },
+                {
+                    itemId: 'mana_potion',
+                    chance: 0.8,
+                    min: 2,
+                    max: 3
+                }
+            ],
+            locations: [] // BOSS不随机出现，通过剧情触发
         }
     },
 
@@ -6122,6 +7567,67 @@ const GameData = {
                         hp: -80,
                         gold: -50
                     }
+                },
+                
+                // 穆家庇护结局
+                mu_family_shelter: {
+                    id: 'mu_family_shelter',
+                    name: '穆家庇护',
+                    description: '你获得了穆家的信任，在灾难中得到了穆家的庇护',
+                    conditions: {
+                        minLevel: 8,
+                        minReputation: { mu_family: 30 }
+                    },
+                    rewards: {
+                        exp: 300,
+                        gold: 200,
+                        reputation: {
+                            mu_family: 20
+                        },
+                        items: [{ itemId: 'ice_staff', count: 1 }]
+                    }
+                },
+                
+                // 魔法协会英雄结局
+                magic_association_hero: {
+                    id: 'magic_association_hero',
+                    name: '魔法协会英雄',
+                    description: '你在灾难中协助魔法协会，成为了协会认可的英雄',
+                    conditions: {
+                        minLevel: 11,
+                        minInfoCount: 9,
+                        minReputation: { magic_association: 20 }
+                    },
+                    rewards: {
+                        exp: 800,
+                        gold: 400,
+                        reputation: {
+                            magic_association: 30,
+                            tianlan_school: 20
+                        },
+                        items: [{ itemId: 'magic_ring', count: 1 }]
+                    }
+                },
+                
+                // 黑教廷隐藏结局
+                black_church_ally: {
+                    id: 'black_church_ally',
+                    name: '黑教廷盟友',
+                    description: '你选择了与黑教廷合作，走上了一条不同的道路...',
+                    conditions: {
+                        minLevel: 9,
+                        minReputation: { black_church: 20 },
+                        hasFlag: 'mu_he_revealed'
+                    },
+                    rewards: {
+                        exp: 600,
+                        gold: 800,
+                        reputation: {
+                            black_church: 30
+                        },
+                        items: [{ itemId: 'dark_bolt', count: 1 }]
+                    },
+                    hidden: true
                 }
             }
         }
@@ -6308,6 +7814,56 @@ const GameData = {
                 credibility: 0.5,
                 relatedEvent: null,
                 unlockDay: 30
+            },
+            'black_church_hierarchy': {
+                id: 'black_church_hierarchy',
+                title: '黑教廷的等级',
+                content: '据说黑教廷有严格的等级制度，从低到高分为：教徒、执事、蓝衣执事、灰衣执事、黑衣执事... 每一级都有强大的实力。',
+                category: 'intel',
+                source: '古老的书籍',
+                credibility: 0.7,
+                relatedEvent: null,
+                unlockDay: 25
+            },
+            'black_church_blue_deacon': {
+                id: 'black_church_blue_deacon',
+                title: '蓝衣执事',
+                content: '蓝衣执事是黑教廷的中高层，每一个都有中阶以上的实力。他们通常负责具体的行动计划，非常危险。',
+                category: 'intel',
+                source: '魔法协会档案',
+                credibility: 0.85,
+                relatedEvent: null,
+                unlockDay: 35
+            },
+            'black_church_ritual': {
+                id: 'black_church_ritual',
+                title: '黑教廷的召唤仪式',
+                content: '黑教廷似乎在进行某种召唤仪式，他们想从另一个世界召唤强大的妖魔。如果让他们成功，后果不堪设想...',
+                category: 'warning',
+                source: '截获的情报',
+                credibility: 0.9,
+                relatedEvent: 'demon_unrest',
+                unlockDay: 40
+            },
+            'mu_he_secret': {
+                id: 'mu_he_secret',
+                title: '穆贺的秘密',
+                content: '穆家的执事穆贺，似乎不像表面看起来那么简单。有人说，他和黑教廷有着千丝万缕的联系... 这会是真的吗？',
+                category: 'clue',
+                source: '匿名举报',
+                credibility: 0.6,
+                relatedEvent: null,
+                unlockDay: 35
+            },
+            'black_church_plan': {
+                id: 'black_church_plan',
+                title: '黑教廷的阴谋',
+                content: '黑教廷在博城的目的是什么？他们为什么要召唤妖魔？有人说，他们想利用博城灾难来达到某种不可告人的目的...',
+                category: 'warning',
+                source: '推测',
+                credibility: 0.75,
+                relatedEvent: 'demon_unrest',
+                unlockDay: 45
             },
             
             // ========== 穆氏家族相关信息 ==========

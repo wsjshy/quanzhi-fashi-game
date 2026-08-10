@@ -138,9 +138,9 @@ const Game = {
             return;
         }
 
-        if (result.npcs && result.npcs.length > 0) {
+        if (result.npcs !== undefined) {
             // 显示 NPC 列表，选择对话对象
-            this.showNPCList(result.npcs);
+            this.showNPCList(result.npcs, result.unavailableNpcs || []);
             return;
         }
 
@@ -572,7 +572,7 @@ const Game = {
     },
 
     // ========== NPC 对话 ==========
-    showNPCList(npcs) {
+    showNPCList(npcs, unavailableNpcs = []) {
         // 创建 NPC 选择弹窗
         const dialog = document.createElement('div');
         dialog.style.cssText = `
@@ -586,64 +586,116 @@ const Game = {
             padding: 30px;
             min-width: 380px;
             max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
             z-index: 1000;
             box-shadow: 0 0 40px rgba(100, 100, 255, 0.3);
         `;
+        
+        // 生成可用NPC的HTML
+        const availableNpcsHtml = npcs.map(npc => {
+            const canTalk = NPCStateSystem.canTalkTo(npc.id);
+            const hint = NPCStateSystem.getDialogueRequirementHint(npc.id);
+            
+            if (canTalk) {
+                return `
+                    <button onclick="talkToNPC('${npc.id}')" style="
+                        padding: 15px 20px;
+                        background: rgba(40, 40, 80, 0.8);
+                        border: 2px solid #444477;
+                        border-radius: 10px;
+                        color: #e0e0ff;
+                        cursor: pointer;
+                        text-align: left;
+                        transition: all 0.3s;
+                        font-size: 16px;
+                    " onmouseover="this.style.borderColor='#7777bb'; this.style.background='rgba(60, 60, 120, 0.8)'" onmouseout="this.style.borderColor='#444477'; this.style.background='rgba(40, 40, 80, 0.8)'">
+                        <div style="font-weight: bold; font-size: 17px;">${npc.name}</div>
+                        <div style="font-size: 13px; color: #999; margin-top: 3px;">${npc.title || ''}</div>
+                    </button>
+                `;
+            } else {
+                return `
+                    <button onclick="showCannotTalkHint('${npc.id}')" style="
+                        padding: 15px 20px;
+                        background: rgba(40, 40, 40, 0.6);
+                        border: 2px solid #555;
+                        border-radius: 10px;
+                        color: #888;
+                        cursor: not-allowed;
+                        text-align: left;
+                        font-size: 16px;
+                        opacity: 0.7;
+                    ">
+                        <div style="font-weight: bold; font-size: 17px;">
+                            🔒 ${npc.name}
+                        </div>
+                        <div style="font-size: 13px; color: #777; margin-top: 3px;">
+                            ${npc.title || ''}
+                        </div>
+                        ${hint ? `
+                            <div style="font-size: 12px; color: #ff9966; margin-top: 5px;">
+                                ⚠️ ${hint}
+                            </div>
+                        ` : ''}
+                    </button>
+                `;
+            }
+        }).join('');
+        
+        // 生成不可用NPC的HTML（因为时间不对而不在的）
+        const periodNames = {
+            morning: '🌅 早上',
+            afternoon: '☀️ 下午',
+            evening: '🌆 傍晚',
+            night: '🌙 夜晚'
+        };
+        
+        const unavailableNpcsHtml = unavailableNpcs.map(npc => {
+            const availableTimesText = npc.availableTimes 
+                ? npc.availableTimes.map(t => periodNames[t] || t).join('、')
+                : '未知';
+            
+            return `
+                <div style="
+                    padding: 15px 20px;
+                    background: rgba(30, 30, 30, 0.5);
+                    border: 1px dashed #555;
+                    border-radius: 10px;
+                    color: #666;
+                    text-align: left;
+                    font-size: 16px;
+                    opacity: 0.6;
+                ">
+                    <div style="font-weight: bold; font-size: 17px;">
+                        💤 ${npc.name}（不在）
+                    </div>
+                    <div style="font-size: 13px; color: #555; margin-top: 3px;">
+                        ${npc.title || ''}
+                    </div>
+                    <div style="font-size: 12px; color: #888; margin-top: 5px;">
+                        🕐 出现时间：${availableTimesText}
+                    </div>
+                </div>
+            `;
+        }).join('');
         
         dialog.innerHTML = `
             <div style="font-size: 22px; color: #ffd700; margin-bottom: 20px; font-weight: bold;">
                 💬 选择对话对象
             </div>
             <div style="display: flex; flex-direction: column; gap: 10px;">
-                ${npcs.map(npc => {
-                    const canTalk = NPCStateSystem.canTalkTo(npc.id);
-                    const hint = NPCStateSystem.getDialogueRequirementHint(npc.id);
-                    
-                    if (canTalk) {
-                        return `
-                            <button onclick="talkToNPC('${npc.id}')" style="
-                                padding: 15px 20px;
-                                background: rgba(40, 40, 80, 0.8);
-                                border: 2px solid #444477;
-                                border-radius: 10px;
-                                color: #e0e0ff;
-                                cursor: pointer;
-                                text-align: left;
-                                transition: all 0.3s;
-                                font-size: 16px;
-                            " onmouseover="this.style.borderColor='#7777bb'; this.style.background='rgba(60, 60, 120, 0.8)'" onmouseout="this.style.borderColor='#444477'; this.style.background='rgba(40, 40, 80, 0.8)'">
-                                <div style="font-weight: bold; font-size: 17px;">${npc.name}</div>
-                                <div style="font-size: 13px; color: #999; margin-top: 3px;">${npc.title || ''}</div>
-                            </button>
-                        `;
-                    } else {
-                        return `
-                            <button onclick="showCannotTalkHint('${npc.id}')" style="
-                                padding: 15px 20px;
-                                background: rgba(40, 40, 40, 0.6);
-                                border: 2px solid #555;
-                                border-radius: 10px;
-                                color: #888;
-                                cursor: not-allowed;
-                                text-align: left;
-                                font-size: 16px;
-                                opacity: 0.7;
-                            ">
-                                <div style="font-weight: bold; font-size: 17px;">
-                                    🔒 ${npc.name}
-                                </div>
-                                <div style="font-size: 13px; color: #777; margin-top: 3px;">
-                                    ${npc.title || ''}
-                                </div>
-                                ${hint ? `
-                                    <div style="font-size: 12px; color: #ff9966; margin-top: 5px;">
-                                        ⚠️ ${hint}
-                                    </div>
-                                ` : ''}
-                            </button>
-                        `;
-                    }
-                }).join('')}
+                ${npcs.length > 0 ? availableNpcsHtml : `
+                    <div style="color: #888; text-align: center; padding: 20px;">
+                        现在这里没有人...
+                    </div>
+                `}
+                ${unavailableNpcs.length > 0 ? `
+                    <div style="font-size: 14px; color: #888; margin-top: 15px; margin-bottom: 5px; border-top: 1px solid #444; padding-top: 15px;">
+                        💤 现在不在
+                    </div>
+                    ${unavailableNpcsHtml}
+                ` : ''}
             </div>
             <div style="text-align: right; margin-top: 20px;">
                 <button onclick="this.parentElement.parentElement.remove()" style="
