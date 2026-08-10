@@ -224,7 +224,8 @@ const DataLocations = {
           "xue_musheng",
           "zhou_min",
           "xu_zhaoting",
-          "he_yu"
+          "he_yu",
+          "wang_sanpang"
         ]
       }
     ],
@@ -378,7 +379,9 @@ const DataLocations = {
       "light_moth",
       "thunder_beast",
       "ice_toad",
-      "shadow_snake"
+      "shadow_snake",
+      "evil_eye_swamp_demon",
+      "running_demon"
     ],
     enemyRate: 0.4
   },
@@ -450,7 +453,9 @@ const DataLocations = {
       "demon_wolf",
       "rock_monster",
       "giant_eye_rat",
-      "bone_spike_zheng"
+      "bone_spike_zheng",
+      "running_demon",
+      "evil_eye_swamp_demon"
     ],
     enemyRate: 0.6,
     enemyLevelBonus: 2,
@@ -584,7 +589,8 @@ const DataLocations = {
       "mu_ningxue",
       "mu_zhuoyun",
       "mu_he",
-      "mu_butler"
+      "mu_butler",
+      "yu_ang"
     ],
     npcRate: 0.3
   },
@@ -644,7 +650,9 @@ const DataLocations = {
     npcRate: 0.1,
     enemies: [
       "demon_wolf",
-      "shadow_creature"
+      "shadow_creature",
+      "evil_eye_swamp_demon",
+      "running_demon"
     ],
     enemyRate: 0.05
   },
@@ -683,7 +691,8 @@ const DataLocations = {
         icon: "🛒",
         timeCost: 1,
         staminaCost: 5,
-        effects: {}
+        effects: {},
+        shopId: "station_shop"
       },
       {
         id: "talk_hunter",
@@ -699,6 +708,12 @@ const DataLocations = {
         events: [
           "event_hunter_advice",
           "event_hunter_story"
+        ],
+        npcs: [
+          "zhan_kong",
+          "luo_yunbo",
+          "pan_lijun",
+          "er_tuzi"
         ]
       },
       {
