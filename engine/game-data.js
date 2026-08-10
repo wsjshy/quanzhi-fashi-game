@@ -4357,8 +4357,8 @@ const GameData = {
                         exp: 25,
                         mp: -5
                     },
-                    eventChance: 0.15,
-                    events: ['event_breakthrough', 'event_classmate_chat']
+                    eventChance: 0.25,
+                    events: ['event_breakthrough', 'event_classmate_chat', 'event_mo_fan_scolded', 'event_zhao_manyan_showoff', 'event_mu_ningxue_gossip']
                 },
                 {
                     id: 'train',
@@ -6015,6 +6015,109 @@ const GameData = {
                         exp: 10
                     },
                     resultText: '你婉拒了对方，继续专心学习。'
+                }
+            ]
+        },
+
+        // 学校事件：看到莫凡被批评
+        event_mo_fan_scolded: {
+            id: 'event_mo_fan_scolded',
+            name: '莫凡被批评',
+            description: '你看到薛老师正在批评莫凡',
+            trigger: 'training',
+            chance: 0.1,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '上去帮忙说话',
+                    effects: {
+                        exp: 8,
+                        hp: -5
+                    },
+                    resultText: '你上去帮莫凡说了几句话，薛老师连你一起批评了一顿，不过莫凡感激地看了你一眼。（获得少量经验）'
+                },
+                {
+                    text: '在旁边看热闹',
+                    effects: {
+                        exp: 5
+                    },
+                    resultText: '你在旁边看热闹，学到了一些不要做的事情。（获得少量经验）'
+                },
+                {
+                    text: '假装没看见',
+                    effects: {},
+                    resultText: '你假装没看见，悄悄走开了。'
+                }
+            ]
+        },
+
+        // 学校事件：赵满延炫耀
+        event_zhao_manyan_showoff: {
+            id: 'event_zhao_manyan_showoff',
+            name: '赵满延炫耀',
+            description: '赵满延又在炫耀他的新装备',
+            trigger: 'training',
+            chance: 0.1,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '羡慕地看着',
+                    effects: {
+                        exp: 5,
+                        mp: 5
+                    },
+                    resultText: '你羡慕地看着赵满延的新装备，他很开心，和你聊了几句修炼心得。（获得少量经验和MP）'
+                },
+                {
+                    text: '不屑一顾',
+                    effects: {
+                        exp: 3
+                    },
+                    resultText: '你表现得不屑一顾，专心自己修炼。（获得少量经验）'
+                },
+                {
+                    text: '问问价格',
+                    effects: {
+                        gold: -10
+                    },
+                    resultText: '你问了问价格，果然是你买不起的东西... 赵满延还非要请你喝饮料，你花了10金币意思一下。'
+                }
+            ]
+        },
+
+        // 学校事件：听到同学议论穆宁雪
+        event_mu_ningxue_gossip: {
+            id: 'event_mu_ningxue_gossip',
+            name: '议论穆宁雪',
+            description: '你听到几个同学在议论穆宁雪',
+            trigger: 'training',
+            chance: 0.1,
+            conditions: [],
+            once: false,
+            choices: [
+                {
+                    text: '凑过去听',
+                    effects: {
+                        exp: 3
+                    },
+                    resultText: '你凑过去听了听，都是些八卦传闻。好像被穆宁雪看到了，她冷冷地看了你一眼...'
+                },
+                {
+                    text: '走开不听',
+                    effects: {
+                        exp: 5
+                    },
+                    resultText: '你觉得背后议论人不好，就走开专心学习了。（获得少量经验）'
+                },
+                {
+                    text: '加入讨论',
+                    effects: {
+                        exp: 2,
+                        hp: -10
+                    },
+                    resultText: '你加入了讨论，聊得很开心。不过你总觉得背后有点冷... 好像被冰系魔法瞄了一眼。（HP减少）'
                 }
             ]
         },
