@@ -1136,11 +1136,228 @@ const GameData = {
             }
         },
 
+        mo_jiaxing: {
+            id: 'mo_jiaxing',
+            name: '莫家兴',
+            title: '莫凡的父亲',
+            description: '莫凡的父亲，脸色蜡黄的中年男子，原本给穆家老爷开车，后来调到后勤做采购。憨厚老实，为了儿子可以低声下气求人，把房子都卖了供莫凡上魔法高中。',
+            elements: [],
+            level: 0,
+            maxHp: 60,
+            maxMp: 0,
+            attack: 3,
+            defense: 2,
+            speed: 5,
+            skills: ['basic_attack'],
+            spriteColor: '#ccaa77',
+            location: 'mo_fan_home',
+            availableTimes: ['morning', 'afternoon', 'evening', 'night'],
+            dialogue: [
+                {
+                    trigger: 'default',
+                    text: '你是莫凡的同学吧？快进来坐，家里简陋，别嫌弃。'
+                },
+                {
+                    trigger: 'after_quest_1',
+                    text: '莫凡这孩子，从小就不服输，你多帮帮他。'
+                }
+            ],
+            givesQuests: [],
+            
+            personality: {
+                brave: 0.4,
+                kind: 0.9,
+                honest: 0.85,
+                impulsive: 0.1,
+                loyal: 0.9,
+                arrogant: 0.05,
+                greedy: 0.1,
+                curious: 0.3
+            },
+            
+            relationshipCap: {
+                maxOpinion: 100,
+                maxTrust: 100,
+                canRomance: false,
+                canBeMentor: false,
+                canBeRival: false
+            },
+            
+            relationships: {
+                mo_fan: {
+                    opinion: 100,
+                    trust: 100,
+                    type: 'father_son',
+                    label: '父子'
+                },
+                mu_he: {
+                    opinion: -20,
+                    trust: 0,
+                    type: 'employer_employee',
+                    label: '穆家管家'
+                }
+            },
+
+            giftPreferences: {
+                loved: ['health_potion', 'super_health_potion'],
+                liked: ['food', 'magic_herb'],
+                disliked: [],
+                baseOpinionGain: 8,
+                lovedMultiplier: 2,
+                likedMultiplier: 1.5,
+                dislikedMultiplier: 0.5,
+                dailyGiftLimit: 5
+            }
+        },
+
+        mu_bai: {
+            id: 'mu_bai',
+            name: '穆白',
+            title: '穆家旁系子弟',
+            description: '穆氏世家旁系子弟，高一8班1号学生。发型身高长相都堪称男神，表面谦逊有礼，内心却极其高傲阴暗，是个典型的绿茶男。寒冰系天赋出众，觉醒时冻结了觉醒石。看不起莫凡，认为他只是杂役的儿子。',
+            elements: ['ice'],
+            level: 3,
+            maxHp: 90,
+            maxMp: 70,
+            attack: 14,
+            defense: 8,
+            speed: 10,
+            skills: ['basic_attack', 'ice_spike', 'ice_shield'],
+            spriteColor: '#aaddff',
+            location: 'tianlan_school',
+            availableTimes: ['morning', 'afternoon', 'evening'],
+            dialogue: [
+                {
+                    trigger: 'default',
+                    text: '（脸上带着谦逊的微笑）你好，我是穆白。有什么事吗？'
+                },
+                {
+                    trigger: 'low_opinion',
+                    text: '（眼神中闪过一丝不屑）哦，是你啊。有事？'
+                }
+            ],
+            givesQuests: [],
+            
+            personality: {
+                brave: 0.5,
+                kind: 0.2,
+                honest: 0.15,
+                impulsive: 0.2,
+                loyal: 0.3,
+                arrogant: 0.9,
+                greedy: 0.6,
+                curious: 0.4
+            },
+            
+            relationshipCap: {
+                maxOpinion: 60,
+                maxTrust: 40,
+                canRomance: false,
+                canBeMentor: false,
+                canBeRival: true
+            },
+            
+            relationships: {
+                mo_fan: {
+                    opinion: -40,
+                    trust: -20,
+                    type: 'rival',
+                    label: '竞争对手'
+                },
+                zhao_kunsan: {
+                    opinion: 30,
+                    trust: 20,
+                    type: 'follower',
+                    label: '跟班'
+                },
+                mu_ningxue: {
+                    opinion: 60,
+                    trust: 10,
+                    type: 'crush',
+                    label: '仰慕'
+                }
+            },
+
+            giftPreferences: {
+                loved: ['ice_crystal', 'magic_stone'],
+                liked: ['super_mana_potion', 'equipment'],
+                disliked: ['common_item', 'food'],
+                baseOpinionGain: 3,
+                lovedMultiplier: 2.5,
+                likedMultiplier: 1.5,
+                dislikedMultiplier: 0.3,
+                dailyGiftLimit: 2
+            }
+        },
+
+        zhao_kunsan: {
+            id: 'zhao_kunsan',
+            name: '赵坤三',
+            title: '穆白的跟班',
+            description: '满脸麻子的少年，穆白的忠实跟班，高一8班学生。风系法师，性格狗腿，爱仗势欺人，经常替穆白出面挑衅莫凡。',
+            elements: ['wind'],
+            level: 2,
+            maxHp: 70,
+            maxMp: 45,
+            attack: 9,
+            defense: 4,
+            speed: 14,
+            skills: ['basic_attack', 'wind_blade'],
+            spriteColor: '#bbffbb',
+            location: 'tianlan_school',
+            availableTimes: ['morning', 'afternoon', 'evening'],
+            dialogue: [
+                {
+                    trigger: 'default',
+                    text: '（上下打量你）你谁啊？有事找穆白哥先跟我说。'
+                },
+                {
+                    trigger: 'low_opinion',
+                    text: '哼，就你也配跟穆白哥说话？'
+                }
+            ],
+            givesQuests: [],
+            
+            personality: {
+                brave: 0.3,
+                kind: 0.2,
+                honest: 0.3,
+                impulsive: 0.7,
+                loyal: 0.6,
+                arrogant: 0.5,
+                greedy: 0.5,
+                curious: 0.4
+            },
+            
+            relationshipCap: {
+                maxOpinion: 50,
+                maxTrust: 30,
+                canRomance: false,
+                canBeMentor: false,
+                canBeRival: true
+            },
+            
+            relationships: {
+                mu_bai: {
+                    opinion: 80,
+                    trust: 60,
+                    type: 'follower',
+                    label: '老大'
+                },
+                mo_fan: {
+                    opinion: -30,
+                    trust: -10,
+                    type: 'hostile',
+                    label: '欺负对象'
+                }
+            }
+        },
+
         zhang_xiaohou: {
             id: 'zhang_xiaohou',
             name: '张小侯',
             title: '莫凡的死党',
-            description: '莫凡的好朋友，性格胆小但很忠诚，风系法师，速度很快。',
+            description: '跟泥猴子一样的少年，莫凡的邻居和发小，高一8班学生。风系法师，速度很快。性格活泼热心，消息灵通，极其崇拜莫凡，叫他"莫凡哥"，关键时刻很护短。',
             elements: ['wind'],
             level: 2,
             maxHp: 80,
@@ -1156,21 +1373,25 @@ const GameData = {
             dialogue: [
                 {
                     trigger: 'default',
-                    text: '你好啊！我叫张小侯，是莫凡的好朋友。'
+                    text: '嘿！我叫张小侯，是莫凡哥的死党！有什么事尽管找我！'
+                },
+                {
+                    trigger: 'after_quest_1',
+                    text: '莫凡哥就是厉害，我就知道他一定能行！'
                 }
             ],
             givesQuests: [],
             
             // 性格设定
             personality: {
-                brave: 0.3,
-                kind: 0.8,
+                brave: 0.4,
+                kind: 0.85,
                 honest: 0.9,
-                impulsive: 0.2,
+                impulsive: 0.4,
                 loyal: 0.95,
                 arrogant: 0.1,
                 greedy: 0.3,
-                curious: 0.6
+                curious: 0.7
             },
             
             // 关系上限
@@ -4896,7 +5117,7 @@ const GameData = {
         mo_fan_house: {
             id: 'mo_fan_house',
             name: '莫凡家',
-            description: '莫凡的家，一间普通的小屋，虽然不富裕，但很温馨。',
+            description: '围绕半城山而建的住宅区最角落，矮矮一小栋，一层半高，外漆斑驳露出红砖，周围堆着杂物。街坊邻居都是三层半的装修新房，这里显得格外寒酸老旧。但家徒四壁的屋子里，却有着最温暖的亲情。',
             backgroundColor: '#3a2a1a',
             unlocked: false,
             unlockCondition: {
@@ -4918,6 +5139,17 @@ const GameData = {
                     events: ['event_mo_fan_secret']
                 },
                 {
+                    id: 'visit_mo_jiaxing',
+                    name: '和莫叔叔聊聊',
+                    description: '和莫凡的父亲莫家兴聊天，他是个憨厚的中年人',
+                    icon: '👨',
+                    timeCost: 1,
+                    staminaCost: 5,
+                    effects: {
+                        npcOpinion: { npcId: 'mo_jiaxing', value: 5 }
+                    }
+                },
+                {
                     id: 'rest_at_mo_fan',
                     name: '在莫凡家休息',
                     description: '在莫凡家休息一下，恢复体力和精神',
@@ -4930,9 +5162,9 @@ const GameData = {
                     }
                 }
             ],
-            connectedLocations: ['tianlan_school', 'bo_city'],
-            npcs: ['mo_fan', 'zhang_xiaohou'],
-            npcRate: 0.5
+            connectedLocations: ['tianlan_school', 'bo_city', 'mu_manor'],
+            npcs: ['mo_fan', 'mo_jiaxing', 'zhang_xiaohou'],
+            npcRate: 0.6
         },
         
         // 穆家庄园
@@ -5098,6 +5330,18 @@ const GameData = {
             type: 'material',
             icon: '🔮',
             price: 50,
+            stackable: true,
+            maxStack: 99,
+            usableInBattle: false,
+            usableOutOfBattle: false
+        },
+        wolf_fang: {
+            id: 'wolf_fang',
+            name: '魔狼獠牙',
+            description: '从独眼魔狼身上取下的獠牙，锋利坚硬，可用于锻造装备或炼药',
+            type: 'material',
+            icon: '🦷',
+            price: 30,
             stackable: true,
             maxStack: 99,
             usableInBattle: false,
@@ -7646,6 +7890,46 @@ const GameData = {
 
     // ========== 敌人/妖魔 ==========
     enemies: {
+        one_eye_wolf: {
+            id: 'one_eye_wolf',
+            name: '独眼魔狼',
+            title: '奴仆级妖魔',
+            description: '栖息在离人类城市最近荒野区域的妖魔，只有一只眼睛，非常凶残。普通人无法对付，唯有魔法师才能与之战斗。',
+            elements: ['dark'],
+            level: 4,
+            maxHp: 150,
+            maxMp: 40,
+            attack: 18,
+            defense: 6,
+            speed: 15,
+            skills: ['basic_attack', 'dark_bolt'],
+            spriteColor: '#553322',
+            isEnemy: true,
+            expReward: 100,
+            goldReward: 50,
+            dropItems: [
+                {
+                    itemId: 'demon_core',
+                    chance: 0.8,
+                    min: 1,
+                    max: 2
+                },
+                {
+                    itemId: 'wolf_fang',
+                    chance: 0.6,
+                    min: 1,
+                    max: 1
+                },
+                {
+                    itemId: 'magic_stone',
+                    chance: 0.4,
+                    min: 1,
+                    max: 1
+                }
+            ],
+            locations: ['xuefeng_mountain', 'bo_city_outskirts']
+        },
+
         demon_wolf: {
             id: 'demon_wolf',
             name: '幽狼兽',
