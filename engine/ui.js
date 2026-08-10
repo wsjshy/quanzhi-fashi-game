@@ -60,6 +60,7 @@ const UI = {
 
         // 创建消息框
         const msgBox = document.createElement('div');
+        msgBox.className = 'mobile-popup';
         msgBox.style.cssText = `
             position: fixed;
             top: 50%;
@@ -144,7 +145,7 @@ const UI = {
         const container = this.elements.gameContainer;
         
         container.innerHTML = `
-            <div style="
+            <div class="mobile-title" style="
                 width: 100%;
                 height: 100vh;
                 display: flex;
@@ -370,7 +371,7 @@ const UI = {
                 
                 <p style="color: #aaa; margin-bottom: 20px;">选择觉醒元素：</p>
                 
-                <div style="
+                <div class="mobile-element-grid" style="
                     display: grid;
                     grid-template-columns: repeat(4, 1fr);
                     gap: 15px;
@@ -460,7 +461,7 @@ const UI = {
                 ` : ''}
                 
                 <!-- 顶部状态栏 -->
-                <div style="
+                <div class="mobile-top-bar" style="
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
@@ -499,10 +500,10 @@ const UI = {
                 </div>
                 
                 <!-- 主内容区 -->
-                <div style="flex: 1; display: flex; overflow: hidden; position: relative; z-index: 1;">
+                <div class="mobile-main-content" style="flex: 1; display: flex; overflow: hidden; position: relative; z-index: 1;">
                     
                     <!-- 左侧：地点行动 -->
-                    <div style="flex: 2; padding: 30px; overflow-y: auto;">
+                    <div class="mobile-action-panel" style="flex: 2; padding: 30px; overflow-y: auto;">
                         <h3 style="color: #ffd700; margin-bottom: 20px; font-size: 22px;">📍 可执行的行动</h3>
                         <div style="display: flex; flex-direction: column; gap: 12px;">
                             ${(location?.actions || []).map(action => {
@@ -596,7 +597,7 @@ const UI = {
                     </div>
                     
                     <!-- 右侧：菜单 -->
-                    <div style="width: 280px; background: rgba(0, 0, 0, 0.4); border-left: 2px solid #444477; padding: 20px;">
+                    <div class="mobile-side-menu" style="width: 280px; background: rgba(0, 0, 0, 0.4); border-left: 2px solid #444477; padding: 20px;">
                         <h3 style="color: #ffd700; margin-bottom: 20px; font-size: 18px;">📋 菜单</h3>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
                             <button onclick="Game.openCharacterPanel()" style="

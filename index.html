@@ -35,6 +35,86 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #7777aa;
         }
+
+        /* ========== 手机端适配（仅屏幕宽度 < 768px 时生效，PC端不受影响） ========== */
+        @media (max-width: 768px) {
+            /* 主界面：左右分栏 → 上下布局 */
+            .mobile-main-content {
+                flex-direction: column !important;
+            }
+            .mobile-action-panel {
+                flex: none !important;
+                width: 100% !important;
+                padding: 15px !important;
+                overflow-y: visible !important;
+            }
+            .mobile-side-menu {
+                width: 100% !important;
+                border-left: none !important;
+                border-top: 2px solid #444477 !important;
+                padding: 15px !important;
+            }
+
+            /* 顶部状态栏：允许换行，减小间距 */
+            .mobile-top-bar {
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+                padding: 10px 15px !important;
+            }
+            .mobile-top-bar > div:first-child {
+                gap: 10px !important;
+                flex-wrap: wrap !important;
+            }
+            .mobile-top-bar > div:last-child {
+                gap: 12px !important;
+                flex-wrap: wrap !important;
+                font-size: 13px !important;
+            }
+
+            /* 创建角色：4列grid → 2列 */
+            .mobile-element-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
+
+            /* 弹窗：自适应宽度 */
+            .mobile-popup {
+                max-width: 92vw !important;
+                width: 92vw !important;
+                min-width: auto !important;
+            }
+
+            /* 通用按钮：增大触摸区域 */
+            .mobile-btn {
+                padding: 14px 18px !important;
+                font-size: 15px !important;
+            }
+
+            /* 标题界面：减小字体 */
+            .mobile-title h1 {
+                font-size: 32px !important;
+            }
+            .mobile-title .subtitle {
+                font-size: 14px !important;
+            }
+
+            /* 战斗界面适配 */
+            .mobile-battle-container {
+                padding: 15px !important;
+            }
+
+            /* 防止水平滚动 */
+            body {
+                overflow-x: hidden;
+            }
+        }
+
+        /* 防止用户缩放时布局错乱 */
+        @media (max-width: 480px) {
+            .mobile-element-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
     </style>
 </head>
 <body>
