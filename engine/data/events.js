@@ -1166,5 +1166,79 @@ const DataEvents = {
         resultText: "你不想惹麻烦，躲开了醉汉。"
       }
     ]
+  },
+  event_merchant_encounter: {
+    id: "event_merchant_encounter",
+    name: "遇到商贩",
+    description: "驿站主道上，一个光头小贩向你招手",
+    trigger: "exploring",
+    chance: 0.3,
+    conditions: [],
+    once: false,
+    choices: [
+      {
+        text: "过去看看",
+        effects: {
+          gold: -10,
+          exp: 5
+        },
+        resultText: "你走过去，二秃子向你推销履魔具和魔石。你花了10金币买了点小东西，也了解了不少魔具知识。"
+      },
+      {
+        text: "摆摆手走开",
+        effects: {},
+        resultText: "你对小贩的商品不感兴趣，走开了。"
+      }
+    ]
+  },
+  event_hunter_advice: {
+    id: "event_hunter_advice",
+    name: "猎者的建议",
+    description: "一位老猎者主动和你聊起野外生存的经验",
+    trigger: "exploring",
+    chance: 0.25,
+    conditions: [],
+    once: false,
+    choices: [
+      {
+        text: "认真聆听",
+        effects: {
+          exp: 20,
+          maxHp: 5
+        },
+        resultText: "老猎者分享了很多野外生存的经验：遇到打不过的妖魔就跑，跟紧队伍，不要单独行动。你受益匪浅，最大生命值永久+5。"
+      },
+      {
+        text: "礼貌告别",
+        effects: {
+          exp: 5
+        },
+        resultText: "你感谢了猎者的好意，告别离开。"
+      }
+    ]
+  },
+  event_hunter_story: {
+    id: "event_hunter_story",
+    name: "猎者的故事",
+    description: "驿站里，几个猎者在喝酒聊天，讲着猎杀妖魔的故事",
+    trigger: "exploring",
+    chance: 0.2,
+    conditions: [],
+    once: false,
+    choices: [
+      {
+        text: "坐下听听",
+        effects: {
+          exp: 15,
+          stamina: -10
+        },
+        resultText: "你坐下来听猎者们讲故事。他们讲了很多妖魔的习性和弱点，还有斩空总教官的传奇事迹。你对妖魔有了更深的了解。"
+      },
+      {
+        text: "继续探索",
+        effects: {},
+        resultText: "你不想浪费时间，继续探索驿站。"
+      }
+    ]
   }
 };

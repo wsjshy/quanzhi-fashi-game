@@ -218,5 +218,72 @@ const DataShops = {
         stock: -1
       }
     ]
+  },
+  station_shop: {
+    id: "station_shop",
+    name: "雪峰山驿站商铺",
+    factionId: "hunter_alliance",
+    items: [
+      {
+        itemId: "health_potion",
+        price: 35,
+        stock: -1
+      },
+      {
+        itemId: "mana_potion",
+        price: 45,
+        stock: -1
+      },
+      {
+        itemId: "stamina_potion",
+        price: 40,
+        stock: -1
+      },
+      {
+        itemId: "super_health_potion",
+        price: 120,
+        stock: 10
+      },
+      {
+        itemId: "speed_boots_magic",
+        price: 500,
+        stock: 3
+      },
+      {
+        itemId: "wind_stone",
+        price: 50,
+        stock: -1
+      },
+      {
+        itemId: "fire_stone",
+        price: 50,
+        stock: -1
+      },
+      {
+        itemId: "running_demon_hide",
+        price: 80,
+        stock: 5
+      },
+      {
+        itemId: "evil_eye",
+        price: 100,
+        stock: 3
+      },
+      {
+        itemId: "soul_essence",
+        price: 250,
+        stock: 2
+      },
+      {
+        itemId: "magic_stone",
+        price: 25,
+        stock: -1
+      },
+      {
+        itemId: "demon_core",
+        price: 60,
+        stock: -1
+      }
+    ]
   }
 };
