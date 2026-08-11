@@ -854,5 +854,33 @@ const DataItems = {
     usableOutOfBattle: false,
     rarity: "稀有",
     lore: "战将级三眼魔狼的骨刺，坚硬程度堪比钢铁。"
+  },
+  ice_crystal: {
+    id: "ice_crystal",
+    name: "冰晶石",
+    description: "宇昂身上掉落的冰系魔法结晶，蕴含纯净的冰系能量。",
+    type: "material",
+    icon: "❄️",
+    price: 200,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    lore: "冰系法师凝练的魔法结晶，可用于强化冰系装备。"
+  },
+  magic_crystal: {
+    id: "magic_crystal",
+    name: "魔法水晶",
+    description: "蕴含纯粹魔力的水晶，是高级魔法材料。",
+    type: "material",
+    icon: "💎",
+    price: 500,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutofBattle: false,
+    rarity: "史诗",
+    lore: "极为稀有的魔法水晶，可用于制作高级装备。"
   }
 };

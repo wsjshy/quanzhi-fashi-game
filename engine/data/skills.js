@@ -1128,5 +1128,93 @@ const DataSkills = {
       { name: "感电", type: "electrified", duration: 3, chance: 1.0, damageBonus: 0.3 },
       { name: "雷霆穿透", type: "defense_down", duration: 3, chance: 0.7, statModifiers: { defense: -10 } }
     ]
+  },
+
+  // ========== 敌人专用技能 ==========
+  wolf_howl: {
+    id: "wolf_howl",
+    name: "狼嚎",
+    description: "魔狼发出嚎叫，提升自身攻击力，并可能召唤同伴。",
+    element: "dark",
+    type: "buff",
+    mpCost: 15,
+    targetType: "self",
+    tier: "初阶",
+    statusEffects: [
+      { name: "嗜血", type: "attack_up", duration: 3, chance: 1.0, statModifiers: { attack: 8 } }
+    ]
+  },
+  dark_claw: {
+    id: "dark_claw",
+    name: "暗爪",
+    description: "进阶魔狼的利爪攻击，附带暗影能量，造成高额伤害。",
+    element: "dark",
+    type: "damage",
+    baseDamage: 25,
+    damageMultiplier: 1.2,
+    mpCost: 12,
+    targetType: "enemy",
+    tier: "初阶",
+    statusEffects: [
+      { name: "撕裂", type: "bleed", duration: 3, chance: 0.5, dotDamage: 8 }
+    ]
+  },
+  wolf_bite: {
+    id: "wolf_bite",
+    name: "撕咬",
+    description: "三眼魔狼的强力撕咬，有概率造成眩晕。",
+    element: "dark",
+    type: "damage",
+    baseDamage: 30,
+    damageMultiplier: 1.3,
+    mpCost: 15,
+    targetType: "enemy",
+    tier: "中阶",
+    statusEffects: [
+      { name: "眩晕", type: "stun", duration: 1, chance: 0.3 }
+    ]
+  },
+  rat_bite: {
+    id: "rat_bite",
+    name: "巨鼠撕咬",
+    description: "血纹巨魔鼠的凶猛撕咬，附带瘟疫效果。",
+    element: "neutral",
+    type: "damage",
+    baseDamage: 35,
+    damageMultiplier: 1.2,
+    mpCost: 10,
+    targetType: "enemy",
+    tier: "中阶",
+    statusEffects: [
+      { name: "瘟疫", type: "poison", duration: 4, chance: 0.6, dotDamage: 10 }
+    ]
+  },
+  blood_rage: {
+    id: "blood_rage",
+    name: "血纹狂暴",
+    description: "血纹巨魔鼠进入狂暴状态，攻击力和速度大幅提升，但降低防御。",
+    element: "neutral",
+    type: "buff",
+    mpCost: 20,
+    targetType: "self",
+    tier: "中阶",
+    statusEffects: [
+      { name: "狂暴", type: "rage", duration: 5, chance: 1.0, statModifiers: { attack: 25, speed: 10, defense: -8 } }
+    ]
+  },
+  bone_spike: {
+    id: "bone_spike",
+    name: "骨刺射击",
+    description: "骨刺狰狼射出背上的骨刺，远程攻击敌人。",
+    element: "earth",
+    type: "damage",
+    baseDamage: 28,
+    damageMultiplier: 1.1,
+    mpCost: 14,
+    targetType: "enemy",
+    tier: "中阶",
+    statusEffects: [
+      { name: "穿刺", type: "defense_down", duration: 2, chance: 0.4, statModifiers: { defense: -5 } }
+    ]
   }
 };

@@ -4,8 +4,8 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.4.0';
-const SAVE_VERSION = '0.4.0';
+const GAME_VERSION = '0.5.0';
+const SAVE_VERSION = '0.5.0';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
 const SKILL_UNLOCK_TABLE = {
@@ -146,7 +146,7 @@ const Player = {
         this.activeQuests = [];
         this.completedQuests = [];
         this.currentLocation = 'tianlan_school';
-        this.day = 1;
+        this.day = 1;  // 游戏从第1天开始（博城历2008年9月1日）
         this.hour = 8;  // 初始时间：早上8点
         this.timeOfDay = 'morning';
         this.flags = {};
@@ -777,6 +777,8 @@ const Player = {
                     });
                 }
             });
+            
+            // 测试用：保留存档天数
             
             // 自动保存一次，更新为新版本格式
             this.save();

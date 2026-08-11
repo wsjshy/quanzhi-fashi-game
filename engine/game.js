@@ -47,36 +47,7 @@ const Game = {
             console.error('未处理的Promise拒绝:', event.reason);
             console.error('错误堆栈:', event.reason?.stack);
         };
-        
-        // DEBUG: 全局点击事件监听，记录所有点击事件的目标元素
-        document.addEventListener('click', (e) => {
-            const target = e.target;
-            const path = [];
-            let el = target;
-            while (el && path.length < 10) {
-                let desc = el.tagName?.toLowerCase();
-                if (el.id) desc += `#${el.id}`;
-                if (el.className && typeof el.className === 'string') {
-                    const classes = el.className.split(' ').filter(c => c).slice(0, 3).join('.');
-                    if (classes) desc += `.${classes}`;
-                }
-                if (el.textContent && el.textContent.trim().length < 20) {
-                    desc += `(${el.textContent.trim().substring(0, 20)})`;
-                }
-                path.push(desc);
-                el = el.parentElement;
-            }
-            console.log(`[点击] 目标: ${path.join(' → ')}`);
-            console.log(`[点击] 位置: x=${e.clientX}, y=${e.clientY}`);
-        }, true); // 捕获阶段，先于其他监听器执行
-        
-        // DEBUG: 全局mousedown事件监听
-        document.addEventListener('mousedown', (e) => {
-            console.log(`[鼠标按下] 按钮: ${e.button}, 位置: x=${e.clientX}, y=${e.clientY}, 目标: ${e.target.tagName}${e.target.id ? '#' + e.target.id : ''}`);
-        }, true);
-        
-        console.log('[游戏] 全局错误处理已初始化');
-        
+
         // 初始化数据
         DataManager.init();
         
@@ -99,78 +70,6 @@ const Game = {
         
         // 显示标题界面
         this.showTitleScreen();
-        
-        // 测试用键盘快捷键
-        document.addEventListener('keydown', (e) => {
-            // F2: +1天
-            if (e.key === 'F2') {
-                e.preventDefault();
-                if (this.state === 'map') {
-                    Player.day += 1;
-                    Player.hour = 8;
-                    Player.timeOfDay = 'morning';
-                    BigEventSystem.checkScheduledEvents();
-                    UI.renderMapScreen();
-                    console.log('[测试] 已推进1天，当前第' + Player.day + '天');
-                }
-            }
-            // F3: +7天
-            if (e.key === 'F3') {
-                e.preventDefault();
-                if (this.state === 'map') {
-                    Player.day += 7;
-                    Player.hour = 8;
-                    Player.timeOfDay = 'morning';
-                    BigEventSystem.checkScheduledEvents();
-                    UI.renderMapScreen();
-                    console.log('[测试] 已推进7天，当前第' + Player.day + '天');
-                }
-            }
-            // F4: +45天
-            if (e.key === 'F4') {
-                e.preventDefault();
-                if (this.state === 'map') {
-                    Player.day += 45;
-                    Player.hour = 8;
-                    Player.timeOfDay = 'morning';
-                    BigEventSystem.checkScheduledEvents();
-                    UI.renderMapScreen();
-                    console.log('[测试] 已推进45天，当前第' + Player.day + '天');
-                }
-            }
-            // F5: 刷新页面（浏览器默认）
-            // F6: 移除DEBUG条
-            if (e.key === 'F6') {
-                e.preventDefault();
-                const debugDiv = document.getElementById('debug-error');
-                if (debugDiv) {
-                    debugDiv.style.display = 'none';
-                }
-            }
-            // F7: 显示玩家信息
-            if (e.key === 'F7') {
-                e.preventDefault();
-                alert('玩家信息:\n' + 
-                    '名字: ' + Player.name + '\n' +
-                    '等级: ' + Player.level + '\n' +
-                    '经验: ' + Player.exp + '/' + Player.expToNext + '\n' +
-                    'HP: ' + Player.hp + '/' + Player.maxHp + '\n' +
-                    'MP: ' + Player.mp + '/' + Player.maxMp + '\n' +
-                    '体力: ' + Player.stamina + '/' + Player.maxStamina + '\n' +
-                    '第' + Player.day + '天 ' + Player.hour + ':00\n' +
-                    '地点: ' + Player.currentLocation + '\n' +
-                    '金币: ' + Player.gold);
-            }
-            // F8: 显示时间
-            if (e.key === 'F8') {
-                e.preventDefault();
-                const date = TimeSystem.getCurrentDate();
-                alert('时间信息:\n' + 
-                    '日期: ' + date.year + '年' + date.month + '月' + date.day + '日 ' + TimeSystem.WEEKDAY_NAMES[date.weekday] + '\n' +
-                    '第' + Player.day + '天 ' + Player.hour + ':00\n' +
-                    '时段: ' + Player.timeOfDay);
-            }
-        });
     },
 
     // ========== 标题界面 ==========
@@ -239,13 +138,9 @@ const Game = {
     // 执行地点行动
     performAction(actionId) {
         try {
-        console.log(`[行动] 执行行动: ${actionId}`);
-        console.trace('[行动] 调用栈');
-        
         // 防护0：时间间隔防护 - 两次行动间隔小于1秒则取消，防止点击穿透/延迟触发
         const now = Date.now();
         if (now - this._lastActionTime < 1000) {
-            console.log(`[行动] 行动间隔太短(${now - this._lastActionTime}ms)，取消执行`);
             return;
         }
         this._lastActionTime = now;
@@ -254,33 +149,28 @@ const Game = {
         if (typeof UI !== 'undefined' && UI._lastMessageCloseTime) {
             const timeSinceMessageClose = now - UI._lastMessageCloseTime;
             if (timeSinceMessageClose < 2000) {
-                console.log(`[行动] 消息关闭后时间太短(${timeSinceMessageClose}ms)，取消执行`);
                 return;
             }
         }
         
         // 防护1：如果有消息弹窗显示，不执行行动
         if (UI._isMessageShowing) {
-            console.log('[行动] 有消息弹窗显示，取消执行');
             return;
         }
         
         // 防护2：如果在行动冷却期，不执行行动
         if (this._actionCooldown) {
-            console.log('[行动] 行动冷却中，取消执行');
             return;
         }
         
         // 防护3：直接检查页面上是否有消息弹窗元素，防止状态不同步
         const hasPopup = document.querySelector('.mobile-popup');
         if (hasPopup) {
-            console.log('[行动] 页面上有消息弹窗，取消执行');
             return;
         }
         
         // 防护4：检查body是否有message-showing类
         if (document.body.classList.contains('message-showing')) {
-            console.log('[行动] body有message-showing类，取消执行');
             return;
         }
         

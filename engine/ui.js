@@ -393,7 +393,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.4.0 · 开放世界版</div>
+                ">v0.5.0 · 开放世界版</div>
             </div>
         `;
 

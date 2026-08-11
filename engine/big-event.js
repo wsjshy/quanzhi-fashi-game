@@ -402,7 +402,7 @@ const BigEventSystem = {
         // NPC关系效果
         if (effects.npcRelation) {
             for (const [npcId, value] of Object.entries(effects.npcRelation)) {
-                NPCState.changeRelation(npcId, value);
+                NPCStateSystem.changeRelation(npcId, value);
             }
         }
     },

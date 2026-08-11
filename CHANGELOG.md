@@ -4,6 +4,32 @@
 
 ---
 
+## [v0.5.0] - 2026-08-12
+
+### 新增
+- ✅ 大事件系统v2：多阶段叙事、分支选择、战斗集成、多结局
+- ✅ 第一个大事件「博城灾难」：6个阶段、3个结局、自动触发（第45天）
+- ✅ 博城历日历系统：2008年9月1日开局，显示年月日星期
+- ✅ 战斗结束回调机制：startBattle支持endCallback
+- ✅ 新敌人：魔狼群（demon_wolf_pack）、6个敌人专用技能
+- ✅ 新物品：冰晶石、魔法水晶
+
+### 修复
+- ✅ 新游戏day=45测试值导致大事件立即触发（改回day=1）
+- ✅ index.html每次刷新清除localStorage导致存档无法持久化
+- ✅ enemies.js中evil_eye_swamp_demon重复定义
+- ✅ big-event.js中NPCState应为NPCStateSystem的引用错误
+- ✅ 多个敌人引用不存在的技能（wolf_howl/dark_claw/wolf_bite/rat_bite/blood_rage/bone_spike）
+- ✅ 敌人掉落物品ice_crystal/magic_crystal不存在
+- ✅ 清理所有console.log/console.trace调试语句
+
+### 清理
+- ✅ 删除index.html红色调试面板和键盘快捷键
+- ✅ 删除game.js/time.js/player.js中的调试代码
+- ✅ 删除旧测试HTML文件
+
+---
+
 ## [v0.4.0] - 2026-08-11
 
 ### 新增
