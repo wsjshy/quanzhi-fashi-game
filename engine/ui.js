@@ -453,6 +453,53 @@ const UI = {
     },
 
     // ========== 地图/主界面 ==========
+    /**
+     * 获取当前目标提示文字（新手引导）
+     */
+    getCurrentGoalText() {
+        const stats = Player.getTotalStats();
+        
+        // 1. 体力不足提示
+        if (Player.stamina < 20) {
+            return '体力不足！点击「休息」或「睡觉」恢复体力后再继续冒险';
+        }
+        
+        // 2. HP不足提示
+        if (Player.hp < stats.maxHp * 0.3) {
+            return 'HP太低了！使用治愈药水或休息恢复HP，避免战斗中死亡';
+        }
+        
+        // 3. 有进行中的任务，显示任务目标
+        const activeQuests = QuestSystem.activeQuests;
+        if (activeQuests && activeQuests.length > 0) {
+            const quest = activeQuests[0]; // 显示第一个任务
+            const questData = QuestSystem.getQuest(quest.questId);
+            if (questData) {
+                const progress = QuestSystem.getQuestProgressText(quest.questId);
+                return `当前任务：${questData.name} - ${progress}`;
+            }
+        }
+        
+        // 4. 新手阶段（1-3级）提示
+        if (Player.level <= 3) {
+            if (Player.currentLocation === 'tianlan_school') {
+                return '新手建议：先在学校修炼提升等级，然后去雪峰山探索完成任务';
+            } else {
+                return '新手建议：探索周围环境，打怪升级，收集材料';
+            }
+        }
+        
+        // 5. 通用提示
+        const expPercent = (Player.exp / Player.expToNext) * 100;
+        if (expPercent < 30) {
+            return '继续修炼或刷怪升级，解锁更多技能和内容';
+        } else if (expPercent < 70) {
+            return `升级进度：${Math.floor(expPercent)}%，继续加油！`;
+        } else {
+            return `快升级了！还差 ${Player.expToNext - Player.exp} 经验，再修炼几次吧`;
+        }
+    },
+    
     renderMapScreen() {
         const location = MapSystem.getCurrentLocation();
         const stats = Player.getTotalStats();
@@ -518,6 +565,22 @@ const UI = {
                         <span style="color: #66ffaa;">⚡ ${Player.stamina}/${Player.maxStamina}</span>
                         <span style="color: #66ff66;">Lv.${Player.level}</span>
                     </div>
+                </div>
+                
+                <!-- 当前目标提示（新手引导） -->
+                <div class="mobile-goal-bar" style="
+                    padding: 10px 25px;
+                    background: linear-gradient(90deg, rgba(100, 80, 30, 0.6), rgba(80, 60, 20, 0.4));
+                    border-bottom: 1px solid #887744;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    z-index: 1;
+                ">
+                    <span style="color: #ffd700; font-size: 16px;">📋</span>
+                    <span style="color: #ffeeaa; font-size: 14px; line-height: 1.5;">
+                        ${this.getCurrentGoalText()}
+                    </span>
                 </div>
                 
                 <!-- 主内容区 -->
