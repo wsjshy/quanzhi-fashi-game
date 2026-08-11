@@ -335,7 +335,9 @@ const Game = {
                 ${availableOptions.map((opt, index) => {
                     const multiplier = opt.hours / baseTime;
                     const expGain = Math.floor(baseExp * multiplier * opt.bonus);
-                    const staminaCost = Math.floor(baseStamina * multiplier * 0.5);
+                    const staminaCost = Math.ceil(baseStamina * multiplier * 0.5); // 向上取整，和实际消耗一致
+                    const hpChange = Math.floor((action.effects?.hp || 0) * multiplier);
+                    const mpChange = Math.floor((action.effects?.mp || 0) * multiplier);
                     const timeCost = opt.hours;
                     return `
                         <div onclick="Game.performCultivate('${actionId}', ${opt.hours}, ${opt.bonus})" style="
@@ -353,6 +355,8 @@ const Game = {
                                 <span style="float: right; font-size: 13px; display: flex; gap: 10px;">
                                     <span style="color: #aaddff;">⏱️ ${timeCost}h</span>
                                     <span style="color: #ff9966;">⚡ -${staminaCost}</span>
+                                    ${hpChange !== 0 ? `<span style="color: ${hpChange > 0 ? '#66ff66' : '#ff6666'};">❤️ ${hpChange > 0 ? '+' : ''}${hpChange}</span>` : ''}
+                                    ${mpChange !== 0 ? `<span style="color: ${mpChange > 0 ? '#6666ff' : '#ff6666'};">💧 ${mpChange > 0 ? '+' : ''}${mpChange}</span>` : ''}
                                     <span style="color: #ffd700;">✨ +${expGain}</span>
                                 </span>
                             </div>
