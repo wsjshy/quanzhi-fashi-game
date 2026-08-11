@@ -19,19 +19,37 @@ const UI = {
     // 消息队列（避免多条消息重叠）
     _messageQueue: [],
     _isMessageShowing: false,
+    
+    // 检查是否可以显示消息（弹窗状态下暂停）
+    _canShowMessage() {
+        // 如果游戏处于事件/大事件/对话/战斗等弹窗状态，暂停显示消息
+        if (typeof Game !== 'undefined' && Game.state) {
+            const modalStates = ['event', 'scheduled_event', 'dialogue', 'battle', 'shop', 'inventory', 'character'];
+            if (modalStates.includes(Game.state)) {
+                return false;
+            }
+        }
+        return true;
+    },
 
     // 显示消息提示（带队列，同一时间只显示一条）
     showMessage(text) {
         // 加入队列
         this._messageQueue.push(text);
-        // 如果当前没有显示消息，立即处理
-        if (!this._isMessageShowing) {
+        // 如果当前没有显示消息且可以显示，立即处理
+        if (!this._isMessageShowing && this._canShowMessage()) {
             this._processNextMessage();
         }
     },
 
     // 处理队列中的下一条消息
     _processNextMessage() {
+        // 检查是否可以显示
+        if (!this._canShowMessage()) {
+            this._isMessageShowing = false;
+            return;
+        }
+        
         if (this._messageQueue.length === 0) {
             this._isMessageShowing = false;
             return;
@@ -897,6 +915,13 @@ const UI = {
                 </div>
             </div>
         `;
+        
+        // 回到地图界面，触发消息队列处理
+        setTimeout(() => {
+            if (!this._isMessageShowing && this._messageQueue.length > 0) {
+                this._processNextMessage();
+            }
+        }, 100);
     },
 
     // ========== 战斗界面 ==========
