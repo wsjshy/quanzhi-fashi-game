@@ -1544,6 +1544,7 @@ const UI = {
                         ${items.map(item => {
                             const itemData = item.itemData;
                             if (!itemData) return '';
+                            const ownedCount = Inventory.getItemCount(item.itemId);
                             return `
                                 <div onclick="Game.buyItem('${item.itemId}')" style="
                                     padding: 15px;
@@ -1554,6 +1555,7 @@ const UI = {
                                 ">
                                     <div style="font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 5px;">
                                         ${itemData.icon || '📦'} ${itemData.name}
+                                        <span style="float: right; font-size: 13px; color: #88ccff;">已拥有 ${ownedCount}</span>
                                     </div>
                                     <div style="font-size: 13px; color: #999; margin-bottom: 10px; min-height: 40px;">
                                         ${itemData.description}
