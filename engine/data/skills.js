@@ -160,9 +160,10 @@ const DataSkills = {
     statusEffects: [
       {
         name: "麻痹",
-        type: "paralyze",
-        duration: 2,
-        chance: 0.35
+        type: "stun",
+        element: "thunder",
+        duration: 1,
+        chance: 0.4
       }
     ]
   },
@@ -325,7 +326,7 @@ const DataSkills = {
   dark_bolt: {
     id: "dark_bolt",
     name: "暗影·腐蚀",
-    description: "初阶暗影系魔法，暗影弹，有腐蚀效果",
+    description: "初阶暗影系魔法，暗影弹，施加诅咒效果（可叠加2层，每层降低攻击和防御）",
     element: "dark",
     type: "damage",
     mpCost: 9,
@@ -338,18 +339,24 @@ const DataSkills = {
     tier: "初阶",
     statusEffects: [
       {
-        name: "腐蚀",
-        type: "poison",
-        dotDamage: 6,
+        name: "诅咒",
+        type: "curse",
+        element: "dark",
         duration: 3,
-        chance: 0.5
+        chance: 0.7,
+        stacks: 1,
+        maxStacks: 2,
+        statModifiers: {
+          attack: -5,
+          defense: -5
+        }
       }
     ]
   },
   light_shield: {
     id: "light_shield",
     name: "光系·圣盾",
-    description: "初阶光系防御魔法，用圣光凝聚护盾，提升防御并恢复少量生命",
+    description: "初阶光系防御魔法，用圣光凝聚护盾，净化所有负面状态并提升防御。光系核心生存技能",
     element: "light",
     type: "buff",
     mpCost: 12,
@@ -360,12 +367,18 @@ const DataSkills = {
     tier: "初阶",
     statusEffects: [
       {
+        name: "净化",
+        type: "cleanse",
+        element: "light",
+        chance: 1.0
+      },
+      {
         name: "圣盾",
         type: "defense_up",
         duration: 3,
         chance: 1,
         statModifiers: {
-          defense: 10
+          defense: 12
         }
       }
     ]
@@ -434,10 +447,12 @@ const DataSkills = {
     tier: "初阶",
     statusEffects: [
       {
-        name: "冻结",
-        type: "paralyze",
-        duration: 1,
-        chance: 0.4
+        name: "冰冻",
+        type: "freeze",
+        element: "ice",
+        value: 60,
+        duration: 3,
+        chance: 1.0
       }
     ]
   },
@@ -594,11 +609,14 @@ const DataSkills = {
     ignoreDefense: 0.3,
     statusEffects: [
       {
-        name: "焚骨",
-        type: "poison",
-        dotDamage: 15,
+        name: "燃烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 8,
         duration: 3,
-        chance: 0.7
+        chance: 0.9,
+        stacks: 2,
+        maxStacks: 3
       }
     ]
   },

@@ -660,6 +660,22 @@ const BattleSystem = {
         const targetName = isPlayerTarget ? '你' : this.enemy.name;
 
         effects.forEach(effect => {
+            // 净化效果：清除所有负面状态
+            if (effect.type === 'cleanse') {
+                if (Math.random() < (effect.chance || 1.0)) {
+                    const debuffTypes = ['burn', 'freeze', 'frozen', 'stun', 'wet', 'slow', 'poison', 'curse', 'electrified', 'mud', 'steam', 'paralyze', 'weakness'];
+                    const beforeCount = target.statusEffects.length;
+                    target.statusEffects = target.statusEffects.filter(e => !debuffTypes.includes(e.type));
+                    const removed = beforeCount - target.statusEffects.length;
+                    if (removed > 0) {
+                        this.addLog(`${targetName} 的圣光净化了 ${removed} 个负面状态！`, 'buff');
+                    } else {
+                        this.addLog(`${targetName} 被圣光笼罩，没有负面状态需要净化`, 'system');
+                    }
+                }
+                return;
+            }
+
             if (Math.random() < (effect.chance || 1.0)) {
                 const existing = target.statusEffects.find(e => e.type === effect.type);
                 
@@ -835,9 +851,10 @@ const BattleSystem = {
 
         target.statusEffects.forEach(effect => {
             if (effect.statModifiers) {
-                mods.attackMod += effect.statModifiers.attack || 0;
-                mods.defenseMod += effect.statModifiers.defense || 0;
-                mods.speedMod += effect.statModifiers.speed || 0;
+                const stacks = effect.stacks || 1;
+                mods.attackMod += (effect.statModifiers.attack || 0) * stacks;
+                mods.defenseMod += (effect.statModifiers.defense || 0) * stacks;
+                mods.speedMod += (effect.statModifiers.speed || 0) * stacks;
             }
             if (effect.speedMod) mods.speedMod += effect.speedMod;
             if (effect.hitRateMod) mods.hitRateMod += effect.hitRateMod;

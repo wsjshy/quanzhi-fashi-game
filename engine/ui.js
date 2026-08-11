@@ -799,6 +799,21 @@ const UI = {
                             </div>
                         </div>
                         
+                        <!-- 玩家状态效果 -->
+                        ${state.player.statusEffects && state.player.statusEffects.length > 0 ? `
+                            <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; max-width: 140px;">
+                                ${state.player.statusEffects.map(effect => {
+                                    const icons = { burn: '🔥', freeze: '❄️', frozen: '❄️', stun: '⚡', wet: '💧', shield: '🛡️', curse: '💀', slow: '🐌', defense_up: '🛡️', speed_up: '💨', evasion_up: '💨', electrified: '⚡', mud: '🟤', steam: '💨', poison: '☠️' };
+                                    const colors = { burn: '#ff6644', freeze: '#66aaff', frozen: '#66ddff', stun: '#ffdd44', wet: '#66bbff', shield: '#44ddcc', curse: '#aa66ff', slow: '#999', defense_up: '#66ff66', speed_up: '#88ff88', evasion_up: '#88ffaa', electrified: '#ffff44', mud: '#aa8844', steam: '#ccc', poison: '#88ff44' };
+                                    const icon = icons[effect.type] || '✨';
+                                    const color = colors[effect.type] || '#fff';
+                                    const stacks = effect.stacks ? `×${effect.stacks}` : '';
+                                    const value = effect.value ? ` ${effect.value}` : '';
+                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}">${icon}${stacks}${value}</span>`;
+                                }).join('')}
+                            </div>
+                        ` : ''}
+                        
                         ${state.playerCasting ? `
                             <div style="margin-top: 10px; padding: 5px 10px; background: rgba(255, 200, 0, 0.3); border: 1px solid #ffcc00; border-radius: 5px; font-size: 12px; color: #ffcc00;">
                                 引导中: ${state.playerCasting.skill.name} (${state.playerCasting.progress}/${state.playerCasting.totalTime})
@@ -836,6 +851,21 @@ const UI = {
                                 <div style="height: 100%; width: ${(state.enemy.hp / state.enemy.maxHp * 100).toFixed(1)}%; background: linear-gradient(90deg, #ff4444, #ff6666); transition: width 0.5s;"></div>
                             </div>
                         </div>
+                        
+                        <!-- 敌人状态效果 -->
+                        ${state.enemy.statusEffects && state.enemy.statusEffects.length > 0 ? `
+                            <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; max-width: 150px;">
+                                ${state.enemy.statusEffects.map(effect => {
+                                    const icons = { burn: '🔥', freeze: '❄️', frozen: '❄️', stun: '⚡', wet: '💧', shield: '🛡️', curse: '💀', slow: '🐌', defense_up: '🛡️', speed_up: '💨', evasion_up: '💨', electrified: '⚡', mud: '🟤', steam: '💨', poison: '☠️' };
+                                    const colors = { burn: '#ff6644', freeze: '#66aaff', frozen: '#66ddff', stun: '#ffdd44', wet: '#66bbff', shield: '#44ddcc', curse: '#aa66ff', slow: '#999', defense_up: '#66ff66', speed_up: '#88ff88', evasion_up: '#88ffaa', electrified: '#ffff44', mud: '#aa8844', steam: '#ccc', poison: '#88ff44' };
+                                    const icon = icons[effect.type] || '✨';
+                                    const color = colors[effect.type] || '#fff';
+                                    const stacks = effect.stacks ? `×${effect.stacks}` : '';
+                                    const value = effect.value ? ` ${effect.value}` : '';
+                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}">${icon}${stacks}${value}</span>`;
+                                }).join('')}
+                            </div>
+                        ` : ''}
                         
                         ${state.enemyCasting ? `
                             <div style="margin-top: 10px; padding: 5px 10px; background: rgba(255, 100, 100, 0.3); border: 1px solid #ff6666; border-radius: 5px; font-size: 12px; color: #ff6666;">
