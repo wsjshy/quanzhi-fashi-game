@@ -969,6 +969,23 @@ const Game = {
         if (!npcs) npcs = [];
         if (!Array.isArray(npcs)) npcs = [];
         
+        // 创建 NPC 选择弹窗的遮罩层
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 99998;
+            cursor: pointer;
+        `;
+        overlay.addEventListener('click', () => {
+            overlay.remove();
+            dialog.remove();
+        });
+        
         // 创建 NPC 选择弹窗
         const dialog = document.createElement('div');
         dialog.style.cssText = `
@@ -1103,7 +1120,7 @@ const Game = {
                 ` : ''}
             </div>
             <div style="text-align: right; margin-top: 20px;">
-                <div onclick="this.parentElement.parentElement.remove()" style="
+                <div onclick="closeNpcSelectDialog()" style="
                     display: inline-block;
                     padding: 8px 25px;
                     background: #444477;
@@ -1116,10 +1133,18 @@ const Game = {
             </div>
         `;
         
+        document.body.appendChild(overlay);
         document.body.appendChild(dialog);
         
-        window.talkToNPC = (npcId) => {
+        const closeDialog = () => {
+            overlay.remove();
             dialog.remove();
+        };
+        
+        window.closeNpcSelectDialog = closeDialog;
+        
+        window.talkToNPC = (npcId) => {
+            closeDialog();
             this.startDialogue(npcId);
         };
         
@@ -1202,6 +1227,22 @@ const Game = {
 
         dialog.innerHTML = `
             <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;">
+            <!-- 退出按钮 -->
+            <div style="position: absolute; top: 20px; right: 20px; z-index: 10;">
+                <div onclick="Game._closeDialogue()" style="
+                    padding: 8px 20px;
+                    background: rgba(60, 60, 100, 0.8);
+                    border: 2px solid #7777aa;
+                    border-radius: 8px;
+                    color: #ccccff;
+                    cursor: pointer;
+                    font-size: 14px;
+                    transition: all 0.2s;
+                " onmouseover="this.style.background='rgba(80, 80, 130, 0.9)'" onmouseout="this.style.background='rgba(60, 60, 100, 0.8)'">
+                    ✕ 告辞
+                </div>
+            </div>
+            
             <!-- NPC 立绘区域 -->
             <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
                 <div style="text-align: center;">
