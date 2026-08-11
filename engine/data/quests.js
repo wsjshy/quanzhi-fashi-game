@@ -1358,5 +1358,95 @@ const DataQuests = {
     dialogueStart: "巨眼猩鼠是奴仆级妖魔，生活在地下，眼睛能释放腥红穿透光束。它饥饿时会吃人，这只已经吃了两个女生，必须消灭！",
     dialogueInProgress: "巨眼猩鼠速度很快，攻击频率高。注意躲避它的腥红光束，找机会反击。雷系的麻痹效果对它很有效。",
     dialogueComplete: "干得漂亮！巨眼猩鼠被消灭了，铭文女子中学恢复了安全。校方非常感谢我们，给了丰厚的报酬。你这个雷法师，果然没招错！"
+  },
+  quest_old_district: {
+    id: "quest_old_district",
+    name: "老街区怪事",
+    description: "周敏说她奶奶住的老榕树街区最近夜里总有奇怪震动，工地明明已经停工了。陪她去调查一下。",
+    type: "story",
+    giver: "zhou_min",
+    objectives: [
+      { type: "reach", locationId: "old_banyan_district", count: 1, description: "前往老榕树街区调查" },
+      { type: "reach", locationId: "old_banyan_district", count: 3, description: "在老榕树街区探索3次" }
+    ],
+    rewards: {
+      exp: 150,
+      gold: 100,
+      items: [
+        { itemId: "demon_detection_powder", count: 3 },
+        { itemId: "healing_potion", count: 3 }
+      ],
+      reputation: { city_hunters: 10 }
+    },
+    prerequisites: ["quest_hunt_giant_rat"],
+    nextQuest: "quest_one_eye_wolf",
+    isMainQuest: false,
+    autoStart: false,
+    dialogueStart: "莫凡，我奶奶家在老榕树街区，最近夜里总有奇怪的震动，可是工地早就停工了。我有点担心，你能陪我去看看吗？",
+    dialogueInProgress: "寻妖粉显示这里确实有妖魔活动的痕迹，脚印很大，不像是巨眼猩鼠。继续深入调查，小心点。",
+    dialogueComplete: "果然有妖魔！是一只独眼魔狼，而且好像在进阶，非常危险。赶紧通知猎妖队！"
+  },
+  quest_one_eye_wolf: {
+    id: "quest_one_eye_wolf",
+    name: "猎杀进阶魔狼",
+    description: "老榕树街区出现了一只偷吸地圣泉的进阶期独眼魔狼，战斗力极强。配合猎妖队和魔法协会消灭它！",
+    type: "hunt",
+    giver: "xu_dahuang",
+    objectives: [
+      { type: "kill", enemyId: "one_eye_wolf_advanced", count: 1, description: "击败进阶期独眼魔狼" }
+    ],
+    rewards: {
+      exp: 400,
+      gold: 300,
+      items: [
+        { itemId: "wolf_fang", count: 2 },
+        { itemId: "demon_core", count: 2 },
+        { itemId: "soul_fragment", count: 1 },
+        { itemId: "healing_potion", count: 5 },
+        { itemId: "mana_potion", count: 5 }
+      ],
+      reputation: {
+        city_hunters: 40,
+        magic_association: 30,
+        city_street: 20
+      }
+    },
+    prerequisites: ["quest_old_district"],
+    nextQuest: null,
+    isMainQuest: false,
+    autoStart: false,
+    dialogueStart: "这只独眼魔狼偷吸了地圣泉，正在进阶期，战斗力远超普通妖魔。我们猎妖队会配合你，雷系对它有特效，关键时刻靠你了！",
+    dialogueInProgress: "它的肌肉骨骼在蜕变，越来越强！用雷系麻痹它，抑制它的进阶！坚持住，杨作河法师马上就到！",
+    dialogueComplete: "干得好！进阶期独眼魔狼被消灭了，老榕树街区恢复了安全。魔法协会会给你嘉奖的。对了，那妖魔的魂魄...你收集到了吗？"
+  },
+  quest_guard_district: {
+    id: "quest_guard_district",
+    name: "守护街区",
+    description: "进阶期独眼魔狼随时可能挣脱控制冲入繁华商业区。疏散居民，坚守阵地，等待中阶法师支援！",
+    type: "story",
+    giver: "xu_dahuang",
+    objectives: [
+      { type: "reach", locationId: "old_banyan_district", count: 1, description: "前往老榕树街区支援" },
+      { type: "talk", npcId: "xu_dahuang", count: 1, description: "与徐大荒对话" }
+    ],
+    rewards: {
+      exp: 200,
+      gold: 150,
+      items: [
+        { itemId: "healing_potion", count: 3 },
+        { itemId: "mana_potion", count: 3 }
+      ],
+      reputation: {
+        city_hunters: 20,
+        city_street: 30
+      }
+    },
+    prerequisites: ["quest_old_district"],
+    nextQuest: "quest_one_eye_wolf",
+    isMainQuest: false,
+    autoStart: false,
+    dialogueStart: "独眼魔狼在强行进阶，我们不能退！后面就是繁华商业区，无数无辜民众在那里。坚守阵地，等待杨作河法师支援！",
+    dialogueInProgress: "它要挣脱了！雷系！快用雷系抑制它！",
+    dialogueComplete: "坚持住了！杨作河法师赶到了，我们一起消灭这只妖魔！"
   }
 };

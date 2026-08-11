@@ -203,6 +203,11 @@ const DataShops = {
         itemId: "demon_core",
         price: 55,
         stock: -1
+      },
+      {
+        itemId: "demon_detection_powder",
+        price: 50,
+        stock: -1
       }
     ]
   },

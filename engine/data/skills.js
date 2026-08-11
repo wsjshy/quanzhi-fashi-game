@@ -1016,5 +1016,67 @@ const DataSkills = {
     cooldown: 2,
     tier: "初阶",
     requiresSummon: true
+  },
+  thunder_whip: {
+    id: "thunder_whip",
+    name: "雷印·狂策",
+    description: "2级雷系技能。雷电化为长鞭疯狂抽打目标，电弧持续传导造成麻痹。对力量型妖魔有特效。",
+    element: "thunder",
+    type: "damage",
+    damage: 45,
+    mpCost: 20,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶2级",
+    statusEffects: [
+      { name: "雷电麻痹", type: "stun", duration: 1, chance: 0.5 },
+      { name: "感电", type: "electrified", duration: 3, chance: 1.0, defenseMalus: 0.2 }
+    ]
+  },
+  ice_freeze: {
+    id: "ice_freeze",
+    name: "冰蔓·凝结",
+    description: "2级冰系技能。飞霜凝结敌人脚下地面，蔓延至下肢冻结，大幅降低敌人移动速度。",
+    element: "ice",
+    type: "damage",
+    damage: 25,
+    mpCost: 18,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶2级",
+    statusEffects: [
+      { name: "冻结", type: "frozen", duration: 1, chance: 0.4, freezeValue: 35 },
+      { name: "减速", type: "slow", duration: 3, chance: 1.0, speedMalus: 0.4 }
+    ]
+  },
+  water_shield: {
+    id: "water_shield",
+    name: "水御·守护",
+    description: "水系防御技能。数条水绸带编织成水之衣甲，吸收伤害并提升防御。",
+    element: "water",
+    type: "buff",
+    mpCost: 15,
+    targetType: "self",
+    cooldown: 4,
+    tier: "初阶",
+    statusEffects: [
+      { name: "水之守护", type: "shield", duration: 3, chance: 1.0, value: 40 },
+      { name: "水之甲", type: "defense_up", duration: 3, chance: 1.0, statModifiers: { defense: 8 } }
+    ]
+  },
+  earth_slow: {
+    id: "earth_slow",
+    name: "地波·迟缓",
+    description: "土系控制技能。拍打地面产生地下波纹，迫使敌人向反方向挪动，降低其速度。",
+    element: "earth",
+    type: "debuff",
+    mpCost: 12,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "地波迟缓", type: "slow", duration: 2, chance: 1.0, speedMalus: 0.5 },
+      { name: "泥泞", type: "mud", duration: 2, chance: 0.6, accuracyMalus: 0.2 }
+    ]
   }
 };

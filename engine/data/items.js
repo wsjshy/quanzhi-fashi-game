@@ -666,5 +666,61 @@ const DataItems = {
     usableOutOfBattle: false,
     rarity: "普通",
     lore: "巨眼猩鼠的利爪，挖洞能手的证明。"
+  },
+  demon_detection_powder: {
+    id: "demon_detection_powder",
+    name: "寻妖粉",
+    description: "城市猎妖队必备道具，对妖魔气息极其敏感，能显现十天内妖魔留下的足迹。撒向空中即可检测。",
+    type: "consumable",
+    icon: "✨",
+    price: 50,
+    stackable: true,
+    maxStack: 20,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "普通",
+    lore: "晶莹的粉末，遇到妖魔气息会自动粘附成形。"
+  },
+  wolf_fang: {
+    id: "wolf_fang",
+    name: "魔狼獠牙",
+    description: "独眼魔狼的锋利獠牙，比普通狼齿坚硬数倍，是制作攻击性魔器的优质材料。",
+    type: "material",
+    icon: "🦷",
+    price: 80,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    lore: "独眼魔狼的獠牙，凶残的证明。"
+  },
+  soul_fragment: {
+    id: "soul_fragment",
+    name: "残魄",
+    description: "妖魔死后残留的微弱魂魄，浑浊暗淡。亡灵系魔法师和特殊魔器可以吸收利用，小泥鳅坠也能收集。",
+    type: "special",
+    icon: "🔵",
+    price: 100,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    lore: "微弱的萤火芒，妖魔残魂的证明。"
+  },
+  elite_soul: {
+    id: "elite_soul",
+    name: "精魄",
+    description: "强大妖魔死后留下的纯净魂魄，光芒璀璨。价值极高，是修炼和制作灵级魔器的珍贵材料。只有亡灵系法师能采集。",
+    type: "special",
+    icon: "💎",
+    price: 5000,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "史诗",
+    lore: "纯净的萤火芒，强大妖魔的证明。价值连城。"
   }
 };

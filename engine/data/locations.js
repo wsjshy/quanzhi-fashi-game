@@ -943,5 +943,77 @@ const DataLocations = {
     enemyRate: 0.25,
     isSafeZone: false,
     shops: []
+  },
+  old_banyan_district: {
+    id: "old_banyan_district",
+    name: "老榕树街区",
+    description: "博城老城区，因投资方资金短缺成为一片拆迁废墟，烂尾楼和半拆房屋遍布。传闻夜里有奇怪震动，流浪汉频繁失踪。",
+    icon: "🏚️",
+    backgroundColor: "#3a3a2a",
+    connectedLocations: ["city_street"],
+    unlockCondition: { level: 6, quest: "quest_old_district" },
+    actions: [
+      {
+        id: "explore_ruins",
+        name: "探索废墟",
+        description: "在拆迁废墟中探索，寻找异常震动的来源",
+        icon: "🔍",
+        timeCost: 2,
+        staminaCost: 15,
+        effects: { exp: 15 },
+        eventChance: 0.5,
+        events: ["event_old_district_explore", "event_find_demon_footprint", "event_encounter_one_eye_wolf"]
+      },
+      {
+        id: "use_demon_powder",
+        name: "使用寻妖粉",
+        description: "撒下寻妖粉，检测妖魔留下的气息足迹",
+        icon: "✨",
+        timeCost: 1,
+        staminaCost: 5,
+        effects: {},
+        eventChance: 0.8,
+        events: ["event_demon_powder_reveal"]
+      },
+      {
+        id: "investigate_construction",
+        name: "调查烂尾楼",
+        description: "深入烂尾楼调查，妖魔很可能藏身于此",
+        icon: "🏢",
+        timeCost: 2,
+        staminaCost: 20,
+        effects: { exp: 20 },
+        eventChance: 0.6,
+        events: ["event_construction_investigate", "event_one_eye_wolf_ambush"]
+      },
+      {
+        id: "evacuate_residents",
+        name: "疏散居民",
+        description: "通知老街区的居民和老人撤离危险区域",
+        icon: "🚨",
+        timeCost: 2,
+        staminaCost: 10,
+        effects: { reputation_city: 10, exp: 10 },
+        eventChance: 0.3,
+        events: ["event_evacuate_residents"]
+      },
+      {
+        id: "meet_hunter_team",
+        name: "与猎妖队汇合",
+        description: "与城市猎妖队汇合，共同对付妖魔",
+        icon: "⚔️",
+        timeCost: 1,
+        staminaCost: 5,
+        effects: {},
+        npcs: ["xu_dahuang", "guo_caitang", "xiao_ke", "li_wenjie", "fei_shi", "yang_zuohe"],
+        npcRate: 0.7
+      }
+    ],
+    npcs: ["xu_dahuang", "guo_caitang", "yang_zuohe", "yu_ang"],
+    npcRate: 0.2,
+    enemies: ["one_eye_wolf_advanced", "one_eye_wolf"],
+    enemyRate: 0.3,
+    isSafeZone: false,
+    shops: []
   }
 };

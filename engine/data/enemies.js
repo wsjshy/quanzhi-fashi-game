@@ -885,5 +885,35 @@ const DataEnemies = {
       { itemId: "rat_claw", chance: 0.5, min: 1, max: 2 }
     ],
     locations: ["city_street", "mingwen_girls_school"]
+  },
+  one_eye_wolf_advanced: {
+    id: "one_eye_wolf_advanced",
+    name: "进阶期独眼魔狼",
+    title: "战将级妖魔（进阶中）",
+    description: "偷吸了博城地圣泉能量的独眼魔狼，正处在进阶期，肌肉骨骼正在蜕变，战斗力远超普通独眼魔狼。雷系魔法对其有特效。",
+    elements: ["dark"],
+    level: 10,
+    maxHp: 400,
+    maxMp: 80,
+    attack: 35,
+    defense: 18,
+    speed: 22,
+    skills: ["basic_attack", "dark_bolt", "dark_claw"],
+    specialAbility: "冲撞：高速撞击造成大量伤害；进阶中：身体持续变强，雷系可抑制进阶",
+    spriteColor: "#4a0000",
+    isEnemy: true,
+    isElite: true,
+    canEnrage: true,
+    thunderWeakness: 2.0,
+    fireResistance: 0.5,
+    expReward: 300,
+    goldReward: 200,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.8, min: 1, max: 2 },
+      { itemId: "wolf_fang", chance: 0.6, min: 1, max: 2 },
+      { itemId: "soul_fragment", chance: 0.15, min: 1, max: 1 },
+      { itemId: "elite_soul", chance: 0.05, min: 1, max: 1 }
+    ],
+    locations: ["old_banyan_district"]
   }
 };

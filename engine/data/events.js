@@ -1595,5 +1595,150 @@ const DataEvents = {
         resultText: "战将级悬赏报酬丰厚，但危险极高。以你现在的实力，还不是对手。"
       }
     ]
+  },
+  event_old_district_explore: {
+    id: "event_old_district_explore",
+    name: "废墟探索",
+    description: "老榕树街区一片废墟，烂尾楼和半拆房屋遍布，灰尘弥漫。你小心翼翼地在废墟中探索。",
+    trigger: "exploring",
+    chance: 0.5,
+    conditions: { location: "old_banyan_district" },
+    choices: [
+      {
+        text: "仔细搜索地面",
+        effects: { exp: 15, stamina: -5 },
+        resultText: "你在地面发现了一些奇怪的痕迹，像是某种大型生物的脚印，但被灰尘覆盖看不太清。"
+      },
+      {
+        text: "检查烂尾楼入口",
+        effects: { exp: 10 },
+        resultText: "烂尾楼里堆满了水泥袋和废弃工具，里面黑漆漆的，似乎有什么东西在里面。"
+      },
+      {
+        text: "寻找居民询问",
+        effects: { exp: 5, reputation_city: 5 },
+        resultText: "几个老人说最近夜里确实有震动，还有流浪汉失踪了，但没人敢深入调查。"
+      }
+    ]
+  },
+  event_find_demon_footprint: {
+    id: "event_find_demon_footprint",
+    name: "发现足迹",
+    description: "你在一片较为干净的地面上发现了一个巨大的脚印，形状像狼，但比普通狼大得多。",
+    trigger: "exploring",
+    chance: 0.4,
+    conditions: { location: "old_banyan_district" },
+    choices: [
+      {
+        text: "测量脚印大小",
+        effects: { exp: 20, intelligence: 5 },
+        resultText: "这个脚印比普通狼大两号，而且只有一只眼睛的妖魔...是独眼魔狼！而且体型异常大，可能是进阶期！"
+      },
+      {
+        text: "追踪足迹方向",
+        effects: { exp: 15, stamina: -10 },
+        resultText: "足迹延伸向那座最大的烂尾楼，看来妖魔就藏身在那里。你需要做好战斗准备。"
+      }
+    ]
+  },
+  event_demon_powder_reveal: {
+    id: "event_demon_powder_reveal",
+    name: "寻妖粉显现",
+    description: "你将寻妖粉撒向空中，晶莹的粉末缓缓飘落。突然，粉末在十米外的地面上粘附成形，组成了一个巨大的脚印轮廓！",
+    trigger: "exploring",
+    chance: 0.8,
+    conditions: { location: "old_banyan_district", action: "use_demon_powder" },
+    choices: [
+      {
+        text: "走近查看脚印",
+        effects: { exp: 25, intelligence: 10 },
+        resultText: "寻妖粉不会骗人，这里十天内确实有妖魔活动。这个脚印形状...是独眼魔狼！而且体型比普通的大很多。"
+      },
+      {
+        text: "继续撒粉追踪",
+        effects: { exp: 20, stamina: -5 },
+        resultText: "更多的粉末显现出足迹的走向，一直延伸到那座烂尾商场楼里。妖魔肯定就藏在里面！"
+      }
+    ]
+  },
+  event_construction_investigate: {
+    id: "event_construction_investigate",
+    name: "深入烂尾楼",
+    description: "你走进烂尾楼，里面堆满了水泥袋和废弃材料，光线昏暗。突然，你听到深处传来咀嚼的声音...",
+    trigger: "exploring",
+    chance: 0.5,
+    conditions: { location: "old_banyan_district", action: "investigate_construction" },
+    choices: [
+      {
+        text: "悄悄靠近查看",
+        effects: { exp: 30, hp: -20 },
+        resultText: "你透过砖墙看到了惊悚的一幕：一只独眼巨狼正在咀嚼，旁边还有断掉的人类手臂！它在吃人！你被发现了，赶紧跑！"
+      },
+      {
+        text: "立刻撤退通知猎妖队",
+        effects: { exp: 15, reputation_city_hunters: 10 },
+        resultText: "你明智地选择撤退，赶紧联系城市猎妖队。这种进阶期妖魔不是你一个人能对付的。"
+      }
+    ]
+  },
+  event_one_eye_wolf_ambush: {
+    id: "event_one_eye_wolf_ambush",
+    name: "魔狼伏击",
+    description: "突然，一道黑影从废墟中窜出！一只体型庞大的独眼魔狼挡住了你的去路，它的独眼中闪烁着凶残的光芒！",
+    trigger: "exploring",
+    chance: 0.4,
+    conditions: { location: "old_banyan_district" },
+    choices: [
+      {
+        text: "迎战！",
+        effects: { exp: 50, hp: -30 },
+        resultText: "你与独眼魔狼展开激战！它的力量和速度都远超普通妖魔，经过一番苦战你勉强击退了它。这只妖魔不简单，需要猎妖队支援！"
+      },
+      {
+        text: "撤退求援",
+        effects: { exp: 10, stamina: -15 },
+        resultText: "你明智地选择撤退，这只独眼魔狼太强了，而且似乎在进阶。赶紧通知猎妖队和魔法协会！"
+      }
+    ]
+  },
+  event_evacuate_residents: {
+    id: "event_evacuate_residents",
+    name: "疏散居民",
+    description: "你挨家挨户通知老街区的居民撤离，告诉他们这里有妖魔出没。",
+    trigger: "exploring",
+    chance: 0.5,
+    conditions: { location: "old_banyan_district", action: "evacuate_residents" },
+    choices: [
+      {
+        text: "耐心劝说老人",
+        effects: { exp: 20, reputation_city: 15, stamina: -10 },
+        resultText: "几位老人起初不愿意离开，但在你的坚持下终于同意撤离。你救了他们的命！"
+      },
+      {
+        text: "快速通知后离开",
+        effects: { exp: 10, reputation_city: 5 },
+        resultText: "你快速通知了能找到的居民，有些人将信将疑，但至少大部分人开始撤离了。"
+      }
+    ]
+  },
+  event_soul_collection: {
+    id: "event_soul_collection",
+    name: "魂魄收集",
+    description: "战斗结束后，你靠近妖魔的尸体。你的小泥鳅坠（或其他收集器皿）开始发出光芒，一缕魂魄从尸体中飘出...",
+    trigger: "battle_victory",
+    chance: 0.3,
+    conditions: { enemy: "one_eye_wolf_advanced" },
+    choices: [
+      {
+        text: "收集魂魄",
+        effects: { addItem: "soul_fragment", exp: 30 },
+        resultText: "你成功收集到了妖魔的残魄！这种魂魄对修炼和制作魔器很有价值。"
+      },
+      {
+        text: "不收集，离开",
+        effects: { exp: 5 },
+        resultText: "你没有收集魂魄的器皿，只能遗憾地离开。"
+      }
+    ]
   }
 };

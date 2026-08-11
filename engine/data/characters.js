@@ -5434,5 +5434,109 @@ const DataCharacters = {
         }
       }
     }
+  },
+  yang_zuohe: {
+    id: "yang_zuohe",
+    name: "杨作河",
+    title: "魔法协会中阶法师",
+    description: "博城魔法协会的中阶水系法师，同时掌握风系，实力强大。在老榕树街区事件中及时赶到，用暴浪·驱逐击败了进阶期独眼魔狼。",
+    avatar: "assets/images/characters/yang_zuohe.jpg",
+    location: "city_street",
+    element: "water",
+    level: 18,
+    personality: ["沉稳", "威严", "公正", "经验丰富"],
+    baseStats: { hp: 300, mp: 200, attack: 50, defense: 30, speed: 25 },
+    skills: ["water_wave", "water_chain", "wind_tornado"],
+    faction: "magic_association",
+    factionRank: "中阶法师",
+    relationships: { xu_dahuang: 30, mo_fan: 20 },
+    giftPreferences: {
+      loved: ["magic_crystal"],
+      liked: ["magic_herb", "demon_core"],
+      disliked: [],
+      baseOpinionGain: 2,
+      lovedMultiplier: 3,
+      likedMultiplier: 2,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 3
+    },
+    dialogueTree: {
+      npcId: "yang_zuohe",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["年轻人，你的雷系天赋不错。", "老榕树街区那次，多亏了你压制住独眼魔狼。", "有什么事吗？"],
+          choices: [
+            { text: "请教中阶魔法", next: "about_mid_magic", action: "talk" },
+            { text: "询问魔法协会", next: "about_association", action: "talk" },
+            { text: "告辞", next: "default", action: "back" }
+          ]
+        },
+        about_mid_magic: {
+          id: "about_mid_magic",
+          texts: ["中阶魔法需要星云级别的精神力。", "初阶是星尘，中阶是星云，完全不同的层次。", "暴浪·驱逐可以淹没整条街道，这就是中阶的威力。", "你还需要继续努力。"],
+          effects: { familiarity: 5, intelligence: 10 },
+          choices: [{ text: "受教了", next: "default", action: "back" }]
+        },
+        about_association: {
+          id: "about_association",
+          texts: ["魔法协会负责管理城市内的魔法师和妖魔事件。", "我们和猎者联盟、城市猎妖队合作。", "如果你足够强，可以申请加入魔法协会。"],
+          effects: { familiarity: 3 },
+          choices: [{ text: "明白了", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  yu_ang: {
+    id: "yu_ang",
+    name: "宇昂",
+    title: "穆氏养子 / 冰系天才",
+    description: "穆卓云的养子，冰系天才，已掌握冰蔓·凝结。穆卓云安排他在成年礼上与莫凡决斗，作为立威的垫脚石。性格阴沉高傲。",
+    avatar: "assets/images/characters/yu_ang.jpg",
+    location: "mu_manor",
+    element: "ice",
+    level: 7,
+    personality: ["高傲", "阴沉", "勤奋", "冷漠"],
+    baseStats: { hp: 120, mp: 80, attack: 22, defense: 12, speed: 14 },
+    skills: ["ice_spike", "ice_frost", "ice_shield"],
+    faction: "mu_family",
+    factionRank: "养子",
+    relationships: { mu_zhuoyun: 50, mu_he: 30, mo_fan: -30, guo_caitang: 20 },
+    giftPreferences: {
+      loved: ["ice_crystal"],
+      liked: ["magic_crystal", "magic_herb"],
+      disliked: ["fire_essence"],
+      baseOpinionGain: 1,
+      lovedMultiplier: 3,
+      likedMultiplier: 2,
+      dislikedMultiplier: 0.3,
+      dailyGiftLimit: 2
+    },
+    dialogueTree: {
+      npcId: "yu_ang",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["...你是谁？", "不要浪费我的时间，我还要修炼。", "如果你是来挑战的，等我成年礼那天吧。"],
+          choices: [
+            { text: "你就是宇昂？", next: "about_self", action: "talk" },
+            { text: "成年礼决斗", next: "about_duel", action: "talk" },
+            { text: "告辞", next: "default", action: "back" }
+          ]
+        },
+        about_self: {
+          id: "about_self",
+          texts: ["没错，我是穆卓云的养子。", "冰系，已经掌握冰蔓·凝结。", "同龄人中，没几个是我的对手。"],
+          effects: { familiarity: 3 },
+          choices: [{ text: "厉害", next: "default", action: "back" }]
+        },
+        about_duel: {
+          id: "about_duel",
+          texts: ["父亲安排我在成年礼上和一个叫莫凡的人决斗。", "本来觉得没意思，但听说他有点实力。", "希望他别让我失望。"],
+          effects: { familiarity: 5 },
+          choices: [{ text: "拭目以待", next: "default", action: "back" }]
+        }
+      }
+    }
   }
 };
