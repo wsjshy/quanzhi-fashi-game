@@ -699,7 +699,7 @@ const UI = {
                 ">
                     <div style="display: flex; gap: 30px; align-items: center;">
                         <div style="color: #ffd700; font-size: 20px; font-weight: bold;">${location?.name || '未知地点'}</div>
-                        <div style="color: #aaa; font-size: 14px;">📅 ${TimeSystem.getDateString()} ${TimeSystem.getDayOfWeekName()} ${TimeSystem.getTimeDescription()}</div>
+                        <div style="color: #aaa; font-size: 14px;">📅 ${TimeSystem.getDateString()} ${TimeSystem.getDayOfWeekName()} ${TimeSystem.getCurrentPeriodInfo().icon} ${TimeSystem.getCurrentPeriodInfo().name} ${Player.hour}:00</div>
                         ${(() => {
                             const currentClass = TimeSystem.getCurrentClass(location);
                             if (currentClass) {

@@ -99,6 +99,78 @@ const Game = {
         
         // 显示标题界面
         this.showTitleScreen();
+        
+        // 测试用键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            // F2: +1天
+            if (e.key === 'F2') {
+                e.preventDefault();
+                if (this.state === 'map') {
+                    Player.day += 1;
+                    Player.hour = 8;
+                    Player.timeOfDay = 'morning';
+                    BigEventSystem.checkScheduledEvents();
+                    UI.renderMapScreen();
+                    console.log('[测试] 已推进1天，当前第' + Player.day + '天');
+                }
+            }
+            // F3: +7天
+            if (e.key === 'F3') {
+                e.preventDefault();
+                if (this.state === 'map') {
+                    Player.day += 7;
+                    Player.hour = 8;
+                    Player.timeOfDay = 'morning';
+                    BigEventSystem.checkScheduledEvents();
+                    UI.renderMapScreen();
+                    console.log('[测试] 已推进7天，当前第' + Player.day + '天');
+                }
+            }
+            // F4: +45天
+            if (e.key === 'F4') {
+                e.preventDefault();
+                if (this.state === 'map') {
+                    Player.day += 45;
+                    Player.hour = 8;
+                    Player.timeOfDay = 'morning';
+                    BigEventSystem.checkScheduledEvents();
+                    UI.renderMapScreen();
+                    console.log('[测试] 已推进45天，当前第' + Player.day + '天');
+                }
+            }
+            // F5: 刷新页面（浏览器默认）
+            // F6: 移除DEBUG条
+            if (e.key === 'F6') {
+                e.preventDefault();
+                const debugDiv = document.getElementById('debug-error');
+                if (debugDiv) {
+                    debugDiv.style.display = 'none';
+                }
+            }
+            // F7: 显示玩家信息
+            if (e.key === 'F7') {
+                e.preventDefault();
+                alert('玩家信息:\n' + 
+                    '名字: ' + Player.name + '\n' +
+                    '等级: ' + Player.level + '\n' +
+                    '经验: ' + Player.exp + '/' + Player.expToNext + '\n' +
+                    'HP: ' + Player.hp + '/' + Player.maxHp + '\n' +
+                    'MP: ' + Player.mp + '/' + Player.maxMp + '\n' +
+                    '体力: ' + Player.stamina + '/' + Player.maxStamina + '\n' +
+                    '第' + Player.day + '天 ' + Player.hour + ':00\n' +
+                    '地点: ' + Player.currentLocation + '\n' +
+                    '金币: ' + Player.gold);
+            }
+            // F8: 显示时间
+            if (e.key === 'F8') {
+                e.preventDefault();
+                const date = TimeSystem.getCurrentDate();
+                alert('时间信息:\n' + 
+                    '日期: ' + date.year + '年' + date.month + '月' + date.day + '日 ' + TimeSystem.WEEKDAY_NAMES[date.weekday] + '\n' +
+                    '第' + Player.day + '天 ' + Player.hour + ':00\n' +
+                    '时段: ' + Player.timeOfDay);
+            }
+        });
     },
 
     // ========== 标题界面 ==========
@@ -181,7 +253,7 @@ const Game = {
         // 防护0.5：消息关闭后短时间内禁止行动，防止点击穿透
         if (typeof UI !== 'undefined' && UI._lastMessageCloseTime) {
             const timeSinceMessageClose = now - UI._lastMessageCloseTime;
-            if (timeSinceMessageClose < 10000) {
+            if (timeSinceMessageClose < 2000) {
                 console.log(`[行动] 消息关闭后时间太短(${timeSinceMessageClose}ms)，取消执行`);
                 return;
             }
@@ -212,19 +284,19 @@ const Game = {
             return;
         }
         
-        // DEBUG: 把调用栈显示在页面上
-        try {
-            const err = new Error();
-            const stack = err.stack || '';
-            const debugDiv = document.getElementById('debug-error');
-            if (debugDiv) {
-                debugDiv.style.display = 'block';
-                debugDiv.style.background = '#006600';
-                debugDiv.textContent = `[DEBUG] 执行行动: ${actionId}\n时间: ${Player.day}天 ${Player.hour}点\n消息弹窗: ${UI._isMessageShowing}\n冷却: ${this._actionCooldown}\n间隔: ${now - this._lastActionTime}ms\n消息关闭后: ${typeof UI !== 'undefined' && UI._lastMessageCloseTime ? now - UI._lastMessageCloseTime + 'ms' : 'N/A'}\n\n调用栈:\n${stack}`;
-            }
-        } catch (e) {
-            console.error('DEBUG显示失败', e);
-        }
+        // DEBUG: 把调用栈显示在页面上（已注释，需要时再打开）
+        // try {
+        //     const err = new Error();
+        //     const stack = err.stack || '';
+        //     const debugDiv = document.getElementById('debug-error');
+        //     if (debugDiv) {
+        //         debugDiv.style.display = 'block';
+        //         debugDiv.style.background = '#006600';
+        //         debugDiv.textContent = `[DEBUG] 执行行动: ${actionId}\n时间: ${Player.day}天 ${Player.hour}点\n消息弹窗: ${UI._isMessageShowing}\n冷却: ${this._actionCooldown}\n间隔: ${now - this._lastActionTime}ms\n消息关闭后: ${typeof UI !== 'undefined' && UI._lastMessageCloseTime ? now - UI._lastMessageCloseTime + 'ms' : 'N/A'}\n\n调用栈:\n${stack}`;
+        //     }
+        // } catch (e) {
+        //     console.error('DEBUG显示失败', e);
+        // }
         
         // 修炼类行动：先弹时长选择菜单
         if (actionId === 'train' || actionId === 'meditate') {
