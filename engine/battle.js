@@ -193,7 +193,7 @@ const BattleSystem = {
     /**
      * 瞬发技能（直接生效）
      */
-    castSkillImmediate(skill, caster) {
+    castSkillImmediate(skill, caster, skipTurnEnd = false) {
         const isPlayer = caster === 'player';
         const casterData = isPlayer ? this.player : this.enemy;
         const targetData = isPlayer ? this.enemy : this.player;
@@ -250,11 +250,13 @@ const BattleSystem = {
         } else if (skill.type === 'heal') {
             // 治疗技能
             const healAmount = Math.floor(skill.baseHeal * (1 + casterData.spirit * 0.01));
-            targetData.hp = Math.min(targetData.maxHp, targetData.hp + healAmount);
+            // 治疗目标：self类型治疗自己，否则治疗targetData
+            const healTarget = (skill.targetType === 'self') ? casterData : targetData;
+            healTarget.hp = Math.min(healTarget.maxHp, healTarget.hp + healAmount);
 
             // 治疗技能的附加状态效果（如净化、复苏）
             if (skill.statusEffects) {
-                this.applyStatusEffects(targetData, skill.statusEffects, !isPlayer);
+                this.applyStatusEffects(healTarget, skill.statusEffects, !isPlayer);
             }
 
             const casterName = isPlayer ? '你' : this.enemy.name;
@@ -319,10 +321,12 @@ const BattleSystem = {
             }
         }
 
-        if (isPlayer) {
-            this.endPlayerTurn();
-        } else {
-            this.endEnemyTurn();
+        if (!skipTurnEnd) {
+            if (isPlayer) {
+                this.endPlayerTurn();
+            } else {
+                this.endEnemyTurn();
+            }
         }
 
         return { success: true };
@@ -446,14 +450,16 @@ const BattleSystem = {
                 const skill = this.playerCasting.skill;
                 this.playerCasting = null;
                 this.addLog(`${skill.name} 引导完成！`, 'magic');
-                this.castSkillImmediate(skill, 'player');
-                return; // castSkillImmediate 里会调用 endPlayerTurn，不对，应该是直接进入敌人回合
+                this.castSkillImmediate(skill, 'player', true);
+                // 引导完成后继续执行后续逻辑（召唤兽攻击、敌人回合）
             }
         }
 
         // 召唤兽自动攻击
         if (this.summon && this.summon.hp > 0) {
             this.summonAttack();
+            // 召唤兽攻击后检查战斗是否结束
+            if (this.checkBattleEnd()) return;
         }
 
         // 敌人回合
@@ -525,7 +531,9 @@ const BattleSystem = {
                 const skill = this.enemyCasting.skill;
                 this.enemyCasting = null;
                 this.addLog(`${this.enemy.name} 的 ${skill.name} 引导完成！`, 'magic');
-                this.castSkillImmediate(skill, 'enemy');
+                this.castSkillImmediate(skill, 'enemy', true);
+                // 引导完成后继续执行后续逻辑
+                this.endEnemyTurn();
                 return;
             }
         }
@@ -645,19 +653,24 @@ const BattleSystem = {
         if (this.checkBattleEnd()) return;
 
         this.turn++;
-        this.isPlayerTurn = true;
         this.player.isDefending = false;
 
         // 玩家被眩晕/冻结，自动跳过回合
         if (this.isStunned(this.player)) {
             const stunEffect = this.player.statusEffects.find(e => e.type === 'stun' || e.type === 'frozen');
             this.addLog(`你被${stunEffect.name}，无法行动！`, 'system');
+            this.isPlayerTurn = false;
+            // 先更新UI，显示玩家被眩晕的状态
+            if (typeof UI !== 'undefined') {
+                UI.updateBattleScreen();
+            }
             setTimeout(() => {
-                this.isPlayerTurn = false;
                 this.enemyTurn();
             }, 1000);
             return;
         }
+        
+        this.isPlayerTurn = true;
         
         // 更新UI
         if (typeof UI !== 'undefined') {
