@@ -136,6 +136,7 @@ const Player = {
         this.skills = ['basic_attack'];
         this.gold = 50;
         this.equipment = { weapon: null, armor: null, accessory: null };
+        this.enhanceLevels = { weapon: 0, armor: 0, accessory: 0 };
         this.activeQuests = [];
         this.completedQuests = [];
         this.currentLocation = 'tianlan_school';
@@ -179,14 +180,16 @@ const Player = {
             hitRate: 0.95
         };
 
-        // 装备加成
+        // 装备加成（含强化加成）
         ['weapon', 'armor', 'accessory'].forEach(slot => {
             const itemId = this.equipment[slot];
             if (itemId) {
                 const item = Inventory.getItem(itemId);
                 if (item && item.equipStats) {
+                    const enhanceLevel = this.enhanceLevels[slot] || 0;
+                    const enhanceMultiplier = 1 + enhanceLevel * 0.1; // 每级强化+10%属性
                     Object.keys(item.equipStats).forEach(key => {
-                        stats[key] = (stats[key] || 0) + item.equipStats[key];
+                        stats[key] = (stats[key] || 0) + Math.floor(item.equipStats[key] * enhanceMultiplier);
                     });
                 }
             }
@@ -202,6 +205,80 @@ const Player = {
         });
 
         return stats;
+    },
+
+    /**
+     * 获取装备强化费用
+     */
+    getEnhanceCost(slot) {
+        const level = this.enhanceLevels[slot] || 0;
+        const baseCost = 100;
+        return Math.floor(baseCost * Math.pow(1.5, level));
+    },
+
+    /**
+     * 获取强化成功率
+     */
+    getEnhanceSuccessRate(slot) {
+        const level = this.enhanceLevels[slot] || 0;
+        return Math.max(0.2, 1.0 - level * 0.08);
+    },
+
+    /**
+     * 强化装备
+     * 返回 { success: boolean, message: string, newLevel: number }
+     */
+    enhanceEquipment(slot) {
+        const itemId = this.equipment[slot];
+        if (!itemId) {
+            return { success: false, message: '该槽位没有装备' };
+        }
+
+        const currentLevel = this.enhanceLevels[slot] || 0;
+        if (currentLevel >= 10) {
+            return { success: false, message: '已达到最高强化等级+10' };
+        }
+
+        const cost = this.getEnhanceCost(slot);
+        if (this.gold < cost) {
+            return { success: false, message: `金币不足，需要${cost}金币` };
+        }
+
+        this.gold -= cost;
+        const successRate = this.getEnhanceSuccessRate(slot);
+        const success = Math.random() < successRate;
+
+        if (success) {
+            this.enhanceLevels[slot] = currentLevel + 1;
+            return {
+                success: true,
+                message: `强化成功！${this.getSlotName(slot)}强化到+${currentLevel + 1}`,
+                newLevel: currentLevel + 1
+            };
+        } else {
+            // 失败降级（0级不降级）
+            if (currentLevel > 0) {
+                this.enhanceLevels[slot] = currentLevel - 1;
+                return {
+                    success: false,
+                    message: `强化失败！${this.getSlotName(slot)}降级到+${currentLevel - 1}`,
+                    newLevel: currentLevel - 1
+                };
+            }
+            return {
+                success: false,
+                message: '强化失败！装备等级未变化',
+                newLevel: 0
+            };
+        }
+    },
+
+    /**
+     * 获取槽位名称
+     */
+    getSlotName(slot) {
+        const names = { weapon: '武器', armor: '护甲', accessory: '饰品' };
+        return names[slot] || slot;
     },
 
     /**
@@ -562,6 +639,7 @@ const Player = {
             skills: this.skills,
             gold: this.gold,
             equipment: this.equipment,
+            enhanceLevels: this.enhanceLevels,
             activeQuests: this.activeQuests,
             completedQuests: this.completedQuests,
             currentLocation: this.currentLocation,
@@ -629,6 +707,7 @@ const Player = {
             this.skills = data.skills || ['basic_attack'];
             this.gold = data.gold || 50;
             this.equipment = data.equipment || { weapon: null, armor: null, accessory: null };
+            this.enhanceLevels = data.enhanceLevels || { weapon: 0, armor: 0, accessory: 0 };
             this.activeQuests = data.activeQuests || [];
             this.completedQuests = data.completedQuests || [];
             this.currentLocation = data.currentLocation || 'tianlan_school';

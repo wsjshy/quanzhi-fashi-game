@@ -1436,6 +1436,9 @@ const UI = {
                         ${['weapon', 'armor', 'accessory'].map(slot => {
                             const slotNames = { weapon: '武器', armor: '防具', accessory: '饰品' };
                             const item = equipment[slot];
+                            const enhanceLevel = Player.enhanceLevels[slot] || 0;
+                            const enhanceCost = Player.getEnhanceCost(slot);
+                            const enhanceRate = Math.floor(Player.getEnhanceSuccessRate(slot) * 100);
                             return `
                                 <div style="
                                     padding: 15px;
@@ -1444,7 +1447,7 @@ const UI = {
                                     border-radius: 10px;
                                     margin-bottom: 15px;
                                 ">
-                                    <div style="font-size: 13px; color: #8899aa; margin-bottom: 5px;">${slotNames[slot]}</div>
+                                    <div style="font-size: 13px; color: #8899aa; margin-bottom: 5px;">${slotNames[slot]} ${enhanceLevel > 0 ? `<span style="color: #ff8844;">+${enhanceLevel}</span>` : ''}</div>
                                     ${item ? `
                                         <div style="font-size: 16px; color: #fff; margin-bottom: 5px;">
                                             ${item.icon || '🔹'} ${item.name}
@@ -1452,20 +1455,32 @@ const UI = {
                                         <div style="font-size: 12px; color: #aabbcc;">
                                             ${Object.entries(item.equipStats || {}).map(([k, v]) => {
                                                 const statNames = { attack: '攻击', defense: '防御', speed: '速度', maxHp: '生命', maxMp: '魔法', critRate: '暴击', hitRate: '命中' };
-                                                return `${statNames[k] || k}: +${typeof v === 'number' && v < 1 ? (v * 100).toFixed(0) + '%' : v}`;
+                                                const enhancedValue = Math.floor(v * (1 + enhanceLevel * 0.1));
+                                                return `${statNames[k] || k}: +${enhancedValue}${enhanceLevel > 0 ? ` <span style="color:#66ff88;">(基础${v})</span>` : ''}`;
                                             }).join(' | ')}
                                         </div>
-                                        <div onclick="Game.unequipItem('${slot}')" style="
-                                            margin-top: 8px;
-                                            padding: 5px 12px;
-                                            background: #554433;
-                                            border: 1px solid #776655;
-                                            border-radius: 5px;
-                                            color: #ffddaa;
-                                            cursor: pointer;
-                                            font-size: 12px;
-                                            display: inline-block;
-                                        ">卸下</div>
+                                        <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+                                            <div onclick="Game.unequipItem('${slot}')" style="
+                                                padding: 5px 12px;
+                                                background: #554433;
+                                                border: 1px solid #776655;
+                                                border-radius: 5px;
+                                                color: #ffddaa;
+                                                cursor: pointer;
+                                                font-size: 12px;
+                                                display: inline-block;
+                                            ">卸下</div>
+                                            <div onclick="Game.enhanceEquipment('${slot}')" style="
+                                                padding: 5px 12px;
+                                                background: ${enhanceLevel >= 10 ? '#444' : '#445533'};
+                                                border: 1px solid ${enhanceLevel >= 10 ? '#666' : '#667755'};
+                                                border-radius: 5px;
+                                                color: ${enhanceLevel >= 10 ? '#888' : '#ddffaa'};
+                                                cursor: ${enhanceLevel >= 10 ? 'not-allowed' : 'pointer'};
+                                                font-size: 12px;
+                                                display: inline-block;
+                                            ">${enhanceLevel >= 10 ? '已满级' : `强化(${enhanceCost}金/${enhanceRate}%)`}</div>
+                                        </div>
                                     ` : `
                                         <div style="font-size: 14px; color: #667788;">空</div>
                                     `}
@@ -1575,7 +1590,12 @@ const UI = {
     updateInventoryScreen() {
         this.renderInventoryScreen();
     },
-    
+
+    // 显示装备强化界面（直接打开背包，强化按钮已在装备栏中）
+    showEnhancePanel() {
+        this.renderInventoryScreen();
+    },
+
     // 设置背包物品筛选
     setInventoryFilter(filter) {
         this.inventoryFilter = filter;

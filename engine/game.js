@@ -1124,6 +1124,19 @@ const Game = {
         Player.save();
     },
 
+    // 显示装备强化界面
+    showEnhancePanel() {
+        UI.showEnhancePanel();
+    },
+
+    // 强化装备
+    enhanceEquipment(slot) {
+        const result = Player.enhanceEquipment(slot);
+        UI.showMessage(result.message);
+        UI.showEnhancePanel();
+        Player.save();
+    },
+
     // 关闭背包
     closeInventory() {
         this.state = 'map';
