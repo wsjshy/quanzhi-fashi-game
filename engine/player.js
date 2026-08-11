@@ -4,8 +4,8 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.5.3';
-const SAVE_VERSION = '0.5.3';
+const GAME_VERSION = '0.6.0';
+const SAVE_VERSION = '0.6.0';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
 const SKILL_UNLOCK_TABLE = {
@@ -93,6 +93,7 @@ const Player = {
     // 元素与技能
     elements: [],
     skills: ['basic_attack'],
+    talents: {},  // 天赋：{ elementId: { talentId, level, exp } }
 
     // 金钱
     gold: 50,
@@ -142,6 +143,7 @@ const Player = {
         this.stamina = 100;
         this.elements = element ? [element] : [];
         this.skills = ['basic_attack'];
+        this.talents = {};  // 天赋系统
         this.gold = 50;
         this.equipment = { weapon: null, armor: null, accessory: null };
         this.enhanceLevels = { weapon: 0, armor: 0, accessory: 0 };
@@ -171,6 +173,11 @@ const Player = {
             };
             if (starterSkills[element]) {
                 this.skills.push(starterSkills[element]);
+            }
+            
+            // 初始化天生天赋
+            if (typeof TalentSystem !== 'undefined' && TalentSystem.initTalentForElement) {
+                this.talents[element] = TalentSystem.initTalentForElement(element);
             }
         }
     },
@@ -429,6 +436,11 @@ const Player = {
         // 觉醒
         this.elements.push(element);
 
+        // 初始化天生天赋
+        if (typeof TalentSystem !== 'undefined' && TalentSystem.initTalentForElement) {
+            this.talents[element] = TalentSystem.initTalentForElement(element);
+        }
+
         // 自动解锁该系1级技能
         const unlockedSkills = [];
         const starterTable = SKILL_UNLOCK_TABLE[element];
@@ -471,6 +483,49 @@ const Player = {
             heal: '治愈系', summon: '召唤系', neutral: '无系'
         };
         return names[element] || element;
+    },
+
+    /**
+     * 获取某元素系的天赋数据
+     * @param {string} element - 元素系ID
+     * @returns {object|null} 天赋数据
+     */
+    getElementTalent(element) {
+        if (!this.talents || !this.talents[element]) return null;
+        return this.talents[element];
+    },
+
+    /**
+     * 获取某元素系的天赋效果
+     * @param {string} element - 元素系ID
+     * @returns {object} 天赋效果
+     */
+    getElementTalentEffects(element) {
+        const talentData = this.getElementTalent(element);
+        if (!talentData || typeof TalentSystem === 'undefined') return {};
+        return TalentSystem.getTalentEffects(talentData.talentId, talentData.level);
+    },
+
+    /**
+     * 获取所有天赋的总效果（按效果类型累加）
+     * @returns {object} 总效果
+     */
+    getAllTalentEffects() {
+        const totalEffects = {};
+        if (!this.talents || typeof TalentSystem === 'undefined') return totalEffects;
+
+        for (const element in this.talents) {
+            const effects = this.getElementTalentEffects(element);
+            for (const key in effects) {
+                if (typeof effects[key] === 'number') {
+                    totalEffects[key] = (totalEffects[key] || 0) + effects[key];
+                } else {
+                    totalEffects[key] = effects[key];
+                }
+            }
+        }
+
+        return totalEffects;
     },
 
     /**
@@ -677,6 +732,7 @@ const Player = {
             spirit: this.spirit,
             elements: this.elements,
             skills: this.skills,
+            talents: this.talents,
             gold: this.gold,
             equipment: this.equipment,
             enhanceLevels: this.enhanceLevels,
@@ -747,6 +803,7 @@ const Player = {
             this.stamina = data.stamina ?? this.maxStamina;
             this.elements = data.elements ?? [];
             this.skills = data.skills ?? ['basic_attack'];
+            this.talents = data.talents ?? {};
             this.gold = data.gold ?? 50;
             this.equipment = data.equipment ?? { weapon: null, armor: null, accessory: null };
             this.enhanceLevels = data.enhanceLevels ?? { weapon: 0, armor: 0, accessory: 0 };
@@ -815,6 +872,16 @@ const Player = {
                     });
                 }
             });
+            
+            // 存档迁移：为旧存档补全天赋（v0.5.3及以前没有天赋系统）
+            if (typeof TalentSystem !== 'undefined' && TalentSystem.initTalentForElement) {
+                this.elements.forEach(elem => {
+                    if (!this.talents || !this.talents[elem]) {
+                        this.talents[elem] = TalentSystem.initTalentForElement(elem);
+                        console.log(`[存档迁移] 为 ${elem} 初始化天赋: ${this.talents[elem].talentId}`);
+                    }
+                });
+            }
             
             // 测试用：保留存档天数
             

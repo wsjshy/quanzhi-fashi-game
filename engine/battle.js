@@ -213,9 +213,18 @@ const BattleSystem = {
             
             // 元素克制
             const elementBonus = this.getElementBonus(skill.element, targetData.elements?.[0] || 'neutral');
+            
+            // 天赋加成（仅玩家）
+            let talentBonus = 1.0;
+            if (isPlayer && typeof Player !== 'undefined' && typeof TalentSystem !== 'undefined') {
+                const talentEffects = Player.getElementTalentEffects(skill.element);
+                if (talentEffects.damageBonus) {
+                    talentBonus = 1 + talentEffects.damageBonus;
+                }
+            }
 
             const damage = this.calculateDamage(
-                baseDamage * spiritBonus * elementBonus,
+                baseDamage * spiritBonus * elementBonus * talentBonus,
                 targetData.defense,
                 1.0,
                 casterData.critRate || 0.05,

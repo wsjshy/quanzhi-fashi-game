@@ -3184,6 +3184,32 @@ const UI = {
                                     ">${SkillSystem.getElementName(elem)}</span>
                                 `).join('')}
                             </div>
+                            ${Player.talents && Object.keys(Player.talents).length > 0 ? `
+                            <div style="margin-bottom: 15px; text-align: left;">
+                                <div style="color: #aaa; font-size: 13px; margin-bottom: 8px;">🌟 天赋</div>
+                                ${Player.elements.map(elem => {
+                                    const talentData = Player.talents[elem];
+                                    if (!talentData || typeof TalentSystem === 'undefined') return '';
+                                    const talent = TalentSystem.getTalent(talentData.talentId);
+                                    if (!talent) return '';
+                                    const rarityConfig = TalentSystem.getRarityConfig(talent.rarity);
+                                    return `
+                                        <div style="
+                                            padding: 8px 12px;
+                                            background: ${rarityConfig.color}11;
+                                            border: 1px solid ${rarityConfig.color}55;
+                                            border-radius: 8px;
+                                            margin-bottom: 6px;
+                                            font-size: 13px;
+                                        ">
+                                            <span style="color: ${SkillSystem.getElementColor(elem)}; font-weight: bold;">${SkillSystem.getElementName(elem)}</span>
+                                            <span style="color: ${rarityConfig.color}; margin-left: 8px;">${talent.name}</span>
+                                            <span style="color: #888; font-size: 12px; margin-left: 8px;">Lv.${talentData.level}</span>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                            ` : ''}
                             ${Player.canAwakenNewElement() ? `
                             <div onclick="Game.showAwakenPanel()" style="
                                 display: inline-block;
