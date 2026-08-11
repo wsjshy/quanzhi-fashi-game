@@ -426,5 +426,56 @@ const BigEventSystem = {
      */
     hasActiveEvent() {
         return this.currentEvent !== null;
+    },
+    
+    /**
+     * 检查所有大事件，触发满足条件的
+     * @returns {boolean} 是否触发了大事件
+     */
+    checkAndTrigger() {
+        // 如果已经有正在进行的大事件，不触发新的
+        if (this.hasActiveEvent()) {
+            return false;
+        }
+        
+        // 获取所有大事件
+        const allBigEvents = DataManager.getAllBigEvents();
+        if (!allBigEvents) return false;
+        
+        for (const eventId in allBigEvents) {
+            const event = allBigEvents[eventId];
+            
+            // 检查是否已经完成
+            if (Player.flags['big_event_' + eventId + '_completed']) {
+                continue;
+            }
+            
+            // 检查是否已经开始
+            if (Player.flags['big_event_' + eventId + '_started']) {
+                continue;
+            }
+            
+            // 检查是否自动触发
+            if (!event.autoTrigger) {
+                continue;
+            }
+            
+            // 检查开始天数
+            if (event.startDay && Player.day < event.startDay) {
+                continue;
+            }
+            
+            // 检查触发条件
+            if (event.conditions && !this.checkConditions(event.conditions)) {
+                continue;
+            }
+            
+            // 触发大事件
+            console.log(`[大事件] 自动触发: ${event.name}`);
+            this.triggerBigEvent(eventId);
+            return true;
+        }
+        
+        return false;
     }
 };

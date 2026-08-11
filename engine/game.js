@@ -118,6 +118,7 @@ const Game = {
     continueGame() {
         if (Player.load()) {
             MapSystem.init();
+            BigEventSystem.init();
             this.state = 'map';
             UI.renderMapScreen();
         }
@@ -133,6 +134,9 @@ const Game = {
         
         // 初始化地图
         MapSystem.init();
+        
+        // 初始化大事件系统
+        BigEventSystem.init();
         
         // 自动接取新手引导任务
         QuestSystem.acceptQuest('quest_intro');
@@ -349,6 +353,11 @@ const Game = {
         if (scheduledEvent) {
             TimeSystem.clearPendingEvent();
             this.showScheduledEvent(scheduledEvent);
+            return;
+        }
+        
+        // 检查是否有新大事件系统的事件
+        if (BigEventSystem.checkAndTrigger()) {
             return;
         }
         
@@ -644,6 +653,11 @@ const Game = {
         if (scheduledEvent) {
             TimeSystem.clearPendingEvent();
             this.showScheduledEvent(scheduledEvent);
+            return;
+        }
+        
+        // 检查是否有新大事件系统的事件
+        if (BigEventSystem.checkAndTrigger()) {
             return;
         }
         
