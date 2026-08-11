@@ -171,19 +171,17 @@ const BigEventSystem = {
             this.applyEffects(phase.effects);
         }
         
-        // 显示剧情文本
-        UI.renderScheduledEventScreen({
-            title: phase.name,
-            description: phase.description,
-            success: true
-        });
+        // 判断是否有下一个阶段
+        const event = DataManager.getBigEvent(this.currentEvent);
+        const currentIndex = event.phases.findIndex(p => p.id === this.currentPhase);
+        const hasNextPhase = phase.nextPhase || (currentIndex >= 0 && currentIndex < event.phases.length - 1);
         
-        // 如果有下一个阶段，设置按钮推进
-        if (phase.nextPhase) {
-            // 由UI的按钮调用advanceToNextPhase
-        } else {
-            // 没有下一个阶段，事件结束
-            this.endEvent('default');
+        // 显示剧情界面
+        UI.renderBigEventNarrativePhase(phase, hasNextPhase);
+        
+        // 如果没有下一个阶段，事件结束
+        if (!hasNextPhase) {
+            // 由按钮点击触发结束
         }
     },
     
@@ -338,6 +336,15 @@ const BigEventSystem = {
         const event = DataManager.getBigEvent(this.currentEvent);
         if (!event) return;
         
+        const currentPhase = this.getCurrentPhase();
+        
+        // 如果当前阶段指定了nextPhase，用指定的
+        if (currentPhase && currentPhase.nextPhase) {
+            this.advanceToPhase(currentPhase.nextPhase);
+            return;
+        }
+        
+        // 否则按顺序推进
         const currentIndex = event.phases.findIndex(p => p.id === this.currentPhase);
         if (currentIndex < 0 || currentIndex >= event.phases.length - 1) {
             // 已经是最后一个阶段，结束事件

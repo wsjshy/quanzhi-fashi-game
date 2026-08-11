@@ -1637,6 +1637,88 @@ const UI = {
         }
     },
 
+    // 渲染大事件剧情阶段界面
+    renderBigEventNarrativePhase(phase, hasNextPhase) {
+        try {
+            console.log('[UI] 渲染大事件剧情阶段:', phase.name);
+            
+            this.elements.gameContainer.innerHTML = `
+                <div style="
+                    width: 100%;
+                    height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    background: linear-gradient(135deg, #1a1a3a, #2a2a5a);
+                    padding: 40px;
+                    position: relative;
+                ">
+                    <!-- 背景图片 -->
+                    <div style="
+                        position: absolute;
+                        top: 0; left: 0;
+                        width: 100%; height: 100%;
+                        background: url('assets/images/effects/thunder_magic.jpg') center/cover;
+                        opacity: 0.08;
+                        filter: blur(3px);
+                        z-index: 0;
+                        pointer-events: none;
+                    "></div>
+                    
+                    <div style="
+                        background: rgba(20, 20, 50, 0.9);
+                        border: 2px solid #6666aa;
+                        border-radius: 15px;
+                        padding: 30px;
+                        max-width: 600px;
+                        width: 90%;
+                        max-height: 80vh;
+                        overflow-y: auto;
+                        z-index: 10;
+                        box-shadow: 0 0 50px rgba(100, 100, 255, 0.3);
+                    ">
+                        <h2 style="
+                            color: #ffd700;
+                            font-size: 24px;
+                            margin-bottom: 20px;
+                            text-align: center;
+                            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+                        ">📖 ${phase.name}</h2>
+                        
+                        <div style="
+                            color: #ddd;
+                            font-size: 15px;
+                            line-height: 1.8;
+                            margin-bottom: 25px;
+                            white-space: pre-wrap;
+                        ">${phase.description}</div>
+                        
+                        <div style="text-align: center;">
+                            <div onclick="BigEventSystem.advanceToNextPhase()" style="
+                                padding: 12px 40px;
+                                background: linear-gradient(135deg, #6666aa, #8888cc);
+                                border: 2px solid #9999dd;
+                                border-radius: 10px;
+                                color: #fff;
+                                cursor: pointer;
+                                font-size: 16px;
+                                font-weight: bold;
+                                display: inline-block;
+                                transition: all 0.3s;
+                            " onmouseover="this.style.background='linear-gradient(135deg, #7777bb, #9999dd)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='linear-gradient(135deg, #6666aa, #8888cc)'; this.style.transform='scale(1)'">
+                                ${hasNextPhase ? '继续 →' : '结束'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+        } catch (e) {
+            console.error('[UI] 渲染大事件剧情阶段失败:', e);
+        }
+    },
+
     // 渲染大事件选择阶段界面
     renderBigEventChoicePhase(phase, choices) {
         try {
