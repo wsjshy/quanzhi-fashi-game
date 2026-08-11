@@ -232,7 +232,8 @@ const TimeSystem = {
         const period = this.TIME_PERIODS.find(p => p.id === this.getCurrentPeriod());
         const icon = period ? period.icon : '⏰';
         const name = period ? period.name : '未知';
-        return `${icon} 第${Player.day}天 ${name} ${Player.hour}:00`;
+        const date = this.getCurrentDate();
+        return `${icon} ${date.month}月${date.day}日 ${this.WEEKDAY_NAMES[date.weekday]} ${name} ${Player.hour}:00`;
     },
 
     /**
@@ -666,7 +667,8 @@ const TimeSystem = {
         };
         const icon = icons[period.id] || '⏰';
         const hourStr = Player.hour.toString().padStart(2, '0');
-        return `${icon} 第 ${Player.day} 天 · ${period.name} ${hourStr}:00`;
+        const date = this.getCurrentDate();
+        return `${icon} ${date.month}月${date.day}日 ${this.WEEKDAY_NAMES[date.weekday]} · ${period.name} ${hourStr}:00`;
     },
     
     /**

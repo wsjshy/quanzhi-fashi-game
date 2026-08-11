@@ -507,7 +507,7 @@ const DataWorld = {
       school_info_1: {
         id: "school_info_1",
         title: "入学考核",
-        content: "入学考核在第 7 天举行，需要达到 3 级才能通过。通过后会有奖励。",
+        content: "入学考核在9月7日举行，需要达到 3 级才能通过。通过后会有奖励。",
         category: "intel",
         source: "唐月老师",
         credibility: 1,
@@ -517,7 +517,7 @@ const DataWorld = {
       school_info_2: {
         id: "school_info_2",
         title: "期中测试",
-        content: "期中测试在第 15 天举行，需要达到 5 级才能通过。奖励比入学考核更丰厚。",
+        content: "期中测试在9月15日举行，需要达到 5 级才能通过。奖励比入学考核更丰厚。",
         category: "intel",
         source: "学校公告",
         credibility: 1,
@@ -527,7 +527,7 @@ const DataWorld = {
       school_info_3: {
         id: "school_info_3",
         title: "期末考核",
-        content: "期末考核在第 30 天举行，需要达到 8 级才能通过。奖励非常丰厚。",
+        content: "期末考核在9月30日举行，需要达到 8 级才能通过。奖励非常丰厚。",
         category: "intel",
         source: "学校公告",
         credibility: 1,
