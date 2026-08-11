@@ -906,7 +906,7 @@ const UI = {
                             cursor: ${state.isPlayerTurn ? 'pointer' : 'not-allowed'};
                             font-size: 15px;
                             opacity: ${state.isPlayerTurn ? 1 : 0.5};
-                        ">⚔️ 攻击</button>
+                        ">👊 普攻</button>
                         
                         <button onclick="Game.battleDefend()" ${!state.isPlayerTurn ? 'disabled' : ''} style="
                             padding: 10px 20px;
@@ -942,7 +942,7 @@ const UI = {
                         ">🎒 道具</button>
                     </div>
                     
-                    <div style="color: #ffd700; font-size: 16px; margin-bottom: 10px;">✨ 技能</div>
+                    <div style="color: #ffd700; font-size: 18px; margin-bottom: 10px; font-weight: bold;">✨ 魔法技能（点击释放）</div>
                     <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
                         ${state.player.skills.map(skillId => {
                             const skill = SkillSystem.getSkill(skillId);
@@ -983,7 +983,7 @@ const UI = {
 
     // 显示战斗道具选择
     showBattleItems() {
-        const items = Inventory.getItems();
+        const items = Inventory.getAllItems();
         const battleItems = items.filter(inv => {
             const item = Inventory.getItem(inv.itemId);
             return item && item.usableInBattle && inv.count > 0;

@@ -744,6 +744,33 @@ const Player = {
                 }
             }
             
+            // 存档迁移：补全缺失的初始技能（旧存档可能只有basic_attack）
+            this.elements.forEach(elem => {
+                const starterSkills = {
+                    fire: 'fire_bolt', ice: 'ice_spike', thunder: 'thunder_bolt',
+                    earth: 'earth_shield', wind: 'wind_blade', water: 'water_heal',
+                    light: 'light_ray', dark: 'dark_bolt', heal: 'heal_light'
+                };
+                const starter = starterSkills[elem];
+                if (starter && !this.skills.includes(starter)) {
+                    this.skills.push(starter);
+                }
+                // 补全当前等级应解锁的技能
+                const unlockTable = SKILL_UNLOCK_TABLE[elem];
+                if (unlockTable) {
+                    Object.keys(unlockTable).forEach(levelStr => {
+                        const unlockLevel = parseInt(levelStr);
+                        if (unlockLevel <= this.level) {
+                            unlockTable[unlockLevel].forEach(skillId => {
+                                if (!this.skills.includes(skillId)) {
+                                    this.skills.push(skillId);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+            
             // 自动保存一次，更新为新版本格式
             this.save();
             
