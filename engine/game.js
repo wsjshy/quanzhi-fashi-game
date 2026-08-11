@@ -1310,7 +1310,15 @@ const Game = {
         const events = TimeSystem.restUntilMorning();
         Player.save();
         UI.renderMapScreen();
-        UI.showMessage('休息了一晚，HP 和 MP 完全恢复了！');
+        // 根据恢复比例显示不同消息
+        const fullRestEvent = events.find(e => e.type === 'full_rest');
+        const ratio = fullRestEvent ? fullRestEvent.staminaRatio : 1.0;
+        if (ratio >= 1.0) {
+            UI.showMessage('休息了一晚，HP、MP 和体力完全恢复了！');
+        } else {
+            const percent = Math.floor(ratio * 100);
+            UI.showMessage(`休息了一晚，HP、MP 和体力恢复了 ${percent}%\n（熬夜睡觉恢复效果较差）`);
+        }
     },
 
     // ========== 保存游戏 ==========

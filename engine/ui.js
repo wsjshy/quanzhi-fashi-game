@@ -975,6 +975,18 @@ const UI = {
                             ${state.enemy.isElite ? '<span style="color: #ff6600;"> ⭐精英</span>' : ''}
                         </div>
                         <div style="font-size: 12px; color: #aaa; margin-bottom: 8px;">Lv.${state.enemy.level}</div>
+                        <!-- 敌人元素系 -->
+                        ${state.enemy.elements && state.enemy.elements.length > 0 ? `
+                            <div style="margin-bottom: 8px; display: flex; gap: 4px; justify-content: center;">
+                                ${state.enemy.elements.map(elem => {
+                                    const elemNames = { fire: '火', ice: '冰', thunder: '雷', earth: '土', wind: '风', water: '水', light: '光', dark: '暗', heal: '治愈', summon: '召唤', neutral: '无' };
+                                    const elemColors = { fire: '#ff6644', ice: '#66aaff', thunder: '#ffdd44', earth: '#aa8844', wind: '#88ffcc', water: '#66bbff', light: '#ffffcc', dark: '#aa66ff', heal: '#66ffaa', summon: '#ff9966', neutral: '#999' };
+                                    const name = elemNames[elem] || elem;
+                                    const color = elemColors[elem] || '#fff';
+                                    return `<span style="font-size: 11px; padding: 2px 8px; background: ${color}22; border: 1px solid ${color}; border-radius: 10px; color: ${color};">${name}系</span>`;
+                                }).join('')}
+                            </div>
+                        ` : ''}
                         <div style="width: 130px;">
                             <div style="display: flex; justify-content: space-between; font-size: 12px; color: #ff6666; margin-bottom: 2px;">
                                 <span>HP</span><span>${state.enemy.hp}/${state.enemy.maxHp}</span>
