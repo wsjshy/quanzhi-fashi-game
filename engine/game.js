@@ -154,11 +154,73 @@ const Game = {
         UI.renderMapScreen();
     },
 
+    // 行动冷却：弹窗关闭后短暂禁止行动，防止点击穿透/延迟触发
+    _actionCooldown: false,
+    
+    // 上一次行动的时间戳，用于防止快速重复触发
+    _lastActionTime: 0,
+    
     // 执行地点行动
     performAction(actionId) {
         try {
         console.log(`[行动] 执行行动: ${actionId}`);
         console.trace('[行动] 调用栈');
+        
+        // 防护0：时间间隔防护 - 两次行动间隔小于1秒则取消，防止点击穿透/延迟触发
+        const now = Date.now();
+        if (now - this._lastActionTime < 1000) {
+            console.log(`[行动] 行动间隔太短(${now - this._lastActionTime}ms)，取消执行`);
+            return;
+        }
+        this._lastActionTime = now;
+        
+        // 防护0.5：消息关闭后短时间内禁止行动，防止点击穿透
+        if (typeof UI !== 'undefined' && UI._lastMessageCloseTime) {
+            const timeSinceMessageClose = now - UI._lastMessageCloseTime;
+            if (timeSinceMessageClose < 10000) {
+                console.log(`[行动] 消息关闭后时间太短(${timeSinceMessageClose}ms)，取消执行`);
+                return;
+            }
+        }
+        
+        // 防护1：如果有消息弹窗显示，不执行行动
+        if (UI._isMessageShowing) {
+            console.log('[行动] 有消息弹窗显示，取消执行');
+            return;
+        }
+        
+        // 防护2：如果在行动冷却期，不执行行动
+        if (this._actionCooldown) {
+            console.log('[行动] 行动冷却中，取消执行');
+            return;
+        }
+        
+        // 防护3：直接检查页面上是否有消息弹窗元素，防止状态不同步
+        const hasPopup = document.querySelector('.mobile-popup');
+        if (hasPopup) {
+            console.log('[行动] 页面上有消息弹窗，取消执行');
+            return;
+        }
+        
+        // 防护4：检查body是否有message-showing类
+        if (document.body.classList.contains('message-showing')) {
+            console.log('[行动] body有message-showing类，取消执行');
+            return;
+        }
+        
+        // DEBUG: 把调用栈显示在页面上
+        try {
+            const err = new Error();
+            const stack = err.stack || '';
+            const debugDiv = document.getElementById('debug-error');
+            if (debugDiv) {
+                debugDiv.style.display = 'block';
+                debugDiv.style.background = '#006600';
+                debugDiv.textContent = `[DEBUG] 执行行动: ${actionId}\n时间: ${Player.day}天 ${Player.hour}点\n消息弹窗: ${UI._isMessageShowing}\n冷却: ${this._actionCooldown}\n间隔: ${now - this._lastActionTime}ms\n消息关闭后: ${typeof UI !== 'undefined' && UI._lastMessageCloseTime ? now - UI._lastMessageCloseTime + 'ms' : 'N/A'}\n\n调用栈:\n${stack}`;
+            }
+        } catch (e) {
+            console.error('DEBUG显示失败', e);
+        }
         
         // 修炼类行动：先弹时长选择菜单
         if (actionId === 'train' || actionId === 'meditate') {
@@ -331,7 +393,7 @@ const Game = {
         // 过滤掉体力不够的选项
         const availableOptions = options.filter(opt => {
             const multiplier = opt.hours / baseTime;
-            const staminaCost = Math.floor(baseStamina * multiplier * 0.5); // 时间越长单位体力消耗越少
+            const staminaCost = Math.ceil(baseStamina * multiplier * 0.5); // 时间越长单位体力消耗越少，向上取整和实际消耗一致
             return Player.stamina >= staminaCost;
         });
         
@@ -916,6 +978,14 @@ const Game = {
     closeScheduledEvent() {
         this.state = 'map';
         this.currentScheduledEvent = null;
+        UI.renderMapScreen();
+    },
+
+    // 关闭事件界面
+    closeEvent() {
+        console.log('[事件] 关闭事件界面');
+        this.state = 'map';
+        this.currentEvent = null;
         UI.renderMapScreen();
     },
 

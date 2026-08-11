@@ -20,6 +20,9 @@ const UI = {
     _messageQueue: [],
     _isMessageShowing: false,
     
+    // 上一次消息关闭的时间戳，用于防止点击穿透
+    _lastMessageCloseTime: 0,
+    
     // 检查是否可以显示消息（弹窗状态下暂停）
     _canShowMessage() {
         // 如果游戏处于事件/大事件/对话/战斗等弹窗状态，暂停显示消息
@@ -44,14 +47,40 @@ const UI = {
 
     // 处理队列中的下一条消息
     _processNextMessage() {
+        const ui = this;
+        
         // 检查是否可以显示
         if (!this._canShowMessage()) {
             this._isMessageShowing = false;
+            // 延迟恢复主容器点击和行动冷却
+            setTimeout(() => {
+                const gameContainer = document.getElementById('game-container');
+                if (gameContainer) {
+                    gameContainer.style.pointerEvents = '';
+                }
+                if (typeof Game !== 'undefined' && Game._actionCooldown !== undefined) {
+                    Game._actionCooldown = false;
+                }
+                // 恢复行动按钮点击
+                document.body.classList.remove('message-showing');
+            }, 500);
             return;
         }
         
         if (this._messageQueue.length === 0) {
             this._isMessageShowing = false;
+            // 延迟恢复主容器点击和行动冷却
+            setTimeout(() => {
+                const gameContainer = document.getElementById('game-container');
+                if (gameContainer) {
+                    gameContainer.style.pointerEvents = '';
+                }
+                if (typeof Game !== 'undefined' && Game._actionCooldown !== undefined) {
+                    Game._actionCooldown = false;
+                }
+                // 恢复行动按钮点击
+                document.body.classList.remove('message-showing');
+            }, 500);
             return;
         }
         this._isMessageShowing = true;
@@ -65,8 +94,47 @@ const UI = {
         
         console.log('[消息] 显示消息:', text.substring(0, 50));
         
+        // 立即开启行动冷却，防止点击穿透
+        if (typeof Game !== 'undefined' && Game._actionCooldown !== undefined) {
+            Game._actionCooldown = true;
+        }
+        
+        // 禁用所有行动按钮，防止点击穿透
+        document.body.classList.add('message-showing');
+        
+        // 禁用主容器点击，防止点击穿透
+        const gameContainer = document.getElementById('game-container');
+        if (gameContainer) {
+            gameContainer.style.pointerEvents = 'none';
+        }
+        
+        // 全局点击拦截：在捕获阶段阻止所有弹窗外部的点击事件，防止点击穿透
+        this._globalClickInterceptor = (e) => {
+            // 检查点击目标是否在弹窗内部
+            let target = e.target;
+            let inPopup = false;
+            while (target) {
+                if (target.classList && (target.classList.contains('mobile-popup') || target.classList.contains('mobile-popup-overlay'))) {
+                    inPopup = true;
+                    break;
+                }
+                target = target.parentElement;
+            }
+            // 如果不在弹窗内部，阻止事件
+            if (!inPopup) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                console.log('[消息] 拦截到弹窗外部点击，已阻止');
+            }
+        };
+        document.addEventListener('click', this._globalClickInterceptor, true);
+        document.addEventListener('mousedown', this._globalClickInterceptor, true);
+        document.addEventListener('mouseup', this._globalClickInterceptor, true);
+        
         // 创建遮罩层（阻止所有点击穿透）
         const overlay = document.createElement('div');
+        overlay.className = 'mobile-popup-overlay';
         overlay.style.cssText = `
             position: fixed;
             top: 0;
@@ -140,6 +208,27 @@ const UI = {
             closed = true;
             
             console.log('[消息] 关闭消息');
+            
+            // 记录消息关闭时间，用于防止点击穿透
+            ui._lastMessageCloseTime = Date.now();
+            
+            // 延迟移除全局点击拦截器，防止弹窗关闭后的延迟点击事件
+            setTimeout(() => {
+                if (ui._globalClickInterceptor) {
+                    document.removeEventListener('click', ui._globalClickInterceptor, true);
+                    document.removeEventListener('mousedown', ui._globalClickInterceptor, true);
+                    document.removeEventListener('mouseup', ui._globalClickInterceptor, true);
+                    ui._globalClickInterceptor = null;
+                }
+            }, 500);
+            
+            // 设置行动冷却，防止点击穿透/延迟触发
+            if (typeof Game !== 'undefined' && Game._actionCooldown !== undefined) {
+                Game._actionCooldown = true;
+                setTimeout(() => {
+                    Game._actionCooldown = false;
+                }, 500);
+            }
             
             // 先创建阻止点击穿透的遮罩层（在最顶层）
             const blocker = document.createElement('div');
@@ -731,7 +820,7 @@ const UI = {
                                     }
                                 }
                                 return `
-                                <button onclick="Game.performAction('${action.id}')" style="
+                                <button class="action-button" onclick="Game.performAction('${action.id}')" style="
                                     padding: 18px 25px;
                                     background: linear-gradient(135deg, rgba(40, 40, 80, 0.8), rgba(60, 60, 120, 0.8));
                                     border: 2px solid ${isSkippingClass ? '#cc6644' : '#444477'};

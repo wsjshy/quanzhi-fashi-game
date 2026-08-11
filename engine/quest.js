@@ -65,6 +65,42 @@ const QuestSystem = {
     },
 
     /**
+     * 获取任务追踪数据（用于UI显示）
+     * @param {number} maxCount - 最多显示几个任务
+     * @returns {Array} 任务追踪数据列表
+     */
+    getQuestTrackerData(maxCount = 2) {
+        const result = [];
+        
+        for (const activeQuest of Player.activeQuests) {
+            const quest = this.getQuest(activeQuest.questId);
+            if (!quest) continue;
+            
+            const objectives = quest.objectives.map((obj, index) => {
+                const current = activeQuest.progress[index] || 0;
+                const total = obj.count || 1;
+                return {
+                    description: obj.description,
+                    current: current,
+                    total: total,
+                    complete: current >= total
+                };
+            });
+            
+            result.push({
+                id: quest.id,
+                name: quest.name,
+                isMainQuest: quest.isMainQuest || false,
+                objectives: objectives
+            });
+            
+            if (result.length >= maxCount) break;
+        }
+        
+        return result;
+    },
+
+    /**
      * 更新任务进度
      * @param {string} type - 进度类型：kill/collect/talk/reach
      * @param {string} targetId - 目标ID

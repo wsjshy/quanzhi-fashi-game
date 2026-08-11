@@ -21,6 +21,11 @@
         button {
             font-family: inherit;
         }
+        /* 消息弹窗显示时禁用行动按钮，防止点击穿透 */
+        body.message-showing .action-button {
+            pointer-events: none !important;
+            opacity: 0.7;
+        }
         /* 滚动条样式 */
         ::-webkit-scrollbar {
             width: 8px;
