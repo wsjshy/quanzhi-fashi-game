@@ -84,7 +84,25 @@ const EventSystem = {
      * 检查条件
      */
     checkConditions(conditions) {
-        if (!conditions || conditions.length === 0) return true;
+        if (!conditions) return true;
+
+        // 支持对象格式的条件（兼容旧数据）
+        if (!Array.isArray(conditions)) {
+            // 转换为数组格式
+            const condArray = [];
+            for (const key in conditions) {
+                if (conditions.hasOwnProperty(key)) {
+                    condArray.push({
+                        type: key,
+                        value: conditions[key],
+                        operator: '=='
+                    });
+                }
+            }
+            conditions = condArray;
+        }
+
+        if (conditions.length === 0) return true;
 
         return conditions.every(cond => {
             const value = this.getConditionValue(cond.type, cond.value);
