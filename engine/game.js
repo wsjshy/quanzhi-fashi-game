@@ -159,6 +159,11 @@ const Game = {
             if (result.effects.mp) message += result.effects.mp > 0 ? `恢复 ${result.effects.mp} MP\n` : `损失 ${-result.effects.mp} MP\n`;
             if (result.effects.stamina) message += result.effects.stamina > 0 ? `恢复 ${result.effects.stamina} 体力\n` : `消耗 ${-result.effects.stamina} 体力\n`;
             if (result.effects.levelUps) message += `升级了！当前等级 ${Player.level}\n`;
+            if (result.effects.addItem) {
+                const item = Inventory.getItem(result.effects.addItem.itemId);
+                const itemName = item?.name || result.effects.addItem.itemId;
+                message += `获得 ${itemName} ×${result.effects.addItem.count}\n`;
+            }
         }
         
         if (message) {
