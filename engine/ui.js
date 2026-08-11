@@ -44,7 +44,8 @@ const UI = {
     // 显示单条消息（内部方法）
     _showSingleMessage(text) {
         const ui = this;
-        // 创建遮罩层
+        
+        // 创建遮罩层（阻止所有点击穿透）
         const overlay = document.createElement('div');
         overlay.style.cssText = `
             position: fixed;
@@ -69,7 +70,7 @@ const UI = {
             background: rgba(10, 10, 30, 0.95);
             border: 2px solid #6666aa;
             border-radius: 10px;
-            padding: 30px 40px;
+            padding: 30px 40px 25px;
             color: #e0e0ff;
             font-size: 16px;
             line-height: 1.8;
@@ -79,10 +80,37 @@ const UI = {
             max-width: 500px;
             box-shadow: 0 0 30px rgba(100, 100, 255, 0.5);
             white-space: pre-line;
-            cursor: pointer;
             pointer-events: auto;
         `;
-        msgBox.textContent = text;
+        
+        // 消息内容
+        const contentDiv = document.createElement('div');
+        contentDiv.textContent = text;
+        contentDiv.style.marginBottom = '20px';
+        msgBox.appendChild(contentDiv);
+        
+        // 关闭按钮
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = '确定';
+        closeBtn.style.cssText = `
+            padding: 10px 40px;
+            background: linear-gradient(135deg, #4444aa, #6666cc);
+            border: 2px solid #7777dd;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        `;
+        closeBtn.onmouseover = () => {
+            closeBtn.style.background = 'linear-gradient(135deg, #5555bb, #7777dd)';
+            closeBtn.style.transform = 'scale(1.05)';
+        };
+        closeBtn.onmouseout = () => {
+            closeBtn.style.background = 'linear-gradient(135deg, #4444aa, #6666cc)';
+            closeBtn.style.transform = 'scale(1)';
+        };
+        msgBox.appendChild(closeBtn);
 
         // 关闭消息函数
         let closed = false;
@@ -109,56 +137,45 @@ const UI = {
             overlay.remove();
             msgBox.remove();
             
-            setTimeout(() => blocker.remove(), 800);
+            setTimeout(() => blocker.remove(), 500);
             
             // 处理下一条消息
             ui._processNextMessage();
         };
         
-        // 点击遮罩层或消息框都关闭
-        overlay.addEventListener('mousedown', (e) => {
+        // 点击遮罩层关闭
+        overlay.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             closeMessage();
         });
-        msgBox.addEventListener('mousedown', (e) => {
+        
+        // 点击消息框内容也关闭（除了按钮）
+        contentDiv.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             closeMessage();
+        });
+        
+        // 点击关闭按钮
+        closeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeMessage();
+        });
+        
+        // 阻止消息框的点击事件冒泡到遮罩层
+        msgBox.addEventListener('click', (e) => {
+            e.stopPropagation();
         });
 
         document.body.appendChild(overlay);
         document.body.appendChild(msgBox);
 
-        // 3秒后自动消失
+        // 5秒后自动消失
         setTimeout(() => {
-            if (closed) return;
-            closed = true;
-            const blocker = document.createElement('div');
-            blocker.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999999;pointer-events:auto;background:transparent;';
-            const stopEvent = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-            };
-            blocker.addEventListener('mousedown', stopEvent);
-            blocker.addEventListener('mouseup', stopEvent);
-            blocker.addEventListener('click', stopEvent);
-            blocker.addEventListener('touchstart', stopEvent);
-            blocker.addEventListener('touchend', stopEvent);
-            document.body.appendChild(blocker);
-            msgBox.style.transition = 'opacity 0.5s';
-            overlay.style.transition = 'opacity 0.5s';
-            msgBox.style.opacity = '0';
-            overlay.style.opacity = '0';
-            setTimeout(() => {
-                overlay.remove();
-                msgBox.remove();
-                setTimeout(() => blocker.remove(), 800);
-                // 处理下一条消息
-                ui._processNextMessage();
-            }, 500);
-        }, 3000);
+            if (!closed) closeMessage();
+        }, 5000);
     },
 
     // ========== 标题界面 ==========
