@@ -19,8 +19,8 @@ const DataQuests = {
       }
     ],
     rewards: {
-      exp: 50,
-      gold: 30,
+      exp: 80,
+      gold: 50,
       items: [
         {
           itemId: "health_potion",
@@ -50,8 +50,8 @@ const DataQuests = {
       }
     ],
     rewards: {
-      exp: 100,
-      gold: 80,
+      exp: 150,
+      gold: 120,
       items: [
         {
           itemId: "mana_potion",
