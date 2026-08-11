@@ -114,6 +114,7 @@ const Player = {
     hour: 8,  // 当前小时（0-23）
     timeOfDay: 'morning',  // morning/afternoon/evening/night
     flags: {},
+    bestiary: {},  // 妖魔图鉴：{enemyId: {kills: N, firstKillDay: N, lastKillDay: N}}
     unlockedLocations: ['tianlan_school', 'city_street', 'xuefeng_mountain'],
 
     // 战斗状态
@@ -150,6 +151,7 @@ const Player = {
         this.hour = 8;  // 初始时间：早上8点
         this.timeOfDay = 'morning';
         this.flags = {};
+        this.bestiary = {};
         this.unlockedLocations = ['tianlan_school', 'city_street', 'xuefeng_mountain'];
         this.battleBuffs = [];
 
@@ -583,6 +585,27 @@ const Player = {
     },
 
     /**
+     * 记录击杀妖魔（图鉴用）
+     */
+    recordKill(enemyId) {
+        if (!this.bestiary[enemyId]) {
+            this.bestiary[enemyId] = { kills: 0, firstKillDay: this.day, lastKillDay: this.day };
+        }
+        this.bestiary[enemyId].kills++;
+        this.bestiary[enemyId].lastKillDay = this.day;
+    },
+
+    /**
+     * 获取图鉴统计
+     */
+    getBestiaryStats() {
+        const totalEnemies = Object.keys(DataEnemies).length;
+        const discovered = Object.keys(this.bestiary).length;
+        const totalKills = Object.values(this.bestiary).reduce((sum, e) => sum + e.kills, 0);
+        return { totalEnemies, discovered, totalKills };
+    },
+
+    /**
      * 接取任务
      */
     acceptQuest(questId) {
@@ -653,6 +676,7 @@ const Player = {
             hour: this.hour,
             timeOfDay: this.timeOfDay,
             flags: this.flags,
+            bestiary: this.bestiary,
             unlockedLocations: this.unlockedLocations,
             inventory: Inventory.getSaveData(),
             worldState: typeof WorldState !== 'undefined' ? WorldState.getSaveData() : null,
@@ -721,6 +745,7 @@ const Player = {
             this.hour = data.hour ?? 8;  // 默认早上8点
             this.timeOfDay = data.timeOfDay ?? 'morning';
             this.flags = data.flags ?? {};
+            this.bestiary = data.bestiary ?? {};
             this.unlockedLocations = data.unlockedLocations ?? ['tianlan_school', 'city_street', 'xuefeng_mountain'];
             
             // 加载背包

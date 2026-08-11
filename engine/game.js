@@ -855,6 +855,10 @@ const Game = {
             }
             
             if (BattleSystem.result === 'win') {
+                // 记录击杀到图鉴
+                if (BattleSystem.enemy && BattleSystem.enemy.id) {
+                    Player.recordKill(BattleSystem.enemy.id);
+                }
                 // 胜利
                 const rewards = BattleSystem.rewards;
                 let message = '战斗胜利！\n';
@@ -1631,6 +1635,17 @@ const Game = {
     },
 
     closeHelpPanel() {
+        this.state = 'map';
+        UI.renderMapScreen();
+    },
+
+    // ========== 妖魔图鉴 ==========
+    openBestiary() {
+        this.state = 'bestiary';
+        UI.renderBestiary();
+    },
+
+    closeBestiary() {
         this.state = 'map';
         UI.renderMapScreen();
     },
