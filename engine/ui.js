@@ -3193,6 +3193,9 @@ const UI = {
                                     const talent = TalentSystem.getTalent(talentData.talentId);
                                     if (!talent) return '';
                                     const rarityConfig = TalentSystem.getRarityConfig(talent.rarity);
+                                    const maxLevel = talent.maxLevel || 10;
+                                    const expToNext = TalentSystem.getExpToNextLevel(talentData.level);
+                                    const expPercent = talentData.level >= maxLevel ? 100 : (talentData.exp / expToNext * 100);
                                     return `
                                         <div style="
                                             padding: 8px 12px;
@@ -3202,9 +3205,19 @@ const UI = {
                                             margin-bottom: 6px;
                                             font-size: 13px;
                                         ">
-                                            <span style="color: ${SkillSystem.getElementColor(elem)}; font-weight: bold;">${SkillSystem.getElementName(elem)}</span>
-                                            <span style="color: ${rarityConfig.color}; margin-left: 8px;">${talent.name}</span>
-                                            <span style="color: #888; font-size: 12px; margin-left: 8px;">Lv.${talentData.level}</span>
+                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                                <span>
+                                                    <span style="color: ${SkillSystem.getElementColor(elem)}; font-weight: bold;">${SkillSystem.getElementName(elem)}</span>
+                                                    <span style="color: ${rarityConfig.color}; margin-left: 8px;">${talent.name}</span>
+                                                </span>
+                                                <span style="color: #888; font-size: 12px;">Lv.${talentData.level}${talentData.level >= maxLevel ? ' (满级)' : ''}</span>
+                                            </div>
+                                            ${talentData.level < maxLevel ? `
+                                            <div style="height: 4px; background: #333; border-radius: 2px; overflow: hidden;">
+                                                <div style="height: 100%; width: ${expPercent.toFixed(1)}%; background: ${rarityConfig.color};"></div>
+                                            </div>
+                                            <div style="color: #666; font-size: 11px; text-align: right; margin-top: 2px;">${talentData.exp} / ${expToNext}</div>
+                                            ` : ''}
                                         </div>
                                     `;
                                 }).join('')}

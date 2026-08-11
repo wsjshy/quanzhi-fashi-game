@@ -539,6 +539,16 @@ const Game = {
                     message += `获得 ${levelResult.levelUps.length * 3} 点可分配属性点\n`;
                 }
             }
+
+            // 天赋经验：修炼增加主系天赋经验
+            if (Player.elements && Player.elements.length > 0 && typeof TalentSystem !== 'undefined') {
+                const mainElement = Player.elements[0];
+                const talentExp = Math.floor(5 * multiplier * bonus); // 每小时5点基础天赋经验
+                const talentResult = Player.addElementTalentExp(mainElement, talentExp);
+                if (talentResult.leveledUp) {
+                    message += `🌟 天赋「${talentResult.talentName}」升级到 Lv.${talentResult.newLevel}！\n`;
+                }
+            }
             
             // 检查强制昏睡
             if (result.timeEvents && result.timeEvents.some(e => e.type === 'force_sleep')) {

@@ -529,6 +529,32 @@ const Player = {
     },
 
     /**
+     * 增加某元素系的天赋经验
+     * @param {string} element - 元素系ID
+     * @param {number} amount - 经验值
+     * @returns {object} { leveledUp, newLevel, newExp, talentName }
+     */
+    addElementTalentExp(element, amount) {
+        if (!this.talents || !this.talents[element] || typeof TalentSystem === 'undefined') {
+            return { leveledUp: false };
+        }
+
+        const talentData = this.talents[element];
+        const result = TalentSystem.addTalentExp(talentData, amount);
+
+        if (result.leveledUp) {
+            talentData.level = result.newLevel;
+            talentData.exp = result.newExp;
+            const talent = TalentSystem.getTalent(talentData.talentId);
+            result.talentName = talent ? talent.name : '天赋';
+        } else {
+            talentData.exp = result.newExp;
+        }
+
+        return result;
+    },
+
+    /**
      * 检查是否可以觉醒新系
      * @returns {boolean}
      */

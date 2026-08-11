@@ -330,6 +330,15 @@ const BattleSystem = {
             }
         }
 
+        // 天赋经验：玩家释放技能增加对应系天赋经验
+        if (isPlayer && typeof Player !== 'undefined' && typeof TalentSystem !== 'undefined') {
+            const talentExp = 3; // 每次释放技能获得3点天赋经验
+            const talentResult = Player.addElementTalentExp(skill.element, talentExp);
+            if (talentResult.leveledUp) {
+                this.addLog(`🌟 天赋「${talentResult.talentName}」升级到 Lv.${talentResult.newLevel}！`, 'buff');
+            }
+        }
+
         if (!skipTurnEnd) {
             if (isPlayer) {
                 this.endPlayerTurn();
@@ -1151,6 +1160,17 @@ const BattleSystem = {
         Player.gainGold(rewards.gold);
         rewards.levelUps = expResult.levelUps;
         rewards.newSkills = expResult.newSkills;
+
+        // 天赋经验：击杀敌人增加主系天赋经验
+        if (typeof Player !== 'undefined' && typeof TalentSystem !== 'undefined' && Player.elements && Player.elements.length > 0) {
+            const mainElement = Player.elements[0];
+            const enemyLevel = this.enemy.level || 1;
+            const talentExp = Math.floor(5 + enemyLevel * 2); // 基础5点 + 等级×2
+            const talentResult = Player.addElementTalentExp(mainElement, talentExp);
+            if (talentResult.leveledUp) {
+                this.addLog(`🌟 天赋「${talentResult.talentName}」升级到 Lv.${talentResult.newLevel}！`, 'buff');
+            }
+        }
 
         // 更新任务进度
         const completedQuests = QuestSystem.updateProgress('kill', this.enemy.id, 1);
