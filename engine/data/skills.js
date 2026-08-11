@@ -953,5 +953,68 @@ const DataSkills = {
     statusEffects: [
       { name: "复苏", type: "regen", element: "heal", duration: 3, chance: 1.0, regen: 15 }
     ]
+  },
+  summon_beast: {
+    id: "summon_beast",
+    name: "召唤·契约",
+    description: "初阶召唤系魔法，召唤一只幽狼兽协助战斗，持续5回合。召唤兽每回合自动攻击敌人。",
+    element: "summon",
+    type: "summon",
+    mpCost: 15,
+    targetType: "self",
+    cooldown: 3,
+    tier: "初阶",
+    summonData: {
+      id: "shadow_wolf",
+      name: "幽狼兽",
+      maxHp: 80,
+      attack: 25,
+      defense: 10,
+      speed: 15,
+      duration: 5,
+      icon: "🐺"
+    }
+  },
+  summon_strengthen: {
+    id: "summon_strengthen",
+    name: "召唤·强化",
+    description: "用星子之力强化召唤兽，提升其攻击和防御50%，持续3回合",
+    element: "summon",
+    type: "buff",
+    mpCost: 10,
+    targetType: "self",
+    cooldown: 4,
+    tier: "初阶",
+    requiresSummon: true,
+    statusEffects: [
+      { name: "召唤强化", type: "summon_buff", duration: 3, chance: 1.0, attackBonus: 0.5, defenseBonus: 0.5 }
+    ]
+  },
+  summon_rage: {
+    id: "summon_rage",
+    name: "召唤·狂暴",
+    description: "刺激召唤兽进入狂暴状态，攻击翻倍，速度提升，但防御降低50%，持续2回合",
+    element: "summon",
+    type: "buff",
+    mpCost: 12,
+    targetType: "self",
+    cooldown: 5,
+    tier: "初阶",
+    requiresSummon: true,
+    statusEffects: [
+      { name: "召唤狂暴", type: "summon_rage", duration: 2, chance: 1.0, attackBonus: 1.0, speedBonus: 0.5, defenseMalus: 0.5 }
+    ]
+  },
+  summon_return: {
+    id: "summon_return",
+    name: "召唤·回收",
+    description: "提前收回召唤兽，恢复召唤兽剩余生命值50%的MP",
+    element: "summon",
+    type: "special",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 2,
+    tier: "初阶",
+    requiresSummon: true
   }
 };

@@ -56,6 +56,7 @@ const BattleSystem = {
         this.playerCasting = null;
         this.enemyCasting = null;
         this.isPlayerTurn = true;
+        this.summon = null;  // 召唤兽状态
 
         // 复制敌人数据，避免修改原数据
         this.enemy = JSON.parse(JSON.stringify(enemyData));
@@ -154,6 +155,12 @@ const BattleSystem = {
         // 检查MP
         if (this.player.mp < skill.mpCost) {
             this.addLog('魔法值不足！', 'system');
+            return null;
+        }
+
+        // 检查是否需要召唤兽
+        if (skill.requiresSummon && !this.summon) {
+            this.addLog('当前没有召唤兽，无法使用此技能！', 'system');
             return null;
         }
 
@@ -257,10 +264,18 @@ const BattleSystem = {
         } else if (skill.type === 'buff') {
             // 增益技能
             if (skill.statusEffects) {
-                this.applyStatusEffects(casterData, skill.statusEffects, !isPlayer);
+                if (skill.element === 'summon' && isPlayer && this.summon) {
+                    // 召唤系增益应用到召唤兽
+                    this.applyStatusEffects(this.summon, skill.statusEffects, !isPlayer);
+                    this.addLog(`${this.summon.icon} ${this.summon.name} 受到了 ${skill.name} 的效果！`, 'buff');
+                } else {
+                    this.applyStatusEffects(casterData, skill.statusEffects, !isPlayer);
+                }
             }
             const casterName = isPlayer ? '你' : this.enemy.name;
-            this.addLog(`${casterName} 使用了 ${skill.name}`, 'buff');
+            if (skill.element !== 'summon') {
+                this.addLog(`${casterName} 使用了 ${skill.name}`, 'buff');
+            }
 
         } else if (skill.type === 'debuff') {
             // 减益技能（对敌人施加负面状态）
@@ -270,6 +285,38 @@ const BattleSystem = {
             const casterName = isPlayer ? '你' : this.enemy.name;
             const targetName = isPlayer ? this.enemy.name : '你';
             this.addLog(`${casterName} 对 ${targetName} 释放了 ${skill.name}`, 'debuff');
+
+        } else if (skill.type === 'summon') {
+            // 召唤技能
+            if (isPlayer && skill.summonData) {
+                if (this.summon) {
+                    this.addLog(`已有召唤兽 ${this.summon.name}，先收回再召唤！`, 'system');
+                    casterData.mp += skill.mpCost; // 退还MP
+                    return { success: false };
+                }
+                this.summon = {
+                    ...skill.summonData,
+                    hp: skill.summonData.maxHp,
+                    remainingDuration: skill.summonData.duration,
+                    buffs: [],
+                    statusEffects: []
+                };
+                this.addLog(`你召唤了 ${skill.summonData.icon} ${skill.summonData.name}！（持续${skill.summonData.duration}回合）`, 'magic');
+            }
+
+        } else if (skill.type === 'special') {
+            // 特殊技能（如召唤回收）
+            if (isPlayer && skill.id === 'summon_return') {
+                if (this.summon) {
+                    const mpRecover = Math.floor(this.summon.hp * 0.5);
+                    this.player.mp = Math.min(this.player.maxMp, this.player.mp + mpRecover);
+                    this.addLog(`你收回了 ${this.summon.name}，恢复了 ${mpRecover} 点魔法值`, 'magic');
+                    this.summon = null;
+                } else {
+                    this.addLog('当前没有召唤兽！', 'system');
+                    return { success: false };
+                }
+            }
         }
 
         if (isPlayer) {
@@ -404,8 +451,57 @@ const BattleSystem = {
             }
         }
 
+        // 召唤兽自动攻击
+        if (this.summon && this.summon.hp > 0) {
+            this.summonAttack();
+        }
+
         // 敌人回合
         setTimeout(() => this.enemyTurn(), 800);
+    },
+
+    /**
+     * 召唤兽攻击
+     */
+    summonAttack() {
+        if (!this.summon || !this.enemy || this.enemy.hp <= 0) return;
+
+        const summon = this.summon;
+        
+        // 计算召唤兽属性加成（强化/狂暴状态）
+        let attackMultiplier = 1;
+        let defenseMultiplier = 1;
+        let speedMultiplier = 1;
+        
+        if (summon.statusEffects) {
+            summon.statusEffects.forEach(effect => {
+                if (effect.type === 'summon_buff') {
+                    attackMultiplier += effect.attackBonus || 0;
+                    defenseMultiplier += effect.defenseBonus || 0;
+                } else if (effect.type === 'summon_rage') {
+                    attackMultiplier += effect.attackBonus || 0;
+                    speedMultiplier += effect.speedBonus || 0;
+                    defenseMultiplier -= effect.defenseMalus || 0;
+                }
+            });
+        }
+
+        const effectiveAttack = Math.floor(summon.attack * attackMultiplier);
+        const baseDamage = effectiveAttack;
+        
+        const damage = this.calculateDamage(
+            baseDamage,
+            this.enemy.defense,
+            1.0,
+            0.05,
+            0.9,
+            'neutral',
+            this.enemy.elements?.[0] || 'neutral',
+            this.enemy
+        );
+
+        this.applyDamage(this.enemy, damage);
+        this.addLog(`${summon.icon} ${summon.name} 发动攻击，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}`, 'magic');
     },
 
     /**
@@ -529,6 +625,21 @@ const BattleSystem = {
         // 处理状态效果（每回合结束）
         this.tickStatusEffects(this.player, true);
         this.tickStatusEffects(this.enemy, false);
+
+        // 处理召唤兽持续时间和状态
+        if (this.summon) {
+            this.summon.remainingDuration--;
+            if (this.summon.statusEffects) {
+                this.summon.statusEffects = this.summon.statusEffects.filter(effect => {
+                    effect.duration--;
+                    return effect.duration > 0;
+                });
+            }
+            if (this.summon.remainingDuration <= 0 || this.summon.hp <= 0) {
+                this.addLog(`${this.summon.icon} ${this.summon.name} 消失了`, 'system');
+                this.summon = null;
+            }
+        }
 
         // 检查战斗是否结束（DOT可能致死）
         if (this.checkBattleEnd()) return;
@@ -1080,6 +1191,7 @@ const BattleSystem = {
             isPlayerTurn: this.isPlayerTurn,
             playerCasting: this.playerCasting,
             enemyCasting: this.enemyCasting,
+            summon: this.summon,
             result: this.result,
             rewards: this.rewards || null,
             log: this.log.slice(-10) // 最近10条

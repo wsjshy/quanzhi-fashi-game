@@ -821,6 +821,54 @@ const UI = {
                         ` : ''}
                     </div>
                     
+                    <!-- 召唤兽 -->
+                    ${state.summon ? `
+                    <div style="
+                        position: absolute;
+                        bottom: 60px;
+                        left: 30%;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                    ">
+                        <div style="
+                            width: 70px;
+                            height: 90px;
+                            background: linear-gradient(180deg, #665544, #443322);
+                            border-radius: 35px 35px 8px 8px;
+                            margin-bottom: 8px;
+                            box-shadow: 0 0 20px rgba(255, 153, 102, 0.4);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 36px;
+                        ">${state.summon.icon || '🐺'}</div>
+                        <div style="font-size: 14px; font-weight: bold; color: #ffcc99; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
+                            ${state.summon.name}
+                        </div>
+                        <div style="font-size: 11px; color: #ffaa66; margin-bottom: 4px;">剩余 ${state.summon.remainingDuration} 回合</div>
+                        <div style="width: 90px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #ff6666; margin-bottom: 2px;">
+                                <span>HP</span><span>${state.summon.hp}/${state.summon.maxHp}</span>
+                            </div>
+                            <div style="height: 6px; background: #333; border-radius: 3px; overflow: hidden;">
+                                <div style="height: 100%; width: ${(state.summon.hp / state.summon.maxHp * 100).toFixed(1)}%; background: linear-gradient(90deg, #ff8844, #ffaa66); transition: width 0.5s;"></div>
+                            </div>
+                        </div>
+                        ${state.summon.statusEffects && state.summon.statusEffects.length > 0 ? `
+                            <div style="margin-top: 4px; display: flex; flex-wrap: wrap; gap: 2px; justify-content: center; max-width: 100px;">
+                                ${state.summon.statusEffects.map(effect => {
+                                    const icons = { summon_buff: '💪', summon_rage: '😡' };
+                                    const colors = { summon_buff: '#66ff66', summon_rage: '#ff4444' };
+                                    const icon = icons[effect.type] || '✨';
+                                    const color = colors[effect.type] || '#fff';
+                                    return `<span style="font-size: 10px; padding: 1px 4px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 3px; color: ${color};" title="${effect.name}">${icon}</span>`;
+                                }).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                    ` : ''}
+                    
                     <!-- 敌人 -->
                     <div style="
                         position: absolute;

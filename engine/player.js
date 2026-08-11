@@ -61,6 +61,12 @@ const SKILL_UNLOCK_TABLE = {
         1: ['heal_light'],
         3: ['heal_holy', 'heal_cleanse'],
         5: ['heal_revive']
+    },
+    summon: {
+        1: ['summon_beast'],
+        2: ['summon_strengthen'],
+        3: ['summon_rage'],
+        5: ['summon_return']
     }
 };
 
@@ -749,7 +755,8 @@ const Player = {
                 const starterSkills = {
                     fire: 'fire_bolt', ice: 'ice_spike', thunder: 'thunder_bolt',
                     earth: 'earth_shield', wind: 'wind_blade', water: 'water_heal',
-                    light: 'light_ray', dark: 'dark_bolt', heal: 'heal_light'
+                    light: 'light_ray', dark: 'dark_bolt', heal: 'heal_light',
+                    summon: 'summon_beast'
                 };
                 const starter = starterSkills[elem];
                 if (starter && !this.skills.includes(starter)) {

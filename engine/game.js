@@ -1214,7 +1214,7 @@ const Game = {
             return;
         }
 
-        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal'];
+        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'summon'];
         const availableElements = allElements.filter(e => !Player.elements.includes(e));
         const currentCount = Player.elements.length;
         const requiredLevel = currentCount === 1 ? 8 : 15;
@@ -1283,7 +1283,8 @@ const Game = {
             water: '治疗恢复，湿润控制，克制火/土系',
             light: '净化增益，圣光裁决，克制暗影系',
             dark: '诅咒削弱，潜行爆发，克制光系',
-            heal: '强力治疗，净化复苏，生存能力极强'
+            heal: '强力治疗，净化复苏，生存能力极强',
+            summon: '召唤召唤兽协同作战，以多打少，战术灵活'
         };
         return descs[element] || '神秘的元素力量';
     },

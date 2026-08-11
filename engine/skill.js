@@ -80,6 +80,7 @@ const SkillSystem = {
             light: '光系',
             dark: '暗影系',
             heal: '治愈系',
+            summon: '召唤系',
             neutral: '无属性'
         };
         return names[element] || element;
@@ -99,6 +100,7 @@ const SkillSystem = {
             light: '#ffffcc',
             dark: '#9966ff',
             heal: '#66ffaa',
+            summon: '#ff9966',
             neutral: '#999999'
         };
         return colors[element] || '#ffffff';
