@@ -3223,6 +3223,30 @@ const UI = {
                                 }).join('')}
                             </div>
                             ` : ''}
+                            ${Player.spiritSeeds && Object.keys(Player.spiritSeeds).length > 0 ? `
+                            <div style="margin-bottom: 15px; text-align: left;">
+                                <div style="color: #aaa; font-size: 13px; margin-bottom: 8px;">💎 灵种</div>
+                                ${Player.elements.map(elem => {
+                                    const seed = Player.getElementSpiritSeed(elem);
+                                    if (!seed || typeof SpiritSeedSystem === 'undefined') return '';
+                                    const gradeConfig = SpiritSeedSystem.getGradeConfig(seed.grade);
+                                    return `
+                                        <div style="
+                                            padding: 8px 12px;
+                                            background: ${gradeConfig.color}11;
+                                            border: 1px solid ${gradeConfig.color}55;
+                                            border-radius: 8px;
+                                            margin-bottom: 6px;
+                                            font-size: 13px;
+                                        ">
+                                            <span style="color: ${SkillSystem.getElementColor(elem)}; font-weight: bold;">${SkillSystem.getElementName(elem)}</span>
+                                            <span style="color: ${gradeConfig.color}; margin-left: 8px;">${seed.name}</span>
+                                            <span style="color: #888; font-size: 12px; margin-left: 8px;">[${gradeConfig.name}]</span>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                            ` : ''}
                             ${Player.canAwakenNewElement() ? `
                             <div onclick="Game.showAwakenPanel()" style="
                                 display: inline-block;

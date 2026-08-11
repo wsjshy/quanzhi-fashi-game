@@ -223,8 +223,17 @@ const BattleSystem = {
                 }
             }
 
+            // 灵种加成（仅玩家）
+            let seedBonus = 1.0;
+            if (isPlayer && typeof Player !== 'undefined' && typeof SpiritSeedSystem !== 'undefined') {
+                const seedEffects = Player.getElementSpiritSeedEffects(skill.element);
+                if (seedEffects.damageBonus) {
+                    seedBonus = 1 + seedEffects.damageBonus;
+                }
+            }
+
             const damage = this.calculateDamage(
-                baseDamage * spiritBonus * elementBonus * talentBonus,
+                baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus,
                 targetData.defense,
                 1.0,
                 casterData.critRate || 0.05,

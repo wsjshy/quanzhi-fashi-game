@@ -94,6 +94,7 @@ const Player = {
     elements: [],
     skills: ['basic_attack'],
     talents: {},  // 天赋：{ elementId: { talentId, level, exp } }
+    spiritSeeds: {},  // 灵种：{ elementId: seedId }
 
     // 金钱
     gold: 50,
@@ -555,6 +556,58 @@ const Player = {
     },
 
     /**
+     * 获取某元素系的灵种数据
+     * @param {string} element - 元素系ID
+     * @returns {object|null} 灵种数据
+     */
+    getElementSpiritSeed(element) {
+        if (!this.spiritSeeds || !this.spiritSeeds[element] || typeof SpiritSeedSystem === 'undefined') return null;
+        return SpiritSeedSystem.getSpiritSeed(this.spiritSeeds[element]);
+    },
+
+    /**
+     * 获取某元素系的灵种效果
+     * @param {string} element - 元素系ID
+     * @returns {object} 灵种效果
+     */
+    getElementSpiritSeedEffects(element) {
+        if (!this.spiritSeeds || typeof SpiritSeedSystem === 'undefined') return {};
+        return SpiritSeedSystem.getPlayerElementSeedEffects(this.spiritSeeds, element);
+    },
+
+    /**
+     * 获取所有灵种的总效果
+     * @returns {object} 总效果
+     */
+    getAllSpiritSeedEffects() {
+        const totalEffects = {};
+        if (!this.spiritSeeds || typeof SpiritSeedSystem === 'undefined') return totalEffects;
+
+        for (const element in this.spiritSeeds) {
+            const effects = this.getElementSpiritSeedEffects(element);
+            for (const key in effects) {
+                if (typeof effects[key] === 'number') {
+                    totalEffects[key] = (totalEffects[key] || 0) + effects[key];
+                } else {
+                    totalEffects[key] = effects[key];
+                }
+            }
+        }
+
+        return totalEffects;
+    },
+
+    /**
+     * 炼化灵种
+     * @param {string} seedId - 灵种ID
+     * @returns {boolean} 是否成功
+     */
+    refineSpiritSeed(seedId) {
+        if (typeof SpiritSeedSystem === 'undefined') return false;
+        return SpiritSeedSystem.refineSpiritSeed(seedId);
+    },
+
+    /**
      * 检查是否可以觉醒新系
      * @returns {boolean}
      */
@@ -759,6 +812,7 @@ const Player = {
             elements: this.elements,
             skills: this.skills,
             talents: this.talents,
+            spiritSeeds: this.spiritSeeds,
             gold: this.gold,
             equipment: this.equipment,
             enhanceLevels: this.enhanceLevels,
@@ -830,6 +884,7 @@ const Player = {
             this.elements = data.elements ?? [];
             this.skills = data.skills ?? ['basic_attack'];
             this.talents = data.talents ?? {};
+            this.spiritSeeds = data.spiritSeeds ?? {};
             this.gold = data.gold ?? 50;
             this.equipment = data.equipment ?? { weapon: null, armor: null, accessory: null };
             this.enhanceLevels = data.enhanceLevels ?? { weapon: 0, armor: 0, accessory: 0 };
