@@ -342,7 +342,7 @@ const TimeSystem = {
                     ? ending.conditions.hasItems
                     : [ending.conditions.hasItems];
                 for (const itemId of items) {
-                    if (!InventorySystem.hasItem(itemId)) {
+                    if (!Inventory.hasItem(itemId)) {
                         conditionsMet = false;
                         break;
                     }
@@ -380,7 +380,7 @@ const TimeSystem = {
             }
             if (ending.rewards.items) {
                 ending.rewards.items.forEach(item => {
-                    InventorySystem.addItem(item.itemId, item.count || 1);
+                    Inventory.addItem(item.itemId, item.count || 1);
                 });
             }
             if (ending.rewards.reputation) {

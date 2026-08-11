@@ -53,9 +53,6 @@ const Game = {
     // 继续游戏
     continueGame() {
         if (Player.load()) {
-            Inventory.loadSaveData(Player.saveData?.inventory || []);
-            WorldState.loadSaveData(Player.saveData?.worldState || null);
-            NPCStateSystem.loadSaveData(Player.saveData?.npcStates || null);
             MapSystem.init();
             this.state = 'map';
             UI.renderMapScreen();
@@ -578,7 +575,7 @@ const Game = {
                 }
                 if (event.successRewards.items) {
                     event.successRewards.items.forEach(item => {
-                        InventorySystem.addItem(item.itemId, item.count || 1);
+                        Inventory.addItem(item.itemId, item.count || 1);
                     });
                 }
             }
