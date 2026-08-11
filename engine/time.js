@@ -69,10 +69,9 @@ const TimeSystem = {
      * 强制昏睡（凌晨3点还没睡觉）
      */
     forceSleep() {
-        // 直接跳到第二天早上6点
+        // 直接跳到当天早上6点
         Player.hour = 6;
         Player.timeOfDay = 'dawn';
-        this.advanceDay();
         
         // 体力只恢复50%
         const stats = Player.getTotalStats();
