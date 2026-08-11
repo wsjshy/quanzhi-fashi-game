@@ -166,6 +166,11 @@ const Game = {
             }
         }
         
+        // 检查强制昏睡
+        if (result.timeEvents && result.timeEvents.some(e => e.type === 'force_sleep')) {
+            message = `😴 你熬夜太晚，不知不觉昏睡了过去...\n\n（第二天早上醒来，感觉没睡好，体力只恢复了50%）\n\n` + message;
+        }
+        
         if (message) {
             UI.showMessage(message.trim());
         }
@@ -265,7 +270,13 @@ const Game = {
             }
 
             UI.renderMapScreen();
-            UI.showMessage(`来到了 ${result.location.name}`);
+            
+            // 检查强制昏睡
+            let travelMsg = `来到了 ${result.location.name}`;
+            if (result.timeEvents && result.timeEvents.some(e => e.type === 'force_sleep')) {
+                travelMsg = `😴 你熬夜赶路，不知不觉昏睡了过去...\n\n（第二天醒来，体力只恢复了50%）\n\n` + travelMsg;
+            }
+            UI.showMessage(travelMsg);
         } catch (e) {
             console.error('移动出错:', e);
             UI.showMessage('移动失败：' + e.message);
