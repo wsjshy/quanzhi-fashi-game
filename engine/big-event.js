@@ -412,13 +412,20 @@ const BigEventSystem = {
         Player.flags['big_event_' + this.currentEvent + '_completed'] = true;
         Player.flags['big_event_' + this.currentEvent + '_ending'] = endingId;
         
-        // 清除当前状态
-        this.currentEvent = null;
-        this.currentPhase = null;
-        this.choiceHistory = [];
-        
+        // 保存
         this.saveState();
         Player.save();
+        
+        // 显示结局界面
+        if (ending) {
+            UI.renderBigEventEnding(event, ending);
+        } else {
+            // 没有结局，直接回到地图
+            Game.returnToMap();
+        }
+        
+        // 清除当前状态（在显示结局之后，因为UI还需要用到）
+        // 不清除，等用户点击继续后再清除
     },
     
     /**

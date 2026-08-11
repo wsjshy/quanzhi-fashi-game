@@ -994,6 +994,19 @@ const Game = {
         this.currentScheduledEvent = null;
         UI.renderMapScreen();
     },
+    
+    // 关闭大事件结局界面
+    closeBigEventEnding() {
+        console.log('[大事件] 关闭结局界面');
+        // 清除大事件状态
+        BigEventSystem.currentEvent = null;
+        BigEventSystem.currentPhase = null;
+        BigEventSystem.choiceHistory = [];
+        BigEventSystem.saveState();
+        
+        this.state = 'map';
+        UI.renderMapScreen();
+    },
 
     // 关闭事件界面
     closeEvent() {
