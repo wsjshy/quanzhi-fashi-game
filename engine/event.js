@@ -237,6 +237,29 @@ const EventSystem = {
             result.giveInfo = effects.giveInfo;
         }
 
+        // 战斗触发（由game.js处理实际战斗开始）
+        if (effects.startBattle) {
+            result.startBattle = effects.startBattle;
+        }
+
+        // 多个物品
+        if (effects.items) {
+            result.items = {};
+            for (const [itemId, count] of Object.entries(effects.items)) {
+                Inventory.addItem(itemId, count);
+                result.items[itemId] = count;
+            }
+        }
+
+        // 声望变化
+        if (effects.reputation) {
+            result.reputation = {};
+            for (const [faction, value] of Object.entries(effects.reputation)) {
+                WorldState.changeReputation(faction, value);
+                result.reputation[faction] = value;
+            }
+        }
+
         return result;
     }
 };

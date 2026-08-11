@@ -2070,5 +2070,120 @@ const DataEvents = {
         resultText: "你握紧了拳头，心中燃起了怒火。虽然你现在还很弱，但你发誓，一定要变得更强，阻止黑教廷的阴谋！"
       }
     ]
+  },
+  event_wandering_merchant: {
+    id: "event_wandering_merchant",
+    name: "游商",
+    description: "你在街上遇到了一个背着大包的游商，他神秘兮兮地向你招手。",
+    trigger: "exploring",
+    chance: 0.08,
+    conditions: [],
+    once: false,
+    choices: [
+      {
+        text: "看看他卖什么（花50金买神秘药水）",
+        effects: { gold: -50, items: { super_health_potion: 1 } },
+        resultText: "你花50金买了一瓶泛着红光的药水，游商笑着消失在人群中。你仔细一看，竟然是一瓶超级生命药水！"
+      },
+      {
+        text: "买一个神秘盒子（花30金）",
+        effects: { gold: -30, items: { health_potion: 2 } },
+        resultText: "你打开盒子，里面是两瓶生命药水。虽然不是什么宝贝，但也算物有所值。"
+      },
+      {
+        text: "不感兴趣，离开",
+        effects: {},
+        resultText: "你摆摆手走开了，游商在身后喊着'下次再来啊！'"
+      }
+    ]
+  },
+  event_lost_child: {
+    id: "event_lost_child",
+    name: "迷路的孩子",
+    description: "一个小孩在街角哭泣，说找不到妈妈了。",
+    trigger: "exploring",
+    chance: 0.1,
+    conditions: [],
+    once: true,
+    choices: [
+      {
+        text: "帮他找妈妈",
+        effects: { exp: 30, reputation: { tianlan_school: 5 } },
+        resultText: "你带着小孩四处打听，终于在市场找到了焦急的母亲。她感激涕零，连连向你道谢。周围的人也向你投来赞许的目光。"
+      },
+      {
+        text: "给他一些钱让他自己找",
+        effects: { gold: -10, exp: 10 },
+        resultText: "你给了小孩10个铜币，告诉他去找卫兵。小孩擦干眼泪跑开了，希望他能找到家人。"
+      },
+      {
+        text: "假装没看见",
+        effects: { reputation: { tianlan_school: -3 } },
+        resultText: "你绕过小孩走了过去，但心里总觉得不太舒服..."
+      }
+    ]
+  },
+  event_magic_insight: {
+    id: "event_magic_insight",
+    name: "魔法顿悟",
+    description: "你在冥想时突然对魔法有了更深的理解。",
+    trigger: "training",
+    chance: 0.05,
+    conditions: [{ type: "level", value: 3, operator: ">=" }],
+    once: false,
+    choices: [
+      {
+        text: "深入感悟（消耗20MP）",
+        effects: { mp: -20, exp: 80 },
+        resultText: "你沉浸在魔法的感悟中，对星子的连接有了新的认识，获得了大量经验！"
+      },
+      {
+        text: "记录下来",
+        effects: { exp: 30 },
+        resultText: "你把感悟记在笔记本上，虽然没有完全领悟，但也有所收获。"
+      }
+    ]
+  },
+  event_street_duel: {
+    id: "event_street_duel",
+    name: "街头切磋",
+    description: "一个同校的学生拦住你，想和你切磋一下魔法。",
+    trigger: "exploring",
+    chance: 0.06,
+    conditions: [{ type: "level", value: 2, operator: ">=" }],
+    once: false,
+    choices: [
+      {
+        text: "接受切磋（进入战斗）",
+        effects: { startBattle: "student_rival" },
+        resultText: ""
+      },
+      {
+        text: "婉拒",
+        effects: {},
+        resultText: "你以修炼为由婉拒了，对方有些失望但也没有勉强。"
+      }
+    ]
+  },
+  event_hidden_herb: {
+    id: "event_hidden_herb",
+    name: "隐秘药草",
+    description: "你在山壁的缝隙中发现了一株少见的药草。",
+    trigger: "exploring",
+    chance: 0.12,
+    conditions: [],
+    once: false,
+    choices: [
+      {
+        text: "小心采摘",
+        effects: { items: { magic_herb: 2 }, exp: 15 },
+        resultText: "你小心翼翼地采下了药草，这在魔法商店能卖个好价钱。"
+      },
+      {
+        text: "继续探索",
+        effects: { exp: 10 },
+        resultText: "你记下了位置，继续深入探索。"
+      }
+    ]
   }
 };

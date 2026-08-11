@@ -987,5 +987,26 @@ const DataEnemies = {
       { itemId: "elite_soul", chance: 0.1, min: 1, max: 1 }
     ],
     locations: ["xuefeng_mountain", "bo_city"]
+  },
+  student_rival: {
+    id: "student_rival",
+    name: "切磋同学",
+    title: "天澜魔法高中学生",
+    description: "一个和你一样刚觉醒魔法不久的学生，想和你切磋一下。",
+    elements: ["fire"],
+    level: 3,
+    maxHp: 120,
+    maxMp: 60,
+    attack: 12,
+    defense: 5,
+    speed: 12,
+    skills: ["basic_attack", "fire_bolt"],
+    spriteColor: "#cc4422",
+    isEnemy: true,
+    isHuman: true,
+    expReward: 60,
+    goldReward: 20,
+    dropItems: [],
+    locations: ["tianlan_school", "city_street"]
   }
 };

@@ -1948,6 +1948,13 @@ const UI = {
             if (effects.hp) effectText += effects.hp > 0 ? `\n恢复 ${effects.hp} HP` : `\n失去 ${-effects.hp} HP`;
             if (effects.mp) effectText += effects.mp > 0 ? `\n恢复 ${effects.mp} MP` : `\n失去 ${-effects.mp} MP`;
             if (effects.addItem) effectText += `\n获得物品`;
+            if (effects.items) {
+                for (const [itemId, count] of Object.entries(effects.items)) {
+                    const item = DataManager.getItem(itemId);
+                    const itemName = item ? item.name : itemId;
+                    effectText += `\n获得 ${itemName} x${count}`;
+                }
+            }
         }
         
         this.showMessage(text + effectText);

@@ -973,6 +973,14 @@ const Game = {
             const result = EventSystem.selectChoice(event.id, choiceIndex);
             
             if (result.success) {
+                // 如果触发战斗
+                if (result.effects.startBattle) {
+                    const enemy = DataManager.getEnemy(result.effects.startBattle);
+                    if (enemy) {
+                        this.startBattle(enemy);
+                        return;
+                    }
+                }
                 // 显示结果
                 UI.showEventResult(result.text, result.effects);
                 
