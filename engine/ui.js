@@ -475,8 +475,11 @@ const UI = {
             const quest = activeQuests[0]; // 显示第一个任务
             const questData = QuestSystem.getQuest(quest.questId);
             if (questData) {
-                const progress = QuestSystem.getQuestProgressText(quest.questId);
-                return `当前任务：${questData.name} - ${progress}`;
+                const firstObjective = questData.objectives[0];
+                const current = quest.progress[0] || 0;
+                const total = firstObjective?.count || 1;
+                const done = current >= total;
+                return `当前任务：${questData.name}（${current}/${total}）${done ? ' ✅ 可交付' : ''}`;
             }
         }
         
@@ -498,6 +501,19 @@ const UI = {
         } else {
             return `快升级了！还差 ${Player.expToNext - Player.exp} 经验，再修炼几次吧`;
         }
+    },
+    
+    /**
+     * 任务追踪面板展开状态
+     */
+    questTrackerExpanded: false,
+    
+    /**
+     * 切换任务追踪面板展开/收起
+     */
+    toggleQuestTracker() {
+        this.questTrackerExpanded = !this.questTrackerExpanded;
+        this.renderMapScreen();
     },
     
     renderMapScreen() {
@@ -567,19 +583,62 @@ const UI = {
                     </div>
                 </div>
                 
-                <!-- 当前目标提示（新手引导） -->
-                <div class="mobile-goal-bar" style="
+                <!-- 任务追踪面板（可展开） -->
+                <div class="mobile-goal-bar" onclick="UI.toggleQuestTracker()" style="
                     padding: 10px 25px;
                     background: linear-gradient(90deg, rgba(100, 80, 30, 0.6), rgba(80, 60, 20, 0.4));
                     border-bottom: 1px solid #887744;
                     display: flex;
-                    align-items: center;
+                    align-items: flex-start;
                     gap: 10px;
                     z-index: 1;
+                    cursor: pointer;
+                    user-select: none;
                 ">
-                    <span style="color: #ffd700; font-size: 16px;">📋</span>
-                    <span style="color: #ffeeaa; font-size: 14px; line-height: 1.5;">
-                        ${this.getCurrentGoalText()}
+                    <span style="color: #ffd700; font-size: 16px; margin-top: 2px;">📋</span>
+                    <div style="flex: 1;">
+                        <div style="color: #ffeeaa; font-size: 14px; line-height: 1.5;">
+                            ${this.getCurrentGoalText()}
+                        </div>
+                        ${this.questTrackerExpanded && QuestSystem.activeQuests && QuestSystem.activeQuests.length > 0 ? `
+                            <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+                                ${QuestSystem.activeQuests.slice(0, 5).map(activeQuest => {
+                                    const quest = QuestSystem.getQuest(activeQuest.questId);
+                                    if (!quest) return '';
+                                    const firstObjective = quest.objectives[0];
+                                    const current = activeQuest.progress[0] || 0;
+                                    const total = firstObjective?.count || 1;
+                                    const percent = Math.min(100, (current / total) * 100);
+                                    const done = current >= total;
+                                    return `
+                                        <div onclick="event.stopPropagation(); Game.openQuestLog()" style="
+                                            padding: 8px 12px;
+                                            background: rgba(0, 0, 0, 0.3);
+                                            border-radius: 6px;
+                                            border: 1px solid ${done ? '#66ff66' : '#887744'};
+                                            cursor: pointer;
+                                        ">
+                                            <div style="font-size: 13px; color: ${done ? '#66ff66' : '#ffeeaa'}; margin-bottom: 4px; font-weight: bold;">
+                                                ${done ? '✅' : '📌'} ${quest.name}
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="flex: 1; height: 6px; background: #333; border-radius: 3px; overflow: hidden;">
+                                                    <div style="height: 100%; width: ${percent}%; background: ${done ? 'linear-gradient(90deg, #44ff44, #66ff66)' : 'linear-gradient(90deg, #ffaa44, #ffd700)'}; transition: width 0.3s;"></div>
+                                                </div>
+                                                <span style="font-size: 11px; color: #aaa;">${current}/${total}</span>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                                ${QuestSystem.activeQuests.length > 5 ? `
+                                    <div style="font-size: 12px; color: #888; text-align: center;">还有 ${QuestSystem.activeQuests.length - 5} 个任务...</div>
+                                ` : ''}
+                                <div style="font-size: 12px; color: #888; text-align: center; margin-top: 4px;">点击查看全部任务 →</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <span style="color: #ffd700; font-size: 12px; margin-top: 4px;">
+                        ${this.questTrackerExpanded ? '▲' : '▼'}
                     </span>
                 </div>
                 
