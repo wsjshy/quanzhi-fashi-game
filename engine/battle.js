@@ -112,9 +112,10 @@ const BattleSystem = {
 
         this.player.isDefending = false;
 
-        // 计算伤害
+        // 计算伤害（含攻击者状态修正）
+        const attackerMods = this.getStatusModifiers(this.player);
         const damage = this.calculateDamage(
-            this.player.attack,
+            this.player.attack + attackerMods.attackMod,
             this.enemy.defense,
             1.0,
             this.player.critRate,
@@ -194,8 +195,10 @@ const BattleSystem = {
         casterData.mp -= skill.mpCost;
 
         if (skill.type === 'damage') {
-            // 伤害技能
-            const baseDamage = skill.baseDamage + casterData.attack * (skill.damageMultiplier || 1.0);
+            // 伤害技能（含攻击者状态修正）
+            const casterMods = this.getStatusModifiers(casterData);
+            const effectiveAttack = casterData.attack + casterMods.attackMod;
+            const baseDamage = skill.baseDamage + effectiveAttack * (skill.damageMultiplier || 1.0);
             
             // 精神力加成
             const spirit = casterData.spirit || 10;
@@ -383,8 +386,10 @@ const BattleSystem = {
 
         if (action.type === 'attack') {
             // 普通攻击
+            // 计算伤害（含攻击者状态修正）
+            const enemyMods = this.getStatusModifiers(this.enemy);
             const damage = this.calculateDamage(
-                this.enemy.attack,
+                this.enemy.attack + enemyMods.attackMod,
                 this.player.defense * (this.player.isDefending ? 2 : 1), // 防御时防御翻倍
                 1.0,
                 0.05,

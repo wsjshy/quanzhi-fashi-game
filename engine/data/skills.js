@@ -62,11 +62,14 @@ const DataSkills = {
     tier: "初阶",
     statusEffects: [
       {
-        name: "灼烧",
+        name: "燃烧",
         type: "burn",
-        dotDamage: 8,
+        element: "fire",
+        dotDamage: 6,
         duration: 3,
-        chance: 0.6
+        chance: 0.7,
+        stacks: 1,
+        maxStacks: 3
       }
     ]
   },
@@ -98,7 +101,7 @@ const DataSkills = {
   ice_shield: {
     id: "ice_shield",
     name: "冰蔓·冰铠",
-    description: "初阶冰系防御魔法，用冰甲保护自己，提升防御",
+    description: "初阶冰系防御魔法，用冰甲保护自己，生成40点护盾并提升防御",
     element: "ice",
     type: "buff",
     mpCost: 10,
@@ -108,6 +111,14 @@ const DataSkills = {
     cooldown: 3,
     tier: "初阶",
     statusEffects: [
+      {
+        name: "冰铠护盾",
+        type: "shield",
+        element: "ice",
+        value: 40,
+        duration: 99,
+        chance: 1
+      },
       {
         name: "冰甲",
         type: "defense_up",
@@ -212,7 +223,19 @@ const DataSkills = {
     critRate: 0.05,
     targetType: "enemy",
     cooldown: 0,
-    tier: "初阶"
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "地刺减速",
+        type: "slow",
+        element: "earth",
+        duration: 2,
+        chance: 0.5,
+        statModifiers: {
+          speed: -6
+        }
+      }
+    ]
   },
   wind_blade: {
     id: "wind_blade",
@@ -227,7 +250,19 @@ const DataSkills = {
     critRate: 0.08,
     targetType: "enemy",
     cooldown: 0,
-    tier: "初阶"
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "风刃减速",
+        type: "slow",
+        element: "wind",
+        duration: 2,
+        chance: 0.4,
+        statModifiers: {
+          speed: -4
+        }
+      }
+    ]
   },
   wind_speed: {
     id: "wind_speed",
@@ -321,7 +356,17 @@ const DataSkills = {
     critRate: 0.08,
     targetType: "enemy",
     cooldown: 0,
-    tier: "初阶"
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "致盲",
+        type: "slow",
+        element: "light",
+        duration: 2,
+        chance: 0.3,
+        hitRateMod: -0.2
+      }
+    ]
   },
   dark_bolt: {
     id: "dark_bolt",
@@ -398,11 +443,19 @@ const DataSkills = {
     statusEffects: [
       {
         name: "暗影潜行",
-        type: "crit_up",
+        type: "evasion_up",
+        element: "dark",
+        duration: 3,
+        chance: 1,
+        evasionMod: 0.3
+      },
+      {
+        name: "暗影暴击",
+        type: "speed_up",
         duration: 3,
         chance: 1,
         statModifiers: {
-          critRate: 0.15
+          speed: 5
         }
       }
     ]
@@ -423,11 +476,14 @@ const DataSkills = {
     tier: "初阶",
     statusEffects: [
       {
-        name: "灼烧",
+        name: "燃烧",
         type: "burn",
-        dotDamage: 10,
-        duration: 4,
-        chance: 0.7
+        element: "fire",
+        dotDamage: 8,
+        duration: 3,
+        chance: 0.8,
+        stacks: 2,
+        maxStacks: 3
       }
     ]
   },
@@ -473,9 +529,10 @@ const DataSkills = {
     statusEffects: [
       {
         name: "麻痹",
-        type: "paralyze",
-        duration: 2,
-        chance: 0.4
+        type: "stun",
+        element: "thunder",
+        duration: 1,
+        chance: 0.5
       }
     ]
   },
@@ -497,10 +554,11 @@ const DataSkills = {
       {
         name: "震荡",
         type: "slow",
-        duration: 2,
-        chance: 0.5,
+        element: "earth",
+        duration: 3,
+        chance: 0.7,
         statModifiers: {
-          speed: -4
+          speed: -8
         }
       }
     ]
@@ -518,7 +576,19 @@ const DataSkills = {
     critRate: 0.1,
     targetType: "enemy",
     cooldown: 0,
-    tier: "初阶"
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "龙卷减速",
+        type: "slow",
+        element: "wind",
+        duration: 3,
+        chance: 0.8,
+        statModifiers: {
+          speed: -10
+        }
+      }
+    ]
   },
   water_wave: {
     id: "water_wave",
@@ -536,11 +606,11 @@ const DataSkills = {
     tier: "初阶",
     statusEffects: [
       {
-        name: "水之祝福",
-        type: "regen",
-        dotDamage: -15,
+        name: "湿润",
+        type: "wet",
+        element: "water",
         duration: 3,
-        chance: 1
+        chance: 1.0
       }
     ]
   },
@@ -557,7 +627,17 @@ const DataSkills = {
     critRate: 0.1,
     targetType: "enemy",
     cooldown: 0,
-    tier: "初阶"
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "裁决致盲",
+        type: "slow",
+        element: "light",
+        duration: 2,
+        chance: 0.5,
+        hitRateMod: -0.3
+      }
+    ]
   },
   dark_curse: {
     id: "dark_curse",
@@ -576,18 +656,15 @@ const DataSkills = {
     statusEffects: [
       {
         name: "诅咒",
-        type: "poison",
-        dotDamage: 12,
+        type: "curse",
+        element: "dark",
         duration: 4,
-        chance: 0.8
-      },
-      {
-        name: "虚弱",
-        type: "attack_down",
-        duration: 3,
-        chance: 0.6,
+        chance: 0.9,
+        stacks: 2,
+        maxStacks: 3,
         statModifiers: {
-          attack: -5
+          attack: -6,
+          defense: -6
         }
       }
     ]
@@ -632,8 +709,16 @@ const DataSkills = {
     tier: "初阶",
     statusEffects: [
       {
-        name: "挪移",
+        name: "挪移闪避",
         type: "evasion_up",
+        element: "earth",
+        duration: 2,
+        chance: 1,
+        evasionMod: 0.4
+      },
+      {
+        name: "挪移加速",
+        type: "speed_up",
         duration: 2,
         chance: 1,
         statModifiers: {
