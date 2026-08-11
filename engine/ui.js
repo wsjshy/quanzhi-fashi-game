@@ -109,7 +109,8 @@ const UI = {
         }
         
         // 全局点击拦截：在捕获阶段阻止所有弹窗外部的点击事件，防止点击穿透
-        this._globalClickInterceptor = (e) => {
+        // 重要：使用局部变量保存拦截器引用，避免多条消息时互相覆盖导致无法移除
+        const clickInterceptor = (e) => {
             // 检查点击目标是否在弹窗内部
             let target = e.target;
             let inPopup = false;
@@ -128,9 +129,10 @@ const UI = {
                 console.log('[消息] 拦截到弹窗外部点击，已阻止');
             }
         };
-        document.addEventListener('click', this._globalClickInterceptor, true);
-        document.addEventListener('mousedown', this._globalClickInterceptor, true);
-        document.addEventListener('mouseup', this._globalClickInterceptor, true);
+        this._globalClickInterceptor = clickInterceptor; // 保留全局引用用于兼容
+        document.addEventListener('click', clickInterceptor, true);
+        document.addEventListener('mousedown', clickInterceptor, true);
+        document.addEventListener('mouseup', clickInterceptor, true);
         
         // 创建遮罩层（阻止所有点击穿透）
         const overlay = document.createElement('div');
@@ -212,12 +214,22 @@ const UI = {
             // 记录消息关闭时间，用于防止点击穿透
             ui._lastMessageCloseTime = Date.now();
             
+            // 立即移除 message-showing 类，恢复界面点击
+            document.body.classList.remove('message-showing');
+            
+            // 立即恢复主容器点击
+            const gameContainer = document.getElementById('game-container');
+            if (gameContainer) {
+                gameContainer.style.pointerEvents = '';
+            }
+            
             // 延迟移除全局点击拦截器，防止弹窗关闭后的延迟点击事件
             setTimeout(() => {
-                if (ui._globalClickInterceptor) {
-                    document.removeEventListener('click', ui._globalClickInterceptor, true);
-                    document.removeEventListener('mousedown', ui._globalClickInterceptor, true);
-                    document.removeEventListener('mouseup', ui._globalClickInterceptor, true);
+                document.removeEventListener('click', clickInterceptor, true);
+                document.removeEventListener('mousedown', clickInterceptor, true);
+                document.removeEventListener('mouseup', clickInterceptor, true);
+                // 如果全局引用还是这个拦截器，就清空
+                if (ui._globalClickInterceptor === clickInterceptor) {
                     ui._globalClickInterceptor = null;
                 }
             }, 500);
@@ -2809,7 +2821,7 @@ const UI = {
     // ========== 妖魔图鉴 ==========
     renderBestiary() {
         const stats = Player.getBestiaryStats();
-        const enemies = DataManager.getAllEnemies();
+        const enemies = Object.values(DataManager.getAllEnemies());
         const elementColors = {
             fire: '#ff4444', ice: '#44aaff', thunder: '#ffff44', earth: '#aa8844',
             wind: '#88ff88', water: '#4488ff', light: '#ffffff', dark: '#aa44ff', neutral: '#888888'

@@ -150,6 +150,24 @@ const Game = {
         }
         this._lastActionTime = now;
         
+        // 安全检查：如果检测到卡住状态（有message-showing类但没有实际弹窗），自动恢复
+        if (document.body.classList.contains('message-showing')) {
+            const hasPopup = document.querySelector('.mobile-popup');
+            const hasOverlay = document.querySelector('.mobile-popup-overlay');
+            if (!hasPopup && !hasOverlay) {
+                console.log('[安全] 检测到卡住状态，自动恢复点击');
+                document.body.classList.remove('message-showing');
+                const gameContainer = document.getElementById('game-container');
+                if (gameContainer) {
+                    gameContainer.style.pointerEvents = '';
+                }
+                this._actionCooldown = false;
+                if (typeof UI !== 'undefined') {
+                    UI._isMessageShowing = false;
+                }
+            }
+        }
+        
         // 防护0.5：消息关闭后短时间内禁止行动，防止点击穿透
         if (typeof UI !== 'undefined' && UI._lastMessageCloseTime) {
             const timeSinceMessageClose = now - UI._lastMessageCloseTime;
