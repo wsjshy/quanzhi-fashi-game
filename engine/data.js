@@ -12,6 +12,7 @@ const DataManager = {
     _items: {},
     _quests: {},
     _events: {},
+    _bigEvents: {},
     _shops: {},
     _enemies: {},
     _scheduledEvents: [],
@@ -30,6 +31,7 @@ const DataManager = {
             this._items = GameData.items || {};
             this._quests = GameData.quests || {};
             this._events = GameData.events || {};
+            this._bigEvents = GameData.bigEvents || {};
             this._shops = GameData.shops || {};
             this._enemies = GameData.enemies || {};
             this._scheduledEvents = GameData.scheduledEvents || [];
@@ -138,6 +140,20 @@ const DataManager = {
      */
     getAllEvents() {
         return this._events;
+    },
+    
+    /**
+     * 获取大事件
+     */
+    getBigEvent(eventId) {
+        return this._bigEvents[eventId] || null;
+    },
+    
+    /**
+     * 获取所有大事件
+     */
+    getAllBigEvents() {
+        return this._bigEvents;
     },
 
     /**

@@ -15,6 +15,7 @@ const GameData = {
     events: DataEvents,
     shops: DataShops,
     enemies: DataEnemies,
+    bigEvents: DataBigEvents,
     scheduledEvents: DataWorld.scheduledEvents,
     eventChains: DataWorld.eventChains,
     infoDatabase: DataWorld.infoDatabase,
