@@ -475,7 +475,7 @@ const DataItems = {
     description: "与灵魂相连，催动意念迅速幻化真实物体帮助战斗的装备。可以幻化成盾牌、铠甲，抵挡魔法和妖魔攻击。普通防御魔具价值几十万，是野外猎者的救命神器。斩空总教官曾用它作为悬赏任务的奖励。",
     type: "accessory",
     icon: "🛡️",
-    price: 50000,
+    price: 5000,
     stackable: false,
     usableInBattle: true,
     usableOutOfBattle: true,

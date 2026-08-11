@@ -964,6 +964,12 @@ const BattleSystem = {
         rewards.exp = Math.floor(rewards.exp * (0.8 + Math.random() * 0.4));
         rewards.gold = Math.floor(rewards.gold * (0.8 + Math.random() * 0.4));
 
+        // 金币暴击：10%概率获得2倍金币
+        if (Math.random() < 0.1) {
+            rewards.gold = rewards.gold * 2;
+            rewards.goldCrit = true;
+        }
+
         // 掉落物品
         if (this.enemy.dropItems) {
             this.enemy.dropItems.forEach(drop => {
@@ -995,7 +1001,7 @@ const BattleSystem = {
         // 更新任务进度
         const completedQuests = QuestSystem.updateProgress('kill', this.enemy.id, 1);
 
-        this.addLog(`获得 ${rewards.exp} 经验，${rewards.gold} 金币`, 'system');
+        this.addLog(`获得 ${rewards.exp} 经验，${rewards.gold} 金币${rewards.goldCrit ? ' 💰金币暴击！' : ''}`, 'system');
         if (rewards.items.length > 0) {
             rewards.items.forEach(item => {
                 this.addLog(`获得 ${item.name} x${item.count}`, 'system');
