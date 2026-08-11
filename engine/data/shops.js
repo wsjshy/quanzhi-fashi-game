@@ -201,6 +201,22 @@ const DataShops = {
         itemId: "summon_basic",
         price: 85000,
         stock: 0
+      },
+      // 星尘魔器（稀有商品，库存极少）
+      {
+        itemId: "star_dust_basic_fire",
+        price: 50000,
+        stock: 1
+      },
+      {
+        itemId: "star_dust_basic_ice",
+        price: 50000,
+        stock: 1
+      },
+      {
+        itemId: "star_dust_basic_thunder",
+        price: 80000,
+        stock: 0
       }
     ]
   },

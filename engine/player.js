@@ -95,6 +95,7 @@ const Player = {
     skills: ['basic_attack'],
     talents: {},  // 天赋：{ elementId: { talentId, level, exp } }
     spiritSeeds: {},  // 灵种：{ elementId: seedId }
+    starDustArtifacts: {},  // 星尘魔器：{ elementId: { id, level, exp } }
 
     // 金钱
     gold: 50,
@@ -598,6 +599,87 @@ const Player = {
     },
 
     /**
+     * 获取某元素的星尘魔器效果
+     * @param {string} element - 元素系ID
+     * @returns {object} 星尘魔器效果
+     */
+    getElementStarDustEffect(element) {
+        if (!this.starDustArtifacts || typeof StarDustArtifactSystem === 'undefined') {
+            return { timeBonus: 0, expBonus: 0 };
+        }
+        return StarDustArtifactSystem.getPlayerElementArtifactEffect(this.starDustArtifacts, element);
+    },
+
+    /**
+     * 获取所有星尘魔器的总效果（取最高值）
+     * @returns {object} 总效果
+     */
+    getTotalStarDustEffect() {
+        if (!this.starDustArtifacts || typeof StarDustArtifactSystem === 'undefined') {
+            return { timeBonus: 0, expBonus: 0 };
+        }
+        return StarDustArtifactSystem.getPlayerTotalArtifactEffect(this.starDustArtifacts);
+    },
+
+    /**
+     * 装备星尘魔器
+     * @param {string} artifactId - 星尘魔器ID
+     * @returns {object} 结果
+     */
+    equipStarDustArtifact(artifactId) {
+        if (typeof StarDustArtifactSystem === 'undefined') {
+            return { success: false, message: "星尘魔器系统未加载" };
+        }
+
+        const artifact = StarDustArtifactSystem.getArtifact(artifactId);
+        if (!artifact) {
+            return { success: false, message: "没有找到该星尘魔器" };
+        }
+
+        // 检查是否已觉醒该元素系
+        if (artifact.element !== "all" && !this.elements.includes(artifact.element)) {
+            return { success: false, message: "你还没有觉醒该元素系" };
+        }
+
+        // 检查是否已有同元素的星尘魔器
+        const elementKey = artifact.element;
+        if (this.starDustArtifacts[elementKey]) {
+            return { success: false, message: "你已经装备了同元素的星尘魔器" };
+        }
+
+        // 装备星尘魔器
+        this.starDustArtifacts[elementKey] = {
+            id: artifactId,
+            level: artifact.level || 1,
+            exp: 0
+        };
+
+        return { success: true, message: `成功装备${artifact.name}` };
+    },
+
+    /**
+     * 卸下星尘魔器
+     * @param {string} element - 元素系ID
+     * @returns {object} 结果
+     */
+    unequipStarDustArtifact(element) {
+        if (!this.starDustArtifacts || !this.starDustArtifacts[element]) {
+            return { success: false, message: "你没有装备该元素的星尘魔器" };
+        }
+
+        const artifactData = this.starDustArtifacts[element];
+        const artifact = StarDustArtifactSystem.getArtifact(artifactData.id);
+        
+        // 灵魂绑定的不能卸下
+        if (artifact && artifact.boundToPlayer) {
+            return { success: false, message: "该星尘魔器已灵魂绑定，无法卸下" };
+        }
+
+        delete this.starDustArtifacts[element];
+        return { success: true, message: "已卸下星尘魔器" };
+    },
+
+    /**
      * 炼化灵种
      * @param {string} seedId - 灵种ID
      * @returns {boolean} 是否成功
@@ -813,6 +895,7 @@ const Player = {
             skills: this.skills,
             talents: this.talents,
             spiritSeeds: this.spiritSeeds,
+            starDustArtifacts: this.starDustArtifacts,
             gold: this.gold,
             equipment: this.equipment,
             enhanceLevels: this.enhanceLevels,
@@ -885,6 +968,7 @@ const Player = {
             this.skills = data.skills ?? ['basic_attack'];
             this.talents = data.talents ?? {};
             this.spiritSeeds = data.spiritSeeds ?? {};
+            this.starDustArtifacts = data.starDustArtifacts ?? {};
             this.gold = data.gold ?? 50;
             this.equipment = data.equipment ?? { weapon: null, armor: null, accessory: null };
             this.enhanceLevels = data.enhanceLevels ?? { weapon: 0, armor: 0, accessory: 0 };

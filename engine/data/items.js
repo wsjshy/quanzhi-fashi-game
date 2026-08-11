@@ -1044,5 +1044,58 @@ const DataItems = {
     element: "summon",
     grade: "basic",
     lore: "天地间自然孕育的召唤系元素种子，召唤系灵种极为稀有。"
+  },
+
+  // 星尘魔器
+  star_dust_basic_fire: {
+    id: "star_dust_basic_fire",
+    name: "凡级火尘魔器",
+    description: "最基础的火系星尘魔器，可以缩短火系冥修的疲劳期，提升修炼效率。",
+    type: "star_dust_artifact",
+    icon: "🔴",
+    price: 50000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "稀有",
+    element: "fire",
+    grade: "basic",
+    artifactId: "basic_fire",
+    lore: "火系魔法师常用的修炼辅助器皿，可以提升修炼效率。"
+  },
+  star_dust_basic_ice: {
+    id: "star_dust_basic_ice",
+    name: "凡级冰尘魔器",
+    description: "最基础的冰系星尘魔器，可以缩短冰系冥修的疲劳期，提升修炼效率。",
+    type: "star_dust_artifact",
+    icon: "🔵",
+    price: 50000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "稀有",
+    element: "ice",
+    grade: "basic",
+    artifactId: "basic_ice",
+    lore: "冰系魔法师常用的修炼辅助器皿，可以提升修炼效率。"
+  },
+  star_dust_basic_thunder: {
+    id: "star_dust_basic_thunder",
+    name: "凡级雷尘魔器",
+    description: "最基础的雷系星尘魔器，可以缩短雷系冥修的疲劳期，提升修炼效率。",
+    type: "star_dust_artifact",
+    icon: "⚡",
+    price: 80000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "稀有",
+    element: "thunder",
+    grade: "basic",
+    artifactId: "basic_thunder",
+    lore: "雷系魔法师常用的修炼辅助器皿，雷系星尘魔器较为稀有。"
   }
 };

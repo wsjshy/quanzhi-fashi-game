@@ -160,6 +160,24 @@ const Inventory = {
             return { success: false, message: '灵种系统未加载' };
         }
 
+        // 星尘魔器装备
+        if (item.type === 'star_dust_artifact') {
+            if (typeof StarDustArtifactSystem === 'undefined') {
+                return { success: false, message: '星尘魔器系统未加载' };
+            }
+            
+            const artifactId = item.artifactId;
+            const result = Player.equipStarDustArtifact(artifactId);
+            
+            if (result.success) {
+                // 消耗物品
+                this.removeItem(itemId, 1);
+                return { success: true, message: result.message };
+            } else {
+                return { success: false, message: result.message };
+            }
+        }
+
         // 消耗物品
         this.removeItem(itemId, 1);
 

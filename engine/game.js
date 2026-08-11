@@ -507,6 +507,16 @@ const Game = {
                 message: `${action.name} ${hours}小时完成`
             };
             
+            // 星尘魔器效果：增加修炼经验
+            if (typeof StarDustArtifactSystem !== 'undefined') {
+                const starDustEffect = Player.getTotalStarDustEffect();
+                if (starDustEffect.expBonus > 0) {
+                    const bonusExp = Math.floor(result.effects.exp * starDustEffect.expBonus);
+                    result.effects.exp += bonusExp;
+                    result.starDustBonus = bonusExp;
+                }
+            }
+            
             // 触发事件的概率：时间越长概率越高，但不是线性增长
             const eventChance = action.eventChance || 0;
             if (eventChance > 0 && Math.random() < eventChance * Math.sqrt(multiplier)) {
@@ -527,6 +537,7 @@ const Game = {
             // 检查强制昏睡
             let message = result.message + '\n';
             if (result.effects.exp) message += `经验 +${result.effects.exp}\n`;
+            if (result.starDustBonus) message += `  ✨ 星尘魔器加成 +${result.starDustBonus}\n`;
             if (result.effects.mp > 0) message += `MP +${result.effects.mp}\n`;
             if (result.effects.mp < 0) message += `MP ${result.effects.mp}\n`;
             if (result.effects.hp < 0) message += `HP ${result.effects.hp}\n`;

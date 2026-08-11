@@ -3247,6 +3247,39 @@ const UI = {
                                 }).join('')}
                             </div>
                             ` : ''}
+                            ${Player.starDustArtifacts && Object.keys(Player.starDustArtifacts).length > 0 ? `
+                            <div style="margin-bottom: 15px; text-align: left;">
+                                <div style="color: #aaa; font-size: 13px; margin-bottom: 8px;">⭐ 星尘魔器</div>
+                                ${Object.keys(Player.starDustArtifacts).map(elem => {
+                                    const artifactData = Player.starDustArtifacts[elem];
+                                    if (!artifactData || typeof StarDustArtifactSystem === 'undefined') return '';
+                                    const artifact = StarDustArtifactSystem.getArtifact(artifactData.id);
+                                    if (!artifact) return '';
+                                    const gradeConfig = StarDustArtifactSystem.getGradeConfig(artifact.grade);
+                                    const effect = StarDustArtifactSystem.getCultivateEffect(artifactData);
+                                    const elementName = artifact.element === "all" ? "全元素" : SkillSystem.getElementName(artifact.element);
+                                    const elementColor = artifact.element === "all" ? "#ffcc00" : SkillSystem.getElementColor(artifact.element);
+                                    return `
+                                        <div style="
+                                            padding: 8px 12px;
+                                            background: ${gradeConfig.color}11;
+                                            border: 1px solid ${gradeConfig.color}55;
+                                            border-radius: 8px;
+                                            margin-bottom: 6px;
+                                            font-size: 13px;
+                                        ">
+                                            <span style="color: ${elementColor}; font-weight: bold;">${elementName}</span>
+                                            <span style="color: ${gradeConfig.color}; margin-left: 8px;">${artifact.name}</span>
+                                            <span style="color: #888; font-size: 12px; margin-left: 8px;">[${gradeConfig.name}]</span>
+                                            ${artifact.grade === 'growth' ? `<span style="color: #ffcc00; font-size: 12px; margin-left: 8px;">Lv.${artifactData.level || 1}</span>` : ''}
+                                            <div style="color: #888; font-size: 11px; margin-top: 4px;">
+                                                修炼时间 +${Math.round(effect.timeBonus * 100)}% · 修炼经验 +${Math.round(effect.expBonus * 100)}%
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                            ` : ''}
                             ${Player.canAwakenNewElement() ? `
                             <div onclick="Game.showAwakenPanel()" style="
                                 display: inline-block;
