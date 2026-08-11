@@ -802,8 +802,9 @@ const Game = {
     },
 
     // ========== 战斗界面 ==========
-    startBattle(enemy) {
+    startBattle(enemy, endCallback) {
         this.state = 'battle';
+        this.battleEndCallback = endCallback || null;
         BattleSystem.startBattle(enemy);
         UI.renderBattleScreen();
     },
@@ -883,6 +884,14 @@ const Game = {
         BattleSystem.endBattle();
         
         setTimeout(() => {
+            // 如果有战斗结束回调，调用回调
+            if (this.battleEndCallback) {
+                const callback = this.battleEndCallback;
+                this.battleEndCallback = null;
+                callback(BattleSystem.result, BattleSystem.rewards);
+                return;
+            }
+            
             if (BattleSystem.result === 'win') {
                 // 胜利
                 const rewards = BattleSystem.rewards;

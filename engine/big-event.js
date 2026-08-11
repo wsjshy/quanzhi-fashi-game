@@ -210,22 +210,30 @@ const BigEventSystem = {
         
         // 触发战斗
         if (phase.enemyId) {
-            BattleSystem.startBattle(phase.enemyId, {
-                onWin: () => {
-                    if (phase.winPhase) {
-                        this.advanceToPhase(phase.winPhase);
+            const enemy = DataManager.getEnemy(phase.enemyId);
+            if (enemy) {
+                Game.startBattle(enemy, (result, rewards) => {
+                    // 战斗结束回调
+                    console.log(`[大事件] 战斗结束: ${result}`);
+                    
+                    if (result === 'win') {
+                        if (phase.winPhase) {
+                            this.advanceToPhase(phase.winPhase);
+                        } else {
+                            this.endEvent('victory');
+                        }
                     } else {
-                        this.endEvent('victory');
+                        if (phase.losePhase) {
+                            this.advanceToPhase(phase.losePhase);
+                        } else {
+                            this.endEvent('defeat');
+                        }
                     }
-                },
-                onLose: () => {
-                    if (phase.losePhase) {
-                        this.advanceToPhase(phase.losePhase);
-                    } else {
-                        this.endEvent('defeat');
-                    }
-                }
-            });
+                });
+            } else {
+                console.error(`[大事件] 敌人不存在: ${phase.enemyId}`);
+                this.advanceToNextPhase();
+            }
         }
     },
     
