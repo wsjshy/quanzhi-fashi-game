@@ -1514,6 +1514,91 @@ const UI = {
         }
     },
 
+    // 渲染大事件选择阶段界面
+    renderBigEventChoicePhase(phase, choices) {
+        try {
+            console.log('[UI] 渲染大事件选择阶段:', phase.name);
+            
+            this.elements.gameContainer.innerHTML = `
+                <div style="
+                    width: 100%;
+                    height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    background: linear-gradient(135deg, #1a1a3a, #2a2a5a);
+                    padding: 40px;
+                    position: relative;
+                ">
+                    <!-- 背景图片 -->
+                    <div style="
+                        position: absolute;
+                        top: 0; left: 0;
+                        width: 100%; height: 100%;
+                        background: url('assets/images/effects/thunder_magic.jpg') center/cover;
+                        opacity: 0.08;
+                        filter: blur(3px);
+                        z-index: 0;
+                        pointer-events: none;
+                    "></div>
+                    
+                    <div style="
+                        background: rgba(20, 20, 50, 0.9);
+                        border: 2px solid #6666aa;
+                        border-radius: 15px;
+                        padding: 30px;
+                        max-width: 600px;
+                        width: 90%;
+                        max-height: 80vh;
+                        overflow-y: auto;
+                        z-index: 10;
+                        box-shadow: 0 0 50px rgba(100, 100, 255, 0.3);
+                    ">
+                        <h2 style="
+                            color: #ffd700;
+                            font-size: 24px;
+                            margin-bottom: 20px;
+                            text-align: center;
+                            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+                        ">⚔️ ${phase.name}</h2>
+                        
+                        <div style="
+                            color: #ddd;
+                            font-size: 15px;
+                            line-height: 1.8;
+                            margin-bottom: 25px;
+                            white-space: pre-wrap;
+                        ">${phase.description}</div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            ${choices.map((choice, index) => `
+                                <div onclick="BigEventSystem.selectChoice(${index})" style="
+                                    padding: 15px 20px;
+                                    background: linear-gradient(135deg, #2a2a5a, #3a3a7a);
+                                    border: 2px solid #555599;
+                                    border-radius: 10px;
+                                    color: #fff;
+                                    cursor: pointer;
+                                    transition: all 0.3s;
+                                    font-size: 15px;
+                                    line-height: 1.5;
+                                " onmouseover="this.style.borderColor='#7777bb'; this.style.background='linear-gradient(135deg, #3a3a7a, #4a4a9a)'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#555599'; this.style.background='linear-gradient(135deg, #2a2a5a, #3a3a7a)'; this.style.transform='translateX(0)'">
+                                    <span style="color: #ffd700; margin-right: 8px;">▶</span>
+                                    ${choice.text}
+                                    ${choice.conditions ? `<div style="font-size: 12px; color: #888; margin-top: 5px; margin-left: 20px;">（需要满足特定条件）</div>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+        } catch (e) {
+            console.error('[UI] 渲染大事件选择阶段失败:', e);
+        }
+    },
+
     // 渲染大事件界面
     renderScheduledEventScreen(event, success) {
         try {
