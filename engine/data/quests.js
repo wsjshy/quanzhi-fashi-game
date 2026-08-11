@@ -1449,4 +1449,66 @@ const DataQuests = {
     dialogueInProgress: "它要挣脱了！雷系！快用雷系抑制它！",
     dialogueComplete: "坚持住了！杨作河法师赶到了，我们一起消灭这只妖魔！"
   }
+  ,
+  quest_magic_duel: {
+    id: "quest_magic_duel",
+    name: "魔法决斗",
+    description: "穆卓云安排你在宇昂的成年礼上与他进行魔法决斗。胜者将获得博城地圣泉的修炼机会。这不仅是个人恩怨，更是学校与世家的较量！",
+    type: "story",
+    giver: "zhu_principal",
+    objectives: [
+      { type: "reach", locationId: "mu_manor", count: 1, description: "前往穆氏庄园参加决斗" },
+      { type: "kill", enemyId: "yu_ang_duel", count: 1, description: "在决斗中击败宇昂" }
+    ],
+    rewards: {
+      exp: 500,
+      gold: 500,
+      items: [
+        { itemId: "earth_spring_pass", count: 1 },
+        { itemId: "magic_crystal", count: 3 },
+        { itemId: "super_health_potion", count: 5 },
+        { itemId: "super_mana_potion", count: 5 }
+      ],
+      reputation: {
+        tianlan_school: 50,
+        city_street: 30,
+        hunter_alliance: 20
+      }
+    },
+    prerequisites: ["quest_one_eye_wolf"],
+    nextQuest: "quest_earth_spring",
+    isMainQuest: true,
+    autoStart: false,
+    dialogueStart: "莫凡，宇昂的成年礼决斗就要开始了。穆卓云这是想拿你当垫脚石，给宇昂立威。胜者将获得地圣泉修炼机会，这对你来说也是个机遇。尽力就好，输了也没人会怪你。",
+    dialogueInProgress: "宇昂的冰系很强，还有地波履魔具。小心他的冰蔓·覆盖，那是3级冰系技能，范围极大！",
+    dialogueComplete: "赢了！你竟然赢了宇昂！整个博城都会记住今天的！地圣泉的修炼机会是你的了，好好把握，争取冲击中阶！"
+  },
+  quest_earth_spring: {
+    id: "quest_earth_spring",
+    name: "地圣泉修炼",
+    description: "你获得了博城地圣泉的修炼资格！在地圣泉中修炼一周，修为将突飞猛进，甚至有机会冲击中阶法师！",
+    type: "story",
+    giver: "zhu_principal",
+    objectives: [
+      { type: "reach", locationId: "mu_manor", count: 1, description: "前往穆氏庄园进入地圣泉" },
+      { type: "reach", locationId: "mu_manor", count: 3, description: "在地圣泉中修炼3次" }
+    ],
+    rewards: {
+      exp: 800,
+      gold: 0,
+      items: [
+        { itemId: "magic_crystal", count: 5 }
+      ],
+      reputation: {
+        tianlan_school: 30
+      }
+    },
+    prerequisites: ["quest_magic_duel"],
+    nextQuest: null,
+    isMainQuest: true,
+    autoStart: false,
+    dialogueStart: "地圣泉是博城最珍贵的修炼圣地，相当于加强版的星尘魔器。在里面修炼一周，抵得上外面半年。这是你冲击中阶的最好机会！",
+    dialogueInProgress: "地圣泉的能量正在滋养你的星尘，感觉星子变得更加明亮了。继续修炼！",
+    dialogueComplete: "地圣泉修炼结束！你的星尘得到了极大的滋养，距离中阶更近了一步！"
+  }
 };

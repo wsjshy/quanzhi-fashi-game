@@ -1078,5 +1078,38 @@ const DataSkills = {
       { name: "地波迟缓", type: "slow", duration: 2, chance: 1.0, speedMalus: 0.5 },
       { name: "泥泞", type: "mud", duration: 2, chance: 0.6, accuracyMalus: 0.2 }
     ]
+  },
+  ice_cover: {
+    id: "ice_cover",
+    name: "冰蔓·覆盖",
+    description: "3级冰系技能。狂雪降临，覆盖整个区域，将一切冻结成冰。范围极大，威力极强，是冰系初阶最强技能。",
+    element: "ice",
+    type: "damage",
+    damage: 60,
+    mpCost: 30,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "初阶3级",
+    statusEffects: [
+      { name: "冰封", type: "frozen", duration: 2, chance: 0.7, freezeValue: 70 },
+      { name: "极寒", type: "slow", duration: 4, chance: 1.0, speedMalus: 0.6 },
+      { name: "冰伤", type: "attack_down", duration: 3, chance: 0.8, statModifiers: { attack: -8 } }
+    ]
+  },
+  fire_burn_bone_lv3: {
+    id: "fire_burn_bone_lv3",
+    name: "火滋·爆裂",
+    description: "3级火系技能。火焰爆裂，范围爆炸伤害，威力巨大。火滋的终极形态。",
+    element: "fire",
+    type: "damage",
+    damage: 70,
+    mpCost: 28,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "初阶3级",
+    statusEffects: [
+      { name: "烈焰灼烧", type: "burn", duration: 4, chance: 1.0, stacks: 3, dotDamage: 10 },
+      { name: "爆裂冲击", type: "stun", duration: 1, chance: 0.3 }
+    ]
   }
 };

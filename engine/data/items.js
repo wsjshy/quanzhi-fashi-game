@@ -722,5 +722,51 @@ const DataItems = {
     usableOutOfBattle: false,
     rarity: "史诗",
     lore: "纯净的萤火芒，强大妖魔的证明。价值连城。"
+  },
+  earth_spring_pass: {
+    id: "earth_spring_pass",
+    name: "地圣泉通行证",
+    description: "博城地圣泉的进入凭证。地圣泉是博城最珍贵的修炼圣地，相当于加强版的星尘魔器，一年只对一人开放。",
+    type: "quest",
+    icon: "💧",
+    price: 0,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "传说",
+    lore: "地圣泉，博城最珍贵的修炼资源，无数魔法师梦寐以求。"
+  },
+  spirit_star_dust_device: {
+    id: "spirit_star_dust_device",
+    name: "灵级星尘魔器",
+    description: "灵级的星尘魔器，不仅可以延长修炼时间，还能直接滋养星尘，提升修炼效率。比凡级星尘魔器强得多。",
+    type: "equipment",
+    slot: "accessory",
+    icon: "💎",
+    price: 10000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    stats: { mp: 20, int: 5 },
+    lore: "灵级星尘魔器，修炼者的至宝。"
+  },
+  bone_shield: {
+    id: "bone_shield",
+    name: "镰骨盾",
+    description: "斩空赠送的防御魔具，可以召唤一面骨质盾牌抵挡攻击。镰骨盾质量上乘，安然无恙抵挡下妖魔的全力一击完全不成问题。",
+    type: "equipment",
+    slot: "armor",
+    icon: "🛡️",
+    price: 2000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    stats: { defense: 15, hp: 30 },
+    lore: "斩空所赠，青黑色棱角分明的骨质盾牌。"
   }
 };

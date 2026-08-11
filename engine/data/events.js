@@ -1740,5 +1740,110 @@ const DataEvents = {
         resultText: "你没有收集魂魄的器皿，只能遗憾地离开。"
       }
     ]
+  },
+  event_duel_practice: {
+    id: "event_duel_practice",
+    name: "决斗场切磋",
+    description: "你在穆氏庄园的决斗场与其他魔法师切磋，提升实战经验。",
+    trigger: "exploring",
+    chance: 0.5,
+    conditions: { location: "mu_manor", action: "duel_arena" },
+    choices: [
+      {
+        text: "与世家弟子切磋",
+        effects: { exp: 30, hp: -20, reputation_mu_family: 5 },
+        resultText: "你与一位世家弟子切磋，虽然受了些伤，但学到了不少实战技巧。对方对你的实力也有些惊讶。"
+      },
+      {
+        text: "观察其他人战斗",
+        effects: { exp: 15, intelligence: 5 },
+        resultText: "你在一旁观察其他魔法师的战斗，学到了一些新的技巧和思路。"
+      }
+    ]
+  },
+  event_duel_yu_ang: {
+    id: "event_duel_yu_ang",
+    name: "挑战宇昂",
+    description: "你在决斗场遇到了宇昂，他轻蔑地看着你，似乎不屑与你交手。",
+    trigger: "exploring",
+    chance: 0.3,
+    conditions: { location: "mu_manor", action: "duel_arena" },
+    choices: [
+      {
+        text: "发起挑战",
+        effects: { exp: 50, hp: -40, reputation_mu_family: -10 },
+        resultText: "你向宇昂发起挑战。他的冰系魔法很强，还有地波履魔具可以闪避。你勉强支撑了几个回合，但最终还是败下阵来。不过你的表现让他有些意外。"
+      },
+      {
+        text: "观察他的战斗方式",
+        effects: { exp: 20, intelligence: 10 },
+        resultText: "你在一旁仔细观察宇昂的战斗方式，他的冰蔓·覆盖威力惊人，范围极大。你记下了他的战斗节奏，为将来的决斗做准备。"
+      }
+    ]
+  },
+  event_mu_banquet: {
+    id: "event_mu_banquet",
+    name: "穆氏宴会",
+    description: "穆氏家族的宴会上，宾客云集，博城各界有头有脸的人物都来了。",
+    trigger: "exploring",
+    chance: 0.5,
+    conditions: { location: "mu_manor", action: "attend_banquet" },
+    choices: [
+      {
+        text: "品尝美食",
+        effects: { stamina: 20, happiness: 10 },
+        resultText: "穆氏的宴会美食丰盛，你大快朵颐，体力恢复了不少。"
+      },
+      {
+        text: "听宾客议论",
+        effects: { exp: 10, intelligence: 5 },
+        resultText: "你听到宾客们议论纷纷，大多在说宇昂的天才和莫凡的不自量力。还有人提到地圣泉和博城势力之争。"
+      }
+    ]
+  },
+  event_meet_important_people: {
+    id: "event_meet_important_people",
+    name: "结识大人物",
+    description: "宴会上你遇到了几位博城的重要人物。",
+    trigger: "exploring",
+    chance: 0.4,
+    conditions: { location: "mu_manor", action: "attend_banquet" },
+    choices: [
+      {
+        text: "与朱校长交谈",
+        effects: { reputation_tianlan_school: 15, exp: 15 },
+        resultText: "朱校长勉励了你几句，让你好好表现，不管输赢，学校都是你坚强的后盾。"
+      },
+      {
+        text: "与斩空总教官交谈",
+        effects: { reputation_military: 10, exp: 20 },
+        resultText: "斩空拍着你的肩膀说，好小子，有骨气！输了也没关系，大不了到我部队来，我罩着你！"
+      },
+      {
+        text: "与杨作河法师交谈",
+        effects: { reputation_magic_association: 10, exp: 15 },
+        resultText: "杨作河法师对你的雷系天赋很欣赏，说以后有机会可以到魔法协会坐坐。"
+      }
+    ]
+  },
+  event_earth_spring_cultivation: {
+    id: "event_earth_spring_cultivation",
+    name: "地圣泉修炼",
+    description: "你进入了博城地圣泉，一股温暖而强大的能量包裹着你，星尘在快速滋养成长。",
+    trigger: "exploring",
+    chance: 0.8,
+    conditions: { location: "mu_manor", action: "earth_spring" },
+    choices: [
+      {
+        text: "全力冥修",
+        effects: { exp: 100, mp: 50, stamina: -30 },
+        resultText: "你在地圣泉中全力冥修，星尘以惊人的速度增长着，星子也变得更加明亮。这种修炼速度简直是坐火箭！"
+      },
+      {
+        text: "感悟星子",
+        effects: { exp: 60, intelligence: 10, stamina: -15 },
+        resultText: "你感悟着星子的变化，对地圣泉的能量有了更深的理解。你的魔法控制力提升了。"
+      }
+    ]
   }
 };

@@ -915,5 +915,32 @@ const DataEnemies = {
       { itemId: "elite_soul", chance: 0.05, min: 1, max: 1 }
     ],
     locations: ["old_banyan_district"]
+  },
+  yu_ang_duel: {
+    id: "yu_ang_duel",
+    name: "宇昂",
+    title: "穆氏养子 / 冰系天才",
+    description: "穆卓云的养子，冰系天才，已掌握3级冰蔓·覆盖。身上有地波履魔具，可以快速移动。成年礼决斗的对手。",
+    elements: ["ice"],
+    level: 8,
+    maxHp: 250,
+    maxMp: 120,
+    attack: 28,
+    defense: 14,
+    speed: 18,
+    skills: ["basic_attack", "ice_spike", "ice_freeze", "ice_cover"],
+    specialAbility: "地波履魔具：每3回合闪避一次攻击；冰蔓覆盖：3级冰系范围冻结",
+    spriteColor: "#aaddff",
+    isEnemy: true,
+    isBoss: true,
+    dodgeEvery: 3,
+    expReward: 500,
+    goldReward: 300,
+    dropItems: [
+      { itemId: "ice_crystal", chance: 0.5, min: 1, max: 1 },
+      { itemId: "magic_crystal", chance: 0.3, min: 1, max: 1 },
+      { itemId: "super_mana_potion", chance: 0.4, min: 1, max: 2 }
+    ],
+    locations: ["mu_manor"]
   }
 };

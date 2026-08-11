@@ -600,6 +600,42 @@ const DataLocations = {
             value: 2
           }
         }
+      },
+      {
+        id: "duel_arena",
+        name: "决斗场切磋",
+        description: "在穆氏庄园的决斗场与其他魔法师切磋，提升实战经验",
+        icon: "⚔️",
+        timeCost: 2,
+        staminaCost: 20,
+        effects: { exp: 25 },
+        eventChance: 0.6,
+        events: ["event_duel_practice", "event_duel_yu_ang"]
+      },
+      {
+        id: "attend_banquet",
+        name: "参加宴会",
+        description: "参加穆氏家族的宴会，结识博城各界人物",
+        icon: "🍷",
+        timeCost: 3,
+        staminaCost: 10,
+        effects: { reputation_mu_family: 5, exp: 10 },
+        eventChance: 0.5,
+        events: ["event_mu_banquet", "event_meet_important_people"]
+      },
+      {
+        id: "earth_spring",
+        name: "地圣泉修炼",
+        description: "进入博城地圣泉修炼，修为突飞猛进",
+        icon: "💧",
+        timeCost: 4,
+        staminaCost: 30,
+        effects: { exp: 80 },
+        condition: {
+          hasItem: "earth_spring_pass"
+        },
+        eventChance: 0.8,
+        events: ["event_earth_spring_cultivation"]
       }
     ],
     connectedLocations: [
