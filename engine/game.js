@@ -253,17 +253,18 @@ const Game = {
         const baseStamina = action.staminaCost || 10;
         const baseExp = action.effects?.exp || 10;
         
-        // 时长选项：1小时、4小时、8小时、全天（按基础时长缩放）
+        // 时长选项：1小时、4小时、8小时、闭关（按基础时长缩放）
         const options = [
-            { hours: 1, multiplier: 1, bonus: 1.0, label: '1小时', desc: '快速修炼，无加成' },
-            { hours: 4, multiplier: 2, bonus: 1.1, label: '4小时', desc: '半天修炼，+10%收益' },
-            { hours: 8, multiplier: 4, bonus: 1.2, label: '8小时', desc: '全天修炼，+20%收益' },
-            { hours: 12, multiplier: 6, bonus: 1.5, label: '全天（12小时）', desc: '闭关修炼，+50%收益' }
+            { hours: 1, bonus: 1.0, label: '1小时', desc: '快速修炼，无加成' },
+            { hours: 4, bonus: 1.1, label: '4小时', desc: '半天修炼，+10%收益' },
+            { hours: 8, bonus: 1.2, label: '8小时', desc: '整日修炼，+20%收益' },
+            { hours: 12, bonus: 1.5, label: '闭关（12小时）', desc: '闭关修炼，+50%收益' }
         ];
         
         // 过滤掉体力不够的选项
         const availableOptions = options.filter(opt => {
-            const staminaCost = Math.floor(baseStamina * opt.multiplier * 0.5); // 时间越长单位体力消耗越少
+            const multiplier = opt.hours / baseTime;
+            const staminaCost = Math.floor(baseStamina * multiplier * 0.5); // 时间越长单位体力消耗越少
             return Player.stamina >= staminaCost;
         });
         
@@ -295,8 +296,9 @@ const Game = {
             <p style="color: #aaa; margin-bottom: 20px; font-size: 14px;">选择修炼时长：时间越长，单位收益越高</p>
             <div style="display: flex; flex-direction: column; gap: 12px;">
                 ${availableOptions.map((opt, index) => {
-                    const expGain = Math.floor(baseExp * opt.multiplier * opt.bonus);
-                    const staminaCost = Math.floor(baseStamina * opt.multiplier * 0.5);
+                    const multiplier = opt.hours / baseTime;
+                    const expGain = Math.floor(baseExp * multiplier * opt.bonus);
+                    const staminaCost = Math.floor(baseStamina * multiplier * 0.5);
                     const timeCost = opt.hours;
                     return `
                         <div onclick="Game.performCultivate('${actionId}', ${opt.hours}, ${opt.bonus})" style="
@@ -337,82 +339,108 @@ const Game = {
     
     // 执行修炼（指定时长）
     performCultivate(actionId, hours, bonus) {
-        // 关闭弹窗
-        const dialogs = document.querySelectorAll('div[style*="z-index: 99999"]');
-        dialogs.forEach(d => {
-            if (d.querySelector('h3')?.textContent?.includes('修炼') || d.querySelector('h3')?.textContent?.includes('冥修')) {
-                d.remove();
+        try {
+            console.log(`[修炼] 开始: ${actionId}, ${hours}小时, 加成: ${bonus}`);
+            
+            // 关闭弹窗
+            const dialogs = document.querySelectorAll('div[style*="z-index: 99999"]');
+            dialogs.forEach(d => {
+                if (d.querySelector('h3')?.textContent?.includes('修炼') || d.querySelector('h3')?.textContent?.includes('冥修')) {
+                    d.remove();
+                }
+            });
+            
+            const location = DataManager.getLocation(Player.currentLocation);
+            const action = location?.actions?.find(a => a.id === actionId);
+            if (!action) {
+                console.warn('[修炼] 行动不存在:', actionId);
+                return;
             }
-        });
-        
-        const location = DataManager.getLocation(Player.currentLocation);
-        const action = location?.actions?.find(a => a.id === actionId);
-        if (!action) return;
-        
-        const baseTime = action.timeCost || 2;
-        const multiplier = hours / baseTime;
-        
-        // 计算实际效果：按时间倍数 × 收益加成
-        const result = {
-            success: true,
-            timeCost: hours,
-            effects: {
-                exp: Math.floor((action.effects?.exp || 0) * multiplier * bonus),
-                hp: Math.floor((action.effects?.hp || 0) * multiplier),
-                mp: Math.floor((action.effects?.mp || 0) * multiplier),
-                stamina: Math.floor(-(action.staminaCost || 10) * multiplier * 0.5) // 时间越长单位体力消耗越少
-            },
-            message: `${action.name} ${hours}小时完成`
-        };
-        
-        // 触发事件的概率：时间越长概率越高，但不是线性增长
-        const eventChance = action.eventChance || 0;
-        if (eventChance > 0 && Math.random() < eventChance * Math.sqrt(multiplier)) {
-            const eventId = action.events[Math.floor(Math.random() * action.events.length)];
-            result.event = eventId;
-        }
-        
-        // 应用效果
-        if (result.effects.exp) Player.gainExp(result.effects.exp);
-        if (result.effects.hp) Player.hp = Math.max(1, Math.min(Player.maxHp, Player.hp + result.effects.hp));
-        if (result.effects.mp) Player.mp = Math.max(0, Math.min(Player.maxMp, Player.mp + result.effects.mp));
-        if (result.effects.stamina) Player.stamina = Math.max(0, Math.min(100, Player.stamina + result.effects.stamina));
-        
-        // 时间流逝
-        const timeResult = TimeSystem.advanceTime(result.timeCost);
-        result.timeEvents = timeResult.events;
-        
-        // 检查强制昏睡
-        let message = result.message + '\n';
-        if (result.effects.exp) message += `经验 +${result.effects.exp}\n`;
-        if (result.effects.mp > 0) message += `MP +${result.effects.mp}\n`;
-        if (result.effects.mp < 0) message += `MP ${result.effects.mp}\n`;
-        if (result.effects.hp < 0) message += `HP ${result.effects.hp}\n`;
-        
-        // 检查升级
-        if (Player.exp >= Player.expToNext) {
-            const levelResult = Player.checkLevelUp();
-            if (levelResult.levelUps.length > 0) {
-                message += `🎉 升级了！当前等级 ${Player.level}\n`;
-                message += `获得 ${levelResult.levelUps.length * 3} 点可分配属性点\n`;
+            
+            const baseTime = action.timeCost || 2;
+            const multiplier = hours / baseTime;
+            console.log(`[修炼] 基础时间: ${baseTime}h, 倍数: ${multiplier}`);
+            
+            // 计算实际效果：按时间倍数 × 收益加成
+            const result = {
+                success: true,
+                timeCost: hours,
+                effects: {
+                    exp: Math.floor((action.effects?.exp || 0) * multiplier * bonus),
+                    hp: Math.floor((action.effects?.hp || 0) * multiplier),
+                    mp: Math.floor((action.effects?.mp || 0) * multiplier),
+                    stamina: Math.floor(-(action.staminaCost || 10) * multiplier * 0.5) // 时间越长单位体力消耗越少
+                },
+                message: `${action.name} ${hours}小时完成`
+            };
+            
+            console.log('[修炼] 计算结果:', result.effects);
+            
+            // 触发事件的概率：时间越长概率越高，但不是线性增长
+            const eventChance = action.eventChance || 0;
+            if (eventChance > 0 && Math.random() < eventChance * Math.sqrt(multiplier)) {
+                const eventId = action.events[Math.floor(Math.random() * action.events.length)];
+                result.event = eventId;
+                console.log('[修炼] 触发事件:', eventId);
             }
-        }
-        
-        // 检查强制昏睡
-        if (result.timeEvents && result.timeEvents.some(e => e.type === 'force_sleep')) {
-            message = `😴 你熬夜修炼，不知不觉昏睡了过去...\n\n（第二天早上醒来，感觉没睡好，体力只恢复了50%）\n\n` + message;
-        }
-        
-        UI.showMessage(message.trim());
-        
-        // 刷新界面
-        UI.renderMapScreen();
-        
-        // 检查地点解锁
-        const newlyUnlocked = MapSystem.checkLocationUnlocks();
-        if (newlyUnlocked.length > 0) {
-            const names = newlyUnlocked.map(loc => loc.name).join('、');
-            setTimeout(() => UI.showMessage(`🎉 解锁新地点：${names}！`), 500);
+            
+            // 应用效果
+            if (result.effects.exp) Player.gainExp(result.effects.exp);
+            if (result.effects.hp) Player.hp = Math.max(1, Math.min(Player.maxHp, Player.hp + result.effects.hp));
+            if (result.effects.mp) Player.mp = Math.max(0, Math.min(Player.maxMp, Player.mp + result.effects.mp));
+            if (result.effects.stamina) Player.stamina = Math.max(0, Math.min(100, Player.stamina + result.effects.stamina));
+            
+            console.log(`[修炼] 应用后: 等级=${Player.level}, 经验=${Player.exp}, 体力=${Player.stamina}`);
+            
+            // 时间流逝
+            const timeResult = TimeSystem.advanceTime(result.timeCost);
+            result.timeEvents = timeResult.events;
+            
+            console.log('[修炼] 时间推进结果:', timeResult);
+            
+            // 检查强制昏睡
+            let message = result.message + '\n';
+            if (result.effects.exp) message += `经验 +${result.effects.exp}\n`;
+            if (result.effects.mp > 0) message += `MP +${result.effects.mp}\n`;
+            if (result.effects.mp < 0) message += `MP ${result.effects.mp}\n`;
+            if (result.effects.hp < 0) message += `HP ${result.effects.hp}\n`;
+            
+            // 检查升级
+            if (Player.exp >= Player.expToNext) {
+                const levelResult = Player.checkLevelUp();
+                if (levelResult.levelUps.length > 0) {
+                    message += `🎉 升级了！当前等级 ${Player.level}\n`;
+                    message += `获得 ${levelResult.levelUps.length * 3} 点可分配属性点\n`;
+                }
+            }
+            
+            // 检查强制昏睡
+            if (result.timeEvents && result.timeEvents.some(e => e.type === 'force_sleep')) {
+                message = `😴 你熬夜修炼，不知不觉昏睡了过去...\n\n（第二天早上醒来，感觉没睡好，体力只恢复了50%）\n\n` + message;
+                console.log('[修炼] 触发强制昏睡');
+            }
+            
+            console.log('[修炼] 最终消息:', message);
+            
+            UI.showMessage(message.trim());
+            
+            // 刷新界面
+            UI.renderMapScreen();
+            
+            // 检查地点解锁
+            const newlyUnlocked = MapSystem.checkLocationUnlocks();
+            if (newlyUnlocked.length > 0) {
+                const names = newlyUnlocked.map(loc => loc.name).join('、');
+                setTimeout(() => UI.showMessage(`🎉 解锁新地点：${names}！`), 500);
+            }
+            
+            // 保存游戏
+            Player.save();
+            
+            console.log('[修炼] 完成');
+        } catch (e) {
+            console.error('[修炼] 出错:', e);
+            UI.showMessage('修炼出错：' + e.message);
         }
     },
     
@@ -749,51 +777,68 @@ const Game = {
 
     // ========== 大事件界面 ==========
     showScheduledEvent(event) {
-        this.state = 'scheduled_event';
-        this.currentScheduledEvent = event;
-
-        // 检查是否满足条件
-        let success = true;
-        if (event.conditions) {
-            if (event.conditions.minLevel && Player.level < event.conditions.minLevel) {
-                success = false;
+        try {
+            console.log('[大事件] 触发:', event.id, event.name);
+            
+            this.state = 'scheduled_event';
+            this.currentScheduledEvent = event;
+    
+            // 检查是否满足条件
+            let success = true;
+            if (event.conditions) {
+                if (event.conditions.minLevel && Player.level < event.conditions.minLevel) {
+                    success = false;
+                }
             }
+    
+            // 标记事件已触发
+            Player.flags['event_' + event.id] = true;
+            console.log('[大事件] 成功:', success);
+    
+            // 应用效果
+            if (success) {
+                if (event.successRewards) {
+                    console.log('[大事件] 奖励:', event.successRewards);
+                    if (event.successRewards.exp) {
+                        Player.gainExp(event.successRewards.exp);
+                    }
+                    if (event.successRewards.gold) {
+                        Player.gold += event.successRewards.gold;
+                    }
+                    if (event.successRewards.items) {
+                        event.successRewards.items.forEach(item => {
+                            console.log('[大事件] 添加物品:', item);
+                            Inventory.addItem(item.itemId, item.count || 1);
+                        });
+                    }
+                }
+            } else {
+                if (event.failPenalty) {
+                    if (event.failPenalty.exp) {
+                        Player.exp = Math.max(0, Player.exp + event.failPenalty.exp);
+                    }
+                    if (event.failPenalty.gold) {
+                        Player.gold = Math.max(0, Player.gold + event.failPenalty.gold);
+                    }
+                }
+            }
+    
+            console.log('[大事件] 开始渲染界面');
+            
+            // 显示事件界面
+            UI.renderScheduledEventScreen(event, success);
+    
+            console.log('[大事件] 界面渲染完成');
+            
+            // 保存游戏
+            Player.save();
+            
+            console.log('[大事件] 完成');
+        } catch (e) {
+            console.error('[大事件] 出错:', e);
+            console.error('[大事件] 错误堆栈:', e.stack);
+            UI.showMessage('大事件出错：' + e.message);
         }
-
-        // 标记事件已触发
-        Player.flags['event_' + event.id] = true;
-
-        // 应用效果
-        if (success) {
-            if (event.successRewards) {
-                if (event.successRewards.exp) {
-                    Player.gainExp(event.successRewards.exp);
-                }
-                if (event.successRewards.gold) {
-                    Player.gold += event.successRewards.gold;
-                }
-                if (event.successRewards.items) {
-                    event.successRewards.items.forEach(item => {
-                        Inventory.addItem(item.itemId, item.count || 1);
-                    });
-                }
-            }
-        } else {
-            if (event.failPenalty) {
-                if (event.failPenalty.exp) {
-                    Player.exp = Math.max(0, Player.exp + event.failPenalty.exp);
-                }
-                if (event.failPenalty.gold) {
-                    Player.gold = Math.max(0, Player.gold + event.failPenalty.gold);
-                }
-            }
-        }
-
-        // 显示事件界面
-        UI.renderScheduledEventScreen(event, success);
-
-        // 保存游戏
-        Player.save();
     },
 
     // 关闭大事件界面
