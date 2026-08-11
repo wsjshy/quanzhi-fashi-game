@@ -8,7 +8,7 @@
 
 ### 1.1 项目基本信息
 - **项目名称**：全职法师网页游戏（基于小说《全职法师》开发）
-- **当前版本**：v0.6.0
+- **当前版本**：v0.8.0（进行中）
 - **分支**：master，直接在master开发
 - **项目根目录**：`C:\Users\22210\Desktop\quanzhi-fashi-game-master\`
 - **小说文件**：`C:\Users\22210\Desktop\全职法师.txt`（3370章，23MB，UTF-8编码）
@@ -18,7 +18,7 @@
 - **操作系统**：Windows，命令行使用PowerShell语法（不支持&&，用分号;分隔）
 - **Gitee远程**：https://gitee.com/wsjshy/quanzhi-fashi-game.git
 - **GitHub远程**：https://github.com/wsjshy/quanzhi-fashi-game.git
-- **GitHub Pages**：https://wsjshy.github.io/quanzhi-fashi-game/（已部署）
+- **GitHub Pages**：https://wsjshy.github.io/quanzhi-fashi-game/（已部署v0.5.3，待更新）
 
 ### 1.2 第一步该做什么
 1. **打开游戏玩一遍**：双击 `index.html`，了解当前游戏状态
