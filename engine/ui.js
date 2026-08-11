@@ -1305,68 +1305,84 @@ const UI = {
 
     // ========== 事件界面 ==========
     renderEventScreen(event) {
-        this.elements.gameContainer.innerHTML = `
-            <div style="
-                width: 100%;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                background: linear-gradient(135deg, #1a1a3a, #2a2a5a);
-                padding: 40px;
-                position: relative;
-            ">
-                <!-- 背景图片 -->
+        try {
+            console.log('[UI] 渲染事件界面:', event.id, event.name);
+            
+            this.elements.gameContainer.innerHTML = `
                 <div style="
-                    position: absolute;
-                    top: 0; left: 0;
-                    width: 100%; height: 100%;
-                    background: url('assets/images/effects/thunder_magic.jpg') center/cover;
-                    opacity: 0.1;
-                    filter: blur(3px);
-                    z-index: 0;
-                    pointer-events: none;
-                "></div>
-                
-                <div style="
-                    max-width: 600px;
-                    background: rgba(20, 20, 50, 0.95);
-                    border: 2px solid #6666aa;
-                    border-radius: 15px;
+                    width: 100%;
+                    height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    background: linear-gradient(135deg, #1a1a3a, #2a2a5a);
                     padding: 40px;
-                    box-shadow: 0 0 50px rgba(100, 100, 255, 0.3);
                     position: relative;
-                    z-index: 1;
                 ">
-                    <h2 style="color: #ffd700; font-size: 28px; margin-bottom: 20px; text-align: center;">
-                        ✨ ${event.name}
-                    </h2>
+                    <!-- 背景图片 -->
+                    <div style="
+                        position: absolute;
+                        top: 0; left: 0;
+                        width: 100%; height: 100%;
+                        background: url('assets/images/effects/thunder_magic.jpg') center/cover;
+                        opacity: 0.1;
+                        filter: blur(3px);
+                        z-index: 0;
+                        pointer-events: none;
+                    "></div>
                     
-                    <p style="color: #d0d0f0; font-size: 17px; line-height: 1.8; margin-bottom: 30px; text-align: center;">
-                        ${event.description}
-                    </p>
-                    
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        ${event.choices.map((choice, index) => `
-                            <div onclick="Game.selectEventChoice(${index})" style="
-                                padding: 15px 25px;
-                                background: linear-gradient(135deg, #2a2a5a, #3a3a7a);
-                                border: 2px solid #555599;
-                                border-radius: 10px;
-                                color: #e0e0ff;
-                                cursor: pointer;
-                                font-size: 16px;
-                                text-align: left;
-                                transition: all 0.3s;
-                            " onmouseover="this.style.borderColor='#7777bb'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#555599'; this.style.transform='translateX(0)'">
-                                ▶ ${choice.text}
-                            </div>
-                        `).join('')}
+                    <div style="
+                        max-width: 600px;
+                        background: rgba(20, 20, 50, 0.95);
+                        border: 2px solid #6666aa;
+                        border-radius: 15px;
+                        padding: 40px;
+                        box-shadow: 0 0 50px rgba(100, 100, 255, 0.3);
+                        position: relative;
+                        z-index: 1;
+                    ">
+                        <h2 style="color: #ffd700; font-size: 28px; margin-bottom: 20px; text-align: center;">
+                            ✨ ${event.name}
+                        </h2>
+                        
+                        <p style="color: #d0d0f0; font-size: 17px; line-height: 1.8; margin-bottom: 30px; text-align: center;">
+                            ${event.description}
+                        </p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            ${event.choices.map((choice, index) => `
+                                <div onclick="Game.selectEventChoice(${index})" style="
+                                    padding: 15px 25px;
+                                    background: linear-gradient(135deg, #2a2a5a, #3a3a7a);
+                                    border: 2px solid #555599;
+                                    border-radius: 10px;
+                                    color: #e0e0ff;
+                                    cursor: pointer;
+                                    font-size: 16px;
+                                    text-align: left;
+                                    transition: all 0.3s;
+                                " onmouseover="this.style.borderColor='#7777bb'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#555599'; this.style.transform='translateX(0)'">
+                                    ▶ ${choice.text}
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
+            
+            console.log('[UI] 事件界面渲染完成');
+        } catch (e) {
+            console.error('[UI] 渲染事件界面出错:', e);
+            console.error('[UI] 错误堆栈:', e.stack);
+            this.elements.gameContainer.innerHTML = `
+                <div style="padding: 40px; color: #ff6666;">
+                    <h2>事件渲染出错</h2>
+                    <p>${e.message}</p>
+                    <button onclick="Game.closeEvent()" style="margin-top: 20px; padding: 10px 20px;">返回</button>
+                </div>
+            `;
+        }
     },
 
     // 渲染大事件界面

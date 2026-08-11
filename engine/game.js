@@ -850,19 +850,37 @@ const Game = {
 
     // 选择事件选项
     selectEventChoice(choiceIndex) {
-        const event = this.currentEvent;
-        if (!event) return;
-
-        const result = EventSystem.selectChoice(event.id, choiceIndex);
-        
-        if (result.success) {
-            // 显示结果
-            UI.showEventResult(result.text, result.effects);
+        try {
+            console.log('[事件] 选择选项:', choiceIndex);
             
-            // 保存游戏
-            Player.save();
+            const event = this.currentEvent;
+            if (!event) {
+                console.warn('[事件] 当前事件为空');
+                return;
+            }
+    
+            const result = EventSystem.selectChoice(event.id, choiceIndex);
+            console.log('[事件] 选择结果:', result);
             
-            // 延迟后返回地图
+            if (result.success) {
+                // 显示结果
+                UI.showEventResult(result.text, result.effects);
+                
+                // 保存游戏
+                Player.save();
+                
+                // 延迟后返回地图
+                setTimeout(() => {
+                    this.state = 'map';
+                    UI.renderMapScreen();
+                }, 2000);
+            }
+            
+            console.log('[事件] 选项处理完成');
+        } catch (e) {
+            console.error('[事件] 选择选项出错:', e);
+            console.error('[事件] 错误堆栈:', e.stack);
+            UI.showMessage('事件处理出错：' + e.message);
             setTimeout(() => {
                 this.state = 'map';
                 UI.renderMapScreen();
