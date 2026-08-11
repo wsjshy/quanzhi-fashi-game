@@ -444,8 +444,6 @@ const Game = {
     // 执行修炼（指定时长）
     performCultivate(actionId, hours, bonus) {
         try {
-            console.log(`[修炼] 开始: ${actionId}, ${hours}小时, 加成: ${bonus}`);
-            
             // 关闭弹窗
             const dialogs = document.querySelectorAll('div[style*="z-index: 99999"]');
             dialogs.forEach(d => {
@@ -463,7 +461,6 @@ const Game = {
             
             const baseTime = action.timeCost || 2;
             const multiplier = hours / baseTime;
-            console.log(`[修炼] 基础时间: ${baseTime}h, 倍数: ${multiplier}`);
             
             // 计算实际效果：按时间倍数 × 收益加成
             const result = {
@@ -478,14 +475,11 @@ const Game = {
                 message: `${action.name} ${hours}小时完成`
             };
             
-            console.log('[修炼] 计算结果:', result.effects);
-            
             // 触发事件的概率：时间越长概率越高，但不是线性增长
             const eventChance = action.eventChance || 0;
             if (eventChance > 0 && Math.random() < eventChance * Math.sqrt(multiplier)) {
                 const eventId = action.events[Math.floor(Math.random() * action.events.length)];
                 result.event = eventId;
-                console.log('[修炼] 触发事件:', eventId);
             }
             
             // 应用效果
@@ -494,13 +488,9 @@ const Game = {
             if (result.effects.mp) Player.mp = Math.max(0, Math.min(Player.maxMp, Player.mp + result.effects.mp));
             if (result.effects.stamina) Player.stamina = Math.max(0, Math.min(100, Player.stamina + result.effects.stamina));
             
-            console.log(`[修炼] 应用后: 等级=${Player.level}, 经验=${Player.exp}, 体力=${Player.stamina}`);
-            
             // 时间流逝
             const timeResult = TimeSystem.advanceTime(result.timeCost);
             result.timeEvents = timeResult.events;
-            
-            console.log('[修炼] 时间推进结果:', timeResult);
             
             // 检查强制昏睡
             let message = result.message + '\n';
@@ -521,10 +511,7 @@ const Game = {
             // 检查强制昏睡
             if (result.timeEvents && result.timeEvents.some(e => e.type === 'force_sleep')) {
                 message = `😴 你熬夜修炼，不知不觉昏睡了过去...\n\n（第二天早上醒来，感觉没睡好，体力只恢复了50%）\n\n` + message;
-                console.log('[修炼] 触发强制昏睡');
             }
-            
-            console.log('[修炼] 最终消息:', message);
             
             UI.showMessage(message.trim());
             
@@ -540,8 +527,6 @@ const Game = {
             
             // 保存游戏
             Player.save();
-            
-            console.log('[修炼] 完成');
         } catch (e) {
             console.error('[修炼] 出错:', e);
             UI.showMessage('修炼出错：' + e.message);
@@ -900,8 +885,6 @@ const Game = {
     // ========== 大事件界面 ==========
     showScheduledEvent(event) {
         try {
-            console.log('[大事件] 触发:', event.id, event.name);
-            
             this.state = 'scheduled_event';
             this.currentScheduledEvent = event;
     
@@ -915,12 +898,10 @@ const Game = {
     
             // 标记事件已触发
             Player.flags['event_' + event.id] = true;
-            console.log('[大事件] 成功:', success);
     
             // 应用效果
             if (success) {
                 if (event.successRewards) {
-                    console.log('[大事件] 奖励:', event.successRewards);
                     if (event.successRewards.exp) {
                         Player.gainExp(event.successRewards.exp);
                     }
@@ -929,7 +910,6 @@ const Game = {
                     }
                     if (event.successRewards.items) {
                         event.successRewards.items.forEach(item => {
-                            console.log('[大事件] 添加物品:', item);
                             Inventory.addItem(item.itemId, item.count || 1);
                         });
                     }
@@ -945,20 +925,13 @@ const Game = {
                 }
             }
     
-            console.log('[大事件] 开始渲染界面');
-            
             // 显示事件界面
             UI.renderScheduledEventScreen(event, success);
     
-            console.log('[大事件] 界面渲染完成');
-            
             // 保存游戏
             Player.save();
-            
-            console.log('[大事件] 完成');
         } catch (e) {
             console.error('[大事件] 出错:', e);
-            console.error('[大事件] 错误堆栈:', e.stack);
             UI.showMessage('大事件出错：' + e.message);
         }
     },
@@ -972,7 +945,6 @@ const Game = {
     
     // 关闭大事件结局界面
     closeBigEventEnding() {
-        console.log('[大事件] 关闭结局界面');
         // 清除大事件状态
         BigEventSystem.currentEvent = null;
         BigEventSystem.currentPhase = null;
@@ -985,7 +957,6 @@ const Game = {
 
     // 关闭事件界面
     closeEvent() {
-        console.log('[事件] 关闭事件界面');
         this.state = 'map';
         this.currentEvent = null;
         UI.renderMapScreen();
@@ -994,16 +965,12 @@ const Game = {
     // 选择事件选项
     selectEventChoice(choiceIndex) {
         try {
-            console.log('[事件] 选择选项:', choiceIndex);
-            
             const event = this.currentEvent;
             if (!event) {
-                console.warn('[事件] 当前事件为空');
                 return;
             }
     
             const result = EventSystem.selectChoice(event.id, choiceIndex);
-            console.log('[事件] 选择结果:', result);
             
             if (result.success) {
                 // 显示结果
@@ -1018,11 +985,8 @@ const Game = {
                     UI.renderMapScreen();
                 }, 2000);
             }
-            
-            console.log('[事件] 选项处理完成');
         } catch (e) {
             console.error('[事件] 选择选项出错:', e);
-            console.error('[事件] 错误堆栈:', e.stack);
             UI.showMessage('事件处理出错：' + e.message);
             setTimeout(() => {
                 this.state = 'map';

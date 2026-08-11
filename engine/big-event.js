@@ -47,17 +47,13 @@ const BigEventSystem = {
         
         // 检查是否已经触发过
         if (Player.flags['big_event_' + eventId + '_completed']) {
-            console.log(`[大事件] 事件已完成: ${eventId}`);
             return false;
         }
         
         // 检查触发条件
         if (event.conditions && !this.checkConditions(event.conditions)) {
-            console.log(`[大事件] 条件不满足: ${eventId}`);
             return false;
         }
-        
-        console.log(`[大事件] 触发事件: ${event.name}`);
         
         // 设置当前事件状态
         this.currentEvent = eventId;
@@ -141,8 +137,6 @@ const BigEventSystem = {
             return;
         }
         
-        console.log(`[大事件] 阶段: ${phase.name}`);
-        
         // 根据阶段类型处理
         switch (phase.type) {
             case 'narrative':
@@ -214,8 +208,6 @@ const BigEventSystem = {
             if (enemy) {
                 Game.startBattle(enemy, (result, rewards) => {
                     // 战斗结束回调
-                    console.log(`[大事件] 战斗结束: ${result}`);
-                    
                     if (result === 'win') {
                         if (phase.winPhase) {
                             this.advanceToPhase(phase.winPhase);
@@ -272,8 +264,6 @@ const BigEventSystem = {
             }
         }
         
-        console.log(`[大事件] 自动判定: ${attribute} = ${playerValue}, 进入 ${nextPhase}`);
-        
         // 推进到下一阶段
         setTimeout(() => {
             this.advanceToPhase(nextPhase);
@@ -290,8 +280,6 @@ const BigEventSystem = {
         
         const choice = phase.choices[choiceIndex];
         if (!choice) return;
-        
-        console.log(`[大事件] 选择: ${choice.text}`);
         
         // 记录选择历史
         this.choiceHistory.push({
@@ -416,7 +404,6 @@ const BigEventSystem = {
         if (!event) return;
         
         const ending = event.endings?.[endingId];
-        console.log(`[大事件] 事件结束: ${event.name}, 结局: ${ending?.name || endingId}`);
         
         // 应用结局效果
         if (ending?.effects) {
@@ -493,7 +480,6 @@ const BigEventSystem = {
             }
             
             // 触发大事件
-            console.log(`[大事件] 自动触发: ${event.name}`);
             this.triggerBigEvent(eventId);
             return true;
         }
