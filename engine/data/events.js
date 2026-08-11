@@ -2185,5 +2185,96 @@ const DataEvents = {
         resultText: "你记下了位置，继续深入探索。"
       }
     ]
+  },
+  event_merchant_caravan: {
+    id: "event_merchant_caravan",
+    name: "商队路过",
+    description: "一支从其他城市来的商队路过，他们有一些稀有物品出售。",
+    trigger: "exploring",
+    chance: 0.08,
+    conditions: [],
+    once: false,
+    choices: [
+      {
+        text: "购买魔法水晶（80金）",
+        effects: { gold: -80, items: { magic_crystal: 1 } },
+        resultText: "你花80金币买下了一颗魔法水晶，这东西在修炼时能派上大用场。",
+        condition: { type: "gold", value: 80, operator: ">=" }
+      },
+      {
+        text: "购买超级血瓶（50金）",
+        effects: { gold: -50, items: { super_health_potion: 1 } },
+        resultText: "你花50金币买了一瓶超级血瓶，关键时刻能救命。",
+        condition: { type: "gold", value: 50, operator: ">=" }
+      },
+      {
+        text: "只是聊聊",
+        effects: { exp: 10 },
+        resultText: "你和商队的人聊了聊外面的世界，开阔了眼界。"
+      }
+    ]
+  },
+  event_starlight_blessing: {
+    id: "event_starlight_blessing",
+    name: "星光祝福",
+    description: "夜晚修炼时，你感觉星空中的星子似乎在回应你的召唤，魔法能量异常活跃。",
+    trigger: "training",
+    chance: 0.08,
+    conditions: [{ type: "time", value: "night", operator: "==" }],
+    once: false,
+    choices: [
+      {
+        text: "趁此机会全力修炼",
+        effects: { exp: 80, mp: -30 },
+        resultText: "你借助星光之力全力修炼，星子连接速度大幅提升，获得了大量经验！"
+      },
+      {
+        text: "静心感悟",
+        effects: { exp: 40, mp: 20 },
+        resultText: "你静下心来感受星子的律动，魔法修为稳步提升。"
+      }
+    ]
+  },
+  event_demon_trap: {
+    id: "event_demon_trap",
+    name: "妖魔陷阱",
+    description: "你发现地上有一些奇怪的痕迹，似乎是妖魔留下的...",
+    trigger: "exploring",
+    chance: 0.1,
+    conditions: [{ type: "level", value: 3, operator: ">=" }],
+    once: false,
+    choices: [
+      {
+        text: "追踪痕迹",
+        effects: { battle: "demon_wolf" },
+        resultText: "你沿着痕迹追踪，果然发现了一只妖魔！"
+      },
+      {
+        text: "绕道而行",
+        effects: { exp: 5 },
+        resultText: "你谨慎地选择绕道，避免了不必要的战斗。"
+      }
+    ]
+  },
+  event_old_mage_advice: {
+    id: "event_old_mage_advice",
+    name: "老法师指点",
+    description: "一位路过的老法师注意到了你的修炼方式，停下来给你一些指点。",
+    trigger: "training",
+    chance: 0.06,
+    conditions: [],
+    once: false,
+    choices: [
+      {
+        text: "虚心请教",
+        effects: { exp: 60, items: { star_map_scroll: 1 } },
+        resultText: "老法师给你讲解了星图的奥秘，还送了你一张星图卷轴。你的魔法理解更上一层楼！"
+      },
+      {
+        text: "礼貌道谢",
+        effects: { exp: 25 },
+        resultText: "你礼貌地向老法师道谢，他的几句话让你茅塞顿开。"
+      }
+    ]
   }
 };
