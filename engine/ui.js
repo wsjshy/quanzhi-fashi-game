@@ -670,15 +670,18 @@ const UI = {
                                 // 课程行动动态显示
                                 let actionName = action.name;
                                 let actionDesc = action.description;
+                                let expReward = action.effects?.exp || 0;
                                 if (action.isClassAction) {
                                     const currentClass = TimeSystem.getCurrentClass(location);
                                     if (currentClass) {
                                         const teacher = DataManager.getCharacter(currentClass.teacher);
                                         actionName = `上课：${currentClass.name}`;
                                         actionDesc = `${teacher?.name || '未知老师'}主讲，获得${currentClass.exp}经验${currentClass.injuryChance ? '，有受伤风险' : ''}`;
+                                        expReward = currentClass.exp;
                                     } else {
                                         actionName = '自习';
                                         actionDesc = '当前没有课程，自由自习获得少量经验';
+                                        expReward = action.effects?.exp || 5;
                                     }
                                 }
                                 return `
@@ -695,9 +698,10 @@ const UI = {
                                 " onmouseover="this.style.borderColor='#7777bb'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#444477'; this.style.transform='translateX(0)'">
                                     <div style="font-size: 18px; margin-bottom: 5px;">
                                         ${action.icon || '🔹'} ${actionName}
-                                        <span style="font-size: 13px; color: #888; float: right;">
-                                            ⏱️ ${action.timeCost}小时 
-                                            <span style="color: #66ffaa;">⚡${action.staminaCost !== undefined ? action.staminaCost : 10}</span>
+                                        <span style="font-size: 12px; color: #888; float: right; display: flex; gap: 10px; align-items: center;">
+                                            <span style="color: #aaddff;" title="时间消耗">⏱️ ${action.timeCost}h</span>
+                                            <span style="color: #ff9966;" title="体力消耗">⚡ -${action.staminaCost !== undefined ? action.staminaCost : 10}</span>
+                                            ${expReward ? `<span style="color: #ffd700;" title="经验奖励">✨ +${expReward}</span>` : ''}
                                         </span>
                                     </div>
                                     <div style="font-size: 13px; color: #999;">${actionDesc}</div>
