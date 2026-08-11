@@ -90,6 +90,7 @@ const Game = {
         if (Player.load()) {
             MapSystem.init();
             BigEventSystem.init();
+            DailySystem.checkDailyReset();
             this.state = 'map';
             UI.renderMapScreen();
         }
@@ -108,6 +109,10 @@ const Game = {
         
         // 初始化大事件系统
         BigEventSystem.init();
+        
+        // 初始化日常系统
+        DailySystem.initNewGame();
+        DailySystem.checkDailyReset();
         
         // 自动接取新手引导任务
         QuestSystem.acceptQuest('quest_intro');
@@ -236,6 +241,15 @@ const Game = {
 
         // 更新任务进度（在当前地点执行行动，视为到达该地点）
         const completedQuests = QuestSystem.updateProgress('reach', Player.currentLocation, 1);
+        
+        // 日常追踪：探索类行动
+        if (actionId && actionId.includes('explore')) {
+            DailySystem.trackActivity('explore', 1);
+        }
+        // 日常追踪：获得金币
+        if (result.effects && result.effects.gold) {
+            DailySystem.trackActivity('earn_gold', result.effects.gold);
+        }
         
         // 保存游戏
         Player.save();
@@ -525,6 +539,9 @@ const Game = {
                 setTimeout(() => UI.showMessage(`🎉 解锁新地点：${names}！`), 500);
             }
             
+            // 日常追踪：修炼
+            DailySystem.trackActivity('cultivate', 1);
+            
             // 保存游戏
             Player.save();
         } catch (e) {
@@ -545,6 +562,9 @@ const Game = {
 
             // 更新任务进度（到达新地点）
             const completedQuests = QuestSystem.updateProgress('reach', locationId, 1);
+
+            // 日常追踪：访问地点
+            DailySystem.trackActivity('visit', 1, locationId);
 
             // 保存游戏
             Player.save();
@@ -843,6 +863,12 @@ const Game = {
                 // 记录击杀到图鉴
                 if (BattleSystem.enemy && BattleSystem.enemy.id) {
                     Player.recordKill(BattleSystem.enemy.id);
+                }
+                // 日常追踪：击杀和战斗胜利
+                DailySystem.trackActivity('kill', 1);
+                DailySystem.trackActivity('battle_win', 1);
+                if (BattleSystem.rewards && BattleSystem.rewards.gold) {
+                    DailySystem.trackActivity('earn_gold', BattleSystem.rewards.gold);
                 }
                 // 胜利
                 const rewards = BattleSystem.rewards;
@@ -1523,6 +1549,9 @@ const Game = {
     useItem(itemId) {
         try {
             const result = Inventory.useItem(itemId, false);
+            if (result.success) {
+                DailySystem.trackActivity('use_item', 1);
+            }
             UI.showMessage(result.message);
             UI.updateInventoryScreen();
             Player.save();
@@ -1620,6 +1649,33 @@ const Game = {
     closeBestiary() {
         this.state = 'map';
         UI.renderMapScreen();
+    },
+
+    // ========== 日常系统 ==========
+    openDaily() {
+        this.state = 'daily';
+        UI.renderDaily();
+    },
+
+    closeDaily() {
+        this.state = 'map';
+        UI.renderMapScreen();
+    },
+
+    doSignIn() {
+        const result = DailySystem.signIn();
+        UI.showMessage(result.message + (result.extraMsg || '') + '\n' + result.rewards.join('\n'));
+        UI.renderDaily();
+    },
+
+    claimDailyReward(questId) {
+        const result = DailySystem.claimDailyReward(questId);
+        if (result.success) {
+            UI.showMessage(result.message + '\n' + result.rewards.join('\n'));
+        } else {
+            UI.showMessage(result.message);
+        }
+        UI.renderDaily();
     },
 
     // ========== 角色/属性界面 ==========

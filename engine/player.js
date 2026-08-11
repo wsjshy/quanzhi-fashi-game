@@ -4,8 +4,8 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.5.1';
-const SAVE_VERSION = '0.5.1';
+const GAME_VERSION = '0.5.2';
+const SAVE_VERSION = '0.5.2';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
 const SKILL_UNLOCK_TABLE = {
@@ -115,6 +115,7 @@ const Player = {
     timeOfDay: 'morning',  // morning/afternoon/evening/night
     flags: {},
     bestiary: {},  // 妖魔图鉴：{enemyId: {kills: N, firstKillDay: N, lastKillDay: N}}
+    dailyData: null,  // 日常系统数据
     unlockedLocations: ['tianlan_school', 'city_street', 'xuefeng_mountain'],
 
     // 战斗状态
@@ -152,6 +153,7 @@ const Player = {
         this.timeOfDay = 'morning';
         this.flags = {};
         this.bestiary = {};
+        this.dailyData = null;  // 由 DailySystem.initNewGame() 初始化
         this.unlockedLocations = ['tianlan_school', 'city_street', 'xuefeng_mountain'];
         this.battleBuffs = [];
 
@@ -677,6 +679,7 @@ const Player = {
             timeOfDay: this.timeOfDay,
             flags: this.flags,
             bestiary: this.bestiary,
+            dailyData: this.dailyData,
             unlockedLocations: this.unlockedLocations,
             inventory: Inventory.getSaveData(),
             worldState: typeof WorldState !== 'undefined' ? WorldState.getSaveData() : null,
@@ -746,6 +749,7 @@ const Player = {
             this.timeOfDay = data.timeOfDay ?? 'morning';
             this.flags = data.flags ?? {};
             this.bestiary = data.bestiary ?? {};
+            this.dailyData = data.dailyData ?? null;
             this.unlockedLocations = data.unlockedLocations ?? ['tianlan_school', 'city_street', 'xuefeng_mountain'];
             
             // 加载背包
