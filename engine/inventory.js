@@ -167,6 +167,53 @@ const Inventory = {
             }
             
             const artifactId = item.artifactId;
+            const artifact = StarDustArtifactSystem.getArtifact(artifactId);
+            
+            // 成长型星尘魔器的特殊处理
+            if (artifact && artifact.grade === 'growth') {
+                // 检查是否已经装备了成长型星尘魔器
+                if (Player.starDustArtifacts && Player.starDustArtifacts['all']) {
+                    // 已经装备了，检查背包中是否有其他星尘魔器可以吸收
+                    const absorbableItems = this._getAbsorbableArtifacts();
+                    if (absorbableItems.length === 0) {
+                        return { success: false, message: '背包中没有可以吸收的星尘魔器' };
+                    }
+                    
+                    // 自动吸收所有可吸收的星尘魔器（简化版）
+                    let count = 0;
+                    let leveledUp = false;
+                    for (const absorbItem of absorbableItems) {
+                        const result = Player.absorbStarDustArtifact('all', absorbItem.itemId);
+                        if (result.success) {
+                            count++;
+                            if (result.levelUp) {
+                                leveledUp = true;
+                            }
+                        }
+                    }
+                    
+                    if (count > 0) {
+                        const msg = leveledUp 
+                            ? `吸收了 ${count} 个星尘魔器，${artifact.name} 升级了！` 
+                            : `成功吸收了 ${count} 个星尘魔器`;
+                        return { success: true, message: msg };
+                    } else {
+                        return { success: false, message: '吸收失败' };
+                    }
+                } else {
+                    // 没有装备，装备它
+                    const result = Player.equipStarDustArtifact(artifactId);
+                    if (result.success) {
+                        // 消耗物品
+                        this.removeItem(itemId, 1);
+                        return { success: true, message: result.message + '（成长型魔器可吸收其他星尘魔器升级）' };
+                    } else {
+                        return { success: false, message: result.message };
+                    }
+                }
+            }
+
+            // 普通星尘魔器的装备逻辑
             const result = Player.equipStarDustArtifact(artifactId);
             
             if (result.success) {
@@ -264,6 +311,18 @@ const Inventory = {
                 ...item,
                 data: data
             };
+        });
+    },
+
+    /**
+     * 获取背包中可以吸收的星尘魔器
+     * @private
+     */
+    _getAbsorbableArtifacts() {
+        return this.items.filter(item => {
+            const data = this.getItem(item.itemId);
+            // 只有星尘魔器可以吸收，且不是成长型的
+            return data && data.type === 'star_dust_artifact' && data.grade !== 'growth';
         });
     },
 

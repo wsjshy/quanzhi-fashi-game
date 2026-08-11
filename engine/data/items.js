@@ -1097,5 +1097,25 @@ const DataItems = {
     grade: "basic",
     artifactId: "basic_thunder",
     lore: "雷系魔法师常用的修炼辅助器皿，雷系星尘魔器较为稀有。"
+  },
+
+  // 成长型星尘魔器
+  little_loach_pendant: {
+    id: "little_loach_pendant",
+    name: "小泥鳅坠",
+    description: "一枚看似普通的黑色吊坠，形似小泥鳅。据说可以吸收其他星尘魔器来成长，是极为稀有的成长型魔器。对所有元素系都有加成效果。",
+    type: "star_dust_artifact",
+    icon: "🐉",
+    price: 999999,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    element: "all",
+    grade: "growth",
+    artifactId: "little_loach",
+    boundToPlayer: true,
+    lore: "来历成谜的成长型星尘魔器，传说中可以无限成长，最终蜕变为神器。"
   }
 };

@@ -680,6 +680,68 @@ const Player = {
     },
 
     /**
+     * 吸收星尘魔器（成长型）
+     * @param {string} targetElement - 目标成长型星尘魔器的元素系
+     * @param {string} materialItemId - 作为材料的星尘魔器物品ID
+     * @returns {object} 结果
+     */
+    absorbStarDustArtifact(targetElement, materialItemId) {
+        if (typeof StarDustArtifactSystem === 'undefined') {
+            return { success: false, message: "星尘魔器系统未加载" };
+        }
+
+        // 检查目标星尘魔器
+        if (!this.starDustArtifacts || !this.starDustArtifacts[targetElement]) {
+            return { success: false, message: "你没有装备该元素的星尘魔器" };
+        }
+
+        const targetData = this.starDustArtifacts[targetElement];
+        const targetArtifact = StarDustArtifactSystem.getArtifact(targetData.id);
+        
+        // 只有成长型才能吸收
+        if (!targetArtifact || targetArtifact.grade !== 'growth') {
+            return { success: false, message: "只有成长型星尘魔器才能吸收其他魔器" };
+        }
+
+        // 检查材料星尘魔器是否在背包中
+        const materialItem = Inventory.getItem(materialItemId);
+        if (!materialItem || materialItem.count <= 0) {
+            return { success: false, message: "背包中没有该星尘魔器" };
+        }
+
+        const materialArtifactId = materialItem.artifactId;
+        const materialArtifact = StarDustArtifactSystem.getArtifact(materialArtifactId);
+        if (!materialArtifact) {
+            return { success: false, message: "材料星尘魔器无效" };
+        }
+
+        // 执行吸收（直接修改this.starDustArtifacts）
+        const result = StarDustArtifactSystem.absorbArtifact(this.starDustArtifacts, targetElement, materialArtifactId);
+        
+        if (!result.success) {
+            return result;
+        }
+
+        // 消耗材料
+        Inventory.removeItem(materialItemId, 1);
+
+        if (result.levelUp) {
+            return { 
+                success: true, 
+                message: `吸收成功！${targetArtifact.name} 升级到 Lv.${result.newLevel}！`,
+                levelUp: true,
+                newLevel: result.newLevel
+            };
+        } else {
+            return { 
+                success: true, 
+                message: `吸收成功！获得经验`,
+                levelUp: false
+            };
+        }
+    },
+
+    /**
      * 炼化灵种
      * @param {string} seedId - 灵种ID
      * @returns {boolean} 是否成功
