@@ -93,6 +93,12 @@ const Game = {
     // 执行地点行动
     performAction(actionId) {
         try {
+        // 修炼类行动：先弹时长选择菜单
+        if (actionId === 'train' || actionId === 'meditate') {
+            this.showCultivateMenu(actionId);
+            return;
+        }
+        
         // 检查逃课惩罚（有课时不上课）
         const location = DataManager.getLocation(Player.currentLocation);
         const currentClass = TimeSystem.getCurrentClass(location);
@@ -235,7 +241,181 @@ const Game = {
             UI.showMessage('行动失败：' + e.message);
         }
     },
-
+    
+    // 显示修炼时长选择菜单
+    showCultivateMenu(actionId) {
+        const location = DataManager.getLocation(Player.currentLocation);
+        const action = location?.actions?.find(a => a.id === actionId);
+        if (!action) return;
+        
+        const isTrain = actionId === 'train';
+        const baseTime = action.timeCost || 2;
+        const baseStamina = action.staminaCost || 10;
+        const baseExp = action.effects?.exp || 10;
+        
+        // 时长选项：1小时、4小时、8小时、全天（按基础时长缩放）
+        const options = [
+            { hours: 1, multiplier: 1, bonus: 1.0, label: '1小时', desc: '快速修炼，无加成' },
+            { hours: 4, multiplier: 2, bonus: 1.1, label: '4小时', desc: '半天修炼，+10%收益' },
+            { hours: 8, multiplier: 4, bonus: 1.2, label: '8小时', desc: '全天修炼，+20%收益' },
+            { hours: 12, multiplier: 6, bonus: 1.5, label: '全天（12小时）', desc: '闭关修炼，+50%收益' }
+        ];
+        
+        // 过滤掉体力不够的选项
+        const availableOptions = options.filter(opt => {
+            const staminaCost = Math.floor(baseStamina * opt.multiplier * 0.5); // 时间越长单位体力消耗越少
+            return Player.stamina >= staminaCost;
+        });
+        
+        if (availableOptions.length === 0) {
+            UI.showMessage('体力不足，无法修炼！');
+            return;
+        }
+        
+        const dialog = document.createElement('div');
+        dialog.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 10, 30, 0.98);
+            border: 2px solid #6666aa;
+            border-radius: 15px;
+            padding: 30px;
+            min-width: 380px;
+            max-width: 500px;
+            z-index: 99999;
+            box-shadow: 0 0 40px rgba(100, 100, 255, 0.3);
+        `;
+        
+        dialog.innerHTML = `
+            <h3 style="color: #ffd700; margin-bottom: 20px; font-size: 22px;">
+                ${isTrain ? '✨ 修炼魔法' : '🧘 冥修'}
+            </h3>
+            <p style="color: #aaa; margin-bottom: 20px; font-size: 14px;">选择修炼时长：时间越长，单位收益越高</p>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                ${availableOptions.map((opt, index) => {
+                    const expGain = Math.floor(baseExp * opt.multiplier * opt.bonus);
+                    const staminaCost = Math.floor(baseStamina * opt.multiplier * 0.5);
+                    const timeCost = opt.hours;
+                    return `
+                        <div onclick="Game.performCultivate('${actionId}', ${opt.hours}, ${opt.bonus})" style="
+                            padding: 15px 20px;
+                            background: rgba(40, 40, 80, 0.8);
+                            border: 2px solid #444477;
+                            border-radius: 10px;
+                            color: #e0e0ff;
+                            cursor: pointer;
+                            text-align: left;
+                            transition: all 0.3s;
+                        " onmouseover="this.style.borderColor='#7777bb'; this.style.background='rgba(60, 60, 120, 0.8)'" onmouseout="this.style.borderColor='#444477'; this.style.background='rgba(40, 40, 80, 0.8)'">
+                            <div style="font-weight: bold; font-size: 17px; margin-bottom: 5px;">
+                                ${opt.label}
+                                <span style="float: right; font-size: 13px; display: flex; gap: 10px;">
+                                    <span style="color: #aaddff;">⏱️ ${timeCost}h</span>
+                                    <span style="color: #ff9966;">⚡ -${staminaCost}</span>
+                                    <span style="color: #ffd700;">✨ +${expGain}</span>
+                                </span>
+                            </div>
+                            <div style="font-size: 13px; color: #999;">${opt.desc}</div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+            <div onclick="this.parentElement.remove()" style="
+                margin-top: 20px;
+                padding: 10px;
+                text-align: center;
+                color: #888;
+                cursor: pointer;
+                font-size: 14px;
+            ">取消</div>
+        `;
+        
+        document.body.appendChild(dialog);
+    },
+    
+    // 执行修炼（指定时长）
+    performCultivate(actionId, hours, bonus) {
+        // 关闭弹窗
+        const dialogs = document.querySelectorAll('div[style*="z-index: 99999"]');
+        dialogs.forEach(d => {
+            if (d.querySelector('h3')?.textContent?.includes('修炼') || d.querySelector('h3')?.textContent?.includes('冥修')) {
+                d.remove();
+            }
+        });
+        
+        const location = DataManager.getLocation(Player.currentLocation);
+        const action = location?.actions?.find(a => a.id === actionId);
+        if (!action) return;
+        
+        const baseTime = action.timeCost || 2;
+        const multiplier = hours / baseTime;
+        
+        // 计算实际效果：按时间倍数 × 收益加成
+        const result = {
+            success: true,
+            timeCost: hours,
+            effects: {
+                exp: Math.floor((action.effects?.exp || 0) * multiplier * bonus),
+                hp: Math.floor((action.effects?.hp || 0) * multiplier),
+                mp: Math.floor((action.effects?.mp || 0) * multiplier),
+                stamina: Math.floor(-(action.staminaCost || 10) * multiplier * 0.5) // 时间越长单位体力消耗越少
+            },
+            message: `${action.name} ${hours}小时完成`
+        };
+        
+        // 触发事件的概率：时间越长概率越高，但不是线性增长
+        const eventChance = action.eventChance || 0;
+        if (eventChance > 0 && Math.random() < eventChance * Math.sqrt(multiplier)) {
+            const eventId = action.events[Math.floor(Math.random() * action.events.length)];
+            result.event = eventId;
+        }
+        
+        // 应用效果
+        if (result.effects.exp) Player.gainExp(result.effects.exp);
+        if (result.effects.hp) Player.hp = Math.max(1, Math.min(Player.maxHp, Player.hp + result.effects.hp));
+        if (result.effects.mp) Player.mp = Math.max(0, Math.min(Player.maxMp, Player.mp + result.effects.mp));
+        if (result.effects.stamina) Player.stamina = Math.max(0, Math.min(100, Player.stamina + result.effects.stamina));
+        
+        // 时间流逝
+        const timeResult = TimeSystem.advanceTime(result.timeCost);
+        result.timeEvents = timeResult.events;
+        
+        // 检查强制昏睡
+        let message = result.message + '\n';
+        if (result.effects.exp) message += `经验 +${result.effects.exp}\n`;
+        if (result.effects.mp > 0) message += `MP +${result.effects.mp}\n`;
+        if (result.effects.mp < 0) message += `MP ${result.effects.mp}\n`;
+        if (result.effects.hp < 0) message += `HP ${result.effects.hp}\n`;
+        
+        // 检查升级
+        if (Player.exp >= Player.expToNext) {
+            const levelResult = Player.checkLevelUp();
+            if (levelResult.levelUps.length > 0) {
+                message += `🎉 升级了！当前等级 ${Player.level}\n`;
+                message += `获得 ${levelResult.levelUps.length * 3} 点可分配属性点\n`;
+            }
+        }
+        
+        // 检查强制昏睡
+        if (result.timeEvents && result.timeEvents.some(e => e.type === 'force_sleep')) {
+            message = `😴 你熬夜修炼，不知不觉昏睡了过去...\n\n（第二天早上醒来，感觉没睡好，体力只恢复了50%）\n\n` + message;
+        }
+        
+        UI.showMessage(message.trim());
+        
+        // 刷新界面
+        UI.renderMapScreen();
+        
+        // 检查地点解锁
+        const newlyUnlocked = MapSystem.checkLocationUnlocks();
+        if (newlyUnlocked.length > 0) {
+            const names = newlyUnlocked.map(loc => loc.name).join('、');
+            setTimeout(() => UI.showMessage(`🎉 解锁新地点：${names}！`), 500);
+        }
+    },
+    
     // 移动到地点
     travelTo(locationId) {
         try {
