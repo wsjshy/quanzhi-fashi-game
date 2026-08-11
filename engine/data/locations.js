@@ -375,9 +375,15 @@ const DataLocations = {
         icon: "🌿",
         timeCost: 2,
         staminaCost: 20,
-        eventChance: 0.4,
+        effects: {
+          addItem: {
+            itemId: "magic_herb",
+            count: 2
+          },
+          exp: 5
+        },
+        eventChance: 0.3,
         events: [
-          "event_find_herb",
           "event_find_herb",
           "event_find_rare_herb"
         ]

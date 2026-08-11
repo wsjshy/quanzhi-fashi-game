@@ -52,8 +52,8 @@ const UI = {
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 99999;
             cursor: pointer;
             pointer-events: auto;
         `;
@@ -74,10 +74,10 @@ const UI = {
             font-size: 16px;
             line-height: 1.8;
             text-align: center;
-            z-index: 1000;
+            z-index: 100000;
             min-width: 300px;
             max-width: 500px;
-            box-shadow: 0 0 30px rgba(100, 100, 255, 0.3);
+            box-shadow: 0 0 30px rgba(100, 100, 255, 0.5);
             white-space: pre-line;
             cursor: pointer;
             pointer-events: auto;
@@ -90,15 +90,26 @@ const UI = {
             if (closed) return;
             closed = true;
             
-            // 先创建阻止点击穿透的遮罩层
+            // 先创建阻止点击穿透的遮罩层（在最顶层）
             const blocker = document.createElement('div');
             blocker.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999999;pointer-events:auto;background:transparent;';
+            // 阻止所有点击事件
+            const stopEvent = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+            };
+            blocker.addEventListener('mousedown', stopEvent);
+            blocker.addEventListener('mouseup', stopEvent);
+            blocker.addEventListener('click', stopEvent);
+            blocker.addEventListener('touchstart', stopEvent);
+            blocker.addEventListener('touchend', stopEvent);
             document.body.appendChild(blocker);
             
             overlay.remove();
             msgBox.remove();
             
-            setTimeout(() => blocker.remove(), 500);
+            setTimeout(() => blocker.remove(), 800);
             
             // 处理下一条消息
             ui._processNextMessage();
@@ -125,6 +136,16 @@ const UI = {
             closed = true;
             const blocker = document.createElement('div');
             blocker.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999999;pointer-events:auto;background:transparent;';
+            const stopEvent = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+            };
+            blocker.addEventListener('mousedown', stopEvent);
+            blocker.addEventListener('mouseup', stopEvent);
+            blocker.addEventListener('click', stopEvent);
+            blocker.addEventListener('touchstart', stopEvent);
+            blocker.addEventListener('touchend', stopEvent);
             document.body.appendChild(blocker);
             msgBox.style.transition = 'opacity 0.5s';
             overlay.style.transition = 'opacity 0.5s';
@@ -133,7 +154,7 @@ const UI = {
             setTimeout(() => {
                 overlay.remove();
                 msgBox.remove();
-                setTimeout(() => blocker.remove(), 500);
+                setTimeout(() => blocker.remove(), 800);
                 // 处理下一条消息
                 ui._processNextMessage();
             }, 500);
