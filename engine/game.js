@@ -13,6 +13,43 @@ const Game = {
 
     // 初始化
     init() {
+        // 全局错误处理
+        window.onerror = (message, source, lineno, colno, error) => {
+            console.error('全局错误:', { message, source, lineno, colno, error });
+            console.error('错误堆栈:', error?.stack);
+            
+            // 显示错误提示
+            const errorBar = document.createElement('div');
+            errorBar.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background: linear-gradient(90deg, #cc3333, #ff5555);
+                color: white;
+                padding: 10px 20px;
+                text-align: center;
+                z-index: 99999999;
+                font-size: 14px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            `;
+            errorBar.innerHTML = `
+                ⚠️ 游戏出错：${message}（第${lineno}行）
+                <button onclick="this.parentElement.style.display='none'" style="margin-left: 20px; padding: 5px 15px; background: rgba(255,255,255,0.2); border: 1px solid white; border-radius: 5px; color: white; cursor: pointer;">关闭</button>
+                <button onclick="location.reload()" style="margin-left: 10px; padding: 5px 15px; background: rgba(255,255,255,0.2); border: 1px solid white; border-radius: 5px; color: white; cursor: pointer;">刷新页面</button>
+            `;
+            document.body.appendChild(errorBar);
+            
+            return false;
+        };
+        
+        window.onunhandledrejection = (event) => {
+            console.error('未处理的Promise拒绝:', event.reason);
+            console.error('错误堆栈:', event.reason?.stack);
+        };
+        
+        console.log('[游戏] 全局错误处理已初始化');
+        
         // 初始化数据
         DataManager.init();
         
