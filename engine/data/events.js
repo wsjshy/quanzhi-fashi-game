@@ -1845,5 +1845,110 @@ const DataEvents = {
         resultText: "你感悟着星子的变化，对地圣泉的能量有了更深的理解。你的魔法控制力提升了。"
       }
     ]
+  },
+  event_natural_double_element: {
+    id: "event_natural_double_element",
+    name: "天生双系",
+    description: "你在修炼中突然发现，自己的精神世界中竟然有两团星尘！一团是你觉醒的元素，另一团...竟然也是元素星尘！你是传说中的天生双系！",
+    trigger: "level_up",
+    chance: 0.05,
+    conditions: { level: 3 },
+    choices: [
+      {
+        text: "这是真的吗？",
+        effects: { awakenElement: "random", exp: 50 },
+        resultText: "你仔细感知，确实是两团星尘！天生双系，这是万里挑一的天赋！你又觉醒了一个新的元素系！"
+      },
+      {
+        text: "先保密，低调发育",
+        effects: { awakenElement: "random", exp: 80, intelligence: 5 },
+        resultText: "你决定先不告诉任何人，低调发育。多一个系就多一张底牌，关键时刻可以一鸣惊人！"
+      }
+    ]
+  },
+  event_factions_compete: {
+    id: "event_factions_compete",
+    name: "众势力争抢",
+    description: "你展现出惊人的天赋后，博城各大势力纷纷向你抛出橄榄枝。军部、魔法协会、猎者联盟...都想拉拢你。",
+    trigger: "exploring",
+    chance: 0.1,
+    conditions: { level: 5 },
+    choices: [
+      {
+        text: "军部开出的条件最好",
+        effects: { reputation_military: 20, reputation_magic_association: -5, gold: 200 },
+        resultText: "你表示对军部更感兴趣。斩空总教官非常高兴，当场给了你一笔军饷作为见面礼。"
+      },
+      {
+        text: "魔法协会资源更多",
+        effects: { reputation_magic_association: 20, reputation_military: -5, gold: 150 },
+        resultText: "你选择了魔法协会。杨作河法师很高兴，给了你一些魔法材料。"
+      },
+      {
+        text: "暂时不加入任何势力",
+        effects: { reputation_tianlan_school: 10, exp: 30 },
+        resultText: "你决定先专注学业，不急于加入任何势力。朱校长对你的稳重很欣赏。"
+      }
+    ]
+  },
+  event_blue_alert: {
+    id: "event_blue_alert",
+    name: "蓝色警戒",
+    description: "你在雪峰山驿站时，突然看到远处升起两道光耀。这是军部的警戒信号——蓝色警戒！北面有异常情况。",
+    trigger: "exploring",
+    chance: 0.15,
+    conditions: { location: "xuefeng_station" },
+    choices: [
+      {
+        text: "去问问怎么回事",
+        effects: { exp: 20, intelligence: 5 },
+        resultText: "你向守卫询问，得知北面发现了异常的橙色雾气和妖魔活动迹象。万断风军长已经拉响了蓝色警戒。"
+      },
+      {
+        text: "赶紧离开这里",
+        effects: { stamina: -10 },
+        resultText: "你感觉情况不对，赶紧离开了驿站。安全第一，还是不要冒险的好。"
+      }
+    ]
+  },
+  event_strange_rain: {
+    id: "event_strange_rain",
+    name: "奇怪的雨",
+    description: "天空突然下起了大雨，但这雨的颜色很奇怪，呈现出一种浑浊的橙黄色。老猎人们说，他们从来没见过这样的雨。",
+    trigger: "exploring",
+    chance: 0.1,
+    conditions: { location: "xuefeng_mountain" },
+    choices: [
+      {
+        text: "躲雨，观察情况",
+        effects: { exp: 15, intelligence: 3 },
+        resultText: "你找了个地方躲雨，仔细观察这奇怪的雨。雨水落在地上，似乎让周围的植物都变得有些异常..."
+      },
+      {
+        text: "冒雨继续探索",
+        effects: { hp: -15, exp: 25 },
+        resultText: "你冒雨继续探索，虽然淋了雨受了点寒，但发现了一些平时看不到的异常现象。"
+      }
+    ]
+  },
+  event_earth_spring_anomaly: {
+    id: "event_earth_spring_anomaly",
+    name: "地圣泉异常",
+    description: "你在地圣泉修炼时，林雨欣副卫长匆匆走来，神色凝重。她告诉你，她在地下通道发现了一些与地圣泉非常相似的水，但似乎被污染了。",
+    trigger: "exploring",
+    chance: 0.3,
+    conditions: { location: "earth_spring" },
+    choices: [
+      {
+        text: "详细询问情况",
+        effects: { intelligence: 8, reputation_magic_association: 5 },
+        resultText: "林雨欣告诉你，那些污水会让生物变得疯狂，失去理智。她怀疑一年前她妹妹的失踪和这有关。"
+      },
+      {
+        text: "表示愿意帮忙调查",
+        effects: { opinion_lin_yuxin: 10, exp: 30 },
+        resultText: "你表示愿意帮忙调查。林雨欣有些意外，但还是感谢了你的好意。她说如果有线索会通知你。"
+      }
+    ]
   }
 };

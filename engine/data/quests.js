@@ -1510,5 +1510,36 @@ const DataQuests = {
     dialogueStart: "地圣泉是博城最珍贵的修炼圣地，相当于加强版的星尘魔器。在里面修炼一周，抵得上外面半年。这是你冲击中阶的最好机会！",
     dialogueInProgress: "地圣泉的能量正在滋养你的星尘，感觉星子变得更加明亮了。继续修炼！",
     dialogueComplete: "地圣泉修炼结束！你的星尘得到了极大的滋养，距离中阶更近了一步！"
+  },
+  quest_earth_spring_investigation: {
+    id: "quest_earth_spring_investigation",
+    name: "地圣泉异常调查",
+    description: "林雨欣副卫长发现地下通道中有一些与地圣泉相似的污水，但似乎被污染了。她怀疑这与一年前她妹妹的失踪有关，希望你能帮忙调查。",
+    type: "story",
+    giver: "lin_yuxin",
+    objectives: [
+      { type: "reach", locationId: "earth_spring", count: 1, description: "进入地圣泉" },
+      { type: "reach", locationId: "earth_spring", count: 3, description: "探索地下通道3次" },
+      { type: "kill", enemyId: "giant_eye_rat", count: 3, description: "击败3只巨眼猩鼠" }
+    ],
+    rewards: {
+      exp: 400,
+      gold: 300,
+      items: [
+        { itemId: "star_map_scroll", count: 1 },
+        { itemId: "super_health_potion", count: 3 },
+        { itemId: "super_mana_potion", count: 3 }
+      ],
+      reputation: {
+        magic_association: 20
+      }
+    },
+    prerequisites: ["quest_earth_spring"],
+    nextQuest: null,
+    isMainQuest: false,
+    autoStart: false,
+    dialogueStart: "我在地下通道发现了一些奇怪的水，和地圣泉很像，但又不太一样。药剂师说那水会让生物变得疯狂...我怀疑我妹妹的失踪和这有关。你能帮我调查吗？",
+    dialogueInProgress: "地下通道很危险，小心那些巨眼猩鼠。如果你发现任何线索，一定要告诉我。",
+    dialogueComplete: "谢谢你的帮助！这些线索很重要...我会继续调查的。如果你以后发现更多信息，随时来找我。"
   }
 };

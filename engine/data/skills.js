@@ -1111,5 +1111,22 @@ const DataSkills = {
       { name: "烈焰灼烧", type: "burn", duration: 4, chance: 1.0, stacks: 3, dotDamage: 10 },
       { name: "爆裂冲击", type: "stun", duration: 1, chance: 0.3 }
     ]
+  },
+  thunder_wrath: {
+    id: "thunder_wrath",
+    name: "雷印·怒击",
+    description: "3级雷系技能。雷霆之怒，多道雷印同时轰击，威力霸道无比。雷系初阶最强技能，穿透力极强，无视大部分防御。",
+    element: "thunder",
+    type: "damage",
+    damage: 75,
+    mpCost: 32,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "初阶3级",
+    statusEffects: [
+      { name: "雷霆麻痹", type: "stun", duration: 2, chance: 0.5 },
+      { name: "感电", type: "electrified", duration: 3, chance: 1.0, damageBonus: 0.3 },
+      { name: "雷霆穿透", type: "defense_down", duration: 3, chance: 0.7, statModifiers: { defense: -10 } }
+    ]
   }
 };

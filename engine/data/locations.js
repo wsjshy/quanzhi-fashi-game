@@ -1051,5 +1051,60 @@ const DataLocations = {
     enemyRate: 0.3,
     isSafeZone: false,
     shops: []
+  },
+  earth_spring: {
+    id: "earth_spring",
+    name: "地圣泉",
+    description: "博城最珍贵的修炼圣地，位于银贸大厦地下十五层。地圣泉是天地灵泉，修炼一小时顶外面三天，无数魔法师梦寐以求。",
+    backgroundColor: "#1a3a3a",
+    unlocked: false,
+    unlockCondition: {
+      hasItem: "earth_spring_pass",
+      hint: "需要地圣泉通行证才能进入"
+    },
+    actions: [
+      {
+        id: "meditate_spring",
+        name: "地圣泉冥修",
+        description: "在地圣泉中央冥修，吸收天地灵气，修为突飞猛进",
+        icon: "🧘",
+        timeCost: 4,
+        staminaCost: 20,
+        effects: { exp: 150, mp: 80 },
+        eventChance: 0.5,
+        events: ["event_earth_spring_cultivation", "event_earth_spring_anomaly"]
+      },
+      {
+        id: "talk_guards",
+        name: "与守卫交谈",
+        description: "与地圣泉的守卫们聊天，了解情况",
+        icon: "💬",
+        timeCost: 1,
+        staminaCost: 5,
+        effects: {},
+        npcs: ["liang_bin", "lin_yuxin"],
+        npcRate: 0.8
+      },
+      {
+        id: "explore_underground",
+        name: "探索地下通道",
+        description: "探索地圣泉周围的地下通道，可能有发现",
+        icon: "🔦",
+        timeCost: 2,
+        staminaCost: 25,
+        effects: { exp: 30 },
+        eventChance: 0.6,
+        events: ["event_underground_explore", "event_giant_eye_rat_encounter"]
+      }
+    ],
+    connectedLocations: [
+      "bo_city"
+    ],
+    npcs: ["liang_bin", "lin_yuxin"],
+    npcRate: 0.5,
+    enemies: ["giant_eye_rat"],
+    enemyRate: 0.2,
+    isSafeZone: true,
+    shops: []
   }
 };

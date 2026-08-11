@@ -5538,5 +5538,161 @@ const DataCharacters = {
         }
       }
     }
+  },
+  liang_bin: {
+    id: "liang_bin",
+    name: "梁斌",
+    title: "地圣泉守卫长 / 中阶土系法师",
+    description: "地圣泉的守卫长，中阶土系法师，沉稳可靠，负责守护博城最重要的修炼圣地。进入过地圣泉修炼，实力不俗。",
+    avatar: "",
+    location: "earth_spring",
+    element: "earth",
+    level: 15,
+    personality: ["沉稳", "可靠", "尽职尽责", "见多识广"],
+    baseStats: { hp: 300, mp: 150, attack: 35, defense: 40, speed: 12 },
+    skills: ["basic_attack", "earth_shield", "earth_slow"],
+    relationships: {
+      lin_yuxin: { type: "subordinate", opinion: 80 }
+    },
+    giftPreferences: {
+      loved: ["demon_core", "magic_stone"],
+      liked: ["health_potion", "mana_potion"],
+      disliked: [],
+      baseOpinionGain: 2,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.3,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 3
+    },
+    dialogueTree: {
+      npcId: "liang_bin",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["你是来修炼的？", "地圣泉是博城最重要的地方，必须严加看守。", "进去吧，好好珍惜这七天。"],
+          choices: [
+            { text: "地圣泉有多神奇？", next: "about_spring", action: "talk" },
+            { text: "这里安全吗？", next: "about_security", action: "talk" },
+            { text: "告辞", next: "default", action: "back" }
+          ]
+        },
+        about_spring: {
+          id: "about_spring",
+          texts: ["地圣泉是天地灵泉，修炼一小时顶外面三天。", "历史可以追溯到秦朝时期，两千多年了。", "没有地圣泉，博城顶多就是个乡镇。"],
+          effects: { familiarity: 5, intelligence: 3 },
+          choices: [{ text: "原来如此", next: "default", action: "back" }]
+        },
+        about_security: {
+          id: "about_security",
+          texts: ["放心，有我在，还有一队守卫。", "一年前有巨眼猩鼠差点挖进来，被我们赶跑了。", "最近发现一些异常的地下水，正在调查。"],
+          effects: { familiarity: 3 },
+          choices: [{ text: "辛苦了", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  lin_yuxin: {
+    id: "lin_yuxin",
+    name: "林雨欣",
+    title: "地圣泉副卫长 / 水系法师",
+    description: "地圣泉的副卫长，英姿飒爽的水系魔法师。妹妹一年前失踪，一直在寻找真相。敏锐细心，察觉到了地圣泉的异常。",
+    avatar: "",
+    location: "earth_spring",
+    element: "water",
+    level: 12,
+    personality: ["敏锐", "细心", "坚韧", "外冷内热"],
+    baseStats: { hp: 220, mp: 180, attack: 28, defense: 20, speed: 22 },
+    skills: ["basic_attack", "water_chain", "water_shield"],
+    relationships: {
+      liang_bin: { type: "superior", opinion: 75 }
+    },
+    giftPreferences: {
+      loved: ["magic_crystal", "star_map_scroll"],
+      liked: ["mana_potion", "magic_herb"],
+      disliked: [],
+      baseOpinionGain: 2,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.3,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 3
+    },
+    dialogueTree: {
+      npcId: "lin_yuxin",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["...有什么事吗？", "我在检查地圣泉的安全。", "如果是来修炼的，进去吧。"],
+          choices: [
+            { text: "你在调查什么？", next: "about_investigation", action: "talk" },
+            { text: "听说你妹妹失踪了", next: "about_sister", action: "talk" },
+            { text: "告辞", next: "default", action: "back" }
+          ]
+        },
+        about_investigation: {
+          id: "about_investigation",
+          texts: ["我在地下通道发现了一些奇怪的水。", "和地圣泉很像，但又不太一样...像是被污染了。", "药剂师说那水会让生物变得疯狂，我担心有问题。"],
+          effects: { familiarity: 5, intelligence: 5 },
+          choices: [{ text: "需要帮忙吗？", next: "default", action: "back" }]
+        },
+        about_sister: {
+          id: "about_sister",
+          texts: ["...一年前，她失踪了。", "大家都说是巨眼猩鼠干的，但我不相信。", "没有找到尸体，她一定还在某个地方。"],
+          effects: { opinion: 5, familiarity: 8 },
+          choices: [{ text: "我会帮你找的", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  wan_duanfeng: {
+    id: "wan_duanfeng",
+    name: "万断风",
+    title: "千人团军长 / 中阶土系法师",
+    description: "博城军部千人团军长，中阶土系法师，论防守整个博城没人比他更出色。驻守雪峰山驿站北面关卡，是博城北方的屏障。",
+    avatar: "",
+    location: "xuefeng_station",
+    element: "earth",
+    level: 18,
+    personality: ["威严", "沉稳", "防守大师", "忠心耿耿"],
+    baseStats: { hp: 400, mp: 200, attack: 40, defense: 55, speed: 10 },
+    skills: ["basic_attack", "earth_shield", "earth_slow"],
+    relationships: {
+      zhankong: { type: "superior", opinion: 90 }
+    },
+    giftPreferences: {
+      loved: ["demon_core", "elite_soul"],
+      liked: ["health_potion", "magic_stone"],
+      disliked: [],
+      baseOpinionGain: 2,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.3,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 2
+    },
+    dialogueTree: {
+      npcId: "wan_duanfeng",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["你来驿站做什么？", "北面关卡由我镇守，放心。", "最近雨下得奇怪，要小心。"],
+          choices: [
+            { text: "北面情况怎么样？", next: "about_north", action: "talk" },
+            { text: "蓝色警戒是什么？", next: "about_alert", action: "talk" },
+            { text: "告辞", next: "default", action: "back" }
+          ]
+        },
+        about_north: {
+          id: "about_north",
+          texts: ["北面是雪峰山深处，妖魔众多。", "我们守着关卡，防止妖魔南下。", "最近橙雾有点重，不太对劲。"],
+          effects: { familiarity: 5, intelligence: 3 },
+          choices: [{ text: "辛苦了", next: "default", action: "back" }]
+        },
+        about_alert: {
+          id: "about_alert",
+          texts: ["警戒分四级：蓝、黄、橙、红。", "蓝色是最低级，发现异常就拉蓝色警戒。", "黄色是妖魔群出现，橙色是大规模入侵，红色是灾难级。"],
+          effects: { familiarity: 5, intelligence: 5 },
+          choices: [{ text: "明白了", next: "default", action: "back" }]
+        }
+      }
+    }
   }
 };

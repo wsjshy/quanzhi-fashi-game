@@ -768,5 +768,49 @@ const DataItems = {
     rarity: "稀有",
     stats: { defense: 15, hp: 30 },
     lore: "斩空所赠，青黑色棱角分明的骨质盾牌。"
+  },
+  star_map_scroll: {
+    id: "star_map_scroll",
+    name: "星图之书",
+    description: "记载着中阶魔法星图的神秘卷轴。将意念注入后，可让初阶魔法师暂时释放中阶魔法。极其珍贵，有钱也买不到。",
+    type: "consumable",
+    icon: "📜",
+    price: 5000,
+    stackable: true,
+    maxStack: 10,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "史诗",
+    lore: "唐月老师赠送的珍贵卷轴，记载着中阶魔法的完整星图。"
+  },
+  ice_silk_armor: {
+    id: "ice_silk_armor",
+    name: "冰蚕铠",
+    description: "穆氏家族的至宝，用千年冰蚕丝编织而成的铠魔具。可以全方位抵挡物理和魔法攻击，尤其克制火系技能。",
+    type: "equipment",
+    slot: "armor",
+    icon: "🥋",
+    price: 20000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "史诗",
+    stats: { defense: 25, hp: 50, fireResistance: 0.5 },
+    lore: "穆卓云送给宇昂的成年礼礼物，冰蚕铠是极其珍贵的铠魔具。"
+  },
+  silver_tower_pass: {
+    id: "silver_tower_pass",
+    name: "银贸大厦通行证",
+    description: "进入银贸大厦地下十五层地圣泉的通行证。地圣泉是博城最珍贵的修炼圣地。",
+    type: "quest",
+    icon: "🏢",
+    price: 0,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "传说",
+    lore: "银贸大厦，博城标志性建筑，地圣泉就藏在地下十五层。"
   }
 };
