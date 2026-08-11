@@ -964,7 +964,7 @@ const UI = {
                         </div>
                         <div style="margin-top: 8px; width: 120px;">
                             <div style="display: flex; justify-content: space-between; font-size: 12px; color: #ff6666; margin-bottom: 2px;">
-                                <span>HP</span><span>${state.player.hp}/${state.player.maxHp}</span>
+                                <span>HP</span><span>${state.player.hp}/${state.player.maxHp} (${Math.floor(state.player.hp / state.player.maxHp * 100)}%)</span>
                             </div>
                             <div style="height: 8px; background: #333; border-radius: 4px; overflow: hidden;">
                                 <div style="height: 100%; width: ${(state.player.hp / state.player.maxHp * 100).toFixed(1)}%; background: linear-gradient(90deg, #ff4444, #ff6666); transition: width 0.5s;"></div>
@@ -1083,7 +1083,7 @@ const UI = {
                         ` : ''}
                         <div style="width: 130px;">
                             <div style="display: flex; justify-content: space-between; font-size: 12px; color: #ff6666; margin-bottom: 2px;">
-                                <span>HP</span><span>${state.enemy.hp}/${state.enemy.maxHp}</span>
+                                <span>HP</span><span>${state.enemy.hp}/${state.enemy.maxHp} (${Math.floor(state.enemy.hp / state.enemy.maxHp * 100)}%)</span>
                             </div>
                             <div style="height: 10px; background: #333; border-radius: 5px; overflow: hidden;">
                                 <div style="height: 100%; width: ${(state.enemy.hp / state.enemy.maxHp * 100).toFixed(1)}%; background: linear-gradient(90deg, #ff4444, #ff6666); transition: width 0.5s;"></div>
