@@ -1950,5 +1950,125 @@ const DataEvents = {
         resultText: "你表示愿意帮忙调查。林雨欣有些意外，但还是感谢了你的好意。她说如果有线索会通知你。"
       }
     ]
+  },
+  event_blood_alert: {
+    id: "event_blood_alert",
+    name: "血色警戒！",
+    description: "突然，全城的警报声响起，凄厉而刺耳。天空中出现了诡异的橙色雨雾，远处传来阵阵妖魔的咆哮声。血色警戒——博城历史上最恐怖的灾难降临了！",
+    trigger: "exploring",
+    chance: 0.05,
+    conditions: { level: 5 },
+    choices: [
+      {
+        text: "赶紧往安全区跑！",
+        effects: { stamina: -30, hp: -20 },
+        resultText: "你拼命往安全区方向跑，路上看到了无数逃难的人群。妖魔的咆哮声越来越近，你必须加快速度！"
+      },
+      {
+        text: "找地方躲起来",
+        effects: { stamina: -10, exp: 10 },
+        resultText: "你找了个隐蔽的地方躲了起来。透过缝隙，你看到成群的妖魔在街上肆虐，心中充满了恐惧和无力感。"
+      }
+    ]
+  },
+  event_demon_attack_school: {
+    id: "event_demon_attack_school",
+    name: "学校遇袭",
+    description: "你正在天澜魔法高中，突然后山传来阵阵嘶吼。一群独眼魔狼冲了进来，学校陷入了混乱！",
+    trigger: "exploring",
+    chance: 0.1,
+    conditions: { location: "tianlan_school", flag: "blood_alert_started" },
+    choices: [
+      {
+        text: "加入战斗，保护同学",
+        effects: { hp: -30, exp: 100, reputation_tianlan_school: 20 },
+        resultText: "你勇敢地加入了战斗，和老师同学们一起抵御妖魔。虽然受了伤，但你保护了很多同学，赢得了大家的尊敬！"
+      },
+      {
+        text: "跟着大部队撤离",
+        effects: { stamina: -20, exp: 30 },
+        resultText: "你跟着大部队一起撤离，一路上看到了很多可怕的景象。虽然安全了，但心里充满了对死者的惋惜。"
+      }
+    ]
+  },
+  event_earth_spring_attack: {
+    id: "event_earth_spring_attack",
+    name: "地圣泉被袭",
+    description: "你在地圣泉修炼时，突然地厅传来剧烈的震动和惨叫声。一只浑身血纹的巨型魔鼠冲了进来，守卫们几乎全灭！",
+    trigger: "exploring",
+    chance: 0.2,
+    conditions: { location: "earth_spring" },
+    choices: [
+      {
+        text: "跟着林雨欣从密道逃",
+        effects: { stamina: -25, hp: -15, exp: 80 },
+        resultText: "林雨欣副卫长果断地打开了密道，带着你逃离了地圣泉。她把地圣泉交给了你保管，希望你能安全带走。"
+      },
+      {
+        text: "留下来帮忙战斗",
+        effects: { hp: -60, exp: 200, reputation_magic_association: 15 },
+        resultText: "你留下来和守卫们一起战斗，但血纹巨魔鼠太强了！你受了重伤，幸好林雨欣及时把你拉进了密道。"
+      }
+    ]
+  },
+  event_vanguard_team: {
+    id: "event_vanguard_team",
+    name: "先锋小队",
+    description: "学校决定撤离到安全结界区，需要一支先锋小队探路。薛木生老师希望你能加入，你是学生中战斗力最强的之一。",
+    trigger: "exploring",
+    chance: 0.15,
+    conditions: { location: "tianlan_school", flag: "blood_alert_started" },
+    choices: [
+      {
+        text: "加入先锋小队",
+        effects: { exp: 150, reputation_tianlan_school: 30, stamina: -20 },
+        resultText: "你加入了先锋小队，负责探路和清除沿途的妖魔。这是一条危险的道路，但你知道这是拯救大家的唯一办法。"
+      },
+      {
+        text: "还是跟着大部队安全",
+        effects: { exp: 50, stamina: -10 },
+        resultText: "你选择跟着大部队一起走。虽然人多更安全，但目标也更大，更容易吸引妖魔群..."
+      }
+    ]
+  },
+  event_encounter_commander_demon: {
+    id: "event_encounter_commander_demon",
+    name: "遭遇战将级妖魔",
+    description: "你正在撤离途中，突然感受到一股令人窒息的压迫感。一只体型巨大的三眼魔狼从楼房后面走了出来，它的高度甚至超过了三层楼！",
+    trigger: "exploring",
+    chance: 0.08,
+    conditions: { level: 6, flag: "blood_alert_started" },
+    choices: [
+      {
+        text: "屏住呼吸，躲起来",
+        effects: { stamina: -15, exp: 50 },
+        resultText: "你赶紧躲到墙角，屏住呼吸。战将级妖魔的感知力很强，幸好一股垃圾的臭味掩盖了你的气味。它慢慢走远了..."
+      },
+      {
+        text: "绕路赶紧跑",
+        effects: { stamina: -30, hp: -10, exp: 80 },
+        resultText: "你小心翼翼地绕路逃跑，心脏狂跳不止。战将级妖魔的实力远超你的想象，这就是真正的灾难吗？"
+      }
+    ]
+  },
+  event_black_church: {
+    id: "event_black_church",
+    name: "黑教廷的阴谋",
+    description: "你从林雨欣那里得知，这场灾难不是偶然，是黑教廷策划的！他们用暴躁之泉激怒了魔狼种群，让它们疯狂进攻博城。",
+    trigger: "exploring",
+    chance: 0.1,
+    conditions: { flag: "earth_spring_escaped" },
+    choices: [
+      {
+        text: "黑教廷？他们为什么要这么做？",
+        effects: { intelligence: 10, exp: 50 },
+        resultText: "林雨欣告诉你，黑教廷是一个邪恶的组织，他们崇拜黑暗，想要摧毁人类文明。这场灾难只是他们计划的一部分..."
+      },
+      {
+        text: "我一定要阻止他们",
+        effects: { exp: 80, willpower: 5 },
+        resultText: "你握紧了拳头，心中燃起了怒火。虽然你现在还很弱，但你发誓，一定要变得更强，阻止黑教廷的阴谋！"
+      }
+    ]
   }
 };

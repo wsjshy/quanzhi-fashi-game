@@ -812,5 +812,47 @@ const DataItems = {
     usableOutOfBattle: false,
     rarity: "传说",
     lore: "银贸大厦，博城标志性建筑，地圣泉就藏在地下十五层。"
+  },
+  berserk_spring: {
+    id: "berserk_spring",
+    name: "暴躁之泉",
+    description: "黑教廷炼制的邪恶药剂，几乎可以和地圣泉以假乱真。效果却完全相反，会激化妖魔的野性，让它们变得疯狂嗜血。这场灾难的罪魁祸首。",
+    type: "quest",
+    icon: "🧪",
+    price: 0,
+    stackable: true,
+    maxStack: 10,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    lore: "黑教廷的邪恶产物，用它洒在云雾中，下雨时就会让妖魔变得疯狂。"
+  },
+  blood_rune: {
+    id: "blood_rune",
+    name: "血纹",
+    description: "从血纹巨魔鼠身上取下的血纹碎片，蕴含着狂暴的力量。据说可以用来炼制特殊的魔具或药剂。",
+    type: "material",
+    icon: "🩸",
+    price: 200,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    lore: "血纹巨魔鼠的标志性特征，蕴含着狂暴的能量。"
+  },
+  bone_spike: {
+    id: "bone_spike",
+    name: "骨刺",
+    description: "从三眼魔狼身上取下的骨刺，坚硬如钢，锋利无比。是制作高级武器的绝佳材料。",
+    type: "material",
+    icon: "🦴",
+    price: 300,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    lore: "战将级三眼魔狼的骨刺，坚硬程度堪比钢铁。"
   }
 };

@@ -942,5 +942,64 @@ const DataEnemies = {
       { itemId: "super_mana_potion", chance: 0.4, min: 1, max: 2 }
     ],
     locations: ["mu_manor"]
+  },
+  blood_rune_giant_rat: {
+    id: "blood_rune_giant_rat",
+    name: "血纹巨魔鼠",
+    description: "战将级妖魔，体型堪比小卡车，浑身遍布狰狞的血纹。受到暴躁之泉的影响，变得异常狂暴和凶残。地圣泉守卫几乎被它全灭。",
+    type: "demon",
+    rank: "战将级",
+    element: "neutral",
+    maxHp: 600,
+    maxMp: 100,
+    attack: 50,
+    defense: 25,
+    speed: 30,
+    skills: ["basic_attack", "rat_bite", "blood_rage"],
+    specialAbility: "血纹狂暴：HP低于50%时攻击+50%，速度+30%",
+    spriteColor: "#cc3333",
+    isEnemy: true,
+    isBoss: true,
+    rageBelowHp: 0.5,
+    rageAttackBonus: 0.5,
+    rageSpeedBonus: 0.3,
+    expReward: 800,
+    goldReward: 500,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.4, min: 1, max: 1 },
+      { itemId: "blood_rune", chance: 0.3, min: 1, max: 1 },
+      { itemId: "super_health_potion", chance: 0.5, min: 1, max: 2 }
+    ],
+    locations: ["earth_spring"]
+  },
+  three_eye_demon_wolf: {
+    id: "three_eye_demon_wolf",
+    name: "三眼魔狼（骨刺狰狼）",
+    description: "战将级妖魔，魔狼种群的统领级之下的高级战将。三只眼睛拥有270度视角，浑身骨刺如钢铁般坚硬。率领数百只独眼魔狼进攻博城的先锋将领。",
+    type: "demon",
+    rank: "战将级",
+    element: "neutral",
+    maxHp: 800,
+    maxMp: 150,
+    attack: 60,
+    defense: 35,
+    speed: 28,
+    skills: ["basic_attack", "wolf_bite", "bone_spike", "wolf_howl"],
+    specialAbility: "骨刺射击：远程攻击；狼嚎召唤：召唤2只独眼魔狼助战",
+    spriteColor: "#884422",
+    isEnemy: true,
+    isBoss: true,
+    summonSkill: "wolf_howl",
+    summonEnemy: "one_eye_wolf",
+    summonCount: 2,
+    expReward: 1200,
+    goldReward: 800,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.6, min: 1, max: 1 },
+      { itemId: "wolf_fang", chance: 0.8, min: 2, max: 4 },
+      { itemId: "bone_spike", chance: 0.5, min: 1, max: 2 },
+      { itemId: "elite_soul", chance: 0.1, min: 1, max: 1 }
+    ],
+    locations: ["xuefeng_mountain", "bo_city"]
   }
 };
