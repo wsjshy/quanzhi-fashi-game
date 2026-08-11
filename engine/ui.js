@@ -63,6 +63,8 @@ const UI = {
     _showSingleMessage(text) {
         const ui = this;
         
+        console.log('[消息] 显示消息:', text.substring(0, 50));
+        
         // 创建遮罩层（阻止所有点击穿透）
         const overlay = document.createElement('div');
         overlay.style.cssText = `
@@ -71,8 +73,8 @@ const UI = {
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 99999;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999998;
             cursor: pointer;
             pointer-events: auto;
         `;
@@ -85,7 +87,7 @@ const UI = {
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(10, 10, 30, 0.95);
+            background: rgba(10, 10, 30, 0.98);
             border: 2px solid #6666aa;
             border-radius: 10px;
             padding: 30px 40px 25px;
@@ -93,7 +95,7 @@ const UI = {
             font-size: 16px;
             line-height: 1.8;
             text-align: center;
-            z-index: 100000;
+            z-index: 9999999;
             min-width: 300px;
             max-width: 500px;
             box-shadow: 0 0 30px rgba(100, 100, 255, 0.5);
@@ -119,6 +121,7 @@ const UI = {
             font-size: 16px;
             cursor: pointer;
             transition: all 0.2s;
+            pointer-events: auto;
         `;
         closeBtn.onmouseover = () => {
             closeBtn.style.background = 'linear-gradient(135deg, #5555bb, #7777dd)';
@@ -136,9 +139,11 @@ const UI = {
             if (closed) return;
             closed = true;
             
+            console.log('[消息] 关闭消息');
+            
             // 先创建阻止点击穿透的遮罩层（在最顶层）
             const blocker = document.createElement('div');
-            blocker.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999999;pointer-events:auto;background:transparent;';
+            blocker.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999999;pointer-events:auto;background:transparent;';
             // 阻止所有点击事件
             const stopEvent = (e) => {
                 e.preventDefault();
@@ -155,7 +160,7 @@ const UI = {
             overlay.remove();
             msgBox.remove();
             
-            setTimeout(() => blocker.remove(), 500);
+            setTimeout(() => blocker.remove(), 800);
             
             // 处理下一条消息
             ui._processNextMessage();
@@ -163,6 +168,7 @@ const UI = {
         
         // 点击遮罩层关闭
         overlay.addEventListener('click', (e) => {
+            console.log('[消息] 点击遮罩层关闭');
             e.preventDefault();
             e.stopPropagation();
             closeMessage();
@@ -170,6 +176,7 @@ const UI = {
         
         // 点击消息框内容也关闭（除了按钮）
         contentDiv.addEventListener('click', (e) => {
+            console.log('[消息] 点击内容关闭');
             e.preventDefault();
             e.stopPropagation();
             closeMessage();
@@ -177,22 +184,30 @@ const UI = {
         
         // 点击关闭按钮
         closeBtn.addEventListener('click', (e) => {
+            console.log('[消息] 点击确定按钮关闭');
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             closeMessage();
         });
         
         // 阻止消息框的点击事件冒泡到遮罩层
         msgBox.addEventListener('click', (e) => {
             e.stopPropagation();
+            e.stopImmediatePropagation();
         });
 
         document.body.appendChild(overlay);
         document.body.appendChild(msgBox);
+        
+        console.log('[消息] 弹窗已添加到页面');
 
         // 5秒后自动消失
         setTimeout(() => {
-            if (!closed) closeMessage();
+            if (!closed) {
+                console.log('[消息] 自动关闭');
+                closeMessage();
+            }
         }, 5000);
     },
 
