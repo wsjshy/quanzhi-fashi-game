@@ -158,7 +158,10 @@ const Game = {
             if (result.effects.hp) message += result.effects.hp > 0 ? `恢复 ${result.effects.hp} HP\n` : `损失 ${-result.effects.hp} HP\n`;
             if (result.effects.mp) message += result.effects.mp > 0 ? `恢复 ${result.effects.mp} MP\n` : `损失 ${-result.effects.mp} MP\n`;
             if (result.effects.stamina) message += result.effects.stamina > 0 ? `恢复 ${result.effects.stamina} 体力\n` : `消耗 ${-result.effects.stamina} 体力\n`;
-            if (result.effects.levelUps) message += `升级了！当前等级 ${Player.level}\n`;
+            if (result.effects.levelUps) {
+                message += `🎉 升级了！当前等级 ${Player.level}\n`;
+                message += `获得 ${result.effects.levelUps * 3} 点可分配属性点\n`;
+            }
             if (result.effects.addItem) {
                 const item = Inventory.getItem(result.effects.addItem.itemId);
                 const itemName = item?.name || result.effects.addItem.itemId;

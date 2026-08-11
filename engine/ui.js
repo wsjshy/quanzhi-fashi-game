@@ -486,6 +486,11 @@ const UI = {
             return 'HP太低了！使用治愈药水或休息恢复HP，避免战斗中死亡';
         }
         
+        // 2.5 有未分配属性点提示
+        if (Player.attributePoints > 0) {
+            return `有 ${Player.attributePoints} 点属性点未分配！点击「角色」分配属性点提升实力`;
+        }
+        
         // 3. 有进行中的任务，显示任务目标
         const activeQuests = QuestSystem.activeQuests;
         if (activeQuests && activeQuests.length > 0) {
