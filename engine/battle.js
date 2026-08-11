@@ -291,6 +291,12 @@ const BattleSystem = {
     playerUseItem(itemId) {
         if (!this.active || !this.isPlayerTurn) return null;
 
+        const item = Inventory.getItem(itemId);
+        if (!item) {
+            this.addLog('物品不存在', 'system');
+            return null;
+        }
+
         const result = Inventory.useItem(itemId, true);
         if (!result.success) {
             this.addLog(result.message, 'system');
@@ -301,7 +307,40 @@ const BattleSystem = {
         this.player.hp = Player.hp;
         this.player.mp = Player.mp;
 
-        this.addLog(`你使用了 ${Inventory.getItem(itemId)?.name || '道具'}`, 'system');
+        this.addLog(`你使用了 ${item.name}`, 'system');
+
+        // 处理物品的状态效果
+        if (item.statusEffects && item.statusEffects.length > 0) {
+            if (item.effects && item.effects.damage) {
+                // 伤害类道具：状态效果施加给敌人
+                this.applyStatusEffects(this.enemy, item.statusEffects, false);
+            } else {
+                // 增益类道具：状态效果施加给玩家
+                this.applyStatusEffects(this.player, item.statusEffects, true);
+            }
+        }
+
+        // 处理伤害类道具（对敌人造成伤害）
+        if (item.effects && item.effects.damage) {
+            const dmg = this.calculateDamage(
+                item.effects.damage,
+                this.enemy.defense,
+                1.0,
+                0,
+                1.0,
+                item.element || 'neutral',
+                this.enemy.elements?.[0] || 'neutral',
+                this.enemy
+            );
+            this.applyDamage(this.enemy, dmg);
+        }
+
+        // 处理净化类道具
+        if (item.effects && item.effects.cleanse) {
+            const debuffTypes = ['burn', 'freeze', 'frozen', 'stun', 'wet', 'slow', 'poison', 'curse', 'electrified', 'mud', 'steam', 'paralyze'];
+            this.player.statusEffects = this.player.statusEffects.filter(e => !debuffTypes.includes(e.type));
+            this.addLog('净化了所有负面状态！', 'buff');
+        }
 
         this.endPlayerTurn();
         return result;

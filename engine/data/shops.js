@@ -43,6 +43,21 @@ const DataShops = {
         itemId: "magic_ring",
         price: 180,
         stock: 3
+      },
+      {
+        itemId: "cleanse_potion",
+        price: 60,
+        stock: 10
+      },
+      {
+        itemId: "strength_potion",
+        price: 70,
+        stock: 10
+      },
+      {
+        itemId: "iron_potion",
+        price: 70,
+        stock: 10
       }
     ]
   },
@@ -120,6 +135,21 @@ const DataShops = {
         itemId: "demon_core",
         price: 60,
         stock: -1
+      },
+      {
+        itemId: "fire_scroll",
+        price: 80,
+        stock: 5
+      },
+      {
+        itemId: "ice_scroll",
+        price: 80,
+        stock: 5
+      },
+      {
+        itemId: "thunder_scroll",
+        price: 100,
+        stock: 3
       }
     ]
   },

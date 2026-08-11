@@ -551,5 +551,106 @@ const DataItems = {
     usableOutOfBattle: false,
     rarity: "普通",
     element: "earth"
+  },
+  fire_scroll: {
+    id: "fire_scroll",
+    name: "火焰卷轴",
+    description: "封印着火系魔法的卷轴，使用后对敌人造成40点火焰伤害，有几率燃烧",
+    type: "consumable",
+    icon: "📜",
+    price: 80,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    element: "fire",
+    effects: { damage: 40 },
+    statusEffects: [
+      { name: "燃烧", type: "burn", element: "fire", dotDamage: 6, duration: 3, chance: 0.6, stacks: 1, maxStacks: 3 }
+    ]
+  },
+  ice_scroll: {
+    id: "ice_scroll",
+    name: "冰霜卷轴",
+    description: "封印着冰系魔法的卷轴，使用后对敌人造成35点冰系伤害，累积冻结值",
+    type: "consumable",
+    icon: "📜",
+    price: 80,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    element: "ice",
+    effects: { damage: 35 },
+    statusEffects: [
+      { name: "冰冻", type: "freeze", element: "ice", value: 50, duration: 3, chance: 1.0 }
+    ]
+  },
+  thunder_scroll: {
+    id: "thunder_scroll",
+    name: "雷电卷轴",
+    description: "封印着雷系魔法的卷轴，使用后对敌人造成45点雷系伤害，有几率麻痹",
+    type: "consumable",
+    icon: "📜",
+    price: 100,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    element: "thunder",
+    effects: { damage: 45 },
+    statusEffects: [
+      { name: "麻痹", type: "stun", element: "thunder", duration: 1, chance: 0.5 }
+    ]
+  },
+  cleanse_potion: {
+    id: "cleanse_potion",
+    name: "净化药水",
+    description: "使用后清除自身所有负面状态（燃烧/冻结/麻痹/诅咒等）",
+    type: "consumable",
+    icon: "✨",
+    price: 60,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: true,
+    rarity: "稀有",
+    effects: { cleanse: true }
+  },
+  strength_potion: {
+    id: "strength_potion",
+    name: "力量药水",
+    description: "使用后攻击力提升15点，持续3回合",
+    type: "consumable",
+    icon: "💪",
+    price: 70,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    statusEffects: [
+      { name: "力量提升", type: "attack_up", duration: 3, chance: 1.0, statModifiers: { attack: 15 } }
+    ]
+  },
+  iron_potion: {
+    id: "iron_potion",
+    name: "铁壁药水",
+    description: "使用后生成30点护盾并提升防御10点，持续3回合",
+    type: "consumable",
+    icon: "🛡️",
+    price: 70,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    statusEffects: [
+      { name: "铁壁护盾", type: "shield", value: 30, duration: 99, chance: 1.0 },
+      { name: "铁壁防御", type: "defense_up", duration: 3, chance: 1.0, statModifiers: { defense: 10 } }
+    ]
   }
 };

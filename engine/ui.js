@@ -929,6 +929,17 @@ const UI = {
                             font-size: 15px;
                             opacity: ${state.isPlayerTurn ? 1 : 0.5};
                         ">🏃 逃跑</button>
+                        
+                        <button onclick="Game.battleShowItems()" ${!state.isPlayerTurn ? 'disabled' : ''} style="
+                            padding: 10px 20px;
+                            background: linear-gradient(135deg, #335544, #446655);
+                            border: 2px solid #557766;
+                            border-radius: 8px;
+                            color: #ccffdd;
+                            cursor: ${state.isPlayerTurn ? 'pointer' : 'not-allowed'};
+                            font-size: 15px;
+                            opacity: ${state.isPlayerTurn ? 1 : 0.5};
+                        ">🎒 道具</button>
                     </div>
                     
                     <div style="color: #ffd700; font-size: 16px; margin-bottom: 10px;">✨ 技能</div>
@@ -968,6 +979,76 @@ const UI = {
         setTimeout(() => {
             this.renderBattleScreen();
         }, 500);
+    },
+
+    // 显示战斗道具选择
+    showBattleItems() {
+        const items = Inventory.getItems();
+        const battleItems = items.filter(inv => {
+            const item = Inventory.getItem(inv.itemId);
+            return item && item.usableInBattle && inv.count > 0;
+        });
+
+        // 创建遮罩层
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); z-index: 99999;
+            display: flex; justify-content: center; align-items: center;
+            pointer-events: auto;
+        `;
+
+        // 创建道具面板
+        const panel = document.createElement('div');
+        panel.className = 'mobile-popup';
+        panel.style.cssText = `
+            background: linear-gradient(135deg, #1a1a3a, #2a2a5a);
+            border: 2px solid #6666aa; border-radius: 15px;
+            padding: 25px; max-width: 500px; width: 90%;
+            max-height: 70vh; overflow-y: auto;
+            box-shadow: 0 0 50px rgba(100, 100, 255, 0.3);
+        `;
+
+        let itemsHtml = '';
+        if (battleItems.length === 0) {
+            itemsHtml = '<p style="color: #aaa; text-align: center; padding: 20px;">没有可在战斗中使用的道具</p>';
+        } else {
+            itemsHtml = battleItems.map(inv => {
+                const item = Inventory.getItem(inv.itemId);
+                return `
+                    <div onclick="Game.battleUseItem('${inv.itemId}')" style="
+                        padding: 12px 15px; margin-bottom: 8px;
+                        background: linear-gradient(135deg, #2a2a5a, #3a3a7a);
+                        border: 2px solid #555599; border-radius: 10px;
+                        cursor: pointer; transition: all 0.2s;
+                        display: flex; align-items: center; gap: 12px;
+                    " onmouseover="this.style.borderColor='#7777bb'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#555599'; this.style.transform='translateX(0)'">
+                        <span style="font-size: 24px;">${item.icon || '📦'}</span>
+                        <div style="flex: 1;">
+                            <div style="color: #fff; font-weight: bold; font-size: 15px;">${item.name} <span style="color: #ffd700;">×${inv.count}</span></div>
+                            <div style="color: #aaa; font-size: 12px; margin-top: 2px;">${item.description}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        panel.innerHTML = `
+            <h2 style="color: #ffd700; font-size: 22px; margin-bottom: 15px; text-align: center;">🎒 战斗道具</h2>
+            ${itemsHtml}
+            <div onclick="this.parentElement.parentElement.remove()" style="
+                margin-top: 15px; padding: 10px; text-align: center;
+                background: linear-gradient(135deg, #553333, #774444);
+                border: 2px solid #885555; border-radius: 8px;
+                color: #ffcccc; cursor: pointer; font-size: 15px;
+            ">取消</div>
+        `;
+
+        overlay.appendChild(panel);
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) overlay.remove();
+        });
+        document.body.appendChild(overlay);
     },
 
     // 获取日志颜色

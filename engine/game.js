@@ -486,6 +486,12 @@ const Game = {
         }
     },
 
+    // 显示战斗道具选择
+    battleShowItems() {
+        if (!BattleSystem.isPlayerTurn) return;
+        UI.showBattleItems();
+    },
+
     // 玩家逃跑
     battleFlee() {
         if (!BattleSystem.isPlayerTurn) return;
