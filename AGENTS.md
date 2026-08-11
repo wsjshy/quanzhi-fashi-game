@@ -18,7 +18,7 @@
 - **操作系统**：Windows，命令行使用PowerShell语法（不支持&&，用分号;分隔）
 - **Gitee远程**：https://gitee.com/wsjshy/quanzhi-fashi-game.git
 - **GitHub远程**：https://github.com/wsjshy/quanzhi-fashi-game.git
-- **GitHub Pages**：https://wsjshy.github.io/quanzhi-fashi-game/（已部署v0.5.3，待更新）
+- **GitHub Pages**：https://wsjshy.github.io/quanzhi-fashi-game/（已部署v0.8.0）
 
 ### 1.2 第一步该做什么
 1. **打开游戏玩一遍**：双击 `index.html`，了解当前游戏状态

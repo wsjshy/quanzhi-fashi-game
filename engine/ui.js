@@ -3275,6 +3275,16 @@ const UI = {
                                             <div style="color: #888; font-size: 11px; margin-top: 4px;">
                                                 修炼时间 +${Math.round(effect.timeBonus * 100)}% · 修炼经验 +${Math.round(effect.expBonus * 100)}%
                                             </div>
+                                            ${artifact.grade === 'growth' ? `
+                                            <div style="margin-top: 6px;">
+                                                <div style="color: #888; font-size: 10px; margin-bottom: 2px;">
+                                                    经验: ${artifactData.exp || 0} / ${StarDustArtifactSystem.getExpToNextLevel(artifactData.level || 1)}
+                                                </div>
+                                                <div style="height: 4px; background: #333; border-radius: 2px; overflow: hidden;">
+                                                    <div style="height: 100%; width: ${Math.min(100, ((artifactData.exp || 0) / StarDustArtifactSystem.getExpToNextLevel(artifactData.level || 1)) * 100).toFixed(1)}%; background: linear-gradient(90deg, #ffcc00, #ffdd44);"></div>
+                                                </div>
+                                            </div>
+                                            ` : ''}
                                         </div>
                                     `;
                                 }).join('')}
