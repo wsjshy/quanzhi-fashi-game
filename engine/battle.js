@@ -244,7 +244,12 @@ const BattleSystem = {
             // 治疗技能
             const healAmount = Math.floor(skill.baseHeal * (1 + casterData.spirit * 0.01));
             targetData.hp = Math.min(targetData.maxHp, targetData.hp + healAmount);
-            
+
+            // 治疗技能的附加状态效果（如净化、复苏）
+            if (skill.statusEffects) {
+                this.applyStatusEffects(targetData, skill.statusEffects, !isPlayer);
+            }
+
             const casterName = isPlayer ? '你' : this.enemy.name;
             const targetName = skill.targetType === 'self' ? casterName : (isPlayer ? this.enemy.name : '你');
             this.addLog(`${casterName} 使用 ${skill.name}，${targetName} 恢复了 ${healAmount} 点生命`, 'heal');
@@ -256,6 +261,15 @@ const BattleSystem = {
             }
             const casterName = isPlayer ? '你' : this.enemy.name;
             this.addLog(`${casterName} 使用了 ${skill.name}`, 'buff');
+
+        } else if (skill.type === 'debuff') {
+            // 减益技能（对敌人施加负面状态）
+            if (skill.statusEffects) {
+                this.applyStatusEffects(targetData, skill.statusEffects, isPlayer);
+            }
+            const casterName = isPlayer ? '你' : this.enemy.name;
+            const targetName = isPlayer ? this.enemy.name : '你';
+            this.addLog(`${casterName} 对 ${targetName} 释放了 ${skill.name}`, 'debuff');
         }
 
         if (isPlayer) {
@@ -857,6 +871,13 @@ const BattleSystem = {
                 this.addLog(`${targetName} 受到 ${effect.name} 伤害 ${damage.amount} 点（${stacks}层）`, 'damage');
             }
 
+            // REG恢复（每回合恢复HP）
+            if (effect.regen) {
+                const healAmount = Math.floor(effect.regen);
+                target.hp = Math.min(target.maxHp, target.hp + healAmount);
+                this.addLog(`${targetName} 受到 ${effect.name} 恢复 ${healAmount} 点生命`, 'heal');
+            }
+
             // 效果结束
             if (effect.duration <= 0) {
                 if (effect.type !== 'shield') {
@@ -1009,6 +1030,9 @@ const BattleSystem = {
         }
         if (expResult.levelUps.length > 0) {
             this.addLog(`🎉 升级了！当前等级 ${Player.level}，获得3点属性点`, 'system');
+        }
+        if (expResult.canAwaken) {
+            this.addLog(`✨ 你已达到觉醒条件！可以在角色面板觉醒新的元素系`, 'system');
         }
         if (expResult.newSkills.length > 0) {
             expResult.newSkills.forEach(skillId => {

@@ -11,43 +11,56 @@ const SAVE_VERSION = '0.4.0';
 const SKILL_UNLOCK_TABLE = {
     fire: {
         1: ['fire_bolt'],
+        2: ['fire_soul'],
         3: ['fire_rain'],
         5: ['fire_burst']
     },
     ice: {
         1: ['ice_spike'],
+        2: ['ice_frost'],
         3: ['ice_shield'],
         5: ['ice_storm']
     },
     thunder: {
         1: ['thunder_bolt'],
+        2: ['thunder_drive'],
         3: ['thunder_chain'],
         5: ['thunder_strike']
     },
     earth: {
         1: ['earth_shield'],
+        2: ['earth_mud'],
         3: ['earth_spike'],
         5: ['earth_quake']
     },
     wind: {
         1: ['wind_blade'],
+        2: ['wind_barrier'],
         3: ['wind_speed'],
         5: ['wind_tornado']
     },
     water: {
         1: ['water_heal'],
+        2: ['water_moist'],
         3: ['water_chain'],
         5: ['water_wave']
     },
     light: {
         1: ['light_ray'],
+        2: ['light_blessing'],
         3: ['light_shield'],
         5: ['light_judgment']
     },
     dark: {
         1: ['dark_bolt'],
+        2: ['dark_weakness'],
         3: ['dark_cloak'],
         5: ['dark_curse']
+    },
+    heal: {
+        1: ['heal_light'],
+        3: ['heal_holy', 'heal_cleanse'],
+        5: ['heal_revive']
     }
 };
 
@@ -199,15 +212,17 @@ const Player = {
         this.exp += amount;
         const levelUps = [];
         const allNewSkills = [];
+        let canAwaken = false;
         
         while (this.exp >= this.expToNext) {
             this.exp -= this.expToNext;
-            const newSkills = this.levelUp();
+            const result = this.levelUp();
             levelUps.push(this.level);
-            allNewSkills.push(...newSkills);
+            allNewSkills.push(...(result.newSkills || []));
+            if (result.canAwaken) canAwaken = true;
         }
         
-        return { levelUps, newSkills: allNewSkills };
+        return { levelUps, newSkills: allNewSkills, canAwaken };
     },
 
     /**
@@ -232,7 +247,11 @@ const Player = {
         
         // 检查并解锁新技能
         const newSkills = this.checkSkillUnlocks();
-        return newSkills;
+
+        // 检查是否可以觉醒新系
+        const canAwaken = this.canAwakenNewElement();
+
+        return { newSkills, canAwaken };
     },
 
     /**
@@ -289,11 +308,84 @@ const Player = {
 
     /**
      * 觉醒元素
+     * @param {string} element - 元素系ID
+     * @returns {object} {success, message, unlockedSkills}
      */
     awakenElement(element) {
-        if (this.elements.includes(element)) return false;
+        // 检查是否已觉醒
+        if (this.elements.includes(element)) {
+            return { success: false, message: '你已经觉醒了该元素系' };
+        }
+
+        // 检查觉醒条件：第二系需要8级（中阶），第三系需要15级（高阶）
+        const currentElementCount = this.elements.length;
+        const requiredLevel = currentElementCount === 0 ? 1 : currentElementCount === 1 ? 8 : 15;
+        if (this.level < requiredLevel) {
+            const rankName = requiredLevel >= 15 ? '高阶' : '中阶';
+            return { success: false, message: `需要达到${rankName}（${requiredLevel}级）才能觉醒新元素系` };
+        }
+
+        // 最多觉醒3系
+        if (currentElementCount >= 3) {
+            return { success: false, message: '最多只能觉醒3个元素系' };
+        }
+
+        // 觉醒
         this.elements.push(element);
-        return true;
+
+        // 自动解锁该系1级技能
+        const unlockedSkills = [];
+        const starterTable = SKILL_UNLOCK_TABLE[element];
+        if (starterTable && starterTable[1]) {
+            starterTable[1].forEach(skillId => {
+                if (!this.skills.includes(skillId)) {
+                    this.skills.push(skillId);
+                    unlockedSkills.push(skillId);
+                }
+            });
+        }
+
+        // 检查该系其他等级的技能是否也满足解锁条件
+        Object.keys(starterTable || {}).forEach(levelStr => {
+            const unlockLevel = parseInt(levelStr);
+            if (unlockLevel <= this.level && unlockLevel > 1) {
+                starterTable[unlockLevel].forEach(skillId => {
+                    if (!this.skills.includes(skillId)) {
+                        this.skills.push(skillId);
+                        unlockedSkills.push(skillId);
+                    }
+                });
+            }
+        });
+
+        return {
+            success: true,
+            message: `成功觉醒${this.getElementName(element)}！`,
+            unlockedSkills: unlockedSkills
+        };
+    },
+
+    /**
+     * 获取元素系中文名
+     */
+    getElementName(element) {
+        const names = {
+            fire: '火系', ice: '冰系', thunder: '雷系', earth: '土系',
+            wind: '风系', water: '水系', light: '光系', dark: '暗影系',
+            heal: '治愈系', summon: '召唤系', neutral: '无系'
+        };
+        return names[element] || element;
+    },
+
+    /**
+     * 检查是否可以觉醒新系
+     * @returns {boolean}
+     */
+    canAwakenNewElement() {
+        const count = this.elements.length;
+        if (count >= 3) return false;
+        const requiredLevel = count === 0 ? 1 : count === 1 ? 8 : 15;
+        return this.level >= requiredLevel;
     },
 
     /**

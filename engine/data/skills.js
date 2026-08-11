@@ -787,5 +787,171 @@ const DataSkills = {
     targetType: "enemy",
     cooldown: 1,
     tier: "初阶"
+  },
+  fire_soul: {
+    id: "fire_soul",
+    name: "火滋·烈阳",
+    description: "点燃内心的火焰，大幅提升攻击力，持续3回合",
+    element: "fire",
+    type: "buff",
+    mpCost: 12,
+    targetType: "self",
+    cooldown: 4,
+    tier: "初阶",
+    statusEffects: [
+      { name: "烈阳", type: "attack_up", element: "fire", duration: 3, chance: 1.0, statModifiers: { attack: 20 } }
+    ]
+  },
+  ice_frost: {
+    id: "ice_frost",
+    name: "冰蔓·霜寒",
+    description: "释放寒气侵蚀敌人，降低其攻击力和速度，持续3回合",
+    element: "ice",
+    type: "debuff",
+    mpCost: 10,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "霜寒", type: "attack_down", element: "ice", duration: 3, chance: 0.9, statModifiers: { attack: -12, speed: -5 } }
+    ]
+  },
+  thunder_drive: {
+    id: "thunder_drive",
+    name: "雷印·励行",
+    description: "雷电激发身体潜能，提升速度和命中率，持续3回合",
+    element: "thunder",
+    type: "buff",
+    mpCost: 10,
+    targetType: "self",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "雷励", type: "speed_up", element: "thunder", duration: 3, chance: 1.0, statModifiers: { speed: 15 }, hitRateMod: 0.15 }
+    ]
+  },
+  earth_mud: {
+    id: "earth_mud",
+    name: "土系·泥泞",
+    description: "召唤泥泞困住敌人，大幅降低其速度和闪避，持续3回合",
+    element: "earth",
+    type: "debuff",
+    mpCost: 10,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "泥泞", type: "slow", element: "earth", duration: 3, chance: 0.9, statModifiers: { speed: -15 }, evasionMod: -0.2 }
+    ]
+  },
+  wind_barrier: {
+    id: "wind_barrier",
+    name: "风轨·风障",
+    description: "在敌人周围制造乱流，降低其命中率，持续3回合",
+    element: "wind",
+    type: "debuff",
+    mpCost: 8,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "风障", type: "accuracy_down", element: "wind", duration: 3, chance: 0.85, hitRateMod: -0.25 }
+    ]
+  },
+  water_moist: {
+    id: "water_moist",
+    name: "水系·水润",
+    description: "水元素包裹全身，提升防御并每回合恢复少量HP，持续3回合",
+    element: "water",
+    type: "buff",
+    mpCost: 12,
+    targetType: "self",
+    cooldown: 4,
+    tier: "初阶",
+    statusEffects: [
+      { name: "水润", type: "defense_up", element: "water", duration: 3, chance: 1.0, statModifiers: { defense: 15 }, regen: 8 }
+    ]
+  },
+  light_blessing: {
+    id: "light_blessing",
+    name: "光系·圣光祝福",
+    description: "圣光加持，同时提升攻击力和防御力，持续3回合",
+    element: "light",
+    type: "buff",
+    mpCost: 15,
+    targetType: "self",
+    cooldown: 4,
+    tier: "初阶",
+    statusEffects: [
+      { name: "圣光祝福", type: "attack_up", element: "light", duration: 3, chance: 1.0, statModifiers: { attack: 12, defense: 12 } }
+    ]
+  },
+  dark_weakness: {
+    id: "dark_weakness",
+    name: "暗影·虚弱诅咒",
+    description: "暗影力量侵蚀敌人，同时降低其攻击力和防御力，持续3回合",
+    element: "dark",
+    type: "debuff",
+    mpCost: 12,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "初阶",
+    statusEffects: [
+      { name: "虚弱诅咒", type: "curse", element: "dark", duration: 3, chance: 0.85, stacks: 1, maxStacks: 2, statModifiers: { attack: -10, defense: -10 } }
+    ]
+  },
+  heal_light: {
+    id: "heal_light",
+    name: "治愈·微光",
+    description: "温和的治愈之光，恢复30点生命值",
+    element: "heal",
+    type: "heal",
+    mpCost: 8,
+    baseHeal: 30,
+    targetType: "self",
+    cooldown: 0,
+    tier: "初阶"
+  },
+  heal_holy: {
+    id: "heal_holy",
+    name: "治愈·圣光",
+    description: "神圣的治愈之光，恢复60点生命值",
+    element: "heal",
+    type: "heal",
+    mpCost: 15,
+    baseHeal: 60,
+    targetType: "self",
+    cooldown: 2,
+    tier: "初阶"
+  },
+  heal_cleanse: {
+    id: "heal_cleanse",
+    name: "治愈·净化",
+    description: "清除所有负面状态，并恢复20点生命值",
+    element: "heal",
+    type: "heal",
+    mpCost: 12,
+    baseHeal: 20,
+    targetType: "self",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "净化", type: "cleanse", element: "heal", chance: 1.0 }
+    ]
+  },
+  heal_revive: {
+    id: "heal_revive",
+    name: "治愈·复苏",
+    description: "恢复40点生命值，并在接下来3回合每回合恢复15点",
+    element: "heal",
+    type: "heal",
+    mpCost: 20,
+    baseHeal: 40,
+    targetType: "self",
+    cooldown: 4,
+    tier: "初阶",
+    statusEffects: [
+      { name: "复苏", type: "regen", element: "heal", duration: 3, chance: 1.0, regen: 15 }
+    ]
   }
 };

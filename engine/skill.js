@@ -79,6 +79,7 @@ const SkillSystem = {
             water: '水系',
             light: '光系',
             dark: '暗影系',
+            heal: '治愈系',
             neutral: '无属性'
         };
         return names[element] || element;
@@ -97,6 +98,7 @@ const SkillSystem = {
             water: '#6699ff',
             light: '#ffffcc',
             dark: '#9966ff',
+            heal: '#66ffaa',
             neutral: '#999999'
         };
         return colors[element] || '#ffffff';

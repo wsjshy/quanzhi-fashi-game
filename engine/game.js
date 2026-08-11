@@ -1194,6 +1194,106 @@ const Game = {
         UI.renderMapScreen();
     },
 
+    // ========== 元素觉醒 ==========
+    showAwakenPanel() {
+        if (!Player.canAwakenNewElement()) {
+            UI.showMessage('你还未达到觉醒条件！');
+            return;
+        }
+
+        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal'];
+        const availableElements = allElements.filter(e => !Player.elements.includes(e));
+        const currentCount = Player.elements.length;
+        const requiredLevel = currentCount === 1 ? 8 : 15;
+        const rankName = requiredLevel >= 15 ? '高阶' : '中阶';
+
+        let elementsHtml = availableElements.map(elem => {
+            const color = SkillSystem.getElementColor(elem);
+            const name = SkillSystem.getElementName(elem);
+            const desc = this.getElementDescription(elem);
+            return `
+                <div onclick="Game.awakenElement('${elem}')" style="
+                    padding: 20px;
+                    background: ${color}15;
+                    border: 2px solid ${color};
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    margin-bottom: 12px;
+                " onmouseover="this.style.background='${color}33'" onmouseout="this.style.background='${color}15'">
+                    <div style="font-size: 20px; font-weight: bold; color: ${color}; margin-bottom: 8px;">
+                        ${name}
+                    </div>
+                    <div style="color: #ccc; font-size: 14px; line-height: 1.5;">
+                        ${desc}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        UI.elements.gameContainer.innerHTML = `
+            <div style="max-width: 600px; margin: 0 auto; padding: 30px 20px;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="font-size: 32px; font-weight: bold; color: #ffd700; margin-bottom: 10px;">
+                        ✨ 元素觉醒
+                    </div>
+                    <div style="color: #aaa; font-size: 16px;">
+                        你已达到${rankName}境界，可以觉醒新的元素系
+                    </div>
+                    <div style="color: #888; font-size: 14px; margin-top: 8px;">
+                        当前已觉醒: ${Player.elements.map(e => SkillSystem.getElementName(e)).join('、')}
+                    </div>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    ${elementsHtml}
+                </div>
+                <div onclick="Game.openCharacterPanel()" style="
+                    text-align: center;
+                    padding: 12px;
+                    background: rgba(100, 100, 100, 0.3);
+                    border-radius: 8px;
+                    color: #ccc;
+                    cursor: pointer;
+                    font-size: 16px;
+                ">返回</div>
+            </div>
+        `;
+    },
+
+    getElementDescription(element) {
+        const descs = {
+            fire: '高爆发伤害，燃烧持续伤害，克制冰/风/植物系',
+            ice: '冻结控制，防御加成，克制水/风系',
+            thunder: '高暴击麻痹，感电组合反应，克制水/土系',
+            earth: '护盾防御，减速控制，克制雷/火系',
+            wind: '高速闪避，连击输出，克制土/雷系',
+            water: '治疗恢复，湿润控制，克制火/土系',
+            light: '净化增益，圣光裁决，克制暗影系',
+            dark: '诅咒削弱，潜行爆发，克制光系',
+            heal: '强力治疗，净化复苏，生存能力极强'
+        };
+        return descs[element] || '神秘的元素力量';
+    },
+
+    awakenElement(element) {
+        const result = Player.awakenElement(element);
+        if (!result.success) {
+            UI.showMessage(result.message);
+            return;
+        }
+
+        Player.save();
+
+        let msg = result.message;
+        if (result.unlockedSkills && result.unlockedSkills.length > 0) {
+            const skillNames = result.unlockedSkills.map(id => SkillSystem.getSkill(id)?.name || id).join('、');
+            msg += ` 解锁技能: ${skillNames}`;
+        }
+
+        UI.showMessage(msg);
+        this.openCharacterPanel();
+    },
+
     // ========== 休息/睡觉 ==========
     rest() {
         const events = TimeSystem.restUntilMorning();

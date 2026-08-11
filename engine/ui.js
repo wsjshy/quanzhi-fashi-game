@@ -803,8 +803,8 @@ const UI = {
                         ${state.player.statusEffects && state.player.statusEffects.length > 0 ? `
                             <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; max-width: 140px;">
                                 ${state.player.statusEffects.map(effect => {
-                                    const icons = { burn: '🔥', freeze: '❄️', frozen: '❄️', stun: '⚡', wet: '💧', shield: '🛡️', curse: '💀', slow: '🐌', defense_up: '🛡️', speed_up: '💨', evasion_up: '💨', electrified: '⚡', mud: '🟤', steam: '💨', poison: '☠️' };
-                                    const colors = { burn: '#ff6644', freeze: '#66aaff', frozen: '#66ddff', stun: '#ffdd44', wet: '#66bbff', shield: '#44ddcc', curse: '#aa66ff', slow: '#999', defense_up: '#66ff66', speed_up: '#88ff88', evasion_up: '#88ffaa', electrified: '#ffff44', mud: '#aa8844', steam: '#ccc', poison: '#88ff44' };
+                                    const icons = { burn: '🔥', freeze: '❄️', frozen: '❄️', stun: '⚡', wet: '💧', shield: '🛡️', curse: '💀', slow: '🐌', defense_up: '🛡️', speed_up: '💨', evasion_up: '💨', attack_up: '⚔️', attack_down: '📉', accuracy_down: '🎯', regen: '💚', electrified: '⚡', mud: '🟤', steam: '💨', poison: '☠️' };
+                                    const colors = { burn: '#ff6644', freeze: '#66aaff', frozen: '#66ddff', stun: '#ffdd44', wet: '#66bbff', shield: '#44ddcc', curse: '#aa66ff', slow: '#999', defense_up: '#66ff66', speed_up: '#88ff88', evasion_up: '#88ffaa', attack_up: '#ff8844', attack_down: '#aaaaaa', accuracy_down: '#ffcc44', regen: '#66ffaa', electrified: '#ffff44', mud: '#aa8844', steam: '#ccc', poison: '#88ff44' };
                                     const icon = icons[effect.type] || '✨';
                                     const color = colors[effect.type] || '#fff';
                                     const stacks = effect.stacks ? `×${effect.stacks}` : '';
@@ -856,8 +856,8 @@ const UI = {
                         ${state.enemy.statusEffects && state.enemy.statusEffects.length > 0 ? `
                             <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; max-width: 150px;">
                                 ${state.enemy.statusEffects.map(effect => {
-                                    const icons = { burn: '🔥', freeze: '❄️', frozen: '❄️', stun: '⚡', wet: '💧', shield: '🛡️', curse: '💀', slow: '🐌', defense_up: '🛡️', speed_up: '💨', evasion_up: '💨', electrified: '⚡', mud: '🟤', steam: '💨', poison: '☠️' };
-                                    const colors = { burn: '#ff6644', freeze: '#66aaff', frozen: '#66ddff', stun: '#ffdd44', wet: '#66bbff', shield: '#44ddcc', curse: '#aa66ff', slow: '#999', defense_up: '#66ff66', speed_up: '#88ff88', evasion_up: '#88ffaa', electrified: '#ffff44', mud: '#aa8844', steam: '#ccc', poison: '#88ff44' };
+                                    const icons = { burn: '🔥', freeze: '❄️', frozen: '❄️', stun: '⚡', wet: '💧', shield: '🛡️', curse: '💀', slow: '🐌', defense_up: '🛡️', speed_up: '💨', evasion_up: '💨', attack_up: '⚔️', attack_down: '📉', accuracy_down: '🎯', regen: '💚', electrified: '⚡', mud: '🟤', steam: '💨', poison: '☠️' };
+                                    const colors = { burn: '#ff6644', freeze: '#66aaff', frozen: '#66ddff', stun: '#ffdd44', wet: '#66bbff', shield: '#44ddcc', curse: '#aa66ff', slow: '#999', defense_up: '#66ff66', speed_up: '#88ff88', evasion_up: '#88ffaa', attack_up: '#ff8844', attack_down: '#aaaaaa', accuracy_down: '#ffcc44', regen: '#66ffaa', electrified: '#ffff44', mud: '#aa8844', steam: '#ccc', poison: '#88ff44' };
                                     const icon = icons[effect.type] || '✨';
                                     const color = colors[effect.type] || '#fff';
                                     const stacks = effect.stacks ? `×${effect.stacks}` : '';
@@ -2121,6 +2121,20 @@ const UI = {
                                     ">${SkillSystem.getElementName(elem)}</span>
                                 `).join('')}
                             </div>
+                            ${Player.canAwakenNewElement() ? `
+                            <div onclick="Game.showAwakenPanel()" style="
+                                display: inline-block;
+                                padding: 10px 20px;
+                                background: linear-gradient(135deg, #ff8844, #ff4488);
+                                border-radius: 10px;
+                                color: #fff;
+                                font-size: 16px;
+                                font-weight: bold;
+                                cursor: pointer;
+                                margin-bottom: 15px;
+                                box-shadow: 0 0 15px rgba(255, 100, 100, 0.5);
+                            ">✨ 觉醒新元素系</div>
+                            ` : ''}
                             <div style="color: #aaa; font-size: 14px;">
                                 经验: ${Player.exp} / ${Player.expToNext}
                             </div>
