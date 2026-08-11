@@ -96,7 +96,7 @@ const DataQuests = {
     prerequisites: [
       "quest_collect_herbs"
     ],
-    nextQuest: null,
+    nextQuest: "quest_magic_practice",
     isMainQuest: true,
     dialogueStart: "嘿，雪峰山最近有只幽狼兽很嚣张，敢不敢去把它干掉？",
     dialogueInProgress: "怎么样，那只幽狼兽解决了吗？小心点，那家伙可不弱。",
@@ -1541,5 +1541,140 @@ const DataQuests = {
     dialogueStart: "我在地下通道发现了一些奇怪的水，和地圣泉很像，但又不太一样。药剂师说那水会让生物变得疯狂...我怀疑我妹妹的失踪和这有关。你能帮我调查吗？",
     dialogueInProgress: "地下通道很危险，小心那些巨眼猩鼠。如果你发现任何线索，一定要告诉我。",
     dialogueComplete: "谢谢你的帮助！这些线索很重要...我会继续调查的。如果你以后发现更多信息，随时来找我。"
+  },
+
+  // ========== 第一卷主线：第10-20章 ==========
+  quest_magic_practice: {
+    id: "quest_magic_practice",
+    name: "勤学苦练",
+    description: "唐月老师说你的魔法基础还不扎实，需要多加练习。去修炼场修炼3次，同时在实战中积累经验。",
+    giver: "tang_yue",
+    type: "story",
+    objectives: [
+      { type: "reach", locationId: "tianlan_school", count: 3, description: "在学校修炼3次" },
+      { type: "kill", enemyId: "demon_wolf", count: 2, description: "击败2只幽狼兽" }
+    ],
+    rewards: {
+      exp: 250,
+      gold: 150,
+      items: [
+        { itemId: "mana_potion", count: 3 }
+      ]
+    },
+    prerequisites: ["quest_hunt_demon"],
+    nextQuest: "quest_school_competition",
+    isMainQuest: true,
+    dialogueStart: "你的魔法天赋不错，但基础还不够扎实。魔法的道路没有捷径，只有不断修炼才能变强。去修炼场多练习练习，同时也别忘记实战经验的积累。",
+    dialogueInProgress: "修炼得怎么样了？记住，星子的连接需要专注和耐心，急不得。",
+    dialogueComplete: "很好，看来你确实下了功夫。过几天就是学校的学期实战考核了，好好准备吧。"
+  },
+
+  quest_school_competition: {
+    id: "quest_school_competition",
+    name: "学期实战考核",
+    description: "天澜魔法高中的学期实战考核到了！你需要在考核中证明自己的实力，赢得3场战斗。",
+    giver: "tang_yue",
+    type: "story",
+    objectives: [
+      { type: "kill", enemyId: "student_rival", count: 3, description: "在考核中赢得3场战斗" }
+    ],
+    rewards: {
+      exp: 350,
+      gold: 200,
+      items: [
+        { itemId: "basic_staff", count: 1 },
+        { itemId: "super_health_potion", count: 2 }
+      ],
+      reputation: {
+        school: 15
+      }
+    },
+    prerequisites: ["quest_magic_practice"],
+    nextQuest: "quest_xuefeng_expedition",
+    isMainQuest: true,
+    dialogueStart: "学期实战考核即将开始！这次考核是模拟战斗，对手是其他同学。别小看他们，有些人的实力可不弱。拿出你的真本事来！",
+    dialogueInProgress: "考核还在进行中，继续加油！连胜3场就能获得优秀评价。",
+    dialogueComplete: "精彩！你的表现超出了我的预期。以你的实力，接下来的雪峰山历练应该能应付了。"
+  },
+
+  quest_xuefeng_expedition: {
+    id: "quest_xuefeng_expedition",
+    name: "雪峰山历练",
+    description: "学校组织雪峰山历练活动，这是检验学生实战能力的重要课程。在雪峰山探索5次，击败 encountered 的妖魔。",
+    giver: "tang_yue",
+    type: "story",
+    objectives: [
+      { type: "reach", locationId: "xuefeng_mountain", count: 5, description: "在雪峰山探索5次" },
+      { type: "kill", enemyId: "demon_wolf", count: 3, description: "击败3只妖魔" }
+    ],
+    rewards: {
+      exp: 400,
+      gold: 250,
+      items: [
+        { itemId: "magic_crystal", count: 1 },
+        { itemId: "super_mana_potion", count: 2 }
+      ]
+    },
+    prerequisites: ["quest_school_competition"],
+    nextQuest: "quest_one_eye_wolf",
+    isMainQuest: true,
+    dialogueStart: "接下来是雪峰山历练。记住，这不是游戏，山上的妖魔是真的会伤人的。结伴而行，不要深入太危险的区域。遇到独眼魔狼那种级别的妖魔，立刻撤退！",
+    dialogueInProgress: "历练进行得如何？注意安全，不要逞强。",
+    dialogueComplete: "你平安回来了就好。听说有人在雪峰山深处看到了独眼魔狼的踪迹...那可是战将级的妖魔，幸好你没遇到。"
+  },
+
+  quest_one_eye_wolf: {
+    id: "quest_one_eye_wolf",
+    name: "独眼魔狼",
+    description: "雪峰山出现了一只独眼魔狼，已经伤了几个历练的学生。作为学校里实力较强的学生，你被请求协助解决这个威胁。",
+    giver: "tang_yue",
+    type: "hunt",
+    objectives: [
+      { type: "kill", enemyId: "one_eye_wolf", count: 1, description: "击败独眼魔狼" }
+    ],
+    rewards: {
+      exp: 600,
+      gold: 400,
+      items: [
+        { itemId: "magic_crystal", count: 2 },
+        { itemId: "super_health_potion", count: 3 },
+        { itemId: "super_mana_potion", count: 3 }
+      ],
+      reputation: {
+        school: 30,
+        magic_association: 10
+      }
+    },
+    prerequisites: ["quest_xuefeng_expedition"],
+    nextQuest: "quest_second_element",
+    isMainQuest: true,
+    dialogueStart: "情况不妙...那只独眼魔狼比预想的更加强大，已经有老师受伤了。以你现在的实力，或许能帮上忙。但你要知道，这战将级的妖魔和之前遇到的完全不是一个级别，你确定要去吗？",
+    dialogueInProgress: "一定要小心！独眼魔狼速度极快，不要被它近身。",
+    dialogueComplete: "难以置信...你居然击败了独眼魔狼！这可是战将级的妖魔啊！你的名字很快就会在博城传开了。"
+  },
+
+  quest_second_element: {
+    id: "quest_second_element",
+    name: "第二系觉醒",
+    description: "学期末，学校将为达到中阶魔法师水平的学生举行第二系觉醒仪式。你需要将等级提升到5级以上。",
+    giver: "tang_yue",
+    type: "story",
+    objectives: [
+      { type: "reach", locationId: "tianlan_school", count: 1, description: "参加第二系觉醒仪式" }
+    ],
+    rewards: {
+      exp: 500,
+      gold: 300,
+      items: [
+        { itemId: "magic_crystal", count: 3 }
+      ],
+      unlocks: ["magic_association"]
+    },
+    prerequisites: ["quest_one_eye_wolf"],
+    nextQuest: null,
+    isMainQuest: true,
+    dialogueStart: "恭喜你！你的实力已经达到了中阶魔法师的水平。学校将为你举行第二系觉醒仪式，这是每个魔法师成长路上的重要里程碑。准备好了吗？",
+    dialogueInProgress: "觉醒仪式即将开始，保持专注，感受星子的召唤...",
+    dialogueComplete: "太棒了！你成功觉醒了第二系！双系魔法师在整个博城都是凤毛麟角的存在。你的魔法之路，才刚刚开始..."
   }
 };
