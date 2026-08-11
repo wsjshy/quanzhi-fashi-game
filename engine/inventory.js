@@ -130,6 +130,36 @@ const Inventory = {
             return { success: false, message: '物品数量不足' };
         }
 
+        // 灵种炼化
+        if (item.type === 'spirit_seed') {
+            // 检查是否已觉醒该系
+            if (!Player.elements.includes(item.element)) {
+                return { success: false, message: '你还没有觉醒该元素系，无法炼化此灵种' };
+            }
+            // 检查是否已有更高品质的灵种
+            if (Player.spiritSeeds && Player.spiritSeeds[item.element]) {
+                const oldSeedId = Player.spiritSeeds[item.element];
+                const oldSeed = this.getItem(oldSeedId);
+                if (oldSeed && typeof SpiritSeedSystem !== 'undefined') {
+                    const oldGrade = SpiritSeedSystem.getGradeConfig(oldSeed.grade);
+                    const newGrade = SpiritSeedSystem.getGradeConfig(item.grade);
+                    if (oldGrade && newGrade && oldGrade.multiplier >= newGrade.multiplier) {
+                        return { success: false, message: '你已拥有品质更高或相等的同系灵种' };
+                    }
+                }
+            }
+            // 执行炼化
+            if (typeof SpiritSeedSystem !== 'undefined') {
+                const success = Player.refineSpiritSeed(itemId);
+                if (success) {
+                    return { success: true, message: `成功炼化了 ${item.name}，该系魔法威力提升！` };
+                } else {
+                    return { success: false, message: '炼化失败' };
+                }
+            }
+            return { success: false, message: '灵种系统未加载' };
+        }
+
         // 消耗物品
         this.removeItem(itemId, 1);
 

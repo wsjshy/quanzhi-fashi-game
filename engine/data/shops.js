@@ -150,6 +150,57 @@ const DataShops = {
         itemId: "thunder_scroll",
         price: 100,
         stock: 3
+      },
+      // 灵种（稀有商品，库存极少）
+      {
+        itemId: "fire_basic",
+        price: 50000,
+        stock: 1
+      },
+      {
+        itemId: "ice_basic",
+        price: 50000,
+        stock: 1
+      },
+      {
+        itemId: "thunder_basic",
+        price: 80000,
+        stock: 0
+      },
+      {
+        itemId: "earth_basic",
+        price: 45000,
+        stock: 1
+      },
+      {
+        itemId: "wind_basic",
+        price: 48000,
+        stock: 1
+      },
+      {
+        itemId: "water_basic",
+        price: 45000,
+        stock: 1
+      },
+      {
+        itemId: "light_basic",
+        price: 70000,
+        stock: 0
+      },
+      {
+        itemId: "dark_basic",
+        price: 60000,
+        stock: 0
+      },
+      {
+        itemId: "heal_basic",
+        price: 75000,
+        stock: 0
+      },
+      {
+        itemId: "summon_basic",
+        price: 85000,
+        stock: 0
       }
     ]
   },
