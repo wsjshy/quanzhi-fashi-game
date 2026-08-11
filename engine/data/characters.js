@@ -1022,27 +1022,59 @@ const DataCharacters = {
         school_news: {
           id: "school_news",
           texts: [
-            "学校最近啊... 好像没什么特别的事。哦对了，听说过几天有个小测验！",
-            "我听说穆宁雪最近又突破了，不愧是冰系天才，真厉害。",
-            "对了，最近山里好像不太太平，你去雪峰山的时候要小心啊！"
+            "学校最近发生了不少事呢，你想知道哪方面的？"
           ],
           effects: {
             familiarity: 2
           },
           choices: [
             {
-              text: "山里不太平？什么意思？",
-              next: "mountain_news",
-              conditions: {
-                minDay: 10
-              }
+              text: "听说有小测验？",
+              next: "quiz_news"
             },
             {
-              text: "穆宁雪是谁？",
-              next: "about_mu_ningxue"
+              text: "穆宁雪最近怎么样？",
+              next: "ningxue_news"
             },
             {
-              text: "知道了，谢谢提醒",
+              text: "山里不太平是什么意思？",
+              next: "mountain_news"
+            },
+            {
+              text: "我知道了",
+              next: "default"
+            }
+          ]
+        },
+        quiz_news: {
+          id: "quiz_news",
+          texts: [
+            "对啊，听说过几天有个小测验，考魔法理论基础。我都快愁死了，理论什么的最头疼了！",
+            "你可要好好复习啊，听说考不好会被唐月老师罚站的。"
+          ],
+          effects: {
+            familiarity: 1
+          },
+          choices: [
+            {
+              text: "好的，我会注意的",
+              next: "default"
+            }
+          ]
+        },
+        ningxue_news: {
+          id: "ningxue_news",
+          texts: [
+            "穆宁雪啊，她最近又突破了！不愧是冰系天才，真的太厉害了。",
+            "我听说她已经快要达到中阶了，我们这些普通人跟她比起来，真是差太远了...",
+            "不过她那个人总是冷冰冰的，好像对谁都爱答不理的。"
+          ],
+          effects: {
+            familiarity: 1
+          },
+          choices: [
+            {
+              text: "确实很厉害",
               next: "default"
             }
           ]
@@ -5034,7 +5066,11 @@ const DataCharacters = {
       nodes: {
         default: {
           id: "default",
-          texts: ["嘿，你也是尖子班的？", "听说历练要去雪峰山，那边有妖魔啊，怕不怕？"],
+          texts: [
+            "听说历练要去雪峰山，那边有妖魔啊，怕不怕？",
+            "马上就要去雪峰山历练了，我心里有点慌...",
+            "你说山里的妖魔会不会很厉害啊？我可不想出事。"
+          ],
           choices: [
             { text: "不怕，正好历练。", next: "brave" },
             { text: "有点担心...", next: "scared" },
