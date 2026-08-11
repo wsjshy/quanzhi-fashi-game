@@ -5174,5 +5174,265 @@ const DataCharacters = {
         }
       }
     }
+  },
+  xu_dahuang: {
+    id: "xu_dahuang",
+    name: "徐大荒",
+    title: "城市猎妖队队长",
+    description: "博城城市猎妖队队长，火系法师，性格豪爽霸道，作战经验丰富。将火滋修炼到第三级爆裂境界，一招火滋·爆裂威力惊人。对队员要求严格，是个负责任的队长。",
+    avatar: "assets/images/characters/xu_dahuang.jpg",
+    location: "bo_city",
+    element: "fire",
+    level: 12,
+    personality: ["豪爽", "严格", "负责任", "战斗经验丰富"],
+    baseStats: { hp: 200, mp: 80, attack: 35, defense: 15, speed: 12 },
+    skills: ["fire_bolt", "fire_burst", "fire_burn_bone"],
+    faction: "city_hunters",
+    factionRank: "队长",
+    relationships: { mo_fan: 10, guo_caitang: 20, xiao_ke: 15, li_wenjie: 15, fei_shi: 20 },
+    giftPreferences: {
+      loved: ["fire_crystal", "premium_ink"],
+      liked: ["magic_herb", "healing_potion"],
+      disliked: [],
+      baseOpinionGain: 2,
+      lovedMultiplier: 3,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 3
+    },
+    dialogueTree: {
+      npcId: "xu_dahuang",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["梵墨，今天有什么任务？", "城市猎妖队随时待命，有妖魔就上。", "雷系法师很珍贵，你要好好发挥。"],
+          choices: [
+            { text: "请教战斗技巧", next: "about_combat" },
+            { text: "城市猎妖队是做什么的？", next: "about_team" },
+            { text: "告辞", next: "default", action: "back" }
+          ]
+        },
+        about_combat: {
+          id: "about_combat",
+          texts: ["战斗不是打靶，妖魔不会站着等你。", "我的火滋练到第三级爆裂，就是为了对付灵活的妖魔。", "记住，团队配合比个人英雄主义重要。"],
+          effects: { familiarity: 5, intelligence: 10 },
+          choices: [{ text: "受教了", next: "default", action: "back" }]
+        },
+        about_team: {
+          id: "about_team",
+          texts: ["城市猎妖队专门处理城市内的妖魔事件。", "我们比野外猎者安全，但责任更重。", "保护市民是我们的职责，不容有失。"],
+          effects: { familiarity: 3 },
+          choices: [{ text: "明白了", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  guo_caitang: {
+    id: "guo_caitang",
+    name: "郭彩棠",
+    title: "城市猎妖队副队长",
+    description: "博城城市猎妖队副队长，冰系法师，与穆氏家族有沾亲带故的关系。性格傲娇，难以相处，但实力不俗。被莫凡（梵墨）救过一命后态度有所转变。",
+    avatar: "assets/images/characters/guo_caitang.jpg",
+    location: "bo_city",
+    element: "ice",
+    level: 10,
+    personality: ["傲娇", "高冷", "实力强", "穆氏亲戚"],
+    baseStats: { hp: 160, mp: 90, attack: 28, defense: 12, speed: 11 },
+    skills: ["ice_spike", "ice_shield", "ice_storm"],
+    faction: "city_hunters",
+    factionRank: "副队长",
+    relationships: { mo_fan: 5, xu_dahuang: 15, xiao_ke: 10, li_wenjie: 10, fei_shi: 10 },
+    giftPreferences: {
+      loved: ["ice_crystal", "beauty_products"],
+      liked: ["magic_herb", "healing_potion"],
+      disliked: [],
+      baseOpinionGain: 1,
+      lovedMultiplier: 3,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 2
+    },
+    dialogueTree: {
+      npcId: "guo_caitang",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["哼，菜鸟雷法师。", "别以为是雷系就了不起。", "……上次谢谢你救了我。"],
+          choices: [
+            { text: "请教冰系技巧", next: "about_ice" },
+            { text: "你和穆氏家族有关系？", next: "about_mu" },
+            { text: "告辞", next: "default", action: "back" }
+          ]
+        },
+        about_ice: {
+          id: "about_ice",
+          texts: ["冰系不仅是伤害，更是控制。", "冻结敌人，让队友有输出空间。", "菜鸟，好好学。"],
+          effects: { familiarity: 3, intelligence: 5 },
+          choices: [{ text: "明白了", next: "default", action: "back" }]
+        },
+        about_mu: {
+          id: "about_mu",
+          texts: ["……是有些亲戚关系。", "但我是我，穆氏是穆氏。", "别再问这个了。"],
+          effects: { familiarity: -2 },
+          choices: [{ text: "抱歉", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  xiao_ke: {
+    id: "xiao_ke",
+    name: "小可",
+    title: "城市猎妖队成员",
+    description: "博城城市猎妖队成员，水系法师，性格温柔可爱，有两颗小虎牙。掌握水系防御技能水御·化解，是队伍中唯一的防御型法师。战斗中容易紧张，但一直在努力成长。",
+    avatar: "assets/images/characters/xiao_ke.jpg",
+    location: "bo_city",
+    element: "water",
+    level: 8,
+    personality: ["温柔", "可爱", "努力", "容易紧张"],
+    baseStats: { hp: 140, mp: 100, attack: 18, defense: 18, speed: 10 },
+    skills: ["water_heal", "water_chain", "water_moist"],
+    faction: "city_hunters",
+    factionRank: "队员",
+    relationships: { mo_fan: 8, xu_dahuang: 10, guo_caitang: 8, li_wenjie: 8, fei_shi: 10 },
+    giftPreferences: {
+      loved: ["candy", "cute_accessories"],
+      liked: ["magic_herb", "healing_potion"],
+      disliked: [],
+      baseOpinionGain: 3,
+      lovedMultiplier: 2.5,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 3
+    },
+    dialogueTree: {
+      npcId: "xiao_ke",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["梵墨哥哥好！", "我的水御还不够熟练，总是紧张。", "有你在，我就安心多了。"],
+          choices: [
+            { text: "请教水系防御", next: "about_water" },
+            { text: "别紧张，你很棒", next: "encourage" },
+            { text: "告辞", next: "default", action: "back" }
+          ]
+        },
+        about_water: {
+          id: "about_water",
+          texts: ["水御·化解可以分解魔法攻击。", "但需要提前准备星轨，反应要快。", "我总是慢半拍，队长骂过我好多次。"],
+          effects: { familiarity: 5, intelligence: 8 },
+          choices: [{ text: "多练习就好", next: "default", action: "back" }]
+        },
+        encourage: {
+          id: "encourage",
+          texts: ["真、真的吗？", "谢谢你，梵墨哥哥！", "我会更加努力的！"],
+          effects: { familiarity: 8, happiness: 10 },
+          choices: [{ text: "加油", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  li_wenjie: {
+    id: "li_wenjie",
+    name: "黎文杰",
+    title: "城市猎妖队成员",
+    description: "博城城市猎妖队成员，风系法师，留着飘逸长发，性格潇洒自信。掌握风轨·闪步，可以快速变换方位，是队伍中的机动输出。面对妖魔从容不迫，实力不俗。",
+    avatar: "assets/images/characters/li_wenjie.jpg",
+    location: "bo_city",
+    element: "wind",
+    level: 9,
+    personality: ["潇洒", "自信", "飘逸", "实力强"],
+    baseStats: { hp: 150, mp: 85, attack: 25, defense: 10, speed: 20 },
+    skills: ["wind_blade", "wind_speed", "wind_tornado"],
+    faction: "city_hunters",
+    factionRank: "队员",
+    relationships: { mo_fan: 5, xu_dahuang: 10, guo_caitang: 8, xiao_ke: 8, fei_shi: 10 },
+    giftPreferences: {
+      loved: ["wind_crystal", "fashion_clothes"],
+      liked: ["magic_herb", "healing_potion"],
+      disliked: [],
+      baseOpinionGain: 2,
+      lovedMultiplier: 2.5,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 2
+    },
+    dialogueTree: {
+      npcId: "li_wenjie",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["哟，新来的雷法师。", "风系的飘逸，你学不来。", "不过雷系的麻痹确实好用。"],
+          choices: [
+            { text: "请教风轨·闪步", next: "about_wind" },
+            { text: "你很厉害", next: "compliment" },
+            { text: "告辞", next: "default", action: "back" }
+          ]
+        },
+        about_wind: {
+          id: "about_wind",
+          texts: ["风轨·疾行只是直线加速。", "闪步则可以快速变向，灵活性天差地别。", "这需要大量实战练习，学校里学不到。"],
+          effects: { familiarity: 5, intelligence: 10 },
+          choices: [{ text: "受教了", next: "default", action: "back" }]
+        },
+        compliment: {
+          id: "compliment",
+          texts: ["哈哈，那是自然。", "不过队长的火滋爆裂才是真的强。", "我们队伍每个人都有不可替代的作用。"],
+          effects: { familiarity: 5 },
+          choices: [{ text: "原来如此", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  fei_shi: {
+    id: "fei_shi",
+    name: "肥石",
+    title: "城市猎妖队成员",
+    description: "博城城市猎妖队成员，土系法师，圆润脸庞，总是戴着蓓蕾帽，性格随和爱笑。掌握土系位移技能地波，可以快速移动位置。经验老道，是队伍中的老大哥。",
+    avatar: "assets/images/characters/fei_shi.jpg",
+    location: "bo_city",
+    element: "earth",
+    level: 11,
+    personality: ["随和", "爱笑", "经验老道", "老大哥"],
+    baseStats: { hp: 220, mp: 70, attack: 22, defense: 25, speed: 8 },
+    skills: ["earth_shield", "earth_spike", "earth_quake", "earth_shift"],
+    faction: "city_hunters",
+    factionRank: "队员",
+    relationships: { mo_fan: 10, xu_dahuang: 15, guo_caitang: 10, xiao_ke: 12, li_wenjie: 12 },
+    giftPreferences: {
+      loved: ["earth_crystal", "good_food"],
+      liked: ["magic_herb", "healing_potion", "stamina_potion"],
+      disliked: [],
+      baseOpinionGain: 3,
+      lovedMultiplier: 2.5,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 3
+    },
+    dialogueTree: {
+      npcId: "fei_shi",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["小兄弟，来了啊。", "有啥不懂的尽管问我。", "土系的地波，赶路逃命都好用。"],
+          choices: [
+            { text: "请教地波技巧", next: "about_earth" },
+            { text: "城市猎妖队的日常", next: "about_daily" },
+            { text: "告辞", next: "default", action: "back" }
+          ]
+        },
+        about_earth: {
+          id: "about_earth",
+          texts: ["地波是通过控制地表挪动来移动。", "不需要自己跑，身体自动平移。", "熟练了可以在战斗中快速调整位置。"],
+          effects: { familiarity: 5, intelligence: 8 },
+          choices: [{ text: "学到了", next: "default", action: "back" }]
+        },
+        about_daily: {
+          id: "about_daily",
+          texts: ["城市猎妖队平时处理城市内的妖魔事件。", "比如下水道的巨眼猩鼠，或者潜伏的其他妖魔。", "比野外安全，但也不能掉以轻心。"],
+          effects: { familiarity: 3 },
+          choices: [{ text: "明白了", next: "default", action: "back" }]
+        }
+      }
+    }
   }
 };

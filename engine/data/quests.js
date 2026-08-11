@@ -1270,5 +1270,93 @@ const DataQuests = {
     dialogueStart: "你想挑战我的幽狼兽？有勇气！不过我提醒你，它比普通妖魔强得多，受刺激还会发狂。你可以正面战斗，也可以用环境智取。",
     dialogueInProgress: "幽狼兽的弱点是眼睛和腹部，发狂时会失去理智，这时候可以利用地形。钟乳石洞穴那种地方，就很适合用智商碾压。",
     dialogueComplete: "竟然真的做到了！不管是正面击败还是用智慧重创，都很了不起。S评分给你！这颗星尘魔器是斩空总教官让我给你的奖励。"
+  },
+  quest_city_hunter: {
+    id: "quest_city_hunter",
+    name: "加入城市猎妖队",
+    description: "博城城市猎妖队正在招募新队员，雷系法师特别受欢迎。去猎者联盟大厅看看吧。",
+    giver: "xu_dahuang",
+    type: "story",
+    objectives: [
+      { type: "reach", locationId: "bo_city", count: 1, description: "前往博城市街" },
+      { type: "talk", npcId: "xu_dahuang", count: 1, description: "与徐大荒队长对话" }
+    ],
+    rewards: {
+      exp: 150,
+      gold: 100,
+      items: [
+        { itemId: "healing_potion", count: 3 },
+        { itemId: "mana_potion", count: 2 }
+      ],
+      reputation: {
+        city_hunters: 20
+      }
+    },
+    prerequisites: ["quest_hunt_demon"],
+    nextQuest: "quest_mingwen_investigation",
+    isMainQuest: false,
+    autoStart: false,
+    dialogueStart: "城市猎妖队正在招新，雷系法师优先！你是雷系？太好了，直接录取！我是队长徐大荒，欢迎加入。",
+    dialogueInProgress: "城市猎妖队专门处理城市内的妖魔事件，比野外安全但责任更重。我们队里有冰系副队长彩棠、水系小可、风系黎文杰、土系肥石，加上你这个雷系，阵容齐了。",
+    dialogueComplete: "欢迎加入城市猎妖队！这是你的证件，现在你相当于博城的执法人员了。正好有个任务，铭文女子中学有女生失踪，我们需要去调查。"
+  },
+  quest_mingwen_investigation: {
+    id: "quest_mingwen_investigation",
+    name: "铭文女子中学失踪事件",
+    description: "铭文女子中学有女生失踪，食堂传出奇怪的震动和腐臭气味。前往调查真相。",
+    giver: "xu_dahuang",
+    type: "story",
+    objectives: [
+      { type: "reach", locationId: "mingwen_girls_school", count: 1, description: "前往铭文女子中学" },
+      { type: "reach", locationId: "mingwen_girls_school", count: 3, description: "探索校园寻找线索（前往3次）" },
+      { type: "talk", npcId: "ye_xinxia", count: 1, description: "向叶心夏了解情况" }
+    ],
+    rewards: {
+      exp: 200,
+      gold: 150,
+      items: [
+        { itemId: "healing_potion", count: 5 }
+      ],
+      reputation: {
+        city_hunters: 15
+      }
+    },
+    prerequisites: ["quest_city_hunter"],
+    nextQuest: "quest_hunt_giant_rat",
+    isMainQuest: false,
+    autoStart: false,
+    dialogueStart: "铭文女子中学有女生失踪，校方一开始压着不报，现在第二个女生失踪了才找我们。食堂有奇怪震动，你去调查一下。",
+    dialogueInProgress: "叶心夏说她嗅到了食堂飘来的腐臭气味，还感觉有东西在盯着她。看来食堂里一定藏着什么妖魔。",
+    dialogueComplete: "线索都指向食堂！看来是有妖魔潜伏在学校里。准备好战斗，我们去清理它！"
+  },
+  quest_hunt_giant_rat: {
+    id: "quest_hunt_giant_rat",
+    name: "猎杀巨眼猩鼠",
+    description: "铭文女子中学食堂里潜伏着一只巨眼猩鼠，它就是女生失踪的元凶。消灭它，保护学校安全。",
+    giver: "xu_dahuang",
+    type: "hunt",
+    objectives: [
+      { type: "kill", enemyId: "giant_eye_mole_rat", count: 1, description: "击败巨眼猩鼠" }
+    ],
+    rewards: {
+      exp: 300,
+      gold: 200,
+      items: [
+        { itemId: "rat_claw", count: 2 },
+        { itemId: "demon_core", count: 1 },
+        { itemId: "healing_potion", count: 5 }
+      ],
+      reputation: {
+        city_hunters: 30,
+        mingwen_school: 20
+      }
+    },
+    prerequisites: ["quest_mingwen_investigation"],
+    nextQuest: null,
+    isMainQuest: false,
+    autoStart: false,
+    dialogueStart: "巨眼猩鼠是奴仆级妖魔，生活在地下，眼睛能释放腥红穿透光束。它饥饿时会吃人，这只已经吃了两个女生，必须消灭！",
+    dialogueInProgress: "巨眼猩鼠速度很快，攻击频率高。注意躲避它的腥红光束，找机会反击。雷系的麻痹效果对它很有效。",
+    dialogueComplete: "干得漂亮！巨眼猩鼠被消灭了，铭文女子中学恢复了安全。校方非常感谢我们，给了丰厚的报酬。你这个雷法师，果然没招错！"
   }
 };

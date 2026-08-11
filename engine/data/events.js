@@ -1455,5 +1455,145 @@ const DataEvents = {
         resultText: "你深入洞穴，发现了一些妖魔活动的痕迹，看来这里并不安全。"
       }
     ]
+  },
+  event_mingwen_explore: {
+    id: "event_mingwen_explore",
+    name: "空旷校园",
+    description: "暑假的铭文女子中学空无一人，只有几只流浪猫在花圃中探头探脑。",
+    trigger: "exploring",
+    chance: 1.0,
+    conditions: { location: "mingwen_girls_school" },
+    choices: [
+      {
+        text: "在校园中散步",
+        effects: { stamina: -5, exp: 10 },
+        resultText: "你在空旷的校园中散步，感受着宁静的氛围，偶尔能听到远处传来的奇怪声响。"
+      },
+      {
+        text: "查看公告栏",
+        effects: { exp: 15, intelligence: 5 },
+        resultText: "公告栏上贴着失踪女生的寻人启事，已经有些发黄了。看来这件事已经发生一段时间了。"
+      }
+    ]
+  },
+  event_mingwen_clue: {
+    id: "event_mingwen_clue",
+    name: "奇怪的气味",
+    description: "你嗅到了一股食物发馊的奇怪味道，似乎是从食堂方向飘来的。",
+    trigger: "exploring",
+    chance: 0.5,
+    conditions: { location: "mingwen_girls_school" },
+    choices: [
+      {
+        text: "循着气味调查",
+        effects: { stamina: -10, exp: 20, setFlag: "mingwen_clue_found" },
+        resultText: "你循着气味来到食堂附近，味道越来越浓。你确定食堂里一定藏着什么东西。"
+      },
+      {
+        text: "暂时离开",
+        effects: { stamina: -5 },
+        resultText: "你决定暂时离开，等准备充分了再来调查。"
+      }
+    ]
+  },
+  event_cafeteria_investigate: {
+    id: "event_cafeteria_investigate",
+    name: "食堂调查",
+    description: "你进入了铭文女子中学的食堂，里面黑漆漆的，只有远处的灯光照亮了些许位置。整齐的餐桌餐椅冷冷清清地摆在那里。",
+    trigger: "exploring",
+    chance: 1.0,
+    conditions: { location: "mingwen_girls_school", action: "investigate_cafeteria" },
+    choices: [
+      {
+        text: "蹲在角落观察",
+        effects: { stamina: -10, exp: 15 },
+        resultText: "你蹲在一个角落，静静观察。突然，不知从什么地方发出了一阵响声，一个铁勺随着桌椅的晃动抖动起来。"
+      },
+      {
+        text: "直接去后厨",
+        effects: { stamina: -15, exp: 25, hp: -20 },
+        resultText: "你直接走向后厨，一股腐臭气味扑面而来。突然，一道腥红光线射来，你勉强躲开，但还是被擦伤了。"
+      }
+    ]
+  },
+  event_giant_eye_rat_encounter: {
+    id: "event_giant_eye_rat_encounter",
+    name: "巨眼猩鼠！",
+    description: "一只脖子粗得跟一人抱树的怪物从后厨冲了出来！它的脑袋上只有一个篮球大的眼睛和一张塞满发馊食物的大嘴！那只眼睛正在凝聚腥红色的能量！",
+    trigger: "exploring",
+    chance: 0.4,
+    conditions: { location: "mingwen_girls_school", action: "investigate_cafeteria" },
+    choices: [
+      {
+        text: "正面迎战！",
+        effects: { hp: -30, exp: 50, stamina: -20, setFlag: "giant_rat_encountered" },
+        resultText: "你与巨眼猩鼠展开激战！腥红光束擦过你的肩膀，火辣辣地疼。经过一番苦战，你终于击退了它，但它逃进了地下通道。你获得了宝贵的战斗经验。"
+      },
+      {
+        text: "快速撤退",
+        effects: { stamina: -20, hp: -10 },
+        resultText: "你转身就跑，腥红光束擦着你的肩膀飞过，火辣辣地疼。你成功逃出了食堂，但巨眼猩鼠还潜伏在那里。"
+      }
+    ]
+  },
+  event_library_study: {
+    id: "event_library_study",
+    name: "图书馆自习",
+    description: "铭文女子中学的图书馆安静而宽敞，书架上摆满了各种魔法书籍。",
+    trigger: "exploring",
+    chance: 1.0,
+    conditions: { location: "mingwen_girls_school", action: "visit_library" },
+    choices: [
+      {
+        text: "阅读魔法理论",
+        effects: { exp: 25, mp: 15, intelligence: 5 },
+        resultText: "你阅读了一本魔法理论书籍，对魔法的本质有了更深的理解。"
+      },
+      {
+        text: "查阅妖魔图鉴",
+        effects: { exp: 20, intelligence: 10, setFlag: "demon_encyclopedia_read" },
+        resultText: "你查阅了妖魔图鉴，了解了更多关于城市妖魔的知识，包括巨眼猩鼠的习性。"
+      }
+    ]
+  },
+  event_hunter_recruit: {
+    id: "event_hunter_recruit",
+    name: "城市猎妖队招新",
+    description: "猎者联盟大厅里，城市猎妖队正在招募新队员。队长徐大荒正在面试应聘者，看到你后眼睛一亮。",
+    trigger: "exploring",
+    chance: 0.5,
+    conditions: { location: "city_street", action: "hunter_alliance" },
+    choices: [
+      {
+        text: "上前报名",
+        effects: { exp: 20, setFlag: "city_hunter_recruit" },
+        resultText: "你走上前报名。徐大荒队长看了看你：'你是雷系法师？太好了，直接录取！欢迎加入城市猎妖队！'"
+      },
+      {
+        text: "先看看再说",
+        effects: { exp: 5 },
+        resultText: "你决定先看看情况。大厅里人来人往，各种悬赏信息在大屏幕上滚动。"
+      }
+    ]
+  },
+  event_hunter_bounty: {
+    id: "event_hunter_bounty",
+    name: "悬赏任务",
+    description: "猎者联盟大厅的大屏幕上公布着各种悬赏任务，从奴仆级到战将级都有。",
+    trigger: "exploring",
+    chance: 0.4,
+    conditions: { location: "city_street", action: "hunter_alliance" },
+    choices: [
+      {
+        text: "查看奴仆级悬赏",
+        effects: { exp: 10, gold: 0 },
+        resultText: "奴仆级悬赏大多是猎杀独眼魔狼、巨眼猩鼠等常见妖魔，报酬在1-5万金币之间。"
+      },
+      {
+        text: "查看战将级悬赏",
+        effects: { exp: 15 },
+        resultText: "战将级悬赏报酬丰厚，但危险极高。以你现在的实力，还不是对手。"
+      }
+    ]
   }
 };

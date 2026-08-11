@@ -859,5 +859,31 @@ const DataEnemies = {
       { itemId: "magic_herb", chance: 0.4, min: 1, max: 1 }
     ],
     locations: ["baicao_valley", "xuefeng_mountain"]
+  },
+  giant_eye_mole_rat: {
+    id: "giant_eye_mole_rat",
+    name: "巨眼猩鼠",
+    title: "奴仆级妖魔",
+    description: "长期生活在土壤里的妖魔，挖地洞的能手，更喜欢生存在城市下水道和垃圾场。脖子可以伸长，篮球大的眼睛会释放穿透腥红暗光束。繁衍速度极快，生存能力强，一般只吃人类残羹冷炙，饥饿到一定程度才会吃人。",
+    level: 4,
+    elements: ["dark"],
+    maxHp: 120,
+    attack: 18,
+    defense: 8,
+    speed: 14,
+    skills: ["basic_attack", "dark_bolt"],
+    specialAbility: "腥红光束：远程穿透攻击，无视部分防御",
+    spriteColor: "#8b4513",
+    isEnemy: true,
+    canBurrow: true,
+    ignoreDefense: 0.3,
+    expReward: 80,
+    goldReward: 40,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.3, min: 1, max: 1 },
+      { itemId: "magic_herb", chance: 0.3, min: 1, max: 1 },
+      { itemId: "rat_claw", chance: 0.5, min: 1, max: 2 }
+    ],
+    locations: ["city_street", "mingwen_girls_school"]
   }
 };

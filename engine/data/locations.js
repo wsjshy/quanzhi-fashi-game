@@ -296,8 +296,26 @@ const DataLocations = {
           "book_shop_owner",
           "magic_association_chairman",
           "mysterious_mage",
-          "hunter_receptionist"
+          "hunter_receptionist",
+          "xu_dahuang",
+          "guo_caitang",
+          "xiao_ke",
+          "li_wenjie",
+          "fei_shi"
         ]
+      },
+      {
+        id: "hunter_alliance",
+        name: "猎者联盟大厅",
+        description: "猎者联盟大厅，接悬赏、加入猎妖队的地方。墙上的大屏幕公布着最新悬赏。",
+        icon: "🏛️",
+        timeCost: 1,
+        staminaCost: 5,
+        effects: { exp: 10 },
+        eventChance: 0.3,
+        events: ["event_hunter_recruit", "event_hunter_bounty"],
+        npcs: ["xu_dahuang", "guo_caitang", "xiao_ke", "li_wenjie", "fei_shi"],
+        npcRate: 0.6
       }
     ],
     connectedLocations: [
@@ -861,6 +879,68 @@ const DataLocations = {
       "one_eye_wolf"
     ],
     enemyRate: 0.35,
+    isSafeZone: false,
+    shops: []
+  },
+  mingwen_girls_school: {
+    id: "mingwen_girls_school",
+    name: "铭文女子中学",
+    description: "博城著名的贵族女子中学，校园宽敞豪华。暑假期间学生稀少，但近期发生了女生失踪事件，食堂传出奇怪的震动和腐臭气味。城市猎妖队已介入调查。",
+    icon: "🏫",
+    backgroundColor: "#4a3a5a",
+    unlocked: false,
+    unlockCondition: { level: 5, quest: "quest_city_hunter" },
+    connectedLocations: ["city_street"],
+    actions: [
+      {
+        id: "explore_campus",
+        name: "探索校园",
+        description: "在空旷的校园中探索，寻找线索",
+        icon: "🔍",
+        timeCost: 2,
+        staminaCost: 10,
+        effects: { exp: 15 },
+        eventChance: 0.4,
+        events: ["event_mingwen_explore", "event_mingwen_clue"]
+      },
+      {
+        id: "investigate_cafeteria",
+        name: "调查食堂",
+        description: "深入调查传出怪声的食堂，可能遇到危险",
+        icon: "🍽️",
+        timeCost: 2,
+        staminaCost: 15,
+        effects: { exp: 25 },
+        eventChance: 0.6,
+        events: ["event_cafeteria_investigate", "event_giant_eye_rat_encounter"]
+      },
+      {
+        id: "visit_library",
+        name: "图书馆",
+        description: "在学校图书馆阅读，提升知识",
+        icon: "📚",
+        timeCost: 2,
+        staminaCost: 5,
+        effects: { exp: 20, mp: 10 },
+        eventChance: 0.2,
+        events: ["event_library_study"]
+      },
+      {
+        id: "meet_ye_xinxia",
+        name: "探望叶心夏",
+        description: "探望在小姑家休养的叶心夏",
+        icon: "👧",
+        timeCost: 1,
+        staminaCost: 5,
+        effects: { happiness: 10 },
+        npcs: ["ye_xinxia"],
+        npcRate: 0.8
+      }
+    ],
+    npcs: ["ye_xinxia"],
+    npcRate: 0.3,
+    enemies: ["giant_eye_mole_rat"],
+    enemyRate: 0.25,
     isSafeZone: false,
     shops: []
   }

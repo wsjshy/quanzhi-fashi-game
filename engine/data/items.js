@@ -652,5 +652,19 @@ const DataItems = {
       { name: "铁壁护盾", type: "shield", value: 30, duration: 99, chance: 1.0 },
       { name: "铁壁防御", type: "defense_up", duration: 3, chance: 1.0, statModifiers: { defense: 10 } }
     ]
+  },
+  rat_claw: {
+    id: "rat_claw",
+    name: "猩鼠利爪",
+    description: "巨眼猩鼠的锋利爪子，坚硬如铁，是制作魔器的好材料。猎者联盟收购价不低。",
+    type: "material",
+    icon: "🦷",
+    price: 25,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "普通",
+    lore: "巨眼猩鼠的利爪，挖洞能手的证明。"
   }
 };
