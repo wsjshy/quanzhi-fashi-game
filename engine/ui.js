@@ -671,6 +671,8 @@ const UI = {
                                 let actionName = action.name;
                                 let actionDesc = action.description;
                                 let expReward = action.effects?.exp || 0;
+                                let isSkippingClass = false;
+                                
                                 if (action.isClassAction) {
                                     const currentClass = TimeSystem.getCurrentClass(location);
                                     if (currentClass) {
@@ -683,28 +685,35 @@ const UI = {
                                         actionDesc = '当前没有课程，自由自习获得少量经验';
                                         expReward = action.effects?.exp || 5;
                                     }
+                                } else {
+                                    // 检查是否是逃课
+                                    const currentClass = TimeSystem.getCurrentClass(location);
+                                    if (currentClass && action.id !== 'sleep' && action.id !== 'rest') {
+                                        isSkippingClass = true;
+                                    }
                                 }
                                 return `
                                 <button onclick="Game.performAction('${action.id}')" style="
                                     padding: 18px 25px;
                                     background: linear-gradient(135deg, rgba(40, 40, 80, 0.8), rgba(60, 60, 120, 0.8));
-                                    border: 2px solid #444477;
+                                    border: 2px solid ${isSkippingClass ? '#cc6644' : '#444477'};
                                     border-radius: 10px;
                                     color: #e0e0ff;
                                     cursor: pointer;
                                     text-align: left;
                                     transition: all 0.3s;
                                     font-size: 16px;
-                                " onmouseover="this.style.borderColor='#7777bb'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#444477'; this.style.transform='translateX(0)'">
+                                " onmouseover="this.style.borderColor='${isSkippingClass ? '#ff8866' : '#7777bb'}'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='${isSkippingClass ? '#cc6644' : '#444477'}'; this.style.transform='translateX(0)'">
                                     <div style="font-size: 18px; margin-bottom: 5px;">
                                         ${action.icon || '🔹'} ${actionName}
+                                        ${isSkippingClass ? '<span style="color: #ff6644; font-size: 13px; margin-left: 8px;">⚠️ 逃课</span>' : ''}
                                         <span style="font-size: 12px; color: #888; float: right; display: flex; gap: 10px; align-items: center;">
                                             <span style="color: #aaddff;" title="时间消耗">⏱️ ${action.timeCost}h</span>
                                             <span style="color: #ff9966;" title="体力消耗">⚡ -${action.staminaCost !== undefined ? action.staminaCost : 10}</span>
                                             ${expReward ? `<span style="color: #ffd700;" title="经验奖励">✨ +${expReward}</span>` : ''}
                                         </span>
                                     </div>
-                                    <div style="font-size: 13px; color: #999;">${actionDesc}</div>
+                                    <div style="font-size: 13px; color: #999;">${actionDesc}${isSkippingClass ? '<span style="color: #ff6644;">（逃课会扣班级声望）</span>' : ''}</div>
                                 </button>
                             `}).join('')}
                         </div>
