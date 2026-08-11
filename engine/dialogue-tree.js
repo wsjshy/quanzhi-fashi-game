@@ -241,6 +241,11 @@ const DialogueTree = {
             this._executeAction(choice.action, choice.actionData);
         }
 
+        // 如果是返回/关闭动作，直接结束对话，不再跳转
+        if (choice.action === 'back' || choice.action === 'close_dialogue') {
+            return this.endDialogue();
+        }
+
         // 跳转到下一个节点
         if (choice.next || choice.nextNode) {
             this.currentNode = choice.next || choice.nextNode;

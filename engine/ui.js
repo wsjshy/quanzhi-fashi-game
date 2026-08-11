@@ -2157,7 +2157,6 @@ const UI = {
                         font-size: 15px;
                         display: inline-block;
                     ">关闭</div>
-                    ">关闭</button>
                 </div>
                 
                 <div style="flex: 1; padding: 40px; overflow-y: auto;">
