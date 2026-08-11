@@ -23,6 +23,105 @@ const TimeSystem = {
     NORMAL_SLEEP_HOUR: 22,
     // 晚睡截止时间
     LATE_SLEEP_HOUR: 24,
+    
+    // ========== 日历系统 ==========
+    // 游戏开始日期：博城历 2008年9月1日 周一（与小说莫凡入学时间一致）
+    // 第1天 = 2008年9月1日
+    START_YEAR: 2008,
+    START_MONTH: 9,
+    START_DAY: 1,
+    START_WEEKDAY: 1, // 0=周日, 1=周一, 2=周二, ..., 6=周六
+    
+    // 每月天数（非闰年）
+    DAYS_IN_MONTH: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
+    
+    // 星期名称
+    WEEKDAY_NAMES: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+    
+    /**
+     * 判断是否闰年
+     */
+    isLeapYear(year) {
+        return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+    },
+    
+    /**
+     * 获取某月的天数
+     */
+    getDaysInMonth(year, month) {
+        if (month === 2 && this.isLeapYear(year)) {
+            return 29;
+        }
+        return this.DAYS_IN_MONTH[month - 1];
+    },
+    
+    /**
+     * 根据第几天计算具体的年月日
+     * @param {number} dayNum - 第几天（从1开始）
+     * @returns {Object} { year, month, day, weekday }
+     */
+    getDateFromDayNum(dayNum) {
+        let year = this.START_YEAR;
+        let month = this.START_MONTH;
+        let day = this.START_DAY;
+        let weekday = this.START_WEEKDAY;
+        
+        // 减去第1天，从第0天开始算
+        let daysRemaining = dayNum - 1;
+        
+        while (daysRemaining > 0) {
+            const daysInCurrentMonth = this.getDaysInMonth(year, month);
+            const daysLeftInMonth = daysInCurrentMonth - day + 1;
+            
+            if (daysRemaining < daysLeftInMonth) {
+                day += daysRemaining;
+                weekday = (weekday + daysRemaining) % 7;
+                daysRemaining = 0;
+            } else {
+                daysRemaining -= daysLeftInMonth;
+                weekday = (weekday + daysLeftInMonth) % 7;
+                month++;
+                day = 1;
+                if (month > 12) {
+                    month = 1;
+                    year++;
+                }
+            }
+        }
+        
+        return { year, month, day, weekday };
+    },
+    
+    /**
+     * 获取当前日期信息
+     */
+    getCurrentDate() {
+        return this.getDateFromDayNum(Player.day);
+    },
+    
+    /**
+     * 获取当前日期字符串（如：2008年9月1日）
+     */
+    getDateString() {
+        const date = this.getCurrentDate();
+        return `${date.year}年${date.month}月${date.day}日`;
+    },
+    
+    /**
+     * 获取当前星期几
+     */
+    getWeekday() {
+        const date = this.getCurrentDate();
+        return this.WEEKDAY_NAMES[date.weekday];
+    },
+    
+    /**
+     * 获取完整日期字符串（如：2008年9月1日 周一）
+     */
+    getFullDateString() {
+        const date = this.getCurrentDate();
+        return `${date.year}年${date.month}月${date.day}日 ${this.WEEKDAY_NAMES[date.weekday]}`;
+    },
 
     /**
      * 推进时间
