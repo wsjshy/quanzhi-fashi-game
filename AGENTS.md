@@ -8,7 +8,7 @@
 
 ### 1.1 项目基本信息
 - **项目名称**：全职法师网页游戏（基于小说《全职法师》开发）
-- **当前版本**：v0.5.0
+- **当前版本**：v0.5.2
 - **分支**：master，直接在master开发
 - **项目根目录**：`C:\Users\22210\Desktop\quanzhi-fashi-game-master\`
 - **小说文件**：`C:\Users\22210\Desktop\全职法师.txt`（3370章，23MB，UTF-8编码）
@@ -17,6 +17,8 @@
 - **入口**：`index.html`，双击即玩，无需HTTP服务器（file://协议可运行）
 - **操作系统**：Windows，命令行使用PowerShell语法（不支持&&，用分号;分隔）
 - **Gitee远程**：https://gitee.com/wsjshy/quanzhi-fashi-game.git
+- **GitHub远程**：https://github.com/wsjshy/quanzhi-fashi-game.git
+- **GitHub Pages**：https://wsjshy.github.io/quanzhi-fashi-game/（已部署）
 
 ### 1.2 第一步该做什么
 1. **打开游戏玩一遍**：双击 `index.html`，了解当前游戏状态
@@ -72,9 +74,10 @@
 ### 2.5 测试与调试类
 | 文档 | 用途 | 何时阅读 |
 |------|------|---------|
-| `docs/UI元素坐标参考.md` | 各界面按钮坐标，用于自动化测试 | **测试UI点击时必读** |
-| `docs/多Agent并行黑盒测试方法论.md` | 多Agent测试方法论，分段接力测试 | 安排测试任务时必读 |
-| `docs/测试反馈与开发进度跟踪.md` | 测试bug跟踪，优化建议跟踪，迭代记录 | 需要了解测试进度和bug列表时 |
+| `docs/测试用例与发布检查清单.md` | **完整测试用例 + 发布前检查清单 + Bug模式总结** | **每次发布前必读**，开发自测也参考 |
+| `docs/UI元素坐标参考.md` | 各界面按钮坐标，用于自动化测试 | 测试UI点击时参考 |
+| `docs/多Agent并行黑盒测试方法论.md` | 多Agent测试方法论，分段接力测试 | 安排测试任务时参考 |
+| `docs/测试反馈与开发进度跟踪.md` | 测试bug跟踪，优化建议跟踪，迭代记录 | 了解测试进度和bug列表 |
 | `docs/开发踩坑记录与通用经验.md` | 踩坑经验总结，避免重复踩坑 | 遇到问题时先看这个 |
 
 ### 2.6 攻略与玩法类
@@ -144,6 +147,48 @@ cd C:\Users\22210\Desktop\quanzhi-fashi-game-master
 - 全局错误捕获div已在index.html中保留（默认隐藏）
 - 字符串拼接用模板字符串`` ` ``，不用+号
 - 变量命名用驼峰命名法
+
+### 3.5 测试与发布规范（重要！）
+
+#### 开发自测要求（每次提交前必须做）
+1. **语法检查**：所有修改的JS文件必须通过 `node --check` 检查
+2. **基本功能测试**：本地打开游戏，测试新增功能的基本流程
+3. **关联功能测试**：测试相关联的旧功能是否受影响
+4. **数据一致性检查**：检查所有引用的ID（物品/敌人/地点/技能等）是否存在
+5. **消息系统测试**（重点！最高风险模块）：
+   - 测试单条消息显示和关闭
+   - **测试连续多条消息**（最容易出bug的场景）
+   - 确认关闭后界面可正常点击
+6. **文档同步**：更新 TODO.md 和 CHANGELOG.md
+
+#### 发布前检查清单（推送部署前必须完成）
+完整清单见：`docs/测试用例与发布检查清单.md`
+
+**必测项**：
+- [ ] 角色创建流程完整测试
+- [ ] 消息弹窗系统完整测试（连续多条消息场景）
+- [ ] 妖魔图鉴打开测试
+- [ ] 战斗系统基本测试
+- [ ] 存档/读档测试
+- [ ] 新增功能完整测试
+- [ ] 手机端基本测试（用户主要用手机玩）
+
+#### 版本发布流程
+1. **开发阶段**：本地开发，自测通过
+2. **测试阶段**：按测试用例逐项验证，修复所有bug
+3. **版本准备**：
+   - 更新版本号（player.js / ui.js）
+   - 更新 CHANGELOG.md
+   - 更新 TODO.md
+   - 提交版本更新
+4. **推送部署**：推送到 GitHub，等待 GitHub Pages 自动部署
+5. **部署验证**：部署后在线验证基本功能正常
+
+#### 最高风险模块（修改时要特别小心）
+1. **消息弹窗系统** - 涉及全局事件监听，最容易导致界面卡住
+2. **战斗系统** - 状态多，逻辑复杂，容易卡死
+3. **存档/读档系统** - 数据丢失是严重问题
+4. **任务系统** - 容易出现无限递归等问题
 
 ---
 
@@ -263,6 +308,44 @@ cd C:\Users\22210\Desktop\quanzhi-fashi-game-master
 - **修复**：改用getCurrentPeriodInfo()获取时段图标和名称，去掉重复的getTimeDescription()
 - **位置**：engine/ui.js 顶部状态栏渲染
 - **经验**：改UI时要检查有没有重复显示的内容
+
+#### Bug 9：妖魔图鉴 enemies.sort 不是函数
+- **现象**：点击妖魔图鉴报错"enemies.sort is not a function"，图鉴完全打不开
+- **根本原因**：DataManager.getAllEnemies() 返回的是对象 `{}`，不是数组 `[]`，而对象没有 sort 方法
+- **修复**：使用 `Object.values()` 将对象转为数组：`const enemies = Object.values(DataManager.getAllEnemies());`
+- **位置**：engine/ui.js renderBestiary方法
+- **经验**：
+  - getAllXxx() 类方法返回值可能是对象也可能是数组，调用数组方法前要确认类型
+  - 统一数据返回格式，尽量统一返回数组
+  - 调用 sort/map/filter 等数组方法前，先用 Object.values() 转一下
+
+#### Bug 10：消息弹窗后界面完全卡住（全局点击拦截器泄漏）
+- **现象**：点击一次学习/修炼后，界面什么都点不了了，所有按钮都没反应，必须刷新页面
+- **根本原因**：连续多条消息时，后面的消息会覆盖全局变量 `_globalClickInterceptor`，导致前面消息的拦截器函数引用丢失，无法被移除，永远拦截所有点击事件
+- **详细分析**：
+  1. 第一条消息显示，创建拦截器A，`_globalClickInterceptor = 拦截器A`
+  2. 第一条消息关闭，setTimeout 500ms 后移除 `_globalClickInterceptor`（此时还是A）
+  3. 第二条消息立即显示，创建拦截器B，`_globalClickInterceptor = 拦截器B`
+  4. 第一条消息的 setTimeout 触发，移除 `_globalClickInterceptor`（现在是B了！）
+  5. 结果：拦截器B被移除，拦截器A永远留在那里，拦截所有点击！
+- **修复**：使用闭包局部变量保存每条消息自己的拦截器引用，不依赖全局变量
+  ```javascript
+  // 创建局部变量保存拦截器引用
+  const clickInterceptor = (e) => { ... };
+  document.addEventListener('click', clickInterceptor, true);
+  // closeMessage 中移除自己的拦截器
+  setTimeout(() => {
+      document.removeEventListener('click', clickInterceptor, true);
+  }, 500);
+  ```
+- **位置**：engine/ui.js _showSingleMessage 和 closeMessage 方法
+- **附加防护**：在 performAction 中添加卡住检测与自动恢复机制
+- **经验**：
+  - **事件监听器是最高风险的bug来源**，一定要确保能被正确移除
+  - 不要用全局变量保存监听器引用，特别是有多个同类实例时
+  - 每条消息/弹窗管理自己的监听器，用闭包保存引用
+  - 添加安全超时机制，确保监听器一定会被移除
+  - 添加卡住检测与自动恢复机制作为最后一道防线
 
 ### 5.2 UI交互经验
 
