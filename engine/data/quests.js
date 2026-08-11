@@ -1656,10 +1656,11 @@ const DataQuests = {
   quest_second_element: {
     id: "quest_second_element",
     name: "第二系觉醒",
-    description: "学期末，学校将为达到中阶魔法师水平的学生举行第二系觉醒仪式。你需要将等级提升到5级以上。",
+    description: "学期末，学校将为达到中阶魔法师水平的学生举行第二系觉醒仪式。你需要将等级提升到8级，然后参加觉醒仪式。",
     giver: "tang_yue",
     type: "story",
     objectives: [
+      { type: "level", count: 8, description: "等级达到 8 级" },
       { type: "reach", locationId: "tianlan_school", count: 1, description: "参加第二系觉醒仪式" }
     ],
     rewards: {

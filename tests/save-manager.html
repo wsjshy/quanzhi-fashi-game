@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全职法师 - 存档管理工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .section h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #48dbfb;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .btn-info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            color: #fff;
+            font-family: monospace;
+            font-size: 12px;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+        .save-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .save-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .save-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        .save-item h3 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #feca57;
+        }
+        .save-item p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+        .info {
+            background: rgba(72, 219, 251, 0.1);
+            border-left: 4px solid #48dbfb;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        input[type="text"], input[type="number"] {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 13px;
+        }
+        .status {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
+        }
+        .status.success {
+            background: rgba(17, 153, 142, 0.2);
+            border: 1px solid #11998e;
+            color: #38ef7d;
+            display: block;
+        }
+        .status.error {
+            background: rgba(245, 87, 108, 0.2);
+            border: 1px solid #f5576c;
+            color: #f5576c;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧙‍♂️ 全职法师 - 存档管理工具</h1>
+
+        <div class="info">
+            <strong>使用说明：</strong><br>
+            1. 本工具用于管理游戏存档，导入导出测试存档<br>
+            2. 游戏存档存在浏览器的 localStorage 中，key 为 "quanzhi_fashi_save"<br>
+            3. 请在游戏同一域名下打开本工具，才能访问游戏存档
+        </div>
+
+        <!-- 当前存档信息 -->
+        <div class="section">
+            <h2>📊 当前存档信息</h2>
+            <div id="saveInfo">加载中...</div>
+            <div class="row" style="margin-top: 15px;">
+                <button class="btn btn-info" onclick="refreshInfo()">刷新信息</button>
+                <button class="btn btn-warning" onclick="clearSave()">清空当前存档</button>
+            </div>
+            <div id="status1" class="status"></div>
+        </div>
+
+        <!-- 导出存档 -->
+        <div class="section">
+            <h2>📤 导出存档</h2>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 10px;">
+                将当前游戏存档导出为 JSON 文本或文件
+            </p>
+            <textarea id="exportText" placeholder="点击下方按钮导出存档..."></textarea>
+            <div class="row">
+                <button class="btn btn-success" onclick="exportSave()">导出存档到文本框</button>
+                <button class="btn btn-info" onclick="downloadSave()">下载为文件</button>
+                <button class="btn" onclick="copySave()">复制到剪贴板</button>
+            </div>
+            <div id="status2" class="status"></div>
+        </div>
+
+        <!-- 导入存档 -->
+        <div class="section">
+            <h2>📥 导入存档</h2>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 10px;">
+                将存档 JSON 文本导入到游戏中（会覆盖当前存档！）
+            </p>
+            <textarea id="importText" placeholder="粘贴存档 JSON 文本到这里..."></textarea>
+            <div class="row">
+                <button class="btn btn-warning" onclick="importSave()">导入存档</button>
+                <button class="btn" onclick="clearImport()">清空</button>
+            </div>
+            <div id="status3" class="status"></div>
+        </div>
+
+        <!-- 测试存档列表 -->
+        <div class="section">
+            <h2>🎮 测试存档列表</h2>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 10px;">
+                点击存档可以查看详情，一键导入用于测试
+            </p>
+            <div class="save-list" id="saveList">
+                <div style="grid-column: 1/-1; text-align: center; padding: 20px; color: rgba(255,255,255,0.5);">
+                    存档列表加载中...
+                </div>
+            </div>
+            <div id="status4" class="status"></div>
+        </div>
+
+        <!-- 存档生成器 -->
+        <div class="section">
+            <h2>⚙️ 快速生成测试存档</h2>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 15px;">
+                快速生成指定参数的测试存档（基于当前存档修改）
+            </p>
+            <div class="row" style="margin-bottom: 10px;">
+                <label>等级：</label>
+                <input type="number" id="genLevel" value="1" min="1" max="50" style="width: 80px;">
+                <label>金币：</label>
+                <input type="number" id="genGold" value="100" min="0" style="width: 100px;">
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <label>天数：</label>
+                <input type="number" id="genDay" value="1" min="1" style="width: 80px;">
+                <label>地点：</label>
+                <input type="text" id="genLocation" value="tianlan_school" style="width: 150px;">
+            </div>
+            <div class="row">
+                <button class="btn btn-success" onclick="generateSave()">生成并导入存档</button>
+            </div>
+            <div id="status5" class="status"></div>
+        </div>
+    </div>
+
+    <script>
+        const SAVE_KEY = 'quanzhi_fashi_save';
+
+        // 测试存档列表（预设）
+        const testSaves = [
+            {
+                name: 'save_01_newbie_lvl1',
+                desc: 'Lv.1，第1天，天澜魔法高中，初始状态',
+                scenario: '新手体验、角色创建、初期引导'
+            },
+            {
+                name: 'save_02_early_lvl3',
+                desc: 'Lv.3，第3天，天澜魔法高中，基础技能',
+                scenario: '基础玩法、任务系统、背包商店'
+            },
+            {
+                name: 'save_03_mid_lvl5',
+                desc: 'Lv.5，第7天，博城市街，多个地点',
+                scenario: '地图探索、日常系统、中期玩法'
+            },
+            {
+                name: 'save_04_pre_disaster',
+                desc: 'Lv.8，第40天，雪峰山，中阶技能',
+                scenario: '大事件系统、博城灾难、高阶玩法'
+            },
+            {
+                name: 'save_05_battle_test',
+                desc: 'Lv.5，第10天，雪峰山，全套装备',
+                scenario: '战斗系统专项测试'
+            },
+            {
+                name: 'save_06_economy_test',
+                desc: 'Lv.4，第5天，博城市街，大量金币',
+                scenario: '经济系统、商店、装备强化'
+            }
+        ];
+
+        function showStatus(id, msg, type) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.className = 'status ' + type;
+            setTimeout(() => {
+                el.className = 'status';
+            }, 3000);
+        }
+
+        function refreshInfo() {
+            const saveStr = localStorage.getItem(SAVE_KEY);
+            const infoEl = document.getElementById('saveInfo');
+            
+            if (!saveStr) {
+                infoEl.innerHTML = '<span style="color: #f5576c;">❌ 当前没有存档</span>';
+                return;
+            }
+
+            try {
+                const data = JSON.parse(saveStr);
+                infoEl.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 13px;">
+                        <div>角色名：<strong>${data.name || '冒险者'}</strong></div>
+                        <div>等级：<strong>Lv.${data.level || 1}</strong></div>
+                        <div>经验：<strong>${data.exp || 0} / ${data.expToNext || 0}</strong></div>
+                        <div>金币：<strong>${data.gold || 0}</strong></div>
+                        <div>HP：<strong>${data.hp || 0} / ${data.maxHp || 0}</strong></div>
+                        <div>MP：<strong>${data.mp || 0} / ${data.maxMp || 0}</strong></div>
+                        <div>天数：<strong>第${data.day || 1}天</strong></div>
+                        <div>地点：<strong>${data.currentLocation || '未知'}</strong></div>
+                        <div>游戏版本：<strong>${data.gameVersion || '未知'}</strong></div>
+                        <div>存档版本：<strong>${data.saveVersion || '未知'}</strong></div>
+                        <div>已学技能：<strong>${(data.skills || []).length}个</strong></div>
+                        <div>已完成任务：<strong>${(data.completedQuests || []).length}个</strong></div>
+                    </div>
+                `;
+            } catch (e) {
+                infoEl.innerHTML = '<span style="color: #f5576c;">❌ 存档数据损坏：' + e.message + '</span>';
+            }
+        }
+
+        function exportSave() {
+            const saveStr = localStorage.getItem(SAVE_KEY);
+            if (!saveStr) {
+                showStatus('status2', '当前没有存档！', 'error');
+                return;
+            }
+            document.getElementById('exportText').value = saveStr;
+            showStatus('status2', '存档已导出到文本框', 'success');
+        }
+
+        function downloadSave() {
+            const saveStr = localStorage.getItem(SAVE_KEY);
+            if (!saveStr) {
+                showStatus('status2', '当前没有存档！', 'error');
+                return;
+            }
+            const blob = new Blob([saveStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'quanzhi_fashi_save_' + new Date().toISOString().slice(0, 10) + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showStatus('status2', '存档文件已下载', 'success');
+        }
+
+        function copySave() {
+            const saveStr = localStorage.getItem(SAVE_KEY);
+            if (!saveStr) {
+                showStatus('status2', '当前没有存档！', 'error');
+                return;
+            }
+            navigator.clipboard.writeText(saveStr).then(() => {
+                showStatus('status2', '存档已复制到剪贴板', 'success');
+            }).catch(() => {
+                showStatus('status2', '复制失败，请手动复制', 'error');
+            });
+        }
+
+        function importSave() {
+            const text = document.getElementById('importText').value.trim();
+            if (!text) {
+                showStatus('status3', '请先粘贴存档文本！', 'error');
+                return;
+            }
+            try {
+                JSON.parse(text); // 验证JSON格式
+                localStorage.setItem(SAVE_KEY, text);
+                refreshInfo();
+                showStatus('status3', '存档导入成功！刷新游戏页面即可生效', 'success');
+            } catch (e) {
+                showStatus('status3', '导入失败：JSON格式错误 - ' + e.message, 'error');
+            }
+        }
+
+        function clearImport() {
+            document.getElementById('importText').value = '';
+        }
+
+        function clearSave() {
+            if (!confirm('确定要清空当前存档吗？此操作不可恢复！')) {
+                return;
+            }
+            localStorage.removeItem(SAVE_KEY);
+            refreshInfo();
+            showStatus('status1', '存档已清空', 'success');
+        }
+
+        function loadSaveList() {
+            const listEl = document.getElementById('saveList');
+            listEl.innerHTML = testSaves.map(save => `
+                <div class="save-item" onclick="loadTestSave('${save.name}')">
+                    <h3>${save.name}</h3>
+                    <p>${save.desc}</p>
+                    <p style="margin-top: 5px; color: #48dbfb;">适用：${save.scenario}</p>
+                </div>
+            `).join('');
+        }
+
+        function loadTestSave(name) {
+            // 这里应该从文件加载，暂时先提示
+            showStatus('status4', '存档 ' + name + ' 正在准备中...（需手动导入）', 'info');
+        }
+
+        function generateSave() {
+            const saveStr = localStorage.getItem(SAVE_KEY);
+            if (!saveStr) {
+                showStatus('status5', '需要先有一个基础存档！', 'error');
+                return;
+            }
+
+            try {
+                const data = JSON.parse(saveStr);
+                
+                // 修改参数
+                const level = parseInt(document.getElementById('genLevel').value) || 1;
+                const gold = parseInt(document.getElementById('genGold').value) || 0;
+                const day = parseInt(document.getElementById('genDay').value) || 1;
+                const location = document.getElementById('genLocation').value || 'tianlan_school';
+
+                data.level = level;
+                data.gold = gold;
+                data.day = day;
+                data.currentLocation = location;
+                
+                // 重新计算expToNext
+                data.expToNext = Math.floor(100 * Math.pow(1.5, level - 1));
+                data.exp = 0;
+                
+                // 重新计算属性
+                data.maxHp = 100 + (level - 1) * 15;
+                data.maxMp = 50 + (level - 1) * 8;
+                data.attack = 10 + (level - 1) * 2;
+                data.defense = 5 + (level - 1) * 1;
+                data.speed = 10 + (level - 1) * 1;
+                data.spirit = 10 + (level - 1) * 2;
+                data.hp = data.maxHp;
+                data.mp = data.maxMp;
+                
+                // 属性点
+                data.attributePoints = (level - 1) * 3;
+
+                localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+                refreshInfo();
+                showStatus('status5', '测试存档生成成功！', 'success');
+            } catch (e) {
+                showStatus('status5', '生成失败：' + e.message, 'error');
+            }
+        }
+
+        // 初始化
+        refreshInfo();
+        loadSaveList();
+    </script>
+</body>
+</html>

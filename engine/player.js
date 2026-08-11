@@ -4,8 +4,8 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.5.2';
-const SAVE_VERSION = '0.5.2';
+const GAME_VERSION = '0.5.3';
+const SAVE_VERSION = '0.5.3';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
 const SKILL_UNLOCK_TABLE = {
@@ -307,6 +307,15 @@ const Player = {
             levelUps.push(this.level);
             allNewSkills.push(...(result.newSkills || []));
             if (result.canAwaken) canAwaken = true;
+        }
+        
+        // 更新等级相关的任务进度
+        if (typeof QuestSystem !== 'undefined' && levelUps.length > 0) {
+            try {
+                QuestSystem.updateProgress('level');
+            } catch (e) {
+                console.warn('[玩家] 更新等级任务进度失败:', e);
+            }
         }
         
         return { levelUps, newSkills: allNewSkills, canAwaken };

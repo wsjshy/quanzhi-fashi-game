@@ -57,6 +57,9 @@ const QuestSystem = {
         
         Player.activeQuests.push(activeQuest);
         
+        // 立即检查等级目标（如果玩家等级已经达标，直接更新进度）
+        this.updateProgress('level');
+        
         return {
             success: true,
             message: `接取任务：${quest.name}`,
@@ -102,7 +105,7 @@ const QuestSystem = {
 
     /**
      * 更新任务进度
-     * @param {string} type - 进度类型：kill/collect/talk/reach
+     * @param {string} type - 进度类型：kill/collect/talk/reach/level
      * @param {string} targetId - 目标ID
      * @param {number} amount - 数量
      * @returns {Array} 完成的任务列表（含奖励信息）
@@ -117,6 +120,12 @@ const QuestSystem = {
             quest.objectives.forEach((obj, index) => {
                 // 检查目标类型是否匹配
                 if (obj.type !== type) return;
+                
+                // 等级类型特殊处理：直接用当前等级作为进度
+                if (type === 'level') {
+                    activeQuest.progress[index] = Math.min(Player.level, obj.count || 1);
+                    return;
+                }
                 
                 // 检查目标ID是否匹配
                 const targetField = {
@@ -234,6 +243,15 @@ const QuestSystem = {
                 nextQuestAccepted = acceptResult.quest;
                 rewardMessages.push(`📜 自动接取新任务：${acceptResult.quest.name}`);
             }
+        }
+        
+        // 特殊任务处理：第二系觉醒任务完成后弹出觉醒界面
+        if (questId === 'quest_second_element') {
+            setTimeout(() => {
+                if (typeof Game !== 'undefined' && Game.showAwakenPanel) {
+                    Game.showAwakenPanel();
+                }
+            }, 1500);
         }
 
         return {
