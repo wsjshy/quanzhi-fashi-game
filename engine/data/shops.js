@@ -217,6 +217,41 @@ const DataShops = {
         itemId: "star_dust_basic_thunder",
         price: 80000,
         stock: 0
+      },
+      {
+        itemId: "star_dust_basic_earth",
+        price: 45000,
+        stock: 1
+      },
+      {
+        itemId: "star_dust_basic_wind",
+        price: 48000,
+        stock: 1
+      },
+      {
+        itemId: "star_dust_basic_water",
+        price: 45000,
+        stock: 1
+      },
+      {
+        itemId: "star_dust_basic_light",
+        price: 70000,
+        stock: 0
+      },
+      {
+        itemId: "star_dust_basic_dark",
+        price: 60000,
+        stock: 0
+      },
+      {
+        itemId: "star_dust_basic_heal",
+        price: 75000,
+        stock: 0
+      },
+      {
+        itemId: "star_dust_basic_summon",
+        price: 85000,
+        stock: 0
       }
     ]
   },
