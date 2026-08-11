@@ -708,22 +708,31 @@ const Game = {
         const availableNpcsHtml = npcs.map(npc => {
             const canTalk = NPCStateSystem.canTalkTo(npc.id);
             const hint = NPCStateSystem.getDialogueRequirementHint(npc.id);
+            const availableQuests = QuestSystem.getAvailableQuestsForNPC(npc.id);
+            const hasQuest = availableQuests.length > 0;
             
             if (canTalk) {
                 return `
                     <div onclick="talkToNPC('${npc.id}')" style="
                         padding: 15px 20px;
                         background: rgba(40, 40, 80, 0.8);
-                        border: 2px solid #444477;
+                        border: 2px solid ${hasQuest ? '#ffcc00' : '#444477'};
                         border-radius: 10px;
                         color: #e0e0ff;
                         cursor: pointer;
                         text-align: left;
                         transition: all 0.3s;
                         font-size: 16px;
-                    " onmouseover="this.style.borderColor='#7777bb'; this.style.background='rgba(60, 60, 120, 0.8)'" onmouseout="this.style.borderColor='#444477'; this.style.background='rgba(40, 40, 80, 0.8)'">
-                        <div style="font-weight: bold; font-size: 17px;">${npc.name}</div>
-                        <div style="font-size: 13px; color: #999; margin-top: 3px;">${npc.title || ''}</div>
+                        position: relative;
+                    " onmouseover="this.style.borderColor='${hasQuest ? '#ffdd44' : '#7777bb'}'; this.style.background='rgba(60, 60, 120, 0.8)'" onmouseout="this.style.borderColor='${hasQuest ? '#ffcc00' : '#444477'}'; this.style.background='rgba(40, 40, 80, 0.8)'">
+                        <div style="font-weight: bold; font-size: 17px;">
+                            ${npc.name}
+                            ${hasQuest ? '<span style="color: #ffcc00; font-size: 20px; margin-left: 8px;">❗</span>' : ''}
+                        </div>
+                        <div style="font-size: 13px; color: #999; margin-top: 3px;">
+                            ${npc.title || ''}
+                            ${hasQuest ? '<span style="color: #ffcc00; margin-left: 8px;">有任务可接</span>' : ''}
+                        </div>
                     </div>
                 `;
             } else {

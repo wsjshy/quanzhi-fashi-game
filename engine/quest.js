@@ -233,7 +233,21 @@ const QuestSystem = {
         // 这个需要从 NPC 数据中获取
         return [];
     },
-
+    
+    /**
+     * 获取某个NPC的所有可接任务
+     */
+    getAvailableQuestsForNPC(npcId) {
+        const available = [];
+        for (const questId in this.quests) {
+            const quest = this.quests[questId];
+            if (quest.giver === npcId && this.canAcceptQuest(questId)) {
+                available.push(quest);
+            }
+        }
+        return available;
+    },
+    
     /**
      * 检查是否可以接取任务
      */
