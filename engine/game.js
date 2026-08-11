@@ -48,6 +48,33 @@ const Game = {
             console.error('错误堆栈:', event.reason?.stack);
         };
         
+        // DEBUG: 全局点击事件监听，记录所有点击事件的目标元素
+        document.addEventListener('click', (e) => {
+            const target = e.target;
+            const path = [];
+            let el = target;
+            while (el && path.length < 10) {
+                let desc = el.tagName?.toLowerCase();
+                if (el.id) desc += `#${el.id}`;
+                if (el.className && typeof el.className === 'string') {
+                    const classes = el.className.split(' ').filter(c => c).slice(0, 3).join('.');
+                    if (classes) desc += `.${classes}`;
+                }
+                if (el.textContent && el.textContent.trim().length < 20) {
+                    desc += `(${el.textContent.trim().substring(0, 20)})`;
+                }
+                path.push(desc);
+                el = el.parentElement;
+            }
+            console.log(`[点击] 目标: ${path.join(' → ')}`);
+            console.log(`[点击] 位置: x=${e.clientX}, y=${e.clientY}`);
+        }, true); // 捕获阶段，先于其他监听器执行
+        
+        // DEBUG: 全局mousedown事件监听
+        document.addEventListener('mousedown', (e) => {
+            console.log(`[鼠标按下] 按钮: ${e.button}, 位置: x=${e.clientX}, y=${e.clientY}, 目标: ${e.target.tagName}${e.target.id ? '#' + e.target.id : ''}`);
+        }, true);
+        
         console.log('[游戏] 全局错误处理已初始化');
         
         // 初始化数据
@@ -130,6 +157,9 @@ const Game = {
     // 执行地点行动
     performAction(actionId) {
         try {
+        console.log(`[行动] 执行行动: ${actionId}`);
+        console.trace('[行动] 调用栈');
+        
         // 修炼类行动：先弹时长选择菜单
         if (actionId === 'train' || actionId === 'meditate') {
             this.showCultivateMenu(actionId);

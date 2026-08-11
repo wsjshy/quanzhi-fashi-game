@@ -33,6 +33,11 @@ const TimeSystem = {
         const events = [];
         const oldPeriod = this.getCurrentPeriod();
         const oldDay = Player.day;
+        const oldHour = Player.hour;
+        
+        console.log(`[时间系统] 推进时间: ${hours}小时`);
+        console.log(`[时间系统] 推进前: 第${oldDay}天 ${oldHour}:00 (${oldPeriod})`);
+        console.trace('[时间系统] 调用栈');
         
         // 增加小时数
         Player.hour += hours;
@@ -42,6 +47,7 @@ const TimeSystem = {
             Player.hour -= 24;
             this.advanceDay();
             events.push({ type: 'new_day', day: Player.day });
+            console.log(`[时间系统] 跨天，现在是第${Player.day}天`);
         }
         
         // 更新当前时段
@@ -56,11 +62,14 @@ const TimeSystem = {
         // 检查是否到了强制昏睡时间
         if (Player.hour >= this.FORCE_SLEEP_HOUR && Player.hour < 6) {
             events.push({ type: 'force_sleep' });
+            console.log('[时间系统] 触发强制昏睡');
             this.forceSleep();
         }
         
         // 检查定时大事件
         this.checkScheduledEvents();
+        
+        console.log(`[时间系统] 推进后: 第${Player.day}天 ${Player.hour}:00 (${newPeriod})`);
         
         return events;
     },
