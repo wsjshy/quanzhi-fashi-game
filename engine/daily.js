@@ -12,7 +12,7 @@ const DailySystem = {
             description: '击败3只妖魔',
             type: 'kill',
             target: 3,
-            rewards: { exp: 50, gold: 30 }
+            rewards: { exp: 50, gold: 40 }
         },
         {
             id: 'daily_kill_5',
@@ -20,7 +20,7 @@ const DailySystem = {
             description: '击败5只妖魔',
             type: 'kill',
             target: 5,
-            rewards: { exp: 80, gold: 50 }
+            rewards: { exp: 80, gold: 70 }
         },
         {
             id: 'daily_cultivate_2',
@@ -28,7 +28,7 @@ const DailySystem = {
             description: '修炼2次',
             type: 'cultivate',
             target: 2,
-            rewards: { exp: 40, gold: 20 }
+            rewards: { exp: 40, gold: 30 }
         },
         {
             id: 'daily_cultivate_4',
@@ -36,7 +36,7 @@ const DailySystem = {
             description: '修炼4次',
             type: 'cultivate',
             target: 4,
-            rewards: { exp: 70, gold: 35 }
+            rewards: { exp: 70, gold: 50 }
         },
         {
             id: 'daily_explore_3',
@@ -44,7 +44,7 @@ const DailySystem = {
             description: '探索3次',
             type: 'explore',
             target: 3,
-            rewards: { exp: 40, gold: 25 }
+            rewards: { exp: 40, gold: 35 }
         },
         {
             id: 'daily_explore_5',
@@ -52,7 +52,7 @@ const DailySystem = {
             description: '探索5次',
             type: 'explore',
             target: 5,
-            rewards: { exp: 70, gold: 40 }
+            rewards: { exp: 70, gold: 55 }
         },
         {
             id: 'daily_earn_100',
@@ -60,7 +60,7 @@ const DailySystem = {
             description: '获得100金币',
             type: 'earn_gold',
             target: 100,
-            rewards: { exp: 30, gold: 20 }
+            rewards: { exp: 30, gold: 30 }
         },
         {
             id: 'daily_visit_3',
@@ -68,7 +68,7 @@ const DailySystem = {
             description: '访问3个不同地点',
             type: 'visit',
             target: 3,
-            rewards: { exp: 35, gold: 25 }
+            rewards: { exp: 35, gold: 35 }
         },
         {
             id: 'daily_battle_win_3',
@@ -76,7 +76,7 @@ const DailySystem = {
             description: '赢得3场战斗',
             type: 'battle_win',
             target: 3,
-            rewards: { exp: 60, gold: 40 }
+            rewards: { exp: 60, gold: 55 }
         },
         {
             id: 'daily_use_items_2',
@@ -84,19 +84,19 @@ const DailySystem = {
             description: '使用2次物品',
             type: 'use_item',
             target: 2,
-            rewards: { exp: 25, gold: 15 }
+            rewards: { exp: 25, gold: 20 }
         }
     ],
 
     // 签到奖励表（7天循环）
     _signInRewards: [
-        { day: 1, gold: 50, items: [] },
-        { day: 2, gold: 30, items: [{ itemId: 'hp_potion_small', count: 1 }] },
-        { day: 3, gold: 100, items: [] },
-        { day: 4, gold: 30, items: [{ itemId: 'mp_potion_small', count: 1 }] },
-        { day: 5, gold: 150, items: [] },
-        { day: 6, gold: 50, items: [{ itemId: 'hp_potion', count: 1 }] },
-        { day: 7, gold: 300, items: [{ itemId: 'magic_crystal', count: 1 }] }
+        { day: 1, gold: 60, items: [] },
+        { day: 2, gold: 40, items: [{ itemId: 'hp_potion_small', count: 1 }] },
+        { day: 3, gold: 120, items: [] },
+        { day: 4, gold: 40, items: [{ itemId: 'mp_potion_small', count: 1 }] },
+        { day: 5, gold: 180, items: [] },
+        { day: 6, gold: 60, items: [{ itemId: 'hp_potion', count: 1 }] },
+        { day: 7, gold: 350, items: [{ itemId: 'magic_crystal', count: 1 }] }
     ],
 
     /**

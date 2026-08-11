@@ -11,17 +11,17 @@ const DataShops = {
     items: [
       {
         itemId: "health_potion",
-        price: 30,
+        price: 25,
         stock: -1
       },
       {
         itemId: "mana_potion",
-        price: 40,
+        price: 35,
         stock: -1
       },
       {
         itemId: "stamina_potion",
-        price: 35,
+        price: 30,
         stock: -1
       },
       {
@@ -68,17 +68,17 @@ const DataShops = {
     items: [
       {
         itemId: "health_potion",
-        price: 28,
+        price: 25,
         stock: -1
       },
       {
         itemId: "mana_potion",
-        price: 38,
+        price: 35,
         stock: -1
       },
       {
         itemId: "stamina_potion",
-        price: 32,
+        price: 28,
         stock: -1
       },
       {

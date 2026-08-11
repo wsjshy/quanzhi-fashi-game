@@ -25,7 +25,7 @@ const DataEnemies = {
     spriteColor: "#553322",
     isEnemy: true,
     expReward: 100,
-    goldReward: 50,
+    goldReward: 60,
     dropItems: [
       {
         itemId: "demon_core",
@@ -75,7 +75,7 @@ const DataEnemies = {
     isSummon: true,
     canEnrage: true,
     expReward: 150,
-    goldReward: 80,
+    goldReward: 100,
     dropItems: [
       {
         itemId: "demon_core",
