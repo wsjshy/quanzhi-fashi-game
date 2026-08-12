@@ -359,6 +359,31 @@ const Inventory = {
         // 装备新物品
         Player.equipment[slot] = itemId;
         this.removeItem(itemId, 1);
+        
+        // 魔具成就检查
+        if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
+            try {
+                const equippedCount = Object.values(Player.equipment).filter(id => id !== null).length;
+                
+                // 第一件魔具
+                if (equippedCount >= 1 && !WorldState.hasAchievement('first_artifact')) {
+                    const achData = DataAchievements['first_artifact'];
+                    if (achData) {
+                        WorldState.unlockAchievement('first_artifact', achData);
+                    }
+                }
+                
+                // 全身武装
+                if (equippedCount >= 3 && !WorldState.hasAchievement('full_equipment')) {
+                    const achData = DataAchievements['full_equipment'];
+                    if (achData) {
+                        WorldState.unlockAchievement('full_equipment', achData);
+                    }
+                }
+            } catch (e) {
+                console.warn('[Inventory] 魔具成就检查失败:', e);
+            }
+        }
 
         return { 
             success: true, 
