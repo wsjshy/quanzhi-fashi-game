@@ -476,6 +476,16 @@ const BattleSystem = {
 
         // 消耗MP
         casterData.mp -= skill.mpCost;
+        
+        // 发布技能释放事件
+        if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+            BattleEventBus.emit(BattleEvents.SKILL_CAST, {
+                skill: skill,
+                caster: caster,
+                isPlayer: isPlayer,
+                casterData: casterData
+            });
+        }
 
         if (skill.type === 'damage') {
             // 伤害技能（含攻击者状态修正）
@@ -594,6 +604,17 @@ const BattleSystem = {
             const casterName = isPlayer ? '你' : this.enemy.name;
             const targetName = skill.targetType === 'self' ? casterName : (isPlayer ? this.enemy.name : '你');
             this.addLog(`${casterName} 使用 ${skill.name}，${targetName} 恢复了 ${healAmount} 点生命`, 'heal');
+            
+            // 发布治疗事件
+            if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                BattleEventBus.emit(BattleEvents.HEAL, {
+                    amount: healAmount,
+                    skill: skill,
+                    caster: caster,
+                    isPlayer: isPlayer,
+                    targetIsSelf: skill.targetType === 'self'
+                });
+            }
 
         } else if (skill.type === 'buff') {
             // 增益技能
