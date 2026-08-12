@@ -137,7 +137,7 @@ const Player = {
         this.name = name || '冒险者';
         this.level = 1;
         this.exp = 0;
-        this.expToNext = 100;
+        this.expToNext = this._calcExpToNext(1);
         this.attributePoints = 0;
         this.maxHp = 100;
         this.hp = 100;
@@ -384,11 +384,50 @@ const Player = {
     },
 
     /**
+     * 计算升级所需经验
+     * 分段函数：前期快、中期慢、后期极慢
+     */
+    _calcExpToNext(level) {
+        // 分段设计：
+        // 1-5级：快速上手，每级×1.4
+        // 6-10级：初阶后期，每级×1.8
+        // 11-15级：中阶初期，每级×2.2
+        // 16-20级：中阶后期，每级×2.6
+        // 21-25级：高阶初期，每级×3.0
+        // 26级以上：高阶后期/超阶，每级×3.5
+        
+        let baseExp = 100;
+        let multiplier = 1;
+        
+        if (level <= 5) {
+            // 1-5级：快速上手
+            multiplier = Math.pow(1.4, level - 1);
+        } else if (level <= 10) {
+            // 6-10级：初阶后期，明显变慢
+            multiplier = Math.pow(1.4, 4) * Math.pow(1.8, level - 5);
+        } else if (level <= 15) {
+            // 11-15级：中阶初期，非常慢
+            multiplier = Math.pow(1.4, 4) * Math.pow(1.8, 5) * Math.pow(2.2, level - 10);
+        } else if (level <= 20) {
+            // 16-20级：中阶后期，极慢
+            multiplier = Math.pow(1.4, 4) * Math.pow(1.8, 5) * Math.pow(2.2, 5) * Math.pow(2.6, level - 15);
+        } else if (level <= 25) {
+            // 21-25级：高阶初期，传说级慢
+            multiplier = Math.pow(1.4, 4) * Math.pow(1.8, 5) * Math.pow(2.2, 5) * Math.pow(2.6, 5) * Math.pow(3.0, level - 20);
+        } else {
+            // 26级以上：高阶后期/超阶，神话级慢
+            multiplier = Math.pow(1.4, 4) * Math.pow(1.8, 5) * Math.pow(2.2, 5) * Math.pow(2.6, 5) * Math.pow(3.0, 5) * Math.pow(3.5, level - 25);
+        }
+        
+        return Math.floor(baseExp * multiplier);
+    },
+    
+    /**
      * 升级
      */
     levelUp() {
         this.level++;
-        this.expToNext = Math.floor(this.expToNext * 1.5);
+        this.expToNext = this._calcExpToNext(this.level);
         this.attributePoints += 3;
         
         // 基础属性提升
@@ -1339,7 +1378,8 @@ const Player = {
             this.name = data.name || '冒险者';
             this.level = data.level ?? 1;
             this.exp = data.exp ?? 0;
-            this.expToNext = data.expToNext ?? this._calcExpToNext(this.level);
+            // 强制重新计算升级所需经验，确保新旧存档都用最新的经验曲线
+            this.expToNext = this._calcExpToNext(this.level);
             this.attributePoints = data.attributePoints ?? 0;
             this.maxHp = data.maxHp ?? 100;
             this.hp = data.hp ?? this.maxHp;

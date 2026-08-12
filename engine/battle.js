@@ -277,6 +277,52 @@ const BattleSystem = {
         this.enemy.statusEffects = [];
         this.enemy.isDefending = false;
         
+        // 妖魔体质加成：不同级别妖魔实力差距巨大
+        // 奴仆级：普通初阶法师打不过，突出的才能单挑
+        // 战将级：普通中阶法师打不过，优秀的才能单挑
+        // 统领级：对应高阶法师
+        // 君主级：对应超阶法师
+        if (this.enemy.enemyType === 'demon' || this.enemy.demonTier) {
+            let hpBonus = 0;
+            let atkBonus = 0;
+            let defBonus = 0;
+            
+            const tier = this.enemy.demonTier;
+            if (tier === 'servant' || tier === '奴仆级') {
+                hpBonus = 0.2;   // HP+20%
+                atkBonus = 0.15; // 攻击+15%
+                defBonus = 0.1;  // 防御+10%
+            } else if (tier === 'warrior' || tier === '战将级') {
+                hpBonus = 0.5;   // HP+50%
+                atkBonus = 0.3;  // 攻击+30%
+                defBonus = 0.2;  // 防御+20%
+            } else if (tier === 'commander' || tier === '统领级') {
+                hpBonus = 1.0;   // HP+100%
+                atkBonus = 0.5;  // 攻击+50%
+                defBonus = 0.4;  // 防御+40%
+            } else if (tier === 'monarch' || tier === '君主级') {
+                hpBonus = 2.0;   // HP+200%
+                atkBonus = 1.0;  // 攻击+100%
+                defBonus = 0.8;  // 防御+80%
+            }
+            
+            if (hpBonus > 0) {
+                this.enemy.maxHp = Math.floor(this.enemy.maxHp * (1 + hpBonus));
+                this.enemy.hp = this.enemy.maxHp;
+            }
+            if (atkBonus > 0) {
+                this.enemy.attack = Math.floor(this.enemy.attack * (1 + atkBonus));
+            }
+            if (defBonus > 0) {
+                this.enemy.defense = Math.floor(this.enemy.defense * (1 + defBonus));
+            }
+            
+            // 记录原始数值，方便调试
+            this.enemy.baseMaxHp = this.enemy.maxHp;
+            this.enemy.baseAttack = this.enemy.attack;
+            this.enemy.baseDefense = this.enemy.defense;
+        }
+        
         // 初始化精神力
         if (!this.enemy.spirit) {
             const level = this.enemy.level || 1;
@@ -3393,6 +3439,39 @@ const BattleSystem = {
         // 基础经验和金币
         rewards.exp = this.enemy.expReward || 0;
         rewards.gold = this.enemy.goldReward || 0;
+        
+        // 等级差调整：防止刷低级怪，鼓励越级挑战
+        const levelDiff = this.enemy.level - Player.level;
+        let expMultiplier = 1.0;
+        let goldMultiplier = 1.0;
+        
+        if (levelDiff < -5) {
+            // 低5级以上：经验只有10%
+            expMultiplier = 0.1;
+            goldMultiplier = 0.3;
+            rewards.lowLevelPenalty = true;
+        } else if (levelDiff < -3) {
+            // 低3-5级：经验减半
+            expMultiplier = 0.5;
+            goldMultiplier = 0.6;
+            rewards.lowLevelPenalty = true;
+        } else if (levelDiff > 0) {
+            // 越级挑战：经验加成
+            if (levelDiff >= 3) {
+                expMultiplier = 2.0;
+                goldMultiplier = 1.5;
+            } else if (levelDiff >= 2) {
+                expMultiplier = 1.5;
+                goldMultiplier = 1.3;
+            } else {
+                expMultiplier = 1.2;
+                goldMultiplier = 1.1;
+            }
+            rewards.overlevelBonus = true;
+        }
+        
+        rewards.exp = Math.floor(rewards.exp * expMultiplier);
+        rewards.gold = Math.floor(rewards.gold * goldMultiplier);
         
         // 战斗评价加成
         if (this.rating) {
