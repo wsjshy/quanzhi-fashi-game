@@ -563,7 +563,8 @@ const DataEnemies = {
       "basic_attack",
       "claw_slash",
       "wind_slash",
-      "wild_charge"
+      "wild_charge",
+      "blood_bite"
     ],
     aiType: "kiter",
     enemyType: "demon",
@@ -613,7 +614,8 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "earth_spike",
-      "earth_shield"
+      "earth_shield",
+      "war_stomp"
     ],
     spriteColor: "#888888",
     isEnemy: true,
@@ -1112,7 +1114,7 @@ const DataEnemies = {
     attack: 150,
     defense: 75,
     speed: 40,
-    skills: ["basic_attack", "wolf_bite", "wind_blade", "dark_bolt", "wolf_howl", "sky_dive"],
+    skills: ["basic_attack", "wolf_bite", "wind_blade", "dark_bolt", "wolf_howl", "sky_dive", "fear_roar", "demon_rage"],
     aiType: "tactical",
     spriteColor: "#555555",
     isEnemy: true,

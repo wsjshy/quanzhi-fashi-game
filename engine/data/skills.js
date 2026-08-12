@@ -1814,5 +1814,146 @@ const DataSkills = {
         chance: 0.3
       }
     ]
+  },
+  
+  // ===== 战将级妖魔新技能 =====
+  blood_bite: {
+    id: "blood_bite",
+    name: "嗜血撕咬",
+    description: "妖魔疯狂撕咬敌人，造成伤害的同时吸取生命值",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 20,
+    damageMultiplier: 1.3,
+    hitRate: 0.9,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "战将级",
+    isDemonSkill: true,
+    lifesteal: 0.3  // 30%吸血
+  },
+  
+  war_stomp: {
+    id: "war_stomp",
+    name: "战争践踏",
+    description: "妖魔用力践踏地面，造成范围伤害并降低敌人速度和攻击力",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 18,
+    damageMultiplier: 1.2,
+    hitRate: 0.95,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "震伤减速",
+        type: "speed_down",
+        duration: 2,
+        chance: 0.8,
+        statModifiers: {
+          speed: -25
+        }
+      },
+      {
+        name: "震伤无力",
+        type: "attack_down",
+        duration: 2,
+        chance: 0.6,
+        statModifiers: {
+          attack: -15
+        }
+      }
+    ]
+  },
+  
+  // ===== 统领级妖魔新技能 =====
+  fear_roar: {
+    id: "fear_roar",
+    name: "恐惧咆哮",
+    description: "统领级妖魔发出震慑灵魂的咆哮，大幅降低敌人全属性",
+    element: "physical",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "统领级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "恐惧",
+        type: "attack_down",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          attack: -25
+        }
+      },
+      {
+        name: "战栗",
+        type: "defense_down",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          defense: -20
+        }
+      },
+      {
+        name: "胆怯",
+        type: "speed_down",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          speed: -20
+        }
+      }
+    ]
+  },
+  
+  demon_rage: {
+    id: "demon_rage",
+    name: "妖魔之怒",
+    description: "统领级妖魔进入狂暴状态，攻击力和速度大幅提升，但防御降低",
+    element: "physical",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "统领级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "妖魔狂暴",
+        type: "attack_up",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          attack: 40
+        }
+      },
+      {
+        name: "狂暴加速",
+        type: "speed_up",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          speed: 30
+        }
+      },
+      {
+        name: "狂暴防御降低",
+        type: "defense_down",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          defense: -20
+        }
+      }
+    ]
   }
 };

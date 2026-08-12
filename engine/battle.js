@@ -1007,6 +1007,16 @@ const BattleSystem = {
 
             this.applyDamage(targetData, damage, casterData);
             
+            // 技能吸血效果
+            if (skill.lifesteal && skill.lifesteal > 0 && !damage.isMiss && damage.amount > 0) {
+                const healAmount = Math.floor(damage.amount * skill.lifesteal);
+                if (healAmount > 0 && casterData.hp < casterData.maxHp) {
+                    casterData.hp = Math.min(casterData.maxHp, casterData.hp + healAmount);
+                    const casterName = isPlayer ? '你' : this.enemy.name;
+                    this.addLog(`${casterName} 吸取了 ${healAmount} 点生命！`, 'heal');
+                }
+            }
+            
             // 连续暴击记录（仅玩家，用于幸运儿成就）
             if (isPlayer && typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
                 if (damage.isCrit) {
