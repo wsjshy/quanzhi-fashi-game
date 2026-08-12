@@ -1134,6 +1134,28 @@ const Player = {
     unlockLocation(locationId) {
         if (!this.unlockedLocations.includes(locationId)) {
             this.unlockedLocations.push(locationId);
+            
+            // 地点探索成就检查
+            if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
+                try {
+                    const locationCount = this.unlockedLocations.length;
+                    const locationAchievements = [
+                        { id: 'first_location', value: 2 },
+                        { id: 'explorer', value: 10 },
+                    ];
+                    
+                    locationAchievements.forEach(ach => {
+                        if (locationCount >= ach.value && !WorldState.hasAchievement(ach.id)) {
+                            const achData = DataAchievements[ach.id];
+                            if (achData) {
+                                WorldState.unlockAchievement(ach.id, achData);
+                            }
+                        }
+                    });
+                } catch (e) {
+                    console.warn('[玩家] 地点探索成就检查失败:', e);
+                }
+            }
         }
     },
 
