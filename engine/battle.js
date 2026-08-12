@@ -19,6 +19,23 @@ const BattleSystem = {
     // 战斗结果
     result: null,  // 'win' | 'lose' | 'flee'
     
+    // 战斗统计
+    stats: {
+        totalDamageDealt: 0,      // 造成的总伤害
+        totalDamageTaken: 0,      // 受到的总伤害
+        totalHealingDone: 0,      // 造成的总治疗
+        skillsUsed: 0,            // 使用的技能数
+        itemsUsed: 0,             // 使用的道具数
+        critCount: 0,             // 暴击次数
+        missCount: 0,             // 未命中次数
+        interruptCount: 0,        // 打断次数
+        maxHpPercent: 1.0,        // 最低血量百分比
+        turnCount: 0              // 回合数
+    },
+    
+    // 战斗评价
+    rating: null,  // S/A/B/C/D
+    
     // 元素克制关系（小说设定）
     // 火克冰、冰克风、风克土、土克雷、雷克水、水克火
     // 光暗互克
@@ -59,6 +76,21 @@ const BattleSystem = {
         this.summon = null;  // 召唤兽状态
         this.tookDamage = false;  // 战斗中是否受到伤害（用于毫发无伤成就）
         this.consecutiveCrits = 0;  // 连续暴击次数（用于幸运儿成就）
+        this.rating = null;  // 战斗评价
+        
+        // 重置战斗统计
+        this.stats = {
+            totalDamageDealt: 0,
+            totalDamageTaken: 0,
+            totalHealingDone: 0,
+            skillsUsed: 0,
+            itemsUsed: 0,
+            critCount: 0,
+            missCount: 0,
+            interruptCount: 0,
+            maxHpPercent: 1.0,
+            turnCount: 0
+        };
         
         // 记录最后战斗日期（用于和平主义者成就）
         if (typeof Player !== 'undefined') {
@@ -1299,6 +1331,23 @@ const BattleSystem = {
 
         target.hp = Math.max(0, target.hp - amount);
         
+        // 更新战斗统计
+        if (target === this.enemy) {
+            // 对敌人造成伤害
+            this.stats.totalDamageDealt += amount;
+            if (damage.isCrit) this.stats.critCount++;
+            if (damage.isMiss) this.stats.missCount++;
+        } else if (target === this.player) {
+            // 玩家受到伤害
+            this.stats.totalDamageTaken += amount;
+            
+            // 更新最低血量百分比
+            const hpPercent = target.hp / target.maxHp;
+            if (hpPercent < this.stats.maxHpPercent) {
+                this.stats.maxHpPercent = hpPercent;
+            }
+        }
+        
         // 同步到玩家数据
         if (target === this.player) {
             Player.hp = this.player.hp;
@@ -1709,6 +1758,14 @@ const BattleSystem = {
                 Player.winStreak = (Player.winStreak || 0) + 1;
             }
             
+            // 计算战斗评价
+            this.calculateBattleRating();
+            
+            // 显示评价
+            if (this.rating) {
+                this.addLog(`战斗评价：${this.rating.name}（${this.rating.score}分）`, 'system');
+            }
+            
             // 计算奖励
             this.calculateRewards();
             
@@ -1721,6 +1778,89 @@ const BattleSystem = {
         }
 
         return false;
+    },
+    
+    /**
+     * 计算战斗评价
+     * S/A/B/C/D 五级评价
+     */
+    calculateBattleRating() {
+        let score = 100; // 基础分100
+        
+        // 1. 回合数评分（越少越好）
+        // 基准：5回合为标准，每少1回合+5分，每多1回合-3分
+        const turnBonus = (5 - this.turn) * 5;
+        score += turnBonus;
+        
+        // 2. 剩余血量评分（越多越好）
+        // 剩余血量百分比 × 20
+        const hpPercent = this.player.hp / this.player.maxHp;
+        const hpBonus = hpPercent * 20;
+        score += hpBonus;
+        
+        // 3. 使用道具扣分（用得越少越好）
+        score -= this.stats.itemsUsed * 10;
+        
+        // 4. 暴击率加分
+        if (this.stats.skillsUsed > 0) {
+            const critRate = this.stats.critCount / this.stats.skillsUsed;
+            score += critRate * 10;
+        }
+        
+        // 5. 打断次数加分
+        score += this.stats.interruptCount * 5;
+        
+        // 6. 毫发无伤加分
+        if (!this.tookDamage) {
+            score += 20;
+        }
+        
+        // 7. 难度修正 - 敌人越强，基础分越高
+        const enemyLevel = this.enemy.level || 1;
+        const playerLevel = this.player.level || 1;
+        const levelDiff = enemyLevel - playerLevel;
+        score += levelDiff * 3; // 越级挑战加分
+        
+        // 确定评价等级
+        let rating = 'D';
+        let ratingName = 'D级·艰难';
+        let ratingColor = '#999999';
+        
+        if (score >= 120) {
+            rating = 'S';
+            ratingName = 'S级·完美';
+            ratingColor = '#ffcc00';
+        } else if (score >= 100) {
+            rating = 'A';
+            ratingName = 'A级·优秀';
+            ratingColor = '#ff6600';
+        } else if (score >= 80) {
+            rating = 'B';
+            ratingName = 'B级·良好';
+            ratingColor = '#66cc66';
+        } else if (score >= 60) {
+            rating = 'C';
+            ratingName = 'C级·普通';
+            ratingColor = '#6699cc';
+        }
+        
+        this.rating = {
+            score: Math.floor(score),
+            level: rating,
+            name: ratingName,
+            color: ratingColor,
+            details: {
+                turnBonus: Math.floor(turnBonus),
+                hpBonus: Math.floor(hpBonus),
+                itemPenalty: -this.stats.itemsUsed * 10,
+                critBonus: Math.floor((this.stats.skillsUsed > 0 ? (this.stats.critCount / this.stats.skillsUsed) * 10 : 0)),
+                interruptBonus: this.stats.interruptCount * 5,
+                noDamageBonus: this.tookDamage ? 0 : 20,
+                levelBonus: levelDiff * 3
+            }
+        };
+        
+        return this.rating;
     },
 
     /**
@@ -1737,6 +1877,24 @@ const BattleSystem = {
         // 基础经验和金币
         rewards.exp = this.enemy.expReward || 0;
         rewards.gold = this.enemy.goldReward || 0;
+        
+        // 战斗评价加成
+        if (this.rating) {
+            let bonusRate = 0;
+            switch (this.rating.level) {
+                case 'S': bonusRate = 0.5; break;  // S级 +50%
+                case 'A': bonusRate = 0.3; break;  // A级 +30%
+                case 'B': bonusRate = 0.15; break; // B级 +15%
+                case 'C': bonusRate = 0.05; break; // C级 +5%
+                default: bonusRate = 0;
+            }
+            
+            if (bonusRate > 0) {
+                rewards.exp = Math.floor(rewards.exp * (1 + bonusRate));
+                rewards.gold = Math.floor(rewards.gold * (1 + bonusRate));
+                rewards.ratingBonus = bonusRate;
+            }
+        }
 
         // 随机浮动 ±20%
         rewards.exp = Math.floor(rewards.exp * (0.8 + Math.random() * 0.4));
