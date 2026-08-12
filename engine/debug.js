@@ -151,7 +151,9 @@ const DebugPanel = {
             
             <div style="display: flex; background: #1a1a2e; border-bottom: 1px solid #333; overflow-x: auto;">
                 <div class="debug-tab active" data-tab="player" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid #6666ff; white-space: nowrap; font-size: 12px; color: #fff;">玩家</div>
+                <div class="debug-tab" data-tab="growth" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">成长</div>
                 <div class="debug-tab" data-tab="items" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">物品</div>
+                <div class="debug-tab" data-tab="battle" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">战斗</div>
                 <div class="debug-tab" data-tab="teleport" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">传送</div>
                 <div class="debug-tab" data-tab="time" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">时间</div>
                 <div class="debug-tab" data-tab="save" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">存档</div>
@@ -220,6 +222,63 @@ const DebugPanel = {
                     </div>
                 </div>
                 
+                <!-- 成长标签页 -->
+                <div id="debug-tab-growth" class="debug-tab-content" style="display: none;">
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff88ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">元素觉醒</div>
+                        <div style="font-size: 11px; color: #888; margin-bottom: 8px;">点击觉醒对应元素系</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.awakenElement('fire')" style="background: #ff4444; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🔥 火系</button>
+                            <button onclick="DebugPanel.awakenElement('ice')" style="background: #44aaff; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">❄️ 冰系</button>
+                            <button onclick="DebugPanel.awakenElement('thunder')" style="background: #ffcc00; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚡ 雷系</button>
+                            <button onclick="DebugPanel.awakenElement('earth')" style="background: #aa8844; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🪨 土系</button>
+                            <button onclick="DebugPanel.awakenElement('wind')" style="background: #88ddaa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">💨 风系</button>
+                            <button onclick="DebugPanel.awakenElement('water')" style="background: #4488dd; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">💧 水系</button>
+                            <button onclick="DebugPanel.awakenElement('light')" style="background: #ffdd44; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">✨ 光系</button>
+                            <button onclick="DebugPanel.awakenElement('dark')" style="background: #6644aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🌑 暗影</button>
+                            <button onclick="DebugPanel.awakenElement('heal')" style="background: #44dd88; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">💚 治愈</button>
+                            <button onclick="DebugPanel.awakenElement('summon')" style="background: #dd8844; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐺 召唤</button>
+                        </div>
+                        <button onclick="DebugPanel.awakenAllElements()" style="width: 100%; background: #aa44aa; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 12px; margin-top: 8px;">🌟 觉醒全部元素</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff88ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">境界突破</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.breakthroughTo('initial')" style="background: #666; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">初阶</button>
+                            <button onclick="DebugPanel.breakthroughTo('middle')" style="background: #4488dd; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">中阶</button>
+                            <button onclick="DebugPanel.breakthroughTo('high')" style="background: #aa44aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">高阶</button>
+                            <button onclick="DebugPanel.breakthroughTo('super')" style="background: #ff8800; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">超阶</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff88ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">灵种获取</div>
+                        <div style="font-size: 11px; color: #888; margin-bottom: 8px;">点击获取对应凡种灵种</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.addItem('fire_basic', 1)" style="background: #ff4444; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🔥 凡火种</button>
+                            <button onclick="DebugPanel.addItem('ice_basic', 1)" style="background: #44aaff; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">❄️ 凡冰种</button>
+                            <button onclick="DebugPanel.addItem('thunder_basic', 1)" style="background: #ffcc00; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">⚡ 凡雷种</button>
+                            <button onclick="DebugPanel.addItem('earth_basic', 1)" style="background: #aa8844; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🪨 凡土种</button>
+                            <button onclick="DebugPanel.addItem('wind_basic', 1)" style="background: #88ddaa; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">💨 凡风种</button>
+                            <button onclick="DebugPanel.addItem('water_basic', 1)" style="background: #4488dd; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">💧 凡水种</button>
+                            <button onclick="DebugPanel.addItem('light_basic', 1)" style="background: #ffdd44; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">✨ 凡光种</button>
+                            <button onclick="DebugPanel.addItem('dark_basic', 1)" style="background: #6644aa; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🌑 凡暗种</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff88ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">星尘魔器</div>
+                        <div style="font-size: 11px; color: #888; margin-bottom: 8px;">点击获取对应星尘魔器</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.addItem('fire_star_dust', 1)" style="background: #ff4444; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🔥 火系星尘</button>
+                            <button onclick="DebugPanel.addItem('ice_star_dust', 1)" style="background: #44aaff; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">❄️ 冰系星尘</button>
+                            <button onclick="DebugPanel.addItem('thunder_star_dust', 1)" style="background: #ffcc00; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">⚡ 雷系星尘</button>
+                            <button onclick="DebugPanel.addItem('little_loach', 1)" style="background: #ffd700; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🐟 小泥鳅坠</button>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- 物品标签页 -->
                 <div id="debug-tab-items" class="debug-tab-content" style="display: none;">
                     <div style="margin-bottom: 15px;">
@@ -244,6 +303,68 @@ const DebugPanel = {
                             <span style="flex: 1; font-size: 12px;">数量</span>
                             <input type="number" id="debug-item-count" value="1" min="1" style="width: 70px; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px; text-align: center;">
                             <button onclick="DebugPanel.addCustomItem()" style="background: #228844; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">添加</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #8888ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">魔具装备</div>
+                        <div style="font-size: 11px; color: #888; margin-bottom: 8px;">各类魔具一键获取</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.addItem('demon_slayer_blade', 1)" style="background: #cc4444; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">⚔️ 斩魔刀</button>
+                            <button onclick="DebugPanel.addItem('flame_demon_slayer', 1)" style="background: #ff6644; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🔥 烈焰斩魔具</button>
+                            <button onclick="DebugPanel.addItem('cloud_pattern_shield', 1)" style="background: #4488cc; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🛡️ 云纹盾</button>
+                            <button onclick="DebugPanel.addItem('ice_essence_shield', 1)" style="background: #66ccff; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">❄️ 冰埃之盾</button>
+                            <button onclick="DebugPanel.addItem('ice_silk_armor', 1)" style="background: #88ddff; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🥋 冰蚕铠</button>
+                            <button onclick="DebugPanel.addItem('wind_walker_boots', 1)" style="background: #88ddaa; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">👟 风履魔具</button>
+                            <button onclick="DebugPanel.addItem('fire_star_atlas', 1)" style="background: #ff8844; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">📖 火系星图之书</button>
+                            <button onclick="DebugPanel.addItem('thunder_star_atlas', 1)" style="background: #ffcc44; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">📖 雷系星图之书</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 战斗标签页 -->
+                <div id="debug-tab-battle" class="debug-tab-content" style="display: none;">
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">快速战斗（奴仆级）</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.startBattle('giant_eye_rat')" style="background: #886644; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐀 巨眼猩鼠</button>
+                            <button onclick="DebugPanel.startBattle('one_eye_wolf')" style="background: #666688; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐺 独眼魔狼</button>
+                            <button onclick="DebugPanel.startBattle('bone_eating_worm')" style="background: #aa8866; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐛 噬骨虫</button>
+                            <button onclick="DebugPanel.startBattle('shadow_demon')" style="background: #444466; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">👤 暗影魔</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">战将级妖魔</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.startBattle('three_eye_wolf')" style="background: #aa6644; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">👁️ 三眼魔狼</button>
+                            <button onclick="DebugPanel.startBattle('blood_pattern_rat')" style="background: #cc4444; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐀 血纹巨魔鼠</button>
+                            <button onclick="DebugPanel.startBattle('black_beast_demon')" style="background: #333344; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">👹 黑畜妖</button>
+                            <button onclick="DebugPanel.startBattle('bone_spike_wolf')" style="background: #886666; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🦴 骨刺狰狼</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">统领级妖魔</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.startBattle('winged_wolf')" style="background: #ff4400; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🦅 翼苍狼</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">事件触发</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.triggerRandomEvent()" style="background: #4488aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🎲 随机事件</button>
+                            <button onclick="DebugPanel.triggerBigEvent('big_event_bocheng_disaster')" style="background: #aa4444; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">💥 博城灾难</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">自定义战斗</div>
+                        <div style="display: flex; align-items: center; margin-bottom: 8px; gap: 8px;">
+                            <span style="flex: 1; font-size: 12px;">妖魔ID</span>
+                            <input type="text" id="debug-enemy-id" placeholder="enemy_id" style="width: 120px; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px;">
+                            <button onclick="DebugPanel.startCustomBattle()" style="background: #ff6644; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">战斗</button>
                         </div>
                     </div>
                 </div>
@@ -847,6 +968,145 @@ const DebugPanel = {
             location.reload();
         } catch (e) {
             console.error('[Debug] resetGame错误:', e);
+        }
+    },
+    
+    // ========== 成长相关功能 ==========
+    
+    // 觉醒元素
+    awakenElement(element) {
+        try {
+            if (typeof Player !== 'undefined' && Player.awakenElement) {
+                const result = Player.awakenElement(element);
+                this.refreshUI();
+                if (result) {
+                    console.log(`[Debug] 已觉醒 ${element} 元素`);
+                    alert(`已觉醒 ${element} 元素！`);
+                } else {
+                    alert('觉醒失败，可能已经觉醒过了');
+                }
+            } else {
+                alert('Player.awakenElement 方法不存在');
+            }
+        } catch (e) {
+            console.error('[Debug] awakenElement错误:', e);
+            alert('觉醒失败: ' + e.message);
+        }
+    },
+    
+    // 觉醒全部元素
+    awakenAllElements() {
+        try {
+            const elements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'summon'];
+            let count = 0;
+            
+            if (typeof Player !== 'undefined' && Player.awakenElement) {
+                for (const element of elements) {
+                    if (Player.awakenElement(element)) {
+                        count++;
+                    }
+                }
+                this.refreshUI();
+                console.log(`[Debug] 已觉醒 ${count} 个新元素`);
+                alert(`已觉醒 ${count} 个新元素！`);
+            }
+        } catch (e) {
+            console.error('[Debug] awakenAllElements错误:', e);
+            alert('觉醒失败: ' + e.message);
+        }
+    },
+    
+    // 突破到指定境界
+    breakthroughTo(realm) {
+        try {
+            if (typeof RealmSystem !== 'undefined' && RealmSystem.breakthrough) {
+                // 先确保等级足够
+                const levelReq = { initial: 1, middle: 7, high: 20, super: 40 };
+                if (Player.level < levelReq[realm]) {
+                    Player.level = levelReq[realm];
+                    if (Player.updateStats) Player.updateStats();
+                }
+                
+                const result = RealmSystem.breakthrough(realm);
+                this.refreshUI();
+                
+                if (result.success) {
+                    console.log(`[Debug] 已突破到 ${realm} 境界`);
+                    alert(`已突破到 ${realm} 境界！`);
+                } else {
+                    alert('突破失败: ' + (result.message || '未知原因'));
+                }
+            } else {
+                alert('RealmSystem 不存在');
+            }
+        } catch (e) {
+            console.error('[Debug] breakthroughTo错误:', e);
+            alert('突破失败: ' + e.message);
+        }
+    },
+    
+    // ========== 战斗相关功能 ==========
+    
+    // 开始战斗
+    startBattle(enemyId) {
+        try {
+            if (typeof Battle !== 'undefined' && Battle.start) {
+                Battle.start(enemyId);
+                this.toggle(); // 关闭调试面板
+                console.log(`[Debug] 开始战斗: ${enemyId}`);
+            } else {
+                alert('Battle 系统不存在');
+            }
+        } catch (e) {
+            console.error('[Debug] startBattle错误:', e);
+            alert('战斗失败: ' + e.message);
+        }
+    },
+    
+    // 自定义战斗
+    startCustomBattle() {
+        try {
+            const enemyId = document.getElementById('debug-enemy-id').value;
+            if (!enemyId) {
+                alert('请输入妖魔ID');
+                return;
+            }
+            this.startBattle(enemyId);
+        } catch (e) {
+            console.error('[Debug] startCustomBattle错误:', e);
+            alert('战斗失败: ' + e.message);
+        }
+    },
+    
+    // 触发随机事件
+    triggerRandomEvent() {
+        try {
+            if (typeof EventSystem !== 'undefined' && EventSystem.triggerRandomEvent) {
+                EventSystem.triggerRandomEvent();
+                this.toggle(); // 关闭调试面板
+                console.log('[Debug] 触发随机事件');
+            } else {
+                alert('EventSystem 不存在');
+            }
+        } catch (e) {
+            console.error('[Debug] triggerRandomEvent错误:', e);
+            alert('触发事件失败: ' + e.message);
+        }
+    },
+    
+    // 触发大事件
+    triggerBigEvent(eventId) {
+        try {
+            if (typeof BigEventSystem !== 'undefined' && BigEventSystem.triggerBigEvent) {
+                BigEventSystem.triggerBigEvent(eventId);
+                this.toggle(); // 关闭调试面板
+                console.log(`[Debug] 触发大事件: ${eventId}`);
+            } else {
+                alert('BigEventSystem 不存在');
+            }
+        } catch (e) {
+            console.error('[Debug] triggerBigEvent错误:', e);
+            alert('触发大事件失败: ' + e.message);
         }
     },
     
