@@ -752,6 +752,173 @@ const DemonTraits = {
         ]
     },
     
+    // 邪眼沼妖
+    evil_eye_swamp_demon: {
+        traits: [
+            {
+                id: "evil_eye",
+                name: "邪眼",
+                description: "邪眼可以释放诅咒，降低敌人属性",
+                type: "passive",
+                effects: {
+                    attackBonus: 0.2
+                }
+            },
+            {
+                id: "swamp_body",
+                name: "沼妖身躯",
+                description: "沼泽生物，水属性伤害+25%，水抗性+30%",
+                type: "passive",
+                effects: {
+                    waterDamageBonus: 0.25,
+                    waterDamageReduction: 0.3
+                }
+            },
+            {
+                id: "poison_breath",
+                name: "毒气",
+                description: "浑身散发毒气，攻击有几率造成中毒",
+                type: "on_hit",
+                effects: {
+                    poisonChance: 0.35,
+                    poisonDamage: 6,
+                    poisonDuration: 3
+                }
+            },
+            {
+                id: "tough_skin",
+                name: "厚皮",
+                description: "皮肤厚实，生命值+30%",
+                type: "passive",
+                effects: {
+                    hpBonus: 0.3
+                }
+            }
+        ]
+    },
+    
+    // 黑畜妖
+    black_beast: {
+        traits: [
+            {
+                id: "dark_body",
+                name: "暗属性身躯",
+                description: "暗属性生物，暗影伤害+30%，暗影抗性+40%",
+                type: "passive",
+                effects: {
+                    shadowDamageBonus: 0.3,
+                    shadowDamageReduction: 0.4
+                }
+            },
+            {
+                id: "beast_strength",
+                name: "兽力",
+                description: "力量强大，攻击力+25%",
+                type: "passive",
+                effects: {
+                    attackBonus: 0.25
+                }
+            },
+            {
+                id: "ferocious",
+                name: "凶残",
+                description: "生性凶残，血量越低攻击越高",
+                type: "passive_scaling",
+                effects: {
+                    attackPerHpLost: 0.5
+                }
+            },
+            {
+                id: "thick_hide",
+                name: "厚皮",
+                description: "皮毛厚实，物理伤害减免+20%",
+                type: "damage_reduction",
+                effects: {
+                    physicalReduction: 0.2
+                }
+            }
+        ]
+    },
+    
+    // 血纹巨魔鼠（战将级）
+    blood_rune_giant_rat: {
+        traits: [
+            {
+                id: "blood_rage",
+                name: "血怒",
+                description: "血量越低，攻击力越高",
+                type: "passive_scaling",
+                effects: {
+                    attackPerHpLost: 0.8
+                }
+            },
+            {
+                id: "giant_body",
+                name: "巨型体型",
+                description: "体型巨大，生命值+50%，攻击力+20%",
+                type: "passive",
+                effects: {
+                    hpBonus: 0.5,
+                    attackBonus: 0.2
+                }
+            },
+            {
+                id: "sharp_teeth",
+                name: "锋利牙齿",
+                description: "牙齿锋利，攻击有几率造成流血",
+                type: "on_hit",
+                effects: {
+                    bleedChance: 0.4,
+                    bleedDamage: 8,
+                    bleedDuration: 3
+                }
+            },
+            {
+                id: "tough_skin",
+                name: "坚韧皮肤",
+                description: "皮肤坚韧，物理伤害减免+25%",
+                type: "damage_reduction",
+                effects: {
+                    physicalReduction: 0.25
+                }
+            }
+        ]
+    },
+    
+    // 三眼魔狼（战将级）- 兼容ID
+    three_eye_demon_wolf: {
+        traits: [
+            {
+                id: "third_eye",
+                name: "第三只眼",
+                description: "第三只眼可以洞察一切，免疫控制，命中+20%",
+                type: "passive",
+                effects: {
+                    controlImmune: true,
+                    hitBonus: 0.2
+                }
+            },
+            {
+                id: "demon_wolf_body",
+                name: "魔狼之躯",
+                description: "魔狼的身躯，全属性+30%",
+                type: "passive",
+                effects: {
+                    allStatsBonus: 0.3
+                }
+            },
+            {
+                id: "wolf_howl",
+                name: "狼嚎",
+                description: "狼嚎可以召唤狼群，提升自身攻击力",
+                type: "passive",
+                effects: {
+                    attackBonus: 0.2
+                }
+            }
+        ]
+    },
+    
     // ==================== 天赋效果工具函数 ====================
     
     /**
