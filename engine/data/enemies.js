@@ -141,10 +141,10 @@ const DataEnemies = {
       "dark"
     ],
     level: 2,
-    maxHp: 80,
+    maxHp: 90,
     maxMp: 0,
-    attack: 12,
-    defense: 3,
+    attack: 14,
+    defense: 4,
     speed: 16,
     skills: [
       "basic_attack",
@@ -308,10 +308,10 @@ const DataEnemies = {
       "fire"
     ],
     level: 3,
-    maxHp: 85,
+    maxHp: 100,
     maxMp: 50,
-    attack: 16,
-    defense: 4,
+    attack: 18,
+    defense: 5,
     speed: 13,
     skills: [
       "basic_attack",
