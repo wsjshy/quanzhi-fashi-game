@@ -226,6 +226,14 @@ const BattleSystem = {
         this.consecutiveCrits = 0;  // 连续暴击次数（用于幸运儿成就）
         this.rating = null;  // 战斗评价
         
+        // 发布战斗开始事件
+        if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+            BattleEventBus.emit(BattleEvents.BATTLE_START, {
+                enemy: enemyData,
+                turn: this.turn
+            });
+        }
+        
         // 重置战斗统计
         this.stats = {
             totalDamageDealt: 0,
@@ -2551,6 +2559,17 @@ const BattleSystem = {
         // 同步玩家状态
         Player.hp = this.player.hp;
         Player.mp = this.player.mp;
+        
+        // 发布战斗结束事件
+        if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+            BattleEventBus.emit(BattleEvents.BATTLE_END, {
+                result: this.result,
+                enemy: this.enemy,
+                stats: this.stats,
+                rating: this.rating,
+                turn: this.turn
+            });
+        }
     },
 
     /**
