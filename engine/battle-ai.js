@@ -1,0 +1,497 @@
+/**
+ * 战斗AI系统 - 基于效用系统（Utility AI）
+ * 
+ * 核心思想：
+ * 1. 列出所有候选行动
+ * 2. 对每个行动打分（基于当前状态）
+ * 3. 选择得分最高的行动执行
+ * 
+ * 评分因素：
+ * - 自身状态（HP、MP、buff/debuff）
+ * - 对手状态（HP、MP、buff/debuff）
+ * - 技能效果（伤害、治疗、控制）
+ * - 技能冷却
+ * - 元素克制
+ * 
+ * 不同AI类型有不同的权重配置
+ */
+
+const BattleAI = {
+    // AI类型配置 - 不同类型有不同的权重和偏好
+    aiProfiles: {
+        // 激进型：全力输出，不顾防御
+        aggressive: {
+            name: "激进型",
+            description: "全力输出，优先使用最高伤害技能",
+            weights: {
+                damage: 1.5,      // 伤害权重高
+                heal: 0.3,        // 治疗权重低
+                defense: 0.2,     // 防御权重低
+                control: 0.5,     // 控制权重中等
+                buff: 0.3,        // buff权重低
+                survival: 0.3     // 生存权重低
+            },
+            thresholds: {
+                healHpPercent: 0.2,  // 血量低于20%才考虑治疗
+                defenseHpPercent: 0.15 // 血量低于15%才考虑防御
+            }
+        },
+        
+        // 保守型：懂得自我保护，血量低时会防御/治疗
+        defensive: {
+            name: "保守型",
+            description: "懂得自我保护，血量低时优先防御/治疗",
+            weights: {
+                damage: 0.8,
+                heal: 1.5,
+                defense: 1.5,
+                control: 0.6,
+                buff: 0.8,
+                survival: 1.5
+            },
+            thresholds: {
+                healHpPercent: 0.5,
+                defenseHpPercent: 0.4
+            }
+        },
+        
+        // 控制型：优先控制，再输出
+        controller: {
+            name: "控制型",
+            description: "优先控制敌人，再进行输出",
+            weights: {
+                damage: 0.7,
+                heal: 0.8,
+                defense: 0.6,
+                control: 1.8,
+                buff: 0.5,
+                survival: 0.8
+            },
+            thresholds: {
+                healHpPercent: 0.35,
+                defenseHpPercent: 0.25
+            }
+        },
+        
+        // 爆发型：攒资源一波爆发
+        burst: {
+            name: "爆发型",
+            description: "积攒资源，寻找机会一波爆发",
+            weights: {
+                damage: 1.2,
+                heal: 0.6,
+                defense: 0.5,
+                control: 0.7,
+                buff: 1.2,
+                survival: 0.6
+            },
+            thresholds: {
+                healHpPercent: 0.3,
+                defenseHpPercent: 0.2,
+                burstHpPercent: 0.6  // 敌人血量低于60%开始爆发
+            }
+        },
+        
+        // 游击型：打一下跑一下，风筝对手
+        kiter: {
+            name: "游击型",
+            description: "打一下防御一下，风筝对手",
+            weights: {
+                damage: 1.0,
+                heal: 0.7,
+                defense: 1.2,
+                control: 1.0,
+                buff: 0.6,
+                survival: 1.0
+            },
+            thresholds: {
+                healHpPercent: 0.4,
+                defenseHpPercent: 0.5  // 经常防御
+            }
+        },
+        
+        // 战术型：最智能，会根据情况调整策略
+        tactical: {
+            name: "战术型",
+            description: "最智能，会根据玩家状态调整策略",
+            weights: {
+                damage: 1.0,
+                heal: 1.0,
+                defense: 1.0,
+                control: 1.0,
+                buff: 1.0,
+                survival: 1.0
+            },
+            thresholds: {
+                healHpPercent: 0.4,
+                defenseHpPercent: 0.3
+            }
+        }
+    },
+    
+    /**
+     * 获取AI决策 - 选择最佳行动
+     * @param {Object} self - 自身状态
+     * @param {Object} opponent - 对手状态
+     * @param {string} aiType - AI类型
+     * @returns {Object} 决策结果 { action, skillId, reason }
+     */
+    getDecision(self, opponent, aiType = 'aggressive') {
+        const profile = this.aiProfiles[aiType] || this.aiProfiles.aggressive;
+        
+        // 获取所有可用行动
+        const actions = this.getAvailableActions(self);
+        
+        // 对每个行动评分
+        const scoredActions = actions.map(action => {
+            const score = this.calculateActionScore(action, self, opponent, profile);
+            return { ...action, score };
+        });
+        
+        // 按分数排序
+        scoredActions.sort((a, b) => b.score - a.score);
+        
+        // 返回分数最高的行动
+        const bestAction = scoredActions[0];
+        
+        return {
+            action: bestAction.type,
+            skillId: bestAction.skillId || null,
+            score: bestAction.score,
+            reason: bestAction.reason || '',
+            allScores: scoredActions.slice(0, 5) // 返回前5名用于调试
+        };
+    },
+    
+    /**
+     * 获取所有可用行动
+     */
+    getAvailableActions(self) {
+        const actions = [];
+        
+        // 普通攻击
+        actions.push({
+            type: 'attack',
+            name: '普通攻击',
+            baseDamage: self.attack,
+            cooldown: 0
+        });
+        
+        // 防御
+        actions.push({
+            type: 'defend',
+            name: '防御'
+        });
+        
+        // 技能
+        if (self.skills && self.skills.length > 0) {
+            for (const skillId of self.skills) {
+                const skill = this.getSkillData(skillId);
+                if (skill) {
+                    // 检查MP是否足够
+                    if (skill.mpCost && self.mp < skill.mpCost) continue;
+                    
+                    // 检查冷却
+                    const cooldown = self.skillCooldowns?.[skillId] || 0;
+                    if (cooldown > 0) continue;
+                    
+                    actions.push({
+                        type: 'skill',
+                        skillId: skillId,
+                        name: skill.name,
+                        skill: skill
+                    });
+                }
+            }
+        }
+        
+        return actions;
+    },
+    
+    /**
+     * 计算行动分数
+     */
+    calculateActionScore(action, self, opponent, profile) {
+        let score = 0.5; // 基础分
+        let reason = '';
+        
+        const selfHpPercent = self.hp / self.maxHp;
+        const opponentHpPercent = opponent.hp / opponent.maxHp;
+        
+        switch (action.type) {
+            case 'attack':
+                score = this.scoreAttack(action, self, opponent, profile);
+                reason = '普通攻击';
+                break;
+                
+            case 'defend':
+                score = this.scoreDefend(action, self, opponent, profile);
+                reason = '防御';
+                break;
+                
+            case 'skill':
+                score = this.scoreSkill(action, self, opponent, profile);
+                reason = `技能: ${action.name}`;
+                break;
+        }
+        
+        // 生存压力修正 - 血量越低，生存权重越高
+        if (selfHpPercent < 0.3) {
+            score *= (0.5 + selfHpPercent); // 血量低时降低攻击倾向
+        }
+        
+        // 随机扰动 - 增加一点随机性，避免AI太死板
+        score *= (0.9 + Math.random() * 0.2);
+        
+        return { score, reason };
+    },
+    
+    /**
+     * 评分：普通攻击
+     */
+    scoreAttack(action, self, opponent, profile) {
+        let score = 0.5;
+        
+        // 基础伤害分
+        const damageRatio = self.attack / opponent.defense / 10;
+        score += damageRatio * profile.weights.damage * 0.5;
+        
+        // 敌人血量低时，攻击更有价值（斩杀）
+        if (opponent.hp / opponent.maxHp < 0.3) {
+            score += 0.3 * profile.weights.damage;
+        }
+        
+        return score;
+    },
+    
+    /**
+     * 评分：防御
+     */
+    scoreDefend(action, self, opponent, profile) {
+        let score = 0.2;
+        
+        const selfHpPercent = self.hp / self.maxHp;
+        
+        // 血量越低，防御价值越高
+        if (selfHpPercent < profile.thresholds.defenseHpPercent) {
+            score += (1 - selfHpPercent) * profile.weights.defense;
+        }
+        
+        // 敌人攻击力高时，防御更有价值
+        const attackPressure = opponent.attack / self.defense / 10;
+        score += attackPressure * profile.weights.defense * 0.3;
+        
+        return score;
+    },
+    
+    /**
+     * 评分：技能
+     */
+    scoreSkill(action, self, opponent, profile) {
+        let score = 0.5;
+        const skill = action.skill;
+        
+        // 根据技能类型评分
+        switch (skill.type) {
+            case 'damage':
+                score = this.scoreDamageSkill(skill, self, opponent, profile);
+                break;
+            case 'heal':
+                score = this.scoreHealSkill(skill, self, opponent, profile);
+                break;
+            case 'buff':
+                score = this.scoreBuffSkill(skill, self, opponent, profile);
+                break;
+            case 'debuff':
+                score = this.scoreDebuffSkill(skill, self, opponent, profile);
+                break;
+            default:
+                score = 0.4;
+        }
+        
+        // MP消耗惩罚 - 消耗MP越多，惩罚越大（但伤害高的技能惩罚小）
+        if (skill.mpCost > 0) {
+            const mpRatio = skill.mpCost / self.maxMp;
+            score -= mpRatio * 0.2;
+        }
+        
+        // 高伤害技能额外加分
+        if (skill.baseDamage > 30) {
+            score += 0.2 * profile.weights.damage;
+        }
+        
+        return score;
+    },
+    
+    /**
+     * 评分：伤害技能
+     */
+    scoreDamageSkill(skill, self, opponent, profile) {
+        let score = 0.5;
+        
+        // 基础伤害分
+        const baseDamage = skill.baseDamage || 10;
+        const damageMultiplier = skill.damageMultiplier || 1;
+        const totalDamage = baseDamage * damageMultiplier;
+        
+        const damageRatio = totalDamage / opponent.maxHp;
+        score += damageRatio * profile.weights.damage * 2;
+        
+        // 敌人血量低时，伤害技能更有价值
+        if (opponent.hp / opponent.maxHp < 0.3) {
+            score += 0.4 * profile.weights.damage;
+        }
+        
+        // 状态效果加分
+        if (skill.statusEffects && skill.statusEffects.length > 0) {
+            for (const effect of skill.statusEffects) {
+                if (effect.type === 'burn' || effect.type === 'poison' || effect.type === 'bleed') {
+                    score += 0.15 * profile.weights.damage; // DOT效果
+                }
+                if (effect.type === 'stun' || effect.type === 'freeze') {
+                    score += 0.3 * profile.weights.control; // 硬控
+                }
+                if (effect.type === 'slow' || effect.type === 'attack_down' || effect.type === 'defense_down') {
+                    score += 0.15 * profile.weights.control; // 软控
+                }
+            }
+        }
+        
+        // 元素克制加分
+        if (skill.element && opponent.elements) {
+            if (this.isElementStrong(skill.element, opponent.elements[0])) {
+                score += 0.3 * profile.weights.damage;
+            }
+            if (this.isElementWeak(skill.element, opponent.elements[0])) {
+                score -= 0.2;
+            }
+        }
+        
+        return score;
+    },
+    
+    /**
+     * 评分：治疗技能
+     */
+    scoreHealSkill(skill, self, opponent, profile) {
+        let score = 0.3;
+        
+        const selfHpPercent = self.hp / self.maxHp;
+        
+        // 血量越低，治疗价值越高
+        if (selfHpPercent < profile.threshold.healHpPercent) {
+            const healAmount = skill.healAmount || 20;
+            const healRatio = healAmount / self.maxHp;
+            score += healRatio * profile.weights.heal * 3;
+            
+            // 血量很低时大幅加分
+            if (selfHpPercent < 0.2) {
+                score += 0.5 * profile.weights.survival;
+            }
+        }
+        
+        return score;
+    },
+    
+    /**
+     * 评分：buff技能
+     */
+    scoreBuffSkill(skill, self, opponent, profile) {
+        let score = 0.3;
+        
+        // 战斗开始时buff更有价值
+        if (self.hp / self.maxHp > 0.8 && opponent.hp / opponent.maxHp > 0.8) {
+            score += 0.3 * profile.weights.buff;
+        }
+        
+        // 检查是否已经有相同buff
+        const hasBuff = self.buffs?.some(b => b.name === skill.name);
+        if (hasBuff) {
+            score -= 0.3; // 已有相同buff，降低优先级
+        }
+        
+        return score;
+    },
+    
+    /**
+     * 评分：debuff技能
+     */
+    scoreDebuffSkill(skill, self, opponent, profile) {
+        let score = 0.4;
+        
+        // 检查敌人是否已有相同debuff
+        const hasDebuff = opponent.statusEffects?.some(e => e.name === skill.name);
+        if (hasDebuff) {
+            score -= 0.2; // 已有相同debuff，降低优先级
+        } else {
+            score += 0.2 * profile.weights.control;
+        }
+        
+        // 战斗开始时debuff更有价值
+        if (opponent.hp / opponent.maxHp > 0.7) {
+            score += 0.15 * profile.weights.control;
+        }
+        
+        return score;
+    },
+    
+    /**
+     * 元素克制判断 - 攻击方是否克制防守方
+     */
+    isElementStrong(attackElement, defendElement) {
+        const strongAgainst = {
+            fire: 'ice',      // 火克冰
+            ice: 'wind',      // 冰克风
+            wind: 'earth',    // 风克土
+            earth: 'thunder', // 土克雷
+            thunder: 'water', // 雷克水
+            water: 'fire',    // 水克火
+            light: 'dark',    // 光克暗
+            dark: 'light'     // 暗克光
+        };
+        return strongAgainst[attackElement] === defendElement;
+    },
+    
+    /**
+     * 元素被克判断 - 攻击方是否被防守方克制
+     */
+    isElementWeak(attackElement, defendElement) {
+        const weakAgainst = {
+            fire: 'water',
+            ice: 'fire',
+            wind: 'ice',
+            earth: 'wind',
+            thunder: 'earth',
+            water: 'thunder',
+            light: 'dark',
+            dark: 'light'
+        };
+        return weakAgainst[attackElement] === defendElement;
+    },
+    
+    /**
+     * 获取技能数据
+     */
+    getSkillData(skillId) {
+        if (typeof DataSkills !== 'undefined' && DataSkills[skillId]) {
+            return DataSkills[skillId];
+        }
+        return null;
+    },
+    
+    /**
+     * 获取AI类型列表
+     */
+    getAITypes() {
+        return Object.keys(this.aiProfiles).map(type => ({
+            type,
+            name: this.aiProfiles[type].name,
+            description: this.aiProfiles[type].description
+        }));
+    }
+};
+
+// 导出（如果在模块环境中）
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = BattleAI;
+}

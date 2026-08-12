@@ -702,10 +702,64 @@ const BattleSystem = {
      * 敌人AI（多样化系统）
      * 支持6种AI类型：aggressive（激进）、defensive（保守）、controller（控制）、burst（爆发）、kiter（游击）、tactical（战术）
      */
+    /**
+     * 敌人AI - 使用Utility AI（效用系统）
+     * 给每个可能的行动打分，选择分数最高的执行
+     */
     enemyAI() {
         const aiType = this.enemy.aiType || 'aggressive';
         
-        // 根据AI类型选择策略
+        // 使用新的Utility AI系统
+        if (typeof BattleAI !== 'undefined') {
+            try {
+                // 准备自身状态
+                const selfState = {
+                    hp: this.enemy.hp,
+                    maxHp: this.enemy.maxHp,
+                    mp: this.enemy.mp || 0,
+                    maxMp: this.enemy.maxMp || 50,
+                    attack: this.enemy.attack,
+                    defense: this.enemy.defense,
+                    speed: this.enemy.speed,
+                    skills: this.enemy.skills || [],
+                    buffs: this.enemy.buffs || [],
+                    statusEffects: this.enemy.statusEffects || [],
+                    skillCooldowns: this.enemy.skillCooldowns || {},
+                    elements: this.enemy.elements || []
+                };
+                
+                // 准备对手状态
+                const opponentState = {
+                    hp: this.player.hp,
+                    maxHp: this.player.maxHp,
+                    mp: this.player.mp || 0,
+                    maxMp: this.player.maxMp || 50,
+                    attack: this.player.attack,
+                    defense: this.player.defense,
+                    speed: this.player.speed,
+                    buffs: this.player.buffs || [],
+                    statusEffects: this.player.statusEffects || [],
+                    elements: this.player.elements || []
+                };
+                
+                // 获取AI决策
+                const decision = BattleAI.getDecision(selfState, opponentState, aiType);
+                
+                // 转换为战斗系统的行动格式
+                if (decision.action === 'attack') {
+                    return { type: 'attack' };
+                } else if (decision.action === 'defend') {
+                    return { type: 'defend' };
+                } else if (decision.action === 'skill' && decision.skillId) {
+                    return { type: 'skill', skillId: decision.skillId };
+                }
+                
+            } catch (e) {
+                console.error('[Battle] Utility AI出错，使用备用AI:', e);
+            }
+        }
+        
+        // 备用：使用原来的简单AI
         switch (aiType) {
             case 'defensive':
                 return this.enemyAIDefensive();
