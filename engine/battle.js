@@ -413,6 +413,40 @@ const BattleSystem = {
                 isMiss: damage.isMiss,
                 damageType: 'physical'
             });
+            
+            // 发布更细粒度的事件
+            if (damage.isMiss) {
+                BattleEventBus.emit(BattleEvents.MISS, {
+                    attacker: 'player',
+                    target: 'enemy',
+                    damageType: 'physical'
+                });
+            } else {
+                BattleEventBus.emit(BattleEvents.HIT, {
+                    attacker: 'player',
+                    target: 'enemy',
+                    damage: damage.amount,
+                    isCrit: damage.isCrit,
+                    damageType: 'physical'
+                });
+                
+                if (damage.isCrit) {
+                    BattleEventBus.emit(BattleEvents.CRIT, {
+                        attacker: 'player',
+                        target: 'enemy',
+                        damage: damage.amount,
+                        damageType: 'physical'
+                    });
+                }
+                
+                BattleEventBus.emit(BattleEvents.DAMAGE, {
+                    target: 'enemy',
+                    attacker: 'player',
+                    damage: damage.amount,
+                    isCrit: damage.isCrit,
+                    damageType: 'physical'
+                });
+            }
         }
 
         this.endPlayerTurn();
@@ -577,6 +611,54 @@ const BattleSystem = {
                 
                 const target = isPlayer ? 'enemy' : 'player';
                 this.showDamageNumber(target, damage.amount, dmgType);
+            }
+            
+            // 发布命中/暴击/闪避/伤害事件
+            if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                const attacker = isPlayer ? 'player' : 'enemy';
+                const target = isPlayer ? 'enemy' : 'player';
+                
+                if (damage.isMiss) {
+                    BattleEventBus.emit(BattleEvents.MISS, {
+                        attacker: attacker,
+                        target: target,
+                        damageType: 'magic',
+                        element: skill.element,
+                        skill: skill
+                    });
+                } else {
+                    BattleEventBus.emit(BattleEvents.HIT, {
+                        attacker: attacker,
+                        target: target,
+                        damage: damage.amount,
+                        isCrit: damage.isCrit,
+                        damageType: 'magic',
+                        element: skill.element,
+                        skill: skill,
+                        elementEffect: damage.elementEffect
+                    });
+                    
+                    if (damage.isCrit) {
+                        BattleEventBus.emit(BattleEvents.CRIT, {
+                            attacker: attacker,
+                            target: target,
+                            damage: damage.amount,
+                            damageType: 'magic',
+                            element: skill.element,
+                            skill: skill
+                        });
+                    }
+                    
+                    BattleEventBus.emit(BattleEvents.DAMAGE, {
+                        target: target,
+                        attacker: attacker,
+                        damage: damage.amount,
+                        isCrit: damage.isCrit,
+                        damageType: 'magic',
+                        element: skill.element,
+                        skill: skill
+                    });
+                }
             }
 
             // 状态效果
@@ -1016,6 +1098,44 @@ const BattleSystem = {
                     damageType: 'physical',
                     enemy: this.enemy
                 });
+                
+                // 发布更细粒度的事件
+                if (damage.isMiss) {
+                    BattleEventBus.emit(BattleEvents.MISS, {
+                        attacker: 'enemy',
+                        target: 'player',
+                        damageType: 'physical',
+                        enemy: this.enemy
+                    });
+                } else {
+                    BattleEventBus.emit(BattleEvents.HIT, {
+                        attacker: 'enemy',
+                        target: 'player',
+                        damage: damage.amount,
+                        isCrit: damage.isCrit,
+                        damageType: 'physical',
+                        enemy: this.enemy
+                    });
+                    
+                    if (damage.isCrit) {
+                        BattleEventBus.emit(BattleEvents.CRIT, {
+                            attacker: 'enemy',
+                            target: 'player',
+                            damage: damage.amount,
+                            damageType: 'physical',
+                            enemy: this.enemy
+                        });
+                    }
+                    
+                    BattleEventBus.emit(BattleEvents.DAMAGE, {
+                        target: 'player',
+                        attacker: 'enemy',
+                        damage: damage.amount,
+                        isCrit: damage.isCrit,
+                        damageType: 'physical',
+                        enemy: this.enemy
+                    });
+                }
             }
 
         } else if (action.type === 'skill') {
