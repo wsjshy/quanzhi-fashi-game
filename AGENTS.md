@@ -154,9 +154,17 @@
 - **系统**：Windows，PowerShell（用 ; 分隔命令）
 
 ### 4.2 核心代码索引
-**核心模块（engine/）**：game.js / ui.js / player.js / battle.js / quest.js / event.js / time.js / inventory.js / map.js / shop.js / skill.js / talent.js / spirit-seed.js / star-dust-artifact.js / daily.js / big-event.js
+**核心模块（engine/）**：game.js / ui.js / player.js / battle.js / quest.js / event.js / time.js / inventory.js / map.js / shop.js / skill.js / talent.js / spirit-seed.js / star-dust-artifact.js / daily.js / big-event.js / debug.js
 
 **数据模块（engine/data/）**：skills.js / characters.js / locations.js / items.js / quests.js / events.js / shops.js / enemies.js / talents.js / spirit-seeds.js / star-dust-artifacts.js / big-events.js
+
+### 4.3 Debug工具（开发测试必备）
+**开启方式**：
+- URL参数：`index.html?debug=1`
+- 快捷键：按 `~` 键（波浪号）切换面板
+- 控制台：`DebugPanel.toggle()`
+
+**功能**：玩家数值调节 / 元素觉醒 / 境界突破 / 物品生成 / 快速战斗 / 事件触发 / 传送 / 时间跳转 / 预设存档 / 存档导入导出
 
 ---
 
