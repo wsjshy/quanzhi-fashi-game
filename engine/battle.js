@@ -641,7 +641,9 @@ const BattleSystem = {
                 const reactionNames = {
                     vaporize: '蒸发',
                     melt: '融化',
+                    overload: '超载',
                     electro: '感电',
+                    superconduct: '超导',
                     freeze: '冻结反应'
                 };
                 reactionText = `（${reactionNames[damage.elementReaction]}！）`;
@@ -663,16 +665,19 @@ const BattleSystem = {
             
             // 元素反应：处理状态变化
             if (damage.elementReaction && !damage.isMiss && targetData.statusEffects) {
-                // 蒸发/融化/感电/冻结都会消耗水状态
+                // 蒸发/感电/冻结都会消耗水状态
                 if (damage.elementReaction === 'vaporize' || 
                     damage.elementReaction === 'electro' || 
                     damage.elementReaction === 'freeze') {
-                    // 移除水状态
                     targetData.statusEffects = targetData.statusEffects.filter(e => e.type !== 'wet');
                 }
-                // 融化消耗冰状态
-                if (damage.elementReaction === 'melt') {
+                // 融化/超导消耗冰状态
+                if (damage.elementReaction === 'melt' || damage.elementReaction === 'superconduct') {
                     targetData.statusEffects = targetData.statusEffects.filter(e => e.type !== 'freeze' && e.type !== 'frozen');
+                }
+                // 超载消耗雷状态
+                if (damage.elementReaction === 'overload') {
+                    targetData.statusEffects = targetData.statusEffects.filter(e => e.type !== 'electrified' && e.type !== 'paralyze');
                 }
                 // 感电附加麻痹
                 if (damage.elementReaction === 'electro') {
@@ -685,6 +690,12 @@ const BattleSystem = {
                     const freezeEffect = { type: 'frozen', name: '冻结', duration: 1, skipTurn: true };
                     targetData.statusEffects.push(freezeEffect);
                     this.addLog(`${targetName} 被冻结了！`, 'debuff');
+                }
+                // 超导降低防御
+                if (damage.elementReaction === 'superconduct') {
+                    const defDownEffect = { type: 'defense_down', name: '防御降低', duration: 3, defenseMod: -0.2 };
+                    targetData.statusEffects.push(defDownEffect);
+                    this.addLog(`${targetName} 防御降低了！`, 'debuff');
                 }
             }
             
@@ -1834,6 +1845,7 @@ const BattleSystem = {
             const hasWet = target.statusEffects.some(e => e.type === 'wet');
             const hasFreeze = target.statusEffects.some(e => e.type === 'freeze' || e.type === 'frozen');
             const hasBurn = target.statusEffects.some(e => e.type === 'burn');
+            const hasElectro = target.statusEffects.some(e => e.type === 'electrified' || e.type === 'paralyze');
             
             // 火 + 水 = 蒸发
             if (element === 'fire' && hasWet) {
@@ -1845,10 +1857,20 @@ const BattleSystem = {
                 damage *= 1.3;
                 result.elementReaction = 'melt';
             }
+            // 火 + 雷 = 超载
+            else if (element === 'fire' && hasElectro) {
+                damage *= 1.25;
+                result.elementReaction = 'overload';
+            }
             // 雷 + 水 = 感电
             else if (element === 'thunder' && hasWet) {
                 damage *= 1.2;
                 result.elementReaction = 'electro';
+            }
+            // 雷 + 冰 = 超导
+            else if (element === 'thunder' && hasFreeze) {
+                damage *= 1.15;
+                result.elementReaction = 'superconduct';
             }
             // 冰 + 水 = 冻结
             else if (element === 'ice' && hasWet) {
