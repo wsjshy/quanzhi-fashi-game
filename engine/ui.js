@@ -405,7 +405,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.5.2 · 开放世界版</div>
+                ">v0.8.2 · 开放世界版</div>
             </div>
         `;
 

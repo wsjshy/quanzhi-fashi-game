@@ -622,11 +622,11 @@ const DebugPanel = {
     
     teleport(locationId) {
         try {
-            if (typeof Game !== 'undefined' && Game.goToLocation) {
-                Game.goToLocation(locationId);
+            if (typeof Game !== 'undefined' && Game.travelTo) {
+                Game.travelTo(locationId);
                 console.log(`[Debug] 传送到: ${locationId}`);
-            } else if (typeof MapSystem !== 'undefined' && MapSystem.moveTo) {
-                MapSystem.moveTo(locationId);
+            } else if (typeof MapSystem !== 'undefined' && MapSystem.travelTo) {
+                MapSystem.travelTo(locationId);
                 console.log(`[Debug] 传送到: ${locationId}`);
             } else {
                 alert('传送功能不可用');
@@ -856,18 +856,24 @@ const DebugPanel = {
         try {
             // 尝试调用各种可能的UI刷新方法
             if (typeof UI !== 'undefined') {
-                if (UI.refreshAll) UI.refreshAll();
-                if (UI.updatePlayerPanel) UI.updatePlayerPanel();
-                if (UI.renderPlayerPanel) UI.renderPlayerPanel();
+                if (UI.updateCharacterScreen) UI.updateCharacterScreen();
+                if (UI.updateShopScreen) UI.updateShopScreen();
+                if (UI.updateInventoryScreen) UI.updateInventoryScreen();
+                if (UI.updateBattleScreen) UI.updateBattleScreen();
             }
             
             if (typeof Game !== 'undefined') {
-                if (Game.refreshUI) Game.refreshUI();
-                if (Game.updateUI) Game.updateUI();
-                if (Game.render) Game.render();
+                // 如果在地图界面，重新渲染地图
+                const mapScreen = document.getElementById('map-screen');
+                if (mapScreen && mapScreen.style.display !== 'none') {
+                    if (Game.showMapScreen) Game.showMapScreen();
+                }
             }
+            
+            // 更新调试面板中的数值显示
+            this.refreshValues();
         } catch (e) {
-            // 静默失败
+            console.warn('[Debug] refreshUI警告:', e);
         }
     },
     
@@ -891,6 +897,9 @@ const DebugPanel = {
         }
     }
 };
+
+// 确保全局可访问
+window.DebugPanel = DebugPanel;
 
 // 页面加载完成后初始化
 if (document.readyState === 'loading') {
