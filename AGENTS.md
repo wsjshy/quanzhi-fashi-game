@@ -20,10 +20,18 @@
 3. 加新内容 → [docs/内容扩展指南.md](./docs/内容扩展指南.md)
 4. 架构设计 → [docs/架构说明.md](./docs/架构说明.md)
 
+### ⚔️ 我要做战斗系统相关
+1. **战斗系统整体规划** → [docs/战斗系统整体规划.md](./docs/战斗系统整体规划.md) ⭐ （核心规划，小说驱动式开发）
+2. **战斗系统完整玩法逻辑** → [docs/战斗系统完整玩法逻辑统计.md](./docs/战斗系统完整玩法逻辑统计.md)
+3. **战斗系统开发Todo** → [docs/战斗系统开发Todo清单.md](./docs/战斗系统开发Todo清单.md)
+4. **可扩展架构与方法论** → [docs/可扩展架构设计与小说拆解方法论.md](./docs/可扩展架构设计与小说拆解方法论.md)
+5. 战斗优化记录 → [docs/战斗系统优化设计.md](./docs/战斗系统优化设计.md)
+
 ### 📖 我要做小说内容拆解
 1. **先看进度** → [docs/小说拆解/README.md](./docs/小说拆解/README.md) ⭐ （唯一进度来源，避免重复劳动）
 2. **再看方法** → [docs/小说内容逐章拆解工作流.md](./docs/小说内容逐章拆解工作流.md)
 3. 转化指南 → [docs/小说内容转化指南.md](./docs/小说内容转化指南.md)
+4. **核心原则** → [docs/战斗系统整体规划.md](./docs/战斗系统整体规划.md) （小说驱动，看到一个加一个）
 
 ### 🧪 我要做测试
 0. **测试指南（完整版总入口）** → [docs/测试指南.md](./docs/测试指南.md)
@@ -62,11 +70,15 @@
 | **数据格式规范.md** | 详细数据格式定义 | 加任何内容前必看 |
 | 内容扩展指南.md | 添加各类内容的步骤指南 | 加内容时参考 |
 
-### 2.3 系统设计类（8个）
+### 2.3 系统设计类（10+个）
 | 文档 | 核心功能 |
 |------|---------|
 | 天赋系统设计文档.md | 天赋系统设计（天生天赋、灵种、魂种、升级） |
+| **战斗系统整体规划.md** | 战斗系统整体规划（小说驱动式开发）⭐ |
+| **战斗系统完整玩法逻辑统计.md** | 战斗系统完整玩法逻辑统计 |
 | 战斗系统优化设计.md | 战斗系统设计与优化记录 |
+| 战斗系统开发Todo清单.md | 战斗系统开发Todo清单 |
+| 可扩展架构设计与小说拆解方法论.md | 可扩展架构设计与小说拆解方法论 |
 | 时间系统重设计方案.md | 时间系统设计（8时段制、熬夜惩罚、课程表） |
 | 世界状态与关系网系统设计.md | 世界状态、NPC关系、势力声望 |
 | 对话树与剧情连锁系统设计.md | 对话树、剧情连锁、事件链 |
@@ -112,6 +124,18 @@
 - **数据驱动**：新内容尽量加data目录，少改核心代码
 - **编码**：UTF-8 无BOM
 
+### 3.2 核心开发原则（小说驱动式）
+**最重要的原则：小说驱动，看到一个加一个。**
+
+1. **从小说里发现什么，就实现什么** - 不凭空想象机制
+2. **能用数据实现的就用数据** - 尽量复用现有效果类型
+3. **实现不了的就新增效果类型** - 模块化新增，不破坏现有
+4. **不固定数量，不设上限** - 跟着小说走，拆到哪做到哪
+5. **已经拆解的不用重头来** - 单独找到对应位置补充数据即可
+6. **先有后优** - 先把内容加进去，再慢慢优化
+
+详细说明 → [docs/战斗系统整体规划.md](./docs/战斗系统整体规划.md)
+
 ### 3.2 Commit格式
 ```
 类型：具体描述
@@ -154,9 +178,9 @@
 - **系统**：Windows，PowerShell（用 ; 分隔命令）
 
 ### 4.2 核心代码索引
-**核心模块（engine/）**：game.js / ui.js / player.js / battle.js / quest.js / event.js / time.js / inventory.js / map.js / shop.js / skill.js / talent.js / spirit-seed.js / star-dust-artifact.js / daily.js / big-event.js / debug.js
+**核心模块（engine/）**：game.js / ui.js / player.js / battle.js / battle-ai.js / quest.js / event.js / time.js / inventory.js / map.js / shop.js / skill.js / talent.js / spirit-seed.js / star-dust-artifact.js / daily.js / big-event.js / debug.js / demon-trait.js
 
-**数据模块（engine/data/）**：skills.js / characters.js / locations.js / items.js / quests.js / events.js / shops.js / enemies.js / talents.js / spirit-seeds.js / star-dust-artifacts.js / big-events.js
+**数据模块（engine/data/）**：skills.js / characters.js / locations.js / items.js / quests.js / events.js / shops.js / enemies.js / talents.js / spirit-seeds.js / star-dust-artifacts.js / big-events.js / demon-traits.js
 
 ### 4.3 Debug工具（开发测试必备）
 **开启方式**：
@@ -169,4 +193,4 @@
 ---
 
 > **本文档是目录，不是内容。** 找不到的东西先看本文档索引，再去对应文档找。
-> 最后更新：2026-08-12
+> 最后更新：2026-08-12（v0.8.2，战斗系统小说驱动式开发）
