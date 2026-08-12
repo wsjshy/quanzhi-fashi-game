@@ -748,6 +748,15 @@ const BattleSystem = {
                     statusEffects: []
                 };
                 this.addLog(`你召唤了 ${skill.summonData.icon} ${skill.summonData.name}！（持续${skill.summonData.duration}回合）`, 'magic');
+                
+                // 发布召唤事件
+                if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                    BattleEventBus.emit(BattleEvents.SUMMON, {
+                        caster: 'player',
+                        summon: this.summon,
+                        skill: skill
+                    });
+                }
             }
 
         } else if (skill.type === 'special') {
