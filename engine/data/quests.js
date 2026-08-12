@@ -142,6 +142,43 @@ const DataQuests = {
     dialogueInProgress: "狼群清理得怎么样了？一定要注意安全。",
     dialogueComplete: "太感谢你了！学校的安全有保障了。你在学校的声望也提高了。"
   },
+  quest_mu_bai_challenge: {
+    id: "quest_mu_bai_challenge",
+    name: "穆白的挑战",
+    description: "穆氏世家的穆白看不起平民出身的法师，他向你发起了挑战。接受他的挑战，证明自己的实力！",
+    giver: "mu_bai",
+    type: "duel",
+    objectives: [
+      {
+        type: "duel",
+        npcId: "mu_bai",
+        count: 1,
+        description: "在决斗中击败穆白"
+      }
+    ],
+    rewards: {
+      exp: 250,
+      gold: 200,
+      items: [
+        {
+          itemId: "basic_staff",
+          count: 1
+        }
+      ],
+      reputation: {
+        tianlan_school: 15,
+        mu_family: -10
+      }
+    },
+    prerequisites: [
+      "quest_hunt_demon"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "哼，平民就是平民，也配和我在一个学校？敢不敢和我决斗？让我教教你什么是真正的魔法！",
+    dialogueInProgress: "怎么，不敢了？我就知道平民都是胆小鬼。",
+    dialogueComplete: "不可能！我居然输给了一个平民？！你等着，这还没完！"
+  },
   quest_collect_more_herbs: {
     id: "quest_collect_more_herbs",
     name: "更多草药",
@@ -1677,5 +1714,49 @@ const DataQuests = {
     dialogueStart: "恭喜你！你的实力已经达到了中阶魔法师的水平。学校将为你举行第二系觉醒仪式，这是每个魔法师成长路上的重要里程碑。准备好了吗？",
     dialogueInProgress: "觉醒仪式即将开始，保持专注，感受星子的召唤...",
     dialogueComplete: "太棒了！你成功觉醒了第二系！双系魔法师在整个博城都是凤毛麟角的存在。你的魔法之路，才刚刚开始..."
+  },
+
+  quest_hunter_guild_recruit: {
+    id: "quest_hunter_guild_recruit",
+    name: "猎妖队招募",
+    description: "博城猎魔者公会正在招募新的猎妖师。去猎魔者公会了解一下，加入猎妖队，成为一名真正的猎妖师！",
+    giver: "mo_fan",
+    type: "story",
+    objectives: [
+      {
+        type: "reach",
+        locationId: "hunter_guild",
+        count: 1,
+        description: "前往猎魔者公会"
+      },
+      {
+        type: "kill",
+        enemyId: "demon_wolf",
+        count: 5,
+        description: "击败 5 只妖魔证明实力"
+      }
+    ],
+    rewards: {
+      exp: 400,
+      gold: 300,
+      items: [
+        {
+          itemId: "hunter_badge",
+          count: 1
+        }
+      ],
+      reputation: {
+        hunter_guild: 20
+      },
+      unlocks: ["hunter_quests"]
+    },
+    prerequisites: [
+      "quest_hunt_wolf_pack"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "嘿，你最近表现不错啊！有没有兴趣加入猎妖队？猎魔者公会正在招人，以你的实力肯定没问题。",
+    dialogueInProgress: "怎么样，去猎魔者公会报到了吗？记得先完成考核任务哦。",
+    dialogueComplete: "恭喜你正式成为猎妖师！以后我们就是战友了，一起猎杀妖魔，保护博城！"
   }
 };
