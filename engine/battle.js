@@ -660,6 +660,15 @@ const BattleSystem = {
         // 应用伤害
         this.applyDamage(this.enemy, damage, this.player);
         
+        // 元素反应：处理状态变化
+        if (damage.elementReaction && !damage.isMiss && this.enemy.statusEffects) {
+            // 碎冰消耗冻结状态
+            if (damage.elementReaction === 'shatter') {
+                this.enemy.statusEffects = this.enemy.statusEffects.filter(e => e.type !== 'freeze' && e.type !== 'frozen');
+                this.addLog(`❄️ 碎冰反应！冻结被打破，造成额外伤害！`, 'magic');
+            }
+        }
+        
         // 连续暴击记录（用于幸运儿成就）
         if (damage.isCrit) {
             this.consecutiveCrits++;
@@ -923,7 +932,11 @@ const BattleSystem = {
                     freeze: '冻结反应',
                     swirl_fire: '扩散火',
                     swirl_water: '扩散水',
-                    mud: '泥浆'
+                    swirl_thunder: '扩散雷',
+                    swirl_ice: '扩散冰',
+                    mud: '泥浆',
+                    crystallize: '结晶',
+                    shatter: '碎冰'
                 };
                 reactionText = `（${reactionNames[damage.elementReaction]}！）`;
             }
@@ -981,6 +994,18 @@ const BattleSystem = {
                     const mudEffect = { type: 'slow', name: '泥浆', duration: 2, speedMod: -0.3 };
                     targetData.statusEffects.push(mudEffect);
                     this.addLog(`${targetName} 陷入泥浆，速度降低！`, 'debuff');
+                }
+                // 结晶产生护盾
+                if (damage.elementReaction === 'crystallize') {
+                    const shieldAmount = Math.floor(casterData.attack * 0.3);
+                    const shieldEffect = { type: 'shield', name: '结晶护盾', value: shieldAmount, duration: 3 };
+                    targetData.statusEffects.push(shieldEffect);
+                    this.addLog(`${targetName} 获得了 ${shieldAmount} 点结晶护盾！`, 'buff');
+                }
+                // 碎冰消耗冻结状态
+                if (damage.elementReaction === 'shatter') {
+                    targetData.statusEffects = targetData.statusEffects.filter(e => e.type !== 'freeze' && e.type !== 'frozen');
+                    this.addLog(`❄️ 碎冰反应！冻结被打破，造成额外伤害！`, 'magic');
                 }
             }
             
@@ -2192,10 +2217,30 @@ const BattleSystem = {
                 damage *= 1.1;
                 result.elementReaction = 'mud';
             }
+            // 土 + 火/冰/雷 = 结晶（产生护盾）
+            else if (element === 'earth' && (hasBurn || hasFreeze || hasElectro)) {
+                damage *= 1.1;
+                result.elementReaction = 'crystallize';
+            }
             // 风 + 水 = 扩散水
             else if (element === 'wind' && hasWet) {
                 damage *= 1.15;
                 result.elementReaction = 'swirl_water';
+            }
+            // 风 + 雷 = 扩散雷
+            else if (element === 'wind' && hasElectro) {
+                damage *= 1.15;
+                result.elementReaction = 'swirl_thunder';
+            }
+            // 风 + 冰 = 扩散冰
+            else if (element === 'wind' && hasFreeze) {
+                damage *= 1.15;
+                result.elementReaction = 'swirl_ice';
+            }
+            // 物理 + 冰 = 碎冰（破冰伤害）
+            else if (element === 'physical' && hasFreeze) {
+                damage *= 1.3;
+                result.elementReaction = 'shatter';
             }
         }
         
