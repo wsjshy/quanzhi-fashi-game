@@ -203,5 +203,60 @@ const SoulSystem = {
       return "";
     }
     return `${config.icon} ${config.name}\n提供 ${config.baseExp} 点星尘魔器经验`;
+  },
+  
+  // ==================== 事件驱动初始化 ====================
+  
+  // 是否已初始化事件订阅
+  _eventInitialized: false,
+  
+  /**
+   * 初始化事件订阅
+   * 通过订阅战斗事件来触发残魄/精魄掉落，实现与战斗系统解耦
+   */
+  initEventSubscription() {
+    if (this._eventInitialized) return;
+    
+    if (typeof BattleEventBus === 'undefined' || typeof BattleEvents === 'undefined') {
+      console.log('[SoulSystem] 事件总线未加载，跳过事件订阅初始化');
+      return;
+    }
+    
+    console.log('[SoulSystem] 初始化事件订阅');
+    
+    // 订阅敌人死亡事件（击杀妖魔时自动收集残魄/精魄）
+    BattleEventBus.on(BattleEvents.ENEMY_DEATH, (data) => {
+      try {
+        if (typeof Player === 'undefined' || typeof BattleSystem === 'undefined') return;
+        
+        const enemy = data.enemy;
+        if (!enemy) return;
+        
+        // 收集残魄/精魄
+        const soulResult = this.collectSoulOnKill(Player, enemy);
+        if (soulResult.collected) {
+          // 添加战斗日志
+          if (BattleSystem.addLog) {
+            BattleSystem.addLog(soulResult.message, 'buff');
+          }
+        }
+      } catch (e) {
+        console.error('[SoulSystem] 事件处理出错:', e);
+      }
+    });
+    
+    this._eventInitialized = true;
+    console.log('[SoulSystem] 事件订阅初始化完成');
   }
 };
+
+// 自动初始化事件订阅（延迟加载，确保事件总线已加载）
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => SoulSystem.initEventSubscription(), 200);
+    });
+  } else {
+    setTimeout(() => SoulSystem.initEventSubscription(), 200);
+  }
+}
