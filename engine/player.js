@@ -1073,6 +1073,29 @@ const Player = {
      */
     gainGold(amount) {
         this.gold += amount;
+        
+        // 财富成就检查
+        if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
+            try {
+                const goldAchievements = [
+                    { id: 'rich_1000', value: 1000 },
+                    { id: 'rich_10000', value: 10000 },
+                    { id: 'rich_100000', value: 100000 },
+                    { id: 'rich_million', value: 1000000 },
+                ];
+                
+                goldAchievements.forEach(ach => {
+                    if (this.gold >= ach.value && !WorldState.hasAchievement(ach.id)) {
+                        const achData = DataAchievements[ach.id];
+                        if (achData) {
+                            WorldState.unlockAchievement(ach.id, achData);
+                        }
+                    }
+                });
+            } catch (e) {
+                console.warn('[玩家] 财富成就检查失败:', e);
+            }
+        }
     },
 
     /**
