@@ -99,6 +99,47 @@ const SpiritSeedSystem = {
         if (!Player.spiritSeeds) Player.spiritSeeds = {};
         Player.spiritSeeds[element] = seedId;
 
+        // 成就检查
+        if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
+            try {
+                const seedCount = Object.keys(Player.spiritSeeds).length;
+                
+                // 第一个灵种
+                if (seedCount >= 1 && !WorldState.hasAchievement('first_spirit_seed')) {
+                    const achData = DataAchievements['first_spirit_seed'];
+                    if (achData) {
+                        WorldState.unlockAchievement('first_spirit_seed', achData);
+                    }
+                }
+                
+                // 稀有灵种
+                if (seed.isRare && !WorldState.hasAchievement('rare_spirit_seed')) {
+                    const achData = DataAchievements['rare_spirit_seed'];
+                    if (achData) {
+                        WorldState.unlockAchievement('rare_spirit_seed', achData);
+                    }
+                }
+                
+                // 魂种
+                if (seed.grade === 'soul' && !WorldState.hasAchievement('soul_seed')) {
+                    const achData = DataAchievements['soul_seed'];
+                    if (achData) {
+                        WorldState.unlockAchievement('soul_seed', achData);
+                    }
+                }
+                
+                // 全元素灵种
+                if (seedCount >= 10 && !WorldState.hasAchievement('all_element_seeds')) {
+                    const achData = DataAchievements['all_element_seeds'];
+                    if (achData) {
+                        WorldState.unlockAchievement('all_element_seeds', achData);
+                    }
+                }
+            } catch (e) {
+                console.warn('[SpiritSeed] 灵种成就检查失败:', e);
+            }
+        }
+
         return true;
     },
 

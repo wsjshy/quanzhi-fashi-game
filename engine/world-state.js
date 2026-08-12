@@ -241,9 +241,24 @@ const WorldState = {
         this.achievements.push(achievement);
         this.save();
 
+        // 发放奖励
+        if (achievementData.reward) {
+            try {
+                if (achievementData.reward.gold && typeof Player !== 'undefined') {
+                    Player.gold += achievementData.reward.gold;
+                }
+            } catch (e) {
+                console.warn('[WorldState] 成就奖励发放失败:', e);
+            }
+        }
+
         // 显示提示
         if (typeof UI !== 'undefined' && UI.showMessage) {
-            UI.showMessage(`🏆 成就解锁：${achievement.name}`);
+            let msg = `🏆 成就解锁：${achievement.name}`;
+            if (achievementData.reward?.gold) {
+                msg += ` （奖励：${achievementData.reward.gold}金币）`;
+            }
+            UI.showMessage(msg);
         }
 
         return true;
