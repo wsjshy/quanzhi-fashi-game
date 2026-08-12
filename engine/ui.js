@@ -3362,18 +3362,43 @@ const UI = {
                                 ${Player.skills.map(skillId => {
                                     const skill = SkillSystem.getSkill(skillId);
                                     if (!skill) return '';
+                                    
+                                    // 技能等级
+                                    const skillLevel = Player.getSkillLevel ? Player.getSkillLevel(skillId) : 1;
+                                    const skillExp = Player.getSkillExp ? Player.getSkillExp(skillId) : 0;
+                                    const expToNext = typeof SkillLevelSystem !== 'undefined' ? SkillLevelSystem.getExpToNextLevel(skillLevel) : 0;
+                                    const isMaxLevel = skillLevel >= (typeof SkillLevelSystem !== 'undefined' ? SkillLevelSystem.MAX_LEVEL : 3);
+                                    const expPercent = isMaxLevel ? 100 : Math.floor((skillExp / expToNext) * 100);
+                                    const elementColor = SkillSystem.getElementColor(skill.element);
+                                    
                                     return `
                                         <div style="
                                             padding: 12px 15px;
-                                            background: ${SkillSystem.getElementColor(skill.element)}15;
-                                            border-left: 4px solid ${SkillSystem.getElementColor(skill.element)};
+                                            background: ${elementColor}15;
+                                            border-left: 4px solid ${elementColor};
                                             border-radius: 5px;
                                         ">
-                                            <div style="font-size: 16px; color: #fff; font-weight: bold;">
-                                                ${skill.name}
-                                                <span style="font-size: 12px; color: ${SkillSystem.getElementColor(skill.element)}; margin-left: 10px;">${skill.tier} · ${SkillSystem.getElementName(skill.element)}</span>
+                                            <div style="font-size: 16px; color: #fff; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+                                                <span>
+                                                    ${skill.name}
+                                                    <span style="font-size: 12px; color: ${elementColor}; margin-left: 10px;">${skill.tier} · ${SkillSystem.getElementName(skill.element)}</span>
+                                                </span>
+                                                <span style="font-size: 14px; color: ${elementColor}; font-weight: bold;">
+                                                    Lv.${skillLevel}${isMaxLevel ? ' (满级)' : ''}
+                                                </span>
                                             </div>
                                             <div style="font-size: 13px; color: #999; margin-top: 4px;">${skill.description}</div>
+                                            ${!isMaxLevel && expToNext > 0 ? `
+                                                <div style="margin-top: 8px;">
+                                                    <div style="font-size: 11px; color: #666; margin-bottom: 3px; display: flex; justify-content: space-between;">
+                                                        <span>技能经验</span>
+                                                        <span>${skillExp} / ${expToNext}</span>
+                                                    </div>
+                                                    <div style="height: 6px; background: #222; border-radius: 3px; overflow: hidden;">
+                                                        <div style="height: 100%; width: ${expPercent}%; background: linear-gradient(90deg, ${elementColor}, ${elementColor}cc); border-radius: 3px;"></div>
+                                                    </div>
+                                                </div>
+                                            ` : ''}
                                         </div>
                                     `;
                                 }).join('')}

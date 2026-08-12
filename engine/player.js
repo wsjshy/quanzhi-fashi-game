@@ -4,7 +4,7 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.8.1';
+const GAME_VERSION = '0.8.2';
 const SAVE_VERSION = '0.8.0';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
@@ -93,6 +93,7 @@ const Player = {
     // 元素与技能
     elements: [],
     skills: ['basic_attack'],
+    skillLevels: {},  // 技能等级：{ skillId: { level, exp } }
     talents: {},  // 天赋：{ elementId: { talentId, level, exp } }
     spiritSeeds: {},  // 灵种：{ elementId: seedId }
     starDustArtifacts: {},  // 星尘魔器：{ elementId: { id, level, exp } }
@@ -145,6 +146,7 @@ const Player = {
         this.stamina = 100;
         this.elements = element ? [element] : [];
         this.skills = ['basic_attack'];
+        this.skillLevels = {};  // 技能等级
         this.talents = {};  // 天赋系统
         this.gold = 50;
         this.equipment = { weapon: null, armor: null, accessory: null };
@@ -559,6 +561,58 @@ const Player = {
     },
 
     /**
+     * 获取技能等级
+     * @param {string} skillId - 技能ID
+     * @returns {number} 技能等级（1-3）
+     */
+    getSkillLevel(skillId) {
+        if (!this.skillLevels || typeof SkillLevelSystem === 'undefined') return 1;
+        return SkillLevelSystem.getSkillLevel(this.skillLevels, skillId);
+    },
+
+    /**
+     * 获取技能经验
+     * @param {string} skillId - 技能ID
+     * @returns {number} 当前经验
+     */
+    getSkillExp(skillId) {
+        if (!this.skillLevels || typeof SkillLevelSystem === 'undefined') return 0;
+        return SkillLevelSystem.getSkillExp(this.skillLevels, skillId);
+    },
+
+    /**
+     * 获取技能伤害加成
+     * @param {string} skillId - 技能ID
+     * @returns {number} 伤害倍率
+     */
+    getSkillDamageBonus(skillId) {
+        const level = this.getSkillLevel(skillId);
+        if (typeof SkillLevelSystem === 'undefined') return 1;
+        return SkillLevelSystem.getDamageBonus(level);
+    },
+
+    /**
+     * 增加技能经验
+     * @param {string} skillId - 技能ID
+     * @param {number} amount - 经验值
+     * @returns {object} { leveledUp, newLevel, skillName }
+     */
+    addSkillExp(skillId, amount) {
+        if (!this.skillLevels || typeof SkillLevelSystem === 'undefined') {
+            return { leveledUp: false };
+        }
+
+        const result = SkillLevelSystem.addSkillExp(this.skillLevels, skillId, amount);
+
+        if (result.leveledUp) {
+            const skill = SkillSystem.getSkill(skillId);
+            result.skillName = skill ? skill.name : '技能';
+        }
+
+        return result;
+    },
+
+    /**
      * 获取某元素系的灵种数据
      * @param {string} element - 元素系ID
      * @returns {object|null} 灵种数据
@@ -957,6 +1011,7 @@ const Player = {
             spirit: this.spirit,
             elements: this.elements,
             skills: this.skills,
+            skillLevels: this.skillLevels,
             talents: this.talents,
             spiritSeeds: this.spiritSeeds,
             starDustArtifacts: this.starDustArtifacts,
@@ -1033,6 +1088,7 @@ const Player = {
             this.stamina = data.stamina ?? this.maxStamina;
             this.elements = data.elements ?? [];
             this.skills = data.skills ?? ['basic_attack'];
+            this.skillLevels = data.skillLevels ?? {};
             this.talents = data.talents ?? {};
             this.spiritSeeds = data.spiritSeeds ?? {};
             this.starDustArtifacts = data.starDustArtifacts ?? {};

@@ -232,8 +232,14 @@ const BattleSystem = {
                 }
             }
 
+            // 技能等级加成（仅玩家）
+            let skillLevelBonus = 1.0;
+            if (isPlayer && typeof Player !== 'undefined' && typeof SkillLevelSystem !== 'undefined') {
+                skillLevelBonus = Player.getSkillDamageBonus(skill.id);
+            }
+
             const damage = this.calculateDamage(
-                baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus,
+                baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus,
                 targetData.defense,
                 1.0,
                 casterData.critRate || 0.05,
@@ -345,6 +351,15 @@ const BattleSystem = {
             const talentResult = Player.addElementTalentExp(skill.element, talentExp);
             if (talentResult.leveledUp) {
                 this.addLog(`🌟 天赋「${talentResult.talentName}」升级到 Lv.${talentResult.newLevel}！`, 'buff');
+            }
+        }
+
+        // 技能经验：玩家释放技能增加技能经验
+        if (isPlayer && typeof Player !== 'undefined' && typeof SkillLevelSystem !== 'undefined') {
+            const skillExp = 5; // 每次释放技能获得5点技能经验
+            const skillResult = Player.addSkillExp(skill.id, skillExp);
+            if (skillResult.leveledUp) {
+                this.addLog(`✨ 技能「${skillResult.skillName}」升级到 Lv.${skillResult.newLevel}！`, 'buff');
             }
         }
 
