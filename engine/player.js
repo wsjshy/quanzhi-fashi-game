@@ -160,6 +160,8 @@ const Player = {
         this.dailyData = null;  // 由 DailySystem.initNewGame() 初始化
         this.unlockedLocations = ['tianlan_school', 'city_street', 'xuefeng_mountain'];
         this.battleBuffs = [];
+        this.tempShopDiscount = 1.0;  // 临时商店折扣率（1.0=不打折）
+        this.tempShopDiscountExpireDay = 0;  // 折扣到期天数
 
         // 如果选了元素，给对应的初始技能
         if (element) {
@@ -971,6 +973,9 @@ const Player = {
             bestiary: this.bestiary,
             dailyData: this.dailyData,
             unlockedLocations: this.unlockedLocations,
+            battleBuffs: this.battleBuffs,
+            tempShopDiscount: this.tempShopDiscount,
+            tempShopDiscountExpireDay: this.tempShopDiscountExpireDay,
             inventory: Inventory.getSaveData(),
             worldState: typeof WorldState !== 'undefined' ? WorldState.getSaveData() : null,
             npcStates: typeof NPCStateSystem !== 'undefined' ? NPCStateSystem.getSaveData() : null,
@@ -1044,6 +1049,9 @@ const Player = {
             this.bestiary = data.bestiary ?? {};
             this.dailyData = data.dailyData ?? null;
             this.unlockedLocations = data.unlockedLocations ?? ['tianlan_school', 'city_street', 'xuefeng_mountain'];
+            this.battleBuffs = data.battleBuffs ?? [];
+            this.tempShopDiscount = data.tempShopDiscount ?? 1.0;
+            this.tempShopDiscountExpireDay = data.tempShopDiscountExpireDay ?? 0;
             
             // 加载背包
             if (data.inventory) {

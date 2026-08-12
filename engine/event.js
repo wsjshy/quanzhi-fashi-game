@@ -250,6 +250,14 @@ const EventSystem = {
             result.unlockLocation = effects.unlockLocation;
         }
 
+        if (effects.shopDiscount) {
+            const discount = effects.shopDiscount.discount || 0.8;
+            const durationDays = effects.shopDiscount.durationDays || 1;
+            Player.tempShopDiscount = discount;
+            Player.tempShopDiscountExpireDay = Player.day + durationDays - 1;
+            result.shopDiscount = effects.shopDiscount;
+        }
+
         if (effects.giveInfo) {
             WorldState.gainInfo(effects.giveInfo);
             result.giveInfo = effects.giveInfo;

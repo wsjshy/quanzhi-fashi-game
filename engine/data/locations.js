@@ -320,7 +320,9 @@ const DataLocations = {
     ],
     connectedLocations: [
       "tianlan_school",
-      "xuefeng_mountain"
+      "xuefeng_mountain",
+      "mingwen_girls_school",
+      "old_banyan_district"
     ],
     enemies: [],
     enemyRate: 0

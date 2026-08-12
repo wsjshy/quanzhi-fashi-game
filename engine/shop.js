@@ -25,24 +25,35 @@ const ShopSystem = {
      * 获取当前商店的折扣率
      */
     getDiscount() {
-        if (!this.currentShop || !this.currentShop.factionId) {
-            return 1.0;
+        let discount = 1.0;
+        
+        // 势力声望折扣
+        if (this.currentShop && this.currentShop.factionId) {
+            const factionId = this.currentShop.factionId;
+            const repLevel = WorldState.getReputationLevel(factionId);
+            const faction = DataManager.getFaction(factionId);
+
+            if (faction && faction.reputationEffects) {
+                const effects = faction.reputationEffects[repLevel.level];
+                if (effects && effects.shopDiscount) {
+                    discount = effects.shopDiscount;
+                }
+            }
+        }
+        
+        // 临时折扣（如商店打折事件）
+        if (typeof Player !== 'undefined' && Player.tempShopDiscount && Player.tempShopDiscount < 1.0) {
+            // 检查是否过期
+            if (Player.tempShopDiscountExpireDay >= Player.day) {
+                discount = Math.min(discount, Player.tempShopDiscount);
+            } else {
+                // 过期了，重置
+                Player.tempShopDiscount = 1.0;
+                Player.tempShopDiscountExpireDay = 0;
+            }
         }
 
-        const factionId = this.currentShop.factionId;
-        const repLevel = WorldState.getReputationLevel(factionId);
-        const faction = DataManager.getFaction(factionId);
-
-        if (!faction || !faction.reputationEffects) {
-            return 1.0;
-        }
-
-        const effects = faction.reputationEffects[repLevel.level];
-        if (effects && effects.shopDiscount) {
-            return effects.shopDiscount;
-        }
-
-        return 1.0;
+        return discount;
     },
 
     /**

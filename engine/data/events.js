@@ -318,7 +318,7 @@ const DataEvents = {
   event_shop_discount: {
     id: "event_shop_discount",
     name: "商店打折",
-    description: "今天商店打折！",
+    description: "你发现今天魔法商店在搞促销活动，所有商品8折优惠，仅限今天！",
     trigger: "exploring",
     chance: 0.1,
     conditions: [],
@@ -327,9 +327,17 @@ const DataEvents = {
       {
         text: "太好了，去买买买",
         effects: {
-          gold: 20
+          shopDiscount: {
+            discount: 0.8,
+            durationDays: 1
+          }
         },
-        resultText: "你发现商店真的在打折，还送了优惠券！（获得 20 金币）"
+        resultText: "你记下了这个好消息，今天去商店买东西都能打8折！"
+      },
+      {
+        text: "没什么需要的，算了",
+        effects: {},
+        resultText: "你觉得暂时不需要买东西，就没有放在心上。"
       }
     ]
   },
