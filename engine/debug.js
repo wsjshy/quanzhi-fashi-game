@@ -371,10 +371,18 @@ const DebugPanel = {
                     </div>
                     
                     <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">🧙 魔法师对手</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.startBattle('mage_student')" style="background: #ff6633; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🔥 切磋同学</button>
+                            <button onclick="DebugPanel.startBattle('mu_bai_duel')" style="background: #66ccff; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">❄️ 穆白</button>
+                            <button onclick="DebugPanel.startBattle('zhao_kunsan_duel')" style="background: #cc9966; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🪨 赵坤三</button>
+                            <button onclick="DebugPanel.startBattle('black_church_mage')" style="background: #663366; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🌑 黑教廷执事</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
                         <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">🎭 特殊战斗</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                            <button onclick="DebugPanel.startBattle('mu_bai')" style="background: #6688cc; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 穆白（决斗）</button>
-                            <button onclick="DebugPanel.startBattle('zhao_kunsan')" style="background: #6688cc; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 赵坤三（决斗）</button>
                             <button onclick="DebugPanel.triggerRandomEvent()" style="background: #4488aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🎲 随机事件</button>
                             <button onclick="DebugPanel.triggerBigEvent('big_event_bocheng_disaster')" style="background: #aa4444; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">💥 博城灾难</button>
                         </div>
