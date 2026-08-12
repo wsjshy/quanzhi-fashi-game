@@ -325,7 +325,17 @@ const DebugPanel = {
                 <!-- 战斗标签页 -->
                 <div id="debug-tab-battle" class="debug-tab-content" style="display: none;">
                     <div style="margin-bottom: 15px;">
-                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">快速战斗（奴仆级）</div>
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">⚡ 快速战斗准备</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.battlePrep()" style="background: #22aa66; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">💪 满血满蓝满体力</button>
+                            <button onclick="DebugPanel.setLevel(5)" style="background: #4488aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⭐ 设置等级5</button>
+                            <button onclick="DebugPanel.setLevel(10)" style="background: #4488aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⭐ 设置等级10</button>
+                            <button onclick="DebugPanel.awakenAllElements()" style="background: #aa66cc; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">✨ 觉醒全部元素</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">🐀 奴仆级妖魔（新手）</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                             <button onclick="DebugPanel.startBattle('giant_eye_rat')" style="background: #886644; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐀 巨眼猩鼠</button>
                             <button onclick="DebugPanel.startBattle('one_eye_wolf')" style="background: #666688; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐺 独眼魔狼</button>
@@ -335,7 +345,7 @@ const DebugPanel = {
                     </div>
                     
                     <div style="margin-bottom: 15px;">
-                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">战将级妖魔</div>
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">👹 战将级妖魔（进阶）</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                             <button onclick="DebugPanel.startBattle('three_eye_wolf')" style="background: #aa6644; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">👁️ 三眼魔狼</button>
                             <button onclick="DebugPanel.startBattle('blood_pattern_rat')" style="background: #cc4444; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐀 血纹巨魔鼠</button>
@@ -345,26 +355,48 @@ const DebugPanel = {
                     </div>
                     
                     <div style="margin-bottom: 15px;">
-                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">统领级妖魔</div>
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">🐺 统领级妖魔（挑战）</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                             <button onclick="DebugPanel.startBattle('winged_wolf')" style="background: #ff4400; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🦅 翼苍狼</button>
+                            <button onclick="DebugPanel.startBattle('stone_troll')" style="background: #888844; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🗿 石巨魔</button>
                         </div>
                     </div>
                     
                     <div style="margin-bottom: 15px;">
-                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">事件触发</div>
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">👑 君主级妖魔（Boss）</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.startBattle('flame_queen')" style="background: #ff2200; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🔥 炎姬女王</button>
+                            <button onclick="DebugPanel.startBattle('ice_saint')" style="background: #44aaff; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">❄️ 冰圣</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">🎭 特殊战斗</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.startBattle('mu_bai')" style="background: #6688cc; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 穆白（决斗）</button>
+                            <button onclick="DebugPanel.startBattle('zhao_kunsan')" style="background: #6688cc; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 赵坤三（决斗）</button>
                             <button onclick="DebugPanel.triggerRandomEvent()" style="background: #4488aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🎲 随机事件</button>
                             <button onclick="DebugPanel.triggerBigEvent('big_event_bocheng_disaster')" style="background: #aa4444; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">💥 博城灾难</button>
                         </div>
                     </div>
                     
                     <div style="margin-bottom: 15px;">
-                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">自定义战斗</div>
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">🔧 自定义战斗</div>
                         <div style="display: flex; align-items: center; margin-bottom: 8px; gap: 8px;">
                             <span style="flex: 1; font-size: 12px;">妖魔ID</span>
                             <input type="text" id="debug-enemy-id" placeholder="enemy_id" style="width: 120px; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px;">
                             <button onclick="DebugPanel.startCustomBattle()" style="background: #ff6644; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">战斗</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">📖 战斗说明</div>
+                        <div style="font-size: 11px; color: #aaa; line-height: 1.6;">
+                            <div>• 回合制战斗，速度高者先行动</div>
+                            <div>• 元素克制：火克冰、冰克风、风克土、土克雷、雷克水、水克火</div>
+                            <div>• 高阶魔法需要引导，引导中可被打断</div>
+                            <div>• 精神力越高，引导速度越快</div>
+                            <div>• 合理运用技能、道具、防御取得胜利</div>
                         </div>
                     </div>
                 </div>
@@ -1046,6 +1078,26 @@ const DebugPanel = {
     },
     
     // ========== 战斗相关功能 ==========
+    
+    // 战斗准备：满血满蓝满体力
+    battlePrep() {
+        try {
+            if (typeof Player !== 'undefined') {
+                const stats = Player.getTotalStats ? Player.getTotalStats() : null;
+                if (stats) {
+                    Player.hp = stats.maxHp;
+                    Player.mp = stats.maxMp;
+                }
+                Player.stamina = 100;
+                this.refreshUI();
+                console.log('[Debug] 战斗准备完成：满血满蓝满体力');
+                alert('战斗准备完成！\nHP: ' + Player.hp + '\nMP: ' + Player.mp + '\n体力: ' + Player.stamina);
+            }
+        } catch (e) {
+            console.error('[Debug] battlePrep错误:', e);
+            alert('战斗准备失败: ' + e.message);
+        }
+    },
     
     // 开始战斗
     startBattle(enemyId) {
