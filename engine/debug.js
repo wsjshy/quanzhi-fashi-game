@@ -581,18 +581,39 @@ const DebugPanel = {
     setLevel() {
         try {
             const levelEl = document.getElementById('debug-level');
-            const level = parseInt(levelEl.value);
-            if (level < 1) level = 1;
+            const targetLevel = parseInt(levelEl.value);
+            if (targetLevel < 1) targetLevel = 1;
             
             if (typeof Player !== 'undefined') {
-                Player.level = level;
-                if (Player.updateStats) Player.updateStats();
+                // 如果目标等级比当前高，升级
+                while (Player.level < targetLevel) {
+                    Player.levelUp();
+                }
+                // 如果目标等级比当前低，降级（重置属性重新计算）
+                if (Player.level > targetLevel) {
+                    // 重置到1级属性
+                    Player.level = 1;
+                    Player.maxHp = 100;
+                    Player.maxMp = 50;
+                    Player.attack = 10;
+                    Player.defense = 5;
+                    Player.speed = 10;
+                    Player.spirit = 10;
+                    Player.attributePoints = 0;
+                    Player.expToNext = 100;
+                    // 再升到目标等级
+                    while (Player.level < targetLevel) {
+                        Player.levelUp();
+                    }
+                }
+                
                 Player.hp = Player.maxHp;
                 Player.mp = Player.maxMp;
+                Player.stamina = Player.maxStamina;
                 
                 this.refreshUI();
-                console.log(`[Debug] 等级设置为 ${level}`);
-                alert(`等级已设置为 ${level}`);
+                console.log(`[Debug] 等级设置为 ${targetLevel}`);
+                alert(`等级已设置为 ${targetLevel}`);
             }
         } catch (e) {
             console.error('[Debug] setLevel错误:', e);
@@ -899,40 +920,56 @@ const DebugPanel = {
     
     loadPresetSave(type) {
         try {
-            let level = 1;
+            let targetLevel = 1;
             let gold = 100;
             
             switch(type) {
                 case 'newbie':
-                    level = 1;
+                    targetLevel = 1;
                     gold = 50;
                     break;
                 case 'early':
-                    level = 3;
+                    targetLevel = 3;
                     gold = 500;
                     break;
                 case 'mid':
-                    level = 5;
+                    targetLevel = 5;
                     gold = 2000;
                     break;
                 case 'max':
-                    level = 10;
+                    targetLevel = 10;
                     gold = 100000;
                     break;
             }
             
             if (typeof Player !== 'undefined') {
-                Player.level = level;
+                // 重置到1级属性
+                Player.level = 1;
+                Player.maxHp = 100;
+                Player.maxMp = 50;
+                Player.attack = 10;
+                Player.defense = 5;
+                Player.speed = 10;
+                Player.spirit = 10;
+                Player.attributePoints = 0;
+                Player.expToNext = 100;
+                Player.skills = [];
+                
+                // 升到目标等级
+                while (Player.level < targetLevel) {
+                    Player.levelUp();
+                }
+                
                 Player.gold = gold;
-                if (Player.updateStats) Player.updateStats();
                 Player.hp = Player.maxHp;
                 Player.mp = Player.maxMp;
                 Player.stamina = Player.maxStamina;
+                Player.exp = 0;
                 
                 this.refreshValues();
                 this.refreshUI();
-                console.log(`[Debug] 已加载 ${type} 存档 (Lv.${level})`);
-                alert(`已生成 ${type} 存档\n等级: Lv.${level}\n金币: ${gold}`);
+                console.log(`[Debug] 已加载 ${type} 存档 (Lv.${targetLevel})`);
+                alert(`已生成 ${type} 存档\n等级: Lv.${targetLevel}\n金币: ${gold}`);
             }
         } catch (e) {
             console.error('[Debug] loadPresetSave错误:', e);

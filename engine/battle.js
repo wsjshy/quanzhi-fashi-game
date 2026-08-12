@@ -82,6 +82,118 @@ const BattleSystem = {
     },
     
     /**
+     * 显示战斗帮助
+     */
+    showHelp() {
+        const helpHtml = `
+            <div style="
+                position: fixed;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                background: rgba(0, 0, 0, 0.85);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            " onclick="if(event.target === this) BattleSystem.closeHelp()">
+                <div style="
+                    width: 90%;
+                    max-width: 600px;
+                    max-height: 80vh;
+                    background: linear-gradient(135deg, #1a1a2e, #16213e);
+                    border: 2px solid #4a4a8a;
+                    border-radius: 16px;
+                    padding: 24px;
+                    overflow-y: auto;
+                    color: #fff;
+                ">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h2 style="color: #ffd700; margin: 0; font-size: 24px;">⚔️ 战斗帮助</h2>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <h3 style="color: #66ccff; margin-bottom: 8px; font-size: 16px;">📋 基本规则</h3>
+                        <ul style="margin: 0; padding-left: 20px; color: #ccc; font-size: 14px; line-height: 1.8;">
+                            <li>回合制战斗，速度高的先行动</li>
+                            <li>HP降为0则战斗失败</li>
+                            <li>使用魔法需要消耗MP</li>
+                            <li>高阶魔法需要引导多回合</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <h3 style="color: #66ccff; margin-bottom: 8px; font-size: 16px;">🎮 行动选项</h3>
+                        <ul style="margin: 0; padding-left: 20px; color: #ccc; font-size: 14px; line-height: 1.8;">
+                            <li><b style="color: #ffaa66;">普通攻击</b>：无消耗，基础物理伤害</li>
+                            <li><b style="color: #66aaff;">释放魔法</b>：消耗MP，伤害/治疗/buff/debuff</li>
+                            <li><b style="color: #66ff66;">防御</b>：防御力翻倍，受到伤害减半</li>
+                            <li><b style="color: #ffcc66;">使用道具</b>：消耗道具，恢复/解除状态/增益</li>
+                            <li><b style="color: #ff6666;">逃跑</b>：有概率逃离战斗</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <h3 style="color: #66ccff; margin-bottom: 8px; font-size: 16px;">⚡ 元素克制</h3>
+                        <div style="color: #ccc; font-size: 14px; line-height: 1.8;">
+                            <p style="margin: 0 0 8px 0;">克制关系：造成150%伤害，被克制只造成70%伤害</p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                <span style="padding: 4px 8px; background: #ff664422; border-radius: 4px;">🔥火 → ❄️冰</span>
+                                <span style="padding: 4px 8px; background: #66aaff22; border-radius: 4px;">❄️冰 → 💨风</span>
+                                <span style="padding: 4px 8px; background: #88ffcc22; border-radius: 4px;">💨风 → 🪨土</span>
+                                <span style="padding: 4px 8px; background: #aa884422; border-radius: 4px;">🪨土 → ⚡雷</span>
+                                <span style="padding: 4px 8px; background: #ffdd4422; border-radius: 4px;">⚡雷 → 💧水</span>
+                                <span style="padding: 4px 8px; background: #66bbff22; border-radius: 4px;">💧水 → 🔥火</span>
+                                <span style="padding: 4px 8px; background: #ffffcc22; border-radius: 4px;">✨光 ↔ 🌑暗</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <h3 style="color: #66ccff; margin-bottom: 8px; font-size: 16px;">💡 战斗技巧</h3>
+                        <ul style="margin: 0; padding-left: 20px; color: #ccc; font-size: 14px; line-height: 1.8;">
+                            <li>利用元素克制可以大幅提高伤害</li>
+                            <li>防御可以在危险时减少伤害</li>
+                            <li>打断敌人引导可以避免高额伤害</li>
+                            <li>妖魔有独特的种族天赋，注意观察</li>
+                            <li>右上角可以调整战斗速度</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="BattleSystem.closeHelp()" style="
+                            padding: 10px 30px;
+                            background: linear-gradient(135deg, #4444aa, #6666cc);
+                            border: 2px solid #8888ee;
+                            border-radius: 8px;
+                            color: #fff;
+                            cursor: pointer;
+                            font-size: 16px;
+                            font-weight: bold;
+                        ">
+                            我知道了
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const helpDiv = document.createElement('div');
+        helpDiv.id = 'battle-help-overlay';
+        helpDiv.innerHTML = helpHtml;
+        document.body.appendChild(helpDiv);
+    },
+    
+    /**
+     * 关闭战斗帮助
+     */
+    closeHelp() {
+        const helpDiv = document.getElementById('battle-help-overlay');
+        if (helpDiv) {
+            helpDiv.remove();
+        }
+    },
+    
+    /**
      * 获取延迟时间（根据速度调整）
      */
     getDelay(baseDelay) {
@@ -196,6 +308,16 @@ const BattleSystem = {
             setTimeout(() => this.enemyTurn(), this.getDelay(1000));
         } else {
             this.addLog('你的速度更快，可以先行动。', 'system');
+        }
+        
+        // 新手引导：第一次战斗自动显示帮助
+        const tutorialDone = localStorage.getItem('quanzhi_fashi_battle_tutorial_done');
+        if (!tutorialDone && this.isPlayerTurn) {
+            // 延迟一会儿显示，让玩家先看到战斗界面
+            setTimeout(() => {
+                this.showHelp();
+                localStorage.setItem('quanzhi_fashi_battle_tutorial_done', '1');
+            }, 500);
         }
 
         return {

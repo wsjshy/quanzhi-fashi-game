@@ -233,6 +233,7 @@ const DataEnemies = {
       "basic_attack",
       "wind_blade"
     ],
+    aiType: "kiter",
     spriteColor: "#88ccaa",
     isEnemy: true,
     expReward: 45,
@@ -273,6 +274,7 @@ const DataEnemies = {
       "basic_attack",
       "water_chain"
     ],
+    aiType: "controller",
     spriteColor: "#6699cc",
     isEnemy: true,
     expReward: 60,
@@ -433,6 +435,7 @@ const DataEnemies = {
       "basic_attack",
       "thunder_bolt"
     ],
+    aiType: "burst",
     spriteColor: "#9966ff",
     isEnemy: true,
     expReward: 90,

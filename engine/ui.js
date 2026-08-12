@@ -1327,6 +1327,24 @@ const UI = {
                     " onmouseover="this.style.boxShadow='0 0 10px rgba(100, 150, 255, 0.5)'" onmouseout="this.style.boxShadow='none'">
                         ⏩ ${state.speed || 1}x 速度
                     </button>
+                    
+                    <!-- 战斗帮助按钮 -->
+                    <button onclick="BattleSystem.showHelp()" style="
+                        position: absolute;
+                        top: 120px;
+                        right: 20px;
+                        padding: 8px 16px;
+                        background: linear-gradient(135deg, #336633, #448844);
+                        border: 2px solid #66aa66;
+                        border-radius: 8px;
+                        color: #aaffaa;
+                        cursor: pointer;
+                        font-size: 14px;
+                        font-weight: bold;
+                        z-index: 10;
+                    " onmouseover="this.style.boxShadow='0 0 10px rgba(100, 255, 150, 0.5)'" onmouseout="this.style.boxShadow='none'">
+                        ❓ 帮助
+                    </button>
                 </div>
                 
                 <!-- 技能/操作面板 -->
