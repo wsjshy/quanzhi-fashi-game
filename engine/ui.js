@@ -1457,6 +1457,14 @@ const UI = {
                 </div>
             </div>
         `;
+        
+        // 战斗日志自动滚动到底部
+        setTimeout(() => {
+            const log = document.getElementById('battle-log');
+            if (log) {
+                log.scrollTop = log.scrollHeight;
+            }
+        }, 10);
     },
 
     // 更新战斗界面
