@@ -915,7 +915,7 @@ const DataEnemies = {
     attack: 35,
     defense: 18,
     speed: 22,
-    skills: ["basic_attack", "dark_bolt", "dark_claw"],
+    skills: ["basic_attack", "dark_bolt", "dark_claw", "berserk_mode"],
     aiType: "tactical",
     specialAbility: "冲撞：高速撞击造成大量伤害；进阶中：身体持续变强，雷系可抑制进阶",
     spriteColor: "#4a0000",
