@@ -1387,6 +1387,9 @@ const UI = {
 
     // 更新战斗界面
     updateBattleScreen() {
+        // 只有在战斗中才更新战斗界面
+        if (!BattleSystem || !BattleSystem.active) return;
+        
         // 简单起见，重新渲染整个战斗界面
         setTimeout(() => {
             this.renderBattleScreen();
