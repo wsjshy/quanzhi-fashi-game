@@ -59,6 +59,11 @@ const BattleSystem = {
         this.summon = null;  // 召唤兽状态
         this.tookDamage = false;  // 战斗中是否受到伤害（用于毫发无伤成就）
         this.consecutiveCrits = 0;  // 连续暴击次数（用于幸运儿成就）
+        
+        // 记录最后战斗日期（用于和平主义者成就）
+        if (typeof Player !== 'undefined') {
+            Player.lastBattleDay = Player.day;
+        }
 
         // 复制敌人数据，避免修改原数据
         this.enemy = JSON.parse(JSON.stringify(enemyData));

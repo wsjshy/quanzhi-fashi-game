@@ -128,6 +128,7 @@ const Player = {
     // 战斗状态
     battleBuffs: [],
     winStreak: 0,  // 连胜次数
+    lastBattleDay: 0,  // 最后一次战斗的日期（用于和平主义者成就）
 
     /**
      * 初始化新玩家
@@ -366,6 +367,14 @@ const Player = {
                         }
                     }
                 });
+                
+                // 速通达人成就：7天内达到10级
+                if (this.level >= 10 && this.day <= 7 && !WorldState.hasAchievement('speedrunner')) {
+                    const achData = DataAchievements['speedrunner'];
+                    if (achData) {
+                        WorldState.unlockAchievement('speedrunner', achData);
+                    }
+                }
             } catch (e) {
                 console.warn('[玩家] 等级成就检查失败:', e);
             }

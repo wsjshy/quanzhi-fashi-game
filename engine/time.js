@@ -323,6 +323,22 @@ const TimeSystem = {
 
         // 检查事件链
         this.checkEventChains();
+        
+        // 和平主义者成就：连续3天不战斗
+        if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
+            try {
+                const lastBattleDay = Player.lastBattleDay || 0;
+                const daysWithoutBattle = Player.day - lastBattleDay;
+                if (lastBattleDay > 0 && daysWithoutBattle >= 3 && !WorldState.hasAchievement('pacifist')) {
+                    const achData = DataAchievements['pacifist'];
+                    if (achData) {
+                        WorldState.unlockAchievement('pacifist', achData);
+                    }
+                }
+            } catch (e) {
+                console.warn('[Time] 和平主义者成就检查失败:', e);
+            }
+        }
     },
 
     /**
