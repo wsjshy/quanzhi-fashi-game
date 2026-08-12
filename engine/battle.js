@@ -382,74 +382,26 @@ const BattleSystem = {
             if (!itemId) return;
             
             const item = typeof DataItems !== 'undefined' ? DataItems[itemId] : null;
-            if (!item || !item.magicToolType) return;
+            if (!item || !item.magicToolSkill) return;
             
-            // 根据魔具类型生成技能
-            let skill = null;
-            const grade = item.magicToolGrade || 'basic';
-            const element = item.element || null;
+            // 从物品数据中读取魔具技能配置
+            const skillConfig = item.magicToolSkill;
+            const skill = {
+                id: skillConfig.id,
+                name: skillConfig.name,
+                icon: item.icon || '🔮',
+                description: skillConfig.description,
+                cooldown: skillConfig.cooldown || 3,
+                effects: skillConfig.effects || [],
+                itemId: itemId,
+                itemName: item.name,
+                magicToolType: item.magicToolType,
+                magicToolGrade: item.magicToolGrade,
+                element: item.element || null
+            };
             
-            switch (item.magicToolType) {
-                case 'slash': // 斩魔具
-                    skill = {
-                        id: 'magic_tool_slash_' + itemId,
-                        name: item.name + '·斩击',
-                        icon: item.icon || '⚔️',
-                        type: 'slash',
-                        description: grade === 'spirit' ? '催动斩魔具，下次攻击造成80%额外伤害' : '催动斩魔具，下次攻击造成50%额外伤害',
-                        cooldown: grade === 'spirit' ? 2 : 3,
-                        damageBonus: grade === 'spirit' ? 0.8 : 0.5,
-                        element: element
-                    };
-                    break;
-                    
-                case 'shield': // 盾魔具
-                    skill = {
-                        id: 'magic_tool_shield_' + itemId,
-                        name: item.name + '·护盾',
-                        icon: item.icon || '🛡️',
-                        type: 'shield',
-                        description: grade === 'spirit' ? '催动盾魔具，获得吸收100点伤害的护盾' : '催动盾魔具，获得吸收60点伤害的护盾',
-                        cooldown: grade === 'spirit' ? 3 : 4,
-                        shieldAmount: grade === 'spirit' ? 100 : 60,
-                        element: element
-                    };
-                    break;
-                    
-                case 'armor': // 铠魔具
-                    skill = {
-                        id: 'magic_tool_armor_' + itemId,
-                        name: item.name + '·铠化',
-                        icon: item.icon || '🛡️',
-                        type: 'armor',
-                        description: '催动铠魔具，3回合内防御提升50%',
-                        cooldown: 5,
-                        defenseBonus: 0.5,
-                        duration: 3,
-                        element: element
-                    };
-                    break;
-                    
-                case 'shoe': // 履魔具
-                    skill = {
-                        id: 'magic_tool_shoe_' + itemId,
-                        name: item.name + '·风行',
-                        icon: item.icon || '👟',
-                        type: 'shoe',
-                        description: '催动履魔具，2回合内速度和闪避大幅提升',
-                        cooldown: 4,
-                        speedBonus: 0.5,
-                        dodgeBonus: 0.2,
-                        duration: 2,
-                        element: element
-                    };
-                    break;
-            }
-            
-            if (skill) {
-                this.magicTools.available.push(skill);
-                this.magicTools.cooldowns[skill.id] = 0;
-            }
+            this.magicTools.available.push(skill);
+            this.magicTools.cooldowns[skill.id] = 0;
         });
     },
     
@@ -470,55 +422,12 @@ const BattleSystem = {
         
         this.player.isDefending = false;
         
-        switch (skill.type) {
-            case 'slash': // 斩魔具：下次攻击额外伤害
-                // 给玩家加一个buff，下次攻击造成额外伤害
-                const slashBuff = {
-                    type: 'attack_up',
-                    name: skill.name,
-                    duration: 1,
-                    attackMod: skill.damageBonus,
-                    isNextAttackOnly: true
-                };
-                this.player.buffs.push(slashBuff);
-                this.addLog(`你催动了 ${skill.name}，下次攻击伤害提升！`, 'buff');
-                break;
-                
-            case 'shield': // 盾魔具：护盾
-                const shieldBuff = {
-                    type: 'shield',
-                    name: skill.name,
-                    duration: 99, // 直到被打破
-                    shieldAmount: skill.shieldAmount,
-                    maxShieldAmount: skill.shieldAmount
-                };
-                this.player.buffs.push(shieldBuff);
-                this.addLog(`你催动了 ${skill.name}，获得了 ${skill.shieldAmount} 点护盾！`, 'buff');
-                break;
-                
-            case 'armor': // 铠魔具：防御提升
-                const armorBuff = {
-                    type: 'defense_up',
-                    name: skill.name,
-                    duration: skill.duration,
-                    defenseMod: skill.defenseBonus
-                };
-                this.player.buffs.push(armorBuff);
-                this.addLog(`你催动了 ${skill.name}，防御大幅提升！`, 'buff');
-                break;
-                
-            case 'shoe': // 履魔具：速度和闪避提升
-                const shoeBuff = {
-                    type: 'speed_up',
-                    name: skill.name,
-                    duration: skill.duration,
-                    speedMod: skill.speedBonus,
-                    dodgeMod: skill.dodgeBonus
-                };
-                this.player.buffs.push(shoeBuff);
-                this.addLog(`你催动了 ${skill.name}，速度和闪避大幅提升！`, 'buff');
-                break;
-        }
+        // 应用所有效果
+        skill.effects.forEach(effect => {
+            this.applyMagicToolEffect(effect, skill);
+        });
+        
+        this.addLog(`你催动了 ${skill.name}！`, 'buff');
         
         // 设置冷却
         this.magicTools.cooldowns[skillId] = skill.cooldown;
@@ -527,6 +436,114 @@ const BattleSystem = {
         this.endPlayerTurn();
         
         return { success: true, skill: skill };
+    },
+    
+    /**
+     * 应用魔具效果
+     */
+    applyMagicToolEffect(effect, skill) {
+        const value = effect.value || 0;
+        const duration = effect.duration || 1;
+        
+        switch (effect.type) {
+            case 'attack_buff': // 攻击提升
+                const attackBuff = {
+                    type: 'attack_up',
+                    name: skill.name,
+                    duration: duration,
+                    attackMod: value,
+                    isNextAttackOnly: effect.isNextAttackOnly || false
+                };
+                this.player.buffs.push(attackBuff);
+                break;
+                
+            case 'defense_buff': // 防御提升
+                const defenseBuff = {
+                    type: 'defense_up',
+                    name: skill.name,
+                    duration: duration,
+                    defenseMod: value
+                };
+                this.player.buffs.push(defenseBuff);
+                break;
+                
+            case 'speed_buff': // 速度提升
+                const speedBuff = {
+                    type: 'speed_up',
+                    name: skill.name,
+                    duration: duration,
+                    speedMod: value
+                };
+                this.player.buffs.push(speedBuff);
+                break;
+                
+            case 'dodge_buff': // 闪避提升
+                const dodgeBuff = {
+                    type: 'evasion_up',
+                    name: skill.name,
+                    duration: duration,
+                    dodgeMod: value
+                };
+                this.player.buffs.push(dodgeBuff);
+                break;
+                
+            case 'shield': // 护盾
+                const shieldBuff = {
+                    type: 'shield',
+                    name: skill.name,
+                    duration: 99, // 直到被打破
+                    shieldAmount: value,
+                    maxShieldAmount: value
+                };
+                this.player.buffs.push(shieldBuff);
+                break;
+                
+            case 'fire_resistance_buff': // 火系抗性提升
+                const fireResBuff = {
+                    type: 'fire_resistance_up',
+                    name: skill.name,
+                    duration: duration,
+                    resistanceMod: value
+                };
+                this.player.buffs.push(fireResBuff);
+                break;
+                
+            case 'next_dodge_guaranteed': // 下次必定闪避
+                const nextDodgeBuff = {
+                    type: 'next_dodge_guaranteed',
+                    name: skill.name,
+                    duration: duration,
+                    value: value
+                };
+                this.player.buffs.push(nextDodgeBuff);
+                break;
+                
+            case 'burn_chance': // 攻击有几率灼烧
+                // 这个效果需要在攻击命中时触发，先加一个标记
+                const burnChanceBuff = {
+                    type: 'burn_chance_on_attack',
+                    name: skill.name,
+                    duration: duration,
+                    chance: value,
+                    damagePerTurn: effect.damagePerTurn || 10
+                };
+                this.player.buffs.push(burnChanceBuff);
+                break;
+                
+            case 'freeze_chance_on_hit': // 受击时有几率冻结攻击者
+                const freezeChanceBuff = {
+                    type: 'freeze_chance_on_hit',
+                    name: skill.name,
+                    duration: 99, // 持续到护盾消失
+                    chance: value,
+                    freezeDuration: effect.duration || 1
+                };
+                this.player.buffs.push(freezeChanceBuff);
+                break;
+                
+            default:
+                console.warn(`[MagicTool] 未知效果类型: ${effect.type}`);
+        }
     },
     
     /**

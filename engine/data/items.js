@@ -1621,6 +1621,20 @@ const DataItems = {
     equipStats: { attack: 25, critRate: 0.05 },
     magicToolType: "slash",
     magicToolGrade: "basic",
+    magicToolSkill: {
+      id: "skill_demon_slayer_blade",
+      name: "斩魔刀·斩击",
+      description: "催动斩魔具，下次攻击造成50%额外伤害",
+      cooldown: 3,
+      effects: [
+        {
+          type: "attack_buff",
+          value: 0.5,
+          duration: 1,
+          isNextAttackOnly: true
+        }
+      ]
+    },
     lore: "猎者公会常用的斩魔具，专门对付妖魔。"
   },
   flame_blade: {
@@ -1640,6 +1654,26 @@ const DataItems = {
     magicToolType: "slash",
     magicToolGrade: "spirit",
     element: "fire",
+    magicToolSkill: {
+      id: "skill_flame_blade",
+      name: "烈焰斩魔具·烈焰斩",
+      description: "催动烈焰斩魔具，下次攻击造成80%额外伤害，并有几率灼烧敌人",
+      cooldown: 2,
+      effects: [
+        {
+          type: "attack_buff",
+          value: 0.8,
+          duration: 1,
+          isNextAttackOnly: true
+        },
+        {
+          type: "burn_chance",
+          value: 0.5,
+          duration: 2,
+          damagePerTurn: 10
+        }
+      ]
+    },
     lore: "灵级斩魔具，附魔了强大的火系魔法。"
   },
 
@@ -1660,6 +1694,18 @@ const DataItems = {
     equipStats: { defense: 20, maxHp: 50 },
     magicToolType: "shield",
     magicToolGrade: "basic",
+    magicToolSkill: {
+      id: "skill_bone_shield",
+      name: "镰骨盾·护盾",
+      description: "催动盾魔具，获得吸收60点伤害的护盾",
+      cooldown: 4,
+      effects: [
+        {
+          type: "shield",
+          value: 60
+        }
+      ]
+    },
     lore: "斩空所赠，青黑色棱角分明的骨质盾牌。"
   },
   ice_shield_magic: {
@@ -1679,6 +1725,23 @@ const DataItems = {
     magicToolType: "shield",
     magicToolGrade: "spirit",
     element: "ice",
+    magicToolSkill: {
+      id: "skill_ice_shield",
+      name: "冰埃之盾·冰盾",
+      description: "催动冰埃之盾，获得吸收100点伤害的冰盾，并有几率冻结攻击者",
+      cooldown: 3,
+      effects: [
+        {
+          type: "shield",
+          value: 100
+        },
+        {
+          type: "freeze_chance_on_hit",
+          value: 0.3,
+          duration: 1
+        }
+      ]
+    },
     lore: "穆氏家族的上等盾魔具，冰埃之盾。"
   },
 
@@ -1700,6 +1763,24 @@ const DataItems = {
     magicToolType: "armor",
     magicToolGrade: "spirit",
     element: "ice",
+    magicToolSkill: {
+      id: "skill_ice_silk_armor",
+      name: "冰蚕铠·铠化",
+      description: "催动冰蚕铠，3回合内防御提升50%，火系伤害减免30%",
+      cooldown: 5,
+      effects: [
+        {
+          type: "defense_buff",
+          value: 0.5,
+          duration: 3
+        },
+        {
+          type: "fire_resistance_buff",
+          value: 0.3,
+          duration: 3
+        }
+      ]
+    },
     lore: "穆卓云送给宇昂的成年礼礼物，冰蚕铠是极其珍贵的铠魔具。"
   },
 
@@ -1721,6 +1802,24 @@ const DataItems = {
     magicToolType: "boots",
     magicToolGrade: "basic",
     element: "wind",
+    magicToolSkill: {
+      id: "skill_wind_boots",
+      name: "风轨履魔具·风行",
+      description: "催动风轨履魔具，2回合内速度提升50%，闪避提升20%",
+      cooldown: 4,
+      effects: [
+        {
+          type: "speed_buff",
+          value: 0.5,
+          duration: 2
+        },
+        {
+          type: "dodge_buff",
+          value: 0.2,
+          duration: 2
+        }
+      ]
+    },
     lore: "速度型魔具，穿上跑得比独眼魔狼还快。野外保命神器。"
   },
   shadow_boots_magic: {
@@ -1740,6 +1839,29 @@ const DataItems = {
     magicToolType: "boots",
     magicToolGrade: "spirit",
     element: "dark",
+    magicToolSkill: {
+      id: "skill_shadow_boots",
+      name: "暗影履魔具·影遁",
+      description: "催动暗影履魔具，2回合内速度提升80%，闪避提升30%，下一次攻击必定闪避",
+      cooldown: 5,
+      effects: [
+        {
+          type: "speed_buff",
+          value: 0.8,
+          duration: 2
+        },
+        {
+          type: "dodge_buff",
+          value: 0.3,
+          duration: 2
+        },
+        {
+          type: "next_dodge_guaranteed",
+          value: 1,
+          duration: 2
+        }
+      ]
+    },
     lore: "暗影系高级履魔具，刺客的最爱。"
   },
 
