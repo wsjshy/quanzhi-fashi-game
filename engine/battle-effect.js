@@ -221,4 +221,215 @@ EffectRegistry.register('all_stats_bonus', {
     }
 });
 
-console.log('[EffectRegistry] 战斗效果注册表已加载，基础效果已注册');
+// ==================== 元素伤害加成（通用） ====================
+// effect.element: 元素类型（fire/ice/thunder/water/wind/earth/light/dark）
+// effect.value: 加成比例（0.3 = +30%）
+EffectRegistry.register('element_damage_bonus', {
+    name: '元素伤害加成',
+    description: '增加指定元素的伤害',
+    
+    getPassiveBonuses(effect) {
+        const element = effect.element || effect.effects?.element;
+        const value = effect.value || effect.effects?.value || 0;
+        if (!element) return {};
+        
+        // 返回元素伤害加成
+        const result = {};
+        result[`${element}DamageBonus`] = value;
+        return result;
+    }
+});
+
+// ==================== 元素抗性（通用） ====================
+// effect.element: 元素类型
+// effect.value: 减免比例（0.3 = -30%伤害）
+EffectRegistry.register('element_resistance', {
+    name: '元素抗性',
+    description: '减少受到的指定元素伤害',
+    
+    getPassiveBonuses(effect) {
+        const element = effect.element || effect.effects?.element;
+        const value = effect.value || effect.effects?.value || 0;
+        if (!element) return {};
+        
+        // 返回元素抗性
+        const result = {};
+        result[`${element}DamageReduction`] = value;
+        return result;
+    }
+});
+
+// ==================== 物理伤害减免 ====================
+EffectRegistry.register('physical_damage_reduction', {
+    name: '物理伤害减免',
+    description: '减少受到的物理伤害',
+    
+    getPassiveBonuses(effect) {
+        const value = effect.value || effect.effects?.value || 0;
+        return { physicalDamageReduction: value };
+    }
+});
+
+// ==================== 魔法伤害减免 ====================
+EffectRegistry.register('magic_damage_reduction', {
+    name: '魔法伤害减免',
+    description: '减少受到的魔法伤害',
+    
+    getPassiveBonuses(effect) {
+        const value = effect.value || effect.effects?.value || 0;
+        return { magicDamageReduction: value };
+    }
+});
+
+// ==================== 伤害反弹 ====================
+EffectRegistry.register('damage_reflect', {
+    name: '伤害反弹',
+    description: '将受到的伤害反弹一部分给攻击者',
+    
+    getPassiveBonuses(effect) {
+        const value = effect.value || effect.effects?.value || 0;
+        return { damageReflect: value };
+    }
+});
+
+// ==================== 血怒（血量越低攻击越高） ====================
+EffectRegistry.register('blood_rage', {
+    name: '血怒',
+    description: '血量越低，攻击力越高',
+    
+    // 动态计算，需要在战斗中实时计算
+    isDynamic: true,
+    
+    calculateBonus(effect, context) {
+        const maxHp = context.maxHp || 1;
+        const currentHp = context.currentHp || 0;
+        const hpPercent = currentHp / maxHp;
+        const maxBonus = effect.value || effect.effects?.maxBonus || 0.5;
+        
+        // 血量越低，加成越高
+        // 满血时0加成，空血时maxBonus加成
+        const bonus = maxBonus * (1 - hpPercent);
+        return { attackBonus: bonus };
+    }
+});
+
+// ==================== 再生（回合结束恢复HP） ====================
+EffectRegistry.register('regeneration', {
+    name: '再生',
+    description: '每回合结束时恢复一定HP',
+    
+    trigger: 'onTurnEnd',
+    
+    onTurnEnd(effect, context) {
+        const target = context.target;
+        if (!target) return;
+        
+        const regenAmount = effect.value || effect.effects?.value || 0;
+        const actualRegen = Math.floor(target.maxHp * regenAmount);
+        target.hp = Math.min(target.maxHp, target.hp + actualRegen);
+        
+        return {
+            healed: actualRegen,
+            message: `恢复了 ${actualRegen} 点生命`
+        };
+    }
+});
+
+// ==================== 首次攻击必定暴击 ====================
+EffectRegistry.register('first_strike_crit', {
+    name: '首次攻击必定暴击',
+    description: '第一次攻击必定暴击',
+    
+    trigger: 'onFirstAttack',
+    
+    onFirstAttack(effect, context) {
+        return {
+            guaranteedCrit: true,
+            damageBonus: effect.effects?.damageBonus || 0
+        };
+    }
+});
+
+// ==================== 攻击流血 ====================
+EffectRegistry.register('bleed_on_hit', {
+    name: '攻击流血',
+    description: '攻击命中时使目标流血',
+    
+    trigger: 'onHit',
+    
+    onHit(effect, context) {
+        const target = context.target;
+        if (!target) return;
+        
+        // 应用流血效果
+        const duration = effect.effects?.duration || 3;
+        const damagePerTurn = effect.effects?.damagePerTurn || 5;
+        
+        if (!target.statusEffects) target.statusEffects = [];
+        target.statusEffects.push({
+            type: 'bleed',
+            name: '流血',
+            duration: duration,
+            damagePerTurn: damagePerTurn
+        });
+        
+        return { applied: true, status: 'bleed' };
+    }
+});
+
+// ==================== 攻击中毒 ====================
+EffectRegistry.register('poison_on_hit', {
+    name: '攻击中毒',
+    description: '攻击命中时使目标中毒',
+    
+    trigger: 'onHit',
+    
+    onHit(effect, context) {
+        const target = context.target;
+        if (!target) return;
+        
+        const duration = effect.effects?.duration || 3;
+        const damagePerTurn = effect.effects?.damagePerTurn || 5;
+        
+        if (!target.statusEffects) target.statusEffects = [];
+        target.statusEffects.push({
+            type: 'poison',
+            name: '中毒',
+            duration: duration,
+            damagePerTurn: damagePerTurn
+        });
+        
+        return { applied: true, status: 'poison' };
+    }
+});
+
+// ==================== 控制免疫 ====================
+EffectRegistry.register('control_immunity', {
+    name: '控制免疫',
+    description: '免疫所有控制效果',
+    
+    getPassiveBonuses(effect) {
+        return { controlImmune: true };
+    }
+});
+
+// ==================== 多段攻击 ====================
+EffectRegistry.register('multi_strike', {
+    name: '多段攻击',
+    description: '攻击时造成多次伤害',
+    
+    trigger: 'onAttack',
+    
+    onAttack(effect, context) {
+        const strikeCount = effect.effects?.strikeCount || 2;
+        const damageMultiplier = effect.effects?.damageMultiplier || 0.5;
+        
+        return {
+            multiStrike: true,
+            strikeCount: strikeCount,
+            damageMultiplier: damageMultiplier
+        };
+    }
+});
+
+console.log('[EffectRegistry] 战斗效果注册表已加载，共注册 ' + Object.keys(EffectRegistry.effects).length + ' 种效果类型');
