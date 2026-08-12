@@ -108,7 +108,75 @@ const NPCStateSystem = {
         }
         
         this._save();
+        
+        // 社交成就检查
+        if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
+            try {
+                this.checkSocialAchievements();
+            } catch (e) {
+                console.warn('[NPCState] 社交成就检查失败:', e);
+            }
+        }
+        
         return state.opinion;
+    },
+    
+    /**
+     * 检查社交成就
+     */
+    checkSocialAchievements() {
+        if (!this.npcStates) return;
+        
+        let friendlyCount = 0;  // 好感度 >= 30（友好）
+        let bestFriendCount = 0; // 好感度 >= 70（莫逆）
+        let respectedCount = 0;  // 尊敬度 >= 50
+        
+        for (const npcId in this.npcStates) {
+            const state = this.npcStates[npcId];
+            if (state.opinion >= 30) friendlyCount++;
+            if (state.opinion >= 70) bestFriendCount++;
+            if (state.respect >= 50) respectedCount++;
+        }
+        
+        // 初交朋友
+        if (friendlyCount >= 1 && !WorldState.hasAchievement('first_friend')) {
+            const achData = DataAchievements['first_friend'];
+            if (achData) {
+                WorldState.unlockAchievement('first_friend', achData);
+            }
+        }
+        
+        // 莫逆之交
+        if (bestFriendCount >= 1 && !WorldState.hasAchievement('best_friend')) {
+            const achData = DataAchievements['best_friend'];
+            if (achData) {
+                WorldState.unlockAchievement('best_friend', achData);
+            }
+        }
+        
+        // 社交达人
+        if (friendlyCount >= 10 && !WorldState.hasAchievement('social_butterfly')) {
+            const achData = DataAchievements['social_butterfly'];
+            if (achData) {
+                WorldState.unlockAchievement('social_butterfly', achData);
+            }
+        }
+        
+        // 受人尊敬
+        if (respectedCount >= 1 && !WorldState.hasAchievement('respected')) {
+            const achData = DataAchievements['respected'];
+            if (achData) {
+                WorldState.unlockAchievement('respected', achData);
+            }
+        }
+        
+        // 万人敬仰
+        if (respectedCount >= 5 && !WorldState.hasAchievement('revered')) {
+            const achData = DataAchievements['revered'];
+            if (achData) {
+                WorldState.unlockAchievement('revered', achData);
+            }
+        }
     },
 
     /**
