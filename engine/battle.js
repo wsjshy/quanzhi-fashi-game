@@ -187,7 +187,8 @@ const BattleSystem = {
             this.player.hitRate,
             'physical',
             null,
-            this.enemy
+            this.enemy,
+            this.player
         );
         
         // 防御减伤
@@ -330,7 +331,8 @@ const BattleSystem = {
                 skill.hitRate || 0.9,
                 skill.element,
                 targetData.elements?.[0] || 'neutral',
-                targetData
+                targetData,
+                casterData
             );
 
             this.applyDamage(targetData, damage);
@@ -541,7 +543,8 @@ const BattleSystem = {
                 1.0,
                 item.element || 'neutral',
                 this.enemy.elements?.[0] || 'neutral',
-                this.enemy
+                this.enemy,
+                this.player
             );
             this.applyDamage(this.enemy, dmg);
         }
@@ -650,7 +653,8 @@ const BattleSystem = {
             0.9,
             'neutral',
             this.enemy.elements?.[0] || 'neutral',
-            this.enemy
+            this.enemy,
+            summon
         );
 
         this.applyDamage(this.enemy, damage);
@@ -715,7 +719,8 @@ const BattleSystem = {
                 0.9,
                 'physical',
                 null,
-                this.player
+                this.player,
+                this.enemy
             );
             
             // 标记首次攻击已完成
@@ -1265,7 +1270,7 @@ const BattleSystem = {
     /**
      * 计算伤害
      */
-    calculateDamage(attack, defense, multiplier, critRate, hitRate, element, targetElement, target) {
+    calculateDamage(attack, defense, multiplier, critRate, hitRate, element, targetElement, target, attacker) {
         const result = {
             amount: 0,
             isCrit: false,
@@ -1307,13 +1312,37 @@ const BattleSystem = {
             }
         }
         
-        // 天赋：弱点伤害加成（比如怕光）
-        if (target && target.traits) {
+        // 天赋：攻击者的元素伤害加成
+        if (element && attacker && attacker.traits) {
+            for (const trait of attacker.traits) {
+                if (trait.type === 'passive' && trait.effects) {
+                    const bonusKey = element + 'DamageBonus';
+                    if (trait.effects[bonusKey]) {
+                        damage *= (1 + trait.effects[bonusKey]);
+                    }
+                }
+            }
+        }
+        
+        // 天赋：目标的元素伤害减免（抗性）
+        if (element && target && target.traits) {
+            for (const trait of target.traits) {
+                if (trait.type === 'passive' && trait.effects) {
+                    const reductionKey = element + 'DamageReduction';
+                    if (trait.effects[reductionKey]) {
+                        damage *= (1 - trait.effects[reductionKey]);
+                    }
+                }
+            }
+        }
+        
+        // 天赋：目标的元素弱点伤害
+        if (element && target && target.traits) {
             for (const trait of target.traits) {
                 if (trait.type === 'weakness' && trait.effects) {
-                    // 光系弱点
-                    if (element === 'light' && trait.effects.lightDamageBonus) {
-                        damage *= (1 + trait.effects.lightDamageBonus);
+                    const weaknessKey = element + 'DamageBonus';
+                    if (trait.effects[weaknessKey]) {
+                        damage *= (1 + trait.effects[weaknessKey]);
                     }
                 }
             }
