@@ -1408,5 +1408,37 @@ const DataItems = {
     rarity: "史诗",
     element: "thunder",
     lore: "雷系星图之书，价值连城。"
+  },
+
+  // ========== 地圣泉相关 ==========
+  earth_spring_water: {
+    id: "earth_spring_water",
+    name: "地圣泉水",
+    description: "从地圣泉中取出的神奇泉水，蕴含着极其浓郁的天地灵气。对修炼有极大的帮助，也可以被成长型魔器吸收。",
+    type: "consumable",
+    icon: "💧",
+    price: 50000,
+    stackable: true,
+    maxStack: 10,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    lore: "地圣泉，博城最珍贵的修炼资源，蕴含着天地灵气的精华。",
+    specialEffect: "earth_spring_absorb"
+  },
+  earth_spring_crystal: {
+    id: "earth_spring_crystal",
+    name: "地圣泉结晶",
+    description: "地圣泉千年沉淀形成的结晶，蕴含着极其庞大的能量。据说可以帮助魔法师突破境界瓶颈。",
+    type: "consumable",
+    icon: "💎",
+    price: 200000,
+    stackable: true,
+    maxStack: 5,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    lore: "地圣泉千年结晶，极其珍贵，可遇不可求。",
+    specialEffect: "breakthrough_boost"
   }
 };

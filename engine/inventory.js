@@ -245,6 +245,66 @@ const Inventory = {
             }
         }
 
+        // 地圣泉水：被小泥鳅坠吸收，获得大量经验
+        if (item.specialEffect === 'earth_spring_absorb') {
+            if (typeof StarDustArtifactSystem === 'undefined') {
+                return { success: false, message: '星尘魔器系统未加载' };
+            }
+
+            // 检查是否装备了小泥鳅坠
+            if (!Player.starDustArtifacts || !Player.starDustArtifacts['all']) {
+                return { success: false, message: '需要先装备小泥鳅坠才能吸收地圣泉水' };
+            }
+
+            const artifactData = Player.starDustArtifacts['all'];
+            if (artifactData.id !== 'little_loach') {
+                return { success: false, message: '只有小泥鳅坠才能吸收地圣泉水' };
+            }
+
+            // 增加大量经验（地圣泉水提供500点经验）
+            const gainExp = 500;
+            const currentLevel = artifactData.level || 1;
+            const currentExp = artifactData.exp || 0;
+            const newExp = currentExp + gainExp;
+
+            // 计算升级
+            let newLevel = currentLevel;
+            let remainingExp = newExp;
+            const maxLevel = 10;
+
+            while (remainingExp >= StarDustArtifactSystem.getExpToNextLevel(newLevel) && newLevel < maxLevel) {
+                remainingExp -= StarDustArtifactSystem.getExpToNextLevel(newLevel);
+                newLevel++;
+            }
+
+            // 更新星尘魔器
+            Player.starDustArtifacts['all'] = {
+                ...artifactData,
+                level: newLevel,
+                exp: remainingExp
+            };
+
+            // 消耗物品
+            this.removeItem(itemId, 1);
+
+            const levelUpMsg = newLevel > currentLevel ? `，小泥鳅坠升级到 Lv.${newLevel}！` : '';
+            return { success: true, message: `小泥鳅坠吸收了地圣泉水，获得 ${gainExp} 经验${levelUpMsg}` };
+        }
+
+        // 地圣泉结晶：提升突破成功率（临时buff）
+        if (item.specialEffect === 'breakthrough_boost') {
+            // 临时增加突破成功率加成
+            if (!Player.tempBreakthroughBonus) {
+                Player.tempBreakthroughBonus = 0;
+            }
+            Player.tempBreakthroughBonus = Math.min(0.3, (Player.tempBreakthroughBonus || 0) + 0.15);
+
+            // 消耗物品
+            this.removeItem(itemId, 1);
+
+            return { success: true, message: `服用了地圣泉结晶，下次突破成功率 +15%！` };
+        }
+
         // 消耗物品
         this.removeItem(itemId, 1);
 

@@ -208,6 +208,21 @@ const RealmSystem = {
         // 道具加成（突破丹等）
         // successRate += itemBonus;
 
+        // 小泥鳅坠加成（成长型星尘魔器）
+        if (player.starDustArtifacts && player.starDustArtifacts.all) {
+            const artifactData = player.starDustArtifacts.all;
+            if (artifactData.id === 'little_loach') {
+                const level = artifactData.level || 1;
+                const loachBonus = Math.min(0.2, level * 0.02); // 每级+2%，最高+20%
+                successRate += loachBonus;
+            }
+        }
+
+        // 临时道具加成（地圣泉结晶等）
+        if (player.tempBreakthroughBonus) {
+            successRate += player.tempBreakthroughBonus;
+        }
+
         // 等级越高，成功率越高
         const levelBonus = Math.min(0.2, (player.level - requirements.requiredLevel) * 0.02);
         successRate += levelBonus;
@@ -265,6 +280,9 @@ const RealmSystem = {
             // 满血满蓝
             player.hp = player.maxHp;
             player.mp = player.maxMp;
+
+            // 清除临时突破加成
+            player.tempBreakthroughBonus = 0;
 
             // 解锁中阶魔法
             let unlockedSkills = [];

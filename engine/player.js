@@ -98,6 +98,7 @@ const Player = {
     talents: {},  // 天赋：{ elementId: { talentId, level, exp } }
     spiritSeeds: {},  // 灵种：{ elementId: seedId }
     starDustArtifacts: {},  // 星尘魔器：{ elementId: { id, level, exp } }
+    tempBreakthroughBonus: 0,  // 临时突破成功率加成
 
     // 金钱
     gold: 50,
@@ -1066,6 +1067,7 @@ const Player = {
             talents: this.talents,
             spiritSeeds: this.spiritSeeds,
             starDustArtifacts: this.starDustArtifacts,
+            tempBreakthroughBonus: this.tempBreakthroughBonus,
             gold: this.gold,
             equipment: this.equipment,
             enhanceLevels: this.enhanceLevels,
@@ -1144,6 +1146,7 @@ const Player = {
             this.talents = data.talents ?? {};
             this.spiritSeeds = data.spiritSeeds ?? {};
             this.starDustArtifacts = data.starDustArtifacts ?? {};
+            this.tempBreakthroughBonus = data.tempBreakthroughBonus ?? 0;
             this.gold = data.gold ?? 50;
             this.equipment = data.equipment ?? { weapon: null, armor: null, accessory: null };
             this.enhanceLevels = data.enhanceLevels ?? { weapon: 0, armor: 0, accessory: 0 };
