@@ -729,6 +729,11 @@ const BattleSystem = {
             }
 
             this.applyDamage(this.player, damage);
+            
+            // 天赋：攻击命中效果（流血等）
+            if (!damage.isMiss && damage.amount > 0) {
+                this.processTraitsOnHit(this.enemy, this.player, damage.amount, false);
+            }
 
             this.addLog(`${this.enemy.name} 发动攻击，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}`, 
                 damage.isCrit ? 'crit' : 'damage');
@@ -1208,6 +1213,10 @@ const BattleSystem = {
         // 处理状态效果（每回合结束）
         this.tickStatusEffects(this.player, true);
         this.tickStatusEffects(this.enemy, false);
+        
+        // 天赋：回合结束效果
+        this.processTraitsOnTurnEnd(this.enemy, false);
+        this.processTraitsOnTurnEnd(this.player, true);
 
         // 处理召唤兽持续时间和状态
         if (this.summon) {
@@ -1430,6 +1439,114 @@ const BattleSystem = {
                 this.tookDamage = true;
             }
         }
+    },
+    
+    /**
+     * 处理回合结束时的天赋效果
+     */
+    processTraitsOnTurnEnd(unit, isPlayer) {
+        if (!unit.traits || unit.traits.length === 0) return;
+        
+        const unitName = isPlayer ? '你' : unit.name;
+        
+        for (const trait of unit.traits) {
+            // 回合结束恢复HP
+            if (trait.type === 'on_turn_end' && trait.effects && trait.effects.hpRegenPercent) {
+                const regenAmount = Math.floor(unit.maxHp * trait.effects.hpRegenPercent);
+                if (regenAmount > 0 && unit.hp < unit.maxHp) {
+                    unit.hp = Math.min(unit.maxHp, unit.hp + regenAmount);
+                    this.addLog(`${unitName} 的【${trait.name}】生效，恢复了 ${regenAmount} 点生命`, 'heal');
+                }
+            }
+        }
+    },
+    
+    /**
+     * 处理受到攻击时的天赋效果
+     */
+    processTraitsOnHitTaken(target, damage, isPlayer) {
+        if (!target.traits || target.traits.length === 0) return damage;
+        
+        let finalDamage = damage;
+        const targetName = isPlayer ? '你' : target.name;
+        
+        for (const trait of target.traits) {
+            // 伤害反弹
+            if (trait.type === 'on_hit_taken' && trait.effects && trait.effects.damageReflect) {
+                const reflectDamage = Math.floor(damage * trait.effects.damageReflect);
+                if (reflectDamage > 0) {
+                    // 反弹伤害给攻击者（这里简化处理，只记录日志）
+                    this.addLog(`${targetName} 的【${trait.name}】反弹了 ${reflectDamage} 点伤害`, 'damage');
+                }
+            }
+        }
+        
+        return finalDamage;
+    },
+    
+    /**
+     * 处理攻击命中时的天赋效果
+     */
+    processTraitsOnHit(attacker, target, damage, isPlayer) {
+        if (!attacker.traits || attacker.traits.length === 0) return;
+        
+        const attackerName = isPlayer ? '你' : attacker.name;
+        
+        for (const trait of attacker.traits) {
+            // 攻击造成流血
+            if (trait.type === 'on_hit' && trait.effects && trait.effects.bleedChance) {
+                if (Math.random() < trait.effects.bleedChance) {
+                    // 添加流血效果
+                    const bleedEffect = {
+                        type: 'bleed',
+                        name: '流血',
+                        duration: trait.effects.bleedDuration || 3,
+                        damagePerTurn: trait.effects.bleedDamage || 5,
+                        icon: '🩸'
+                    };
+                    
+                    if (!target.statusEffects) target.statusEffects = [];
+                    target.statusEffects.push(bleedEffect);
+                    
+                    this.addLog(`${attackerName} 的【${trait.name}】造成了流血效果！`, 'debuff');
+                }
+            }
+        }
+    },
+    
+    /**
+     * 计算动态攻击加成（血量越低攻击越高之类的）
+     */
+    getDynamicAttackBonus(unit, baseAttack) {
+        if (!unit.traits || unit.traits.length === 0) return baseAttack;
+        
+        let finalAttack = baseAttack;
+        
+        for (const trait of unit.traits) {
+            // 血怒：血量越低，攻击越高
+            if (trait.type === 'passive_scaling' && trait.effects && trait.effects.attackPerHpLost) {
+                const hpLostPercent = 1 - (unit.hp / unit.maxHp);
+                const attackBonus = hpLostPercent * trait.effects.attackPerHpLost * 100;
+                finalAttack *= (1 + attackBonus);
+            }
+        }
+        
+        return Math.floor(finalAttack);
+    },
+    
+    /**
+     * 检查是否有控制免疫
+     */
+    hasControlImmunity(unit) {
+        if (!unit.traits || unit.traits.length === 0) return false;
+        
+        for (const trait of unit.traits) {
+            if (trait.effects && trait.effects.controlImmune) {
+                return true;
+            }
+        }
+        
+        return false;
     },
 
     /**
