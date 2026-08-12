@@ -1457,6 +1457,34 @@ const UI = {
                             `;
                         }).join('')}
                     </div>
+                    
+                    ${state.magicTools && state.magicTools.available && state.magicTools.available.length > 0 ? `
+                        <div style="color: #ff8844; font-size: 18px; margin-bottom: 10px; margin-top: 15px; font-weight: bold;">🔮 魔具技能</div>
+                        <div style="display: grid; grid-template-columns: repeat(${Math.min(state.magicTools.available.length, 4)}, 1fr); gap: 10px;">
+                            ${state.magicTools.available.map(skill => {
+                                const cooldown = state.magicTools.cooldowns[skill.id] || 0;
+                                const canUse = state.isPlayerTurn && cooldown === 0;
+                                return `
+                                    <button onclick="Game.battleUseMagicTool('${skill.id}')" ${!canUse ? 'disabled' : ''}
+                                            title="${skill.description}"
+                                            style="
+                                        padding: 12px;
+                                        background: linear-gradient(135deg, #443322, #665544);
+                                        border: 2px solid #aa8866;
+                                        border-radius: 8px;
+                                        color: #ffddaa;
+                                        cursor: ${canUse ? 'pointer' : 'not-allowed'};
+                                        text-align: center;
+                                        opacity: ${canUse ? 1 : 0.4};
+                                        transition: all 0.2s;
+                                    " ${canUse ? 'onmouseover="this.style.boxShadow=\'0 0 15px #aa886680\'" onmouseout="this.style.boxShadow=\'none\'"' : ''}>
+                                        <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">${skill.icon} ${skill.name.split('·')[1] || skill.name}</div>
+                                        <div style="font-size: 12px; color: #ccaa88;">${cooldown > 0 ? '冷却: ' + cooldown + '回合' : '可使用'}</div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    ` : ''}
                 </div>
             </div>
         `;

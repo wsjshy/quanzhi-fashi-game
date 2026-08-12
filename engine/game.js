@@ -892,6 +892,18 @@ const Game = {
         }
     },
 
+    // 玩家使用魔具技能
+    battleUseMagicTool(skillId) {
+        if (!BattleSystem.isPlayerTurn) return;
+        
+        BattleSystem.useMagicTool(skillId);
+        UI.updateBattleScreen();
+        
+        if (!BattleSystem.active) {
+            this.endBattle();
+        }
+    },
+
     // 玩家防御
     battleDefend() {
         if (!BattleSystem.isPlayerTurn) return;

@@ -257,6 +257,13 @@ const BattleSystem = {
             turnCount: 0
         };
         
+        // 初始化魔具技能
+        this.magicTools = {
+            available: [],  // 可用的魔具技能列表
+            cooldowns: {}  // 冷却时间
+        };
+        this.initMagicTools();
+        
         // 记录最后战斗日期（用于和平主义者成就）
         if (typeof Player !== 'undefined') {
             Player.lastBattleDay = Player.day;
@@ -361,6 +368,176 @@ const BattleSystem = {
             enemy: this.enemy,
             isPlayerTurn: this.isPlayerTurn
         };
+    },
+    
+    /**
+     * 初始化魔具技能
+     */
+    initMagicTools() {
+        if (typeof Player === 'undefined' || typeof Player.equipment === 'undefined') return;
+        
+        const slots = ['weapon', 'armor', 'accessory'];
+        slots.forEach(slot => {
+            const itemId = Player.equipment[slot];
+            if (!itemId) return;
+            
+            const item = typeof DataItems !== 'undefined' ? DataItems[itemId] : null;
+            if (!item || !item.magicToolType) return;
+            
+            // 根据魔具类型生成技能
+            let skill = null;
+            const grade = item.magicToolGrade || 'basic';
+            const element = item.element || null;
+            
+            switch (item.magicToolType) {
+                case 'slash': // 斩魔具
+                    skill = {
+                        id: 'magic_tool_slash_' + itemId,
+                        name: item.name + '·斩击',
+                        icon: item.icon || '⚔️',
+                        type: 'slash',
+                        description: grade === 'spirit' ? '催动斩魔具，下次攻击造成80%额外伤害' : '催动斩魔具，下次攻击造成50%额外伤害',
+                        cooldown: grade === 'spirit' ? 2 : 3,
+                        damageBonus: grade === 'spirit' ? 0.8 : 0.5,
+                        element: element
+                    };
+                    break;
+                    
+                case 'shield': // 盾魔具
+                    skill = {
+                        id: 'magic_tool_shield_' + itemId,
+                        name: item.name + '·护盾',
+                        icon: item.icon || '🛡️',
+                        type: 'shield',
+                        description: grade === 'spirit' ? '催动盾魔具，获得吸收100点伤害的护盾' : '催动盾魔具，获得吸收60点伤害的护盾',
+                        cooldown: grade === 'spirit' ? 3 : 4,
+                        shieldAmount: grade === 'spirit' ? 100 : 60,
+                        element: element
+                    };
+                    break;
+                    
+                case 'armor': // 铠魔具
+                    skill = {
+                        id: 'magic_tool_armor_' + itemId,
+                        name: item.name + '·铠化',
+                        icon: item.icon || '🛡️',
+                        type: 'armor',
+                        description: '催动铠魔具，3回合内防御提升50%',
+                        cooldown: 5,
+                        defenseBonus: 0.5,
+                        duration: 3,
+                        element: element
+                    };
+                    break;
+                    
+                case 'shoe': // 履魔具
+                    skill = {
+                        id: 'magic_tool_shoe_' + itemId,
+                        name: item.name + '·风行',
+                        icon: item.icon || '👟',
+                        type: 'shoe',
+                        description: '催动履魔具，2回合内速度和闪避大幅提升',
+                        cooldown: 4,
+                        speedBonus: 0.5,
+                        dodgeBonus: 0.2,
+                        duration: 2,
+                        element: element
+                    };
+                    break;
+            }
+            
+            if (skill) {
+                this.magicTools.available.push(skill);
+                this.magicTools.cooldowns[skill.id] = 0;
+            }
+        });
+    },
+    
+    /**
+     * 使用魔具技能
+     */
+    useMagicTool(skillId) {
+        if (!this.active || !this.isPlayerTurn) return null;
+        
+        const skill = this.magicTools.available.find(s => s.id === skillId);
+        if (!skill) return null;
+        
+        // 检查冷却
+        if (this.magicTools.cooldowns[skillId] > 0) {
+            this.addLog(`${skill.name} 还在冷却中（${this.magicTools.cooldowns[skillId]}回合）`, 'system');
+            return null;
+        }
+        
+        this.player.isDefending = false;
+        
+        switch (skill.type) {
+            case 'slash': // 斩魔具：下次攻击额外伤害
+                // 给玩家加一个buff，下次攻击造成额外伤害
+                const slashBuff = {
+                    type: 'attack_up',
+                    name: skill.name,
+                    duration: 1,
+                    attackMod: skill.damageBonus,
+                    isNextAttackOnly: true
+                };
+                this.player.buffs.push(slashBuff);
+                this.addLog(`你催动了 ${skill.name}，下次攻击伤害提升！`, 'buff');
+                break;
+                
+            case 'shield': // 盾魔具：护盾
+                const shieldBuff = {
+                    type: 'shield',
+                    name: skill.name,
+                    duration: 99, // 直到被打破
+                    shieldAmount: skill.shieldAmount,
+                    maxShieldAmount: skill.shieldAmount
+                };
+                this.player.buffs.push(shieldBuff);
+                this.addLog(`你催动了 ${skill.name}，获得了 ${skill.shieldAmount} 点护盾！`, 'buff');
+                break;
+                
+            case 'armor': // 铠魔具：防御提升
+                const armorBuff = {
+                    type: 'defense_up',
+                    name: skill.name,
+                    duration: skill.duration,
+                    defenseMod: skill.defenseBonus
+                };
+                this.player.buffs.push(armorBuff);
+                this.addLog(`你催动了 ${skill.name}，防御大幅提升！`, 'buff');
+                break;
+                
+            case 'shoe': // 履魔具：速度和闪避提升
+                const shoeBuff = {
+                    type: 'speed_up',
+                    name: skill.name,
+                    duration: skill.duration,
+                    speedMod: skill.speedBonus,
+                    dodgeMod: skill.dodgeBonus
+                };
+                this.player.buffs.push(shoeBuff);
+                this.addLog(`你催动了 ${skill.name}，速度和闪避大幅提升！`, 'buff');
+                break;
+        }
+        
+        // 设置冷却
+        this.magicTools.cooldowns[skillId] = skill.cooldown;
+        
+        // 消耗回合
+        this.endPlayerTurn();
+        
+        return { success: true, skill: skill };
+    },
+    
+    /**
+     * 减少魔具冷却时间
+     */
+    tickMagicToolCooldowns() {
+        for (const skillId in this.magicTools.cooldowns) {
+            if (this.magicTools.cooldowns[skillId] > 0) {
+                this.magicTools.cooldowns[skillId]--;
+            }
+        }
     },
 
     /**
@@ -1027,6 +1204,9 @@ const BattleSystem = {
 
         this.isPlayerTurn = false;
         this.enemy.isDefending = false; // 重置敌人防御状态
+        
+        // 减少魔具技能冷却时间
+        this.tickMagicToolCooldowns();
         
         // 处理玩家引导中的魔法
         if (this.playerCasting) {
@@ -3029,7 +3209,8 @@ const BattleSystem = {
             rewards: this.rewards || null,
             log: this.log.slice(-10), // 最近10条
             speed: this.speed, // 战斗速度
-            options: this.battleOptions // 战斗模式选项
+            options: this.battleOptions, // 战斗模式选项
+            magicTools: this.magicTools // 魔具技能
         };
     },
 
