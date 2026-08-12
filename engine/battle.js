@@ -149,13 +149,74 @@ const BattleSystem = {
                     </div>
                     
                     <div style="margin-bottom: 16px;">
+                        <h3 style="color: #66ccff; margin-bottom: 8px; font-size: 16px;">💥 元素反应</h3>
+                        <div style="color: #ccc; font-size: 14px; line-height: 1.8;">
+                            <p style="margin: 0 0 8px 0;">特定元素与状态结合会触发强力反应：</p>
+                            <ul style="margin: 0; padding-left: 20px;">
+                                <li><b style="color: #ff9944;">蒸发</b>：火 + 潮湿 → 伤害+30%</li>
+                                <li><b style="color: #ffaa66;">融化</b>：火 + 冻结 → 伤害+30%</li>
+                                <li><b style="color: #ffdd44;">感电</b>：雷 + 潮湿 → 伤害+20%，附加麻痹</li>
+                                <li><b style="color: #88ddff;">冻结</b>：冰 + 潮湿 → 伤害+20%，附加冻结</li>
+                                <li><b style="color: #aa88ff;">超导</b>：雷 + 冻结 → 降低防御</li>
+                                <li><b style="color: #88cc88;">结晶</b>：土 + 元素 → 产生护盾</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <h3 style="color: #66ccff; margin-bottom: 8px; font-size: 16px;">🔮 精神力与引导</h3>
+                        <div style="color: #ccc; font-size: 14px; line-height: 1.8;">
+                            <ul style="margin: 0; padding-left: 20px;">
+                                <li>高阶魔法需要引导多回合才能释放</li>
+                                <li>精神力越高，引导速度越快</li>
+                                <li>攻击有概率打断敌人引导（精神力对抗）</li>
+                                <li>精神力越高，越不容易被打断</li>
+                                <li>控制效果（麻痹/冻结/眩晕）受精神力抵抗</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <h3 style="color: #66ccff; margin-bottom: 8px; font-size: 16px;">👹 妖魔天赋</h3>
+                        <div style="color: #ccc; font-size: 14px; line-height: 1.8;">
+                            <p style="margin: 0 0 8px 0;">每个妖魔都有独特的种族天赋：</p>
+                            <ul style="margin: 0; padding-left: 20px;">
+                                <li><b style="color: #ff8866;">高速型</b>：速度快，闪避高，先手攻击</li>
+                                <li><b style="color: #8888ff;">防御型</b>：防御高，血量厚，难以击败</li>
+                                <li><b style="color: #ff4444;">攻击型</b>：攻击力强，伤害高</li>
+                                <li><b style="color: #aa44ff;">控制型</b>：会施加各种负面状态</li>
+                                <li>注意观察敌人的特点，制定策略</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <h3 style="color: #66ccff; margin-bottom: 8px; font-size: 16px;">📊 状态效果</h3>
+                        <div style="color: #ccc; font-size: 14px; line-height: 1.8;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                                <span>🔥 灼烧：持续掉血</span>
+                                <span>❄️ 冻结：无法行动</span>
+                                <span>⚡ 麻痹：无法行动</span>
+                                <span>🐌 减速：速度降低</span>
+                                <span>💀 诅咒：攻击降低</span>
+                                <span>🛡️ 护盾：吸收伤害</span>
+                                <span>💚 再生：持续回血</span>
+                                <span>💨 加速：速度提升</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
                         <h3 style="color: #66ccff; margin-bottom: 8px; font-size: 16px;">💡 战斗技巧</h3>
                         <ul style="margin: 0; padding-left: 20px; color: #ccc; font-size: 14px; line-height: 1.8;">
                             <li>利用元素克制可以大幅提高伤害</li>
-                            <li>防御可以在危险时减少伤害</li>
+                            <li>尝试触发元素反应获得额外效果</li>
+                            <li>防御可以在危险时减少伤害，还能回蓝</li>
                             <li>打断敌人引导可以避免高额伤害</li>
+                            <li>MP不足时用普攻或防御回蓝</li>
                             <li>妖魔有独特的种族天赋，注意观察</li>
                             <li>右上角可以调整战斗速度</li>
+                            <li>战斗评价越高，奖励越丰厚</li>
                         </ul>
                     </div>
                     
