@@ -99,6 +99,7 @@ const Player = {
     spiritSeeds: {},  // 灵种：{ elementId: seedId }
     starDustArtifacts: {},  // 星尘魔器：{ elementId: { id, level, exp } }
     tempBreakthroughBonus: 0,  // 临时突破成功率加成
+    npcRelations: {},  // NPC关系：{ npcId: { opinion, trust, familiarity } }
 
     // 金钱
     gold: 50,
@@ -717,6 +718,81 @@ const Player = {
 
         return totalEffects;
     },
+    
+    // ========== NPC关系系统 ==========
+    
+    /**
+     * 获取NPC关系数据
+     * @param {string} npcId - NPC ID
+     * @returns {object} 关系数据 { opinion, trust, familiarity }
+     */
+    getNpcRelation(npcId) {
+        if (!this.npcRelations) this.npcRelations = {};
+        if (!this.npcRelations[npcId]) {
+            this.npcRelations[npcId] = { opinion: 0, trust: 0, familiarity: 0 };
+        }
+        return this.npcRelations[npcId];
+    },
+    
+    /**
+     * 获取NPC好感度
+     * @param {string} npcId - NPC ID
+     * @returns {number} 好感度（-100到100）
+     */
+    getNpcOpinion(npcId) {
+        const relation = this.getNpcRelation(npcId);
+        return relation.opinion || 0;
+    },
+    
+    /**
+     * 增加NPC好感度
+     * @param {string} npcId - NPC ID
+     * @param {number} amount - 增加的好感度（可以是负数）
+     * @returns {number} 新的好感度
+     */
+    addNpcOpinion(npcId, amount) {
+        const relation = this.getNpcRelation(npcId);
+        relation.opinion = Math.max(-100, Math.min(100, (relation.opinion || 0) + amount));
+        return relation.opinion;
+    },
+    
+    /**
+     * 获取关系等级
+     * @param {string} npcId - NPC ID
+     * @returns {number} 关系等级（0-6）
+     */
+    getRelationLevel(npcId) {
+        const opinion = this.getNpcOpinion(npcId);
+        if (opinion >= 80) return 6;      // 尊敬/挚友
+        if (opinion >= 50) return 5;      // 亲密
+        if (opinion >= 20) return 4;      // 友好
+        if (opinion >= 0) return 3;       // 中立
+        if (opinion >= -20) return 2;     // 冷淡
+        if (opinion >= -50) return 1;     // 敌对
+        return 0;                          // 仇恨
+    },
+    
+    /**
+     * 获取关系等级名称
+     * @param {string} npcId - NPC ID
+     * @returns {string} 关系等级名称
+     */
+    getRelationLevelName(npcId) {
+        const level = this.getRelationLevel(npcId);
+        const names = ['仇恨', '敌对', '冷淡', '中立', '友好', '亲密', '挚友'];
+        return names[level] || '中立';
+    },
+    
+    /**
+     * 获取关系等级颜色
+     * @param {string} npcId - NPC ID
+     * @returns {string} 颜色代码
+     */
+    getRelationLevelColor(npcId) {
+        const level = this.getRelationLevel(npcId);
+        const colors = ['#ff3333', '#ff6633', '#999999', '#cccccc', '#66ff66', '#66ffff', '#ffcc00'];
+        return colors[level] || '#cccccc';
+    },
 
     /**
      * 获取某元素的星尘魔器效果
@@ -1080,6 +1156,7 @@ const Player = {
             talents: this.talents,
             spiritSeeds: this.spiritSeeds,
             starDustArtifacts: this.starDustArtifacts,
+            npcRelations: this.npcRelations,
             tempBreakthroughBonus: this.tempBreakthroughBonus,
             gold: this.gold,
             equipment: this.equipment,
@@ -1159,6 +1236,7 @@ const Player = {
             this.talents = data.talents ?? {};
             this.spiritSeeds = data.spiritSeeds ?? {};
             this.starDustArtifacts = data.starDustArtifacts ?? {};
+            this.npcRelations = data.npcRelations ?? {};
             this.tempBreakthroughBonus = data.tempBreakthroughBonus ?? 0;
             this.gold = data.gold ?? 50;
             this.equipment = data.equipment ?? { weapon: null, armor: null, accessory: null };
