@@ -328,6 +328,282 @@ const DemonTraits = {
         ]
     },
     
+    // 普通魔狼
+    demon_wolf: {
+        traits: [
+            {
+                id: "fierce",
+                name: "凶猛",
+                description: "生性凶猛，攻击力+15%",
+                type: "passive",
+                effects: {
+                    attackBonus: 0.15
+                }
+            },
+            {
+                id: "pack_hunter",
+                name: "群居",
+                description: "群居生物，同类越多越强",
+                type: "passive",
+                effects: {
+                    attackBonus: 0.1
+                }
+            },
+            {
+                id: "sharp_claws",
+                name: "锋利爪子",
+                description: "爪子锋利，攻击有几率造成流血",
+                type: "on_hit",
+                effects: {
+                    bleedChance: 0.2,
+                    bleedDamage: 3,
+                    bleedDuration: 2
+                }
+            }
+        ]
+    },
+    
+    // 水蜘蛛
+    water_spider: {
+        traits: [
+            {
+                id: "water_affinity",
+                name: "水属性",
+                description: "掌握水系力量，水伤害+25%",
+                type: "passive",
+                effects: {
+                    waterDamageBonus: 0.25
+                }
+            },
+            {
+                id: "web_silk",
+                name: "吐丝",
+                description: "可以吐丝，有几率减速敌人",
+                type: "on_hit",
+                effects: {
+                    slowChance: 0.3,
+                    slowAmount: 0.2,
+                    slowDuration: 2
+                }
+            },
+            {
+                id: "water_breathing",
+                name: "水下呼吸",
+                description: "可以在水中自由行动",
+                type: "passive",
+                effects: {
+                    waterDamageReduction: 0.3
+                }
+            }
+        ]
+    },
+    
+    // 火鼠
+    fire_rat: {
+        traits: [
+            {
+                id: "fire_affinity",
+                name: "火属性",
+                description: "掌握火系力量，火伤害+25%",
+                type: "passive",
+                effects: {
+                    fireDamageBonus: 0.25
+                }
+            },
+            {
+                id: "high_temperature",
+                name: "耐高温",
+                description: "生活在高温环境，火抗性+50%",
+                type: "passive",
+                effects: {
+                    fireDamageReduction: 0.5
+                }
+            },
+            {
+                id: "small_fast",
+                name: "小巧灵活",
+                description: "体型小，速度快，闪避+10%",
+                type: "passive",
+                effects: {
+                    speedBonus: 0.2,
+                    dodgeBonus: 0.1
+                }
+            }
+        ]
+    },
+    
+    // 金蚁
+    gold_ant: {
+        traits: [
+            {
+                id: "metal_affinity",
+                name: "金属性",
+                description: "掌握金系力量，防御+20%",
+                type: "passive",
+                effects: {
+                    defenseBonus: 0.2
+                }
+            },
+            {
+                id: "hard_shell",
+                name: "坚硬外壳",
+                description: "外壳坚硬，物理伤害减免+25%",
+                type: "damage_reduction",
+                effects: {
+                    physicalReduction: 0.25
+                }
+            },
+            {
+                id: "swarm",
+                name: "蚁群",
+                description: "群居生物，数量多力量大",
+                type: "passive",
+                effects: {
+                    attackBonus: 0.1
+                }
+            }
+        ]
+    },
+    
+    // 冰蟾
+    ice_toad: {
+        traits: [
+            {
+                id: "ice_affinity",
+                name: "冰属性",
+                description: "掌握冰系力量，冰伤害+25%",
+                type: "passive",
+                effects: {
+                    iceDamageBonus: 0.25
+                }
+            },
+            {
+                id: "cold_touch",
+                name: "寒冰之触",
+                description: "攻击有几率冰冻敌人",
+                type: "on_hit",
+                effects: {
+                    freezeChance: 0.15,
+                    freezeDuration: 1
+                }
+            },
+            {
+                id: "thick_skin",
+                name: "厚皮",
+                description: "皮肤厚实，生命值+20%",
+                type: "passive",
+                effects: {
+                    hpBonus: 0.2
+                }
+            }
+        ]
+    },
+    
+    // 雷兽
+    thunder_beast: {
+        traits: [
+            {
+                id: "thunder_affinity",
+                name: "雷属性",
+                description: "掌握雷系力量，雷伤害+30%",
+                type: "passive",
+                effects: {
+                    thunderDamageBonus: 0.3
+                }
+            },
+            {
+                id: "static_shock",
+                name: "静电",
+                description: "受到攻击时有几率麻痹敌人",
+                type: "on_hit_taken",
+                effects: {
+                    stunChance: 0.1,
+                    stunDuration: 1
+                }
+            },
+            {
+                id: "fast_movement",
+                name: "迅捷",
+                description: "速度极快，速度+25%",
+                type: "passive",
+                effects: {
+                    speedBonus: 0.25
+                }
+            }
+        ]
+    },
+    
+    // 光蛾
+    light_moth: {
+        traits: [
+            {
+                id: "light_affinity",
+                name: "光属性",
+                description: "掌握光系力量，光伤害+25%",
+                type: "passive",
+                effects: {
+                    lightDamageBonus: 0.25
+                }
+            },
+            {
+                id: "scales",
+                name: "光鳞",
+                description: "鳞片反光，有几率致盲敌人",
+                type: "on_hit",
+                effects: {
+                    blindChance: 0.2,
+                    blindDuration: 1
+                }
+            },
+            {
+                id: "flying",
+                name: "飞行",
+                description: "可以飞行，闪避+15%",
+                type: "passive",
+                effects: {
+                    dodgeBonus: 0.15,
+                    speedBonus: 0.15
+                }
+            }
+        ]
+    },
+    
+    // 暗影蛇
+    shadow_snake: {
+        traits: [
+            {
+                id: "shadow_affinity",
+                name: "暗影属性",
+                description: "掌握暗影力量，暗影伤害+30%",
+                type: "passive",
+                effects: {
+                    shadowDamageBonus: 0.3
+                }
+            },
+            {
+                id: "venom",
+                name: "剧毒",
+                description: "有毒，攻击有几率造成中毒",
+                type: "on_hit",
+                effects: {
+                    poisonChance: 0.3,
+                    poisonDamage: 5,
+                    poisonDuration: 3
+                }
+            },
+            {
+                id: "stealth",
+                name: "潜行",
+                description: "擅长潜行，首次攻击必定暴击",
+                type: "first_strike",
+                effects: {
+                    crit: true,
+                    damageBonus: 0.3
+                }
+            }
+        ]
+    },
+    
     // ==================== 天赋效果工具函数 ====================
     
     /**
