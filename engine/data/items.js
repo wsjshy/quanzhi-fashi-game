@@ -1046,6 +1046,189 @@ const DataItems = {
     lore: "天地间自然孕育的召唤系元素种子，召唤系灵种极为稀有。"
   },
 
+  // ========== 稀有灵种物品 ==========
+  // 比普通灵种更强，有独特的特殊效果
+
+  fire_yanji: {
+    id: "fire_yanji",
+    name: "炎姬灵种",
+    icon: "🔥",
+    description: "传说中有自我意识的火系稀有灵种，化形为炎之少女。灼烧伤害翻倍，可叠加到10层。",
+    type: "spirit_seed",
+    price: 5000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "史诗",
+    element: "fire",
+    grade: "spirit",
+    isRare: true,
+    lore: "炎姬，传说中诞生于地心熔岩的火之精灵，拥有自己的意识。她选择的魔法师，将获得焚天灭地之力。"
+  },
+
+  ice_liuli: {
+    id: "ice_liuli",
+    name: "琉璃冰种",
+    icon: "❄️",
+    description: "冰系灵种中的极品，琉璃般通透，威力远超普通灵种。穆宁雪天生拥有。",
+    type: "spirit_seed",
+    price: 5000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "史诗",
+    element: "ice",
+    grade: "spirit",
+    isRare: true,
+    lore: "穆氏家族传承千年的至宝，传说由极北冰原的万年冰魄孕育而成。穆宁雪天生便与之共鸣。"
+  },
+
+  thunder_zixiao: {
+    id: "thunder_zixiao",
+    name: "紫霄雷种",
+    icon: "⚡",
+    description: "紫色的稀有雷种，蕴含紫霄神雷之力。连锁概率翻倍，麻痹时间更长。",
+    type: "spirit_seed",
+    price: 6000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "史诗",
+    element: "thunder",
+    grade: "spirit",
+    isRare: true,
+    lore: "紫霄神雷，九天之上的雷霆之力。传说中只有被雷选中的人，才能获得紫霄雷种的认可。"
+  },
+
+  earth_yanshen: {
+    id: "earth_yanshen",
+    name: "岩神种",
+    icon: "🪨",
+    description: "蕴含岩神之力的稀有土系灵种，防御极强，受到攻击时有概率石化敌人。",
+    type: "spirit_seed",
+    price: 4500000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "史诗",
+    element: "earth",
+    grade: "spirit",
+    isRare: true,
+    lore: "岩神，大地之神。传说他陨落之后，心脏化为岩神种，守护着这片土地。"
+  },
+
+  wind_fengling: {
+    id: "wind_fengling",
+    name: "风灵种",
+    icon: "💨",
+    description: "蕴含风之精灵的稀有风系灵种，速度极快，闪避率极高。",
+    type: "spirit_seed",
+    price: 4500000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "史诗",
+    element: "wind",
+    grade: "spirit",
+    isRare: true,
+    lore: "风之精灵，自由的象征。她们从不臣服于任何人，只会选择与自己志同道合的魔法师。"
+  },
+
+  water_shuijing: {
+    id: "water_shuijing",
+    name: "水晶灵种",
+    icon: "💧",
+    description: "如水晶般纯净的水系灵种，治疗效果极强，每回合自动回复生命。",
+    type: "spirit_seed",
+    price: 4500000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "史诗",
+    element: "water",
+    grade: "spirit",
+    isRare: true,
+    lore: "水晶灵种，诞生于深海之中的神秘灵种。据说拥有它的人，永远不会被疾病困扰。"
+  },
+
+  light_shengguang: {
+    id: "light_shengguang",
+    name: "圣光种",
+    icon: "✨",
+    description: "蕴含神圣之力的光系灵种，对黑暗生物有毁灭性打击，净化能力极强。",
+    type: "spirit_seed",
+    price: 5000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "史诗",
+    element: "light",
+    grade: "spirit",
+    isRare: true,
+    lore: "圣光，神的恩赐。只有内心纯净、信念坚定的人，才能获得圣光种的认可。"
+  },
+
+  dark_anying: {
+    id: "dark_anying",
+    name: "暗影之魂",
+    icon: "🌑",
+    description: "来自深渊的暗影之魂，暴击率和暴击伤害极高，擅长暗杀。",
+    type: "spirit_seed",
+    price: 5000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "史诗",
+    element: "dark",
+    grade: "spirit",
+    isRare: true,
+    lore: "暗影之魂，黑暗的化身。传说中它会寻找内心有黑暗的人，与他们签订契约。"
+  },
+
+  heal_shengming: {
+    id: "heal_shengming",
+    name: "生命灵种",
+    icon: "💚",
+    description: "蕴含浓郁生命之力的治愈系灵种，治疗效果极强，甚至可以复活死者。",
+    type: "spirit_seed",
+    price: 5500000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "史诗",
+    element: "heal",
+    grade: "spirit",
+    isRare: true,
+    lore: "生命灵种，生命女神的眼泪所化。拥有它的人，就拥有了创造生命的力量。"
+  },
+
+  summon_qiyue: {
+    id: "summon_qiyue",
+    name: "契约灵种",
+    icon: "🐺",
+    description: "蕴含灵魂契约之力的稀有召唤系灵种，可多契约一只召唤兽，且召唤兽更强。",
+    type: "spirit_seed",
+    price: 5500000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "史诗",
+    element: "summon",
+    grade: "spirit",
+    isRare: true,
+    lore: "契约灵种，传说中可以与任何生物签订灵魂契约的神秘灵种。是每个召唤系法师梦寐以求的至宝。"
+  },
+
   // 星尘魔器
   star_dust_basic_fire: {
     id: "star_dust_basic_fire",
