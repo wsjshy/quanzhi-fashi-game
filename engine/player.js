@@ -94,6 +94,7 @@ const Player = {
     elements: [],
     skills: ['basic_attack'],
     skillLevels: {},  // 技能等级：{ skillId: { level, exp } }
+    realm: 'initial',  // 境界：initial/middle/high/super
     talents: {},  // 天赋：{ elementId: { talentId, level, exp } }
     spiritSeeds: {},  // 灵种：{ elementId: seedId }
     starDustArtifacts: {},  // 星尘魔器：{ elementId: { id, level, exp } }
@@ -147,6 +148,7 @@ const Player = {
         this.elements = element ? [element] : [];
         this.skills = ['basic_attack'];
         this.skillLevels = {};  // 技能等级
+        this.realm = 'initial';  // 境界
         this.talents = {};  // 天赋系统
         this.gold = 50;
         this.equipment = { weapon: null, armor: null, accessory: null };
@@ -613,6 +615,54 @@ const Player = {
     },
 
     /**
+     * 获取当前境界
+     * @returns {string} 境界ID
+     */
+    getRealm() {
+        return this.realm || 'initial';
+    },
+
+    /**
+     * 获取当前境界数据
+     * @returns {object} 境界数据
+     */
+    getRealmData() {
+        if (typeof RealmSystem === 'undefined') return null;
+        return RealmSystem.getRealm(this.realm || 'initial');
+    },
+
+    /**
+     * 获取下一个境界
+     * @returns {object|null} 下一个境界数据
+     */
+    getNextRealm() {
+        if (typeof RealmSystem === 'undefined') return null;
+        return RealmSystem.getNextRealm(this.realm || 'initial');
+    },
+
+    /**
+     * 检查是否可以突破
+     * @returns {object} { canBreakthrough: boolean, reason: string }
+     */
+    canBreakthrough() {
+        if (typeof RealmSystem === 'undefined') {
+            return { canBreakthrough: false, reason: '境界系统未加载' };
+        }
+        return RealmSystem.canBreakthrough(this);
+    },
+
+    /**
+     * 执行突破
+     * @returns {object} 突破结果
+     */
+    breakthrough() {
+        if (typeof RealmSystem === 'undefined') {
+            return { success: false, message: '境界系统未加载' };
+        }
+        return RealmSystem.breakthrough(this);
+    },
+
+    /**
      * 获取某元素系的灵种数据
      * @param {string} element - 元素系ID
      * @returns {object|null} 灵种数据
@@ -1012,6 +1062,7 @@ const Player = {
             elements: this.elements,
             skills: this.skills,
             skillLevels: this.skillLevels,
+            realm: this.realm,
             talents: this.talents,
             spiritSeeds: this.spiritSeeds,
             starDustArtifacts: this.starDustArtifacts,
@@ -1089,6 +1140,7 @@ const Player = {
             this.elements = data.elements ?? [];
             this.skills = data.skills ?? ['basic_attack'];
             this.skillLevels = data.skillLevels ?? {};
+            this.realm = data.realm ?? 'initial';
             this.talents = data.talents ?? {};
             this.spiritSeeds = data.spiritSeeds ?? {};
             this.starDustArtifacts = data.starDustArtifacts ?? {};

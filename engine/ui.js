@@ -3171,6 +3171,11 @@ const UI = {
                             </div>
                             <div style="font-size: 18px; color: #66ff99; margin-bottom: 15px;">
                                 等级 ${Player.level}
+                                ${typeof RealmSystem !== 'undefined' ? `
+                                    <span style="font-size: 14px; color: #ffd700; margin-left: 15px;">
+                                        ${RealmSystem.getRealm(Player.realm || 'initial').name}魔法师
+                                    </span>
+                                ` : ''}
                             </div>
                             <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                                 ${Player.elements.map(elem => `
@@ -3184,6 +3189,23 @@ const UI = {
                                     ">${SkillSystem.getElementName(elem)}</span>
                                 `).join('')}
                             </div>
+                            ${typeof RealmSystem !== 'undefined' ? `
+                                <div onclick="Game.showBreakthroughPanel()" style="
+                                    padding: 10px 15px;
+                                    background: linear-gradient(135deg, #ff660033, #ff330033);
+                                    border: 2px solid #ff6600;
+                                    border-radius: 10px;
+                                    cursor: pointer;
+                                    text-align: center;
+                                    margin-bottom: 15px;
+                                    transition: all 0.2s;
+                                " onmouseover="this.style.background='linear-gradient(135deg, #ff660055, #ff330055)'" onmouseout="this.style.background='linear-gradient(135deg, #ff660033, #ff330033)'">
+                                    <span style="color: #ff9933; font-size: 15px; font-weight: bold;">
+                                        ⚡ 境界突破
+                                        ${Player.canBreakthrough && Player.canBreakthrough().canBreakthrough ? ' (可突破!)' : ''}
+                                    </span>
+                                </div>
+                            ` : ''}
                             ${Player.talents && Object.keys(Player.talents).length > 0 ? `
                             <div style="margin-bottom: 15px; text-align: left;">
                                 <div style="color: #aaa; font-size: 13px; margin-bottom: 8px;">🌟 天赋</div>
