@@ -57,6 +57,7 @@ const BattleSystem = {
         this.enemyCasting = null;
         this.isPlayerTurn = true;
         this.summon = null;  // 召唤兽状态
+        this.tookDamage = false;  // 战斗中是否受到伤害（用于毫发无伤成就）
 
         // 复制敌人数据，避免修改原数据
         this.enemy = JSON.parse(JSON.stringify(enemyData));
@@ -850,6 +851,11 @@ const BattleSystem = {
         // 同步到玩家数据
         if (target === this.player) {
             Player.hp = this.player.hp;
+            
+            // 记录受到伤害（用于毫发无伤成就）
+            if (amount > 0) {
+                this.tookDamage = true;
+            }
         }
     },
 
@@ -1233,6 +1239,12 @@ const BattleSystem = {
             this.result = 'lose';
             this.active = false;
             this.addLog('你被击败了...', 'system');
+            
+            // 重置连胜
+            if (typeof Player !== 'undefined') {
+                Player.winStreak = 0;
+            }
+            
             return true;
         }
 
@@ -1240,6 +1252,11 @@ const BattleSystem = {
             this.result = 'win';
             this.active = false;
             this.addLog(`击败了 ${this.enemy.name}！`, 'system');
+            
+            // 增加连胜
+            if (typeof Player !== 'undefined') {
+                Player.winStreak = (Player.winStreak || 0) + 1;
+            }
             
             // 计算奖励
             this.calculateRewards();
@@ -1453,6 +1470,23 @@ const BattleSystem = {
                     if (achData) {
                         WorldState.unlockAchievement('boss_killer', achData);
                     }
+                }
+            }
+            
+            // 连胜成就
+            const winStreak = Player.winStreak || 0;
+            if (winStreak >= 5 && !WorldState.hasAchievement('win_streak_5')) {
+                const achData = DataAchievements['win_streak_5'];
+                if (achData) {
+                    WorldState.unlockAchievement('win_streak_5', achData);
+                }
+            }
+            
+            // 毫发无伤成就（战斗中未受到伤害）
+            if (!this.tookDamage && !WorldState.hasAchievement('flawless_victory')) {
+                const achData = DataAchievements['flawless_victory'];
+                if (achData) {
+                    WorldState.unlockAchievement('flawless_victory', achData);
                 }
             }
             

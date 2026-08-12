@@ -127,6 +127,7 @@ const Player = {
 
     // 战斗状态
     battleBuffs: [],
+    winStreak: 0,  // 连胜次数
 
     /**
      * 初始化新玩家
