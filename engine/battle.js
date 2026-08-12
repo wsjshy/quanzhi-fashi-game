@@ -261,6 +261,25 @@ const BattleSystem = {
         this.enemy.statusEffects = [];
         this.enemy.isDefending = false;
         
+        // 初始化精神力
+        if (!this.enemy.spirit) {
+            const level = this.enemy.level || 1;
+            // 基础精神力：等级 * 3 + 10
+            let baseSpirit = level * 3 + 10;
+            // 魔法师类型精神力更高
+            if (this.enemy.enemyType === 'mage' || this.enemy.isHuman) {
+                baseSpirit = Math.floor(baseSpirit * 1.5);
+            }
+            // 战将级以上精神力更高
+            if (this.enemy.demonTier === 'warrior' || this.enemy.rank === '战将级') {
+                baseSpirit = Math.floor(baseSpirit * 1.3);
+            }
+            if (this.enemy.demonTier === 'commander' || this.enemy.rank === '统领级') {
+                baseSpirit = Math.floor(baseSpirit * 1.5);
+            }
+            this.enemy.spirit = baseSpirit;
+        }
+        
         // 初始化妖魔天赋
         this.enemy.traits = [];
         this.enemy.traitBonuses = null;
@@ -388,9 +407,15 @@ const BattleSystem = {
             this.showDamageNumber('enemy', damage.amount, dmgType);
         }
 
-        // 检查是否打断敌人引导
+        // 检查是否打断敌人引导（精神力对抗）
         if (this.enemyCasting && !damage.isMiss) {
-            if (Math.random() < 0.3) { // 30%概率打断
+            // 基础打断概率20%，精神力差每1点增减0.5%，最低10%，最高60%
+            const playerSpirit = this.player.spirit || 30;
+            const enemySpirit = this.enemy.spirit || 20;
+            let interruptChance = 0.2 + (playerSpirit - enemySpirit) * 0.005;
+            interruptChance = Math.max(0.1, Math.min(0.6, interruptChance));
+            
+            if (Math.random() < interruptChance) {
                 this.addLog(`打断了 ${this.enemy.name} 的魔法引导！`, 'system');
                 this.enemyCasting = null;
                 
@@ -476,9 +501,10 @@ const BattleSystem = {
 
         this.player.isDefending = false;
 
-        // 计算引导时间（精神力越高越快）
+        // 计算引导时间（精神力越高越快，精神力100时引导时间减半）
         const baseCastTime = this.getCastTime(skill.tier);
-        const castTime = Math.max(1, Math.floor(baseCastTime * (100 - this.player.spirit) / 100));
+        const spirit = this.player.spirit || 30;
+        const castTime = Math.max(1, Math.floor(baseCastTime * (100 - spirit * 0.5) / 100));
 
         // 如果引导时间为0（瞬发），直接释放
         if (castTime <= 1 || skill.type === 'buff' || skill.targetType === 'self') {
@@ -1109,9 +1135,15 @@ const BattleSystem = {
                 this.showDamageNumber('player', damage.amount, dmgType);
             }
 
-            // 检查是否打断玩家引导
+            // 检查是否打断玩家引导（精神力对抗）
             if (this.playerCasting && !damage.isMiss) {
-                if (Math.random() < 0.3) {
+                // 基础打断概率20%，精神力差每1点增减0.5%，最低10%，最高60%
+                const enemySpirit = this.enemy.spirit || 20;
+                const playerSpirit = this.player.spirit || 30;
+                let interruptChance = 0.2 + (enemySpirit - playerSpirit) * 0.005;
+                interruptChance = Math.max(0.1, Math.min(0.6, interruptChance));
+                
+                if (Math.random() < interruptChance) {
                     this.addLog(`你的魔法引导被打断了！`, 'system');
                     this.playerCasting = null;
                     
@@ -1179,9 +1211,10 @@ const BattleSystem = {
             // 使用技能
             const skill = SkillSystem.getSkill(action.skillId);
             if (skill && this.enemy.mp >= skill.mpCost) {
-                // 计算引导时间
+                // 计算引导时间（精神力越高越快）
                 const baseCastTime = this.getCastTime(skill.tier);
-                const castTime = Math.max(1, Math.floor(baseCastTime * 0.8)); // 敌人引导稍快
+                const spirit = this.enemy.spirit || 20;
+                const castTime = Math.max(1, Math.floor(baseCastTime * (100 - spirit * 0.5) / 100));
 
                 if (castTime <= 1 || skill.type === 'buff' || skill.targetType === 'self') {
                     // 瞬发
