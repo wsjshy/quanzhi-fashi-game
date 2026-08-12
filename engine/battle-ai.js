@@ -353,12 +353,53 @@ const BattleAI = {
                 if (effect.type === 'burn' || effect.type === 'poison' || effect.type === 'bleed') {
                     score += 0.15 * profile.weights.damage; // DOT效果
                 }
-                if (effect.type === 'stun' || effect.type === 'freeze') {
-                    score += 0.3 * profile.weights.control; // 硬控
+                if (effect.type === 'stun' || effect.type === 'freeze' || effect.type === 'frozen' || effect.type === 'paralyze') {
+                    // 硬控效果
+                    score += 0.3 * profile.weights.control;
+                    
+                    // 对手没有被控制时，控制技能价值更高
+                    const opponentHasControl = opponent.statusEffects?.some(e => 
+                        e.type === 'stun' || e.type === 'freeze' || e.type === 'frozen' || e.type === 'paralyze'
+                    );
+                    if (!opponentHasControl) {
+                        score += 0.2 * profile.weights.control;
+                    }
+                    
+                    // 对手血量很低时，控制技能价值降低（直接斩杀更重要）
+                    if (opponent.hp / opponent.maxHp < 0.2) {
+                        score -= 0.15 * profile.weights.damage;
+                    }
                 }
                 if (effect.type === 'slow' || effect.type === 'attack_down' || effect.type === 'defense_down') {
                     score += 0.15 * profile.weights.control; // 软控
                 }
+            }
+        }
+        
+        // 元素反应加分 - 如果技能能触发元素反应，额外加分
+        if (skill.element && opponent.statusEffects && opponent.statusEffects.length > 0) {
+            const hasWet = opponent.statusEffects.some(e => e.type === 'wet');
+            const hasFreeze = opponent.statusEffects.some(e => e.type === 'freeze' || e.type === 'frozen');
+            const hasBurn = opponent.statusEffects.some(e => e.type === 'burn');
+            const hasElectro = opponent.statusEffects.some(e => e.type === 'electrified' || e.type === 'paralyze');
+            
+            let canTriggerReaction = false;
+            
+            // 检查是否能触发元素反应
+            if (skill.element === 'fire' && (hasWet || hasFreeze || hasElectro)) {
+                canTriggerReaction = true; // 蒸发/融化/超载
+            } else if (skill.element === 'thunder' && (hasWet || hasFreeze)) {
+                canTriggerReaction = true; // 感电/超导
+            } else if (skill.element === 'ice' && hasWet) {
+                canTriggerReaction = true; // 冻结
+            } else if (skill.element === 'earth' && hasWet) {
+                canTriggerReaction = true; // 泥浆
+            } else if (skill.element === 'wind' && (hasWet || hasBurn || hasElectro || hasFreeze)) {
+                canTriggerReaction = true; // 扩散
+            }
+            
+            if (canTriggerReaction) {
+                score += 0.2 * profile.weights.damage;
             }
         }
         
