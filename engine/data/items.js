@@ -1229,6 +1229,188 @@ const DataItems = {
     lore: "契约灵种，传说中可以与任何生物签订灵魂契约的神秘灵种。是每个召唤系法师梦寐以求的至宝。"
   },
 
+  // ========== 稀有魂种物品（传说级） ==========
+  // 比普通魂种更强，有独特的终极效果，极为稀有
+  fire_jiuyou: {
+    id: "fire_jiuyou",
+    name: "九幽冥火",
+    icon: "🔥",
+    description: "传说中的幽冥之火，来自九幽深渊。灼烧为真实伤害，无视防御，可焚烧灵魂。",
+    type: "spirit_seed",
+    price: 20000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    element: "fire",
+    grade: "soul",
+    isRare: true,
+    lore: "九幽冥火，九幽深渊的本源之火。传说中它可以焚烧一切，包括灵魂。只有最强大的火法师，才能驾驭它的力量。"
+  },
+  
+  ice_juedui: {
+    id: "ice_juedui",
+    name: "绝对零度",
+    icon: "❄️",
+    description: "传说中的冰系终极魂种，温度低至绝对零度。冻结时间翻倍，全场减速，甚至可以冻结时间。",
+    type: "spirit_seed",
+    price: 22000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    element: "ice",
+    grade: "soul",
+    isRare: true,
+    lore: "绝对零度，宇宙中最低的温度。传说中达到这个温度，连时间都会被冻结。"
+  },
+  
+  thunder_miehun: {
+    id: "thunder_miehun",
+    name: "灭魂雷",
+    icon: "⚡",
+    description: "传说中的雷系终极魂种，可以毁灭灵魂。造成灵魂伤害，有概率即死。",
+    type: "spirit_seed",
+    price: 25000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    element: "thunder",
+    grade: "soul",
+    isRare: true,
+    lore: "灭魂雷，传说中可以毁灭灵魂的雷霆。它的每一次落下，都会带走无数亡魂。"
+  },
+  
+  earth_dadi: {
+    id: "earth_dadi",
+    name: "大地之心",
+    icon: "🪨",
+    description: "传说中的土系终极魂种，大地的核心。每回合自动回血，护盾效果翻倍，受到攻击有概率石化敌人。",
+    type: "spirit_seed",
+    price: 18000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    element: "earth",
+    grade: "soul",
+    isRare: true,
+    lore: "大地之心，大地的核心。传说中它是大地之神的心脏，拥有无穷的生命力和防御力。"
+  },
+  
+  wind_fengbao: {
+    id: "wind_fengbao",
+    name: "风暴之眼",
+    icon: "💨",
+    description: "传说中的风系终极魂种，风暴的中心。速度极快，每回合自动加速，可形成风暴范围伤害。",
+    type: "spirit_seed",
+    price: 19000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    element: "wind",
+    grade: "soul",
+    isRare: true,
+    lore: "风暴之眼，风暴的中心。传说中它可以操控所有的风，形成毁天灭地的风暴。"
+  },
+  
+  water_shengming: {
+    id: "water_shengming",
+    name: "生命之泉",
+    icon: "💧",
+    description: "传说中的水系终极魂种，生命的源泉。治疗效果翻倍，每回合全队回血，濒死时自动复活一次。",
+    type: "spirit_seed",
+    price: 21000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    element: "water",
+    grade: "soul",
+    isRare: true,
+    lore: "生命之泉，万物之源。传说中喝一口就能长生不老，甚至可以起死回生。"
+  },
+  
+  light_shensheng: {
+    id: "light_shensheng",
+    name: "神圣之光",
+    icon: "✨",
+    description: "传说中的光系终极魂种，神的光芒。对黑暗生物三倍伤害，免疫所有负面状态，可净化一切。",
+    type: "spirit_seed",
+    price: 23000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    element: "light",
+    grade: "soul",
+    isRare: true,
+    lore: "神圣之光，神的光芒。传说中它可以净化一切邪恶，驱散所有黑暗。"
+  },
+  
+  dark_shenyuan: {
+    id: "dark_shenyuan",
+    name: "深渊之影",
+    icon: "🌑",
+    description: "传说中的暗影系终极魂种，深渊的化身。潜行攻击必暴击，有概率即死，可吞噬敌人灵魂。",
+    type: "spirit_seed",
+    price: 24000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    element: "dark",
+    grade: "soul",
+    isRare: true,
+    lore: "深渊之影，深渊的化身。传说中它来自最深的深渊，可以吞噬一切光明。"
+  },
+  
+  heal_nvshen: {
+    id: "heal_nvshen",
+    name: "生命女神",
+    icon: "💚",
+    description: "传说中的治愈系终极魂种，生命女神的化身。全队大幅回血，净化所有负面状态，可复活全队。",
+    type: "spirit_seed",
+    price: 25000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    element: "heal",
+    grade: "soul",
+    isRare: true,
+    lore: "生命女神，生命的守护神。传说中她可以创造生命，也可以毁灭生命。她的眼泪，就是生命之泉。"
+  },
+  
+  summon_shouwang: {
+    id: "summon_shouwang",
+    name: "兽王之魂",
+    icon: "🐺",
+    description: "传说中的召唤系终极魂种，万兽之王的灵魂。可多契约三只召唤兽，召唤兽全属性翻倍，可进化。",
+    type: "spirit_seed",
+    price: 25000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    element: "summon",
+    grade: "soul",
+    isRare: true,
+    lore: "兽王之魂，万兽之王的灵魂。传说中它可以号令所有妖兽，是召唤系法师的终极梦想。"
+  },
+
   // 星尘魔器
   star_dust_basic_fire: {
     id: "star_dust_basic_fire",
