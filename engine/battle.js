@@ -1243,6 +1243,12 @@ const BattleSystem = {
             
             // 计算奖励
             this.calculateRewards();
+            
+            // 成就检查
+            if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
+                this.checkBattleAchievements();
+            }
+            
             return true;
         }
 
@@ -1400,5 +1406,58 @@ const BattleSystem = {
         // 同步玩家状态
         Player.hp = this.player.hp;
         Player.mp = this.player.mp;
-    }
+    },
+
+    /**
+     * 检查战斗相关成就
+     */
+    checkBattleAchievements() {
+        try {
+            if (typeof WorldState === 'undefined' || typeof DataAchievements === 'undefined') return;
+            
+            // 获取总击杀数
+            const bestiaryStats = Player.getBestiaryStats();
+            const totalKills = bestiaryStats.totalKills || 0;
+            
+            // 击杀数量成就
+            const killAchievements = [
+                { id: 'first_blood', value: 1 },
+                { id: 'slayer_10', value: 10 },
+                { id: 'slayer_100', value: 100 },
+                { id: 'slayer_1000', value: 1000 },
+            ];
+            
+            killAchievements.forEach(ach => {
+                if (totalKills >= ach.value && !WorldState.hasAchievement(ach.id)) {
+                    const achData = DataAchievements[ach.id];
+                    if (achData) {
+                        WorldState.unlockAchievement(ach.id, achData);
+                    }
+                }
+            });
+            
+            // 精英怪击杀成就
+            if (this.enemy.isElite || this.enemy.tier === 'warrior') {
+                if (!WorldState.hasAchievement('elite_killer')) {
+                    const achData = DataAchievements['elite_killer'];
+                    if (achData) {
+                        WorldState.unlockAchievement('elite_killer', achData);
+                    }
+                }
+            }
+            
+            // BOSS击杀成就（统领级）
+            if (this.enemy.tier === 'commander' || this.enemy.isBoss) {
+                if (!WorldState.hasAchievement('boss_killer')) {
+                    const achData = DataAchievements['boss_killer'];
+                    if (achData) {
+                        WorldState.unlockAchievement('boss_killer', achData);
+                    }
+                }
+            }
+            
+        } catch (e) {
+            console.warn('[Battle] 成就检查失败:', e);
+        }
+    },
 };
