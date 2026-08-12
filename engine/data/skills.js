@@ -1526,5 +1526,293 @@ const DataSkills = {
         }
       }
     ]
+  },
+  
+  // ==================== 妖魔种族技能 ====================
+  // 妖魔使用种族天赋能力，不是人类魔法
+  
+  // 通用妖魔技能
+  claw_slash: {
+    id: "claw_slash",
+    name: "利爪撕咬",
+    description: "妖魔用锋利的爪子撕咬敌人，造成物理伤害，有几率造成流血",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 10,
+    damageMultiplier: 1.2,
+    hitRate: 0.9,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "流血",
+        type: "bleed",
+        dotDamage: 4,
+        duration: 3,
+        chance: 0.4,
+        stacks: 1,
+        maxStacks: 5
+      }
+    ]
+  },
+  
+  wild_charge: {
+    id: "wild_charge",
+    name: "狂暴冲撞",
+    description: "妖魔全力冲撞敌人，造成高额物理伤害，有几率击退敌人",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 20,
+    damageMultiplier: 1.5,
+    hitRate: 0.8,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true
+  },
+  
+  fierce_roar: {
+    id: "fierce_roar",
+    name: "凶猛咆哮",
+    description: "妖魔发出震慑人心的咆哮，降低敌人的攻击力",
+    element: "physical",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "威慑",
+        type: "attack_down",
+        duration: 3,
+        chance: 0.8,
+        statModifiers: {
+          attack: -15
+        }
+      }
+    ]
+  },
+  
+  // 暗影系妖魔技能
+  shadow_assault: {
+    id: "shadow_assault",
+    name: "暗影突袭",
+    description: "暗影系妖魔融入阴影中突然袭击，造成暗影伤害，有几率致盲",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 15,
+    damageMultiplier: 1.3,
+    hitRate: 0.95,
+    critRate: 0.2,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "致盲",
+        type: "hit_rate_down",
+        duration: 2,
+        chance: 0.3,
+        statModifiers: {
+          hitRate: -30
+        }
+      }
+    ]
+  },
+  
+  // 风系妖魔技能
+  wind_slash: {
+    id: "wind_slash",
+    name: "风刃斩击",
+    description: "速度型妖魔高速移动产生的风刃，造成伤害并降低敌人速度",
+    element: "wind",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 12,
+    damageMultiplier: 1.2,
+    hitRate: 0.95,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 1,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "风刃减速",
+        type: "speed_down",
+        duration: 2,
+        chance: 0.6,
+        statModifiers: {
+          speed: -20
+        }
+      }
+    ]
+  },
+  
+  // 战将级妖魔技能
+  bone_spike_shot: {
+    id: "bone_spike_shot",
+    name: "骨刺射击",
+    description: "骨刺类妖魔射出锋利的骨刺，远程物理攻击",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 25,
+    damageMultiplier: 1.3,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 1,
+    tier: "战将级",
+    isDemonSkill: true
+  },
+  
+  demon_regeneration: {
+    id: "demon_regeneration",
+    name: "妖魔再生",
+    description: "强大妖魔的再生能力，恢复一定生命值",
+    element: "physical",
+    type: "heal",
+    mpCost: 0,
+    healAmount: 30,
+    targetType: "self",
+    cooldown: 4,
+    tier: "战将级",
+    isDemonSkill: true
+  },
+  
+  berserk_mode: {
+    id: "berserk_mode",
+    name: "狂暴模式",
+    description: "妖魔进入狂暴状态，攻击力大幅提升，但防御力下降",
+    element: "physical",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "狂暴",
+        type: "attack_up",
+        duration: 4,
+        chance: 1,
+        statModifiers: {
+          attack: 30
+        }
+      },
+      {
+        name: "狂暴防御下降",
+        type: "defense_down",
+        duration: 4,
+        chance: 1,
+        statModifiers: {
+          defense: -15
+        }
+      }
+    ]
+  },
+  
+  // 统领级妖魔技能
+  demonic_aura: {
+    id: "demonic_aura",
+    name: "妖魔领域",
+    description: "统领级以上妖魔释放的恐怖领域，压制敌人同时增强自身",
+    element: "dark",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 6,
+    tier: "统领级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "领域威压",
+        type: "all_down",
+        duration: 4,
+        chance: 1,
+        statModifiers: {
+          attack: -10,
+          defense: -10,
+          speed: -10
+        }
+      },
+      {
+        name: "领域增强",
+        type: "all_up",
+        duration: 4,
+        chance: 1,
+        statModifiers: {
+          attack: 15,
+          defense: 15,
+          speed: 10
+        }
+      }
+    ]
+  },
+  
+  // 特殊妖魔技能
+  venom_spit: {
+    id: "venom_spit",
+    name: "毒液喷射",
+    description: "毒系妖魔喷射剧毒液体，造成中毒效果",
+    element: "poison",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 8,
+    damageMultiplier: 1.0,
+    hitRate: 0.85,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "剧毒",
+        type: "poison",
+        dotDamage: 8,
+        duration: 4,
+        chance: 0.9,
+        stacks: 1,
+        maxStacks: 3
+      }
+    ]
+  },
+  
+  rock_throw: {
+    id: "rock_throw",
+    name: "巨石投掷",
+    description: "土系/岩石妖魔投掷巨大岩石，造成高额伤害并有几率眩晕",
+    element: "earth",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 25,
+    damageMultiplier: 1.4,
+    hitRate: 0.75,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "眩晕",
+        type: "stun",
+        duration: 1,
+        chance: 0.3
+      }
+    ]
   }
 };

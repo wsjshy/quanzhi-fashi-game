@@ -14,14 +14,18 @@ const DataEnemies = {
     ],
     level: 4,
     maxHp: 150,
-    maxMp: 40,
+    maxMp: 0,
     attack: 18,
     defense: 6,
     speed: 15,
     skills: [
       "basic_attack",
-      "dark_bolt"
+      "claw_slash",
+      "shadow_assault",
+      "fierce_roar"
     ],
+    aiType: "aggressive",
+    enemyType: "demon",
     spriteColor: "#553322",
     isEnemy: true,
     expReward: 100,
@@ -536,15 +540,18 @@ const DataEnemies = {
     ],
     level: 7,
     maxHp: 400,
-    maxMp: 100,
+    maxMp: 0,
     attack: 35,
     defense: 15,
     speed: 22,
     skills: [
       "basic_attack",
-      "wind_blade",
-      "wind_speed"
+      "claw_slash",
+      "wind_slash",
+      "wild_charge"
     ],
+    aiType: "kiter",
+    enemyType: "demon",
     spriteColor: "#aa6633",
     isEnemy: true,
     demonTier: "warrior",
