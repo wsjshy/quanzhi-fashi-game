@@ -386,6 +386,7 @@ const DebugPanel = {
                             <button onclick="DebugPanel.triggerRandomEvent()" style="background: #4488aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🎲 随机事件</button>
                             <button onclick="DebugPanel.triggerBigEvent('big_event_bocheng_disaster')" style="background: #aa4444; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">💥 博城灾难</button>
                             <button onclick="DebugPanel.startBattle('mage_student', { mode: 'duel', canUseItems: false, canFlee: false, winHpPercent: 0.2, isFriendly: true })" style="background: #66aa44; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 决斗模式</button>
+                            <button onclick="DebugPanel.startGauntlet()" style="background: #aa6622; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🔄 车轮战</button>
                         </div>
                     </div>
                     
@@ -1198,6 +1199,28 @@ const DebugPanel = {
         } catch (e) {
             console.error('[Debug] startCustomBattle错误:', e);
             alert('战斗失败: ' + e.message);
+        }
+    },
+    
+    // 开始车轮战
+    startGauntlet() {
+        try {
+            if (typeof Game !== 'undefined' && Game.startGauntlet) {
+                // 准备3个敌人：切磋同学、穆白、赵坤三
+                const enemies = [
+                    DataEnemies['mage_student'],
+                    DataEnemies['mu_bai_duel'],
+                    DataEnemies['zhao_kunsan_duel']
+                ];
+                Game.startGauntlet(enemies);
+                this.toggle(); // 关闭调试面板
+                console.log('[Debug] 开始车轮战：3个对手');
+            } else {
+                alert('Game.startGauntlet 不存在');
+            }
+        } catch (e) {
+            console.error('[Debug] startGauntlet错误:', e);
+            alert('车轮战失败: ' + e.message);
         }
     },
     

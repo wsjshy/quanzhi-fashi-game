@@ -814,6 +814,58 @@ const Game = {
         BattleSystem.startBattle(enemy);
         UI.renderBattleScreen();
     },
+    
+    // 开始车轮战
+    startGauntlet(enemyList, options = {}) {
+        this.gauntletState = {
+            enemies: enemyList,  // 敌人列表
+            currentIndex: 0,  // 当前敌人索引
+            totalWins: 0,  // 胜利次数
+            totalExp: 0,  // 累计经验
+            totalGold: 0,  // 累计金币
+            totalItems: [],  // 累计物品
+            options: options  // 其他选项
+        };
+        this.state = 'battle';
+        this.battleEndCallback = null;
+        
+        // 开始第一个敌人
+        const firstEnemy = enemyList[0];
+        BattleSystem.startBattle(firstEnemy, {
+            canUseItems: options.canUseItems !== false,
+            canFlee: false  // 车轮战不能逃跑
+        });
+        UI.renderBattleScreen();
+        
+        // 显示车轮战开始消息
+        BattleSystem.addLog(`⚔️ 车轮战开始！共 ${enemyList.length} 个对手`, 'system');
+    },
+    
+    // 车轮战：下一个敌人
+    nextGauntletEnemy() {
+        if (!this.gauntletState) return false;
+        
+        this.gauntletState.currentIndex++;
+        const index = this.gauntletState.currentIndex;
+        const total = this.gauntletState.enemies.length;
+        
+        if (index >= total) {
+            // 全部打完了，车轮战胜利
+            return false;
+        }
+        
+        // 继续下一个敌人
+        const nextEnemy = this.gauntletState.enemies[index];
+        BattleSystem.startBattle(nextEnemy, {
+            canUseItems: this.gauntletState.options.canUseItems !== false,
+            canFlee: false
+        });
+        
+        // 显示下一个敌人的消息
+        BattleSystem.addLog(`⚔️ 第 ${index + 1}/${total} 个对手：${nextEnemy.name}！`, 'system');
+        
+        return true;
+    },
 
     // 玩家攻击
     battleAttack() {
@@ -909,7 +961,55 @@ const Game = {
                 if (BattleSystem.rewards && BattleSystem.rewards.gold) {
                     DailySystem.trackActivity('earn_gold', BattleSystem.rewards.gold);
                 }
-                // 胜利
+                
+                // 检查是不是车轮战
+                if (this.gauntletState) {
+                    // 累计奖励
+                    const rewards = BattleSystem.rewards;
+                    this.gauntletState.totalWins++;
+                    this.gauntletState.totalExp += rewards.exp;
+                    this.gauntletState.totalGold += rewards.gold;
+                    if (rewards.items && rewards.items.length > 0) {
+                        this.gauntletState.totalItems.push(...rewards.items);
+                    }
+                    
+                    // 尝试下一个敌人
+                    const hasNext = this.nextGauntletEnemy();
+                    if (hasNext) {
+                        // 还有下一个，继续战斗
+                        UI.renderBattleScreen();
+                        return;
+                    } else {
+                        // 全部打完了，车轮战胜利
+                        const totalWins = this.gauntletState.totalWins;
+                        const totalExp = this.gauntletState.totalExp;
+                        const totalGold = this.gauntletState.totalGold;
+                        const totalItems = this.gauntletState.totalItems;
+                        
+                        // 清空车轮战状态
+                        this.gauntletState = null;
+                        
+                        // 显示车轮战胜利消息
+                        let message = `🏆 车轮战胜利！\n\n`;
+                        message += `连胜：${totalWins} 场\n\n`;
+                        message += `🎁 累计奖励\n`;
+                        message += `经验：+${totalExp}\n`;
+                        message += `金币：+${totalGold}\n`;
+                        if (totalItems.length > 0) {
+                            totalItems.forEach(item => {
+                                message += `${item.name}：x${item.count}\n`;
+                            });
+                        }
+                        
+                        UI.showMessage(message.trim());
+                        this.state = 'map';
+                        UI.renderMapScreen();
+                        Player.save();
+                        return;
+                    }
+                }
+                
+                // 普通战斗胜利
                 const rewards = BattleSystem.rewards;
                 const stats = BattleSystem.stats;
                 const rating = BattleSystem.rating;
@@ -955,7 +1055,36 @@ const Game = {
                 Player.save();
                 
             } else if (BattleSystem.result === 'lose') {
-                // 失败 - 死亡惩罚
+                // 检查是不是车轮战
+                if (this.gauntletState) {
+                    const totalWins = this.gauntletState.totalWins;
+                    const totalExp = this.gauntletState.totalExp;
+                    const totalGold = this.gauntletState.totalGold;
+                    const totalItems = this.gauntletState.totalItems;
+                    
+                    // 清空车轮战状态
+                    this.gauntletState = null;
+                    
+                    // 显示车轮战失败消息
+                    let message = `💀 车轮战失败！\n\n`;
+                    message += `连胜：${totalWins} 场\n\n`;
+                    message += `🎁 已获得奖励\n`;
+                    message += `经验：+${totalExp}\n`;
+                    message += `金币：+${totalGold}\n`;
+                    if (totalItems.length > 0) {
+                        totalItems.forEach(item => {
+                            message += `${item.name}：x${item.count}\n`;
+                        });
+                    }
+                    
+                    UI.showMessage(message.trim());
+                    this.state = 'map';
+                    UI.renderMapScreen();
+                    Player.save();
+                    return;
+                }
+                
+                // 普通战斗失败 - 死亡惩罚
                 const deathResult = MapSystem.handleDeath();
                 UI.showMessage(deathResult.message);
                 this.state = 'map';
