@@ -1146,6 +1146,28 @@ const Player = {
         }
         this.bestiary[enemyId].kills++;
         this.bestiary[enemyId].lastKillDay = this.day;
+        
+        // 妖魔图鉴成就检查
+        if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
+            try {
+                const discovered = Object.keys(this.bestiary).length;
+                const bestiaryAchievements = [
+                    { id: 'bestiary_10', value: 10 },
+                    { id: 'bestiary_50', value: 50 },
+                ];
+                
+                bestiaryAchievements.forEach(ach => {
+                    if (discovered >= ach.value && !WorldState.hasAchievement(ach.id)) {
+                        const achData = DataAchievements[ach.id];
+                        if (achData) {
+                            WorldState.unlockAchievement(ach.id, achData);
+                        }
+                    }
+                });
+            } catch (e) {
+                console.warn('[玩家] 妖魔图鉴成就检查失败:', e);
+            }
+        }
     },
 
     /**
