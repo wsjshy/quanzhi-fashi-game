@@ -1267,7 +1267,9 @@ const BattleSystem = {
                     speed: this.player.speed,
                     buffs: this.player.buffs || [],
                     statusEffects: this.player.statusEffects || [],
-                    elements: this.player.elements || []
+                    elements: this.player.elements || [],
+                    isCasting: !!this.playerCasting, // 对手是否在引导魔法
+                    castingSkill: this.playerCasting?.skill
                 };
                 
                 // 获取AI决策

@@ -261,6 +261,11 @@ const BattleAI = {
             score += 0.3 * profile.weights.damage;
         }
         
+        // 对手在引导魔法时，攻击更有价值（可以打断）
+        if (opponent.isCasting) {
+            score += 0.4 * profile.weights.damage;
+        }
+        
         return score;
     },
     
@@ -358,13 +363,29 @@ const BattleAI = {
         }
         
         // 元素克制加分
-        if (skill.element && opponent.elements) {
-            if (this.isElementStrong(skill.element, opponent.elements[0])) {
+        if (skill.element && opponent.elements && opponent.elements.length > 0) {
+            // 检查是否克制对手的任意元素
+            let hasStrong = false;
+            let hasWeak = false;
+            for (const element of opponent.elements) {
+                if (this.isElementStrong(skill.element, element)) {
+                    hasStrong = true;
+                }
+                if (this.isElementWeak(skill.element, element)) {
+                    hasWeak = true;
+                }
+            }
+            if (hasStrong) {
                 score += 0.3 * profile.weights.damage;
             }
-            if (this.isElementWeak(skill.element, opponent.elements[0])) {
+            if (hasWeak) {
                 score -= 0.2;
             }
+        }
+        
+        // 对手在引导魔法时，伤害技能更有价值（可以打断）
+        if (opponent.isCasting) {
+            score += 0.35 * profile.weights.damage;
         }
         
         return score;
