@@ -213,7 +213,7 @@ const BattleSystem = {
     /**
      * 开始战斗
      */
-    startBattle(enemyData) {
+    startBattle(enemyData, options = {}) {
         this.active = true;
         this.turn = 1;
         this.log = [];
@@ -225,6 +225,15 @@ const BattleSystem = {
         this.tookDamage = false;  // 战斗中是否受到伤害（用于毫发无伤成就）
         this.consecutiveCrits = 0;  // 连续暴击次数（用于幸运儿成就）
         this.rating = null;  // 战斗评价
+        
+        // 战斗模式选项
+        this.battleOptions = {
+            mode: options.mode || 'normal',  // normal / duel / gauntlet
+            canUseItems: options.canUseItems !== false,  // 是否可以使用道具
+            canFlee: options.canFlee !== false,  // 是否可以逃跑
+            winHpPercent: options.winHpPercent || 0,  // 胜利条件：对方HP低于这个百分比就胜利（0表示打到0）
+            isFriendly: options.isFriendly || false  // 是否是友好切磋（不真的杀人）
+        };
         
         // 发布战斗开始事件
         if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
@@ -2708,10 +2717,15 @@ const BattleSystem = {
      * 检查战斗是否结束
      */
     checkBattleEnd() {
-        if (this.player.hp <= 0) {
+        if (this.player.hp <= 0 || (this.battleOptions.winHpPercent > 0 && this.player.hp <= this.player.maxHp * this.battleOptions.winHpPercent)) {
             this.result = 'lose';
             this.active = false;
-            this.addLog('你被击败了...', 'system');
+            
+            if (this.battleOptions.isFriendly) {
+                this.addLog('你认输了...', 'system');
+            } else {
+                this.addLog('你被击败了...', 'system');
+            }
             
             // 重置连胜
             if (typeof Player !== 'undefined') {
@@ -2729,10 +2743,15 @@ const BattleSystem = {
             return true;
         }
 
-        if (this.enemy.hp <= 0) {
+        if (this.enemy.hp <= 0 || (this.battleOptions.winHpPercent > 0 && this.enemy.hp <= this.enemy.maxHp * this.battleOptions.winHpPercent)) {
             this.result = 'win';
             this.active = false;
-            this.addLog(`击败了 ${this.enemy.name}！`, 'system');
+            
+            if (this.battleOptions.isFriendly) {
+                this.addLog(`${this.enemy.name} 认输了！你赢得了决斗！`, 'system');
+            } else {
+                this.addLog(`击败了 ${this.enemy.name}！`, 'system');
+            }
             
             // 增加连胜
             if (typeof Player !== 'undefined') {
@@ -3009,7 +3028,8 @@ const BattleSystem = {
             result: this.result,
             rewards: this.rewards || null,
             log: this.log.slice(-10), // 最近10条
-            speed: this.speed // 战斗速度
+            speed: this.speed, // 战斗速度
+            options: this.battleOptions // 战斗模式选项
         };
     },
 

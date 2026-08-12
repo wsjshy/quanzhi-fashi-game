@@ -1408,26 +1408,26 @@ const UI = {
                             opacity: ${state.isPlayerTurn ? 1 : 0.5};
                         ">🛡️ 防御</button>
                         
-                        <button onclick="Game.battleFlee()" ${!state.isPlayerTurn ? 'disabled' : ''} style="
+                        <button onclick="Game.battleFlee()" ${!state.isPlayerTurn || !state.options?.canFlee ? 'disabled' : ''} style="
                             padding: 10px 20px;
                             background: linear-gradient(135deg, #555533, #666644);
                             border: 2px solid #777755;
                             border-radius: 8px;
                             color: #ffffcc;
-                            cursor: ${state.isPlayerTurn ? 'pointer' : 'not-allowed'};
+                            cursor: ${state.isPlayerTurn && state.options?.canFlee ? 'pointer' : 'not-allowed'};
                             font-size: 15px;
-                            opacity: ${state.isPlayerTurn ? 1 : 0.5};
+                            opacity: ${state.isPlayerTurn && state.options?.canFlee ? 1 : 0.4};
                         ">🏃 逃跑</button>
                         
-                        <button onclick="Game.battleShowItems()" ${!state.isPlayerTurn ? 'disabled' : ''} style="
+                        <button onclick="Game.battleShowItems()" ${!state.isPlayerTurn || !state.options?.canUseItems ? 'disabled' : ''} style="
                             padding: 10px 20px;
                             background: linear-gradient(135deg, #335544, #446655);
                             border: 2px solid #557766;
                             border-radius: 8px;
                             color: #ccffdd;
-                            cursor: ${state.isPlayerTurn ? 'pointer' : 'not-allowed'};
+                            cursor: ${state.isPlayerTurn && state.options?.canUseItems ? 'pointer' : 'not-allowed'};
                             font-size: 15px;
-                            opacity: ${state.isPlayerTurn ? 1 : 0.5};
+                            opacity: ${state.isPlayerTurn && state.options?.canUseItems ? 1 : 0.4};
                         ">🎒 道具</button>
                     </div>
                     

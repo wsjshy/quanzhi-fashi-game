@@ -385,6 +385,7 @@ const DebugPanel = {
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                             <button onclick="DebugPanel.triggerRandomEvent()" style="background: #4488aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🎲 随机事件</button>
                             <button onclick="DebugPanel.triggerBigEvent('big_event_bocheng_disaster')" style="background: #aa4444; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">💥 博城灾难</button>
+                            <button onclick="DebugPanel.startBattle('mage_student', { mode: 'duel', canUseItems: false, canFlee: false, winHpPercent: 0.2, isFriendly: true })" style="background: #66aa44; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 决斗模式</button>
                         </div>
                     </div>
                     
@@ -1145,7 +1146,7 @@ const DebugPanel = {
     },
     
     // 开始战斗
-    startBattle(enemyId) {
+    startBattle(enemyId, options = {}) {
         try {
             if (typeof BattleSystem !== 'undefined' && BattleSystem.startBattle) {
                 // 获取敌人数据
@@ -1170,9 +1171,9 @@ const DebugPanel = {
                 }
                 
                 if (enemyData) {
-                    BattleSystem.startBattle(enemyData);
+                    BattleSystem.startBattle(enemyData, options);
                     this.toggle(); // 关闭调试面板
-                    console.log(`[Debug] 开始战斗: ${enemyId}`);
+                    console.log(`[Debug] 开始战斗: ${enemyId}`, options);
                 } else {
                     alert('找不到敌人数据: ' + enemyId);
                 }
