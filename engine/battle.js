@@ -104,6 +104,30 @@ const BattleSystem = {
         this.enemy.buffs = [];
         this.enemy.statusEffects = [];
         this.enemy.isDefending = false;
+        
+        // 初始化妖魔天赋
+        this.enemy.traits = [];
+        this.enemy.traitBonuses = null;
+        this.enemy.firstAttackDone = false; // 首次攻击标记
+        if (this.enemy.enemyType === 'demon' && typeof DemonTraits !== 'undefined') {
+            const traits = DemonTraits.getTraits(this.enemy.id);
+            if (traits && traits.length > 0) {
+                this.enemy.traits = traits;
+                this.enemy.traitBonuses = DemonTraits.calculatePassiveBonuses(traits);
+                
+                // 应用天赋加成到属性
+                const bonuses = this.enemy.traitBonuses;
+                if (bonuses.attackBonus) this.enemy.attack = Math.floor(this.enemy.attack * (1 + bonuses.attackBonus));
+                if (bonuses.defenseBonus) this.enemy.defense = Math.floor(this.enemy.defense * (1 + bonuses.defenseBonus));
+                if (bonuses.speedBonus) this.enemy.speed = Math.floor(this.enemy.speed * (1 + bonuses.speedBonus));
+                if (bonuses.hpBonus) {
+                    this.enemy.maxHp = Math.floor(this.enemy.maxHp * (1 + bonuses.hpBonus));
+                    this.enemy.hp = this.enemy.maxHp;
+                }
+                
+                this.addLog(`${this.enemy.name} 的种族天赋：${traits.map(t => t.name).join('、')}`, 'system');
+            }
+        }
 
         // 玩家战斗状态
         this.player = {
@@ -668,16 +692,36 @@ const BattleSystem = {
             // 普通攻击
             // 计算伤害（含攻击者状态修正）
             const enemyMods = this.getStatusModifiers(this.enemy);
+            
+            // 天赋：首次攻击必定暴击
+            let critRate = 0.05;
+            let firstStrikeBonus = 0;
+            if (!this.enemy.firstAttackDone && this.enemy.traits) {
+                const firstStrikeTrait = this.enemy.traits.find(t => t.type === 'first_strike');
+                if (firstStrikeTrait) {
+                    critRate = 1.0; // 必定暴击
+                    if (firstStrikeTrait.effects && firstStrikeTrait.effects.firstDamageBonus) {
+                        firstStrikeBonus = firstStrikeTrait.effects.firstDamageBonus;
+                    }
+                    this.addLog(`${this.enemy.name} 发动暗影突袭！`, 'crit');
+                }
+            }
+            
             const damage = this.calculateDamage(
                 this.enemy.attack + enemyMods.attackMod,
                 this.player.defense * (this.player.isDefending ? 2 : 1), // 防御时防御翻倍
-                1.0,
-                0.05,
+                1.0 + firstStrikeBonus,
+                critRate,
                 0.9,
                 'physical',
                 null,
                 this.player
             );
+            
+            // 标记首次攻击已完成
+            if (!this.enemy.firstAttackDone) {
+                this.enemy.firstAttackDone = true;
+            }
 
             // 防御减伤
             if (this.player.isDefending) {
@@ -1226,6 +1270,11 @@ const BattleSystem = {
         if (target) {
             const mods = this.getStatusModifiers(target);
             evasion = mods.evasionMod;
+            
+            // 天赋：闪避加成
+            if (target.traitBonuses && target.traitBonuses.dodgeBonus) {
+                evasion += target.traitBonuses.dodgeBonus;
+            }
         }
         if (Math.random() > (hitRate - evasion)) {
             result.isMiss = true;
@@ -1248,6 +1297,18 @@ const BattleSystem = {
                 damage *= 0.8; // 同系抗性：伤害-20%
             }
         }
+        
+        // 天赋：弱点伤害加成（比如怕光）
+        if (target && target.traits) {
+            for (const trait of target.traits) {
+                if (trait.type === 'weakness' && trait.effects) {
+                    // 光系弱点
+                    if (element === 'light' && trait.effects.lightDamageBonus) {
+                        damage *= (1 + trait.effects.lightDamageBonus);
+                    }
+                }
+            }
+        }
 
         // 元素特性伤害加成（基于目标状态）
         if (target) {
@@ -1255,6 +1316,18 @@ const BattleSystem = {
             if (element === 'fire') damage *= mods.fireDamageMod;
             if (element === 'thunder') damage *= mods.thunderDamageMod;
             if (element === 'ice') damage *= mods.iceDamageMod;
+        }
+        
+        // 天赋：伤害减免
+        if (target && target.traitBonuses) {
+            // 物理伤害减免
+            if (!element && target.traitBonuses.physicalDamageReduction) {
+                damage *= (1 - target.traitBonuses.physicalDamageReduction);
+            }
+            // 魔法伤害减免
+            if (element && target.traitBonuses.magicDamageReduction) {
+                damage *= (1 - target.traitBonuses.magicDamageReduction);
+            }
         }
 
         // 随机浮动 ±15%

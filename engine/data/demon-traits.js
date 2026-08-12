@@ -1,0 +1,404 @@
+/**
+ * 妖魔种族天赋数据
+ * 每个妖魔种族都有独特的天赋能力
+ * 完全贴合原著设定
+ */
+
+const DemonTraits = {
+    // ==================== 奴仆级妖魔天赋 ====================
+    
+    // 巨眼猩鼠
+    giant_eye_rat: {
+        traits: [
+            {
+                id: "high_speed",
+                name: "高速移动",
+                description: "速度极快，闪避率+15%",
+                type: "passive",
+                effects: {
+                    speedBonus: 0.3,      // 速度+30%
+                    dodgeBonus: 0.15      // 闪避+15%
+                }
+            },
+            {
+                id: "sharp_claws",
+                name: "锋利爪子",
+                description: "利爪攻击有30%概率造成流血效果",
+                type: "on_hit",
+                effects: {
+                    bleedChance: 0.3,
+                    bleedDamage: 5,
+                    bleedDuration: 3
+                }
+            },
+            {
+                id: "cowardly",
+                name: "胆小",
+                description: "HP低于30%时会尝试逃跑",
+                type: "trigger",
+                trigger: "low_hp",
+                threshold: 0.3,
+                effect: "flee_attempt"
+            }
+        ]
+    },
+    
+    // 独眼魔狼
+    one_eye_wolf: {
+        traits: [
+            {
+                id: "fierce",
+                name: "凶猛",
+                description: "攻击力+20%",
+                type: "passive",
+                effects: {
+                    attackBonus: 0.2
+                }
+            },
+            {
+                id: "shadow_assault_trait",
+                name: "暗影突袭",
+                description: "第一次攻击必定暴击，伤害+50%",
+                type: "first_strike",
+                effects: {
+                    firstCrit: true,
+                    firstDamageBonus: 0.5
+                }
+            },
+            {
+                id: "wolf_pack",
+                name: "群居",
+                description: "附近有同类时，全属性+10%",
+                type: "conditional",
+                condition: "allies_nearby",
+                effects: {
+                    allStatsBonus: 0.1
+                }
+            }
+        ]
+    },
+    
+    // 石怪
+    rock_monster: {
+        traits: [
+            {
+                id: "rock_body",
+                name: "岩石身躯",
+                description: "物理伤害减免40%，魔法伤害减免20%",
+                type: "passive",
+                effects: {
+                    physicalDamageReduction: 0.4,
+                    magicDamageReduction: 0.2
+                }
+            },
+            {
+                id: "heavy",
+                name: "沉重",
+                description: "速度-30%，但不会被击退",
+                type: "passive",
+                effects: {
+                    speedPenalty: 0.3,
+                    knockbackImmune: true
+                }
+            },
+            {
+                id: "rock_throw_trait",
+                name: "投石",
+                description: "可以远程投掷巨石攻击",
+                type: "ability",
+                skill: "rock_throw"
+            }
+        ]
+    },
+    
+    // 暗影怪
+    shadow_creature: {
+        traits: [
+            {
+                id: "shadow_stealth",
+                name: "暗影潜行",
+                description: "在阴影中难以被命中，闪避率+30%",
+                type: "passive",
+                effects: {
+                    dodgeBonus: 0.3
+                }
+            },
+            {
+                id: "shadow_strike",
+                name: "暗影突袭",
+                description: "第一次攻击必定暴击",
+                type: "first_strike",
+                effects: {
+                    firstCrit: true
+                }
+            },
+            {
+                id: "light_weakness",
+                name: "怕光",
+                description: "受到光系伤害+50%",
+                type: "weakness",
+                effects: {
+                    lightDamageBonus: 0.5
+                }
+            }
+        ]
+    },
+    
+    // 噬骨虫
+    bone_eating_worm: {
+        traits: [
+            {
+                id: "swarm",
+                name: "虫群",
+                description: "数量多，每次攻击有2次伤害判定",
+                type: "passive",
+                effects: {
+                    multiHit: 2
+                }
+            },
+            {
+                id: "corrosion",
+                name: "腐蚀",
+                description: "攻击有概率降低敌人防御",
+                type: "on_hit",
+                effects: {
+                    defenseDownChance: 0.25,
+                    defenseDownAmount: 0.15,
+                    defenseDownDuration: 3
+                }
+            }
+        ]
+    },
+    
+    // 风翼鸟
+    wind_bird: {
+        traits: [
+            {
+                id: "flight",
+                name: "飞行",
+                description: "可以飞行，闪避率+25%",
+                type: "passive",
+                effects: {
+                    dodgeBonus: 0.25,
+                    speedBonus: 0.2
+                }
+            },
+            {
+                id: "wind_blade_trait",
+                name: "风刃",
+                description: "翅膀挥出风刃，远程攻击",
+                type: "ability",
+                skill: "wind_slash"
+            }
+        ]
+    },
+    
+    // ==================== 战将级妖魔天赋 ====================
+    
+    // 三眼魔狼
+    three_eye_wolf: {
+        traits: [
+            {
+                id: "third_eye",
+                name: "第三只眼",
+                description: "可以看穿幻术，免疫控制效果",
+                type: "passive",
+                effects: {
+                    controlImmune: true
+                }
+            },
+            {
+                id: "demon_wolf_body",
+                name: "魔狼之躯",
+                description: "全属性+30%",
+                type: "passive",
+                effects: {
+                    allStatsBonus: 0.3
+                }
+            },
+            {
+                id: "wolf_howl",
+                name: "狼嚎",
+                description: "战斗开始时召唤1只独眼魔狼",
+                type: "on_battle_start",
+                effect: "summon_allies"
+            }
+        ]
+    },
+    
+    // 骨刺狰
+    bone_spike_zheng: {
+        traits: [
+            {
+                id: "bone_spike_shot_trait",
+                name: "骨刺射击",
+                description: "可以远程射击骨刺",
+                type: "ability",
+                skill: "bone_spike_shot"
+            },
+            {
+                id: "bone_regeneration",
+                name: "骨刺再生",
+                description: "每回合恢复5%最大HP",
+                type: "on_turn_end",
+                effects: {
+                    hpRegenPercent: 0.05
+                }
+            },
+            {
+                id: "bone_armor",
+                name: "骨刺护甲",
+                description: "受到攻击时反弹10%伤害",
+                type: "on_hit_taken",
+                effects: {
+                    damageReflect: 0.1
+                }
+            }
+        ]
+    },
+    
+    // 血纹巨魔鼠
+    blood_pattern_rat: {
+        traits: [
+            {
+                id: "blood_rage",
+                name: "血怒",
+                description: "HP越低，攻击力越高，最多+50%",
+                type: "passive_scaling",
+                effects: {
+                    attackPerHpLost: 0.01  // 每损失1%HP，攻击+1%
+                }
+            },
+            {
+                id: "giant_size",
+                name: "巨型体型",
+                description: "HP+50%，攻击+20%，速度-10%",
+                type: "passive",
+                effects: {
+                    hpBonus: 0.5,
+                    attackBonus: 0.2,
+                    speedPenalty: 0.1
+                }
+            }
+        ]
+    },
+    
+    // ==================== 统领级妖魔天赋 ====================
+    
+    // 翼苍狼
+    winged_gray_wolf: {
+        traits: [
+            {
+                id: "wings",
+                name: "飞行",
+                description: "背生双翼，可以飞行，闪避+40%，速度+50%",
+                type: "passive",
+                effects: {
+                    dodgeBonus: 0.4,
+                    speedBonus: 0.5
+                }
+            },
+            {
+                id: "commander_pressure",
+                name: "统领威压",
+                description: "低阶妖魔全属性-20%，对玩家降低10%属性",
+                type: "passive_aura",
+                effects: {
+                    lowerLevelDebuff: 0.2,
+                    playerDebuff: 0.1
+                }
+            },
+            {
+                id: "summon_wolf_pack",
+                name: "召唤狼群",
+                description: "战斗中可以召唤3只独眼魔狼",
+                type: "summon",
+                summon: "one_eye_wolf",
+                summonCount: 3
+            },
+            {
+                id: "wind_attribute",
+                name: "风属性",
+                description: "掌握风系力量，速度极快",
+                type: "passive",
+                effects: {
+                    windDamageBonus: 0.3
+                }
+            }
+        ]
+    },
+    
+    // ==================== 天赋效果工具函数 ====================
+    
+    /**
+     * 获取妖魔的天赋列表
+     */
+    getTraits(demonId) {
+        const demonData = this[demonId];
+        if (demonData && demonData.traits) {
+            return demonData.traits;
+        }
+        return [];
+    },
+    
+    /**
+     * 计算被动天赋加成
+     */
+    calculatePassiveBonuses(traits) {
+        const bonuses = {
+            attackBonus: 0,
+            defenseBonus: 0,
+            speedBonus: 0,
+            hpBonus: 0,
+            dodgeBonus: 0,
+            critBonus: 0,
+            physicalDamageReduction: 0,
+            magicDamageReduction: 0,
+            allStatsBonus: 0,
+            controlImmune: false
+        };
+        
+        for (const trait of traits) {
+            if (trait.type === 'passive' && trait.effects) {
+                for (const key in trait.effects) {
+                    if (bonuses.hasOwnProperty(key)) {
+                        if (typeof trait.effects[key] === 'number') {
+                            bonuses[key] += trait.effects[key];
+                        } else {
+                            bonuses[key] = trait.effects[key];
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 全属性加成
+        if (bonuses.allStatsBonus > 0) {
+            bonuses.attackBonus += bonuses.allStatsBonus;
+            bonuses.defenseBonus += bonuses.allStatsBonus;
+            bonuses.speedBonus += bonuses.allStatsBonus;
+            bonuses.hpBonus += bonuses.allStatsBonus;
+        }
+        
+        return bonuses;
+    },
+    
+    /**
+     * 检查是否有特定天赋
+     */
+    hasTrait(traits, traitId) {
+        return traits.some(t => t.id === traitId);
+    },
+    
+    /**
+     * 获取特定类型的天赋
+     */
+    getTraitsByType(traits, type) {
+        return traits.filter(t => t.type === type);
+    }
+};
+
+// 导出
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = DemonTraits;
+}
