@@ -348,6 +348,28 @@ const Player = {
             }
         }
         
+        // 成就检查
+        if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined' && levelUps.length > 0) {
+            try {
+                const levelAchievements = [
+                    { id: 'level_5', value: 5 },
+                    { id: 'level_10', value: 10 },
+                    { id: 'level_20', value: 20 },
+                ];
+                
+                levelAchievements.forEach(ach => {
+                    if (this.level >= ach.value && !WorldState.hasAchievement(ach.id)) {
+                        const achData = DataAchievements[ach.id];
+                        if (achData) {
+                            WorldState.unlockAchievement(ach.id, achData);
+                        }
+                    }
+                });
+            } catch (e) {
+                console.warn('[玩家] 等级成就检查失败:', e);
+            }
+        }
+        
         return { levelUps, newSkills: allNewSkills, canAwaken };
     },
 
