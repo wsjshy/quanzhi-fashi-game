@@ -253,6 +253,31 @@ const QuestSystem = {
                 }
             }, 1500);
         }
+        
+        // 任务成就检查
+        if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
+            try {
+                const completedCount = Player.completedQuests ? Player.completedQuests.length : 0;
+                
+                // 第一个任务
+                if (completedCount >= 1 && !WorldState.hasAchievement('first_quest')) {
+                    const achData = DataAchievements['first_quest'];
+                    if (achData) {
+                        WorldState.unlockAchievement('first_quest', achData);
+                    }
+                }
+                
+                // 任务大师
+                if (completedCount >= 20 && !WorldState.hasAchievement('quest_master')) {
+                    const achData = DataAchievements['quest_master'];
+                    if (achData) {
+                        WorldState.unlockAchievement('quest_master', achData);
+                    }
+                }
+            } catch (e) {
+                console.warn('[Quest] 任务成就检查失败:', e);
+            }
+        }
 
         return {
             success: true,
