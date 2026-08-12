@@ -58,6 +58,7 @@ const BattleSystem = {
         this.isPlayerTurn = true;
         this.summon = null;  // 召唤兽状态
         this.tookDamage = false;  // 战斗中是否受到伤害（用于毫发无伤成就）
+        this.consecutiveCrits = 0;  // 连续暴击次数（用于幸运儿成就）
 
         // 复制敌人数据，避免修改原数据
         this.enemy = JSON.parse(JSON.stringify(enemyData));
@@ -129,6 +130,21 @@ const BattleSystem = {
 
         // 应用伤害
         this.applyDamage(this.enemy, damage);
+        
+        // 连续暴击记录（用于幸运儿成就）
+        if (damage.isCrit) {
+            this.consecutiveCrits++;
+            if (this.consecutiveCrits >= 3 && typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
+                if (!WorldState.hasAchievement('lucky_dog')) {
+                    const achData = DataAchievements['lucky_dog'];
+                    if (achData) {
+                        WorldState.unlockAchievement('lucky_dog', achData);
+                    }
+                }
+            }
+        } else {
+            this.consecutiveCrits = 0;
+        }
         
         this.addLog(`你发动了普通攻击，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}`, damage.isCrit ? 'crit' : 'damage');
 
@@ -251,7 +267,22 @@ const BattleSystem = {
             );
 
             this.applyDamage(targetData, damage);
-
+            
+            // 连续暴击记录（仅玩家，用于幸运儿成就）
+            if (isPlayer && typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
+                if (damage.isCrit) {
+                    this.consecutiveCrits++;
+                    if (this.consecutiveCrits >= 3 && !WorldState.hasAchievement('lucky_dog')) {
+                        const achData = DataAchievements['lucky_dog'];
+                        if (achData) {
+                            WorldState.unlockAchievement('lucky_dog', achData);
+                        }
+                    }
+                } else {
+                    this.consecutiveCrits = 0;
+                }
+            }
+            
             const casterName = isPlayer ? '你' : this.enemy.name;
             
             // 元素克制效果显示
