@@ -1501,7 +1501,8 @@ const BattleSystem = {
                         type: 'bleed',
                         name: '流血',
                         duration: trait.effects.bleedDuration || 3,
-                        damagePerTurn: trait.effects.bleedDamage || 5,
+                        dotDamage: trait.effects.bleedDamage || 5,
+                        stacks: 1,
                         icon: '🩸'
                     };
                     
