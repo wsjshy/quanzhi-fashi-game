@@ -125,6 +125,21 @@ const DataItems = {
     soulType: "pure",
     soulExp: 500
   },
+  demon_detect_powder: {
+    id: "demon_detect_powder",
+    name: "寻妖粉",
+    description: "城市猎妖队必备道具，对妖魔的气息特别敏感，十天前妖魔留下的脚印都能检测出来。\n\n使用后可以检测当前区域是否有妖魔出没。",
+    type: "consumable",
+    icon: "✨",
+    price: 100,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    effects: {
+      detectDemon: true
+    }
+  },
   basic_staff: {
     id: "basic_staff",
     name: "基础法杖",

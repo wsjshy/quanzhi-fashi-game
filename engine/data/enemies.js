@@ -101,6 +101,117 @@ const DataEnemies = {
       "baicao_valley"
     ]
   },
+  giant_eye_rat: {
+    id: "giant_eye_rat",
+    name: "巨眼猩鼠",
+    title: "奴仆级妖魔",
+    description: "地底妖魔，挖洞能手，常年生活在城市的下水道和阴暗角落。单眼可以释放穿透光束，速度极快，以残羹冷炙为食，饥饿时也会攻击人类。",
+    elements: [
+      "dark"
+    ],
+    level: 3,
+    maxHp: 100,
+    maxMp: 30,
+    attack: 15,
+    defense: 4,
+    speed: 20,
+    skills: [
+      "basic_attack",
+      "dark_bolt"
+    ],
+    spriteColor: "#8B4513",
+    isEnemy: true,
+    isUrban: true,
+    expReward: 60,
+    goldReward: 40,
+    dropItems: [
+      {
+        itemId: "demon_core",
+        chance: 0.6,
+        min: 1,
+        max: 1
+      },
+      {
+        itemId: "magic_stone",
+        chance: 0.5,
+        min: 1,
+        max: 1
+      },
+      {
+        itemId: "remnant_soul",
+        chance: 0.3,
+        min: 1,
+        max: 1
+      }
+    ],
+    locations: [
+      "old_banyan_district",
+      "mingwen_girls_school",
+      "city_street"
+    ]
+  },
+  advanced_one_eye_wolf: {
+    id: "advanced_one_eye_wolf",
+    name: "进阶期独眼魔狼",
+    title: "进阶期妖魔",
+    description: "吸食了地圣泉能量的独眼魔狼，正在进阶中。体型比普通独眼魔狼大两号，战斗力极强，可以无视初阶魔法的攻击。进阶成功后将成为更强大的存在。",
+    elements: [
+      "dark"
+    ],
+    level: 8,
+    maxHp: 500,
+    maxMp: 100,
+    attack: 40,
+    defense: 15,
+    speed: 25,
+    skills: [
+      "basic_attack",
+      "dark_bolt",
+      "wild_charge"
+    ],
+    spriteColor: "#662211",
+    isEnemy: true,
+    isElite: true,
+    isBoss: true,
+    isAdvanced: true,
+    expReward: 500,
+    goldReward: 300,
+    dropItems: [
+      {
+        itemId: "demon_core",
+        chance: 1,
+        min: 3,
+        max: 5
+      },
+      {
+        itemId: "wolf_fang",
+        chance: 1,
+        min: 2,
+        max: 4
+      },
+      {
+        itemId: "magic_stone",
+        chance: 0.8,
+        min: 2,
+        max: 3
+      },
+      {
+        itemId: "pure_soul",
+        chance: 0.5,
+        min: 1,
+        max: 1
+      },
+      {
+        itemId: "health_potion",
+        chance: 0.6,
+        min: 2,
+        max: 3
+      }
+    ],
+    locations: [
+      "old_banyan_district"
+    ]
+  },
   demon_wolf_pack: {
     id: "demon_wolf_pack",
     name: "魔狼群",
