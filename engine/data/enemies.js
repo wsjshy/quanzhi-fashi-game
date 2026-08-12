@@ -554,9 +554,9 @@ const DataEnemies = {
       "wind"
     ],
     level: 7,
-    maxHp: 500,
+    maxHp: 450,
     maxMp: 0,
-    attack: 42,
+    attack: 38,
     defense: 18,
     speed: 22,
     skills: [

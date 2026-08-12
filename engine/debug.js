@@ -580,10 +580,14 @@ const DebugPanel = {
     
     // ========== 玩家相关功能 ==========
     
-    setLevel() {
+    setLevel(targetLevel) {
         try {
-            const levelEl = document.getElementById('debug-level');
-            const targetLevel = parseInt(levelEl.value);
+            // 如果没有传参数，从输入框获取
+            if (targetLevel === undefined) {
+                const levelEl = document.getElementById('debug-level');
+                targetLevel = parseInt(levelEl.value);
+            }
+            
             if (targetLevel < 1) targetLevel = 1;
             
             if (typeof Player !== 'undefined') {

@@ -13,11 +13,11 @@ const DemonTraits = {
             {
                 id: "high_speed",
                 name: "高速移动",
-                description: "速度极快，闪避率+15%",
+                description: "速度极快，闪避率+10%",
                 type: "passive",
                 effects: {
                     speedBonus: 0.3,      // 速度+30%
-                    dodgeBonus: 0.15      // 闪避+15%
+                    dodgeBonus: 0.10      // 闪避+10%
                 }
             },
             {
@@ -27,7 +27,7 @@ const DemonTraits = {
                 type: "on_hit",
                 effects: {
                     bleedChance: 0.3,
-                    bleedDamage: 5,
+                    bleedDamage: 4,
                     bleedDuration: 3
                 }
             },

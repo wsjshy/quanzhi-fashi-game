@@ -660,6 +660,14 @@ const BattleSystem = {
         // 应用伤害
         this.applyDamage(this.enemy, damage, this.player);
         
+        // 普通攻击恢复少量MP（2%最大MP）
+        if (this.player.maxMp > 0) {
+            const mpGain = Math.floor(this.player.maxMp * 0.02);
+            if (mpGain > 0 && this.player.mp < this.player.maxMp) {
+                this.player.mp = Math.min(this.player.maxMp, this.player.mp + mpGain);
+            }
+        }
+        
         // 元素反应：处理状态变化
         if (damage.elementReaction && !damage.isMiss && this.enemy.statusEffects) {
             // 碎冰消耗冻结状态
@@ -1198,8 +1206,8 @@ const BattleSystem = {
 
         this.player.isDefending = true;
         
-        // 防御恢复少量MP
-        const mpRecover = Math.floor(this.player.maxMp * 0.05);
+        // 防御恢复MP（10%最大MP）
+        const mpRecover = Math.floor(this.player.maxMp * 0.10);
         this.player.mp = Math.min(this.player.maxMp, this.player.mp + mpRecover);
 
         this.addLog(`你采取防御姿态，减少受到的伤害，并恢复了 ${mpRecover} 点魔法值`, 'system');
@@ -1407,10 +1415,13 @@ const BattleSystem = {
     enemyTurn() {
         if (!this.active || this.result) return;
 
-        // 检查眩晕/冻结状态，跳过回合
+        // 检查眩晕/冻结/麻痹状态，跳过回合
         if (this.isStunned(this.enemy)) {
-            const stunEffect = this.enemy.statusEffects.find(e => e.type === 'stun' || e.type === 'frozen');
-            this.addLog(`${this.enemy.name} 被${stunEffect.name}，无法行动！`, 'system');
+            const stunEffect = this.enemy.statusEffects.find(e => 
+                e.type === 'stun' || e.type === 'frozen' || e.type === 'paralyze' || e.skipTurn === true
+            );
+            const effectName = stunEffect ? stunEffect.name : '控制';
+            this.addLog(`${this.enemy.name} 被${effectName}，无法行动！`, 'system');
             this.endEnemyTurn();
             return;
         }
@@ -2060,6 +2071,20 @@ const BattleSystem = {
         this.tickStatusEffects(this.player, true);
         this.tickStatusEffects(this.enemy, false);
         
+        // MP自然恢复（每回合5%）
+        if (this.player.maxMp > 0) {
+            const mpRegen = Math.floor(this.player.maxMp * 0.05);
+            if (mpRegen > 0 && this.player.mp < this.player.maxMp) {
+                this.player.mp = Math.min(this.player.maxMp, this.player.mp + mpRegen);
+            }
+        }
+        if (this.enemy.maxMp > 0) {
+            const mpRegen = Math.floor(this.enemy.maxMp * 0.05);
+            if (mpRegen > 0 && this.enemy.mp < this.enemy.maxMp) {
+                this.enemy.mp = Math.min(this.enemy.maxMp, this.enemy.mp + mpRegen);
+            }
+        }
+        
         // 天赋：回合结束效果
         this.processTraitsOnTurnEnd(this.enemy, false);
         this.processTraitsOnTurnEnd(this.player, true);
@@ -2085,10 +2110,13 @@ const BattleSystem = {
         this.turn++;
         this.player.isDefending = false;
 
-        // 玩家被眩晕/冻结，自动跳过回合
+        // 玩家被眩晕/冻结/麻痹，自动跳过回合
         if (this.isStunned(this.player)) {
-            const stunEffect = this.player.statusEffects.find(e => e.type === 'stun' || e.type === 'frozen');
-            this.addLog(`你被${stunEffect.name}，无法行动！`, 'system');
+            const stunEffect = this.player.statusEffects.find(e => 
+                e.type === 'stun' || e.type === 'frozen' || e.type === 'paralyze' || e.skipTurn === true
+            );
+            const effectName = stunEffect ? stunEffect.name : '控制';
+            this.addLog(`你被${effectName}，无法行动！`, 'system');
             this.isPlayerTurn = false;
             // 先更新UI，显示玩家被眩晕的状态
             if (typeof UI !== 'undefined') {
@@ -3084,7 +3112,12 @@ const BattleSystem = {
      * 检查目标是否被眩晕/冻结，应跳过回合
      */
     isStunned(target) {
-        return target.statusEffects.some(e => e.type === 'stun' || e.type === 'frozen');
+        return target.statusEffects.some(e => 
+            e.type === 'stun' || 
+            e.type === 'frozen' || 
+            e.type === 'paralyze' ||
+            e.skipTurn === true
+        );
     },
 
     /**
