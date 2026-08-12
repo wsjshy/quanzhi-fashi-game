@@ -252,6 +252,12 @@ const DataShops = {
         itemId: "star_dust_basic_summon",
         price: 85000,
         stock: 0
+      },
+      // 残魄（用于升级星尘魔器）
+      {
+        itemId: "remnant_soul",
+        price: 12000,
+        stock: 3
       }
     ]
   },
