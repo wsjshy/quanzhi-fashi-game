@@ -634,7 +634,19 @@ const BattleSystem = {
                 elementEffectText = '（被抵抗了）';
             }
             
-            this.addLog(`${casterName} 释放了 ${skill.name}，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}${elementEffectText}`, 
+            // 元素反应文本
+            let reactionText = '';
+            if (damage.elementReaction) {
+                const reactionNames = {
+                    vaporize: '蒸发',
+                    melt: '融化',
+                    electro: '感电',
+                    freeze: '冻结反应'
+                };
+                reactionText = `（${reactionNames[damage.elementReaction]}！）`;
+            }
+            
+            this.addLog(`${casterName} 释放了 ${skill.name}，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}${elementEffectText}${reactionText}`, 
                 damage.isCrit ? 'crit' : 'magic');
             
             // 显示浮动伤害数字
@@ -1786,6 +1798,34 @@ const BattleSystem = {
                 damage *= 0.7; // 被克制：伤害-30%
             } else if (counterResult.effect === 'resist') {
                 damage *= 0.8; // 同系抗性：伤害-20%
+            }
+        }
+        
+        // 元素反应计算（基于目标状态）
+        if (element && target && target.statusEffects) {
+            const hasWet = target.statusEffects.some(e => e.type === 'wet');
+            const hasFreeze = target.statusEffects.some(e => e.type === 'freeze' || e.type === 'frozen');
+            const hasBurn = target.statusEffects.some(e => e.type === 'burn');
+            
+            // 火 + 水 = 蒸发
+            if (element === 'fire' && hasWet) {
+                damage *= 1.3;
+                result.elementReaction = 'vaporize';
+            }
+            // 火 + 冰 = 融化
+            else if (element === 'fire' && hasFreeze) {
+                damage *= 1.3;
+                result.elementReaction = 'melt';
+            }
+            // 雷 + 水 = 感电
+            else if (element === 'thunder' && hasWet) {
+                damage *= 1.2;
+                result.elementReaction = 'electro';
+            }
+            // 冰 + 水 = 冻结
+            else if (element === 'ice' && hasWet) {
+                damage *= 1.2;
+                result.elementReaction = 'freeze';
             }
         }
         
