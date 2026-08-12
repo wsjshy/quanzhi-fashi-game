@@ -800,17 +800,27 @@ const BattleSystem = {
         // 逃跑成功率：取决于双方速度差
         const speedDiff = this.player.speed - this.enemy.speed;
         const fleeChance = Math.min(0.9, Math.max(0.1, 0.5 + speedDiff * 0.02));
+        const success = Math.random() < fleeChance;
 
-        if (Math.random() < fleeChance) {
+        if (success) {
             this.addLog('你成功逃跑了！', 'system');
             this.result = 'flee';
             this.active = false;
-            return { success: true };
         } else {
             this.addLog('逃跑失败！', 'system');
             this.endPlayerTurn();
-            return { success: false };
         }
+        
+        // 发布逃跑事件
+        if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+            BattleEventBus.emit(BattleEvents.FLEE, {
+                success: success,
+                fleeChance: fleeChance,
+                speedDiff: speedDiff
+            });
+        }
+        
+        return { success: success };
     },
 
     /**
