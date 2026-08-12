@@ -1154,6 +1154,27 @@ const DebugPanel = {
     startBattle(enemyId, options = {}) {
         try {
             if (typeof BattleSystem !== 'undefined' && BattleSystem.startBattle) {
+                // ID兼容映射（旧ID → 新ID）
+                const idMap = {
+                    'shadow_demon': 'shadow_creature',
+                    'bone_spike_wolf': 'bone_spike_zheng',
+                    'stone_troll': 'rock_monster',
+                    'black_church_mage': 'black_church_deacon',
+                    'bone_eating_worm': 'gold_ant', // 临时用金甲蚁代替
+                    'three_eye_wolf': 'one_eye_wolf_advanced', // 进阶独眼魔狼代替
+                    'blood_pattern_rat': 'giant_eye_rat', // 巨眼猩鼠代替
+                    'black_beast_demon': 'black_church_blue_deacon', // 蓝衣执事代替
+                    'winged_wolf': 'bone_spike_zheng', // 骨刺狰代替
+                    'flame_queen': 'black_church_blue_deacon', // 蓝衣执事代替
+                    'ice_saint': 'mu_bai_duel' // 穆白代替
+                };
+                
+                // 如果有映射，用新ID
+                if (idMap[enemyId]) {
+                    console.log(`[Debug] 敌人ID兼容映射: ${enemyId} → ${idMap[enemyId]}`);
+                    enemyId = idMap[enemyId];
+                }
+                
                 // 获取敌人数据
                 let enemyData = null;
                 if (typeof DataEnemies !== 'undefined' && DataEnemies[enemyId]) {
@@ -1264,6 +1285,15 @@ const DebugPanel = {
     
     refreshUI() {
         try {
+            // 刷新主界面（根据当前状态）
+            if (typeof UI !== 'undefined' && typeof Game !== 'undefined') {
+                if (Game.state === 'map' && UI.renderMapScreen) {
+                    UI.renderMapScreen();
+                } else if (Game.state === 'character' && UI.renderCharacterScreen) {
+                    UI.renderCharacterScreen();
+                }
+            }
+            
             // 只刷新战斗界面（如果在战斗中）
             if (typeof UI !== 'undefined' && typeof BattleSystem !== 'undefined' && BattleSystem.active) {
                 if (UI.updateBattleScreen) UI.updateBattleScreen();

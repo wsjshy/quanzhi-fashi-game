@@ -1030,7 +1030,7 @@ const Game = {
                 // 战斗评价
                 if (rating) {
                     const ratingColors = { S: '🌟', A: '⭐', B: '✨', C: '👍', D: '💪' };
-                    message += `${ratingColors[rating.grade] || ''} 评价：${rating.grade}级\n`;
+                    message += `${ratingColors[rating.level] || ''} 评价：${rating.level}级\n`;
                     message += `得分：${rating.score}分\n\n`;
                 }
                 
