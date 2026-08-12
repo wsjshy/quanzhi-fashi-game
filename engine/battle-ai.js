@@ -347,6 +347,29 @@ const BattleAI = {
             score += 0.4 * profile.weights.damage;
         }
         
+        // 狂暴机制：自身血量低时，激进型AI伤害技能分数大幅提高
+        const selfHpPercent = self.hp / self.maxHp;
+        if (selfHpPercent < 0.3 && profile.weights.survival < 0.5) {
+            // 激进型AI濒死时狂暴，更倾向于高伤害技能
+            score += 0.5 * profile.weights.damage;
+            // 高伤害技能额外加分更多
+            if (totalDamage > self.attack * 1.5) {
+                score += 0.3 * profile.weights.damage;
+            }
+        }
+        
+        // 对手被控制时，伤害技能价值更高（趁你病要你命）
+        const opponentHasControl = opponent.statusEffects?.some(e => 
+            e.type === 'stun' || e.type === 'freeze' || e.type === 'frozen' || e.type === 'paralyze'
+        );
+        if (opponentHasControl) {
+            score += 0.3 * profile.weights.damage;
+            // 高伤害技能在对手被控制时价值更高
+            if (totalDamage > self.attack * 1.5) {
+                score += 0.2 * profile.weights.damage;
+            }
+        }
+        
         // 状态效果加分
         if (skill.statusEffects && skill.statusEffects.length > 0) {
             for (const effect of skill.statusEffects) {
