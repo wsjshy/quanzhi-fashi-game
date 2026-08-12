@@ -229,6 +229,19 @@ const Player = {
                 });
             }
         });
+        
+        // 灵种被动加成
+        if (typeof SpiritSeedSystem !== 'undefined' && this.spiritSeeds) {
+            for (const element in this.spiritSeeds) {
+                const seedEffects = this.getElementSpiritSeedEffects(element);
+                if (seedEffects.defenseBonus) {
+                    stats.defense += Math.floor(stats.defense * seedEffects.defenseBonus);
+                }
+                if (seedEffects.speedBonus) {
+                    stats.speed += Math.floor(stats.speed * seedEffects.speedBonus);
+                }
+            }
+        }
 
         return stats;
     },
