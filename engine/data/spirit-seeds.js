@@ -508,6 +508,220 @@ const DataSpiritSeeds = {
     price: 5500000,
     lore: '契约灵种，传说中可以与任何生物签订灵魂契约的神秘灵种。是每个召唤系法师梦寐以求的至宝。'
   },
+
+  // ========== 稀有魂种（传说级） ==========
+  // 比普通魂种更强，有独特的终极效果
+  // 极其稀有，只有特殊途径才能获得
+
+  // 火系稀有魂种
+  fire_jiuyou: {
+    id: 'fire_jiuyou',
+    name: '九幽冥火',
+    element: 'fire',
+    grade: 'soul',
+    rarity: 'legendary',
+    isRare: true,
+    isSoul: true,
+    description: '传说中的幽冥之火，来自九幽深渊。灼烧为真实伤害，无视防御，可焚烧灵魂。',
+    effects: {
+      damageBonus: 1.3, // 130%伤害加成（普通魂种100%）
+      burnChance: 0.6, // 60%灼烧概率
+      burnDamage: 2.0, // 灼烧伤害+200%
+      burnTrueDamage: true, // 灼烧真实伤害
+      burnMaxStacks: 15, // 最大叠加15层
+    },
+    price: 20000000,
+    lore: '九幽冥火，九幽深渊的本源之火。传说中它可以焚烧一切，包括灵魂。只有最强大的火法师，才能驾驭它的力量。'
+  },
+
+  // 冰系稀有魂种
+  ice_juedui: {
+    id: 'ice_juedui',
+    name: '绝对零度',
+    element: 'ice',
+    grade: 'soul',
+    rarity: 'legendary',
+    isRare: true,
+    isSoul: true,
+    description: '传说中的冰系终极魂种，温度低至绝对零度。冻结时间翻倍，全场减速，甚至可以冻结时间。',
+    effects: {
+      damageBonus: 1.2, // 120%伤害加成（普通魂种100%）
+      slowChance: 0.8, // 80%减速概率
+      freezeChance: 0.3, // 30%冻结概率
+      freezeDuration: 2, // 冻结时间+2回合
+      aoeSlow: true, // 全场减速
+    },
+    price: 20000000,
+    lore: '绝对零度，宇宙中最低的温度。传说中达到这个温度，连时间都会被冻结。'
+  },
+
+  // 雷系稀有魂种
+  thunder_miehun: {
+    id: 'thunder_miehun',
+    name: '灭魂雷',
+    element: 'thunder',
+    grade: 'soul',
+    rarity: 'legendary',
+    isRare: true,
+    isSoul: true,
+    description: '毁灭级雷系魂种，专门针对灵魂的攻击。对亡灵/暗影系双倍伤害，有概率直接湮灭敌人灵魂。',
+    effects: {
+      damageBonus: 1.3, // 130%伤害加成（普通魂种100%）
+      stunChance: 0.4, // 40%麻痹概率
+      chainChance: 0.5, // 50%连锁概率
+      soulDamage: true, // 灵魂伤害
+      instantKillChance: 0.05, // 5%即死概率
+    },
+    price: 25000000,
+    lore: '灭魂雷，传说中可以毁灭灵魂的雷霆。它的每一次落下，都会带走无数亡魂。'
+  },
+
+  // 土系稀有魂种
+  earth_dadi: {
+    id: 'earth_dadi',
+    name: '大地之心',
+    element: 'earth',
+    grade: 'soul',
+    rarity: 'legendary',
+    isRare: true,
+    isSoul: true,
+    description: '传说中的土系终极魂种，大地的核心。每回合自动回血，护盾效果翻倍，受到攻击有概率石化敌人。',
+    effects: {
+      damageBonus: 1.1, // 110%伤害加成
+      defenseBonus: 0.8, // 80%防御加成（普通魂种50%）
+      hpRegen: 0.1, // 每回合回复10%最大HP
+      shieldBonus: 1.0, // 护盾效果+100%
+      petrifyChance: 0.25, // 25%石化概率（受击时）
+    },
+    price: 18000000,
+    lore: '大地之心，大地的核心。传说中它是大地之神的心脏，拥有无穷的生命力和防御力。'
+  },
+
+  // 风系稀有魂种
+  wind_fengbao: {
+    id: 'wind_fengbao',
+    name: '风暴之眼',
+    element: 'wind',
+    grade: 'soul',
+    rarity: 'legendary',
+    isRare: true,
+    isSoul: true,
+    description: '传说中的风系终极魂种，风暴的中心。速度极快，每回合自动加速，可形成风暴范围伤害。',
+    effects: {
+      damageBonus: 1.15, // 115%伤害加成
+      speedBonus: 0.6, // 60%速度加成
+      dodgeBonus: 0.25, // 25%闪避加成
+      speedStackPerTurn: true, // 每回合叠加速度
+      aoeStorm: true, // 风暴范围伤害
+    },
+    price: 18000000,
+    lore: '风暴之眼，风暴的中心。最平静的地方，却蕴含着最恐怖的力量。'
+  },
+
+  // 水系稀有魂种
+  water_shengming: {
+    id: 'water_shengming',
+    name: '生命之泉',
+    element: 'water',
+    grade: 'soul',
+    rarity: 'legendary',
+    isRare: true,
+    isSoul: true,
+    description: '传说中的水系终极魂种，生命的源泉。治疗效果翻倍，每回合全队回血，濒死时自动复活一次。',
+    effects: {
+      damageBonus: 1.0, // 100%伤害加成
+      healBonus: 1.2, // 120%治疗加成（普通魂种80%）
+      regenBonus: 0.3, // 30%生命回复加成
+      reviveOnce: true, // 每局复活一次
+      teamHeal: true, // 全队回血
+    },
+    price: 20000000,
+    lore: '生命之泉，万物之源。传说中喝一口就能长生不老，甚至可以起死回生。'
+  },
+
+  // 光系稀有魂种
+  light_shensheng: {
+    id: 'light_shensheng',
+    name: '神圣之光',
+    element: 'light',
+    grade: 'soul',
+    rarity: 'legendary',
+    isRare: true,
+    isSoul: true,
+    description: '传说中的光系终极魂种，神的光芒。对黑暗生物三倍伤害，免疫所有负面状态，可净化一切。',
+    effects: {
+      damageBonus: 1.2, // 120%伤害加成
+      holyBonus: 0.8, // 80%神圣伤害加成（普通魂种50%）
+      purifyChance: 0.6, // 60%净化概率
+      immuneDebuff: true, // 免疫负面状态
+      darkDamageMultiplier: 3, // 对黑暗系3倍伤害
+    },
+    price: 22000000,
+    lore: '神圣之光，神的恩赐。它可以净化一切邪恶，驱散一切黑暗。拥有它的人，就是神在人间的使者。'
+  },
+
+  // 暗影系稀有魂种
+  dark_shenyuan: {
+    id: 'dark_shenyuan',
+    name: '深渊之影',
+    element: 'dark',
+    grade: 'soul',
+    rarity: 'legendary',
+    isRare: true,
+    isSoul: true,
+    description: '来自深渊的终极暗影魂种。潜行中攻击必暴击，有概率即死，可吞噬敌人灵魂增强自身。',
+    effects: {
+      damageBonus: 1.25, // 125%伤害加成
+      shadowBonus: 0.7, // 70%暗影伤害加成（普通魂种50%）
+      critChance: 0.25, // 25%暴击率加成
+      critDamage: 1.0, // 100%暴击伤害加成
+      stealthCrit: true, // 潜行必暴击
+      instantKillChance: 0.08, // 8%即死概率
+    },
+    price: 22000000,
+    lore: '深渊之影，来自世界的尽头。它是黑暗的化身，是恐惧的代名词。'
+  },
+
+  // 治愈系稀有魂种
+  heal_nvshen: {
+    id: 'heal_nvshen',
+    name: '生命女神',
+    element: 'heal',
+    grade: 'soul',
+    rarity: 'legendary',
+    isRare: true,
+    isSoul: true,
+    description: '传说中的治愈系终极魂种，生命女神的化身。全队大幅回血，净化所有负面状态，可复活全队。',
+    effects: {
+      healBonus: 1.5, // 150%治疗加成（普通魂种100%）
+      regenBonus: 0.4, // 40%生命回复加成
+      teamHeal: true, // 全队回血
+      fullPurify: true, // 完全净化
+      teamRevive: true, // 全队复活
+    },
+    price: 25000000,
+    lore: '生命女神，创造生命的神祇。她的一滴眼泪，就可以救活成千上万的人。'
+  },
+
+  // 召唤系稀有魂种
+  summon_shouwang: {
+    id: 'summon_shouwang',
+    name: '兽王之魂',
+    element: 'summon',
+    grade: 'soul',
+    rarity: 'legendary',
+    isRare: true,
+    isSoul: true,
+    description: '传说中的召唤系终极魂种，万兽之王的灵魂。可多契约三只召唤兽，召唤兽全属性翻倍，可进化。',
+    effects: {
+      summonBonus: 1.2, // 120%召唤兽加成（普通魂种80%）
+      summonCount: 3, // 额外3只召唤兽（普通魂种2只）
+      summonEvolve: true, // 召唤兽可进化
+      summonShareDamage: true, // 召唤兽分担伤害
+    },
+    price: 25000000,
+    lore: '兽王之魂，万兽之王的灵魂。传说中它可以号令所有妖兽，是召唤系法师的终极梦想。'
+  },
 };
 
 // 灵种品质配置
