@@ -716,6 +716,14 @@ const BattleSystem = {
         this.player.mp = Math.min(this.player.maxMp, this.player.mp + mpRecover);
 
         this.addLog(`你采取防御姿态，减少受到的伤害，并恢复了 ${mpRecover} 点魔法值`, 'system');
+        
+        // 发布防御事件
+        if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+            BattleEventBus.emit(BattleEvents.DEFEND, {
+                caster: 'player',
+                mpRecover: mpRecover
+            });
+        }
 
         this.endPlayerTurn();
         return { defend: true, mpRecover: mpRecover };
@@ -1028,6 +1036,14 @@ const BattleSystem = {
             // 防御
             this.enemy.isDefending = true;
             this.addLog(`${this.enemy.name} 进入防御姿态，防御力提升！`, 'system');
+            
+            // 发布防御事件
+            if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                BattleEventBus.emit(BattleEvents.DEFEND, {
+                    caster: 'enemy',
+                    enemy: this.enemy
+                });
+            }
         }
 
         this.endEnemyTurn();
