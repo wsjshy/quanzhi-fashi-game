@@ -393,7 +393,26 @@ const BattleSystem = {
             if (Math.random() < 0.3) { // 30%概率打断
                 this.addLog(`打断了 ${this.enemy.name} 的魔法引导！`, 'system');
                 this.enemyCasting = null;
+                
+                // 发布打断事件
+                if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                    BattleEventBus.emit(BattleEvents.INTERRUPT, {
+                        attacker: 'player',
+                        target: 'enemy',
+                        skill: this.enemyCasting?.skill
+                    });
+                }
             }
+        }
+        
+        // 发布玩家攻击事件
+        if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+            BattleEventBus.emit(BattleEvents.PLAYER_ATTACK, {
+                damage: damage.amount,
+                isCrit: damage.isCrit,
+                isMiss: damage.isMiss,
+                damageType: 'physical'
+            });
         }
 
         this.endPlayerTurn();
@@ -937,7 +956,27 @@ const BattleSystem = {
                 if (Math.random() < 0.3) {
                     this.addLog(`你的魔法引导被打断了！`, 'system');
                     this.playerCasting = null;
+                    
+                    // 发布打断事件
+                    if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                        BattleEventBus.emit(BattleEvents.INTERRUPT, {
+                            attacker: 'enemy',
+                            target: 'player',
+                            skill: this.playerCasting?.skill
+                        });
+                    }
                 }
+            }
+            
+            // 发布敌人攻击事件
+            if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                BattleEventBus.emit(BattleEvents.ENEMY_ATTACK, {
+                    damage: damage.amount,
+                    isCrit: damage.isCrit,
+                    isMiss: damage.isMiss,
+                    damageType: 'physical',
+                    enemy: this.enemy
+                });
             }
 
         } else if (action.type === 'skill') {
