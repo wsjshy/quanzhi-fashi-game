@@ -644,7 +644,10 @@ const BattleSystem = {
                     overload: '超载',
                     electro: '感电',
                     superconduct: '超导',
-                    freeze: '冻结反应'
+                    freeze: '冻结反应',
+                    swirl_fire: '扩散火',
+                    swirl_water: '扩散水',
+                    mud: '泥浆'
                 };
                 reactionText = `（${reactionNames[damage.elementReaction]}！）`;
             }
@@ -696,6 +699,12 @@ const BattleSystem = {
                     const defDownEffect = { type: 'defense_down', name: '防御降低', duration: 3, defenseMod: -0.2 };
                     targetData.statusEffects.push(defDownEffect);
                     this.addLog(`${targetName} 防御降低了！`, 'debuff');
+                }
+                // 泥浆减速
+                if (damage.elementReaction === 'mud') {
+                    const mudEffect = { type: 'slow', name: '泥浆', duration: 2, speedMod: -0.3 };
+                    targetData.statusEffects.push(mudEffect);
+                    this.addLog(`${targetName} 陷入泥浆，速度降低！`, 'debuff');
                 }
             }
             
@@ -1862,6 +1871,11 @@ const BattleSystem = {
                 damage *= 1.25;
                 result.elementReaction = 'overload';
             }
+            // 火 + 风 = 扩散火
+            else if (element === 'fire' && target.statusEffects.some(e => e.type === 'wind')) {
+                damage *= 1.15;
+                result.elementReaction = 'swirl_fire';
+            }
             // 雷 + 水 = 感电
             else if (element === 'thunder' && hasWet) {
                 damage *= 1.2;
@@ -1876,6 +1890,16 @@ const BattleSystem = {
             else if (element === 'ice' && hasWet) {
                 damage *= 1.2;
                 result.elementReaction = 'freeze';
+            }
+            // 土 + 水 = 泥浆
+            else if (element === 'earth' && hasWet) {
+                damage *= 1.1;
+                result.elementReaction = 'mud';
+            }
+            // 风 + 水 = 扩散水
+            else if (element === 'wind' && hasWet) {
+                damage *= 1.15;
+                result.elementReaction = 'swirl_water';
             }
         }
         
