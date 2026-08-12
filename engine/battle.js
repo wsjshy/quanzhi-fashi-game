@@ -71,6 +71,7 @@ const BattleSystem = {
         this.enemy.mp = this.enemy.maxMp || 50;
         this.enemy.buffs = [];
         this.enemy.statusEffects = [];
+        this.enemy.isDefending = false;
 
         // 玩家战斗状态
         this.player = {
@@ -124,7 +125,7 @@ const BattleSystem = {
         const attackerMods = this.getStatusModifiers(this.player);
         const damage = this.calculateDamage(
             this.player.attack + attackerMods.attackMod,
-            this.enemy.defense,
+            this.enemy.defense * (this.enemy.isDefending ? 2 : 1), // 防御时防御翻倍
             1.0,
             this.player.critRate,
             this.player.hitRate,
@@ -132,6 +133,11 @@ const BattleSystem = {
             null,
             this.enemy
         );
+        
+        // 防御减伤
+        if (this.enemy.isDefending) {
+            damage.amount = Math.floor(damage.amount * 0.5);
+        }
 
         // 应用伤害
         this.applyDamage(this.enemy, damage);
@@ -525,6 +531,7 @@ const BattleSystem = {
         if (this.checkBattleEnd()) return;
 
         this.isPlayerTurn = false;
+        this.enemy.isDefending = false; // 重置敌人防御状态
         
         // 处理玩家引导中的魔法
         if (this.playerCasting) {
@@ -682,29 +689,383 @@ const BattleSystem = {
                     this.addLog(`${this.enemy.name} 开始引导 ${skill.name}...`, 'magic');
                 }
             }
+        } else if (action.type === 'defend') {
+            // 防御
+            this.enemy.isDefending = true;
+            this.addLog(`${this.enemy.name} 进入防御姿态，防御力提升！`, 'system');
         }
 
         this.endEnemyTurn();
     },
 
     /**
-     * 敌人AI
+     * 敌人AI（多样化系统）
+     * 支持6种AI类型：aggressive（激进）、defensive（保守）、controller（控制）、burst（爆发）、kiter（游击）、tactical（战术）
      */
     enemyAI() {
-        // 简单AI：优先用技能，没MP就普攻
-        const availableSkills = (this.enemy.skills || ['basic_attack'])
-            .filter(id => {
+        const aiType = this.enemy.aiType || 'aggressive';
+        
+        // 根据AI类型选择策略
+        switch (aiType) {
+            case 'defensive':
+                return this.enemyAIDefensive();
+            case 'controller':
+                return this.enemyAIController();
+            case 'burst':
+                return this.enemyAIBurst();
+            case 'kiter':
+                return this.enemyAIKiter();
+            case 'tactical':
+                return this.enemyAITactical();
+            case 'aggressive':
+            default:
+                return this.enemyAIAggressive();
+        }
+    },
+    
+    /**
+     * 激进型AI：全力输出，不顾防御
+     */
+    enemyAIAggressive() {
+        const availableSkills = this.getAvailableSkills(this.enemy);
+        
+        // 优先用最高伤害技能
+        if (availableSkills.length > 0) {
+            // 找伤害最高的技能
+            let bestSkill = null;
+            let bestDamage = 0;
+            for (const skillId of availableSkills) {
+                const skill = SkillSystem.getSkill(skillId);
+                if (skill && skill.type === 'damage') {
+                    const dmg = skill.baseDamage || 0;
+                    if (dmg > bestDamage) {
+                        bestDamage = dmg;
+                        bestSkill = skillId;
+                    }
+                }
+            }
+            
+            // 70%概率用最强技能，30%普攻
+            if (bestSkill && Math.random() < 0.7) {
+                return { type: 'skill', skillId: bestSkill };
+            }
+        }
+        
+        return { type: 'attack' };
+    },
+    
+    /**
+     * 保守型AI：懂得自我保护
+     */
+    enemyAIDefensive() {
+        const hpPercent = this.enemy.hp / this.enemy.maxHp;
+        const availableSkills = this.getAvailableSkills(this.enemy);
+        
+        // 血量低于30%，优先防御或治疗
+        if (hpPercent < 0.3) {
+            // 找治疗技能
+            const healSkill = availableSkills.find(id => {
                 const skill = SkillSystem.getSkill(id);
-                return skill && this.enemy.mp >= skill.mpCost;
+                return skill && skill.type === 'heal';
             });
-
-        // 30%概率用技能
+            
+            if (healSkill && Math.random() < 0.7) {
+                return { type: 'skill', skillId: healSkill };
+            }
+            
+            // 没有治疗技能就防御
+            if (Math.random() < 0.6) {
+                return { type: 'defend' };
+            }
+        }
+        
+        // 血量30%-70%，攻防交替
+        if (hpPercent < 0.7) {
+            if (Math.random() < 0.3) {
+                return { type: 'defend' };
+            }
+        }
+        
+        // 正常攻击
+        if (availableSkills.length > 0 && Math.random() < 0.5) {
+            const skillId = availableSkills[Math.floor(Math.random() * availableSkills.length)];
+            return { type: 'skill', skillId: skillId };
+        }
+        
+        return { type: 'attack' };
+    },
+    
+    /**
+     * 控制型AI：优先控制，再输出
+     */
+    enemyAIController() {
+        const availableSkills = this.getAvailableSkills(this.enemy);
+        const playerHasDebuff = this.player.statusEffects && this.player.statusEffects.length > 0;
+        
+        // 玩家没有debuff，优先放控制技能
+        if (!playerHasDebuff) {
+            // 找debuff技能
+            const debuffSkill = availableSkills.find(id => {
+                const skill = SkillSystem.getSkill(id);
+                return skill && (skill.type === 'debuff' || skill.effectType === 'debuff');
+            });
+            
+            if (debuffSkill && Math.random() < 0.8) {
+                return { type: 'skill', skillId: debuffSkill };
+            }
+        }
+        
+        // 玩家已经被控，全力输出
+        if (playerHasDebuff && availableSkills.length > 0 && Math.random() < 0.6) {
+            // 找伤害最高的技能
+            let bestSkill = null;
+            let bestDamage = 0;
+            for (const skillId of availableSkills) {
+                const skill = SkillSystem.getSkill(skillId);
+                if (skill && skill.type === 'damage') {
+                    const dmg = skill.baseDamage || 0;
+                    if (dmg > bestDamage) {
+                        bestDamage = dmg;
+                        bestSkill = skillId;
+                    }
+                }
+            }
+            
+            if (bestSkill) {
+                return { type: 'skill', skillId: bestSkill };
+            }
+        }
+        
+        // 补控制或正常输出
         if (availableSkills.length > 0 && Math.random() < 0.4) {
             const skillId = availableSkills[Math.floor(Math.random() * availableSkills.length)];
             return { type: 'skill', skillId: skillId };
         }
-
+        
         return { type: 'attack' };
+    },
+    
+    /**
+     * 爆发型AI：攒MP一波爆发
+     */
+    enemyAIBurst() {
+        const availableSkills = this.getAvailableSkills(this.enemy);
+        const mpPercent = this.enemy.mp / (this.enemy.maxMp || 50);
+        
+        // 初始化爆发状态
+        if (!this.enemy.burstPhase) {
+            this.enemy.burstPhase = 'charging'; // charging（蓄力） / bursting（爆发） / recovering（恢复）
+            this.enemy.burstTurns = 0;
+        }
+        
+        this.enemy.burstTurns++;
+        
+        // 蓄力阶段：攒MP
+        if (this.enemy.burstPhase === 'charging') {
+            // MP够了，进入爆发阶段
+            if (mpPercent >= 0.8) {
+                this.enemy.burstPhase = 'bursting';
+                this.enemy.burstTurns = 0;
+                this.addLog(`${this.enemy.name} 开始爆发！`, 'system');
+            } else {
+                // 蓄力期：普攻/小技能
+                if (availableSkills.length > 0 && Math.random() < 0.3) {
+                    // 找消耗MP最少的技能
+                    let cheapestSkill = null;
+                    let cheapestCost = 999;
+                    for (const skillId of availableSkills) {
+                        const skill = SkillSystem.getSkill(skillId);
+                        if (skill && skill.mpCost < cheapestCost) {
+                            cheapestCost = skill.mpCost;
+                            cheapestSkill = skillId;
+                        }
+                    }
+                    if (cheapestSkill && cheapestCost <= 10) {
+                        return { type: 'skill', skillId: cheapestSkill };
+                    }
+                }
+                return { type: 'attack' };
+            }
+        }
+        
+        // 爆发阶段：全力输出
+        if (this.enemy.burstPhase === 'bursting') {
+            // 爆发持续3回合
+            if (this.enemy.burstTurns >= 3 || mpPercent < 0.2) {
+                this.enemy.burstPhase = 'recovering';
+                this.enemy.burstTurns = 0;
+                this.addLog(`${this.enemy.name} 进入虚弱期！`, 'system');
+            } else {
+                // 爆发期：优先用最强技能
+                if (availableSkills.length > 0) {
+                    let bestSkill = null;
+                    let bestDamage = 0;
+                    for (const skillId of availableSkills) {
+                        const skill = SkillSystem.getSkill(skillId);
+                        if (skill && skill.type === 'damage') {
+                            const dmg = skill.baseDamage || 0;
+                            if (dmg > bestDamage) {
+                                bestDamage = dmg;
+                                bestSkill = skillId;
+                            }
+                        }
+                    }
+                    if (bestSkill) {
+                        return { type: 'skill', skillId: bestSkill };
+                    }
+                }
+                return { type: 'attack' };
+            }
+        }
+        
+        // 恢复阶段：防御为主
+        if (this.enemy.burstPhase === 'recovering') {
+            if (this.enemy.burstTurns >= 3) {
+                this.enemy.burstPhase = 'charging';
+                this.enemy.burstTurns = 0;
+            }
+            
+            // 恢复期：防御为主
+            if (Math.random() < 0.5) {
+                return { type: 'defend' };
+            }
+            
+            if (availableSkills.length > 0 && Math.random() < 0.3) {
+                const skillId = availableSkills[Math.floor(Math.random() * availableSkills.length)];
+                return { type: 'skill', skillId: skillId };
+            }
+            
+            return { type: 'attack' };
+        }
+        
+        return { type: 'attack' };
+    },
+    
+    /**
+     * 游击型AI：打一下跑一下
+     */
+    enemyAIKiter() {
+        const availableSkills = this.getAvailableSkills(this.enemy);
+        
+        // 初始化游击状态
+        if (this.enemy.kiterState === undefined) {
+            this.enemy.kiterState = 'attack'; // attack / evade
+        }
+        
+        // 切换状态
+        if (this.enemy.kiterState === 'attack') {
+            this.enemy.kiterState = 'evade';
+            
+            // 攻击回合：放技能
+            if (availableSkills.length > 0 && Math.random() < 0.7) {
+                const skillId = availableSkills[Math.floor(Math.random() * availableSkills.length)];
+                return { type: 'skill', skillId: skillId };
+            }
+            return { type: 'attack' };
+        } else {
+            this.enemy.kiterState = 'attack';
+            
+            // 闪避回合：防御
+            return { type: 'defend' };
+        }
+    },
+    
+    /**
+     * 战术型AI：会根据玩家状态调整策略（最智能）
+     */
+    enemyAITactical() {
+        const availableSkills = this.getAvailableSkills(this.enemy);
+        const playerHpPercent = this.player.hp / this.player.maxHp;
+        const playerMpPercent = this.player.mp / this.player.maxMp;
+        const enemyHpPercent = this.enemy.hp / this.enemy.maxHp;
+        
+        // 1. 玩家在引导大招，优先打断
+        if (this.playerCasting) {
+            // 普攻打断
+            if (Math.random() < 0.8) {
+                return { type: 'attack' };
+            }
+        }
+        
+        // 2. 自己血量很低，防御/治疗
+        if (enemyHpPercent < 0.25) {
+            const healSkill = availableSkills.find(id => {
+                const skill = SkillSystem.getSkill(id);
+                return skill && skill.type === 'heal';
+            });
+            
+            if (healSkill && Math.random() < 0.8) {
+                return { type: 'skill', skillId: healSkill };
+            }
+            
+            if (Math.random() < 0.5) {
+                return { type: 'defend' };
+            }
+        }
+        
+        // 3. 玩家血量很低，猛攻
+        if (playerHpPercent < 0.3) {
+            if (availableSkills.length > 0) {
+                let bestSkill = null;
+                let bestDamage = 0;
+                for (const skillId of availableSkills) {
+                    const skill = SkillSystem.getSkill(skillId);
+                    if (skill && skill.type === 'damage') {
+                        const dmg = skill.baseDamage || 0;
+                        if (dmg > bestDamage) {
+                            bestDamage = dmg;
+                            bestSkill = skillId;
+                        }
+                    }
+                }
+                if (bestSkill) {
+                    return { type: 'skill', skillId: bestSkill };
+                }
+            }
+            return { type: 'attack' };
+        }
+        
+        // 4. 玩家MP很少，消耗战
+        if (playerMpPercent < 0.2) {
+            // 玩家没MP了，用小技能消耗
+            if (availableSkills.length > 0 && Math.random() < 0.5) {
+                const skillId = availableSkills[Math.floor(Math.random() * availableSkills.length)];
+                return { type: 'skill', skillId: skillId };
+            }
+            return { type: 'attack' };
+        }
+        
+        // 5. 正常情况：有策略的攻击
+        // 利用元素克制
+        const playerElement = this.player.elements?.[0] || 'neutral';
+        const counterSkill = availableSkills.find(id => {
+            const skill = SkillSystem.getSkill(id);
+            if (!skill || !skill.element) return false;
+            return this.ELEMENT_COUNTER[skill.element] === playerElement;
+        });
+        
+        if (counterSkill && Math.random() < 0.6) {
+            return { type: 'skill', skillId: counterSkill };
+        }
+        
+        // 正常输出
+        if (availableSkills.length > 0 && Math.random() < 0.5) {
+            const skillId = availableSkills[Math.floor(Math.random() * availableSkills.length)];
+            return { type: 'skill', skillId: skillId };
+        }
+        
+        return { type: 'attack' };
+    },
+    
+    /**
+     * 获取可用技能列表
+     */
+    getAvailableSkills(entity) {
+        return (entity.skills || ['basic_attack'])
+            .filter(id => {
+                const skill = SkillSystem.getSkill(id);
+                return skill && entity.mp >= skill.mpCost;
+            });
     },
 
     /**
