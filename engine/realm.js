@@ -307,6 +307,28 @@ const RealmSystem = {
                     }
                 });
             }
+            
+            // 成就检查
+            if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
+                try {
+                    const realmAchievements = [
+                        { id: 'realm_middle', value: 'middle' },
+                        { id: 'realm_high', value: 'high' },
+                        { id: 'realm_super', value: 'super' },
+                    ];
+                    
+                    realmAchievements.forEach(ach => {
+                        if (nextRealm.id === ach.value && !WorldState.hasAchievement(ach.id)) {
+                            const achData = DataAchievements[ach.id];
+                            if (achData) {
+                                WorldState.unlockAchievement(ach.id, achData);
+                            }
+                        }
+                    });
+                } catch (e) {
+                    console.warn('[Realm] 境界成就检查失败:', e);
+                }
+            }
 
             return {
                 success: true,
