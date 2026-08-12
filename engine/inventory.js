@@ -225,6 +225,26 @@ const Inventory = {
             }
         }
 
+        // 残魄/精魄：用于升级成长型星尘魔器
+        if (item.type === 'soul') {
+            if (typeof SoulSystem === 'undefined') {
+                return { success: false, message: '魂魄系统未加载' };
+            }
+
+            // 检查是否有成长型星尘魔器
+            if (!SoulSystem.hasLittleLoach(Player)) {
+                return { success: false, message: '需要先装备成长型星尘魔器（如小泥鳅坠）才能使用魂魄' };
+            }
+
+            // 使用魂魄升级星尘魔器
+            const soulResult = SoulSystem.upgradeArtifactWithSoul(Player, 'all', itemId, 1);
+            if (soulResult.success) {
+                return { success: true, message: soulResult.message };
+            } else {
+                return { success: false, message: soulResult.message };
+            }
+        }
+
         // 消耗物品
         this.removeItem(itemId, 1);
 

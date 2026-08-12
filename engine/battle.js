@@ -1164,6 +1164,14 @@ const BattleSystem = {
             rewards.gold = Math.floor(rewards.gold * 1.5);
         }
 
+        // 残魄/精魄掉落（小泥鳅坠自动收集）
+        if (typeof SoulSystem !== 'undefined' && typeof Player !== 'undefined') {
+            const soulResult = SoulSystem.collectSoulOnKill(Player, this.enemy);
+            if (soulResult.collected) {
+                this.addLog(soulResult.message, 'buff');
+            }
+        }
+
         // 应用奖励
         const expResult = Player.gainExp(rewards.exp);
         Player.gainGold(rewards.gold);

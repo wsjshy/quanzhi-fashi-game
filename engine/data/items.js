@@ -97,6 +97,34 @@ const DataItems = {
     usableInBattle: false,
     usableOutOfBattle: false
   },
+  remnant_soul: {
+    id: "remnant_soul",
+    name: "残魄",
+    description: "普通妖魔死后残留的微弱魂魄，可用于滋养星尘魔器。\n\n小泥鳅坠可以自动收集残魄。",
+    type: "soul",
+    icon: "✨",
+    price: 10000,
+    stackable: true,
+    maxStack: 999,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    soulType: "remnant",
+    soulExp: 10
+  },
+  pure_soul: {
+    id: "pure_soul",
+    name: "精魄",
+    description: "精英或进阶妖魔死后留下的纯净魂魄，蕴含强大能量，可用于星尘魔器的进阶。\n\n极为稀有，价值连城。",
+    type: "soul",
+    icon: "💫",
+    price: 5000000,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    soulType: "pure",
+    soulExp: 500
+  },
   basic_staff: {
     id: "basic_staff",
     name: "基础法杖",
