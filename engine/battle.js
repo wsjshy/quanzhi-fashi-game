@@ -2236,7 +2236,16 @@ const BattleSystem = {
                 return;
             }
 
-            if (Math.random() < (effect.chance || 1.0)) {
+            // 计算命中概率（控制类状态受精神力抵抗）
+            let hitChance = effect.chance || 1.0;
+            const controlTypes = ['stun', 'frozen', 'freeze', 'paralyze', 'bind', 'blind', 'slow'];
+            if (controlTypes.includes(effect.type)) {
+                const spirit = target.spirit || 30;
+                const resist = spirit * 0.003; // 每点精神力抵抗0.3%
+                hitChance = Math.max(0.5, hitChance - resist); // 最低50%命中
+            }
+            
+            if (Math.random() < hitChance) {
                 const existing = target.statusEffects.find(e => e.type === effect.type);
                 
                 if (existing) {
