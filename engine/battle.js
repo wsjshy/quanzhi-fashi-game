@@ -36,6 +36,13 @@ const BattleSystem = {
     // 战斗评价
     rating: null,  // S/A/B/C/D
     
+    // 战斗速度（1x, 2x, 4x）
+    speed: 1,
+    
+    // 速度档位
+    speedLevels: [1, 2, 4],
+    currentSpeedIndex: 0,
+    
     // 元素克制关系（小说设定）
     // 火克冰、冰克风、风克土、土克雷、雷克水、水克火
     // 光暗互克
@@ -60,6 +67,35 @@ const BattleSystem = {
         water: '水系',
         light: '光系',
         dark: '暗影系'
+    },
+    
+    /**
+     * 切换战斗速度
+     */
+    toggleSpeed() {
+        this.currentSpeedIndex = (this.currentSpeedIndex + 1) % this.speedLevels.length;
+        this.speed = this.speedLevels[this.currentSpeedIndex];
+        this.addLog(`战斗速度切换为 ${this.speed}x`, 'system');
+        if (typeof UI !== 'undefined' && UI.updateBattleScreen) {
+            UI.updateBattleScreen();
+        }
+    },
+    
+    /**
+     * 获取延迟时间（根据速度调整）
+     */
+    getDelay(baseDelay) {
+        return Math.floor(baseDelay / this.speed);
+    },
+    
+    /**
+     * 显示浮动伤害数字
+     */
+    showDamageNumber(target, amount, type = 'normal') {
+        if (typeof UI === 'undefined' || !UI.showDamageNumber) return;
+        
+        const isPlayer = target === 'player';
+        UI.showDamageNumber(amount, type, isPlayer);
     },
 
     /**
@@ -157,7 +193,7 @@ const BattleSystem = {
             this.isPlayerTurn = false;
             this.addLog(`${this.enemy.name} 速度更快，抢先出手！`, 'system');
             // 延迟执行敌人回合
-            setTimeout(() => this.enemyTurn(), 1000);
+            setTimeout(() => this.enemyTurn(), this.getDelay(1000));
         } else {
             this.addLog('你的速度更快，可以先行动。', 'system');
         }
@@ -215,6 +251,12 @@ const BattleSystem = {
         }
         
         this.addLog(`你发动了普通攻击，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}`, damage.isCrit ? 'crit' : 'damage');
+        
+        // 显示浮动伤害数字
+        if (!damage.isMiss) {
+            const dmgType = damage.isCrit ? 'crit' : 'normal';
+            this.showDamageNumber('enemy', damage.amount, dmgType);
+        }
 
         // 检查是否打断敌人引导
         if (this.enemyCasting && !damage.isMiss) {
@@ -366,6 +408,17 @@ const BattleSystem = {
             
             this.addLog(`${casterName} 释放了 ${skill.name}，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}${elementEffectText}`, 
                 damage.isCrit ? 'crit' : 'magic');
+            
+            // 显示浮动伤害数字
+            if (!damage.isMiss) {
+                let dmgType = 'magic';
+                if (damage.isCrit) dmgType = 'crit';
+                else if (damage.elementEffect === 'super') dmgType = 'counter';
+                else if (damage.elementEffect === 'weak') dmgType = 'weakness';
+                
+                const target = isPlayer ? 'enemy' : 'player';
+                this.showDamageNumber(target, damage.amount, dmgType);
+            }
 
             // 状态效果
             if (skill.statusEffects && !damage.isMiss) {
@@ -613,7 +666,7 @@ const BattleSystem = {
         }
 
         // 敌人回合
-        setTimeout(() => this.enemyTurn(), 800);
+        setTimeout(() => this.enemyTurn(), this.getDelay(800));
     },
 
     /**
@@ -742,6 +795,12 @@ const BattleSystem = {
 
             this.addLog(`${this.enemy.name} 发动攻击，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}`, 
                 damage.isCrit ? 'crit' : 'damage');
+            
+            // 显示浮动伤害数字
+            if (!damage.isMiss) {
+                const dmgType = damage.isCrit ? 'crit' : 'normal';
+                this.showDamageNumber('player', damage.amount, dmgType);
+            }
 
             // 检查是否打断玩家引导
             if (this.playerCasting && !damage.isMiss) {
@@ -1255,7 +1314,7 @@ const BattleSystem = {
             }
             setTimeout(() => {
                 this.enemyTurn();
-            }, 1000);
+            }, this.getDelay(1000));
             return;
         }
         
@@ -2354,7 +2413,8 @@ const BattleSystem = {
             summon: this.summon,
             result: this.result,
             rewards: this.rewards || null,
-            log: this.log.slice(-10) // 最近10条
+            log: this.log.slice(-10), // 最近10条
+            speed: this.speed // 战斗速度
         };
     },
 

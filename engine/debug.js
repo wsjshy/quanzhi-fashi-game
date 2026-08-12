@@ -1199,20 +1199,9 @@ const DebugPanel = {
     
     refreshUI() {
         try {
-            // 尝试调用各种可能的UI刷新方法
-            if (typeof UI !== 'undefined') {
-                if (UI.updateCharacterScreen) UI.updateCharacterScreen();
-                if (UI.updateShopScreen) UI.updateShopScreen();
-                if (UI.updateInventoryScreen) UI.updateInventoryScreen();
+            // 只刷新战斗界面（如果在战斗中）
+            if (typeof UI !== 'undefined' && typeof BattleSystem !== 'undefined' && BattleSystem.active) {
                 if (UI.updateBattleScreen) UI.updateBattleScreen();
-            }
-            
-            if (typeof Game !== 'undefined') {
-                // 如果在地图界面，重新渲染地图
-                const mapScreen = document.getElementById('map-screen');
-                if (mapScreen && mapScreen.style.display !== 'none') {
-                    if (Game.showMapScreen) Game.showMapScreen();
-                }
             }
             
             // 更新调试面板中的数值显示

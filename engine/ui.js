@@ -1100,18 +1100,20 @@ const UI = {
                         position: absolute;
                         top: 20px;
                         left: 20px;
-                        width: 320px;
-                        max-height: 250px;
+                        width: 340px;
+                        max-height: 280px;
                         overflow-y: auto;
-                        background: rgba(0, 0, 0, 0.6);
-                        border: 1px solid #444;
-                        border-radius: 8px;
+                        background: rgba(0, 0, 0, 0.7);
+                        border: 1px solid #555;
+                        border-radius: 10px;
                         padding: 12px;
-                        font-size: 14px;
-                        line-height: 1.6;
+                        font-size: 13px;
+                        line-height: 1.7;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
                     ">
+                        <div style="color: #ffd700; font-weight: bold; margin-bottom: 8px; font-size: 14px; border-bottom: 1px solid #444; padding-bottom: 6px;">📜 战斗日志</div>
                         ${state.log.map(log => `
-                            <p style="margin-bottom: 4px; color: ${this.getLogColor(log.type)};">${log.text}</p>
+                            <p style="margin-bottom: 5px; color: ${this.getLogColor(log.type)}; padding: 2px 4px; border-radius: 3px;">${log.text}</p>
                         `).join('')}
                     </div>
                     
@@ -1255,6 +1257,14 @@ const UI = {
                                 }).join('')}
                             </div>
                         ` : ''}
+                        <!-- 敌人种族天赋 -->
+                        ${state.enemy.traits && state.enemy.traits.length > 0 ? `
+                            <div style="margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; max-width: 150px;">
+                                ${state.enemy.traits.map(trait => {
+                                    return `<span style="font-size: 10px; padding: 2px 6px; background: rgba(255, 200, 100, 0.15); border: 1px solid #ffcc66; border-radius: 4px; color: #ffcc66; cursor: help;" title="${trait.description}">${trait.name}</span>`;
+                                }).join('')}
+                            </div>
+                        ` : ''}
                         <div style="width: 130px;">
                             <div style="display: flex; justify-content: space-between; font-size: 12px; color: #ff6666; margin-bottom: 2px;">
                                 <span>HP</span><span>${state.enemy.hp}/${state.enemy.maxHp} (${Math.floor(state.enemy.hp / state.enemy.maxHp * 100)}%)</span>
@@ -1299,6 +1309,24 @@ const UI = {
                     ">
                         第 ${state.turn} 回合 - ${state.isPlayerTurn ? '你的回合' : '敌人回合'}
                     </div>
+                    
+                    <!-- 战斗速度按钮 -->
+                    <button onclick="BattleSystem.toggleSpeed()" style="
+                        position: absolute;
+                        top: 70px;
+                        right: 20px;
+                        padding: 8px 16px;
+                        background: linear-gradient(135deg, #333366, #444488);
+                        border: 2px solid #6666aa;
+                        border-radius: 8px;
+                        color: #aaccff;
+                        cursor: pointer;
+                        font-size: 14px;
+                        font-weight: bold;
+                        z-index: 10;
+                    " onmouseover="this.style.boxShadow='0 0 10px rgba(100, 150, 255, 0.5)'" onmouseout="this.style.boxShadow='none'">
+                        ⏩ ${state.speed || 1}x 速度
+                    </button>
                 </div>
                 
                 <!-- 技能/操作面板 -->
@@ -1391,9 +1419,10 @@ const UI = {
         if (!BattleSystem || !BattleSystem.active) return;
         
         // 简单起见，重新渲染整个战斗界面
+        const delay = BattleSystem.getDelay ? BattleSystem.getDelay(500) : 500;
         setTimeout(() => {
             this.renderBattleScreen();
-        }, 500);
+        }, delay);
     },
 
     // 显示战斗道具选择
@@ -1618,9 +1647,87 @@ const UI = {
             crit: '#ffff66',
             system: '#aaaacc',
             buff: '#88ccff',
-            debuff: '#cc88ff'
+            debuff: '#cc88ff',
+            counter: '#ff6644',  // 克制伤害
+            weakness: '#ff44ff'  // 弱点伤害
         };
         return colors[type] || '#ccc';
+    },
+    
+    /**
+     * 显示浮动伤害数字
+     */
+    showDamageNumber(amount, type, isPlayer) {
+        const battleScreen = document.getElementById('battle-screen');
+        if (!battleScreen) return;
+        
+        // 创建伤害数字元素
+        const damageEl = document.createElement('div');
+        
+        // 根据类型设置颜色
+        const colors = {
+            normal: '#ffffff',
+            crit: '#ffff44',
+            magic: '#ffcc66',
+            counter: '#ff6644',
+            weakness: '#ff44ff',
+            heal: '#66ff66'
+        };
+        const color = colors[type] || colors.normal;
+        
+        // 根据类型设置图标/文字
+        let prefix = '';
+        if (type === 'crit') prefix = '💥 ';
+        if (type === 'counter') prefix = '⚡ ';
+        if (type === 'weakness') prefix = '✨ ';
+        if (type === 'heal') prefix = '💚 ';
+        
+        damageEl.textContent = prefix + (type === 'heal' ? '+' : '-') + amount;
+        damageEl.style.cssText = `
+            position: absolute;
+            ${isPlayer ? 'left: 15%;' : 'right: 15%;'}
+            bottom: 200px;
+            font-size: 28px;
+            font-weight: bold;
+            color: ${color};
+            text-shadow: 0 0 10px ${color}, 0 2px 4px rgba(0,0,0,0.8);
+            pointer-events: none;
+            z-index: 100;
+            animation: damageFloat 1.5s ease-out forwards;
+            transform: translateX(-50%);
+        `;
+        
+        // 添加动画样式（如果还没有的话）
+        if (!document.getElementById('damage-number-style')) {
+            const style = document.createElement('style');
+            style.id = 'damage-number-style';
+            style.textContent = `
+                @keyframes damageFloat {
+                    0% {
+                        opacity: 0;
+                        transform: translateX(-50%) translateY(0) scale(0.5);
+                    }
+                    20% {
+                        opacity: 1;
+                        transform: translateX(-50%) translateY(-20px) scale(1.2);
+                    }
+                    100% {
+                        opacity: 0;
+                        transform: translateX(-50%) translateY(-80px) scale(1);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        battleScreen.appendChild(damageEl);
+        
+        // 动画结束后移除
+        setTimeout(() => {
+            if (damageEl.parentNode) {
+                damageEl.remove();
+            }
+        }, 1500);
     },
 
     // ========== 事件界面 ==========
