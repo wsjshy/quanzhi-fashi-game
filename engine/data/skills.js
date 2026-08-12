@@ -1216,5 +1216,300 @@ const DataSkills = {
     statusEffects: [
       { name: "穿刺", type: "defense_down", duration: 2, chance: 0.4, statModifiers: { defense: -5 } }
     ]
+  },
+
+  // ========== 中阶魔法（玩家） ==========
+  fire_fist: {
+    id: "fire_fist",
+    name: "烈拳",
+    description: "中阶火系魔法，凝聚火焰于拳上，爆发出毁灭性的一击。威力巨大，附带强烈灼烧效果。",
+    element: "fire",
+    type: "damage",
+    mpCost: 35,
+    baseDamage: 80,
+    damageMultiplier: 1.8,
+    hitRate: 0.85,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "中阶",
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "烈炎灼烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 15,
+        duration: 4,
+        chance: 0.9,
+        stacks: 2,
+        maxStacks: 5
+      }
+    ]
+  },
+  thunder_praise: {
+    id: "thunder_praise",
+    name: "礼赞",
+    description: "中阶雷系魔法，召唤雷电从天而降，威力惊人，高几率麻痹敌人。",
+    element: "thunder",
+    type: "damage",
+    mpCost: 40,
+    baseDamage: 90,
+    damageMultiplier: 1.7,
+    hitRate: 0.8,
+    critRate: 0.2,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "中阶",
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "雷麻",
+        type: "stun",
+        element: "thunder",
+        duration: 2,
+        chance: 0.5
+      }
+    ]
+  },
+  ice_lock: {
+    id: "ice_lock",
+    name: "冰锁",
+    description: "中阶冰系魔法，用冰链锁住敌人，造成伤害并大概率冻结。",
+    element: "ice",
+    type: "damage",
+    mpCost: 32,
+    baseDamage: 65,
+    damageMultiplier: 1.6,
+    hitRate: 0.88,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "中阶",
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "冰封",
+        type: "freeze",
+        element: "ice",
+        value: 70,
+        duration: 4,
+        chance: 0.7
+      }
+    ]
+  },
+  earth_wave: {
+    id: "earth_wave",
+    name: "地波",
+    description: "中阶土系魔法，引发地震波，造成范围伤害并减速敌人。",
+    element: "earth",
+    type: "damage",
+    mpCost: 30,
+    baseDamage: 60,
+    damageMultiplier: 1.5,
+    hitRate: 0.9,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "中阶",
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "地震减速",
+        type: "slow",
+        element: "earth",
+        duration: 3,
+        chance: 0.8,
+        statModifiers: {
+          speed: -10
+        }
+      }
+    ]
+  },
+  wind_wing: {
+    id: "wind_wing",
+    name: "风之翼",
+    description: "中阶风系魔法，在背后形成风之翼，大幅提升速度和闪避。",
+    element: "wind",
+    type: "buff",
+    mpCost: 30,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "中阶",
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "风之翼",
+        type: "speed_up",
+        duration: 5,
+        chance: 1,
+        statModifiers: {
+          speed: 20
+        }
+      },
+      {
+        name: "风之闪避",
+        type: "dodge_up",
+        duration: 5,
+        chance: 1,
+        statModifiers: {
+          dodge: 0.2
+        }
+      }
+    ]
+  },
+  water_tide: {
+    id: "water_tide",
+    name: "潮汐",
+    description: "中阶水系魔法，召唤潮汐冲击敌人，造成伤害并恢复自身。",
+    element: "water",
+    type: "damage",
+    mpCost: 28,
+    baseDamage: 55,
+    damageMultiplier: 1.5,
+    hitRate: 0.9,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "中阶",
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "潮汐回复",
+        type: "regen",
+        element: "water",
+        duration: 3,
+        chance: 1,
+        regenAmount: 15
+      }
+    ]
+  },
+  light_blessing: {
+    id: "light_blessing",
+    name: "圣佑",
+    description: "中阶光系魔法，神圣之光护体，大幅提升防御并净化负面状态。",
+    element: "light",
+    type: "buff",
+    mpCost: 35,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "中阶",
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "神圣护盾",
+        type: "shield",
+        element: "light",
+        value: 100,
+        duration: 99,
+        chance: 1
+      },
+      {
+        name: "圣佑防御",
+        type: "defense_up",
+        duration: 5,
+        chance: 1,
+        statModifiers: {
+          defense: 20
+        }
+      }
+    ]
+  },
+  dark_spike: {
+    id: "dark_spike",
+    name: "暗影之刺",
+    description: "中阶暗影系魔法，从暗影中凝聚尖刺，无视部分防御，高暴击。",
+    element: "dark",
+    type: "damage",
+    mpCost: 32,
+    baseDamage: 70,
+    damageMultiplier: 1.6,
+    hitRate: 0.85,
+    critRate: 0.25,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "中阶",
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "暗影诅咒",
+        type: "attack_down",
+        duration: 3,
+        chance: 0.6,
+        statModifiers: {
+          attack: -10
+        }
+      }
+    ]
+  },
+  heal_holy_light: {
+    id: "heal_holy_light",
+    name: "圣光治愈",
+    description: "中阶治愈系魔法，神圣之光普照，大幅恢复生命值并净化负面状态。",
+    element: "heal",
+    type: "heal",
+    mpCost: 40,
+    baseHeal: 80,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 3,
+    tier: "中阶",
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "圣光净化",
+        type: "cleanse",
+        chance: 1
+      }
+    ]
+  },
+  summon_beast_empower: {
+    id: "summon_beast_empower",
+    name: "兽潮",
+    description: "中阶召唤系魔法，召唤兽进入狂暴状态，全属性大幅提升。",
+    element: "summon",
+    type: "buff",
+    mpCost: 35,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "中阶",
+    realmRequired: "middle",
+    requiresSummon: true,
+    statusEffects: [
+      {
+        name: "兽潮狂暴",
+        type: "attack_up",
+        duration: 5,
+        chance: 1,
+        statModifiers: {
+          attack: 25
+        }
+      },
+      {
+        name: "兽潮坚韧",
+        type: "defense_up",
+        duration: 5,
+        chance: 1,
+        statModifiers: {
+          defense: 15
+        }
+      },
+      {
+        name: "兽潮迅捷",
+        type: "speed_up",
+        duration: 5,
+        chance: 1,
+        statModifiers: {
+          speed: 10
+        }
+      }
+    ]
   }
 };

@@ -1971,7 +1971,14 @@ const Game = {
 
         if (result.success) {
             Player.save();
-            UI.showMessage(`🎉 ${result.message}\n\n属性提升：\nHP +${result.statGains.maxHp}\nMP +${result.statGains.maxMp}\n攻击 +${result.statGains.attack}\n防御 +${result.statGains.defense}`);
+            let msg = `🎉 ${result.message}\n\n属性提升：\nHP +${result.statGains.maxHp}\nMP +${result.statGains.maxMp}\n攻击 +${result.statGains.attack}\n防御 +${result.statGains.defense}`;
+            
+            if (result.unlockedSkills && result.unlockedSkills.length > 0) {
+                const skillNames = result.unlockedSkills.map(id => SkillSystem.getSkill(id)?.name || id).join('、');
+                msg += `\n\n解锁中阶魔法: ${skillNames}`;
+            }
+            
+            UI.showMessage(msg);
             this.openCharacterPanel();
         } else {
             UI.showMessage(`💔 ${result.message}`);

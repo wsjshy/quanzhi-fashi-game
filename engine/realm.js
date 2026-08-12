@@ -266,10 +266,34 @@ const RealmSystem = {
             player.hp = player.maxHp;
             player.mp = player.maxMp;
 
+            // 解锁中阶魔法
+            let unlockedSkills = [];
+            if (nextRealm.id === 'middle') {
+                const elementToSkill = {
+                    fire: 'fire_fist',
+                    thunder: 'thunder_praise',
+                    ice: 'ice_lock',
+                    earth: 'earth_wave',
+                    wind: 'wind_wing',
+                    water: 'water_tide',
+                    light: 'light_blessing',
+                    dark: 'dark_spike',
+                    heal: 'heal_holy_light',
+                    summon: 'summon_beast_empower'
+                };
+                player.elements.forEach(elem => {
+                    const skillId = elementToSkill[elem];
+                    if (skillId && !player.skills.includes(skillId)) {
+                        player.skills.push(skillId);
+                        unlockedSkills.push(skillId);
+                    }
+                });
+            }
+
             return {
                 success: true,
                 newRealm: nextRealm.id,
-                message: `突破成功！晋升${nextRealm}魔法师！`,
+                message: `突破成功！晋升${nextRealm.name}魔法师！`,
                 statGains: {
                     maxHp: hpBonus,
                     maxMp: mpBonus,
@@ -277,7 +301,8 @@ const RealmSystem = {
                     defense: defBonus,
                     speed: spdBonus,
                     spirit: spiBonus
-                }
+                },
+                unlockedSkills: unlockedSkills
             };
         } else {
             // 突破失败
