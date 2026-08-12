@@ -140,14 +140,17 @@ const DataEnemies = {
     ],
     level: 2,
     maxHp: 80,
-    maxMp: 40,
+    maxMp: 0,
     attack: 12,
     defense: 3,
     speed: 16,
     skills: [
       "basic_attack",
-      "dark_bolt"
+      "shadow_assault",
+      "claw_slash"
     ],
+    aiType: "kiter",
+    enemyType: "demon",
     spriteColor: "#442266",
     isEnemy: true,
     expReward: 50,
@@ -180,14 +183,16 @@ const DataEnemies = {
     ],
     level: 4,
     maxHp: 200,
-    maxMp: 20,
+    maxMp: 0,
     attack: 18,
     defense: 15,
     speed: 6,
     skills: [
       "basic_attack",
-      "earth_spike"
+      "rock_throw"
     ],
+    aiType: "defensive",
+    enemyType: "demon",
     spriteColor: "#996633",
     isEnemy: true,
     expReward: 100,
@@ -1104,5 +1109,137 @@ const DataEnemies = {
       { itemId: "wolf_king_fang", chance: 0.3, min: 1, max: 1 }
     ],
     locations: ["bo_city"]
+  },
+  
+  // ==================== 魔法师类敌人 ====================
+  // 使用元素魔法，和玩家模型类似
+  
+  mage_student: {
+    id: "mage_student",
+    name: "切磋同学",
+    title: "初阶法师",
+    description: "天澜魔法高中的学生，初阶法师，用来切磋练习。",
+    elements: ["fire"],
+    level: 3,
+    maxHp: 100,
+    maxMp: 80,
+    attack: 10,
+    defense: 5,
+    speed: 12,
+    spirit: 10,
+    skills: [
+      "basic_attack",
+      "fire_bolt"
+    ],
+    aiType: "aggressive",
+    enemyType: "mage",
+    spriteColor: "#ff6633",
+    isEnemy: true,
+    isMage: true,
+    expReward: 80,
+    goldReward: 40,
+    dropItems: [
+      { itemId: "magic_stone", chance: 0.5, min: 1, max: 2 },
+      { itemId: "mana_potion", chance: 0.3, min: 1, max: 1 }
+    ]
+  },
+  
+  mu_bai_duel: {
+    id: "mu_bai_duel",
+    name: "穆白",
+    title: "冰系初阶法师",
+    description: "穆氏家族的天才，冰系初阶法师，性格高傲，实力在班级中名列前茅。",
+    elements: ["ice"],
+    level: 5,
+    maxHp: 150,
+    maxMp: 120,
+    attack: 15,
+    defense: 8,
+    speed: 14,
+    spirit: 15,
+    skills: [
+      "basic_attack",
+      "ice_spike",
+      "ice_chain"
+    ],
+    aiType: "controller",
+    enemyType: "mage",
+    spriteColor: "#66ccff",
+    isEnemy: true,
+    isMage: true,
+    isNoble: true,
+    expReward: 200,
+    goldReward: 150,
+    dropItems: [
+      { itemId: "magic_stone", chance: 0.8, min: 2, max: 4 },
+      { itemId: "mana_potion", chance: 0.5, min: 1, max: 2 },
+      { itemId: "ice_crystal", chance: 0.2, min: 1, max: 1 }
+    ]
+  },
+  
+  zhao_kunsan_duel: {
+    id: "zhao_kunsan_duel",
+    name: "赵坤三",
+    title: "土系初阶法师",
+    description: "土系法师，性格憨厚，防御很强，是穆白的跟班。",
+    elements: ["earth"],
+    level: 4,
+    maxHp: 180,
+    maxMp: 80,
+    attack: 12,
+    defense: 15,
+    speed: 8,
+    spirit: 10,
+    skills: [
+      "basic_attack",
+      "earth_spike",
+      "earth_shield"
+    ],
+    aiType: "defensive",
+    enemyType: "mage",
+    spriteColor: "#cc9966",
+    isEnemy: true,
+    isMage: true,
+    expReward: 150,
+    goldReward: 100,
+    dropItems: [
+      { itemId: "magic_stone", chance: 0.7, min: 2, max: 3 },
+      { itemId: "health_potion", chance: 0.5, min: 1, max: 2 }
+    ]
+  },
+  
+  black_church_mage: {
+    id: "black_church_mage",
+    name: "黑教廷执事",
+    title: "暗影系法师",
+    description: "黑教廷的执事，暗影系法师，擅长诅咒和暗杀，非常危险。",
+    elements: ["dark"],
+    level: 7,
+    maxHp: 200,
+    maxMp: 150,
+    attack: 25,
+    defense: 10,
+    speed: 18,
+    spirit: 20,
+    skills: [
+      "basic_attack",
+      "dark_bolt",
+      "dark_claw",
+      "dark_curse"
+    ],
+    aiType: "controller",
+    enemyType: "mage",
+    spriteColor: "#330033",
+    isEnemy: true,
+    isMage: true,
+    isBlackChurch: true,
+    expReward: 400,
+    goldReward: 250,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.8, min: 2, max: 4 },
+      { itemId: "dark_crystal", chance: 0.4, min: 1, max: 2 },
+      { itemId: "black_robe_fragment", chance: 0.3, min: 1, max: 1 },
+      { itemId: "forbidden_spell_book", chance: 0.1, min: 1, max: 1 }
+    ]
   }
 };
