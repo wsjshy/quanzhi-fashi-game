@@ -1111,7 +1111,10 @@ const UI = {
                         line-height: 1.7;
                         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
                     ">
-                        <div style="color: #ffd700; font-weight: bold; margin-bottom: 8px; font-size: 14px; border-bottom: 1px solid #444; padding-bottom: 6px;">📜 战斗日志</div>
+                        <div style="color: #ffd700; font-weight: bold; margin-bottom: 8px; font-size: 14px; border-bottom: 1px solid #444; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+                            <span>📜 战斗日志</span>
+                            <span style="font-size: 12px; color: #aaa;">第 ${state.turn || 1} 回合</span>
+                        </div>
                         ${state.log.map(log => `
                             <p style="margin-bottom: 5px; color: ${this.getLogColor(log.type)}; padding: 2px 4px; border-radius: 3px;">${log.text}</p>
                         `).join('')}
