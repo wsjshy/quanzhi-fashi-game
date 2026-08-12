@@ -1490,6 +1490,15 @@ const BattleSystem = {
                 }
             }
             
+            // 浴火重生成就（生命值低于10%时获胜）
+            const hpPercent = this.player.hp / this.player.maxHp;
+            if (hpPercent <= 0.1 && !WorldState.hasAchievement('near_death_win')) {
+                const achData = DataAchievements['near_death_win'];
+                if (achData) {
+                    WorldState.unlockAchievement('near_death_win', achData);
+                }
+            }
+            
         } catch (e) {
             console.warn('[Battle] 成就检查失败:', e);
         }
