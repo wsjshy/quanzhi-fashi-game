@@ -911,16 +911,41 @@ const Game = {
                 }
                 // 胜利
                 const rewards = BattleSystem.rewards;
-                let message = '战斗胜利！\n';
-                message += `获得 ${rewards.exp} 经验\n`;
-                message += `获得 ${rewards.gold} 金币\n`;
+                const stats = BattleSystem.stats;
+                const rating = BattleSystem.rating;
+                let message = '⚔️ 战斗胜利！\n\n';
+                
+                // 战斗评价
+                if (rating) {
+                    const ratingColors = { S: '🌟', A: '⭐', B: '✨', C: '👍', D: '💪' };
+                    message += `${ratingColors[rating.grade] || ''} 评价：${rating.grade}级\n`;
+                    message += `得分：${rating.score}分\n\n`;
+                }
+                
+                // 战斗统计
+                message += '📊 战斗统计\n';
+                message += `回合数：${BattleSystem.turn}\n`;
+                message += `总伤害：${stats.totalDamageDealt || 0}\n`;
+                if (stats.critCount > 0) {
+                    message += `暴击次数：${stats.critCount}\n`;
+                }
+                if (stats.interruptCount > 0) {
+                    message += `打断次数：${stats.interruptCount}\n`;
+                }
+                message += `受到伤害：${stats.totalDamageTaken || 0}\n`;
+                message += `\n`;
+                
+                // 奖励
+                message += '🎁 奖励\n';
+                message += `经验：+${rewards.exp}\n`;
+                message += `金币：+${rewards.gold}\n`;
                 if (rewards.items.length > 0) {
                     rewards.items.forEach(item => {
-                        message += `获得 ${item.name} x${item.count}\n`;
+                        message += `${item.name}：x${item.count}\n`;
                     });
                 }
                 if (rewards.levelUps.length > 0) {
-                    message += `升级了！当前等级 ${Player.level}\n`;
+                    message += `\n🎉 升级了！当前等级 ${Player.level}\n`;
                     message += `获得 ${rewards.levelUps.length * 3} 属性点`;
                 }
                 
