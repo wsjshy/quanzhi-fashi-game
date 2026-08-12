@@ -13,10 +13,10 @@ const DataEnemies = {
       "dark"
     ],
     level: 4,
-    maxHp: 150,
+    maxHp: 180,
     maxMp: 0,
-    attack: 18,
-    defense: 6,
+    attack: 22,
+    defense: 8,
     speed: 15,
     skills: [
       "basic_attack",
@@ -184,10 +184,10 @@ const DataEnemies = {
       "earth"
     ],
     level: 4,
-    maxHp: 200,
+    maxHp: 240,
     maxMp: 0,
-    attack: 18,
-    defense: 15,
+    attack: 20,
+    defense: 18,
     speed: 6,
     skills: [
       "basic_attack",
@@ -431,10 +431,10 @@ const DataEnemies = {
       "thunder"
     ],
     level: 4,
-    maxHp: 110,
+    maxHp: 130,
     maxMp: 60,
-    attack: 20,
-    defense: 6,
+    attack: 24,
+    defense: 7,
     speed: 15,
     skills: [
       "basic_attack",
@@ -554,10 +554,10 @@ const DataEnemies = {
       "wind"
     ],
     level: 7,
-    maxHp: 400,
+    maxHp: 500,
     maxMp: 0,
-    attack: 35,
-    defense: 15,
+    attack: 42,
+    defense: 18,
     speed: 22,
     skills: [
       "basic_attack",
@@ -605,10 +605,10 @@ const DataEnemies = {
       "earth"
     ],
     level: 8,
-    maxHp: 600,
+    maxHp: 750,
     maxMp: 80,
-    attack: 40,
-    defense: 25,
+    attack: 48,
+    defense: 30,
     speed: 12,
     skills: [
       "basic_attack",
@@ -1107,10 +1107,10 @@ const DataEnemies = {
     description: "博城灾难的元凶，统领级妖魔，背生双翼，能飞天遁地，实力远超战将级。率领无数魔狼进攻博城，造成了巨大的灾难。",
     elements: ["wind", "dark"],
     level: 15,
-    maxHp: 3000,
+    maxHp: 4000,
     maxMp: 500,
-    attack: 120,
-    defense: 60,
+    attack: 150,
+    defense: 75,
     speed: 40,
     skills: ["basic_attack", "wolf_bite", "wind_blade", "dark_bolt", "wolf_howl", "sky_dive"],
     aiType: "tactical",
