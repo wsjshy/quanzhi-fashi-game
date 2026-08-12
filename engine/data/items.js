@@ -1865,6 +1865,200 @@ const DataItems = {
     lore: "暗影系高级履魔具，刺客的最爱。"
   },
 
+  // ========== 镯魔具（辅助型魔具） ==========
+  healing_bracelet: {
+    id: "healing_bracelet",
+    name: "治愈镯",
+    description: "附魔了治愈魔法的手镯，催动后可以恢复生命值。是猎者们常用的保命魔具。",
+    type: "equipment",
+    slot: "accessory",
+    icon: "💚",
+    price: 12000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    equipStats: { maxHp: 30 },
+    magicToolType: "bracelet",
+    magicToolGrade: "basic",
+    element: "light",
+    magicToolSkill: {
+      id: "skill_healing_bracelet",
+      name: "治愈镯·治愈",
+      description: "催动治愈镯，恢复80点生命值",
+      cooldown: 5,
+      effects: [
+        {
+          type: "heal",
+          value: 80
+        }
+      ]
+    },
+    lore: "治愈系魔具，野外猎者的标配，关键时刻能救命。"
+  },
+  
+  cleansing_bracelet: {
+    id: "cleansing_bracelet",
+    name: "净化镯",
+    description: "附魔了净化魔法的手镯，可以清除身上的负面状态。对付诅咒系和毒系妖魔特别有效。",
+    type: "equipment",
+    slot: "accessory",
+    icon: "✨",
+    price: 15000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    equipStats: { spirit: 5 },
+    magicToolType: "bracelet",
+    magicToolGrade: "basic",
+    element: "light",
+    magicToolSkill: {
+      id: "skill_cleansing_bracelet",
+      name: "净化镯·净化",
+      description: "催动净化镯，清除身上所有负面状态",
+      cooldown: 4,
+      effects: [
+        {
+          type: "cleanse",
+          value: 1
+        }
+      ]
+    },
+    lore: "净化系魔具，对付诅咒和毒素的利器。"
+  },
+  
+  mana_bracelet: {
+    id: "mana_bracelet",
+    name: "魔力镯",
+    description: "可以储存魔能的手镯，催动后可以恢复魔法值。对于魔法师来说是非常实用的魔具。",
+    type: "equipment",
+    slot: "accessory",
+    icon: "💙",
+    price: 10000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    equipStats: { maxMp: 20 },
+    magicToolType: "bracelet",
+    magicToolGrade: "basic",
+    magicToolSkill: {
+      id: "skill_mana_bracelet",
+      name: "魔力镯·回魔",
+      description: "催动魔力镯，恢复50点魔法值",
+      cooldown: 4,
+      effects: [
+        {
+          type: "mana_restore",
+          value: 50
+        }
+      ]
+    },
+    lore: "魔力系魔具，魔法师的好帮手。"
+  },
+  
+  crit_bracelet: {
+    id: "crit_bracelet",
+    name: "锐击镯",
+    description: "附魔了锐击魔法的手镯，催动后短时间内暴击率大幅提升。适合爆发型战斗。",
+    type: "equipment",
+    slot: "accessory",
+    icon: "💥",
+    price: 18000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    equipStats: { critRate: 0.03 },
+    magicToolType: "bracelet",
+    magicToolGrade: "basic",
+    magicToolSkill: {
+      id: "skill_crit_bracelet",
+      name: "锐击镯·锐击",
+      description: "催动锐击镯，3回合内暴击率提升30%",
+      cooldown: 5,
+      effects: [
+        {
+          type: "crit_buff",
+          value: 0.3,
+          duration: 3
+        }
+      ]
+    },
+    lore: "爆发系魔具，一击必杀的快感。"
+  },
+  
+  lifesteal_bracelet: {
+    id: "lifesteal_bracelet",
+    name: "吸血镯",
+    description: "附魔了吸血魔法的邪恶手镯，催动后攻击可以吸取敌人的生命值。虽然有些邪恶，但是非常实用。",
+    type: "equipment",
+    slot: "accessory",
+    icon: "🩸",
+    price: 25000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "史诗",
+    equipStats: { attack: 10 },
+    magicToolType: "bracelet",
+    magicToolGrade: "spirit",
+    element: "dark",
+    magicToolSkill: {
+      id: "skill_lifesteal_bracelet",
+      name: "吸血镯·吸血",
+      description: "催动吸血镯，3回合内攻击吸取20%伤害的生命值",
+      cooldown: 6,
+      effects: [
+        {
+          type: "lifesteal",
+          value: 0.2,
+          duration: 3
+        }
+      ]
+    },
+    lore: "暗影系魔具，以战养战的邪恶力量。"
+  },
+  
+  thorn_bracelet: {
+    id: "thorn_bracelet",
+    name: "荆棘镯",
+    description: "附魔了荆棘魔法的手镯，受到攻击时会反弹一部分伤害给敌人。对付近战妖魔特别有效。",
+    type: "equipment",
+    slot: "accessory",
+    icon: "🌵",
+    price: 20000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    equipStats: { defense: 15 },
+    magicToolType: "bracelet",
+    magicToolGrade: "basic",
+    element: "earth",
+    magicToolSkill: {
+      id: "skill_thorn_bracelet",
+      name: "荆棘镯·反伤",
+      description: "催动荆棘镯，3回合内受到攻击反弹25%伤害",
+      cooldown: 5,
+      effects: [
+        {
+          type: "damage_reflect",
+          value: 0.25,
+          duration: 3
+        }
+      ]
+    },
+    lore: "土系魔具，以彼之道还施彼身。"
+  },
+
   // 星图之书（中阶魔法卷轴）
   star_map_book_fire: {
     id: "star_map_book_fire",

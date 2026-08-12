@@ -541,6 +541,79 @@ const BattleSystem = {
                 this.player.buffs.push(freezeChanceBuff);
                 break;
                 
+            case 'heal': // 治疗
+                const healAmount = Math.floor(value);
+                const oldHp = this.player.hp;
+                this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
+                const actualHeal = this.player.hp - oldHp;
+                this.addLog(`恢复了 ${actualHeal} 点生命值！`, 'heal');
+                break;
+                
+            case 'mana_restore': // 恢复MP
+                const manaAmount = Math.floor(value);
+                const oldMp = this.player.mp;
+                this.player.mp = Math.min(this.player.maxMp, this.player.mp + manaAmount);
+                const actualMana = this.player.mp - oldMp;
+                this.addLog(`恢复了 ${actualMana} 点魔法值！`, 'heal');
+                break;
+                
+            case 'cleanse': // 净化（移除负面状态）
+                const removed = [];
+                this.player.statusEffects = this.player.statusEffects.filter(s => {
+                    const isDebuff = ['burn', 'freeze', 'frozen', 'stun', 'poison', 'slow', 'curse', 'blind', 'bind', 'paralyze', 'electrified'].includes(s.type);
+                    if (isDebuff) {
+                        removed.push(s.name || s.type);
+                        return false;
+                    }
+                    return true;
+                });
+                if (removed.length > 0) {
+                    this.addLog(`净化了 ${removed.length} 个负面状态！`, 'heal');
+                } else {
+                    this.addLog(`没有需要净化的负面状态。`, 'system');
+                }
+                break;
+                
+            case 'crit_buff': // 暴击率提升
+                const critBuff = {
+                    type: 'crit_up',
+                    name: skill.name,
+                    duration: duration,
+                    critMod: value
+                };
+                this.player.buffs.push(critBuff);
+                break;
+                
+            case 'hit_buff': // 命中率提升
+                const hitBuff = {
+                    type: 'hit_up',
+                    name: skill.name,
+                    duration: duration,
+                    hitMod: value
+                };
+                this.player.buffs.push(hitBuff);
+                break;
+                
+            case 'lifesteal': // 攻击吸血（持续效果）
+                const lifestealBuff = {
+                    type: 'lifesteal',
+                    name: skill.name,
+                    duration: duration,
+                    lifestealPercent: value
+                };
+                this.player.buffs.push(lifestealBuff);
+                break;
+                
+            case 'damage_reflect': // 伤害反弹（持续效果）
+                const reflectBuff = {
+                    type: 'damage_reflect',
+                    name: skill.name,
+                    duration: duration,
+                    reflectPercent: value
+                };
+                this.player.buffs.push(reflectBuff);
+                break;
+                
             default:
                 console.warn(`[MagicTool] 未知效果类型: ${effect.type}`);
         }
@@ -585,7 +658,7 @@ const BattleSystem = {
         }
 
         // 应用伤害
-        this.applyDamage(this.enemy, damage);
+        this.applyDamage(this.enemy, damage, this.player);
         
         // 连续暴击记录（用于幸运儿成就）
         if (damage.isCrit) {
@@ -808,7 +881,7 @@ const BattleSystem = {
                 casterData
             );
 
-            this.applyDamage(targetData, damage);
+            this.applyDamage(targetData, damage, casterData);
             
             // 连续暴击记录（仅玩家，用于幸运儿成就）
             if (isPlayer && typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
@@ -1166,7 +1239,7 @@ const BattleSystem = {
                 this.enemy,
                 this.player
             );
-            this.applyDamage(this.enemy, dmg);
+            this.applyDamage(this.enemy, dmg, this.player);
         }
 
         // 处理净化类道具
@@ -1299,7 +1372,7 @@ const BattleSystem = {
             summon
         );
 
-        this.applyDamage(this.enemy, damage);
+        this.applyDamage(this.enemy, damage, summon);
         this.addLog(`${summon.icon} ${summon.name} 发动攻击，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}`, 'magic');
     },
 
@@ -1385,7 +1458,7 @@ const BattleSystem = {
                 damage.amount = Math.floor(damage.amount * 0.5);
             }
 
-            this.applyDamage(this.player, damage);
+            this.applyDamage(this.player, damage, this.enemy);
             
             // 天赋：攻击命中效果（流血等）
             if (!damage.isMiss && damage.amount > 0) {
@@ -2021,12 +2094,29 @@ const BattleSystem = {
             element: element,
             elementEffect: null  // 'super' | 'weak' | 'normal'
         };
+        
+        // 应用攻击者的增益效果
+        if (attacker) {
+            const attackerMods = this.getStatusModifiers(attacker);
+            hitRate += attackerMods.hitRateMod;
+            critRate += attackerMods.critRateMod;
+        }
 
         // 命中判定（考虑目标闪避修正）
         let evasion = 0;
         if (target) {
             const mods = this.getStatusModifiers(target);
             evasion = mods.evasionMod;
+            
+            // 下次必定闪避
+            if (mods.nextDodgeGuaranteed) {
+                result.isMiss = true;
+                // 消耗掉必定闪避效果
+                if (target.buffs) {
+                    target.buffs = target.buffs.filter(b => b.type !== 'next_dodge_guaranteed');
+                }
+                return result;
+            }
             
             // 天赋：闪避加成
             if (target.traitBonuses && target.traitBonuses.dodgeBonus) {
@@ -2219,7 +2309,7 @@ const BattleSystem = {
     /**
      * 应用伤害
      */
-    applyDamage(target, damage) {
+    applyDamage(target, damage, attacker) {
         let amount = damage.amount;
         
         // 护盾吸收
@@ -2256,6 +2346,63 @@ const BattleSystem = {
             }
         }
         
+        // 处理攻击命中后的效果（吸血、灼烧等）
+        if (attacker && amount > 0 && !damage.isMiss) {
+            const attackerMods = this.getStatusModifiers(attacker);
+            const attackerName = attacker === this.player ? '你' : this.enemy.name;
+            const targetName = target === this.player ? '你' : this.enemy.name;
+            
+            // 吸血效果
+            if (attackerMods.lifesteal > 0) {
+                const healAmount = Math.floor(amount * attackerMods.lifesteal);
+                if (healAmount > 0 && attacker.hp < attacker.maxHp) {
+                    attacker.hp = Math.min(attacker.maxHp, attacker.hp + healAmount);
+                    this.addLog(`${attackerName} 吸取了 ${healAmount} 点生命！`, 'heal');
+                }
+            }
+            
+            // 攻击灼烧几率
+            if (attackerMods.burnChanceOnAttack > 0 && Math.random() < attackerMods.burnChanceOnAttack) {
+                const burnDamage = attackerMods.burnDamagePerTurn || 10;
+                const burnEffect = {
+                    type: 'burn',
+                    name: '灼烧',
+                    duration: 3,
+                    damagePerTurn: burnDamage
+                };
+                target.statusEffects.push(burnEffect);
+                this.addLog(`${targetName} 被灼烧了！`, 'debuff');
+            }
+        }
+        
+        // 处理受到攻击后的效果（反伤、冻结等）
+        if (attacker && amount > 0 && !damage.isMiss) {
+            const targetMods = this.getStatusModifiers(target);
+            const attackerName = attacker === this.player ? '你' : this.enemy.name;
+            const targetName = target === this.player ? '你' : this.enemy.name;
+            
+            // 伤害反弹
+            if (targetMods.damageReflect > 0) {
+                const reflectAmount = Math.floor(amount * targetMods.damageReflect);
+                if (reflectAmount > 0) {
+                    attacker.hp = Math.max(0, attacker.hp - reflectAmount);
+                    this.addLog(`${attackerName} 受到了 ${reflectAmount} 点反伤！`, 'damage');
+                }
+            }
+            
+            // 受击冻结几率
+            if (targetMods.freezeChanceOnHit > 0 && Math.random() < targetMods.freezeChanceOnHit) {
+                const freezeDuration = targetMods.freezeDuration || 1;
+                const freezeEffect = {
+                    type: 'frozen',
+                    name: '冻结',
+                    duration: freezeDuration
+                };
+                attacker.statusEffects.push(freezeEffect);
+                this.addLog(`${attackerName} 被冻结了！`, 'debuff');
+            }
+        }
+        
         // 同步到玩家数据
         if (target === this.player) {
             Player.hp = this.player.hp;
@@ -2264,6 +2411,11 @@ const BattleSystem = {
             if (amount > 0) {
                 this.tookDamage = true;
             }
+        }
+        
+        // 同步攻击者的HP到玩家数据
+        if (attacker === this.player) {
+            Player.hp = this.player.hp;
         }
     },
     
@@ -2823,7 +2975,7 @@ const BattleSystem = {
             if (effect.dotDamage) {
                 const stacks = effect.stacks || 1;
                 const damage = { amount: Math.floor(effect.dotDamage * stacks), isCrit: false, isMiss: false };
-                this.applyDamage(target, damage);
+                this.applyDamage(target, damage, null);
                 this.addLog(`${targetName} 受到 ${effect.name} 伤害 ${damage.amount} 点（${stacks}层）`, 'damage');
             }
 
@@ -2858,6 +3010,29 @@ const BattleSystem = {
 
         // 清除融化加成标记
         if (target._meltBonus) delete target._meltBonus;
+        
+        // 处理增益效果（buffs）的持续时间
+        if (target.buffs && target.buffs.length > 0) {
+            target.buffs = target.buffs.filter(buff => {
+                // 护盾类型的buff不随时间消失（被打掉才消失）
+                if (buff.type === 'shield') {
+                    if ((buff.shieldAmount || 0) <= 0) {
+                        return false;
+                    }
+                    return true;
+                }
+                
+                // 减少持续时间
+                if (buff.duration !== undefined && buff.duration !== null) {
+                    buff.duration--;
+                    if (buff.duration <= 0) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+        }
     },
 
     /**
@@ -2877,11 +3052,21 @@ const BattleSystem = {
             speedMod: 0,
             hitRateMod: 0,
             evasionMod: 0,
+            critRateMod: 0,
             fireDamageMod: 1,
             thunderDamageMod: 1,
-            iceDamageMod: 1
+            iceDamageMod: 1,
+            fireResistanceMod: 0,
+            lifesteal: 0,
+            damageReflect: 0,
+            nextDodgeGuaranteed: false,
+            burnChanceOnAttack: 0,
+            burnDamagePerTurn: 0,
+            freezeChanceOnHit: 0,
+            freezeDuration: 0
         };
 
+        // 处理状态效果
         target.statusEffects.forEach(effect => {
             if (effect.statModifiers) {
                 const stacks = effect.stacks || 1;
@@ -2901,6 +3086,52 @@ const BattleSystem = {
                 mods.fireDamageMod *= 2;
             }
         });
+        
+        // 处理增益效果（buffs）
+        if (target.buffs && target.buffs.length > 0) {
+            target.buffs.forEach(buff => {
+                switch (buff.type) {
+                    case 'attack_up':
+                        mods.attackMod += buff.attackMod || 0;
+                        break;
+                    case 'defense_up':
+                        mods.defenseMod += buff.defenseMod || 0;
+                        break;
+                    case 'speed_up':
+                        mods.speedMod += buff.speedMod || 0;
+                        break;
+                    case 'evasion_up':
+                        mods.evasionMod += buff.dodgeMod || 0;
+                        break;
+                    case 'crit_up':
+                        mods.critRateMod += buff.critMod || 0;
+                        break;
+                    case 'hit_up':
+                        mods.hitRateMod += buff.hitMod || 0;
+                        break;
+                    case 'fire_resistance_up':
+                        mods.fireResistanceMod += buff.resistanceMod || 0;
+                        break;
+                    case 'lifesteal':
+                        mods.lifesteal += buff.lifestealPercent || 0;
+                        break;
+                    case 'damage_reflect':
+                        mods.damageReflect += buff.reflectPercent || 0;
+                        break;
+                    case 'next_dodge_guaranteed':
+                        mods.nextDodgeGuaranteed = true;
+                        break;
+                    case 'burn_chance_on_attack':
+                        mods.burnChanceOnAttack += buff.chance || 0;
+                        mods.burnDamagePerTurn = buff.damagePerTurn || 10;
+                        break;
+                    case 'freeze_chance_on_hit':
+                        mods.freezeChanceOnHit += buff.chance || 0;
+                        mods.freezeDuration = buff.freezeDuration || 1;
+                        break;
+                }
+            });
+        }
 
         // 融化加成
         if (target._meltBonus) {
