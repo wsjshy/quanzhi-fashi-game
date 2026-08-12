@@ -25,6 +25,12 @@ const WorldState = {
     // NPC 间的关系矩阵
     npcRelationships: {},
 
+    // 区域状态
+    regionStates: {},
+
+    // 玩家成就
+    achievements: [],
+
     // 初始化
     init() {
         // 初始化默认值
@@ -35,6 +41,8 @@ const WorldState = {
         this.completedEventChains = [];
         this.knownInfo = [];
         this.npcRelationships = {};
+        this.regionStates = {};
+        this.achievements = [];
 
         // 初始化默认势力声望
         if (DataManager.getFactions) {
@@ -138,6 +146,117 @@ const WorldState = {
         if (rep >= -20) return { level: 'cold', name: '冷淡', color: '#aaaaaa' };
         if (rep >= -50) return { level: 'hostile', name: '敌对', color: '#ff6666' };
         return { level: 'hated', name: '仇恨', color: '#ff0000' };
+    },
+
+    // ========== 区域状态 ==========
+
+    /**
+     * 获取区域状态
+     * @param {string} regionId - 区域ID
+     * @returns {object} 区域状态
+     */
+    getRegionState(regionId) {
+        if (!this.regionStates[regionId]) {
+            // 初始化默认区域状态
+            this.regionStates[regionId] = {
+                safety: 50,      // 安全度 0-100
+                prosperity: 50,  // 繁荣度 0-100
+                demonActivity: 50, // 妖魔活跃度 0-100
+                publicOpinion: 50, // 舆论风向 0-100
+                lastUpdated: 0   // 最后更新天数
+            };
+        }
+        return this.regionStates[regionId];
+    },
+
+    /**
+     * 修改区域状态
+     * @param {string} regionId - 区域ID
+     * @param {string} stat - 状态类型（safety/prosperity/demonActivity/publicOpinion）
+     * @param {number} amount - 变化量
+     * @returns {number} 新值
+     */
+    changeRegionState(regionId, stat, amount) {
+        const state = this.getRegionState(regionId);
+        state[stat] = (state[stat] || 0) + amount;
+        state[stat] = Math.max(0, Math.min(100, state[stat]));
+        state.lastUpdated = Player.day;
+        this.save();
+        return state[stat];
+    },
+
+    /**
+     * 获取区域安全等级
+     * @param {string} regionId - 区域ID
+     * @returns {object} 安全等级
+     */
+    getSafetyLevel(regionId) {
+        const safety = this.getRegionState(regionId).safety;
+        if (safety >= 80) return { level: 'safe', name: '安全', color: '#00ff00', desc: '治安良好，妖魔稀少' };
+        if (safety >= 60) return { level: 'caution', name: ' caution', color: '#88ff88', desc: '偶有妖魔出没，需注意安全' };
+        if (safety >= 40) return { level: 'warning', name: '危险', color: '#ffcc00', desc: '妖魔频繁出没，建议组队' };
+        if (safety >= 20) return { level: 'danger', name: '极度危险', color: '#ff6600', desc: '妖魔横行，不建议单独行动' };
+        return { level: 'disaster', name: '灾难', color: '#ff0000', desc: '妖魔占领区域，人类无法生存' };
+    },
+
+    // ========== 玩家成就 ==========
+
+    /**
+     * 获取所有成就
+     * @returns {array} 成就列表
+     */
+    getAchievements() {
+        return this.achievements || [];
+    },
+
+    /**
+     * 解锁成就
+     * @param {string} achievementId - 成就ID
+     * @param {object} achievementData - 成就数据
+     * @returns {boolean} 是否新解锁
+     */
+    unlockAchievement(achievementId, achievementData = {}) {
+        if (!this.achievements) {
+            this.achievements = [];
+        }
+
+        // 检查是否已经解锁
+        if (this.achievements.find(a => a.id === achievementId)) {
+            return false;
+        }
+
+        // 添加成就
+        const achievement = {
+            id: achievementId,
+            name: achievementData.name || achievementId,
+            description: achievementData.description || '',
+            rarity: achievementData.rarity || 'common',
+            unlockedAt: {
+                day: Player.day,
+                hour: Player.hour
+            },
+            ...achievementData
+        };
+
+        this.achievements.push(achievement);
+        this.save();
+
+        // 显示提示
+        if (typeof UI !== 'undefined' && UI.showMessage) {
+            UI.showMessage(`🏆 成就解锁：${achievement.name}`);
+        }
+
+        return true;
+    },
+
+    /**
+     * 检查是否已解锁成就
+     * @param {string} achievementId - 成就ID
+     * @returns {boolean} 是否已解锁
+     */
+    hasAchievement(achievementId) {
+        if (!this.achievements) return false;
+        return this.achievements.some(a => a.id === achievementId);
     },
 
     // ========== 世界事件 ==========
@@ -667,7 +786,9 @@ const WorldState = {
             activeEventChains: this.activeEventChains,
             completedEventChains: this.completedEventChains,
             knownInfo: this.knownInfo,
-            npcRelationships: this.npcRelationships
+            npcRelationships: this.npcRelationships,
+            regionStates: this.regionStates,
+            achievements: this.achievements
         };
     },
 
@@ -684,6 +805,8 @@ const WorldState = {
         this.completedEventChains = data.completedEventChains || [];
         this.knownInfo = data.knownInfo || [];
         this.npcRelationships = data.npcRelationships || {};
+        this.regionStates = data.regionStates || {};
+        this.achievements = data.achievements || [];
     },
 
     /**
