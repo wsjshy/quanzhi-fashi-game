@@ -1144,6 +1144,21 @@ const DataSkills = {
       { name: "嗜血", type: "attack_up", duration: 3, chance: 1.0, statModifiers: { attack: 8 } }
     ]
   },
+  sky_dive: {
+    id: "sky_dive",
+    name: "俯冲攻击",
+    description: "翼苍狼从高空俯冲而下，造成毁灭性的伤害，有几率眩晕。",
+    element: "wind",
+    type: "damage",
+    baseDamage: 80,
+    damageMultiplier: 1.8,
+    mpCost: 40,
+    targetType: "enemy",
+    tier: "中阶",
+    statusEffects: [
+      { name: "眩晕", type: "stun", duration: 1, chance: 0.4 }
+    ]
+  },
   dark_claw: {
     id: "dark_claw",
     name: "暗爪",
