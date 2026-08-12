@@ -2310,6 +2310,14 @@ const BattleSystem = {
                 Player.winStreak = 0;
             }
             
+            // 发布玩家死亡事件
+            if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                BattleEventBus.emit(BattleEvents.PLAYER_DEATH, {
+                    enemy: this.enemy,
+                    turn: this.turn
+                });
+            }
+            
             return true;
         }
 
@@ -2337,6 +2345,16 @@ const BattleSystem = {
             // 成就检查
             if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
                 this.checkBattleAchievements();
+            }
+            
+            // 发布敌人死亡事件
+            if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                BattleEventBus.emit(BattleEvents.ENEMY_DEATH, {
+                    enemy: this.enemy,
+                    turn: this.turn,
+                    rating: this.rating,
+                    stats: this.stats
+                });
             }
             
             return true;
