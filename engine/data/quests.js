@@ -1838,5 +1838,73 @@ const DataQuests = {
     dialogueStart: "今天是班级考核日，大家轮流上台切磋，点到为止。",
     dialogueInProgress: "不错不错，继续加油！还有几位同学等着你挑战呢。",
     dialogueComplete: "太棒了！你在班级考核中表现优异，排名很靠前！继续努力，期末考核争取拿第一！"
+  },
+
+  quest_library_research: {
+    id: "quest_library_research",
+    name: "图书馆研究",
+    description: "薛木生老师布置了一个研究作业，需要去图书馆查阅资料。去图书馆看5次书，完成研究作业。",
+    giver: "xue_musheng",
+    type: "story",
+    objectives: [
+      {
+        type: "library",
+        count: 5,
+        description: "去图书馆看书 5 次"
+      }
+    ],
+    rewards: {
+      exp: 200,
+      gold: 100,
+      items: [
+        {
+          itemId: "magic_book",
+          count: 1
+        }
+      ],
+      reputation: {
+        tianlan_school: 10
+      }
+    },
+    prerequisites: [
+      "quest_intro"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "这学期的研究作业是关于魔法史的，去图书馆多看看书，对你会有帮助的。",
+    dialogueInProgress: "图书馆是知识的宝库，要好好利用。",
+    dialogueComplete: "很好！你的研究作业完成得很不错，看得出来你很用心。"
+  },
+
+  quest_cafeteria_lunch: {
+    id: "quest_cafeteria_lunch",
+    name: "食堂午餐",
+    description: "学习了一上午，肚子饿了吧？去食堂吃个午饭，补充一下体力。",
+    giver: "zhang_xiaohou",
+    type: "story",
+    objectives: [
+      {
+        type: "eat",
+        locationId: "cafeteria",
+        count: 1,
+        description: "去食堂吃一顿饭"
+      }
+    ],
+    rewards: {
+      exp: 50,
+      gold: 0,
+      items: [],
+      reputation: {
+        tianlan_school: 5
+      }
+    },
+    prerequisites: [
+      "quest_intro"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "嘿，快到饭点了，一起去食堂吃饭吧？我听说今天有红烧肉！",
+    dialogueInProgress: "快点快点，去晚了就没好吃的了！",
+    dialogueComplete: "呼，吃得好饱啊！下午的课才有精神嘛。"
   }
 };
