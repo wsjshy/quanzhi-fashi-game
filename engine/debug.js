@@ -1102,12 +1102,37 @@ const DebugPanel = {
     // 开始战斗
     startBattle(enemyId) {
         try {
-            if (typeof Battle !== 'undefined' && Battle.start) {
-                Battle.start(enemyId);
-                this.toggle(); // 关闭调试面板
-                console.log(`[Debug] 开始战斗: ${enemyId}`);
+            if (typeof BattleSystem !== 'undefined' && BattleSystem.startBattle) {
+                // 获取敌人数据
+                let enemyData = null;
+                if (typeof DataEnemies !== 'undefined' && DataEnemies[enemyId]) {
+                    enemyData = DataEnemies[enemyId];
+                } else if (typeof DataCharacters !== 'undefined' && DataCharacters[enemyId]) {
+                    // NPC决斗
+                    const npc = DataCharacters[enemyId];
+                    enemyData = {
+                        id: enemyId,
+                        name: npc.name || enemyId,
+                        level: npc.level || 5,
+                        maxHp: (npc.stats?.maxHp) || 100,
+                        maxMp: (npc.stats?.maxMp) || 50,
+                        attack: (npc.stats?.attack) || 10,
+                        defense: (npc.stats?.defense) || 5,
+                        speed: (npc.stats?.speed) || 10,
+                        element: npc.element || 'fire',
+                        skills: npc.skills || []
+                    };
+                }
+                
+                if (enemyData) {
+                    BattleSystem.startBattle(enemyData);
+                    this.toggle(); // 关闭调试面板
+                    console.log(`[Debug] 开始战斗: ${enemyId}`);
+                } else {
+                    alert('找不到敌人数据: ' + enemyId);
+                }
             } else {
-                alert('Battle 系统不存在');
+                alert('BattleSystem 不存在');
             }
         } catch (e) {
             console.error('[Debug] startBattle错误:', e);
