@@ -604,6 +604,154 @@ const DemonTraits = {
         ]
     },
     
+    // 巨眼鼹鼠
+    giant_eye_mole_rat: {
+        traits: [
+            {
+                id: "giant_eye",
+                name: "巨眼",
+                description: "眼睛巨大，视力极佳，命中+10%",
+                type: "passive",
+                effects: {
+                    hitBonus: 0.1
+                }
+            },
+            {
+                id: "digging",
+                name: "掘地",
+                description: "擅长挖洞，防御+15%",
+                type: "passive",
+                effects: {
+                    defenseBonus: 0.15
+                }
+            },
+            {
+                id: "sharp_claws",
+                name: "锋利爪子",
+                description: "爪子锋利，攻击有几率造成流血",
+                type: "on_hit",
+                effects: {
+                    bleedChance: 0.25,
+                    bleedDamage: 4,
+                    bleedDuration: 2
+                }
+            }
+        ]
+    },
+    
+    // 进阶独眼魔狼
+    one_eye_wolf_advanced: {
+        traits: [
+            {
+                id: "fierce",
+                name: "凶猛",
+                description: "生性凶猛，攻击力+25%",
+                type: "passive",
+                effects: {
+                    attackBonus: 0.25
+                }
+            },
+            {
+                id: "shadow_assault",
+                name: "暗影突袭",
+                description: "擅长暗影突袭，首次攻击必定暴击，伤害+50%",
+                type: "first_strike",
+                effects: {
+                    crit: true,
+                    damageBonus: 0.5
+                }
+            },
+            {
+                id: "pack_hunter",
+                name: "群居",
+                description: "群居生物，同类越多越强",
+                type: "passive",
+                effects: {
+                    attackBonus: 0.1,
+                    defenseBonus: 0.1
+                }
+            },
+            {
+                id: "thick_fur",
+                name: "厚皮",
+                description: "皮毛厚实，物理伤害减免+15%",
+                type: "damage_reduction",
+                effects: {
+                    physicalReduction: 0.15
+                }
+            }
+        ]
+    },
+    
+    // 疾行怪
+    running_demon: {
+        traits: [
+            {
+                id: "extreme_speed",
+                name: "极速",
+                description: "速度极快，速度+50%，闪避+20%",
+                type: "passive",
+                effects: {
+                    speedBonus: 0.5,
+                    dodgeBonus: 0.2
+                }
+            },
+            {
+                id: "hit_and_run",
+                name: "打了就跑",
+                description: "擅长游击，攻击后速度提升",
+                type: "passive",
+                effects: {
+                    attackBonus: 0.1
+                }
+            },
+            {
+                id: "fragile",
+                name: "脆弱",
+                description: "速度快但防御低，防御-10%",
+                type: "passive",
+                effects: {
+                    defenseBonus: -0.1
+                }
+            }
+        ]
+    },
+    
+    // 魔藤
+    demon_vine: {
+        traits: [
+            {
+                id: "plant_body",
+                name: "植物身躯",
+                description: "植物身躯，物理伤害减免+20%，但火伤害+30%",
+                type: "damage_reduction",
+                effects: {
+                    physicalReduction: 0.2,
+                    fireWeakness: 0.3
+                }
+            },
+            {
+                id: "vine_bind",
+                name: "藤蔓缠绕",
+                description: "藤蔓可以缠绕敌人，有几率束缚",
+                type: "on_hit",
+                effects: {
+                    bindChance: 0.25,
+                    bindDuration: 2
+                }
+            },
+            {
+                id: "regen",
+                name: "再生",
+                description: "生命力顽强，每回合恢复5%HP",
+                type: "on_turn_end",
+                effects: {
+                    hpRegenPercent: 0.05
+                }
+            }
+        ]
+    },
+    
     // ==================== 天赋效果工具函数 ====================
     
     /**
