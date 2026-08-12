@@ -323,6 +323,191 @@ const DataSpiritSeeds = {
     },
     price: 2800000,
   },
+
+  // ========== 稀有灵种（独特名字+特殊效果） ==========
+  // 比同品质通用灵种强15-20%，有独特的特殊效果
+
+  // 火系稀有灵种
+  fire_yanji: {
+    id: 'fire_yanji',
+    name: '炎姬灵种',
+    element: 'fire',
+    grade: 'spirit',
+    rarity: 'epic',
+    isRare: true,
+    description: '传说中有自我意识的火系灵种，化形为炎之少女。灼烧伤害翻倍，灼烧可叠加到10层。',
+    effects: {
+      damageBonus: 0.65, // 65%伤害加成（普通灵种50%）
+      burnChance: 0.3, // 30%灼烧概率
+      burnDamage: 1.0, // 灼烧伤害+100%
+      burnMaxStacks: 10, // 最大叠加10层
+    },
+    price: 5000000,
+    lore: '炎姬，传说中诞生于地心熔岩的火之精灵，拥有自己的意识。她选择的魔法师，将获得焚天灭地之力。'
+  },
+
+  // 冰系稀有灵种
+  ice_liuli: {
+    id: 'ice_liuli',
+    name: '琉璃冰种',
+    element: 'ice',
+    grade: 'spirit',
+    rarity: 'epic',
+    isRare: true,
+    description: '冰系灵种中的极品，琉璃般通透，威力比普通灵种强很多。穆宁雪天生拥有。',
+    effects: {
+      damageBonus: 0.8, // 80%伤害加成（普通灵种50%）
+      slowChance: 0.5, // 50%减速概率
+      freezeChance: 0.15, // 15%冻结概率
+    },
+    price: 5000000,
+    lore: '穆氏家族传承千年的至宝，传说由极北冰原的万年冰魄孕育而成。穆宁雪天生便与之共鸣。'
+  },
+
+  // 雷系稀有灵种
+  thunder_zixiao: {
+    id: 'thunder_zixiao',
+    name: '紫霄雷种',
+    element: 'thunder',
+    grade: 'spirit',
+    rarity: 'epic',
+    isRare: true,
+    description: '紫色的稀有雷种，蕴含紫霄神雷之力。连锁概率翻倍，麻痹时间更长。',
+    effects: {
+      damageBonus: 0.65, // 65%伤害加成（普通灵种50%）
+      stunChance: 0.25, // 25%麻痹概率（普通灵种15%）
+      chainChance: 0.3, // 30%连锁概率
+      stunDuration: 1, // 额外麻痹1回合
+    },
+    price: 6000000,
+    lore: '紫霄神雷，九天之上的雷霆之力。传说中只有被雷选中的人，才能获得紫霄雷种的认可。'
+  },
+
+  // 土系稀有灵种
+  earth_yanshen: {
+    id: 'earth_yanshen',
+    name: '岩神种',
+    element: 'earth',
+    grade: 'spirit',
+    rarity: 'epic',
+    isRare: true,
+    description: '蕴含岩神之力的稀有土系灵种，防御极强，受到攻击时有概率石化敌人。',
+    effects: {
+      damageBonus: 0.6, // 60%伤害加成（普通灵种50%）
+      defenseBonus: 0.3, // 30%防御加成（普通灵种15%）
+      petrifyChance: 0.15, // 15%石化概率（受击时）
+    },
+    price: 4500000,
+    lore: '岩神，大地之神。传说他陨落之后，心脏化为岩神种，守护着这片土地。'
+  },
+
+  // 风系稀有灵种
+  wind_fengling: {
+    id: 'wind_fengling',
+    name: '风灵种',
+    element: 'wind',
+    grade: 'spirit',
+    rarity: 'epic',
+    isRare: true,
+    description: '蕴含风之精灵的稀有风系灵种，速度极快，闪避率极高。',
+    effects: {
+      damageBonus: 0.6, // 60%伤害加成（普通灵种50%）
+      speedBonus: 0.3, // 30%速度加成
+      dodgeBonus: 0.15, // 15%闪避加成
+    },
+    price: 4500000,
+    lore: '风之精灵，自由的象征。她们从不臣服于任何人，只会选择与自己志同道合的魔法师。'
+  },
+
+  // 水系稀有灵种
+  water_shuijing: {
+    id: 'water_shuijing',
+    name: '水晶灵种',
+    element: 'water',
+    grade: 'spirit',
+    rarity: 'epic',
+    isRare: true,
+    description: '如水晶般纯净的水系灵种，治疗效果极强，每回合自动回复生命。',
+    effects: {
+      damageBonus: 0.55, // 55%伤害加成
+      healBonus: 0.7, // 70%治疗加成（普通灵种50%）
+      regenBonus: 0.2, // 20%生命回复加成
+    },
+    price: 4500000,
+    lore: '水晶灵种，诞生于深海之中的神秘灵种。据说拥有它的人，永远不会被疾病困扰。'
+  },
+
+  // 光系稀有灵种
+  light_shengguang: {
+    id: 'light_shengguang',
+    name: '圣光种',
+    element: 'light',
+    grade: 'spirit',
+    rarity: 'epic',
+    isRare: true,
+    description: '蕴含神圣之力的光系灵种，对黑暗生物有毁灭性打击，净化能力极强。',
+    effects: {
+      damageBonus: 0.65, // 65%伤害加成（普通灵种50%）
+      holyBonus: 0.3, // 30%神圣伤害加成（普通灵种20%）
+      purifyChance: 0.3, // 30%净化概率（普通灵种20%）
+    },
+    price: 5000000,
+    lore: '圣光，神的恩赐。只有内心纯净、信念坚定的人，才能获得圣光种的认可。'
+  },
+
+  // 暗影系稀有灵种
+  dark_anying: {
+    id: 'dark_anying',
+    name: '暗影之魂',
+    element: 'dark',
+    grade: 'spirit',
+    rarity: 'epic',
+    isRare: true,
+    description: '来自深渊的暗影之魂，暴击率和暴击伤害极高，擅长暗杀。',
+    effects: {
+      damageBonus: 0.65, // 65%伤害加成（普通灵种50%）
+      shadowBonus: 0.3, // 30%暗影伤害加成（普通灵种20%）
+      critChance: 0.15, // 15%暴击率加成
+      critDamage: 0.5, // 50%暴击伤害加成
+    },
+    price: 5000000,
+    lore: '暗影之魂，黑暗的化身。传说中它会寻找内心有黑暗的人，与他们签订契约。'
+  },
+
+  // 治愈系稀有灵种
+  heal_shengming: {
+    id: 'heal_shengming',
+    name: '生命灵种',
+    element: 'heal',
+    grade: 'spirit',
+    rarity: 'epic',
+    isRare: true,
+    description: '蕴含浓郁生命之力的治愈系灵种，治疗效果极强，甚至可以复活死者。',
+    effects: {
+      healBonus: 0.8, // 80%治疗加成（普通灵种50%）
+      regenBonus: 0.2, // 20%生命回复加成
+      reviveChance: 0.1, // 10%复活概率（濒死时）
+    },
+    price: 5500000,
+    lore: '生命灵种，生命女神的眼泪所化。拥有它的人，就拥有了创造生命的力量。'
+  },
+
+  // 召唤系稀有灵种
+  summon_qiyue: {
+    id: 'summon_qiyue',
+    name: '契约灵种',
+    element: 'summon',
+    grade: 'spirit',
+    rarity: 'epic',
+    isRare: true,
+    description: '蕴含灵魂契约之力的稀有召唤系灵种，可多契约一只召唤兽，且召唤兽更强。',
+    effects: {
+      summonBonus: 0.7, // 70%召唤兽加成（普通灵种50%）
+      summonCount: 2, // 额外2只召唤兽（普通灵种1只）
+    },
+    price: 5500000,
+    lore: '契约灵种，传说中可以与任何生物签订灵魂契约的神秘灵种。是每个召唤系法师梦寐以求的至宝。'
+  },
 };
 
 // 灵种品质配置

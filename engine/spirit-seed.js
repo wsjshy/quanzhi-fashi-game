@@ -73,9 +73,21 @@ const SpiritSeedSystem = {
         if (Player.spiritSeeds && Player.spiritSeeds[element]) {
             // 已有灵种，需要先移除旧的，或者替换
             const oldSeed = this.getSpiritSeed(Player.spiritSeeds[element]);
-            if (oldSeed && this.getGradeConfig(oldSeed.grade).multiplier >= this.getGradeConfig(seed.grade).multiplier) {
-                // 旧的品质更高或相等，不能替换
-                return false;
+            if (oldSeed) {
+                const oldMultiplier = this.getGradeConfig(oldSeed.grade).multiplier;
+                const newMultiplier = this.getGradeConfig(seed.grade).multiplier;
+                
+                // 旧的品质更高，不能替换
+                if (oldMultiplier > newMultiplier) {
+                    return false;
+                }
+                
+                // 同品质：稀有灵种可以替换普通灵种
+                // （玩家可以自由更换同品质灵种，尝试不同效果）
+                if (oldMultiplier === newMultiplier && !seed.isRare && oldSeed.isRare) {
+                    // 旧的是稀有，新的不是，不能替换（防止误操作降级）
+                    return false;
+                }
             }
         }
 
