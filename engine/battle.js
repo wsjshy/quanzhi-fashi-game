@@ -495,6 +495,15 @@ const BattleSystem = {
 
         this.player.mp -= skill.mpCost;
         this.addLog(`你开始引导 ${skill.name}...（${castTime} 回合后释放）`, 'magic');
+        
+        // 发布技能引导事件
+        if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+            BattleEventBus.emit(BattleEvents.SKILL_CHANNEL, {
+                caster: 'player',
+                skill: skill,
+                totalTime: castTime
+            });
+        }
 
         this.endPlayerTurn();
         return { casting: true, castTime: castTime };
@@ -923,6 +932,15 @@ const BattleSystem = {
                 const skill = this.playerCasting.skill;
                 this.playerCasting = null;
                 this.addLog(`${skill.name} 引导完成！`, 'magic');
+                
+                // 发布技能完成事件
+                if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                    BattleEventBus.emit(BattleEvents.SKILL_COMPLETE, {
+                        caster: 'player',
+                        skill: skill
+                    });
+                }
+                
                 this.castSkillImmediate(skill, 'player', true);
                 // 引导完成后继续执行后续逻辑（召唤兽攻击、敌人回合）
             }
@@ -1005,6 +1023,16 @@ const BattleSystem = {
                 const skill = this.enemyCasting.skill;
                 this.enemyCasting = null;
                 this.addLog(`${this.enemy.name} 的 ${skill.name} 引导完成！`, 'magic');
+                
+                // 发布技能完成事件
+                if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                    BattleEventBus.emit(BattleEvents.SKILL_COMPLETE, {
+                        caster: 'enemy',
+                        skill: skill,
+                        enemy: this.enemy
+                    });
+                }
+                
                 this.castSkillImmediate(skill, 'enemy', true);
                 // 引导完成后继续执行后续逻辑
                 this.endEnemyTurn();
@@ -1160,6 +1188,16 @@ const BattleSystem = {
                     };
                     this.enemy.mp -= skill.mpCost;
                     this.addLog(`${this.enemy.name} 开始引导 ${skill.name}...`, 'magic');
+                    
+                    // 发布技能引导事件
+                    if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                        BattleEventBus.emit(BattleEvents.SKILL_CHANNEL, {
+                            caster: 'enemy',
+                            skill: skill,
+                            totalTime: castTime,
+                            enemy: this.enemy
+                        });
+                    }
                 }
             }
         } else if (action.type === 'defend') {
