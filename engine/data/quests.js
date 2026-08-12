@@ -1758,5 +1758,85 @@ const DataQuests = {
     dialogueStart: "嘿，你最近表现不错啊！有没有兴趣加入猎妖队？猎魔者公会正在招人，以你的实力肯定没问题。",
     dialogueInProgress: "怎么样，去猎魔者公会报到了吗？记得先完成考核任务哦。",
     dialogueComplete: "恭喜你正式成为猎妖师！以后我们就是战友了，一起猎杀妖魔，保护博城！"
+  },
+
+  quest_magic_theory_class: {
+    id: "quest_magic_theory_class",
+    name: "魔法理论课",
+    description: "薛木生老师的魔法理论课开始了。去上课，学习魔法基础知识，提升你的理论水平。",
+    giver: "xue_musheng",
+    type: "story",
+    objectives: [
+      {
+        type: "attend_class",
+        classId: "magic_theory",
+        count: 3,
+        description: "参加 3 次魔法理论课"
+      }
+    ],
+    rewards: {
+      exp: 150,
+      gold: 50,
+      items: [
+        {
+          itemId: "magic_book",
+          count: 1
+        }
+      ],
+      reputation: {
+        tianlan_school: 10
+      }
+    },
+    prerequisites: [
+      "quest_intro"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "同学们，今天我们来讲魔法的基本原理。魔法的本质是星子的共鸣...",
+    dialogueInProgress: "理论知识是魔法的基础，一定要认真学习。",
+    dialogueComplete: "很好，你对魔法理论的掌握很不错！继续努力。"
+  },
+
+  quest_class_exam: {
+    id: "quest_class_exam",
+    name: "班级考核",
+    description: "学期中的班级考核开始了。和同班同学切磋一下，看看你的实力在班级里排第几。",
+    giver: "xue_musheng",
+    type: "story",
+    objectives: [
+      {
+        type: "duel",
+        npcId: "zhao_kunsan",
+        count: 1,
+        description: "击败赵坤三"
+      },
+      {
+        type: "duel",
+        npcId: "zhang_xiaohou",
+        count: 1,
+        description: "击败张小侯"
+      }
+    ],
+    rewards: {
+      exp: 300,
+      gold: 200,
+      items: [
+        {
+          itemId: "magic_crystal",
+          count: 2
+        }
+      ],
+      reputation: {
+        tianlan_school: 15
+      }
+    },
+    prerequisites: [
+      "quest_magic_theory_class"
+    ],
+    nextQuest: null,
+    isMainQuest: false,
+    dialogueStart: "今天是班级考核日，大家轮流上台切磋，点到为止。",
+    dialogueInProgress: "不错不错，继续加油！还有几位同学等着你挑战呢。",
+    dialogueComplete: "太棒了！你在班级考核中表现优异，排名很靠前！继续努力，期末考核争取拿第一！"
   }
 };
