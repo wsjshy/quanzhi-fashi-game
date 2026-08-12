@@ -5730,5 +5730,225 @@ const DataCharacters = {
         }
       }
     }
+  },
+  zhu_principal: {
+    id: "zhu_principal",
+    name: "朱校长",
+    title: "天澜魔法高中校长",
+    description: "天澜魔法高中的大校长，在学生和家长们心中威望极高。他颇有半隐士的意味，可大事情依旧会出来主持。朱校长始终站在普通学生们这边，宁愿在世家、家族的压力下也保护普通学生，培养了很多并没有什么背景的出色魔法师。",
+    elements: [
+      "fire",
+      "water"
+    ],
+    level: 20,
+    maxHp: 800,
+    maxMp: 500,
+    attack: 80,
+    defense: 50,
+    speed: 40,
+    skills: [
+      "basic_attack",
+      "fire_bolt",
+      "water_shield"
+    ],
+    spriteColor: "#8B4513",
+    location: "tianlan_school",
+    availableTimes: [
+      "morning",
+      "afternoon"
+    ],
+    dialogue: [
+      {
+        trigger: "default",
+        text: "年轻人，修炼之路漫漫，要沉得住气。"
+      }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.8,
+      kind: 0.9,
+      honest: 0.85,
+      impulsive: 0.2,
+      loyal: 0.9,
+      arrogant: 0.1,
+      greedy: 0.1,
+      curious: 0.6,
+      wise: 0.95
+    },
+    giftPreferences: {
+      loved: [
+        "magic_herb",
+        "super_mana_potion"
+      ],
+      liked: [
+        "health_potion",
+        "mana_potion",
+        "demon_core"
+      ],
+      disliked: [],
+      baseOpinionGain: 3,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 2
+    },
+    relationshipCap: {
+      maxOpinion: 100,
+      maxTrust: 100,
+      canRomance: false,
+      canBeMentor: true,
+      canBeRival: false
+    },
+    relationships: {
+      deng_kai: {
+        opinion: 90,
+        trust: 90,
+        type: "friend",
+        label: "老战友"
+      },
+      mu_zhuoyun: {
+        opinion: -30,
+        trust: -20,
+        type: "rival",
+        label: "老对头"
+      }
+    },
+    dialogueTree: {
+      npcId: "zhu_principal",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["年轻人，来找我有什么事吗？", "修炼要循序渐进，不可急于求成。", "学校是你们的后盾，好好努力。"],
+          choices: [
+            { text: "请教修炼心得", next: "about_training", action: "talk" },
+            { text: "问问学校的情况", next: "about_school", action: "talk" },
+            { text: "告辞", next: "default", action: "back" }
+          ]
+        },
+        about_training: {
+          id: "about_training",
+          texts: ["修炼一途，天赋重要，努力更重要。", "光靠冥修是不够的，实战才能真正提升实力。", "记住，审时度势，别做无意义的事。"],
+          effects: { intelligence: 10, familiarity: 5 },
+          choices: [{ text: "受教了", next: "default", action: "back" }]
+        },
+        about_school: {
+          id: "about_school",
+          texts: ["天澜魔法高中是博城最好的公立学校。", "我们培养了很多优秀的魔法师，他们出身平凡，却成就非凡。", "学校会尽力为每一个学生提供公平的机会。"],
+          effects: { familiarity: 5 },
+          choices: [{ text: "明白了", next: "default", action: "back" }]
+        }
+      }
+    }
+  },
+  deng_kai: {
+    id: "deng_kai",
+    name: "邓凯",
+    title: "猎者联盟大长老",
+    description: "博城猎者联盟的大长老，地位超然，实力还在那位叫做杨作河的中阶魔法师之上。邓凯完全站在学生这一边，很看重有潜力的年轻魔法师，尤其是莫凡这样的天才。",
+    elements: [
+      "thunder",
+      "wind"
+    ],
+    level: 18,
+    maxHp: 700,
+    maxMp: 450,
+    attack: 90,
+    defense: 40,
+    speed: 60,
+    skills: [
+      "basic_attack",
+      "thunder_bolt",
+      "wind_blade"
+    ],
+    spriteColor: "#4169E1",
+    location: "hunter_guild",
+    availableTimes: [
+      "morning",
+      "afternoon",
+      "evening"
+    ],
+    dialogue: [
+      {
+        trigger: "default",
+        text: "年轻人，想加入猎者联盟吗？"
+      }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.9,
+      kind: 0.7,
+      honest: 0.8,
+      impulsive: 0.3,
+      loyal: 0.85,
+      arrogant: 0.2,
+      greedy: 0.2,
+      curious: 0.7,
+      wise: 0.8
+    },
+    giftPreferences: {
+      loved: [
+        "demon_core",
+        "magic_stone",
+        "super_mana_potion"
+      ],
+      liked: [
+        "health_potion",
+        "mana_potion",
+        "magic_herb"
+      ],
+      disliked: [],
+      baseOpinionGain: 3,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 2
+    },
+    relationshipCap: {
+      maxOpinion: 100,
+      maxTrust: 100,
+      canRomance: false,
+      canBeMentor: true,
+      canBeRival: false
+    },
+    relationships: {
+      zhu_principal: {
+        opinion: 90,
+        trust: 90,
+        type: "friend",
+        label: "老战友"
+      },
+      yang_zuohe: {
+        opinion: 60,
+        trust: 50,
+        type: "colleague",
+        label: "同僚"
+      }
+    },
+    dialogueTree: {
+      npcId: "deng_kai",
+      nodes: {
+        default: {
+          id: "default",
+          texts: ["年轻人，来找我有什么事？", "猎妖是个危险的活，你准备好了吗？", "有实力的年轻人，我们猎者联盟很欢迎。"],
+          choices: [
+            { text: "问问猎者联盟的情况", next: "about_guild", action: "talk" },
+            { text: "请教猎妖经验", next: "about_hunting", action: "talk" },
+            { text: "告辞", next: "default", action: "back" }
+          ]
+        },
+        about_guild: {
+          id: "about_guild",
+          texts: ["猎者联盟是魔法师们自发组成的组织。", "我们接受各种猎妖任务，保护城市的安全。", "加入猎者联盟，不仅能获得报酬，还能提升实力。"],
+          effects: { familiarity: 5 },
+          choices: [{ text: "明白了", next: "default", action: "back" }]
+        },
+        about_hunting: {
+          id: "about_hunting",
+          texts: ["猎妖可不是闹着玩的，随时都可能丢性命。", "光有实力不够，还要有经验和智慧。", "记住，活着回来才是最重要的。"],
+          effects: { intelligence: 8, familiarity: 5 },
+          choices: [{ text: "受教了", next: "default", action: "back" }]
+        }
+      }
+    }
   }
 };
