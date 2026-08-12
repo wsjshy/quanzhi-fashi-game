@@ -510,6 +510,29 @@ const Player = {
                 });
             }
         });
+        
+        // 成就检查
+        if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
+            try {
+                const awakenCount = this.elements.length;
+                const awakenAchievements = [
+                    { id: 'awaken_2', value: 2 },
+                    { id: 'awaken_5', value: 5 },
+                    { id: 'awaken_all', value: 10 },
+                ];
+                
+                awakenAchievements.forEach(ach => {
+                    if (awakenCount >= ach.value && !WorldState.hasAchievement(ach.id)) {
+                        const achData = DataAchievements[ach.id];
+                        if (achData) {
+                            WorldState.unlockAchievement(ach.id, achData);
+                        }
+                    }
+                });
+            } catch (e) {
+                console.warn('[玩家] 觉醒成就检查失败:', e);
+            }
+        }
 
         return {
             success: true,
