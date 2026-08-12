@@ -623,6 +623,7 @@ const BattleSystem = {
             }
             
             const casterName = isPlayer ? '你' : this.enemy.name;
+            const targetName = isPlayer ? this.enemy.name : '你';
             
             // 元素克制效果显示
             let elementEffectText = '';
@@ -658,6 +659,33 @@ const BattleSystem = {
                 
                 const target = isPlayer ? 'enemy' : 'player';
                 this.showDamageNumber(target, damage.amount, dmgType);
+            }
+            
+            // 元素反应：处理状态变化
+            if (damage.elementReaction && !damage.isMiss && targetData.statusEffects) {
+                // 蒸发/融化/感电/冻结都会消耗水状态
+                if (damage.elementReaction === 'vaporize' || 
+                    damage.elementReaction === 'electro' || 
+                    damage.elementReaction === 'freeze') {
+                    // 移除水状态
+                    targetData.statusEffects = targetData.statusEffects.filter(e => e.type !== 'wet');
+                }
+                // 融化消耗冰状态
+                if (damage.elementReaction === 'melt') {
+                    targetData.statusEffects = targetData.statusEffects.filter(e => e.type !== 'freeze' && e.type !== 'frozen');
+                }
+                // 感电附加麻痹
+                if (damage.elementReaction === 'electro') {
+                    const paralyzeEffect = { type: 'paralyze', name: '麻痹', duration: 1, skipTurn: true };
+                    targetData.statusEffects.push(paralyzeEffect);
+                    this.addLog(`${targetName} 陷入了麻痹状态！`, 'debuff');
+                }
+                // 冻结反应附加冻结
+                if (damage.elementReaction === 'freeze') {
+                    const freezeEffect = { type: 'frozen', name: '冻结', duration: 1, skipTurn: true };
+                    targetData.statusEffects.push(freezeEffect);
+                    this.addLog(`${targetName} 被冻结了！`, 'debuff');
+                }
             }
             
             // 发布命中/暴击/闪避/伤害事件
