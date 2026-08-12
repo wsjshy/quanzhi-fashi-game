@@ -255,9 +255,9 @@ const DataShops = {
       },
       // 残魄（用于升级星尘魔器）
       {
-        itemId: "remnant_soul",
-        price: 12000,
-        stock: 3
+        itemId: "soul_fragment",
+        price: 120,
+        stock: 5
       }
     ]
   },

@@ -8,17 +8,19 @@ const SoulSystem = {
   soulTypes: {
     remnant: {
       name: "残魄",
-      icon: "✨",
+      icon: "🔵",
       baseExp: 10,
       dropRate: 0.3, // 普通妖魔30%掉落率
-      price: 10000
+      price: 100,
+      itemId: "soul_fragment"
     },
     pure: {
       name: "精魄",
-      icon: "💫",
+      icon: "💎",
       baseExp: 500,
       dropRate: 0.05, // 精英妖魔5%掉落率
-      price: 5000000
+      price: 5000,
+      itemId: "elite_soul"
     }
   },
 
@@ -32,13 +34,6 @@ const SoulSystem = {
 
   // 击杀妖魔后自动收集残魄/精魄
   collectSoulOnKill(player, enemy) {
-    if (!this.hasLittleLoach(player)) {
-      return {
-        collected: false,
-        message: ""
-      };
-    }
-
     // 根据敌人等级和类型计算掉落
     const enemyLevel = enemy.level || 1;
     const isElite = enemy.isElite || enemy.isBoss || enemy.isAdvanced;
@@ -55,6 +50,12 @@ const SoulSystem = {
     // 等级修正：等级越高，掉落率略微增加
     dropRate *= (1 + enemyLevel * 0.02);
 
+    // 小泥鳅坠加成：掉落率+20%
+    const hasLoach = this.hasLittleLoach(player);
+    if (hasLoach) {
+      dropRate *= 1.2;
+    }
+
     // 随机判定是否掉落
     if (Math.random() > dropRate) {
       return {
@@ -64,7 +65,7 @@ const SoulSystem = {
     }
 
     // 掉落成功，添加到玩家背包
-    const soulItemId = soulType === "remnant" ? "remnant_soul" : "pure_soul";
+    const soulItemId = this.soulTypes[soulType].itemId;
     const soulName = this.soulTypes[soulType].name;
     const soulIcon = this.soulTypes[soulType].icon;
 
@@ -73,11 +74,17 @@ const SoulSystem = {
       player.addItem(soulItemId, 1);
     }
 
+    // 有小泥鳅坠的话，自动吸收并显示提示
+    let message = `获得 ${soulIcon} ${soulName} x1`;
+    if (hasLoach) {
+      message = `${soulIcon} 小泥鳅坠自动吸收了${soulName}！`;
+    }
+
     return {
       collected: true,
       soulType: soulType,
       soulItemId: soulItemId,
-      message: `${soulIcon} 小泥鳅坠吸收了${soulName}！`
+      message: message
     };
   },
 
@@ -125,14 +132,22 @@ const SoulSystem = {
 
     // 获取魂魄提供的经验
     const soulItem = DataItems[soulItemId];
-    if (!soulItem || soulItem.type !== "soul") {
+    
+    // 判断魂魄类型
+    let soulExp = 10;
+    if (soulItemId === this.soulTypes.remnant.itemId) {
+      soulExp = this.soulTypes.remnant.baseExp;
+    } else if (soulItemId === this.soulTypes.pure.itemId) {
+      soulExp = this.soulTypes.pure.baseExp;
+    } else if (soulItem && soulItem.soulExp) {
+      soulExp = soulItem.soulExp;
+    } else {
       return {
         success: false,
         message: "物品不是魂魄"
       };
     }
 
-    const soulExp = soulItem.soulExp || 10;
     const totalExp = soulExp * count;
 
     // 计算升级
