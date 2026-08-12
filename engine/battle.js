@@ -2131,11 +2131,22 @@ const BattleSystem = {
             if (effect.type === 'cleanse') {
                 if (Math.random() < (effect.chance || 1.0)) {
                     const debuffTypes = ['burn', 'freeze', 'frozen', 'stun', 'wet', 'slow', 'poison', 'curse', 'electrified', 'mud', 'steam', 'paralyze', 'weakness'];
-                    const beforeCount = target.statusEffects.length;
+                    const removedEffects = target.statusEffects.filter(e => debuffTypes.includes(e.type));
                     target.statusEffects = target.statusEffects.filter(e => !debuffTypes.includes(e.type));
-                    const removed = beforeCount - target.statusEffects.length;
+                    const removed = removedEffects.length;
                     if (removed > 0) {
                         this.addLog(`${targetName} 的圣光净化了 ${removed} 个负面状态！`, 'buff');
+                        
+                        // 发布状态移除事件
+                        if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                            removedEffects.forEach(removedEffect => {
+                                BattleEventBus.emit(BattleEvents.STATUS_REMOVED, {
+                                    target: isPlayerTarget ? 'player' : 'enemy',
+                                    effect: removedEffect,
+                                    reason: 'cleanse'
+                                });
+                            });
+                        }
                     } else {
                         this.addLog(`${targetName} 被圣光笼罩，没有负面状态需要净化`, 'system');
                     }
@@ -2189,6 +2200,15 @@ const BattleSystem = {
                         this.addLog(`${targetName} 闪避率提升！`, 'buff');
                     } else {
                         this.addLog(`${targetName} 陷入了 ${effect.name} 状态！`, 'debuff');
+                    }
+                    
+                    // 发布状态施加事件
+                    if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                        BattleEventBus.emit(BattleEvents.STATUS_APPLIED, {
+                            target: isPlayerTarget ? 'player' : 'enemy',
+                            effect: newEffect,
+                            isDebuff: !['shield', 'evasion_up', 'attack_up', 'defense_up', 'speed_up', 'crit_up', 'regen', 'cleanse'].includes(effect.type)
+                        });
                     }
                 }
 
@@ -2374,11 +2394,15 @@ const BattleSystem = {
      */
     tickStatusEffects(target, isPlayer) {
         const targetName = isPlayer ? '你' : this.enemy.name;
+        const removedEffects = [];
 
         target.statusEffects = target.statusEffects.filter(effect => {
             // 护盾不随时间消失（被打掉才消失）
             if (effect.type === 'shield') {
-                if ((effect.value || 0) <= 0) return false;
+                if ((effect.value || 0) <= 0) {
+                    removedEffects.push({ effect, reason: 'broken' });
+                    return false;
+                }
                 return true;
             }
 
@@ -2404,10 +2428,22 @@ const BattleSystem = {
                 if (effect.type !== 'shield') {
                     this.addLog(`${targetName} 的 ${effect.name} 效果消失了`, 'system');
                 }
+                removedEffects.push({ effect, reason: 'expired' });
                 return false;
             }
             return true;
         });
+
+        // 发布状态移除事件
+        if (removedEffects.length > 0 && typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+            removedEffects.forEach(item => {
+                BattleEventBus.emit(BattleEvents.STATUS_REMOVED, {
+                    target: isPlayer ? 'player' : 'enemy',
+                    effect: item.effect,
+                    reason: item.reason
+                });
+            });
+        }
 
         // 清除融化加成标记
         if (target._meltBonus) delete target._meltBonus;
