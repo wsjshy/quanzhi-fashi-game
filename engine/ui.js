@@ -1272,7 +1272,35 @@ const UI = {
                             <div style="height: 10px; background: #333; border-radius: 5px; overflow: hidden;">
                                 <div style="height: 100%; width: ${(state.enemy.hp / state.enemy.maxHp * 100).toFixed(1)}%; background: linear-gradient(90deg, #ff4444, #ff6666); transition: width 0.5s;"></div>
                             </div>
+                            ${state.enemy.mp && state.enemy.maxMp ? `
+                            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #6666ff; margin: 4px 0 2px;">
+                                <span>MP</span><span>${state.enemy.mp}/${state.enemy.maxMp}</span>
+                            </div>
+                            <div style="height: 6px; background: #333; border-radius: 3px; overflow: hidden;">
+                                <div style="height: 100%; width: ${(state.enemy.mp / state.enemy.maxMp * 100).toFixed(1)}%; background: linear-gradient(90deg, #4444ff, #6666ff); transition: width 0.5s;"></div>
+                            </div>
+                            ` : ''}
                         </div>
+                        
+                        <!-- 敌人状态效果 -->
+                        ${state.enemy.statusEffects && state.enemy.statusEffects.length > 0 ? `
+                            <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; max-width: 150px;">
+                                ${state.enemy.statusEffects.map(effect => {
+                                    const icons = { burn: '🔥', freeze: '❄️', frozen: '❄️', stun: '⚡', wet: '💧', shield: '🛡️', curse: '💀', slow: '🐌', defense_up: '🛡️', speed_up: '💨', evasion_up: '💨', attack_up: '⚔️', attack_down: '📉', defense_down: '📉', accuracy_down: '🎯', regen: '💚', electrified: '⚡', mud: '🟤', steam: '💨', poison: '☠️', paralyze: '⚡', bind: '🔗', blind: '👁️' };
+                                    const colors = { burn: '#ff6644', freeze: '#66aaff', frozen: '#66ddff', stun: '#ffdd44', wet: '#66bbff', shield: '#44ddcc', curse: '#aa66ff', slow: '#999', defense_up: '#66ff66', speed_up: '#88ff88', evasion_up: '#88ffaa', attack_up: '#ff8844', attack_down: '#aaaaaa', defense_down: '#aaaaaa', accuracy_down: '#ffcc44', regen: '#66ffaa', electrified: '#ffff44', mud: '#aa8844', steam: '#ccc', poison: '#88ff44', paralyze: '#ffff44', bind: '#aa8844', blind: '#999' };
+                                    const icon = icons[effect.type] || '✨';
+                                    const color = colors[effect.type] || '#fff';
+                                    const stacks = effect.stacks ? `×${effect.stacks}` : '';
+                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}">${icon}${stacks}</span>`;
+                                }).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        ${state.enemyCasting ? `
+                            <div style="margin-top: 10px; padding: 5px 10px; background: rgba(255, 100, 100, 0.3); border: 1px solid #ff6666; border-radius: 5px; font-size: 12px; color: #ff6666;">
+                                引导中: ${state.enemyCasting.skill.name} (${state.enemyCasting.progress}/${state.enemyCasting.totalTime})
+                            </div>
+                        ` : ''}
                         
                         <!-- 敌人状态效果 -->
                         ${state.enemy.statusEffects && state.enemy.statusEffects.length > 0 ? `
