@@ -1533,6 +1533,10 @@ const UI = {
                                     transition: all 0.2s;
                                 " ${canUse ? 'onmouseover="this.style.boxShadow=\'0 0 15px ' + SkillSystem.getElementColor(skill.element) + '80\'" onmouseout="this.style.boxShadow=\'none\'"' : ''}>
                                     <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">
+                                        ${(() => {
+                                            const elemIcons = { fire: '🔥', ice: '❄️', thunder: '⚡', earth: '🪨', wind: '🌪️', water: '💧', light: '✨', dark: '🌑', heal: '💚', summon: '🐺', neutral: '⚔️' };
+                                            return elemIcons[skill.element] || '';
+                                        })()}
                                         ${skill.name}
                                         ${state.player.skillLevels && state.player.skillLevels[skillId] ? `<span style="font-size: 11px; color: #ffcc66;"> Lv.${state.player.skillLevels[skillId].level || 1}</span>` : ''}
                                     </div>
