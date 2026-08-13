@@ -2186,5 +2186,83 @@ const DataSkills = {
         value: 0.3
       }
     ]
+  },
+  evil_eye_gaze: {
+    id: "evil_eye_gaze",
+    name: "邪眼凝视",
+    description: "邪眼沼妖用邪眼凝视目标，有几率使目标眩晕",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.8,
+    statusEffects: [
+      { name: "眩晕", type: "stun", duration: 1, chance: 0.35 }
+    ]
+  },
+  life_drain: {
+    id: "life_drain",
+    name: "生命汲取",
+    description: "暗系妖魔汲取目标生命，造成伤害并回复自身HP",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.0,
+    lifesteal: 0.5
+  },
+  curse_weakness: {
+    id: "curse_weakness",
+    name: "虚弱诅咒",
+    description: "黑教廷法师施加诅咒，降低目标攻击力",
+    element: "dark",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "虚弱", type: "attack_down", duration: 3, chance: 0.8, statModifiers: { attack: -8 } }
+    ]
+  },
+  terror_screech: {
+    id: "terror_screech",
+    name: "恐惧尖叫",
+    description: "妖魔发出刺耳尖叫，降低目标防御和速度",
+    element: "dark",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "恐惧", type: "defense_down", duration: 2, chance: 0.7, statModifiers: { defense: -6 } },
+      { name: "迟缓", type: "slow", duration: 2, chance: 0.7, speedMod: -5 }
+    ]
+  },
+  venom_spit: {
+    id: "venom_spit",
+    name: "毒液喷射",
+    description: "喷射毒液，造成伤害并使目标中毒减速",
+    element: "water",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.7,
+    statusEffects: [
+      { name: "中毒", type: "poison", duration: 3, chance: 0.5, dotDamage: 5 },
+      { name: "减速", type: "slow", duration: 2, chance: 0.4, value: 0.2 }
+    ]
   }
 };

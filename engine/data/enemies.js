@@ -674,7 +674,8 @@ const DataEnemies = {
     speed: 12,
     skills: [
       "basic_attack",
-      "dark_bolt"
+      "dark_bolt",
+      "curse_weakness"
     ],
     spriteColor: "#330033",
     aiType: "aggressive",
@@ -821,7 +822,7 @@ const DataEnemies = {
     attack: 16,
     defense: 8,
     speed: 10,
-    skills: ["basic_attack", "dark_bolt", "water_chain"],
+    skills: ["basic_attack", "dark_bolt", "water_chain", "evil_eye_gaze"],
     spriteColor: "#556b2f",
     isEnemy: true,
     aiType: "controller",
@@ -1098,7 +1099,7 @@ const DataEnemies = {
     attack: 30,
     defense: 10,
     speed: 30,
-    skills: ["basic_attack", "dark_bolt", "dark_claw"],
+    skills: ["basic_attack", "dark_bolt", "dark_claw", "life_drain", "terror_screech"],
     aiType: "aggressive",
     spriteColor: "#222222",
     isEnemy: true,
