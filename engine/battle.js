@@ -2583,6 +2583,17 @@ const BattleSystem = {
                 this.bossPhase2 = true;
                 this.addLog(`⚠️ ${this.enemy.name} 进入狂暴状态！攻击力大幅提升！`, 'crit');
                 
+                // 阶段转换：清除所有debuff
+                this.enemy.statusEffects = this.enemy.statusEffects.filter(e => 
+                    e.type === 'shield' || e.type === 'attack_up' || e.type === 'defense_up' || e.type === 'speed_up'
+                );
+                this.addLog(`${this.enemy.name} 驱散了身上的所有负面效果！`, 'buff');
+                
+                // 阶段转换：恢复10%HP
+                const phaseHeal = Math.floor(this.enemy.maxHp * 0.1);
+                this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + phaseHeal);
+                this.addLog(`${this.enemy.name} 恢复了 ${phaseHeal} 点生命值！`, 'heal');
+                
                 // 狂暴加成：攻击+30%，速度+20%，防御-10%
                 this.enemy.attack = Math.floor(this.enemy.attack * 1.3);
                 this.enemy.speed = Math.floor(this.enemy.speed * 1.2);
@@ -2592,6 +2603,9 @@ const BattleSystem = {
                 if (this.enemy.enemyType === 'demon' || this.enemy.demonTier) {
                     if (!this.enemy.skills.includes('berserk_mode')) {
                         this.enemy.skills.push('berserk_mode');
+                    }
+                    if (!this.enemy.skills.includes('demon_rage') && this.enemy.demonTier === 'commander') {
+                        this.enemy.skills.push('demon_rage');
                     }
                 }
                 
