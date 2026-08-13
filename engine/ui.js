@@ -1174,6 +1174,16 @@ const UI = {
                                 state.player.realm === 'super' ? '超阶' : state.player.realm
                             }</span>` : ''}
                         </div>
+                        ${state.player.elements && state.player.elements.length > 0 ? `
+                            <div style="margin-top: 4px; display: flex; gap: 4px; justify-content: center;">
+                                ${state.player.elements.map(elem => {
+                                    const elemIcons = { fire: '🔥', ice: '❄️', thunder: '⚡', earth: '🪨', wind: '🌪️', water: '💧', light: '✨', dark: '🌑', heal: '💚', summon: '🐺', neutral: '⚔️' };
+                                    const elemNames = { fire: '火', ice: '冰', thunder: '雷', earth: '土', wind: '风', water: '水', light: '光', dark: '暗', heal: '治愈', summon: '召唤', neutral: '无' };
+                                    const elemColors = { fire: '#ff6644', ice: '#66aaff', thunder: '#ffdd44', earth: '#aa8844', wind: '#88ffcc', water: '#66bbff', light: '#ffffcc', dark: '#aa66ff', heal: '#66ffaa', summon: '#cc9966', neutral: '#999' };
+                                    return `<span style="font-size: 11px; padding: 1px 5px; background: ${elemColors[elem] || '#666'}33; border: 1px solid ${elemColors[elem] || '#666'}; border-radius: 3px; color: ${elemColors[elem] || '#fff'};">${elemIcons[elem] || ''}${elemNames[elem] || elem}</span>`;
+                                }).join('')}
+                            </div>
+                        ` : ''}
                         <div style="margin-top: 8px; width: 120px;">
                             <div style="display: flex; justify-content: space-between; font-size: 12px; color: #ff6666; margin-bottom: 2px;">
                                 <span>HP</span><span>${state.player.hp}/${state.player.maxHp} (${Math.floor(state.player.hp / state.player.maxHp * 100)}%)</span>
