@@ -71,7 +71,7 @@ const Game = {
             console.log(`[剧情] 开始新章节: ${chapter.name}`);
         };
         StoryChapterSystem.onChapterComplete = (chapter) => {
-            UI.showMessage(`🎉 章节完成：${chapter.name}\n\n获得章节奖励！`);
+            UI.showChapterCompleteModal(chapter);
         };
         
         // 检查存档
@@ -140,9 +140,9 @@ const Game = {
         // 进入地图界面
         this.state = 'map';
         UI.renderMapScreen();
-        
-        // 显示欢迎消息和新手引导
-        UI.showMessage(`欢迎来到全职法师的世界，${name}！\n你觉醒了${SkillSystem.getElementName(element)}，开始你的冒险吧！\n\n【新手引导】已自动接取任务「初识魔法」，去修炼场感受魔法的力量吧！`);
+
+        // 开场剧情
+        UI.showOpeningStory(element);
     },
 
     // ========== 地图界面 ==========

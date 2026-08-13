@@ -134,6 +134,7 @@ const EventSystem = {
             case 'flag': return Player.hasFlag(value) ? 1 : 0;
             case 'location': return Player.currentLocation === value ? 1 : 0;
             case 'element': return Player.elements.includes(value) ? 1 : 0;
+            case 'elementCount': return Player.elements.length;
             default: return 0;
         }
     },

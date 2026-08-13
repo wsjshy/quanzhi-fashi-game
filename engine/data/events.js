@@ -2537,5 +2537,85 @@ const DataEvents = {
         resultText: "你选择不告而别。背着行囊，你最后看了一眼博城的方向，踏上了前往上海的列车。\n\n也许有些遗憾，但前方有更广阔的世界在等你。"
       }
     ]
+  },
+
+  // ========== 中阶突破·第二系觉醒 ==========
+  event_second_awakening: {
+    id: "event_second_awakening",
+    name: "中阶突破·第二系觉醒",
+    description: "你的精神力达到了中阶门槛，感知到了第二个元素系的召唤",
+    trigger: "training",
+    chance: 0.8,
+    conditions: [
+      { type: "level", value: 10, operator: ">=" },
+      { type: "elementCount", value: 1, operator: "==" }
+    ],
+    once: true,
+    text: "修炼中，你忽然感到精神世界一阵剧烈的震荡！\n\n原本稳固的星子之海开始翻涌，一股全新的力量从灵魂深处苏醒——你的精神力已经突破了初阶的界限，达到了中阶法师的门槛！\n\n在中阶，法师可以觉醒第二个元素系。这是每个法师修行路上的重要里程碑。\n\n你静下心来，感知着在精神世界中若隐若现的各系星尘……",
+    choices: [
+      {
+        text: "前往魔法协会进行第二系觉醒",
+        effects: {
+          setFlag: "second_awakening_ready",
+          exp: 200
+        },
+        resultText: "你睁开眼，感受着体内涌动的全新力量。是时候去魔法协会，正式觉醒你的第二个元素系了！\n\n💡 提示：在角色面板点击「觉醒新系」按钮，选择你的第二系。"
+      }
+    ]
+  },
+
+  // ========== 第二系觉醒后的感悟 ==========
+  event_second_element_insight: {
+    id: "event_second_element_insight",
+    name: "新系感悟",
+    description: "觉醒第二系后对魔法的新理解",
+    trigger: "training",
+    chance: 0.5,
+    conditions: [
+      { type: "level", value: 10, operator: ">=" },
+      { type: "elementCount", value: 2, operator: ">=" },
+      { type: "flag", value: "second_awakening_ready", operator: "==" }
+    ],
+    once: true,
+    text: "修炼中，你尝试同时调动两个系的星子。\n\n初阶时你只能感知一系的星尘，但现在，两系的星子在精神世界中交相辉映。它们各自运转，却又隐隐有一种奇妙的共鸣。\n\n唐月老师曾说过，双系法师的优势在于变化——敌人永远猜不到你的第二张底牌。\n\n你想起了莫凡……那个据说觉醒了雷火双系的天才。他现在，又走到了哪一步？",
+    choices: [
+      {
+        text: "继续修炼",
+        effects: { exp: 100 },
+        resultText: "你对双系的运用有了更深的理解。"
+      }
+    ]
+  },
+
+  // ========== 灵种发现 ==========
+  event_spirit_seed_discovery: {
+    id: "event_spirit_seed_discovery",
+    name: "灵种共鸣",
+    description: "在修炼中感知到了灵种的气息",
+    trigger: "training",
+    chance: 0.08,
+    conditions: [
+      { type: "level", value: 5, operator: ">=" }
+    ],
+    once: false,
+    text: "修炼中，你忽然感到精神世界一阵悸动——远处的某个方向，有一股纯净的元素力量在召唤你。\n\n那是……灵种？\n\n你听说过，天地间自然孕育的元素种子，蕴含着强大的力量。法师如果能找到并炼化灵种，魔法威力会大幅提升。\n\n但灵种通常诞生在元素浓郁之地，而且……往往有强大的妖魔守护。",
+    choices: [
+      {
+        text: "循感应而去",
+        effects: {
+          hp: -20,
+          items: [{ itemId: "fire_spirit_seed", count: 1 }]
+        },
+        resultText: "你循着感应来到雪峰山深处，在一处熔岩裂隙中找到了一颗散发着灼热气息的红色晶石——灵种！\n\n守护灵种的是一只中级火系妖魔，你经过一番苦战才将它击退，带着灵种返回。\n\n💡 获得了灵种！在背包中使用可以炼化，大幅提升魔法威力。"
+      },
+      {
+        text: "实力不够，先记下位置",
+        effects: {
+          exp: 30,
+          setFlag: "spirit_seed_location_known"
+        },
+        resultText: "你记下了灵种的大致方位。等实力更强时再来寻找吧。灵种……不会轻易消失。"
+      }
+    ]
   }
 };

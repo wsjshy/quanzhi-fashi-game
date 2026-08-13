@@ -923,6 +923,86 @@ const DataWorld = {
         credibility: 0.7,
         relatedEvent: null,
         unlockDay: 50
+      },
+      mu_ningxue_family_pressure: {
+        id: "mu_ningxue_family_pressure",
+        title: "穆宁雪的家族压力",
+        content: "穆宁雪说，从她觉醒冰系的那天起，穆家就告诉她是百年一遇的天才。'天才就必须承受天才该承受的东西。'她的语气平淡得像在说别人的事，但那份沉重是真实的。",
+        category: "intel",
+        source: "穆宁雪",
+        credibility: 0.9,
+        relatedEvent: null,
+        unlockDay: 10
+      },
+      mu_ningxue_past_mystery: {
+        id: "mu_ningxue_past_mystery",
+        title: "穆宁雪的过去",
+        content: "穆宁雪对小时候的事讳莫如深。提到时她周身的空气都变冷了，手不自觉地攥紧衣角。她的眼神深处藏着恐惧——那不是普通的恐惧。",
+        category: "clue",
+        source: "穆宁雪",
+        credibility: 0.8,
+        relatedEvent: null,
+        unlockDay: 15
+      },
+      mu_ningxue_black_church_trauma: {
+        id: "mu_ningxue_black_church_trauma",
+        title: "穆宁雪与黑教廷",
+        content: "穆宁雪小时候见过黑教廷的标记——倒十字和眼睛。那件事给她留下了深刻的创伤。她只说了'和黑教廷有关'，便不愿再提。黑教廷的魔爪竟然伸向过穆家？",
+        category: "warning",
+        source: "穆宁雪",
+        credibility: 0.95,
+        relatedEvent: null,
+        unlockDay: 20
+      },
+      mu_ningxue_innate_spirit_body: {
+        id: "mu_ningxue_innate_spirit_body",
+        title: "天生灵体",
+        content: "穆宁雪拥有'天生灵体'——冰系星子不是被她征服的，而是主动靠近她。她的冰系星尘颜色比普通冰系更深，带着近乎透明的蓝。但她说'天赋只是起点，不修炼天才也会变废物'。",
+        category: "intel",
+        source: "穆宁雪",
+        credibility: 0.95,
+        relatedEvent: null,
+        unlockDay: 10
+      },
+      yu_ang_warning_from_mu_bai: {
+        id: "yu_ang_warning_from_mu_bai",
+        title: "穆白的警告",
+        content: "穆白临别时警告你：'离宇昂远点，那个人，不对劲。'作为穆家旁系，穆白似乎知道一些关于宇昂的内情，但他没有多说。宇昂……那个孤儿出身的冰系天才，到底有什么秘密？",
+        category: "warning",
+        source: "穆白",
+        credibility: 0.7,
+        relatedEvent: null,
+        unlockDay: 50
+      },
+      yu_ang_black_church_confirmed: {
+        id: "yu_ang_black_church_confirmed",
+        title: "宇昂的真面目",
+        content: "博城灾难之夜，你亲眼目睹宇昂在后山布置黑教廷阵法，并击败了他。他身穿黑色教袍，使用的不是普通冰系魔法，而是夹杂着黑暗力量的黑色冰霜。他临死前说：'黑教廷的计划……才刚刚开始……博城……只是个开始……'宇昂是黑教廷成员，这已经是确凿的事实。",
+        category: "warning",
+        source: "亲眼目睹",
+        credibility: 1.0,
+        relatedEvent: "big_event_bocheng_disaster",
+        unlockDay: 45
+      },
+      yu_ang_dark_power_witnessed: {
+        id: "yu_ang_dark_power_witnessed",
+        title: "宇昂的黑暗力量",
+        content: "你试图追击宇昂，但他的力量远超你的想象——那不是普通的冰系魔法，黑色的冰霜中夹杂着某种诡异的黑暗力量。他警告你'今晚什么都没看到'后消失。虽然没有证据，但你确信宇昂和黑教廷有关。",
+        category: "warning",
+        source: "亲身经历",
+        credibility: 0.9,
+        relatedEvent: "big_event_bocheng_disaster",
+        unlockDay: 45
+      },
+      yu_ang_zhankong_knew: {
+        id: "yu_ang_zhankong_knew",
+        title: "斩空的反应",
+        content: "你把宇昂的可疑行为报告给了斩空，他的反应耐人寻味——不是惊讶，而是'我知道了'的凝重。他带人去了后山，回来时军装上多了一道被黑色冰霜灼烧的痕迹。斩空似乎早就知道什么，或者说，他一直在等这个证据。",
+        category: "clue",
+        source: "斩空",
+        credibility: 0.85,
+        relatedEvent: "big_event_bocheng_disaster",
+        unlockDay: 45
       }
     }
   },

@@ -177,7 +177,7 @@ const DataBigEvents = {
         name: "第二波攻势",
         description: "你击退了第一波妖魔，但很快，更强的第二波攻势来了。这次，甚至有高级妖魔出现！\n\n就在你感到绝望时，一道强大的魔法光芒从天而降——是城市的高阶法师们出手了！",
         type: "narrative",
-        nextPhase: "phase_6_final",
+        nextPhase: "phase_5_discovery",
         effects: {
           exp: 150
         }
@@ -189,12 +189,101 @@ const DataBigEvents = {
         name: "被救",
         description: "你体力不支，倒在了战场上。就在一只妖魔要扑向你时，一道魔法光束击中了它。\n\n是唐月老师！她及时赶到，救了你一命。\"坚持住，孩子，我们一定会赢的！\"",
         type: "narrative",
-        nextPhase: "phase_6_final",
+        nextPhase: "phase_5_discovery",
         effects: {
           hp: -30,
           flags: {
             "rescued_by_teacher": true
           }
+        }
+      },
+
+      // 第五阶段C：发现黑教廷踪迹
+      {
+        id: "phase_5_discovery",
+        name: "黑暗中的身影",
+        description: "战斗间隙，你注意到一个灰衣人影在混乱中向学校后山方向移动。那人的动作不像是在逃跑，更像是在……执行什么任务。\n\n你认出了那个背影——是宇昂。他不是应该在前线战斗吗？为什么往后山去？\n\n你想起了之前听到的关于黑教廷的传闻……",
+        type: "choice",
+        choices: [
+          {
+            text: "追上去看看",
+            nextPhase: "phase_5_chase_yuang",
+            conditions: { minLevel: 7 },
+            effects: { flags: { "chased_yu_ang": true } }
+          },
+          {
+            text: "先告诉斩空教官",
+            nextPhase: "phase_5_report_zhankong",
+            effects: { flags: { "reported_yu_ang": true } }
+          },
+          {
+            text: "现在战斗更重要，先不管",
+            nextPhase: "phase_6_final",
+            effects: {}
+          }
+        ]
+      },
+
+      // 追击宇昂
+      {
+        id: "phase_5_chase_yuang",
+        name: "追击",
+        description: "你悄悄跟了上去。\n\n在后山的一片树林中，你看到宇昂正站在一个奇怪的阵法前——那阵法散发着不祥的黑光，中央是一个倒十字的标记。\n\n黑教廷！\n\n宇昂察觉到了你，转过头来，脸上不再是平时那个天才少年的表情，而是一种阴冷的笑意。\n\n\"看到了不该看的东西呢……可惜，你今晚就要死在这里了。\"",
+        type: "battle",
+        enemyId: "yu_ang_black_church",
+        winPhase: "phase_5_yuang_defeated",
+        losePhase: "phase_5_yuang_lost"
+      },
+
+      // 击败宇昂
+      {
+        id: "phase_5_yuang_defeated",
+        name: "真相",
+        description: "你击败了宇昂！他倒在地上，身上的灰衣裂开，露出了里面黑色的教袍——倒十字的标记在月光下格外刺眼。\n\n\"你……你以为赢了吗？\"宇昂咳出鲜血，\"黑教廷的计划……才刚刚开始……博城……只是个开始……\"\n\n他的身体开始化作黑色的雾气消散，只留下一枚黑色的徽章。\n\n斩空教官带人赶到时，只看到了那枚徽章和被破坏的阵法。\n\n\"做得好。\"斩空的表情前所未有的凝重，\"这件事……不要告诉任何人。\"",
+        type: "narrative",
+        nextPhase: "phase_6_final",
+        effects: {
+          exp: 300,
+          gold: 200,
+          flags: {
+            "defeated_yu_ang": true,
+            "yu_ang_black_church_confirmed": true
+          },
+          giveInfo: "yu_ang_black_church_confirmed",
+          items: [{ itemId: "black_church_badge", count: 1 }]
+        }
+      },
+
+      // 追击失败
+      {
+        id: "phase_5_yuang_lost",
+        name: "逃脱",
+        description: "宇昂的实力远超你的想象——他用的根本不是普通的冰系魔法！黑色的寒气中夹杂着某种诡异的力量。\n\n你被击退，撞在树上。宇昂没有追来，只是冷冷地看了你一眼。\n\n\"记住今晚，你什么都没看到。\"\n\n等你挣扎着爬起来时，他已经消失了。那个阵法也被销毁，仿佛什么都没发生过。\n\n但你知道，那不是幻觉。宇昂……和黑教廷有关。",
+        type: "narrative",
+        nextPhase: "phase_6_final",
+        effects: {
+          hp: -40,
+          flags: {
+            "witnessed_yu_ang_ritual": true
+          },
+          giveInfo: "yu_ang_dark_power_witnessed"
+        }
+      },
+
+      // 报告斩空
+      {
+        id: "phase_5_report_zhankong",
+        name: "报告斩空",
+        description: "你找到了正在指挥战斗的斩空教官，把看到的告诉了他。\n\n斩空的表情瞬间变了。\n\n\"宇昂？后山？\"他沉吟片刻，\"我知道了。你做得对，这件事交给我。\"他叫了两个亲信法师，\"你们两个，跟我去后山。其他人继续战斗！\"\n\n他看了你一眼，\"你留在这里，不要跟来。这不是你现在能应付的。\"\n\n那天晚上，斩空回来时什么都没说，但你注意到他军装上多了一道被黑色冰霜灼烧的痕迹。",
+        type: "narrative",
+        nextPhase: "phase_6_final",
+        effects: {
+          exp: 100,
+          reputation: { "military": 15 },
+          flags: {
+            "reported_yu_ang_to_zhankong": true
+          },
+          giveInfo: "yu_ang_zhankong_knew"
         }
       },
       

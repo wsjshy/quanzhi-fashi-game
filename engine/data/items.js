@@ -768,6 +768,45 @@ const DataItems = {
     rarity: "稀有",
     lore: "斩空说：'有些人表面上人模狗样，背地里比妖魔还脏。'这枚军牌，是他在博城三年的信任。"
   },
+  ningxue_ice_crystal: {
+    id: "ningxue_ice_crystal",
+    name: "穆宁雪的冰晶石",
+    description: "穆宁雪在雪峰山修炼时找到的冰蓝色晶石，散发着淡淡的寒气。握在手中能感受到冰系星子变得更加活跃，对冰系修炼有辅助作用。晶石内部隐约可见一片雪花状的纹路。",
+    type: "special",
+    icon: "❄️",
+    price: 0,
+    stackable: false,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    lore: "穆宁雪说：'别死在外面。'这是她第一次送人东西。"
+  },
+  mu_bai_ice_notes: {
+    id: "mu_bai_ice_notes",
+    name: "穆白的冰系笔记",
+    description: "穆白整理的冰系中阶星图连接笔记，字迹工整但带着几分傲气。里面详细记录了冰系中阶星图的连接顺序、常见错误和提速技巧，还有他自己总结的几个小窍门。",
+    type: "special",
+    icon: "📓",
+    price: 0,
+    stackable: false,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    lore: "穆白说：'别给博城丢脸。还有，离宇昂远点。'"
+  },
+  black_church_badge: {
+    id: "black_church_badge",
+    name: "黑教廷徽章",
+    description: "从宇昂身上得到的黑色徽章，中央是一个倒十字，上方是一只睁开的眼睛。徽章散发着阴冷的气息，握在手中让人不寒而栗。这是黑教廷成员的身份证明。",
+    type: "special",
+    icon: "🕆",
+    price: 0,
+    stackable: false,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "史诗",
+    lore: "宇昂说：'黑教廷的计划……才刚刚开始……博城……只是个开始……'"
+  },
   spirit_star_dust_device: {
     id: "spirit_star_dust_device",
     name: "灵级星尘魔器",

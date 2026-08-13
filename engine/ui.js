@@ -35,6 +35,115 @@ const UI = {
         return true;
     },
 
+    // 开场剧情
+    showOpeningStory(element) {
+        const elementName = (typeof SkillSystem !== 'undefined') ? SkillSystem.getElementName(element) : element;
+        const elementColor = (typeof SkillSystem !== 'undefined') ? SkillSystem.getElementColor(element) : '#888';
+
+        const overlay = document.createElement('div');
+        overlay.id = 'opening-story-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:10001;display:flex;align-items:center;justify-content:center;';
+        overlay.innerHTML = `
+            <div style="max-width:600px;width:90%;text-align:center;padding:40px 20px;">
+                <div id="opening-text" style="font-size:16px;color:#ccc;line-height:2;min-height:300px;text-align:left;"></div>
+                <button id="opening-btn" style="margin-top:30px;background:transparent;border:1px solid #4a6fa5;color:#8ab4f0;padding:10px 30px;border-radius:6px;cursor:pointer;font-size:14px;display:none;">开始冒险</button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        const storyTexts = [
+            { text: '这是一个魔法的世界。', delay: 1500 },
+            { text: '在这个世界里，魔法不再是传说，而是科学、是力量、是每个人都有可能掌握的能力。', delay: 2500 },
+            { text: '十七岁那年，每个人都会经历一次觉醒仪式——在觉醒石的光芒中，感知自己与哪种元素系共鸣。', delay: 2500 },
+            { text: '有人觉醒了火系，有人觉醒了冰系，有人觉醒了雷系……', delay: 2000 },
+            { text: '而你，觉醒了<span style="color:' + elementColor + ';font-weight:bold;">' + elementName + '</span>。', delay: 2000 },
+            { text: '但魔法之路，从不是坦途。', delay: 2000 },
+            { text: '在人类城市之外，是妖魔横行的荒野。在光明之下，潜伏着名为「黑教廷」的黑暗组织。', delay: 2500 },
+            { text: '而你，即将踏入天澜魔法高中——一个看似平静，实则暗流涌动的地方。', delay: 2500 },
+            { text: '你的故事，从博城开始。', delay: 2000 }
+        ];
+
+        const textDiv = overlay.querySelector('#opening-text');
+        const btn = overlay.querySelector('#opening-btn');
+        let idx = 0;
+
+        const showNext = () => {
+            if (idx >= storyTexts.length) {
+                btn.style.display = 'inline-block';
+                btn.onclick = () => {
+                    overlay.remove();
+                    UI.showMessage(`【新手引导】已自动接取任务「初识魔法」，去修炼场感受魔法的力量吧！\n\n💡 提示：按 ~ 键可打开调试面板（需在URL加?debug=1）。`);
+                };
+                return;
+            }
+            const s = storyTexts[idx];
+            textDiv.innerHTML = s.text;
+            textDiv.style.opacity = '0';
+            textDiv.style.transition = 'opacity 0.8s';
+            setTimeout(() => { textDiv.style.opacity = '1'; }, 50);
+            idx++;
+            setTimeout(showNext, s.delay);
+        };
+
+        setTimeout(showNext, 800);
+    },
+
+    // 章节完成总结弹窗
+    showChapterCompleteModal(chapter) {
+        const rewards = chapter.rewards || {};
+        const unlocks = chapter.unlocks || {};
+
+        let rewardText = '';
+        if (rewards.exp) rewardText += `<div style="color:#88ff88;">经验 +${rewards.exp}</div>`;
+        if (rewards.gold) rewardText += `<div style="color:#ffdd44;">金币 +${rewards.gold}</div>`;
+        if (rewards.items) {
+            rewards.items.forEach(item => {
+                const itemData = (typeof DataItems !== 'undefined') ? DataItems[item.itemId] : null;
+                const name = itemData ? itemData.name : item.itemId;
+                rewardText += `<div style="color:#aaccff;">${name} ×${item.count}</div>`;
+            });
+        }
+
+        let unlockText = '';
+        if (unlocks.locations && unlocks.locations.length) {
+            unlockText += `<div style="color:#88ccff;">新地点: ${unlocks.locations.length}个</div>`;
+        }
+        if (unlocks.systems && unlocks.systems.length) {
+            unlockText += `<div style="color:#cc88ff;">新系统: ${unlocks.systems.join(', ')}</div>`;
+        }
+        if (unlocks.features && unlocks.features.length) {
+            unlockText += `<div style="color:#ffaa88;">新功能: ${unlocks.features.join(', ')}</div>`;
+        }
+
+        let discoveredIntel = 0;
+        if (typeof WorldState !== 'undefined' && WorldState.knownInfo) {
+            discoveredIntel = WorldState.knownInfo.length;
+        }
+
+        const overlay = document.createElement('div');
+        overlay.id = 'chapter-complete-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;';
+        overlay.innerHTML = `
+            <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:2px solid #4a6fa5;border-radius:16px;padding:30px;max-width:500px;width:90%;text-align:center;box-shadow:0 0 40px rgba(74,111,165,0.5);">
+                <div style="font-size:14px;color:#6a8aba;letter-spacing:4px;margin-bottom:8px;">CHAPTER COMPLETE</div>
+                <div style="font-size:28px;font-weight:bold;color:#e8d44d;margin-bottom:5px;text-shadow:0 0 20px rgba(232,212,77,0.5);">${chapter.name}</div>
+                <div style="font-size:13px;color:#888;margin-bottom:20px;">${chapter.volumeName || ''}</div>
+                <div style="font-size:14px;color:#ccc;line-height:1.6;margin-bottom:20px;padding:15px;background:rgba(255,255,255,0.05);border-radius:8px;text-align:left;">
+                    ${chapter.description || ''}
+                </div>
+                ${rewardText ? `<div style="margin-bottom:15px;text-align:left;"><div style="color:#aaa;font-size:12px;margin-bottom:5px;">获得奖励</div>${rewardText}</div>` : ''}
+                ${unlockText ? `<div style="margin-bottom:15px;text-align:left;"><div style="color:#aaa;font-size:12px;margin-bottom:5px;">解锁内容</div>${unlockText}</div>` : ''}
+                <div style="margin-bottom:20px;text-align:left;">
+                    <div style="color:#aaa;font-size:12px;margin-bottom:5px;">情报收集</div>
+                    <div style="color:#88ccff;">已收集信息碎片: ${discoveredIntel}条</div>
+                </div>
+                ${chapter.nextChapter ? `<div style="font-size:13px;color:#6a8aba;margin-bottom:20px;">下一章即将开始...</div>` : '<div style="font-size:13px;color:#6a8aba;margin-bottom:20px;">本卷完结</div>'}
+                <button onclick="document.getElementById('chapter-complete-overlay').remove()" style="background:linear-gradient(135deg,#4a6fa5,#3a5a8a);color:#fff;border:none;padding:12px 40px;border-radius:8px;font-size:16px;cursor:pointer;">继续</button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    },
+
     // 显示消息提示（带队列，同一时间只显示一条）
     showMessage(text) {
         // 加入队列

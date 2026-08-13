@@ -939,6 +939,13 @@ const DataCharacters = {
               nextNode: "about_ningxue"
             },
             {
+              id: "farewell_mu_bai",
+              text: "我要离开博城了",
+              condition: { hasFlag: "bocheng_disaster_happened", notNpcFlags: ["said_farewell"] },
+              effects: { npcFlags: { said_farewell: true } },
+              nextNode: "mu_bai_farewell"
+            },
+            {
               id: "leave",
               text: "打扰了",
               effects: {},
@@ -1034,6 +1041,47 @@ const DataCharacters = {
           mood: "jealous",
           choices: [
             { id: "back", text: "我只是随便问问", effects: {}, nextNode: "default" }
+          ]
+        },
+        mu_bai_farewell: {
+          id: "mu_bai_farewell",
+          texts: [
+            "（穆白站在学校走廊里，看到你走来，似乎已经知道你要说什么。）",
+            "……要走了？明珠学府。",
+            "（他沉默了一会儿，手不自觉地摸了摸口袋里的什么东西。）",
+            "博城这次……穆家也损失惨重。我叔叔他……",
+            "（他咬了咬牙，没有继续说下去。）",
+            "算了。你去明珠也好。",
+            "（他从口袋里掏出一本薄薄的册子扔给你。）",
+            "这是我整理的冰系中阶星图连接笔记。反正我已经背下来了。",
+            "（他别过头，语气生硬。）",
+            "别误会，我不是舍不得你。只是……到了明珠，别给博城丢脸。",
+            "还有……离宇昂远点。那个人，不对劲。"
+          ],
+          mood: "complex",
+          effects: {
+            giveItem: "mu_bai_ice_notes",
+            exp: 80,
+            opinion: 10,
+            giveInfo: "yu_ang_warning_from_mu_bai"
+          },
+          choices: [
+            { id: "thanks", text: "穆白……保重", effects: { opinion: 5 }, nextNode: "default" },
+            { id: "tease", text: "你这是在关心我？", condition: { minOpinion: 30 }, effects: { opinion: -3 }, nextNode: "farewell_tease" }
+          ]
+        },
+        farewell_tease: {
+          id: "farewell_tease",
+          texts: [
+            "（穆白的脸瞬间涨红。）",
+            "谁、谁关心你了！",
+            "你爱要不要！",
+            "（他转身快步离开，走了几步又停下来，头也不回地说。）",
+            "……到了明珠，别死了。"
+          ],
+          mood: "embarrassed",
+          choices: [
+            { id: "back", text: "（笑着目送他离开）", effects: { opinion: 5 }, nextNode: null }
           ]
         }
       }
@@ -1989,6 +2037,34 @@ const DataCharacters = {
               }
             },
             {
+              id: "ask_family",
+              text: "作为穆家的人……压力大吗？",
+              condition: { minOpinion: 20, notNpcFlags: ["opened_about_family"] },
+              effects: {},
+              nextNode: "about_family"
+            },
+            {
+              id: "ask_power",
+              text: "你的冰系天赋是怎么做到的？",
+              condition: { minOpinion: 15 },
+              effects: {},
+              nextNode: "about_power"
+            },
+            {
+              id: "ask_past",
+              text: "我听说你小时候发生过什么……",
+              condition: { minOpinion: 35, notNpcFlags: ["shared_past"] },
+              effects: {},
+              nextNode: "about_past"
+            },
+            {
+              id: "farewell_ningxue",
+              text: "我要离开博城了",
+              condition: { hasFlag: "bocheng_disaster_happened", notNpcFlags: ["said_farewell"] },
+              effects: { npcFlags: { said_farewell: true } },
+              nextNode: "ningxue_farewell"
+            },
+            {
               id: "leave",
               text: "打扰了，告辞",
               effects: {},
@@ -2047,6 +2123,156 @@ const DataCharacters = {
               effects: {},
               nextNode: null
             }
+          ]
+        },
+        about_family: {
+          id: "about_family",
+          texts: [
+            "（穆宁雪的眼神微微一冷。）",
+            "……家族？",
+            "穆家需要的是最强的冰系法师，不是一个会笑的女孩。",
+            "（她顿了顿，语气平淡得像在说别人的事。）",
+            "从我觉醒冰系的那天起，他们就告诉我，我是穆家百年一遇的天才。",
+            "天才……就必须承受天才该承受的东西。"
+          ],
+          mood: "cold",
+          effects: { giveInfo: "mu_ningxue_family_pressure", trust: 3 },
+          choices: [
+            { id: "push", text: "你不觉得累吗？", condition: { minOpinion: 30 }, effects: { trust: 5 }, nextNode: "family_pressure" },
+            { id: "back", text: "……抱歉", effects: {}, nextNode: "default" }
+          ]
+        },
+        family_pressure: {
+          id: "family_pressure",
+          texts: [
+            "（穆宁雪沉默了很久，冰蓝色的眼眸中闪过一丝你从未见过的东西——是疲惫，还是孤独？）",
+            "……累又怎样。",
+            "这是我的命。",
+            "（她别过头去，不再看你。）",
+            "这个话题到此为止。"
+          ],
+          mood: "sad",
+          effects: { opinion: 5, npcFlags: { opened_about_family: true } },
+          choices: [
+            { id: "back", text: "我明白了", effects: {}, nextNode: "default" }
+          ]
+        },
+        about_past: {
+          id: "about_past",
+          texts: [
+            "（穆宁雪的表情瞬间冷了下来，周围的空气似乎都降低了几度。）",
+            "……你听谁说的？",
+            "（她的手不自觉地攥紧了衣角。）",
+            "小时候的事……我不想提。",
+            "（你注意到她的眼神深处，藏着一丝不易察觉的……恐惧？）"
+          ],
+          mood: "cold",
+          effects: { giveInfo: "mu_ningxue_past_mystery" },
+          choices: [
+            { id: "apologize", text: "抱歉，我不该问", effects: { opinion: 2 }, nextNode: "default" },
+            { id: "press", text: "如果有什么我能帮忙的……", condition: { minOpinion: 50, minTrust: 30 }, effects: { trust: 8, opinion: 3 }, nextNode: "past_trust" }
+          ]
+        },
+        past_trust: {
+          id: "past_trust",
+          texts: [
+            "（穆宁雪看着你，冰蓝色的眼眸微微颤动。）",
+            "……你是第一个说这种话的人。",
+            "（她沉默了片刻，声音轻得几乎听不见。）",
+            "那件事……和黑教廷有关。",
+            "我见过他们的标记……倒十字，眼睛……",
+            "（她的声音在发抖，但很快恢复了冰冷。）",
+            "别说出去。"
+          ],
+          mood: "fear",
+          effects: { giveInfo: "mu_ningxue_black_church_trauma", trust: 10, npcFlags: { shared_past: true } },
+          choices: [
+            { id: "promise", text: "我不会告诉任何人", effects: { trust: 10, opinion: 5 }, nextNode: "default" }
+          ]
+        },
+        about_power: {
+          id: "about_power",
+          texts: [
+            "（你提起她的冰系天赋，穆宁雪抬起手，一缕冰蓝色的星尘在她指尖环绕。）",
+            "……天生灵体。",
+            "他们是这么说的。",
+            "（那缕冰星尘的颜色比普通冰系更深，带着一种近乎透明的蓝。）",
+            "我能感知到冰系星子的方式……和别人不同。它们不是被我征服的，而是……主动靠近我。",
+            "（她收起星尘，语气恢复平淡。）",
+            "但天赋只是起点。不修炼，天才也会变成废物。"
+          ],
+          mood: "neutral",
+          effects: { giveInfo: "mu_ningxue_innate_spirit_body", exp: 20 },
+          choices: [
+            { id: "amazing", text: "这太厉害了", effects: { opinion: -1 }, nextNode: "power_humble" },
+            { id: "understand", text: "所以你才这么努力", condition: { minOpinion: 25 }, effects: { opinion: 5, trust: 3 }, nextNode: "power_recognize" },
+            { id: "back", text: "受教了", effects: {}, nextNode: "default" }
+          ]
+        },
+        power_humble: {
+          id: "power_humble",
+          texts: [
+            "（穆宁雪微微皱眉。）",
+            "……厉害的不是天赋，是每天三百次的星子连接。",
+            "你只看到了结果。"
+          ],
+          mood: "cold",
+          choices: [
+            { id: "back", text: "……我明白了", effects: {}, nextNode: "default" }
+          ]
+        },
+        power_recognize: {
+          id: "power_recognize",
+          texts: [
+            "（穆宁雪看了你一眼，眼神中多了一丝……认可？）",
+            "……你比那些人聪明。",
+            "他们只会说'你是天才'，好像我不需要努力一样。",
+            "（她顿了顿。）",
+            "你也在修炼吧？冰系？"
+          ],
+          mood: "neutral",
+          choices: [
+            { id: "yes_ice", text: "是，我也是冰系", condition: { element: "ice" }, effects: { opinion: 5 }, nextNode: "fellow_ice" },
+            { id: "no", text: "不是，但我敬佩你的努力", effects: { opinion: 3 }, nextNode: "default" }
+          ]
+        },
+        fellow_ice: {
+          id: "fellow_ice",
+          texts: [
+            "（穆宁雪的表情柔和了一瞬。）",
+            "……冰系的路不好走。",
+            "中阶之后，冰系的控制会变得很难。星图……比其他系更复杂。",
+            "（她犹豫了一下。）",
+            "如果你在连接星图时遇到问题……可以问我。"
+          ],
+          mood: "neutral",
+          effects: { opinion: 8, trust: 5, npcFlags: { offered_help: true } },
+          choices: [
+            { id: "thanks", text: "谢谢，我会的", effects: { opinion: 2 }, nextNode: "default" }
+          ]
+        },
+        ningxue_farewell: {
+          id: "ningxue_farewell",
+          texts: [
+            "（穆宁雪站在学校门口，冰蓝色的眼眸看着你，似乎想说什么，但最终只是点了点头。）",
+            "……你要走了。",
+            "（沉默。）",
+            "明珠学府……是个好地方。",
+            "（她从口袋里掏出一个东西递给你——是一枚冰蓝色的晶石，散发着淡淡的寒气。）",
+            "这个……给你。",
+            "是我在雪峰山修炼时找到的，对冰系修炼有帮助。",
+            "（她别过头，耳朵微微泛红。）",
+            "……别死在外面。"
+          ],
+          mood: "sad",
+          effects: {
+            giveItem: "ningxue_ice_crystal",
+            exp: 100,
+            opinion: 15,
+            trust: 10
+          },
+          choices: [
+            { id: "thanks", text: "穆宁雪……保重", effects: { opinion: 5 }, nextNode: "default" }
           ]
         }
       }
