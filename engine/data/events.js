@@ -2617,5 +2617,249 @@ const DataEvents = {
         resultText: "你记下了灵种的大致方位。等实力更强时再来寻找吧。灵种……不会轻易消失。"
       }
     ]
+  },
+
+  // ========== 明珠篇事件 ==========
+
+  // 唐月揭露审判会身份
+  event_tang_yue_reveal: {
+    id: "event_tang_yue_reveal",
+    name: "唐月的身份",
+    description: "唐月揭露自己是审判会成员",
+    trigger: "location",
+    chance: 1.0,
+    conditions: [
+      { type: "level", value: 10, operator: ">=" },
+      { type: "flag", value: "bocheng_disaster_happened", operator: "==" },
+      { type: "flag", value: "tang_yue_identity_revealed", operator: "!=" }
+    ],
+    once: true,
+    text: "你在西博安置区收到唐月老师的传讯。\n\n\"莫凡，来杭州戏水镇一趟。我有些事要告诉你。\"\n\n你赶到戏水镇，发现这里到处龟裂，水源干涸。唐月在\"有间客栈\"等你，她的气质和以前不同了——不再是那个温柔的实习老师，而是一个带着凌厉气息的执法者。\n\n\"我是审判会的人，\"她平静地说，\"在博城那几年，我是卧底，调查黑教廷。\"\n\n她告诉你博城灾难的真相——黑教廷策划了十年，撒朗亲自出手。而戏水镇的水源干涸，是因为有火系灵种自然形成，引来多方势力争夺。\n\n\"帮我这次，我帮你觉醒暗影系。\"",
+    choices: [
+      {
+        text: "我答应你",
+        effects: {
+          setFlag: "tang_yue_identity_revealed",
+          giveInfo: "tang_yue_judgment_member",
+          exp: 200
+        },
+        resultText: "唐月微微点头：\"跟我来。记住，从现在起，你看到的一切都不能外传。\""
+      }
+    ]
+  },
+
+  // 灵种争夺·玫炎
+  event_spirit_seed_meiyan: {
+    id: "event_spirit_seed_meiyan",
+    name: "玫炎灵种",
+    description: "戏水镇灵种争夺事件",
+    trigger: "location",
+    chance: 1.0,
+    conditions: [
+      { type: "flag", value: "tang_yue_identity_revealed", operator: "==" },
+      { type: "flag", value: "meiyan_obtained", operator: "!=" }
+    ],
+    once: true,
+    text: "溪水源头，两拨人正在激战——猎法师队伍和东方世家的人为了灵种大打出手。\n\n唐月用遁影带你隐藏在暗处观察。战斗结束后，一个额头上有烙铁烙印的男人出现了——朝赫，审判会通缉的死刑犯，咒法系法师。\n\n他用邪蛛之阱控制了所有人，潜入水库底部取出灵种。那是一枚遍体嫣红的火焰灵种——玫炎，地火中最纯净的存在。\n\n唐月出手了！巨影钉钉住朝赫的影子，但朝赫拼死反抗。激战中，唐月向你使了个眼色。\n\n你暗中引导雷系星图——霹雳·轰顶！\n\n雷系中阶最暴力的魔法，一道晴天霹雳贯穿朝赫。他甚至没来得及惨叫，就被雷电解体。\n\n\"去炼化玫炎，\"唐月喘息着说，\"它是你的了。\"",
+    choices: [
+      {
+        text: "炼化玫炎",
+        effects: {
+          setFlag: "meiyan_obtained",
+          giveInfo: "meiyan_spirit_seed",
+          items: [{ itemId: "fire_spirit_seed", count: 1 }],
+          exp: 500
+        },
+        resultText: "你触碰玫炎，那枚嫣红色的火焰灵种像有生命般跳动了一下，随即融入你的身体。\n\n你的火系魔法从此将带有玫炎的力量——温度更高，灼烧更强。"
+      }
+    ]
+  },
+
+  // 暗影系觉醒
+  event_shadow_awakening: {
+    id: "event_shadow_awakening",
+    name: "暗影觉醒",
+    description: "唐月帮你觉醒暗影系",
+    trigger: "location",
+    chance: 1.0,
+    conditions: [
+      { type: "flag", value: "meiyan_obtained", operator: "==" },
+      { type: "flag", value: "shadow_awakened", operator: "!=" }
+    ],
+    once: true,
+    text: "朝赫死后，唐月履行了承诺。\n\n\"暗影系觉醒和普通觉醒不同，需要在阴影中进行。\"\n\n她带你来到一处幽暗的山洞，用暗影系魔法构建了一个纯粹的阴影空间。\n\n\"放松心神，让阴影接纳你。\"\n\n你闭上眼睛，感觉自己沉入了无尽的黑暗。不是恐惧，而是一种……归属。阴影像流水般包裹住你，星尘中第七颗星子之外，又多了一颗暗色的星子。\n\n你睁开眼，发现自己的影子在微微蠕动。\n\n\"遁影——暗影系初阶技能，可以让你在影子间快速移动。好好练，这是保命的本事。\"",
+    choices: [
+      {
+        text: "感受暗影之力",
+        effects: {
+          setFlag: "shadow_awakened",
+          giveInfo: "shadow_element_awakened",
+          exp: 300
+        },
+        resultText: "你尝试融入影子，身体瞬间变得半透明，在阴影中滑行数米。\n\n暗影系——你的第三个系。从此你拥有了火、雷、暗影三系力量。"
+      }
+    ]
+  },
+
+  // 新生斗兽大赛
+  event_tournament: {
+    id: "event_tournament",
+    name: "斗兽大赛",
+    description: "明珠学府新生斗兽大赛",
+    trigger: "location",
+    chance: 1.0,
+    conditions: [
+      { type: "level", value: 12, operator: ">=" },
+      { type: "flag", value: "shadow_awakened", operator: "==" },
+      { type: "flag", value: "mingzhu_tournament_done", operator: "!=" }
+    ],
+    once: true,
+    text: "明珠学府新生斗兽大赛开始了。\n\n召唤系七人站在斗兽场中央，面对数百名挑战者。你召唤出幽狼兽，它在你身边低吼。\n\n挑战者一波波涌来。白铠战蛰、岩魔士、食骨妖……其他召唤系学生纷纷败下阵来，只有你和幽狼兽还站着。\n\n白藏锋出场了——白家子弟，光系中阶，话多得让人烦躁。他单人挑战，一副胜券在握的样子。\n\n你冷笑一声，暗中引导雷系星图。\n\n\"就你是中阶？\"\n\n霹雳！一道紫色闪电从天而降，白藏锋脸色大变，顾翰老师紧急出手才救下他。\n\n全场寂静。\n\n许昭霆在观众席上瞪大了眼睛——他认出了你。",
+    choices: [
+      {
+        text: "继续战斗",
+        effects: {
+          setFlag: "mingzhu_tournament_done",
+          giveInfo: "mingzhu_tournament_result",
+          exp: 800,
+          gold: 2000000,
+          reputation: { mingzhu_school: 30 }
+        },
+        resultText: "斗兽大赛结束，你以一人一兽斩落150名挑战者，震惊整个明珠学府。\n\n萧院长亲自奖励你：200万奖金、一件中阶魔具、三步塔修炼机会。\n\n💰 获得2,000,000金币！"
+      }
+    ]
+  },
+
+  // 加入青天猎所
+  event_qingtian_hunter: {
+    id: "event_qingtian_hunter",
+    name: "青天猎所",
+    description: "加入青天猎所",
+    trigger: "location",
+    chance: 1.0,
+    conditions: [
+      { type: "flag", value: "mingzhu_tournament_done", operator: "==" },
+      { type: "flag", value: "joined_qingtian", operator: "!=" }
+    ],
+    once: true,
+    text: "你决定做猎法师——实战锻炼，还能赚钱。\n\n猎者联盟大厦里，你的猎人等级不够接高级任务。女助理建议你加入私人猎所。\n\n你找到了青天猎所。一个看起来普通的老头坐在椅子上喝茶，旁边一个十二三岁的女孩在看资料，头也不抬。\n\n\"新人？\"老头眯着眼看你，\"灵灵说你实力不错。\"\n\n那女孩终于抬起头，一双大眼睛上下打量你：\"雷火双系，还有暗影系波动……你身上有妖魔的气息。有意思。\"\n\n包老头笑了：\"欢迎加入青天猎所。灵灵负责情报，你负责执行。别死了。\"",
+    choices: [
+      {
+        text: "请多关照",
+        effects: {
+          setFlag: "joined_qingtian",
+          giveInfo: "qingtian_hunter_office",
+          exp: 200
+        },
+        resultText: "你正式加入青天猎所。灵灵推过来一份资料：\"第一个任务，追踪一只蜕皮女妖。别搞砸了。\""
+      }
+    ]
+  },
+
+  // 寄生妖魔事件
+  event_parasite_demon: {
+    id: "event_parasite_demon",
+    name: "寄生妖魔",
+    description: "学校寄生妖魔事件",
+    trigger: "location",
+    chance: 1.0,
+    conditions: [
+      { type: "flag", value: "joined_qingtian", operator: "==" },
+      { type: "flag", value: "parasite_demon_defeated", operator: "!=" }
+    ],
+    once: true,
+    text: "灵灵紧急联系你：学校里出现了寄生妖魔！\n\n被寄生的人白天正常，夜晚蜕皮变妖。追踪器显示红点在学校各处扩散，体育馆有数千人——如果妖母完成血祭，她可能突破到统领级！\n\n你独自赶往体育馆。雷印·怒击配合玫炎·火滋·爆裂，青黄女妖在你面前纷纷倒下。\n\n三楼升降台，你找到了妖母——战将级鳞皮妖母。一场恶战，你用火滋·焚骨持续灼烧，遁影周旋，最终将她击杀。\n\n赵满延在楼下挡住了小妖。\"妖母的功劳归我，\"他喘着气说，\"我给你弄灵级雷种——千钧。\"",
+    choices: [
+      {
+        text: "成交",
+        effects: {
+          setFlag: "parasite_demon_defeated",
+          giveInfo: "parasite_demon_incident",
+          exp: 1000,
+          items: [{ itemId: "thunder_spirit_seed", count: 1 }]
+        },
+        resultText: "你用妖母精魄换来了灵级雷种·千钧——天山雷峰采集的稀有灵种，释放雷系魔法时产生空间震荡。\n\n⚡ 获得灵级雷种·千钧！"
+      }
+    ]
+  },
+
+  // 三步塔修炼
+  event_three_step_tower: {
+    id: "event_three_step_tower",
+    name: "三步塔",
+    description: "三步塔修炼",
+    trigger: "location",
+    chance: 1.0,
+    conditions: [
+      { type: "flag", value: "parasite_demon_defeated", operator: "==" },
+      { type: "flag", value: "three_step_tower_done", operator: "!=" }
+    ],
+    once: true,
+    text: "包老头告诉你：黑教廷高层已经注意到你了。宇昂——那个博城的旧敌——已经成为黑教廷教士，正在找你。\n\n你决定进入三步塔修炼。\n\n三步塔是空间魔法建筑，\"一步千丈，两步万里，三步无疆\"。塔内元素浓度是外界的数十倍，但越往上精神重力越大。\n\n你进入第一层，浓郁的元素能量涌入身体。火、雷、暗影三系星尘同时运转，修炼速度比平时快了数倍。\n\n在三步塔中，你感受到了突破的契机——暗影系星云开始形成，巨影钉的星图在精神世界中逐渐清晰。",
+    choices: [
+      {
+        text: "全力修炼",
+        effects: {
+          setFlag: "three_step_tower_done",
+          giveInfo: "three_step_tower_secret",
+          exp: 2000
+        },
+        resultText: "三步塔修炼结束，你三系齐头并进，暗影系突破中阶！\n\n🌑 学会巨影钉！"
+      }
+    ]
+  },
+
+  // 许昭霆之死
+  event_xu_zhaoting_death: {
+    id: "event_xu_zhaoting_death",
+    name: "许昭霆之死",
+    description: "许昭霆被黑教廷变成诅咒畜妖",
+    trigger: "location",
+    chance: 1.0,
+    conditions: [
+      { type: "flag", value: "three_step_tower_done", operator: "==" },
+      { type: "flag", value: "xu_zhaoting_died", operator: "!=" }
+    ],
+    once: true,
+    text: "主校区考核开始了。\n\n消息传来——许昭霆跟踪灰衣人时被抓了。\n\n你赶到废弃工厂，看到了令人愤怒的一幕：许昭霆被宇昂用咒法变成了诅咒畜妖——黑畜妖的强化版，保留着部分意识。他的身体被怪物化，但眼神中还有人性。\n\n张璐璐也在。许昭霆被灵魂锁链控制，一爪贯穿了她。\n\n\"莫凡……\"许昭霆的声音从怪物喉咙中挤出，\"杀了我……灵魂锁链……帕特农都解不开……\"\n\n他从腹中掏出一块皮革塞给你：\"神侍者的名字……替我……报仇……\"\n\n唐月确认无法解救。许昭霆求你结束他的痛苦。\n\n你用玫炎——玫瑰色的火焰——火化了许昭霆和张璐璐。\n\n火焰中，你立誓：黑教廷，我会让你们血债血偿。",
+    choices: [
+      {
+        text: "你的仇，我来报",
+        effects: {
+          setFlag: "xu_zhaoting_died",
+          giveInfo: "black_church_soul_chain",
+          exp: 500
+        },
+        resultText: "你将皮革交给灵灵分析。许昭霆用命换来的情报，不能白费。\n\n从今天起，你不再被动防守——你要主动出击。"
+      }
+    ]
+  },
+
+  // 宇昂最终对决
+  event_yu_ang_final: {
+    id: "event_yu_ang_final",
+    name: "宇昂终局",
+    description: "与宇昂的最终对决",
+    trigger: "location",
+    chance: 1.0,
+    conditions: [
+      { type: "flag", value: "xu_zhaoting_died", operator: "==" },
+      { type: "flag", value: "yu_ang_defeated_final", operator: "!=" }
+    ],
+    once: true,
+    text: "大混战中，你用地圣泉做诱饵引蛇出洞。\n\n近千名学生在驯兽铁笼周围混战，而你在人群中寻找黑教廷的内奸。\n\n宇昂出现了——半张面具下是扭曲的面容，他身后跟着灰衣人和黑畜妖。\n\n\"莫凡，\"他冷笑，\"你以为一个许昭霆就能动摇我？\"\n\n你不再废话。雷系星图、火系星图、暗影星图同时展开。\n\n千钧·霹雳·夜叉！五道叉状闪电撕裂天空！\n\n巨影钉钉住宇昂的影子，玫炎·烈拳·轰天轰向他。\n\n宇昂的黑教廷法术在你三系中阶的猛攻下土崩瓦解。他倒在地上，面具碎裂。\n\n\"博城……只是开始……\"他咳出黑血，\"撒朗大人……会为我报仇……\"\n\n他化作黑雾消散——这一次，你确认他真的死了。",
+    choices: [
+      {
+        text: "结束了",
+        effects: {
+          setFlag: "yu_ang_defeated_final",
+          giveInfo: "yu_ang_final_death",
+          exp: 3000,
+          gold: 5000000,
+          reputation: { mingzhu_school: 50, hunter_guild: 50 }
+        },
+        resultText: "宇昂死了。博城的仇，许昭霆的仇，终于报了一部分。\n\n但你知道这不是结束。撒朗还在，神侍者还在，黑教廷还在。\n\n你的魔法之路，才刚刚开始。\n\n💰 获得5,000,000金币！\n⭐ 明珠篇·主线完成！"
+      }
+    ]
   }
 };

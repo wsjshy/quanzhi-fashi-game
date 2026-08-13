@@ -1003,6 +1003,129 @@ const DataWorld = {
         credibility: 0.85,
         relatedEvent: "big_event_bocheng_disaster",
         unlockDay: 45
+      },
+
+      // ========== 明珠篇信息碎片 ==========
+
+      tang_yue_judgment_member: {
+        id: "tang_yue_judgment_member",
+        title: "唐月的真实身份",
+        content: "唐月不是普通的实习老师——她是魔法协会审判会的成员。在博城那几年她是卧底，负责调查黑教廷。她主修火系，次修暗影系，实力远超中阶法师。审判会是魔法协会的最高执法机构，专门缉拿触犯公约的法师。",
+        category: "intel",
+        source: "唐月",
+        credibility: 1.0,
+        relatedEvent: "event_tang_yue_reveal",
+        unlockDay: 60
+      },
+
+      meiyan_spirit_seed: {
+        id: "meiyan_spirit_seed",
+        title: "玫炎灵种",
+        content: "玫炎是地火中相当纯净的火系灵种，遍体嫣红，温度远比普通灵种高，简单粗暴。它在戏水镇水库底部自然形成，导致周围水源干涸。灵种'炎'级比凡种'火'级威力大数倍，炼化后改变法师体质——皮肤有光泽、血液改造、骨骼如铁。",
+        category: "intel",
+        source: "唐月/亲身经历",
+        credibility: 1.0,
+        relatedEvent: "event_spirit_seed_meiyan",
+        unlockDay: 65
+      },
+
+      shadow_element_awakened: {
+        id: "shadow_element_awakened",
+        title: "暗影系觉醒",
+        content: "暗影系是稀有系，觉醒方式与普通系不同——需要在纯粹的阴影环境中进行。暗影系初阶技能'遁影'可以在影子间快速移动，中阶技能'巨影钉'攻击影子本身，无法用魔具防御，是最强的控制技能之一。暗影系法师擅长暗杀和潜入。",
+        category: "intel",
+        source: "唐月",
+        credibility: 1.0,
+        relatedEvent: "event_shadow_awakening",
+        unlockDay: 70
+      },
+
+      mingzhu_tournament_result: {
+        id: "mingzhu_tournament_result",
+        title: "斗兽大赛",
+        content: "明珠学府新生斗兽大赛中，一名召唤系新生以一人一兽斩落150名挑战者，其中包括白家白藏锋。那名新生召唤幽狼兽，更在战斗中暴露了中阶雷系法师的实力——霹雳·轰顶一击震全场。许昭霆认出他是博城出来的莫凡。",
+        category: "rumor",
+        source: "校园传闻",
+        credibility: 0.9,
+        relatedEvent: "event_tournament",
+        unlockDay: 80
+      },
+
+      qingtian_hunter_office: {
+        id: "qingtian_hunter_office",
+        title: "青天猎所",
+        content: "青天猎所是包老头创办的私人猎所，位于魔都。包老头看似普通老头，实则在猎者联盟德高望重。他孙女灵灵年仅12岁却是猎人大师，智商极高，擅长情报分析。猎所接私人委托，酬金比猎者联盟高但更危险。",
+        category: "intel",
+        source: "包老头",
+        credibility: 1.0,
+        relatedEvent: "event_qingtian_hunter",
+        unlockDay: 90
+      },
+
+      parasite_demon_incident: {
+        id: "parasite_demon_incident",
+        title: "寄生妖魔事件",
+        content: "明珠学府发生寄生妖魔事件。鳞皮妖母通过寄生繁殖，被寄生者白天正常夜晚变妖。妖母在体育馆试图血祭数千人突破统领级，被一名中阶法师阻止。赵满延光系在楼下挡住小妖，那名法师独自击杀妖母。事件后学校封锁消息。",
+        category: "clue",
+        source: "灵灵/亲身经历",
+        credibility: 0.95,
+        relatedEvent: "event_parasite_demon",
+        unlockDay: 100
+      },
+
+      three_step_tower_secret: {
+        id: "three_step_tower_secret",
+        title: "三步塔",
+        content: "三步塔是明珠主校区的修炼圣地，由土系和空间系大贤者建造。'一步千丈，两步万里，三步无疆'，塔内元素浓度是外界数十倍，但越往上精神重力越大。中阶法师最多上1-2层，3层可能爆体。三步塔类似地圣泉，是天材地宝级别的修炼资源。",
+        category: "intel",
+        source: "萧院长",
+        credibility: 1.0,
+        relatedEvent: "event_three_step_tower",
+        unlockDay: 110
+      },
+
+      black_church_soul_chain: {
+        id: "black_church_soul_chain",
+        title: "灵魂锁链",
+        content: "黑教廷用'灵魂锁链'控制黑畜妖——那不是妖魔，而是被咒法奴役的活人！诅咒畜妖是强化版，需要强大体魄和充满怨恨的灵魂，保留部分意识。灵魂锁链连帕特农神庙都无法解除。被控制者求死不能，唯一解脱是死亡。",
+        category: "warning",
+        source: "唐月/许昭霆",
+        credibility: 1.0,
+        relatedEvent: "event_xu_zhaoting_death",
+        unlockDay: 120
+      },
+
+      black_church_hierarchy: {
+        id: "black_church_hierarchy",
+        title: "黑教廷等级",
+        content: "黑教廷等级森严：最顶层是撒朗（神听者），下面是神侍者（能直接接触撒朗的高层），再下面是教士（如宇昂），最底层是灰衣人。帕特农神庙12位选女姬被弑，神女缺位，导致灵魂锁链无法解除。许昭霆用命换来的皮革上有神侍者的名字。",
+        category: "intel",
+        source: "灵灵/许昭霆遗物",
+        credibility: 0.95,
+        relatedEvent: "event_xu_zhaoting_death",
+        unlockDay: 125
+      },
+
+      yu_ang_final_death: {
+        id: "yu_ang_final_death",
+        title: "宇昂之死",
+        content: "宇昂——博城灾难的黑教廷教士，在主校区考核大混战中被击杀。他半张脸被烧毁，饲养黑畜妖，用灵魂锁链控制许昭霆。击杀者用三系中阶魔法（雷火暗影）联手，霹雳·夜叉分裂五道闪电，巨影钉控制影子，玫炎·烈拳·轰天终结。宇昂临死前提到撒朗会报仇。",
+        category: "intel",
+        source: "亲身经历",
+        credibility: 1.0,
+        relatedEvent: "event_yu_ang_final",
+        unlockDay: 130
+      },
+
+      bocheng_disaster_truth: {
+        id: "bocheng_disaster_truth",
+        title: "博城灾难真相",
+        content: "博城灾难不是天灾——黑教廷用妖母引动雪峰山妖魔潮，策划了十余年。撒朗亲自出手，唐月当时负责牵制她。翼苍王只是棋子，真正的目标是地圣泉下的古老存在。博城只是黑教廷计划的第一步。",
+        category: "warning",
+        source: "许昭霆/唐月",
+        credibility: 0.95,
+        relatedEvent: "event_tang_yue_reveal",
+        unlockDay: 60
       }
     }
   },

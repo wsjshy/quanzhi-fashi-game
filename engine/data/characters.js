@@ -7202,6 +7202,9 @@ const DataCharacters = {
           choices: [
             { id: "ask_hunt", text: "有猎魔任务吗？", condition: { minOpinion: 5 }, nextNode: "hunt_info" },
             { id: "ask_intel", text: "最近有什么妖魔情报？", condition: { minOpinion: 15 }, effects: { exp: 10 }, nextNode: "demon_intel" },
+            { id: "ask_parasite", text: "寄生妖魔的事怎么样了？", condition: { minOpinion: 25, minTrust: 20 }, nextNode: "parasite_case" },
+            { id: "ask_hierarchy", text: "黑教廷的等级结构？", condition: { hasFlag: "xu_zhaoting_died", minTrust: 40 }, nextNode: "black_church_hierarchy" },
+            { id: "ask_xu", text: "许昭霆的事……", condition: { hasFlag: "xu_zhaoting_died", minTrust: 30 }, nextNode: "xu_zhaoting_mourn" },
             { id: "ask_age", text: "你多大了？", condition: { notNpcFlags: ["asked_age"] }, effects: { opinion: -5, npcFlags: { asked_age: true } }, nextNode: "age_talk" },
             { id: "chat", text: "随便聊聊", condition: { minOpinion: 20 }, nextNode: "casual_chat" },
             { id: "give_gift", text: "送你东西", action: "open_gift" },
@@ -7263,6 +7266,46 @@ const DataCharacters = {
           ],
           choices: [
             { id: "back", text: "你也挺有意思的", effects: { opinion: 3 }, nextNode: "default" }
+          ]
+        },
+        parasite_case: {
+          id: "parasite_case",
+          texts: [
+            "寄生妖魔的案子我查过资料。那东西叫鳞皮妖母，战将级，能通过寄生繁殖。",
+            "被寄生的人白天正常，晚上蜕皮变妖。杀了妖母，被寄生的人就能恢复。",
+            "但如果妖母完成血祭，她可能突破到统领级。到时候整个学校都危险。"
+          ],
+          condition: { minOpinion: 25, minTrust: 20 },
+          effects: { giveInfo: "parasite_demon_incident" },
+          choices: [
+            { id: "back", text: "我会小心的", effects: { trust: 5 }, nextNode: "default" }
+          ]
+        },
+        xu_zhaoting_mourn: {
+          id: "xu_zhaoting_mourn",
+          texts: [
+            "……许昭霆的事，我知道了。",
+            "他传递的情报很有价值。神侍者的名字……我会继续追查。",
+            "他选择那样结束，对他来说或许是解脱。黑教廷的灵魂锁链，连帕特农都解不开。",
+            "别太自责。你能做的都做了。"
+          ],
+          condition: { hasFlag: "xu_zhaoting_died", minTrust: 30 },
+          mood: "rare_soft",
+          choices: [
+            { id: "back", text: "……嗯", effects: { trust: 10 }, nextNode: "default" }
+          ]
+        },
+        black_church_hierarchy: {
+          id: "black_church_hierarchy",
+          texts: [
+            "黑教廷的等级：最顶层是撒朗，下面是神侍者，再下面是教士，最底层是灰衣人。",
+            "宇昂不过是个教士。真正危险的是神侍者——能直接接触撒朗的人。",
+            "许昭霆用命换来的那块皮革上，有神侍者的名字。但信息被加密了，我需要时间破解。"
+          ],
+          condition: { hasFlag: "xu_zhaoting_died", minTrust: 40 },
+          effects: { giveInfo: "black_church_hierarchy" },
+          choices: [
+            { id: "back", text: "需要什么帮助告诉我", effects: { trust: 5, opinion: 5 }, nextNode: "default" }
           ]
         }
       }
@@ -7333,8 +7376,8 @@ const DataCharacters = {
     id: "bai_cangfeng",
     name: "白藏锋",
     title: "白家子弟",
-    description: "白家子弟，风系中阶法师。为人高傲，实力不俗。",
-    elements: ["wind"],
+    description: "魔都四大家族白家的子弟，光系中阶法师，光系系主任白眉的侄子。为人高傲多话，自认天才，视莫凡为眼中钉。主校区考核中被莫凡一霹雳秒杀。",
+    elements: ["light"],
     level: 18,
     maxHp: 500,
     maxMp: 280,
@@ -7342,7 +7385,7 @@ const DataCharacters = {
     defense: 18,
     speed: 32,
     spirit: 28,
-    skills: ["basic_attack", "wind_track_phantom"],
+    skills: ["basic_attack", "light_ray", "light_blind"],
     aiType: "aggressive",
     growthType: "mage",
     canDuel: true,
@@ -7358,7 +7401,7 @@ const DataCharacters = {
       loyal: 0.5, arrogant: 0.8, greedy: 0.3, curious: 0.4
     },
     giftPreferences: {
-      loved: ["wind_spirit_seed"],
+      loved: ["light_spirit_seed"],
       liked: ["magic_stone", "mana_potion"],
       disliked: [],
       baseOpinionGain: 3, lovedMultiplier: 2.5, likedMultiplier: 1.3, dislikedMultiplier: 0.3, dailyGiftLimit: 1
@@ -7368,6 +7411,71 @@ const DataCharacters = {
     },
     relationships: {
       mo_fan: { opinion: -20, trust: 0, type: "rival", label: "白家" }
+    },
+    dialogueTree: {
+      npcId: "bai_cangfeng",
+      nodes: {
+        default: {
+          id: "default",
+          texts: [
+            "哼，又是你。别以为在斗兽大赛上出了点风头就了不起了。",
+            "召唤系？不过是靠召唤兽的废物罢了。真正的法师靠的是自己的实力。",
+            "我白家在魔都传承百年，什么天才没见过？你这种草根，不过是昙花一现。"
+          ],
+          mood: "arrogant",
+          choices: [
+            { id: "ask_family", text: "白家很厉害吗？", nextNode: "about_family" },
+            { id: "ask_light", text: "光系很强吗？", condition: { minOpinion: -10 }, nextNode: "about_light" },
+            { id: "challenge", text: "切磋一下？", condition: { minOpinion: -30 }, nextNode: "challenge_response" },
+            { id: "threaten", text: "主校区考核小心点", condition: { minOpinion: -50, npcFlags: { threatened_by_mofan: false } }, effects: { npcFlags: { threatened_by_mofan: true }, opinion: -10 }, nextNode: "threaten_response" },
+            { id: "give_gift", text: "我有东西给你", action: "open_gift" },
+            { id: "leave", text: "告辞", nextNode: null }
+          ]
+        },
+        about_family: {
+          id: "about_family",
+          texts: [
+            "白家？你连白家都没听过？魔都四大家族白、赵、穆、东方，我白家以光系闻名。",
+            "我叔叔是光系系主任白眉，中阶法师在他面前连光都放不出来。",
+            "世家的底蕴不是你们这些草根能想象的。资源、魔具、功法，哪一样不是用钱堆出来的？"
+          ],
+          choices: [
+            { id: "back", text: "原来如此", nextNode: "default" }
+          ]
+        },
+        about_light: {
+          id: "about_light",
+          texts: [
+            "光系？光系是所有系中最神圣的。光耀·失明可以让敌人瞬间失去战斗力，光佑·圣盾可以抵挡任何攻击。",
+            "而且光系对黑暗生物有天生克制。黑教廷那些东西，最怕的就是光系法师。",
+            "不过……光系修炼起来也最难。星子太活跃了，不容易控制。"
+          ],
+          choices: [
+            { id: "back", text: "受教了", nextNode: "default" }
+          ]
+        },
+        challenge_response: {
+          id: "challenge_response",
+          texts: [
+            "切磋？就凭你？好，我给你这个机会。别到时候输了哭鼻子。",
+            "我可是中阶光系法师，你一个召唤系的……算了，让你三招。"
+          ],
+          choices: [
+            { id: "fight", text: "来吧！", action: "start_battle", actionData: { enemyId: "bai_cangfeng" } },
+            { id: "back", text: "算了，改天", nextNode: "default" }
+          ]
+        },
+        threaten_response: {
+          id: "threaten_response",
+          texts: [
+            "你威胁我？哼，主校区考核上见真章。到时候可别求饶。",
+            "白家的人，不是你能惹的。好自为之吧。"
+          ],
+          choices: [
+            { id: "back", text: "等着瞧", nextNode: "default" }
+          ]
+        }
+      }
     }
   },
 
@@ -7375,7 +7483,7 @@ const DataCharacters = {
     id: "xu_zhaoting",
     name: "许昭霆",
     title: "博城幸存者",
-    description: "博城灾难中失去全家的幸存者，雷系+风系双系中阶法师。对黑教廷恨之入骨，性格刚烈勇敢。与张璐璐是情侣。",
+    description: "博城灾难中失去全家的幸存者，雷系+风系双系中阶法师。对黑教廷恨之入骨，性格刚烈勇敢。与张璐璐是情侣。在主校区考核中被宇昂抓住变成诅咒畜妖，最终求莫凡结束自己生命。",
     elements: ["thunder", "wind"],
     level: 12,
     maxHp: 350,
@@ -7414,6 +7522,185 @@ const DataCharacters = {
       zhang_lulu: { opinion: 90, trust: 90, type: "lover", label: "恋人" }
     },
     isCanon: true,
-    canonSource: "第220章 误闯陷阱"
+    canonSource: "第220章 误闯陷阱",
+    dialogueTree: {
+      npcId: "xu_zhaoting",
+      nodes: {
+        default: {
+          id: "default",
+          texts: [
+            "莫凡！你也来明珠了？太好了，博城出来的就我们几个了。",
+            "黑教廷……我绝不会放过他们。我全家都死在博城灾难里。",
+            "我现在是雷风双系，虽然比不了你那个变态双系，但杀黑教廷绰绰有余。"
+          ],
+          mood: "determined",
+          choices: [
+            { id: "ask_bocheng", text: "博城那天你也在？", nextNode: "about_bocheng" },
+            { id: "ask_lulu", text: "张璐璐是谁？", condition: { minOpinion: 20 }, nextNode: "about_lulu" },
+            { id: "ask_black_church", text: "你在追查黑教廷？", condition: { minOpinion: 30, minTrust: 20 }, nextNode: "about_black_church" },
+            { id: "train_together", text: "一起修炼？", condition: { minOpinion: 40 }, effects: { exp: 50 }, nextNode: "training_together" },
+            { id: "give_gift", text: "我有东西给你", action: "open_gift" },
+            { id: "leave", text: "保重", nextNode: null }
+          ]
+        },
+        about_bocheng: {
+          id: "about_bocheng",
+          texts: [
+            "我怎么会忘……那天晚上，我亲眼看着我爸妈被妖魔撕碎。",
+            "我拼了命才逃出来。后来才知道，那场灾难不是天灾——是黑教廷搞的鬼。",
+            "他们用妖母引动了整个雪峰山的妖魔潮。博城……只是他们计划的一部分。"
+          ],
+          effects: { giveInfo: "bocheng_disaster_truth" },
+          choices: [
+            { id: "back", text: "……我会让他们付出代价", effects: { opinion: 5, trust: 5 }, nextNode: "default" }
+          ]
+        },
+        about_lulu: {
+          id: "about_lulu",
+          texts: [
+            "张璐璐……我女朋友。水系的，比我小一届。",
+            "她也是博城出来的，但她比我幸运——家人都还在。",
+            "我答应过她，等我杀够了黑教廷的人，就好好陪她。"
+          ],
+          mood: "soft",
+          choices: [
+            { id: "back", text: "祝你们好", effects: { opinion: 3 }, nextNode: "default" }
+          ]
+        },
+        about_black_church: {
+          id: "about_black_church",
+          texts: [
+            "我一直在暗中查。黑教廷在明珠有眼线，而且不止一个。",
+            "我发现有个灰衣人经常在学校附近出没，像是在联络什么人。",
+            "莫凡，你也要小心。博城那场灾难的参与者，有些可能就混在明珠。"
+          ],
+          effects: { giveInfo: "black_church_in_mingzhu" },
+          choices: [
+            { id: "back", text: "你也是，别一个人冒险", effects: { trust: 10, opinion: 5 }, nextNode: "default" }
+          ]
+        },
+        training_together: {
+          id: "training_together",
+          texts: [
+            "好！雷系星图我已经摸到门道了，中阶魔法霹雳·轰顶威力确实大。",
+            "不过你的雷系比我强多了……有空教教我？"
+          ],
+          choices: [
+            { id: "back", text: "随时可以", effects: { opinion: 5 }, nextNode: "default" }
+          ]
+        }
+      }
+    }
+  },
+
+  bao_laotou: {
+    id: "bao_laotou",
+    name: "包老头",
+    title: "青天猎所所长",
+    description: "青天猎所的创办者，灵灵的爷爷。看似普通的老头，实则深藏不露，是猎者联盟中德高望重的人物。对黑教廷有深入了解，暗中保护莫凡。",
+    elements: ["shadow", "light"],
+    level: 40,
+    maxHp: 1200,
+    maxMp: 800,
+    attack: 60,
+    defense: 40,
+    speed: 35,
+    spirit: 80,
+    skills: ["basic_attack"],
+    aiType: "defensive",
+    growthType: "mage",
+    canDuel: false,
+    spriteColor: "#8B4513",
+    location: "qingtian_hunter_office",
+    availableTimes: ["morning", "afternoon"],
+    dialogue: [
+      { trigger: "default", text: "年轻人，想接什么任务？" }
+    ],
+    givesQuests: ["quest_hunter_guild_recruit"],
+    personality: {
+      brave: 0.8, kind: 0.7, honest: 0.6, impulsive: 0.2,
+      loyal: 0.9, arrogant: 0.1, greedy: 0.1, curious: 0.5
+    },
+    giftPreferences: {
+      loved: ["rare_demon_core", "ancient_book"],
+      liked: ["tea", "magic_stone"],
+      disliked: [],
+      baseOpinionGain: 4, lovedMultiplier: 2, likedMultiplier: 1.2, dislikedMultiplier: 0.5, dailyGiftLimit: 1
+    },
+    relationshipCap: {
+      maxOpinion: 100, maxTrust: 100, canRomance: false, canBeMentor: true, canBeRival: false
+    },
+    relationships: {
+      mo_fan: { opinion: 30, trust: 20, type: "mentor", label: "猎所新人" },
+      lingling: { opinion: 100, trust: 100, type: "granddaughter", label: "孙女" }
+    },
+    dialogueTree: {
+      npcId: "bao_laotou",
+      nodes: {
+        default: {
+          id: "default",
+          texts: [
+            "哦？新人？灵灵说你实力不错，就是有点莽撞。",
+            "青天猎所不养闲人。想在这里待着，就得拿出真本事。",
+            "黑教廷最近在明珠活动频繁……年轻人，你最好小心点。"
+          ],
+          mood: "wise",
+          choices: [
+            { id: "ask_hunter", text: "猎所都做什么任务？", nextNode: "hunter_info" },
+            { id: "ask_black_church", text: "黑教廷在明珠？", condition: { minOpinion: 20, minTrust: 15 }, nextNode: "black_church_warn" },
+            { id: "ask_lingling", text: "灵灵是您孙女？", condition: { minOpinion: 10 }, nextNode: "about_lingling" },
+            { id: "ask_training", text: "能教我些什么吗？", condition: { minOpinion: 40, minTrust: 30 }, effects: { exp: 100 }, nextNode: "mentor_advice" },
+            { id: "give_gift", text: "我带了点东西", action: "open_gift" },
+            { id: "leave", text: "告辞", nextNode: null }
+          ]
+        },
+        hunter_info: {
+          id: "hunter_info",
+          texts: [
+            "猎所接的都是私人委托，比猎者联盟的悬赏酬金高，但也更危险。",
+            "追踪妖魔、调查异常、护送要人……什么都做。前提是你活得到交任务那天。",
+            "灵灵负责情报分析，你负责执行。分工明确，别拖后腿。"
+          ],
+          choices: [
+            { id: "back", text: "明白了", nextNode: "default" }
+          ]
+        },
+        black_church_warn: {
+          id: "black_church_warn",
+          texts: [
+            "博城那场灾难不是偶然。黑教廷在魔都也有布局，而且渗透得比你想象的深。",
+            "他们的目标可能是地圣泉——你身上带着的东西，对他们来说是大补之物。",
+            "别一个人逞强。真遇到黑教廷的人，第一时间联系我或者灵灵。"
+          ],
+          effects: { giveInfo: "black_church_in_mingzhu" },
+          choices: [
+            { id: "back", text: "我会小心的", effects: { trust: 10 }, nextNode: "default" }
+          ]
+        },
+        about_lingling: {
+          id: "about_lingling",
+          texts: [
+            "那丫头……从小就聪明，十二岁就过了猎人大师考试。",
+            "她爸妈都是猎人，在一次任务中牺牲了。我把她带大，教她分析情报。",
+            "她嘴上不饶人，但心是好的。你多担待。"
+          ],
+          mood: "gentle",
+          choices: [
+            { id: "back", text: "她很厉害", effects: { opinion: 5 }, nextNode: "default" }
+          ]
+        },
+        mentor_advice: {
+          id: "mentor_advice",
+          texts: [
+            "你雷火双系，爆发力够了，但生存能力差。暗影系的遁影要多练，那是保命的本事。",
+            "中阶法师之间的战斗，比的是谁先露出破绽。别急着放中阶魔法，先用初阶试探。",
+            "记住——活着的法师才有输出。"
+          ],
+          choices: [
+            { id: "back", text: "受教了", effects: { opinion: 5 }, nextNode: "default" }
+          ]
+        }
+      }
+    }
   }
 };
