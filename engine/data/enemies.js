@@ -62,10 +62,10 @@ const DataEnemies = {
   demon_wolf: {
     id: "demon_wolf",
     name: "幽狼兽",
-    title: "奴仆级召唤兽",
-    description: "召唤系法师白阳的召唤兽，绿色汗毛锯齿獠牙，比普通独眼魔狼更强。受强刺激会发狂，眼睛变红，战斗力大幅提升。",
+    title: "奴仆级妖魔/召唤兽",
+    description: "魔狼亚种，绿色皮毛锯齿獠牙，比独眼魔狼更强。性情好斗，会使用土系飞沙走石吐息。受刺激会发狂，眼睛变红，战斗力大增。",
     elements: [
-      "dark"
+      "dark", "earth"
     ],
     level: 5,
     maxHp: 200,
@@ -75,7 +75,7 @@ const DataEnemies = {
     speed: 18,
     skills: [
       "basic_attack",
-      "dark_bolt",
+      "demon_sand_breath",
       "demon_wild_charge",
       "battle_howl"
     ],
@@ -1530,6 +1530,45 @@ const DataEnemies = {
       start: "你以为能抓住我？",
       lowHp: "可恶...你这小子！",
       death: "不可能...我怎么会死在这里..."
+    }
+  },
+
+  // ===== 第二卷 明珠学府篇 =====
+  luo_song: {
+    id: "luo_song",
+    name: "罗宋",
+    title: "明珠学府新生·双系中阶",
+    description: "小说原著人物。富家子弟，土系+冰系双系中阶法师，性格傲慢。入学测试时与莫凡竞争，被莫凡的霹雳震慑。",
+    elements: ["earth", "ice"],
+    level: 8,
+    maxHp: 450,
+    maxMp: 180,
+    attack: 28,
+    defense: 18,
+    speed: 16,
+    spirit: 20,
+    skills: [
+      "basic_attack",
+      "earth_shield",
+      "ice_lock",
+      "earth_wave"
+    ],
+    aiType: "defensive",
+    enemyType: "human",
+    spriteColor: "#8B7355",
+    isEnemy: true,
+    isCanon: true,
+    canonSource: "第143章 入学试炼",
+    expReward: 300,
+    goldReward: 200,
+    dropItems: [
+      { itemId: "magic_stone", chance: 0.8, min: 1, max: 3 }
+    ],
+    locations: ["mingzhu_academy"],
+    battleQuotes: {
+      start: "召唤系？哼，看我怎么收拾你！",
+      lowHp: "你...你到底是什么人！",
+      death: "不可能...我可是双系中阶..."
     }
   }
 };

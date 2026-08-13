@@ -1684,6 +1684,28 @@ const DataSkills = {
     isDemonSkill: true
   },
   
+  demon_sand_breath: {
+    id: "demon_sand_breath",
+    name: "飞沙走石",
+    description: "幽狼兽吐出土属性沙石吐息，造成土系伤害并降低目标命中",
+    element: "earth",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 18,
+    damageMultiplier: 1.2,
+    hitRate: 0.95,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 2,
+    statusEffects: [
+      { type: "blind", chance: 0.4, duration: 2, power: 0.3 }
+    ],
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第144章 幽狼兽使用飞沙走石吐息攻击"
+  },
+  
   fierce_roar: {
     id: "fierce_roar",
     name: "凶猛咆哮",

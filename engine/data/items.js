@@ -2121,5 +2121,23 @@ const DataItems = {
     rarity: "传说",
     lore: "地圣泉千年结晶，极其珍贵，可遇不可求。",
     specialEffect: "breakthrough_boost"
+  },
+
+  // ========== 召唤兽相关 ==========
+  beast_refining_blood: {
+    id: "beast_refining_blood",
+    name: "炼兽之血",
+    description: "让召唤兽进行一次洗髓，实力大幅增长。有一定概率让奴仆级巅峰的召唤兽进阶为战将级。明珠学府斗兽大赛前两名奖励。",
+    type: "consumable",
+    icon: "🩸",
+    price: 50000,
+    stackable: true,
+    maxStack: 5,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "稀有",
+    isCanon: true,
+    source: "第148章 斗兽大赛奖励",
+    lore: "炼兽之血可以洗髓召唤生物，比用魔能慢慢喂养快得多，甚至有概率让召唤兽进阶。"
   }
 };
