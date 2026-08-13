@@ -1229,6 +1229,11 @@ const BattleSystem = {
                     this.addLog(`${casterName} 吸取了 ${healAmount} 点生命！`, 'heal');
                 }
             }
+
+            // 自身负面效果（如狂暴冲锋后防御降低）
+            if (skill.selfStatusEffects && !damage.isMiss) {
+                this.applyStatusEffects(casterData, skill.selfStatusEffects, isPlayer);
+            }
             
             // 连续暴击记录（仅玩家，用于幸运儿成就）
             if (isPlayer && typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {

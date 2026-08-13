@@ -22,7 +22,8 @@ const DataEnemies = {
       "basic_attack",
       "claw_slash",
       "shadow_assault",
-      "fierce_roar"
+      "fierce_roar",
+      "berserk_charge"
     ],
     aiType: "aggressive",
     enemyType: "demon",
@@ -118,7 +119,7 @@ const DataEnemies = {
     attack: 20,
     defense: 8,
     speed: 16,
-    skills: ["basic_attack", "dark_bolt", "wolf_howl"],
+    skills: ["basic_attack", "dark_bolt", "wolf_howl", "wolf_pack_attack"],
     spriteColor: "#3a2a1a",
     isEnemy: true,
     isElite: true,
@@ -149,7 +150,8 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "shadow_assault",
-      "claw_slash"
+      "claw_slash",
+      "shadow_dodge"
     ],
     aiType: "kiter",
     enemyType: "demon",
@@ -192,7 +194,8 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "rock_throw",
-      "demon_regeneration"
+      "demon_regeneration",
+      "stone_skin"
     ],
     aiType: "defensive",
     enemyType: "demon",
@@ -445,7 +448,8 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "thunder_bolt",
-      "thunder_charge"
+      "thunder_charge",
+      "lightning_fur"
     ],
     aiType: "burst",
     spriteColor: "#9966ff",
@@ -529,7 +533,8 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "dark_bolt",
-      "poison_fang"
+      "poison_fang",
+      "shadow_dodge"
     ],
     spriteColor: "#553377",
     isEnemy: true,

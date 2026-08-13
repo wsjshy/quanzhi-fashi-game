@@ -1762,35 +1762,6 @@ const DataSkills = {
     ]
   },
   
-  // 特殊妖魔技能
-  venom_spit: {
-    id: "venom_spit",
-    name: "毒液喷射",
-    description: "毒系妖魔喷射剧毒液体，造成中毒效果",
-    element: "poison",
-    type: "damage",
-    mpCost: 0,
-    baseDamage: 8,
-    damageMultiplier: 1.0,
-    hitRate: 0.85,
-    critRate: 0.05,
-    targetType: "enemy",
-    cooldown: 2,
-    tier: "奴仆级",
-    isDemonSkill: true,
-    statusEffects: [
-      {
-        name: "剧毒",
-        type: "poison",
-        dotDamage: 8,
-        duration: 4,
-        chance: 0.9,
-        stacks: 1,
-        maxStacks: 3
-      }
-    ]
-  },
-  
   rock_throw: {
     id: "rock_throw",
     name: "巨石投掷",
@@ -2263,6 +2234,89 @@ const DataSkills = {
     statusEffects: [
       { name: "中毒", type: "poison", duration: 3, chance: 0.5, dotDamage: 5 },
       { name: "减速", type: "slow", duration: 2, chance: 0.4, value: 0.2 }
+    ]
+  },
+
+  // ===== 第三批奴仆级妖魔特色技能 =====
+  wolf_pack_attack: {
+    id: "wolf_pack_attack",
+    name: "狼群围攻",
+    description: "群狼一拥而上撕咬目标，造成高额伤害并有几率撕裂伤口",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.4,
+    statusEffects: [
+      { name: "撕裂", type: "bleed", duration: 2, chance: 0.5, dotDamage: 4 }
+    ]
+  },
+
+  shadow_dodge: {
+    id: "shadow_dodge",
+    name: "暗影闪避",
+    description: "融入阴影中，2回合内闪避率大幅提升",
+    element: "dark",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "暗影闪避", type: "dodge_up", duration: 2, chance: 1, dodgeMod: 0.4 }
+    ]
+  },
+
+  stone_skin: {
+    id: "stone_skin",
+    name: "石肤术",
+    description: "皮肤化为岩石，大幅提升防御力3回合",
+    element: "earth",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "石肤", type: "defense_up", duration: 3, chance: 1, statModifiers: { defense: 12 } }
+    ]
+  },
+
+  berserk_charge: {
+    id: "berserk_charge",
+    name: "狂暴冲锋",
+    description: "疯狂冲向目标，造成高额伤害但自身防御降低2回合",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.6,
+    selfStatusEffects: [
+      { name: "冲锋后摇", type: "defense_down", duration: 2, chance: 1, statModifiers: { defense: -5 } }
+    ]
+  },
+
+  lightning_fur: {
+    id: "lightning_fur",
+    name: "雷电皮毛",
+    description: "毛发竖起带电，3回合内攻击力提升",
+    element: "thunder",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "雷电附体", type: "attack_up", duration: 3, chance: 1, statModifiers: { attack: 6 } }
     ]
   }
 };
