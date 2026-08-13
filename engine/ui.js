@@ -2748,7 +2748,7 @@ const UI = {
                                             <span style="float: right; color: #ffd700;">x${item.count}</span>
                                         </div>
                                         <div style="font-size: 12px; color: #999; margin-bottom: 10px; min-height: 30px;">
-                                            ${itemData.description}
+                                            ${itemData.description}${(itemData.dynamicLore || []).filter(d => WorldState.getFlag(d.flag)).map(d => `<span style="color: #88aacc;">${d.text}</span>`).join('')}
                                         </div>
                                         <div style="display: flex; gap: 8px;">
                                             ${canUse ? `

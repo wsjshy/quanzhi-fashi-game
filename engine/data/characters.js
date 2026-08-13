@@ -1214,6 +1214,16 @@ const DataCharacters = {
               next: "casual_chat"
             },
             {
+              id: "farewell_xiaohou",
+              text: "小侯，我要离开博城了",
+              condition: {
+                hasFlag: "bocheng_disaster_happened",
+                notNpcFlags: ["said_farewell"]
+              },
+              effects: { npcFlags: { said_farewell: true } },
+              next: "xiaohou_farewell"
+            },
+            {
               text: "再见",
               next: null,
               action: "close"
@@ -1433,6 +1443,33 @@ const DataCharacters = {
           choices: [
             {
               text: "加油，我相信你",
+              next: "default"
+            }
+          ]
+        },
+        xiaohou_farewell: {
+          id: "xiaohou_farewell",
+          texts: [
+            "（张小侯愣了一下，笑容慢慢消失。）",
+            "你要走了？去明珠学府？",
+            "（他低下头，踢了踢脚边的石子。）",
+            "也是啊，你那么厉害，博城留不住你的。",
+            "（他突然抬起头，眼眶有点红，但笑得很灿烂。）",
+            "没事！到了明珠记得联系我！等我毕业了，我也考明珠去！到时候咱们再一起修炼！",
+            "莫凡哥也说要去呢，你们在明珠可别把我忘了！",
+            "（他拍了拍你的肩膀，力气很大。）",
+            "一路顺风啊，兄弟。"
+          ],
+          mood: "emotional",
+          effects: {
+            opinion: 15,
+            trust: 10,
+            exp: 50
+          },
+          choices: [
+            {
+              text: "保重，小侯",
+              effects: { opinion: 5 },
               next: "default"
             }
           ]
@@ -2227,6 +2264,19 @@ const DataCharacters = {
               nextNode: "roof_confrontation"
             },
             {
+              id: "farewell",
+              text: "老师，我要离开博城了",
+              condition: {
+                hasFlag: "bocheng_disaster_happened",
+                notNpcFlags: ["said_farewell"]
+              },
+              effects: {
+                opinion: 5,
+                npcFlags: { said_farewell: true }
+              },
+              nextNode: "farewell_node"
+            },
+            {
               id: "leave",
               text: "谢谢老师，我先走了",
               effects: {},
@@ -2418,6 +2468,27 @@ const DataCharacters = {
           mood: "tired",
           choices: [
             { id: "back", text: "...好", effects: {}, nextNode: "default" }
+          ]
+        },
+        farewell_node: {
+          id: "farewell_node",
+          texts: [
+            "（唐月愣了一下，随即露出微笑，但眼底有一丝不舍。）",
+            "要去明珠学府了吗？那是个好地方，比博城大得多。",
+            "你是我教过的最有天赋的学生之一。到了那里，不要懈怠。",
+            "（她顿了顿，语气变得认真。）",
+            "记住我跟你说过的话——有些真相需要实力来承载。到了明珠，小心行事。",
+            "如果遇到解决不了的麻烦……可以联系我。",
+            "（她递给你一张传讯符。）",
+            "去吧，前程似锦。"
+          ],
+          mood: "gentle",
+          effects: {
+            giveItem: "tang_yue_message_talisman",
+            exp: 100
+          },
+          choices: [
+            { id: "thanks", text: "谢谢老师，我会的", effects: { opinion: 10, trust: 10 }, nextNode: "default" }
           ]
         }
       }
@@ -5296,63 +5367,6 @@ const DataCharacters = {
       }
     }
   },
-  yu_ang: {
-    id: "yu_ang",
-    name: "宇昂",
-    title: "穆氏修炼疯子",
-    description: "穆卓云的养子，对穆卓云唯命是从，让他杀人都不犹豫的修炼疯子。常年有星尘魔器温养，修为远超同龄学生。18岁时将与莫凡进行魔法决斗。",
-    avatar: "assets/images/characters/yu_ang.jpg",
-    location: "mu_estate",
-    element: "ice",
-    level: 10,
-    personality: ["冷酷", "偏执", "唯命是从", "修炼狂"],
-    baseStats: { hp: 400, mp: 250, attack: 60, defense: 35, speed: 25 },
-    skills: ["basic_attack", "ice_spike", "ice_shield"],
-    faction: "mu_family",
-    factionRank: "养子",
-    relationships: {
-      mu_zhuoyun: { opinion: 100, trust: 100, type: "family", label: "养父" },
-      mu_he: { opinion: 70, trust: 60, type: "acquaintance", label: "长辈" },
-      mu_bai: { opinion: 50, trust: 40, type: "acquaintance", label: "族弟" },
-      mo_fan: { opinion: -50, trust: -30, type: "rival", label: "决斗对手" }
-    },
-    giftPreferences: {
-      loved: ["ice_crystal", "demon_core"],
-      liked: ["magic_stone", "super_mana_potion"],
-      disliked: [],
-      baseOpinionGain: 1,
-      lovedMultiplier: 2,
-      likedMultiplier: 1.2,
-      dislikedMultiplier: 0.3,
-      dailyGiftLimit: 1
-    },
-    dialogueTree: {
-      npcId: "yu_ang",
-      nodes: {
-        default: {
-          id: "default",
-          texts: ["……", "有事？"],
-          choices: [
-            { text: "你就是宇昂？", next: "about_self", condition: { minOpinion: -100 } },
-            { text: "18岁的决斗，我等着。", next: "about_duel", condition: { minOpinion: -100 } },
-            { text: "告辞。", next: "default", action: "back" }
-          ]
-        },
-        about_self: {
-          id: "about_self",
-          texts: ["是又如何。", "穆家收养我，给我资源，我替穆家做事。"],
-          effects: { familiarity: 2 },
-          choices: [{ text: "原来如此。", next: "default", action: "back" }]
-        },
-        about_duel: {
-          id: "about_duel",
-          texts: ["哼，嘴硬。", "到时候，我会让你知道，世家培养的弟子和平民的差距。"],
-          effects: { opinion: -5 },
-          choices: [{ text: "拭目以待。", next: "default", action: "back" }]
-        }
-      }
-    }
-  },
   zhan_kong: {
     id: "zhan_kong",
     name: "斩空",
@@ -6061,22 +6075,101 @@ const DataCharacters = {
           id: "default",
           texts: ["...你是谁？", "不要浪费我的时间，我还要修炼。", "如果你是来挑战的，等我成年礼那天吧。"],
           choices: [
-            { text: "你就是宇昂？", next: "about_self", action: "talk" },
-            { text: "成年礼决斗", next: "about_duel", action: "talk" },
-            { text: "告辞", next: "default", action: "back" }
+            { text: "你就是宇昂？", next: "about_self" },
+            { text: "成年礼决斗", next: "about_duel" },
+            {
+              id: "ask_origin",
+              text: "你是穆家亲生的吗？",
+              condition: { minOpinion: 10, notNpcFlags: ["asked_origin"] },
+              effects: { npcFlags: { asked_origin: true } },
+              next: "about_origin"
+            },
+            {
+              id: "ask_power",
+              text: "你为什么这么执着于力量？",
+              condition: { minOpinion: 20, notNpcFlags: ["asked_power"] },
+              effects: { npcFlags: { asked_power: true } },
+              next: "about_power"
+            },
+            {
+              id: "after_disaster",
+              text: "博城灾难时你在哪？",
+              condition: { hasFlag: "bocheng_disaster_happened", notNpcFlags: ["asked_disaster"] },
+              effects: { npcFlags: { asked_disaster: true } },
+              next: "disaster_whereabouts"
+            },
+            { text: "告辞", next: null, action: "close" }
           ]
         },
         about_self: {
           id: "about_self",
           texts: ["没错，我是穆卓云的养子。", "冰系，已经掌握冰蔓·凝结。", "同龄人中，没几个是我的对手。"],
           effects: { familiarity: 3 },
-          choices: [{ text: "厉害", next: "default", action: "back" }]
+          choices: [{ text: "厉害", next: "default" }]
         },
         about_duel: {
           id: "about_duel",
           texts: ["父亲安排我在成年礼上和一个叫莫凡的人决斗。", "本来觉得没意思，但听说他有点实力。", "希望他别让我失望。"],
           effects: { familiarity: 5 },
-          choices: [{ text: "拭目以待", next: "default", action: "back" }]
+          choices: [{ text: "拭目以待", next: "default" }]
+        },
+        about_origin: {
+          id: "about_origin",
+          texts: [
+            "（他的眼神冷了一瞬。）",
+            "亲生？我没有父母。穆家收养了我，给了我名字和资源。",
+            "在这个世界，没有力量的人连活着都是奢望。血缘算什么？",
+            "（他顿了顿，语气恢复平静。）",
+            "力量才是一切。"
+          ],
+          mood: "cold",
+          effects: { giveInfo: "yu_ang_orphan", trust: 3 },
+          choices: [
+            { text: "……我明白了", next: "default" }
+          ]
+        },
+        about_power: {
+          id: "about_power",
+          texts: [
+            "（他停下修炼，第一次认真看你。）",
+            "为什么？因为这个世界是弱肉强食的。",
+            "你以为穆家给我资源是出于善心？不，是因为我有价值。",
+            "总有一天……我会获得更强的力量。不是世家给的那种。",
+            "（他似乎意识到自己说多了，冷哼一声。）",
+            "你不会懂的。"
+          ],
+          mood: "fanatical",
+          effects: { giveInfo: "yu_ang_seeks_dark_power", trust: 5, opinion: -2 },
+          choices: [
+            { text: "什么意思？", next: "power_hint" },
+            { text: "告辞", next: "default" }
+          ]
+        },
+        power_hint: {
+          id: "power_hint",
+          texts: [
+            "（他看了你一眼，嘴角勾起一丝冷笑。）",
+            "没什么。回去修炼吧，别在这浪费时间。",
+            "（他转身继续修炼，不再理你。但你注意到他的冰系星子中，似乎夹杂着一丝不属于冰的……黑色气息。）"
+          ],
+          effects: { giveInfo: "yu_ang_dark_hint" },
+          choices: [
+            { text: "（离开）", next: "default" }
+          ]
+        },
+        disaster_whereabouts: {
+          id: "disaster_whereabouts",
+          texts: [
+            "（他的表情没有任何波澜，仿佛那场灾难与他无关。）",
+            "灾难？我在穆家地下室修炼，结界挡住了一切。",
+            "倒是你……活下来了，运气不错。",
+            "（他转身离开，你注意到他的袖口下，手腕上有一个黑色的印记，一闪而逝。）"
+          ],
+          mood: "indifferent",
+          effects: { giveInfo: "yu_ang_disaster_alibi" },
+          choices: [
+            { text: "（那个印记……）", next: "default" }
+          ]
         }
       }
     }

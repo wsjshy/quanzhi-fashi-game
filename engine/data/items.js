@@ -408,7 +408,12 @@ const DataItems = {
     lore: "来历不明的黑色坠子，似乎隐藏着什么秘密。随着实力提升，或许能发现它的真正价值。",
     isSoulBound: true,
     growthStage: "mortal",
-    growthProgress: 0
+    growthProgress: 0,
+    dynamicLore: [
+      { flag: "heard_spring_whisper", text: "\n\n【异变】在地圣泉深处时，这枚坠子剧烈地震动起来，仿佛在回应泉底的什么东西。它似乎……在兴奋？" },
+      { flag: "found_ancient_cave", text: "\n\n【感应】你发现那个古代山洞后，小泥鳅坠变得温热。那些符文……它认识？" },
+      { flag: "bocheng_disaster_happened", text: "\n\n【共鸣】灾难中，小泥鳅坠吸收了大量弥漫在空气中的残魄能量。它在成长。" }
+    ]
   },
   stardust_device_mortal: {
     id: "stardust_device_mortal",
@@ -736,6 +741,19 @@ const DataItems = {
     usableOutOfBattle: false,
     rarity: "传说",
     lore: "地圣泉，博城最珍贵的修炼资源，无数魔法师梦寐以求。"
+  },
+  tang_yue_message_talisman: {
+    id: "tang_yue_message_talisman",
+    name: "唐月的传讯符",
+    description: "唐月老师临别时给你的传讯符。遇到解决不了的麻烦时可以用它联系她。符纸上有淡淡的火系魔力波动。",
+    type: "special",
+    icon: "📜",
+    price: 0,
+    stackable: false,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    lore: "唐月说：'如果遇到解决不了的麻烦，可以联系我。'这不仅仅是一张传讯符，更是一份承诺。"
   },
   spirit_star_dust_device: {
     id: "spirit_star_dust_device",
@@ -1600,7 +1618,12 @@ const DataItems = {
     grade: "growth",
     artifactId: "little_loach",
     boundToPlayer: true,
-    lore: "来历成谜的成长型坠子，似乎能吸收其他魔器的力量。它的极限在哪里，无人知晓。"
+    lore: "来历成谜的成长型坠子，似乎能吸收其他魔器的力量。它的极限在哪里，无人知晓。",
+    dynamicLore: [
+      { flag: "heard_spring_whisper", text: "\n\n【共鸣】在地圣泉时，这枚坠子疯狂地震动，发出低沉的嗡鸣。泉底那个古老的存在……它认识这枚坠子？还是这枚坠子认识它？" },
+      { flag: "found_ancient_cave", text: "\n\n【记忆】触碰雪峰山古代符文时，小泥鳅坠发出了微光。那些符文的年代……和这枚坠子一样古老。" },
+      { flag: "bocheng_disaster_happened", text: "\n\n【吞噬】灾难中，它自动吸收了弥漫在博城上空的大量残魄能量。你能感觉到它变得更强了。它到底需要多少能量？" }
+    ]
   },
 
   // ========== 魔具系统深化 ==========

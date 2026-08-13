@@ -723,6 +723,186 @@ const DataWorld = {
         credibility: 0.9,
         relatedEvent: null,
         unlockDay: 3
+      },
+      tang_yue_secret: {
+        id: "tang_yue_secret",
+        title: "唐月的过去",
+        content: "唐月老师似乎有不为人知的过去。当你问起她的来历时，她眼神闪烁，说'有些事知道太多没好处'。她似乎在博城执行什么秘密任务。",
+        category: "clue",
+        source: "唐月",
+        credibility: 0.7,
+        relatedEvent: null,
+        unlockDay: 5
+      },
+      tang_yue_roof_secret: {
+        id: "tang_yue_roof_secret",
+        title: "天台上的密谈",
+        content: "你亲眼看到唐月老师在天台用传讯石密谈，说什么'继续监视，不要打草惊蛇'。她的表情和平时判若两人。唐月老师到底是什么人？",
+        category: "clue",
+        source: "亲眼目睹",
+        credibility: 0.95,
+        relatedEvent: "event_tang_yue_roof",
+        unlockDay: 15
+      },
+      ye_xinxia_intro: {
+        id: "ye_xinxia_intro",
+        title: "叶心夏",
+        content: "莫凡的义妹，坐在轮椅上，身体不好。莫凡说她'对特殊的能量很敏感'。她似乎没有成功觉醒，但莫凡说她'比我们想象的要厉害'。",
+        category: "intel",
+        source: "莫凡",
+        credibility: 0.8,
+        relatedEvent: null,
+        unlockDay: 3
+      },
+      ye_xinxia_condition: {
+        id: "ye_xinxia_condition",
+        title: "心夏的异常",
+        content: "叶心夏虽然坐着轮椅，但莫凡说她能感知到普通人感知不到的东西。她的腿……似乎不是普通的病。",
+        category: "clue",
+        source: "莫凡",
+        credibility: 0.6,
+        relatedEvent: null,
+        unlockDay: 5
+      },
+      small_loach_secret: {
+        id: "small_loach_secret",
+        title: "小泥鳅坠的秘密",
+        content: "你脖子上的小泥鳅坠似乎不普通。它在某些时候会微微发热，甚至在你冥想时加速星子的连接。这东西到底是什么？",
+        category: "clue",
+        source: "亲身感受",
+        credibility: 0.9,
+        relatedEvent: null,
+        unlockDay: 1
+      },
+      demon_migration_anomaly: {
+        id: "demon_migration_anomaly",
+        title: "妖魔异常迁徙",
+        content: "你亲眼看到成群的妖魔从深山方向往外逃窜，不是在觅食，而是在逃跑。它们身上有黑色纹路，眼睛血红，充满恐惧。有什么东西在驱赶它们……",
+        category: "warning",
+        source: "亲眼目睹",
+        credibility: 0.95,
+        relatedEvent: "event_demon_migration",
+        unlockDay: 20
+      },
+      ancient_cave_runes: {
+        id: "ancient_cave_runes",
+        title: "雪峰山古代符文",
+        content: "你在雪峰山一个隐秘山洞中发现了数百年前的魔法符文。触碰晶石时，你看到了一座地下宫殿和一个被锁链束缚的古老存在。雪峰山下，沉睡着什么？",
+        category: "clue",
+        source: "亲身探索",
+        credibility: 0.9,
+        relatedEvent: "event_ancient_cave",
+        unlockDay: 20
+      },
+      mu_he_interest_defense: {
+        id: "mu_he_interest_defense",
+        title: "穆贺的异常关心",
+        content: "穆贺校董对学校的防御阵法表现出异常的兴趣，特别询问了结界节点的位置。他说'会让人检查'，但他的关心似乎过于……刻意了。",
+        category: "clue",
+        source: "穆贺",
+        credibility: 0.7,
+        relatedEvent: null,
+        unlockDay: 25
+      },
+      mu_he_warning: {
+        id: "mu_he_warning",
+        title: "穆贺的威胁",
+        content: "当你提起看到他和灰衣人在一起时，穆贺瞬间变了脸，警告你'不要乱说话，免得惹祸上身'。那一刻的他，和平时那个市侩校董判若两人。",
+        category: "warning",
+        source: "穆贺",
+        credibility: 0.9,
+        relatedEvent: null,
+        unlockDay: 30
+      },
+      mu_he_gray_clothes_meeting: {
+        id: "mu_he_gray_clothes_meeting",
+        title: "穆贺与灰衣人",
+        content: "你偷听到穆贺和一个灰衣人的对话：'结界节点已经摸清了'、'主教大人说了'、'斩空不好对付'。穆贺是叛徒？灰衣人是谁？'主教大人'又是谁？",
+        category: "warning",
+        source: "偷听",
+        credibility: 0.95,
+        relatedEvent: "event_mu_he_stranger",
+        unlockDay: 30
+      },
+      zhan_kong_knows_anomaly: {
+        id: "zhan_kong_knows_anomaly",
+        title: "斩空的沉默",
+        content: "斩空承认他也注意到了妖魔的异常，已经上报，但不知道原因。他警告你不要声张，说'有些东西不是你们能应付的'。这个男人，似乎知道得比他说的多。",
+        category: "intel",
+        source: "斩空",
+        credibility: 0.85,
+        relatedEvent: null,
+        unlockDay: 25
+      },
+      calm_before_storm: {
+        id: "calm_before_storm",
+        title: "不安的夜晚",
+        content: "灾难前夜，博城异常安静——天空暗红，虫鸣消失，老鼠疯狂逃窜，雪峰山升起黑雾。所有动物都在逃避，但没有人知道即将发生什么。",
+        category: "warning",
+        source: "亲身感受",
+        credibility: 1.0,
+        relatedEvent: "event_eve_of_disaster",
+        unlockDay: 42
+      },
+      black_church_symbol: {
+        id: "black_church_symbol",
+        title: "黑教廷印记",
+        content: "灾难后的废墟中，你发现了一个黑色符号——扭曲的眼睛，瞳孔是倒十字。这是黑教廷的标记。这场灾难不是偶然，是黑教廷策划的。",
+        category: "warning",
+        source: "亲眼发现",
+        credibility: 1.0,
+        relatedEvent: "event_black_church_mark",
+        unlockDay: 45
+      },
+      ancient_presence_below: {
+        id: "ancient_presence_below",
+        title: "泉底的古老存在",
+        content: "在地圣泉冥想时，你听到了地下极深处的心跳声。一个古老威严的声音直接灌入你的意识：'谁……扰我长眠……'。地圣泉下面，沉睡着一个古老的存在。",
+        category: "clue",
+        source: "亲身经历",
+        credibility: 0.95,
+        relatedEvent: "event_earth_spring_depths",
+        unlockDay: 40
+      },
+      yu_ang_orphan: {
+        id: "yu_ang_orphan",
+        title: "宇昂的出身",
+        content: "宇昂是穆卓云的养子，没有亲生父母。他认为'力量才是一切'，血缘毫无意义。他对力量的执着，似乎不仅仅是为了报答穆家。",
+        category: "intel",
+        source: "宇昂",
+        credibility: 0.8,
+        relatedEvent: null,
+        unlockDay: 10
+      },
+      yu_ang_seeks_dark_power: {
+        id: "yu_ang_seeks_dark_power",
+        title: "宇昂的黑暗追求",
+        content: "宇昂说他'会获得更强的力量，不是世家给的那种'。他说这话时眼中闪烁着狂热。他似乎在追求某种……不属于正统法师的力量。",
+        category: "clue",
+        source: "宇昂",
+        credibility: 0.7,
+        relatedEvent: null,
+        unlockDay: 20
+      },
+      yu_ang_dark_hint: {
+        id: "yu_ang_dark_hint",
+        title: "宇昂的黑色气息",
+        content: "你注意到宇昂的冰系星子中，似乎夹杂着一丝不属于冰的黑色气息。那是什么？黑教廷的黑暗力量？",
+        category: "warning",
+        source: "亲眼观察",
+        credibility: 0.6,
+        relatedEvent: null,
+        unlockDay: 25
+      },
+      yu_ang_disaster_alibi: {
+        id: "yu_ang_disaster_alibi",
+        title: "宇昂的不在场证明",
+        content: "博城灾难时，宇昂说自己在穆家地下室修炼。但你注意到他袖口下的手腕上有一个黑色印记，一闪而逝。那个印记……和废墟上的黑教廷符号很像。",
+        category: "warning",
+        source: "宇昂",
+        credibility: 0.8,
+        relatedEvent: null,
+        unlockDay: 45
       }
     }
   },
