@@ -350,21 +350,21 @@ const BattleSystem = {
             
             const tier = this.enemy.demonTier;
             if (tier === 'servant' || tier === '奴仆级') {
-                hpBonus = 0.2;   // HP+20%
-                atkBonus = 0.15; // 攻击+15%
-                defBonus = 0.1;  // 防御+10%
+                hpBonus = 0.15;  // HP+15%
+                atkBonus = 0.1;  // 攻击+10%
+                defBonus = 0.05; // 防御+5%
             } else if (tier === 'warrior' || tier === '战将级') {
-                hpBonus = 0.5;   // HP+50%
-                atkBonus = 0.3;  // 攻击+30%
-                defBonus = 0.2;  // 防御+20%
+                hpBonus = 0.4;   // HP+40%
+                atkBonus = 0.25; // 攻击+25%
+                defBonus = 0.15; // 防御+15%
             } else if (tier === 'commander' || tier === '统领级') {
-                hpBonus = 1.0;   // HP+100%
-                atkBonus = 0.5;  // 攻击+50%
-                defBonus = 0.4;  // 防御+40%
+                hpBonus = 0.8;   // HP+80%
+                atkBonus = 0.4;  // 攻击+40%
+                defBonus = 0.3;  // 防御+30%
             } else if (tier === 'monarch' || tier === '君主级') {
-                hpBonus = 2.0;   // HP+200%
-                atkBonus = 1.0;  // 攻击+100%
-                defBonus = 0.8;  // 防御+80%
+                hpBonus = 1.5;   // HP+150%
+                atkBonus = 0.8;  // 攻击+80%
+                defBonus = 0.6;  // 防御+60%
             }
             
             if (hpBonus > 0) {
@@ -460,9 +460,9 @@ const BattleSystem = {
             this.addLog('你的速度更快，可以先行动。', 'system');
         }
         
-        // 新手引导：第一次战斗自动显示帮助
+        // 新手引导：第一次战斗自动显示帮助（不管谁先手）
         const tutorialDone = localStorage.getItem('quanzhi_fashi_battle_tutorial_done');
-        if (!tutorialDone && this.isPlayerTurn) {
+        if (!tutorialDone) {
             // 延迟一会儿显示，让玩家先看到战斗界面
             setTimeout(() => {
                 this.showHelp();
@@ -1184,7 +1184,7 @@ const BattleSystem = {
 
             // 状态效果
             if (skill.statusEffects && !damage.isMiss) {
-                this.applyStatusEffects(targetData, skill.statusEffects, isPlayer);
+                this.applyStatusEffects(targetData, skill.statusEffects, !isPlayer);
             }
             
             // 灵种特殊效果（仅玩家）
@@ -1201,7 +1201,8 @@ const BattleSystem = {
 
             // 治疗技能的附加状态效果（如净化、复苏）
             if (skill.statusEffects) {
-                this.applyStatusEffects(healTarget, skill.statusEffects, !isPlayer);
+                const isHealTargetPlayer = healTarget === this.player;
+                this.applyStatusEffects(healTarget, skill.statusEffects, isHealTargetPlayer);
             }
 
             const casterName = isPlayer ? '你' : this.enemy.name;
@@ -1227,7 +1228,7 @@ const BattleSystem = {
                     this.applyStatusEffects(this.summon, skill.statusEffects, !isPlayer);
                     this.addLog(`${this.summon.icon} ${this.summon.name} 受到了 ${skill.name} 的效果！`, 'buff');
                 } else {
-                    this.applyStatusEffects(casterData, skill.statusEffects, !isPlayer);
+                    this.applyStatusEffects(casterData, skill.statusEffects, isPlayer);
                 }
             }
             const casterName = isPlayer ? '你' : this.enemy.name;
@@ -1238,7 +1239,7 @@ const BattleSystem = {
         } else if (skill.type === 'debuff') {
             // 减益技能（对敌人施加负面状态）
             if (skill.statusEffects) {
-                this.applyStatusEffects(targetData, skill.statusEffects, isPlayer);
+                this.applyStatusEffects(targetData, skill.statusEffects, !isPlayer);
             }
             const casterName = isPlayer ? '你' : this.enemy.name;
             const targetName = isPlayer ? this.enemy.name : '你';
@@ -1363,7 +1364,12 @@ const BattleSystem = {
         this.player.hp = Player.hp;
         this.player.mp = Player.mp;
 
-        this.addLog(`你使用了 ${item.name}`, 'system');
+        this.addLog(`你使用了 ${item.name}，${result.message}`, 'system');
+        
+        // 立即更新UI，让玩家看到效果
+        if (typeof UI !== 'undefined') {
+            UI.updateBattleScreen();
+        }
 
         // 处理物品的状态效果
         if (item.statusEffects && item.statusEffects.length > 0) {
@@ -1569,6 +1575,25 @@ const BattleSystem = {
 
         // 敌人AI选择行动
         const action = this.enemyAI();
+        
+        // 保护：如果AI返回无效行动，默认普通攻击
+        if (!action || !action.type) {
+            console.warn('[Battle] 敌人AI返回无效行动，使用默认普通攻击');
+            this.addLog(`${this.enemy.name} 发动攻击！`, 'attack');
+            this.applyDamage(this.player, this.calculateDamage(
+                this.enemy.attack,
+                this.player.defense * (this.player.isDefending ? 2 : 1),
+                1.0,
+                0.05,
+                0.9,
+                'physical',
+                null,
+                this.player,
+                this.enemy
+            ), this.enemy);
+            this.endEnemyTurn();
+            return;
+        }
 
         if (action.type === 'attack') {
             // 普通攻击
@@ -1801,13 +1826,16 @@ const BattleSystem = {
                 const decision = BattleAI.getDecision(selfState, opponentState, aiType);
                 
                 // 转换为战斗系统的行动格式
-                if (decision.action === 'attack') {
+                if (decision && decision.action === 'attack') {
                     return { type: 'attack' };
-                } else if (decision.action === 'defend') {
+                } else if (decision && decision.action === 'defend') {
                     return { type: 'defend' };
-                } else if (decision.action === 'skill' && decision.skillId) {
+                } else if (decision && decision.action === 'skill' && decision.skillId) {
                     return { type: 'skill', skillId: decision.skillId };
                 }
+                
+                // Utility AI返回无效行动，降级到备用AI
+                console.warn('[Battle] Utility AI返回无效行动，使用备用AI:', decision);
                 
             } catch (e) {
                 console.error('[Battle] Utility AI出错，使用备用AI:', e);
