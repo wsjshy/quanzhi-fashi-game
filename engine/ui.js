@@ -1137,9 +1137,11 @@ const UI = {
                             <span>📜 战斗日志</span>
                             <span style="font-size: 12px; color: #aaa;">第 ${state.turn || 1} 回合</span>
                         </div>
-                        ${state.log.map(log => `
-                            <p style="margin-bottom: 5px; color: ${this.getLogColor(log.type)}; padding: 2px 4px; border-radius: 3px;">${log.text}</p>
-                        `).join('')}
+                        ${state.log.map(log => {
+                            const logIcons = { damage: '⚔️', magic: '✨', heal: '💚', crit: '💥', system: '📢', buff: '⬆️', debuff: '⬇️', counter: '🔥', weakness: '❄️', flee: '🏃', item: '🎒', defend: '🛡️', interrupt: '⚡', summon: '🐺', soul: '💎' };
+                            const icon = logIcons[log.type] || '';
+                            return `<p style="margin-bottom: 5px; color: ${this.getLogColor(log.type)}; padding: 2px 4px; border-radius: 3px;">${icon ? icon + ' ' : ''}${log.text}</p>`;
+                        }).join('')}
                     </div>
                     
                     <!-- 玩家 -->
