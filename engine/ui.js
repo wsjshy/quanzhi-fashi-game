@@ -1213,12 +1213,14 @@ const UI = {
                                 ${state.player.statusEffects.map(effect => {
                                     const icons = { burn: '🔥', freeze: '❄️', frozen: '❄️', stun: '⚡', wet: '💧', shield: '🛡️', curse: '💀', slow: '🐌', defense_up: '🛡️', speed_up: '💨', evasion_up: '💨', attack_up: '⚔️', attack_down: '📉', defense_down: '🛡️⬇️', accuracy_down: '🎯', regen: '💚', electrified: '⚡', mud: '🟤', steam: '💨', poison: '☠️', bind: '🔗', silence: '🔇', fear: '😱' };
                                     const colors = { burn: '#ff6644', freeze: '#66aaff', frozen: '#66ddff', stun: '#ffdd44', wet: '#66bbff', shield: '#44ddcc', curse: '#aa66ff', slow: '#999', defense_up: '#66ff66', speed_up: '#88ff88', evasion_up: '#88ffaa', attack_up: '#ff8844', attack_down: '#aaaaaa', defense_down: '#ff8888', accuracy_down: '#ffcc44', regen: '#66ffaa', electrified: '#ffff44', mud: '#aa8844', steam: '#ccc', poison: '#88ff44', bind: '#aa88ff', silence: '#8888ff', fear: '#ff4488' };
+                                    const descriptions = { burn: '每回合受到火焰伤害', freeze: '冰冻，无法行动', frozen: '冰冻，无法行动', stun: '眩晕，无法行动', wet: '湿润，雷系伤害增加', shield: '护盾，吸收伤害', curse: '诅咒，全属性降低', slow: '减速，速度降低', defense_up: '防御提升', speed_up: '速度提升', evasion_up: '闪避提升', attack_up: '攻击提升', attack_down: '攻击降低', defense_down: '防御降低', accuracy_down: '命中降低', regen: '每回合恢复HP', electrified: '麻痹，有概率无法行动', mud: '泥沼，速度降低', steam: '雾气，闪避提升', poison: '中毒，每回合受到伤害', bind: '束缚，无法行动', silence: '沉默，无法使用魔法', fear: '恐惧，攻击降低' };
                                     const icon = icons[effect.type] || '✨';
                                     const color = colors[effect.type] || '#fff';
+                                    const desc = descriptions[effect.type] || '';
                                     const stacks = effect.stacks ? `×${effect.stacks}` : '';
                                     const value = effect.value ? ` ${effect.value}` : '';
                                     const duration = effect.duration ? ` (${effect.duration}回合)` : '';
-                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}${duration}">${icon}${stacks}${value}</span>`;
+                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}${duration}${desc ? '\\n' + desc : ''}">${icon}${stacks}${value}</span>`;
                                 }).join('')}
                             </div>
                         ` : ''}
@@ -1373,12 +1375,14 @@ const UI = {
                                 ${state.enemy.statusEffects.map(effect => {
                                     const icons = { burn: '🔥', freeze: '❄️', frozen: '❄️', stun: '⚡', wet: '💧', shield: '🛡️', curse: '💀', slow: '🐌', defense_up: '🛡️', speed_up: '💨', evasion_up: '💨', attack_up: '⚔️', attack_down: '📉', defense_down: '🛡️⬇️', accuracy_down: '🎯', regen: '💚', electrified: '⚡', mud: '🟤', steam: '💨', poison: '☠️', bind: '🔗', silence: '🔇', fear: '😱' };
                                     const colors = { burn: '#ff6644', freeze: '#66aaff', frozen: '#66ddff', stun: '#ffdd44', wet: '#66bbff', shield: '#44ddcc', curse: '#aa66ff', slow: '#999', defense_up: '#66ff66', speed_up: '#88ff88', evasion_up: '#88ffaa', attack_up: '#ff8844', attack_down: '#aaaaaa', defense_down: '#ff8888', accuracy_down: '#ffcc44', regen: '#66ffaa', electrified: '#ffff44', mud: '#aa8844', steam: '#ccc', poison: '#88ff44', bind: '#aa88ff', silence: '#8888ff', fear: '#ff4488' };
+                                    const descriptions = { burn: '每回合受到火焰伤害', freeze: '冰冻，无法行动', frozen: '冰冻，无法行动', stun: '眩晕，无法行动', wet: '湿润，雷系伤害增加', shield: '护盾，吸收伤害', curse: '诅咒，全属性降低', slow: '减速，速度降低', defense_up: '防御提升', speed_up: '速度提升', evasion_up: '闪避提升', attack_up: '攻击提升', attack_down: '攻击降低', defense_down: '防御降低', accuracy_down: '命中降低', regen: '每回合恢复HP', electrified: '麻痹，有概率无法行动', mud: '泥沼，速度降低', steam: '雾气，闪避提升', poison: '中毒，每回合受到伤害', bind: '束缚，无法行动', silence: '沉默，无法使用魔法', fear: '恐惧，攻击降低' };
                                     const icon = icons[effect.type] || '✨';
                                     const color = colors[effect.type] || '#fff';
+                                    const desc = descriptions[effect.type] || '';
                                     const stacks = effect.stacks ? `×${effect.stacks}` : '';
                                     const value = effect.value ? ` ${effect.value}` : '';
                                     const duration = effect.duration ? ` (${effect.duration}回合)` : '';
-                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}${duration}">${icon}${stacks}${value}</span>`;
+                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}${duration}${desc ? '\\n' + desc : ''}">${icon}${stacks}${value}</span>`;
                                 }).join('')}
                             </div>
                         ` : ''}
