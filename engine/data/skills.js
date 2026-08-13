@@ -2318,5 +2318,120 @@ const DataSkills = {
     statusEffects: [
       { name: "雷电附体", type: "attack_up", duration: 3, chance: 1, statModifiers: { attack: 6 } }
     ]
+  },
+
+  // ===== 第四批妖魔特色技能 =====
+  wind_barrier: {
+    id: "wind_barrier",
+    name: "风之屏障",
+    description: "在身边形成风之屏障，2回合内闪避率大幅提升",
+    element: "wind",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "风之屏障", type: "dodge_up", duration: 2, chance: 1, dodgeMod: 0.5 }
+    ]
+  },
+
+  flame_cloak: {
+    id: "flame_cloak",
+    name: "火焰披风",
+    description: "全身笼罩火焰，3回合内攻击带灼烧效果",
+    element: "fire",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "火焰披风", type: "attack_up", duration: 3, chance: 1, statModifiers: { attack: 4 } }
+    ]
+  },
+
+  water_recovery: {
+    id: "water_recovery",
+    name: "水之恢复",
+    description: "利用水元素恢复自身生命",
+    element: "water",
+    type: "heal",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    healPercent: 0.25
+  },
+
+  armor_break: {
+    id: "armor_break",
+    name: "破甲一击",
+    description: "精准打击目标护甲，造成伤害并降低其防御",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.0,
+    statusEffects: [
+      { name: "破甲", type: "defense_down", duration: 3, chance: 0.8, statModifiers: { defense: -8 } }
+    ]
+  },
+
+  battle_howl: {
+    id: "battle_howl",
+    name: "战斗嚎叫",
+    description: "发出战斗嚎叫，提升自身攻击力3回合",
+    element: "physical",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "战斗嚎叫", type: "attack_up", duration: 3, chance: 1, statModifiers: { attack: 8 } }
+    ]
+  },
+
+  // ===== 战将级妖魔新技能 =====
+  terror_howl: {
+    id: "terror_howl",
+    name: "恐惧咆哮",
+    description: "发出令人恐惧的咆哮，降低目标攻击力并使其有几率无法行动",
+    element: "dark",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "恐惧", type: "attack_down", duration: 3, chance: 0.8, statModifiers: { attack: -10 } },
+      { name: "恐惧", type: "stun", duration: 1, chance: 0.3 }
+    ]
+  },
+
+  demon_rage: {
+    id: "demon_rage",
+    name: "妖魔之怒",
+    description: "进入狂暴状态，攻击力大幅提升但防御降低，持续3回合",
+    element: "physical",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 6,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "狂暴", type: "attack_up", duration: 3, chance: 1, statModifiers: { attack: 15 } },
+      { name: "狂暴", type: "defense_down", duration: 3, chance: 1, statModifiers: { defense: -5 } }
+    ]
   }
 };

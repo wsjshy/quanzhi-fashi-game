@@ -73,7 +73,8 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "dark_bolt",
-      "wild_charge"
+      "wild_charge",
+      "battle_howl"
     ],
     spriteColor: "#4a7c3f",
     isEnemy: true,
@@ -238,7 +239,8 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "wind_blade",
-      "wind_step"
+      "wind_step",
+      "wind_barrier"
     ],
     aiType: "kiter",
     spriteColor: "#88ccaa",
@@ -280,7 +282,8 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "water_chain",
-      "web_bind"
+      "web_bind",
+      "water_recovery"
     ],
     aiType: "controller",
     spriteColor: "#6699cc",
@@ -322,7 +325,8 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "fire_bolt",
-      "fire_burst"
+      "fire_burst",
+      "flame_cloak"
     ],
     spriteColor: "#ff6633",
     isEnemy: true,
@@ -364,7 +368,8 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "earth_spike",
-      "hard_shell"
+      "hard_shell",
+      "armor_break"
     ],
     spriteColor: "#ccaa33",
     isEnemy: true,
@@ -932,7 +937,7 @@ const DataEnemies = {
     attack: 35,
     defense: 18,
     speed: 22,
-    skills: ["basic_attack", "dark_bolt", "dark_claw", "berserk_mode"],
+    skills: ["basic_attack", "dark_bolt", "dark_claw", "berserk_mode", "demon_rage"],
     aiType: "tactical",
     specialAbility: "冲撞：高速撞击造成大量伤害；进阶中：身体持续变强，雷系可抑制进阶",
     spriteColor: "#4a0000",
@@ -1021,7 +1026,7 @@ const DataEnemies = {
     attack: 60,
     defense: 35,
     speed: 28,
-    skills: ["basic_attack", "wolf_bite", "bone_spike", "wolf_howl", "berserk_mode", "blood_bite"],
+    skills: ["basic_attack", "wolf_bite", "bone_spike", "wolf_howl", "berserk_mode", "blood_bite", "terror_howl"],
     aiType: "tactical",
     specialAbility: "骨刺射击：远程攻击；狼嚎召唤：召唤2只独眼魔狼助战",
     spriteColor: "#884422",
