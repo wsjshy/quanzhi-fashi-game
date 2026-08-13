@@ -2754,6 +2754,20 @@ const BattleSystem = {
             }
         }
         
+        // 妖魔特定元素弱点/抗性（如妖藤怕火抗雷）
+        if (target && element) {
+            const weaknessKey = element + 'Weakness';
+            const resistanceKey = element + 'Resistance';
+            if (target[weaknessKey]) {
+                damage *= target[weaknessKey];
+                result.elementEffect = 'super';
+            }
+            if (target[resistanceKey]) {
+                damage *= target[resistanceKey];
+                result.elementEffect = 'weak';
+            }
+        }
+        
         // 元素反应计算（基于目标状态）
         if (element && target && target.statusEffects) {
             const hasWet = target.statusEffects.some(e => e.type === 'wet');
