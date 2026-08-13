@@ -2139,5 +2139,73 @@ const DataItems = {
     isCanon: true,
     source: "第148章 斗兽大赛奖励",
     lore: "炼兽之血可以洗髓召唤生物，比用魔能慢慢喂养快得多，甚至有概率让召唤兽进阶。"
+  },
+
+  // ========== 精魄/残魄相关 ==========
+  servant_soul_essence: {
+    id: "servant_soul_essence",
+    name: "奴仆级精魄",
+    description: "奴仆级妖魔死后凝聚的精魄，蕴含着妖魔的部分力量。可用于强化魔具、炼制物品或直接出售。",
+    type: "material",
+    icon: "🔮",
+    price: 50000,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    isCanon: true,
+    source: "奴仆级妖魔掉落",
+    lore: "精魄是妖魔死后的精华，小泥鳅坠可以自动吸收。"
+  },
+  warrior_soul_essence: {
+    id: "warrior_soul_essence",
+    name: "战将级精魄",
+    description: "战将级妖魔死后凝聚的精魄，蕴含强大的力量。市场价值1000-2500万金币，是修炼和炼制的顶级材料。小泥鳅坠吸收后可获得大量经验。",
+    type: "material",
+    icon: "💎",
+    price: 15000000,
+    stackable: true,
+    maxStack: 10,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "史诗",
+    isCanon: true,
+    source: "第197章 击杀鳞皮妖母获得",
+    lore: "战将级精魄价值连城，在拍卖会上起拍价就达1000万金币。小泥鳅坠吸收后能获得惊人的能量。",
+    specialEffect: "small_loach_absorb_warrior"
+  },
+  commander_soul_essence: {
+    id: "commander_soul_essence",
+    name: "统领级精魄",
+    description: "统领级妖魔死后凝聚的精魄，蕴含恐怖的力量。无价之宝，可遇不可求。",
+    type: "material",
+    icon: "👑",
+    price: 100000000,
+    stackable: true,
+    maxStack: 5,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "传说",
+    isCanon: true,
+    source: "统领级妖魔掉落",
+    lore: "统领级精魄是传说中的宝物，足以让任何法师疯狂。"
+  },
+  soul_vessel: {
+    id: "soul_vessel",
+    name: "亡魂器皿",
+    description: "专门用于收集和保存妖魔精魄的特殊器皿。只有亡灵系法师才能炼制，起拍价500万金币。可将击杀妖魔时的精魄收集起来，避免消散。",
+    type: "equipment",
+    icon: "🏺",
+    price: 5000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "史诗",
+    isCanon: true,
+    source: "第200章 拍卖会",
+    lore: "亡魂器皿是亡灵系法师的杰作，可以将精魄保存其中不消散。普通法师击杀妖魔时精魄会直接消散，有了亡魂器皿就能收集起来。",
+    specialEffect: "collect_soul_essence"
   }
 };

@@ -1953,5 +1953,98 @@ const DataEnemies = {
     battleQuotes: {
       start: "别慌，我罩着你。"
     }
+  },
+
+  // ===== 白藏锋 =====
+  bai_cangfeng: {
+    id: "bai_cangfeng",
+    name: "白藏锋",
+    title: "白家大少",
+    description: "白家大少爷，中阶法师，新生大赛热门人选。性格傲慢，看不起平民出身的法师。在新生大赛上被莫凡一招霹雳秒杀。",
+    elements: ["wind", "earth"],
+    level: 9,
+    maxHp: 450,
+    maxMp: 180,
+    attack: 28,
+    defense: 18,
+    speed: 22,
+    spirit: 20,
+    skills: [
+      "basic_attack",
+      "wind_blade",
+      "wind_tornado",
+      "earth_spike",
+      "earth_shield"
+    ],
+    aiType: "aggressive",
+    enemyType: "human",
+    spriteColor: "#87CEEB",
+    isEnemy: true,
+    isCanon: true,
+    canonSource: "第200章 白藏锋登场",
+    traits: ["arrogant", "dual_element", "rich_family"],
+    battleQuotes: {
+      start: "就凭你？也配站在我面前？",
+      defeat: "不可能...我怎么会输给你这种人..."
+    }
+  },
+
+  // ===== 猎王西明 =====
+  xi_ming: {
+    id: "xi_ming",
+    name: "西明",
+    title: "猎王",
+    description: "猎者联盟的猎王，实力深不可测。骑乘一头青蓝色巨兽，统领猎妖队。在鳞皮妖母事件中率队支援，尊重每一个生命。",
+    elements: ["wind", "water"],
+    level: 25,
+    maxHp: 2500,
+    maxMp: 800,
+    attack: 80,
+    defense: 60,
+    speed: 35,
+    spirit: 70,
+    skills: [
+      "basic_attack",
+      "wind_blade",
+      "wind_tornado",
+      "water_burst",
+      "water_shield"
+    ],
+    aiType: "tactical",
+    enemyType: "human",
+    spriteColor: "#4169E1",
+    isEnemy: false,
+    isAlly: true,
+    isCanon: true,
+    canonSource: "第197章 猎王登场",
+    traits: ["hunter_king", "beast_rider", "tactical_genius", "respects_life"],
+    battleQuotes: {
+      start: "她们也有活下去的权力。"
+    }
+  },
+
+  // ===== 醋醋（偶像NPC，非战斗） =====
+  cu_cu: {
+    id: "cu_cu",
+    name: "醋醋",
+    title: "人气偶像",
+    description: "当红人气偶像，在演唱会上被鳞皮妖母袭击。被莫凡等人救下。",
+    elements: [],
+    level: 0,
+    maxHp: 50,
+    maxMp: 0,
+    attack: 2,
+    defense: 1,
+    speed: 8,
+    spirit: 15,
+    skills: ["basic_attack"],
+    aiType: "defensive",
+    enemyType: "civilian",
+    spriteColor: "#FF69B4",
+    isEnemy: false,
+    isAlly: false,
+    isCanon: true,
+    canonSource: "第192章 妖母伪装成技师对醋醋下手",
+    traits: ["celebrity", "civilian", "damsel_in_distress"]
   }
 };
