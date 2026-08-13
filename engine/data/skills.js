@@ -2433,5 +2433,127 @@ const DataSkills = {
       { name: "狂暴", type: "attack_up", duration: 3, chance: 1, statModifiers: { attack: 15 } },
       { name: "狂暴", type: "defense_down", duration: 3, chance: 1, statModifiers: { defense: -5 } }
     ]
+  },
+
+  // ===== 第五批妖魔技能（带新机制）=====
+  charge_attack: {
+    id: "charge_attack",
+    name: "蓄力冲撞",
+    description: "蓄力一回合，下回合造成2.5倍伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 2.5,
+    chargeTurns: 1,
+    statusEffects: [
+      { name: "冲撞", type: "stun", duration: 1, chance: 0.3 }
+    ]
+  },
+
+  ice_armor: {
+    id: "ice_armor",
+    name: "冰甲术",
+    description: "凝结冰霜护甲，3回合内防御提升，近战攻击者有几率被冰冻",
+    element: "ice",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "冰甲", type: "defense_up", duration: 3, chance: 1, statModifiers: { defense: 10 } },
+      { name: "冰甲", type: "ice_thorns", duration: 3, chance: 1 }
+    ]
+  },
+
+  thunder_strike: {
+    id: "thunder_strike",
+    name: "雷霆一击",
+    description: "召唤雷电劈向目标，造成高额雷系伤害并有几率麻痹",
+    element: "thunder",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.8,
+    statusEffects: [
+      { name: "麻痹", type: "paralyze", duration: 1, chance: 0.4 }
+    ]
+  },
+
+  shadow_step_strike: {
+    id: "shadow_step_strike",
+    name: "暗影步",
+    description: "融入阴影瞬移到目标身后攻击，必定命中且暴击率提升",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.3,
+    guaranteedHit: true,
+    critBonus: 0.3
+  },
+
+  poison_cloud: {
+    id: "poison_cloud",
+    name: "毒雾",
+    description: "喷出毒雾笼罩目标，造成持续毒素伤害并降低其命中",
+    element: "dark",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.5,
+    statusEffects: [
+      { name: "中毒", type: "poison", duration: 3, chance: 0.8, dotDamage: 6 },
+      { name: "致盲", type: "accuracy_down", duration: 2, chance: 0.6 }
+    ]
+  },
+
+  rock_throw: {
+    id: "rock_throw",
+    name: "巨石投掷",
+    description: "投掷巨石砸向目标，造成高额土系伤害并有几率眩晕",
+    element: "earth",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.6,
+    statusEffects: [
+      { name: "眩晕", type: "stun", duration: 1, chance: 0.25 }
+    ]
+  },
+
+  // 战将级技能
+  dark_dragon_breath: {
+    id: "dark_dragon_breath",
+    name: "暗龙息",
+    description: "喷出黑暗龙息，造成大量暗系伤害并降低目标全属性",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 2.0,
+    statusEffects: [
+      { name: "虚弱", type: "curse", duration: 2, chance: 0.5 }
+    ]
   }
 };

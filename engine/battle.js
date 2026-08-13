@@ -115,35 +115,51 @@ const BattleSystem = {
             // 找治疗技能
             const healSkill = this.findBestHealSkill();
             if (healSkill && player.mp >= healSkill.mpCost) {
-                this.useSkill(healSkill.id);
+                this.playerUseSkill(healSkill.id);
                 return;
             }
             // 用治疗药水
-            const healPotion = Player.items.find(i => i.id === 'hp_potion' && i.count > 0);
-            if (healPotion) {
-                this.useItem('hp_potion');
+            if (this.hasItem('hp_potion')) {
+                this.playerUseItem('hp_potion');
                 return;
             }
         }
         
         // 2. MP低于20%，用蓝药
         if (mpPercent < 0.2) {
-            const mpPotion = Player.items.find(i => i.id === 'mp_potion' && i.count > 0);
-            if (mpPotion) {
-                this.useItem('mp_potion');
+            if (this.hasItem('mp_potion')) {
+                this.playerUseItem('mp_potion');
                 return;
             }
         }
         
-        // 3. 使用伤害最高的可用技能
+        // 3. 使用伤害最高的可用技能（考虑元素克制）
         const damageSkill = this.findBestDamageSkill();
         if (damageSkill && player.mp >= damageSkill.mpCost) {
-            this.useSkill(damageSkill.id);
+            this.playerUseSkill(damageSkill.id);
             return;
         }
         
         // 4. 普通攻击
         this.playerAttack();
+    },
+    
+    /**
+     * 检查玩家是否有指定物品
+     */
+    hasItem(itemId) {
+        if (typeof Player !== 'undefined' && Player.items) {
+            if (Array.isArray(Player.items)) {
+                const item = Player.items.find(i => i.id === itemId && i.count > 0);
+                return !!item;
+            } else if (typeof Player.items === 'object') {
+                return Player.items[itemId] > 0;
+            }
+        }
+        if (typeof Inventory !== 'undefined' && Inventory.hasItem) {
+            return Inventory.hasItem(itemId);
+        }
+        return false;
     },
     
     /**
@@ -157,7 +173,14 @@ const BattleSystem = {
         for (const skillId of availableSkills) {
             const skill = SkillSystem.getSkill(skillId);
             if (skill && skill.type === 'heal') {
-                const healAmount = skill.baseHeal || skill.healPercent * this.player.maxHp || 0;
+                let healAmount = 0;
+                if (skill.baseHeal) {
+                    healAmount = skill.baseHeal;
+                } else if (skill.healPercent) {
+                    healAmount = Math.floor(this.player.maxHp * skill.healPercent);
+                } else if (skill.healAmount) {
+                    healAmount = skill.healAmount;
+                }
                 if (healAmount > bestHeal && this.player.mp >= skill.mpCost) {
                     bestHeal = healAmount;
                     bestSkill = skill;
@@ -168,7 +191,7 @@ const BattleSystem = {
     },
     
     /**
-     * 找伤害最高的技能
+     * 找伤害最高的技能（考虑元素克制、power倍率、伤害倍率）
      */
     findBestDamageSkill() {
         const availableSkills = this.getAvailableSkills(this.player);
@@ -178,16 +201,39 @@ const BattleSystem = {
         for (const skillId of availableSkills) {
             const skill = SkillSystem.getSkill(skillId);
             if (skill && skill.type === 'damage' && !skill.isDemonSkill) {
-                const damage = skill.baseDamage || 0;
+                // 计算基础伤害：支持baseDamage固定值和power基于攻击力倍率
+                let baseDamage = skill.baseDamage || 0;
+                if (skill.power) {
+                    baseDamage = Math.max(baseDamage, this.player.attack * skill.power);
+                }
+                // 伤害倍率
+                const damageMultiplier = skill.damageMultiplier || 1;
+                let finalDamage = baseDamage * damageMultiplier;
+                
                 // 元素克制加分
-                let finalDamage = damage;
                 if (skill.element && this.enemy.elements) {
                     for (const elem of this.enemy.elements) {
                         if (this.isElementStrong(skill.element, elem)) {
                             finalDamage *= 1.5;
                         }
+                        if (this.isElementWeak(skill.element, elem)) {
+                            finalDamage *= 0.75;
+                        }
                     }
                 }
+                
+                // 状态效果加分（DOT、控制等）
+                if (skill.statusEffects && skill.statusEffects.length > 0) {
+                    for (const effect of skill.statusEffects) {
+                        if (effect.type === 'burn' || effect.type === 'poison' || effect.type === 'bleed') {
+                            finalDamage += (effect.dotDamage || 3) * (effect.duration || 2);
+                        }
+                        if (effect.type === 'stun' || effect.type === 'freeze' || effect.type === 'paralyze') {
+                            finalDamage += this.player.attack * 0.5; // 控制效果等价于多打一下
+                        }
+                    }
+                }
+                
                 if (finalDamage > bestDamage && this.player.mp >= skill.mpCost) {
                     bestDamage = finalDamage;
                     bestSkill = skill;
@@ -1206,12 +1252,22 @@ const BattleSystem = {
                 skillLevelBonus = Player.getSkillDamageBonus(skill.id);
             }
 
+            // 技能特殊属性：必中、额外暴击率
+            let skillCritRate = casterData.critRate || 0.05;
+            let skillHitRate = skill.hitRate || 0.9;
+            if (skill.guaranteedHit) {
+                skillHitRate = 1.0;
+            }
+            if (skill.critBonus) {
+                skillCritRate += skill.critBonus;
+            }
+
             const damage = this.calculateDamage(
                 baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus,
                 targetData.defense,
                 1.0,
-                casterData.critRate || 0.05,
-                skill.hitRate || 0.9,
+                skillCritRate,
+                skillHitRate,
                 skill.element,
                 targetData.elements?.[0] || 'neutral',
                 targetData,
@@ -2831,7 +2887,18 @@ const BattleSystem = {
         }
 
         target.hp = Math.max(0, target.hp - amount);
-        
+
+        // 冰甲反伤：近战攻击有几率冰冻攻击者
+        if (amount > 0 && attacker) {
+            const iceArmor = target.statusEffects?.find(e => e.type === 'ice_thorns');
+            if (iceArmor && Math.random() < 0.3) {
+                const freezeEffect = { name: '冰冻', type: 'freeze', duration: 1, chance: 1 };
+                this.applyStatusEffects(attacker, [freezeEffect], target === this.enemy);
+                const attackerName = attacker === this.player ? '你' : this.enemy.name;
+                this.addLog(`❄️ ${attackerName} 被冰甲冻住了！`, 'debuff');
+            }
+        }
+
         // Boss战模式：阶段转换检查
         if (this.battleOptions.mode === 'boss' && target === this.enemy && !this.bossPhase2) {
             const hpPercent = target.hp / target.maxHp;

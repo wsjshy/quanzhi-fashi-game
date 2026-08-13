@@ -23,7 +23,8 @@ const DataEnemies = {
       "claw_slash",
       "shadow_assault",
       "fierce_roar",
-      "berserk_charge"
+      "berserk_charge",
+      "charge_attack"
     ],
     aiType: "aggressive",
     enemyType: "demon",
@@ -152,7 +153,8 @@ const DataEnemies = {
       "basic_attack",
       "shadow_assault",
       "claw_slash",
-      "shadow_dodge"
+      "shadow_dodge",
+      "shadow_step_strike"
     ],
     aiType: "kiter",
     enemyType: "demon",
@@ -454,7 +456,8 @@ const DataEnemies = {
       "basic_attack",
       "thunder_bolt",
       "thunder_charge",
-      "lightning_fur"
+      "lightning_fur",
+      "thunder_strike"
     ],
     aiType: "burst",
     spriteColor: "#9966ff",
@@ -496,7 +499,8 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "ice_spike",
-      "frost_breath"
+      "frost_breath",
+      "ice_armor"
     ],
     spriteColor: "#99ddff",
     isEnemy: true,
@@ -832,7 +836,7 @@ const DataEnemies = {
     attack: 16,
     defense: 8,
     speed: 10,
-    skills: ["basic_attack", "dark_bolt", "water_chain", "evil_eye_gaze"],
+    skills: ["basic_attack", "dark_bolt", "water_chain", "evil_eye_gaze", "poison_cloud"],
     spriteColor: "#556b2f",
     isEnemy: true,
     aiType: "controller",
@@ -1026,7 +1030,7 @@ const DataEnemies = {
     attack: 60,
     defense: 35,
     speed: 28,
-    skills: ["basic_attack", "wolf_bite", "bone_spike", "wolf_howl", "berserk_mode", "blood_bite", "terror_howl"],
+    skills: ["basic_attack", "wolf_bite", "bone_spike", "wolf_howl", "berserk_mode", "blood_bite", "terror_howl", "dark_dragon_breath"],
     aiType: "tactical",
     specialAbility: "骨刺射击：远程攻击；狼嚎召唤：召唤2只独眼魔狼助战",
     spriteColor: "#884422",
