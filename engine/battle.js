@@ -1573,6 +1573,25 @@ const BattleSystem = {
             }
         }
 
+        // 狩猎战模式：妖魔血量低时会尝试逃跑
+        if (this.battleOptions.mode === 'hunt' && this.enemy.hp / this.enemy.maxHp < 0.3) {
+            // 基础逃跑概率30%，速度差每多1点+2%成功率
+            const speedDiff = this.enemy.speed - this.player.speed;
+            const fleeChance = Math.min(0.8, Math.max(0.1, 0.3 + speedDiff * 0.02));
+            
+            if (Math.random() < fleeChance) {
+                this.addLog(`${this.enemy.name} 见势不妙，转身逃跑了！`, 'system');
+                this.result = 'flee';
+                this.active = false;
+                // 妖魔逃跑，玩家只能得到部分奖励
+                this.huntFled = true;
+                this.endBattle();
+                return;
+            } else {
+                this.addLog(`${this.enemy.name} 试图逃跑，但被你拦住了！`, 'system');
+            }
+        }
+
         // 敌人AI选择行动
         const action = this.enemyAI();
         
@@ -3534,6 +3553,14 @@ const BattleSystem = {
             items: [],
             levelUps: []
         };
+
+        // 狩猎战模式：妖魔逃跑了，只有一半奖励
+        if (this.battleOptions.mode === 'hunt' && this.huntFled) {
+            rewards.exp = Math.floor((this.enemy.expReward || 0) * 0.5);
+            rewards.gold = Math.floor((this.enemy.goldReward || 0) * 0.5);
+            rewards.huntFled = true;
+            return rewards;
+        }
 
         // 基础经验和金币
         rewards.exp = this.enemy.expReward || 0;
