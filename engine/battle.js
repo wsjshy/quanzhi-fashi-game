@@ -529,6 +529,7 @@ const BattleSystem = {
         this.bossPhase2 = false;  // Boss战第二阶段标记
         this.huntFled = false;  // 狩猎战妖魔逃跑标记
         this.huntFailed = false;  // 狩猎战妖魔逃跑失败标记
+        this.usedElements = new Set();  // 本场战斗使用过的元素系
         
         // 战斗模式选项
         this.battleOptions = {
@@ -1268,6 +1269,11 @@ const BattleSystem = {
 
         // 消耗MP
         casterData.mp -= skill.mpCost;
+
+        // 记录玩家使用过的元素系（用于经验分配）
+        if (isPlayer && skill.element && skill.element !== 'neutral') {
+            this.usedElements.add(skill.element);
+        }
         
         // 发布技能释放事件
         if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
@@ -1325,6 +1331,15 @@ const BattleSystem = {
                 skillLevelBonus = Player.getSkillDamageBonus(skill.id);
             }
 
+            // 各系等级加成（仅玩家）：魔法威力 = 基础 × (1 + 该系等级×0.05)
+            let elementLevelBonus = 1.0;
+            if (isPlayer && skill.element && typeof Player !== 'undefined') {
+                const elLevel = Player.getElementLevel(skill.element);
+                if (elLevel > 0) {
+                    elementLevelBonus = 1 + elLevel * 0.05;
+                }
+            }
+
             // 技能特殊属性：必中、额外暴击率
             let skillCritRate = casterData.critRate || 0.05;
             let skillHitRate = skill.hitRate || 0.9;
@@ -1350,7 +1365,7 @@ const BattleSystem = {
 
             for (let hit = 0; hit < hitCount; hit++) {
                 const damage = this.calculateDamage(
-                    baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus,
+                    baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus * elementLevelBonus,
                     effectiveDefense,
                     1.0,
                     skillCritRate,
@@ -4266,8 +4281,9 @@ const BattleSystem = {
             }
         }
 
-        // 应用奖励
-        const expResult = Player.gainExp(rewards.exp);
+        // 应用奖励（各系独立经验：使用过的系获全额，其他系获30%）
+        const usedElementArray = Array.from(this.usedElements || []);
+        const expResult = Player.gainExp(rewards.exp, usedElementArray);
         Player.gainGold(rewards.gold);
         rewards.levelUps = expResult.levelUps;
         rewards.newSkills = expResult.newSkills;

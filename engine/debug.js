@@ -615,44 +615,65 @@ const DebugPanel = {
     
     setLevel(targetLevel) {
         try {
-            // 如果没有传参数，从输入框获取
             if (targetLevel === undefined) {
                 const levelEl = document.getElementById('debug-level');
                 targetLevel = parseInt(levelEl.value);
             }
-            
+
             if (targetLevel < 1) targetLevel = 1;
-            
+
             if (typeof Player !== 'undefined') {
-                // 如果目标等级比当前高，升级
-                while (Player.level < targetLevel) {
-                    Player.levelUp();
-                }
-                // 如果目标等级比当前低，降级（重置属性重新计算）
-                if (Player.level > targetLevel) {
-                    // 重置到1级属性
-                    Player.level = 1;
-                    Player.maxHp = 100;
-                    Player.maxMp = 50;
-                    Player.attack = 10;
-                    Player.defense = 5;
-                    Player.speed = 10;
-                    Player.spirit = 10;
-                    Player.attributePoints = 0;
-                    Player.expToNext = 80;
-                    // 再升到目标等级
-                    while (Player.level < targetLevel) {
-                        Player.levelUp();
+                // 重置基础属性
+                Player.level = 1;
+                Player.maxHp = 100;
+                Player.maxMp = 50;
+                Player.attack = 10;
+                Player.defense = 5;
+                Player.speed = 10;
+                Player.spirit = 10;
+                Player.attributePoints = 0;
+
+                // 把所有已觉醒系设为目标等级
+                Player.elements.forEach(el => {
+                    Player.elementLevels[el] = 1;
+                    Player.elementExp[el] = 0;
+                });
+
+                // 模拟升级到目标等级（每次给第一个系加经验触发升级）
+                const mainEl = Player.elements[0];
+                if (mainEl) {
+                    for (let lv = 1; lv < targetLevel; lv++) {
+                        Player.elementLevels[mainEl] = lv + 1;
+                        const growth = Player._getLevelGrowth(lv + 1);
+                        Player.attributePoints += growth.apt;
+                        Player.maxHp += growth.hp;
+                        Player.maxMp += growth.mp;
+                        Player.attack += growth.atk;
+                        Player.defense += growth.def;
+                        Player.speed += growth.spd;
+                        Player.spirit += growth.spr;
                     }
+                    // 其他系也设为目标等级（不重复加属性）
+                    Player.elements.forEach(el => {
+                        if (el !== mainEl) {
+                            Player.elementLevels[el] = targetLevel;
+                            Player.elementExp[el] = 0;
+                        }
+                    });
                 }
-                
+
+                Player.level = targetLevel;
+                Player.expToNext = Player._calcExpToNext(targetLevel);
+                Player.exp = 0;
+                Player.checkSkillUnlocks();
+
                 Player.hp = Player.maxHp;
                 Player.mp = Player.maxMp;
                 Player.stamina = Player.maxStamina;
-                
+
                 this.refreshUI();
-                console.log(`[Debug] 等级设置为 ${targetLevel}`);
-                alert(`等级已设置为 ${targetLevel}`);
+                console.log(`[Debug] 各系等级设置为 ${targetLevel}`);
+                alert(`各系等级已设置为 ${targetLevel}`);
             }
         } catch (e) {
             console.error('[Debug] setLevel错误:', e);
@@ -982,7 +1003,7 @@ const DebugPanel = {
             }
             
             if (typeof Player !== 'undefined') {
-                // 重置到1级属性
+                // 重置到1级
                 Player.level = 1;
                 Player.maxHp = 100;
                 Player.maxMp = 50;
@@ -992,18 +1013,27 @@ const DebugPanel = {
                 Player.spirit = 10;
                 Player.attributePoints = 0;
                 Player.expToNext = 80;
-                Player.skills = [];
-                
-                // 升到目标等级
-                while (Player.level < targetLevel) {
-                    Player.levelUp();
+                Player.skills = ['basic_attack'];
+
+                // 确保有初始元素
+                if (Player.elements.length === 0) {
+                    Player.elements = ['fire'];
+                    Player.elementLevels = { fire: 1 };
+                    Player.elementExp = { fire: 0 };
+                    if (typeof SkillSystem !== 'undefined') {
+                        Player.skills.push('fire_bolt');
+                    }
                 }
-                
+
+                // 用setLevel逻辑升到目标等级
+                this.setLevel(targetLevel);
+                Player.skills = ['basic_attack'];
+                Player.checkSkillUnlocks();
+
                 Player.gold = gold;
                 Player.hp = Player.maxHp;
                 Player.mp = Player.maxMp;
                 Player.stamina = Player.maxStamina;
-                Player.exp = 0;
                 
                 this.refreshValues();
                 this.refreshUI();
@@ -1125,6 +1155,8 @@ const DebugPanel = {
                         } else {
                             // 强制觉醒（debug模式绕过等级限制）
                             Player.elements.push(element);
+                            Player.elementLevels[element] = 1;
+                            Player.elementExp[element] = 0;
                             if (typeof TalentSystem !== 'undefined' && TalentSystem.initTalentForElement) {
                                 Player.talents[element] = TalentSystem.initTalentForElement(element);
                             }

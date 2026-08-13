@@ -4,7 +4,32 @@
 
 ---
 
-## [v0.8.6] - 开发中
+## [v0.8.7] - 开发中
+
+### 各系独立修炼系统（核心改动）
+- ✅ 各系独立等级和经验，不再全局齐步走
+- ✅ 全局等级 = 最高系等级，决定基础属性和境界判定
+- ✅ 新系从Lv1开始，高境界法师修炼新系更快：中阶×2/高阶×4/超阶×8
+- ✅ 技能解锁按各系等级判断，非全局等级
+- ✅ 魔法威力受该系等级加成：伤害 × (1 + 该系等级×0.05)
+- ✅ 战斗经验分配：使用过的系获全额经验，其他已觉醒系获30%经验
+- ✅ 非战斗经验（任务/事件/日常）所有系平分
+- ✅ 属性只在全局等级提升时增长（避免多系重复加属性）
+- ✅ 境界突破条件基于最高系等级
+- ✅ 存档迁移：0.8.6→0.8.7，旧全局等级→各系等级
+- ✅ 角色面板显示各系等级+境界简称（初/中/高/超）
+- ✅ Debug工具支持设置各系等级
+
+### 改动文件
+- engine/player.js：核心重构（getPlayerLevel/getElementLevel/gainElementExp/_elementLevelUp/_checkElementSkillUnlocks/存档迁移）
+- engine/battle.js：伤害加成+usedElements追踪+经验分配
+- engine/realm.js：canBreakthrough基于getPlayerLevel()
+- engine/ui.js：各系等级显示
+- engine/debug.js：setLevel/loadPresetSave/awakenAllElements兼容
+
+---
+
+## [v0.8.6] - 已完成
 
 ### 等级体系重构（核心改动）
 - ✅ 等级范围从25级扩展到80级：

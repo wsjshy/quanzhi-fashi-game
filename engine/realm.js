@@ -164,8 +164,9 @@ const RealmSystem = {
             return { canBreakthrough: false, reason: '未知突破条件' };
         }
 
-        // 检查等级
-        if (player.level < requirements.requiredLevel) {
+        // 检查等级（基于最高系等级）
+        const playerLevel = (typeof player.getPlayerLevel === 'function') ? player.getPlayerLevel() : player.level;
+        if (playerLevel < requirements.requiredLevel) {
             return {
                 canBreakthrough: false,
                 reason: `等级不足，需要 ${requirements.requiredLevel} 级`

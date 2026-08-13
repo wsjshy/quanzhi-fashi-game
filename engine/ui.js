@@ -3625,16 +3625,18 @@ const UI = {
                                 ` : ''}
                             </div>
                             <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-                                ${Player.elements.map(elem => `
-                                    <span style="
+                                ${Player.elements.map(elem => {
+                                    const elLv = Player.getElementLevel(elem);
+                                    const elRealm = elLv >= 56 ? '超' : elLv >= 31 ? '高' : elLv >= 11 ? '中' : '初';
+                                    return `<span style="
                                         padding: 6px 15px;
                                         background: ${SkillSystem.getElementColor(elem)}22;
                                         border: 1px solid ${SkillSystem.getElementColor(elem)};
                                         border-radius: 15px;
                                         font-size: 14px;
                                         color: ${SkillSystem.getElementColor(elem)};
-                                    ">${SkillSystem.getElementName(elem)}</span>
-                                `).join('')}
+                                    ">${SkillSystem.getElementName(elem)} Lv.${elLv}(${elRealm})</span>`;
+                                }).join('')}
                             </div>
                             ${typeof RealmSystem !== 'undefined' ? `
                                 <div onclick="Game.showBreakthroughPanel()" style="

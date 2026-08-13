@@ -5,7 +5,7 @@
 
 // 游戏版本号 - 用于存档兼容性
 const GAME_VERSION = '0.8.4';
-const SAVE_VERSION = '0.8.6';
+const SAVE_VERSION = '0.8.7';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
 const SKILL_UNLOCK_TABLE = {
@@ -117,6 +117,8 @@ const Player = {
 
     // 元素与技能
     elements: [],
+    elementLevels: {},  // 各系独立等级：{ fire: 15, thunder: 3 }
+    elementExp: {},     // 各系独立经验：{ fire: 500, thunder: 0 }
     skills: ['basic_attack'],
     skillLevels: {},  // 技能等级：{ skillId: { level, exp } }
     realm: 'initial',  // 境界：initial/middle/high/super
@@ -175,6 +177,12 @@ const Player = {
         this.maxStamina = 100;
         this.stamina = 100;
         this.elements = element ? [element] : [];
+        this.elementLevels = {};
+        this.elementExp = {};
+        if (element) {
+            this.elementLevels[element] = 1;
+            this.elementExp[element] = 0;
+        }
         this.skills = ['basic_attack'];
         this.skillLevels = {};  // 技能等级
         this.realm = 'initial';  // 境界
@@ -349,34 +357,121 @@ const Player = {
     },
 
     /**
-     * 获得经验
-     * 返回 { levelUps: [], newSkills: [] }
+     * 获取玩家全局等级（= 最高系等级）
      */
-    gainExp(amount) {
-        this.exp += amount;
+    getPlayerLevel() {
+        let maxLv = 1;
+        for (const e of this.elements) {
+            if (this.elementLevels[e] && this.elementLevels[e] > maxLv) {
+                maxLv = this.elementLevels[e];
+            }
+        }
+        return maxLv;
+    },
+
+    /**
+     * 获取指定系的等级
+     */
+    getElementLevel(element) {
+        return this.elementLevels[element] || 0;
+    },
+
+    /**
+     * 获取新系修炼加速系数
+     * 高境界法师修炼新系更快：中阶×2/高阶×4/超阶×8
+     */
+    _getNewElementExpBonus(targetElement) {
+        const playerLv = this.getPlayerLevel();
+        const targetLv = this.getElementLevel(targetElement);
+        // 如果该系等级接近全局等级，不给加成
+        if (targetLv >= playerLv - 2) return 1;
+        // 按全局境界给加成
+        if (playerLv >= 56) return 8;
+        if (playerLv >= 31) return 4;
+        if (playerLv >= 11) return 2;
+        return 1;
+    },
+
+    /**
+     * 给指定系加经验
+     * @param {string} element - 元素系ID
+     * @param {number} amount - 经验值
+     * @returns {object} { levelUps, newSkills, canAwaken }
+     */
+    gainElementExp(element, amount) {
+        if (!this.elements.includes(element)) {
+            console.warn(`[玩家] 尝试给未觉醒的系 ${element} 加经验`);
+            return { levelUps: [], newSkills: [], canAwaken: false };
+        }
+
+        // 新系修炼加速
+        const bonus = this._getNewElementExpBonus(element);
+        const finalAmount = Math.floor(amount * bonus);
+
+        if (!this.elementExp[element]) this.elementExp[element] = 0;
+        this.elementExp[element] += finalAmount;
+
         const levelUps = [];
         const allNewSkills = [];
         let canAwaken = false;
-        
-        while (this.exp >= this.expToNext) {
-            this.exp -= this.expToNext;
-            const result = this.levelUp();
-            levelUps.push(this.level);
+        let oldPlayerLv = this.getPlayerLevel();
+
+        // 循环检查该系升级
+        while (true) {
+            const curLv = this.elementLevels[element] || 1;
+            const expNeeded = this._calcExpToNext(curLv);
+            if (this.elementExp[element] < expNeeded) break;
+
+            this.elementExp[element] -= expNeeded;
+            const result = this._elementLevelUp(element);
+            levelUps.push({ element, level: this.elementLevels[element] });
             allNewSkills.push(...(result.newSkills || []));
             if (result.canAwaken) canAwaken = true;
         }
-        
-        // 更新等级相关的任务进度
-        if (typeof QuestSystem !== 'undefined' && levelUps.length > 0) {
-            try {
-                QuestSystem.updateProgress('level');
-            } catch (e) {
-                console.warn('[玩家] 更新等级任务进度失败:', e);
+
+        // 更新全局等级缓存
+        const newPlayerLv = this.getPlayerLevel();
+        this.level = newPlayerLv;
+        this.expToNext = this._calcExpToNext(newPlayerLv);
+        // this.exp 显示为最高系的当前经验
+        const topElement = this._getTopElement();
+        this.exp = topElement ? (this.elementExp[topElement] || 0) : 0;
+
+        // 全局等级提升时的额外处理
+        if (newPlayerLv > oldPlayerLv) {
+            this._onPlayerLevelUp(oldPlayerLv, newPlayerLv, levelUps, allNewSkills, canAwaken);
+        }
+
+        return { levelUps, newSkills: allNewSkills, canAwaken };
+    },
+
+    /**
+     * 获取等级最高的系
+     */
+    _getTopElement() {
+        let topEl = null;
+        let topLv = 0;
+        for (const e of this.elements) {
+            const lv = this.elementLevels[e] || 0;
+            if (lv > topLv) {
+                topLv = lv;
+                topEl = e;
             }
         }
-        
+        return topEl;
+    },
+
+    /**
+     * 全局等级提升时的处理（任务/成就/境界检查）
+     */
+    _onPlayerLevelUp(oldLv, newLv, levelUps, allNewSkills, canAwaken) {
+        // 更新等级相关的任务进度
+        if (typeof QuestSystem !== 'undefined') {
+            try { QuestSystem.updateProgress('level'); } catch (e) {}
+        }
+
         // 成就检查
-        if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined' && levelUps.length > 0) {
+        if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
             try {
                 const levelAchievements = [
                     { id: 'level_5', value: 5 },
@@ -385,29 +480,59 @@ const Player = {
                     { id: 'level_30', value: 30 },
                     { id: 'level_50', value: 50 },
                 ];
-                
                 levelAchievements.forEach(ach => {
-                    if (this.level >= ach.value && !WorldState.hasAchievement(ach.id)) {
+                    if (newLv >= ach.value && !WorldState.hasAchievement(ach.id)) {
                         const achData = DataAchievements[ach.id];
-                        if (achData) {
-                            WorldState.unlockAchievement(ach.id, achData);
-                        }
+                        if (achData) WorldState.unlockAchievement(ach.id, achData);
                     }
                 });
-                
-                // 速通达人成就：7天内达到10级
-                if (this.level >= 10 && this.day <= 7 && !WorldState.hasAchievement('speedrunner')) {
+                if (newLv >= 10 && this.day <= 7 && !WorldState.hasAchievement('speedrunner')) {
                     const achData = DataAchievements['speedrunner'];
-                    if (achData) {
-                        WorldState.unlockAchievement('speedrunner', achData);
-                    }
+                    if (achData) WorldState.unlockAchievement('speedrunner', achData);
                 }
-            } catch (e) {
-                console.warn('[玩家] 等级成就检查失败:', e);
+            } catch (e) {}
+        }
+    },
+
+    /**
+     * 获得经验（兼容旧接口，分配给所有已觉醒系）
+     * @param {number} amount - 经验值
+     * @param {string[]} usedElements - 本场战斗使用过的元素系（可选，这些系获全额经验，其他系获30%）
+     */
+    gainExp(amount, usedElements) {
+        const allLevelUps = [];
+        const allNewSkills = [];
+        let canAwaken = false;
+
+        if (!usedElements || usedElements.length === 0) {
+            // 没指定使用系，所有系平分全额经验
+            for (const el of this.elements) {
+                const result = this.gainElementExp(el, amount);
+                allLevelUps.push(...result.levelUps);
+                allNewSkills.push(...result.newSkills);
+                if (result.canAwaken) canAwaken = true;
+            }
+        } else {
+            // 使用过的系获全额经验
+            const usedSet = new Set(usedElements.filter(e => this.elements.includes(e)));
+            for (const el of usedSet) {
+                const result = this.gainElementExp(el, amount);
+                allLevelUps.push(...result.levelUps);
+                allNewSkills.push(...result.newSkills);
+                if (result.canAwaken) canAwaken = true;
+            }
+            // 其他已觉醒系获30%经验（实战感悟）
+            for (const el of this.elements) {
+                if (!usedSet.has(el)) {
+                    const result = this.gainElementExp(el, Math.floor(amount * 0.3));
+                    allLevelUps.push(...result.levelUps);
+                    allNewSkills.push(...result.newSkills);
+                    if (result.canAwaken) canAwaken = true;
+                }
             }
         }
-        
-        return { levelUps, newSkills: allNewSkills, canAwaken };
+
+        return { levelUps: allLevelUps, newSkills: allNewSkills, canAwaken };
     },
 
     /**
@@ -438,48 +563,46 @@ const Player = {
      * 获取当前等级每级的属性成长值
      * 按境界递增：初阶少→中阶中→高阶多→超阶多
      */
-    _getLevelGrowth() {
-        const level = this.level;
-        if (level <= 10) {
-            // 初阶：每级小成长
+    _getLevelGrowth(level) {
+        const lv = level || this.getPlayerLevel();
+        if (lv <= 10) {
             return { hp: 12, mp: 6, atk: 2, def: 1, spd: 1, spr: 1, apt: 2 };
-        } else if (level <= 30) {
-            // 中阶：每级中成长
+        } else if (lv <= 30) {
             return { hp: 15, mp: 10, atk: 3, def: 2, spd: 1, spr: 2, apt: 3 };
-        } else if (level <= 55) {
-            // 高阶：每级大成长
+        } else if (lv <= 55) {
             return { hp: 20, mp: 15, atk: 4, def: 3, spd: 2, spr: 3, apt: 4 };
         } else {
-            // 超阶：每级巨成长
             return { hp: 25, mp: 20, atk: 5, def: 4, spd: 2, spr: 4, apt: 5 };
         }
     },
-    
+
     /**
-     * 升级
+     * 指定系升级（内部方法）
      */
-    levelUp() {
-        this.level++;
-        this.expToNext = this._calcExpToNext(this.level);
+    _elementLevelUp(element) {
+        if (!this.elementLevels[element]) this.elementLevels[element] = 1;
+        const oldPlayerLv = this.getPlayerLevel();
+        this.elementLevels[element]++;
+        const newPlayerLv = this.getPlayerLevel();
 
-        // 根据境界给不同的属性成长（越到后期每级加越多）
-        const growth = this._getLevelGrowth();
-        this.attributePoints += growth.apt;
+        // 只有全局等级提升时才加属性（避免多系重复加属性）
+        if (newPlayerLv > oldPlayerLv) {
+            const growth = this._getLevelGrowth(newPlayerLv);
+            this.attributePoints += growth.apt;
+            this.maxHp += growth.hp;
+            this.maxMp += growth.mp;
+            this.attack += growth.atk;
+            this.defense += growth.def;
+            this.speed += growth.spd;
+            this.spirit += growth.spr;
+        }
 
-        // 基础属性提升
-        this.maxHp += growth.hp;
-        this.maxMp += growth.mp;
-        this.attack += growth.atk;
-        this.defense += growth.def;
-        this.speed += growth.spd;
-        this.spirit += growth.spr;
-
-        // 满血满蓝
+        // 升级回满
         this.hp = this.maxHp;
         this.mp = this.maxMp;
-        
-        // 检查并解锁新技能
-        const newSkills = this.checkSkillUnlocks();
+
+        // 检查该系新解锁技能
+        const newSkills = this._checkElementSkillUnlocks(element);
 
         // 检查是否可以觉醒新系
         const canAwaken = this.canAwakenNewElement();
@@ -488,27 +611,36 @@ const Player = {
     },
 
     /**
-     * 检查当前等级可解锁的技能
-     * 返回新解锁的技能ID列表
+     * 检查所有系可解锁的技能
      */
     checkSkillUnlocks() {
         const newSkills = [];
         this.elements.forEach(element => {
-            const unlockTable = SKILL_UNLOCK_TABLE[element];
-            if (!unlockTable) return;
-            
-            // 检查所有小于等于当前等级的解锁项
-            Object.keys(unlockTable).forEach(levelStr => {
-                const unlockLevel = parseInt(levelStr);
-                if (unlockLevel <= this.level) {
-                    unlockTable[unlockLevel].forEach(skillId => {
-                        if (!this.skills.includes(skillId) && SkillSystem.getSkill(skillId)) {
-                            this.skills.push(skillId);
-                            newSkills.push(skillId);
-                        }
-                    });
-                }
-            });
+            const elSkills = this._checkElementSkillUnlocks(element);
+            newSkills.push(...elSkills);
+        });
+        return newSkills;
+    },
+
+    /**
+     * 检查指定系可解锁的技能
+     */
+    _checkElementSkillUnlocks(element) {
+        const newSkills = [];
+        const unlockTable = SKILL_UNLOCK_TABLE[element];
+        if (!unlockTable) return newSkills;
+
+        const elLevel = this.elementLevels[element] || 1;
+        Object.keys(unlockTable).forEach(levelStr => {
+            const unlockLevel = parseInt(levelStr);
+            if (unlockLevel <= elLevel) {
+                unlockTable[unlockLevel].forEach(skillId => {
+                    if (!this.skills.includes(skillId) && SkillSystem.getSkill(skillId)) {
+                        this.skills.push(skillId);
+                        newSkills.push(skillId);
+                    }
+                });
+            }
         });
         return newSkills;
     },
@@ -553,7 +685,7 @@ const Player = {
         // 检查觉醒条件：第二系Lv10（中阶），第三系Lv30（高阶），第四系Lv55（超阶）
         const currentElementCount = this.elements.length;
         const requiredLevel = currentElementCount === 0 ? 1 : currentElementCount === 1 ? 10 : currentElementCount === 2 ? 30 : 55;
-        if (this.level < requiredLevel) {
+        if (this.getPlayerLevel() < requiredLevel) {
             const rankName = requiredLevel >= 55 ? '超阶' : requiredLevel >= 30 ? '高阶' : '中阶';
             return { success: false, message: `需要达到${rankName}（${requiredLevel}级）才能觉醒新元素系` };
         }
@@ -563,15 +695,17 @@ const Player = {
             return { success: false, message: '最多只能觉醒4个元素系' };
         }
 
-        // 觉醒
+        // 觉醒：新系从Lv1开始
         this.elements.push(element);
+        this.elementLevels[element] = 1;
+        this.elementExp[element] = 0;
 
         // 初始化天生天赋
         if (typeof TalentSystem !== 'undefined' && TalentSystem.initTalentForElement) {
             this.talents[element] = TalentSystem.initTalentForElement(element);
         }
 
-        // 自动解锁该系1级技能
+        // 新系从Lv1开始，只解锁该系1级技能
         const unlockedSkills = [];
         const starterTable = SKILL_UNLOCK_TABLE[element];
         if (starterTable && starterTable[1]) {
@@ -582,19 +716,6 @@ const Player = {
                 }
             });
         }
-
-        // 检查该系其他等级的技能是否也满足解锁条件
-        Object.keys(starterTable || {}).forEach(levelStr => {
-            const unlockLevel = parseInt(levelStr);
-            if (unlockLevel <= this.level && unlockLevel > 1) {
-                starterTable[unlockLevel].forEach(skillId => {
-                    if (!this.skills.includes(skillId)) {
-                        this.skills.push(skillId);
-                        unlockedSkills.push(skillId);
-                    }
-                });
-            }
-        });
         
         // 成就检查
         if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
@@ -1083,9 +1204,8 @@ const Player = {
     canAwakenNewElement() {
         const count = this.elements.length;
         if (count >= 4) return false;
-        // 新等级体系：初阶1系→中阶2系→高阶3系→超阶4系
         const requiredLevel = count === 0 ? 1 : count === 1 ? 10 : count === 2 ? 30 : 55;
-        return this.level >= requiredLevel;
+        return this.getPlayerLevel() >= requiredLevel;
     },
 
     /**
@@ -1347,6 +1467,8 @@ const Player = {
             speed: this.speed,
             spirit: this.spirit,
             elements: this.elements,
+            elementLevels: this.elementLevels,
+            elementExp: this.elementExp,
             skills: this.skills,
             skillLevels: this.skillLevels,
             realm: this.realm,
@@ -1428,6 +1550,15 @@ const Player = {
             this.maxStamina = data.maxStamina ?? 100;
             this.stamina = data.stamina ?? this.maxStamina;
             this.elements = data.elements ?? [];
+            this.elementLevels = data.elementLevels ?? {};
+            this.elementExp = data.elementExp ?? {};
+            // 兼容旧存档：如果没有elementLevels，用level初始化
+            if (Object.keys(this.elementLevels).length === 0 && this.elements.length > 0) {
+                this.elements.forEach(el => {
+                    this.elementLevels[el] = this.level;
+                    this.elementExp[el] = this.exp || 0;
+                });
+            }
             this.skills = data.skills ?? ['basic_attack'];
             this.skillLevels = data.skillLevels ?? {};
             this.realm = data.realm ?? 'initial';
@@ -1674,7 +1805,24 @@ const Player = {
             migrated.expToNext = this._calcExpToNext(newLevel);
             migrated.exp = 0; // 重置当前经验，避免负数
         }
-        
+
+        // 从0.8.6迁移到0.8.7（各系独立等级）
+        if (this._compareVersion(fromVersion, '0.8.7') < 0) {
+            console.log('[存档迁移] 从 0.8.6 迁移到 0.8.7（各系独立等级）');
+            const globalLevel = migrated.level || 1;
+            // 初始化各系等级：所有已觉醒系都设为原全局等级
+            migrated.elementLevels = {};
+            migrated.elementExp = {};
+            if (migrated.elements && migrated.elements.length > 0) {
+                migrated.elements.forEach(el => {
+                    migrated.elementLevels[el] = globalLevel;
+                    migrated.elementExp[el] = migrated.exp || 0;
+                });
+            }
+            // this.level 保持为最高系等级（=globalLevel）
+            console.log(`[存档迁移] 各系等级初始化：${migrated.elements.map(e=>e+':'+globalLevel).join(', ')}`);
+        }
+
         // 更新版本号
         migrated.saveVersion = SAVE_VERSION;
         migrated.gameVersion = GAME_VERSION;

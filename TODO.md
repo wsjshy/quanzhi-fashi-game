@@ -1,6 +1,6 @@
 # TODO - 全职法师游戏
 
-> 当前版本：v0.8.6（开发中）| 最后更新：2026-08-14
+> 当前版本：v0.8.7（开发中）| 最后更新：2026-08-14
 > 状态说明：[ ]待做 [~]进行中 [x]完成
 
 ---
@@ -8,6 +8,36 @@
 ## P0 - 紧急/阻塞
 
 （当前无P0阻塞项）
+
+---
+
+## P1 - v0.8.7 各系独立修炼系统
+
+### 核心设计（已确认）
+- 各系独立等级和经验，不再全局齐步走
+- 全局等级 = 最高系等级，决定基础属性和境界
+- 新系修炼加速：中阶×2/高阶×4/超阶×8
+- 技能解锁按各系等级，魔法威力 = 基础×(1+该系等级×0.05)
+- 境界判定：至少一个系到中阶 = 中阶法师
+- 境界突破保留（加属性%），触发条件为最高系达到阈值
+
+### 开发任务
+- [x] player.js数据结构：elementLevels/elementExp对象，init初始化
+- [x] player.js核心方法：getPlayerLevel()返回最高系等级，getElementLevel(element)
+- [x] player.js经验系统：gainElementExp(element, amount)，含新系加速系数
+- [x] player.js升级逻辑：_elementLevelUp(element)，全局等级提升时才加属性
+- [x] player.js技能解锁：checkSkillUnlocks改为按各系等级检查，新增_checkElementSkillUnlocks
+- [x] player.js觉醒系统：canAwakenNewElement基于getPlayerLevel()，新系从Lv1开始
+- [x] player.js境界系统：getRealm()保留realm字段，突破条件基于最高系等级
+- [x] player.js存档迁移：0.8.6→0.8.7，旧全局等级→各系等级
+- [x] battle.js伤害计算：魔法威力受该系等级加成（elementLevelBonus = 1 + elLevel * 0.05）
+- [x] battle.js经验分配：战斗胜利经验分配给使用的技能所属系（usedElements追踪）
+- [x] realm.js：canBreakthrough用getPlayerLevel()替代player.level
+- [x] ui.js：角色面板元素显示各系等级+境界简称
+- [x] debug.js：setLevel重写为设置各系等级，loadPresetSave兼容
+- [x] npc-growth.js：NPC不需要elementLevels（伤害加成仅对玩家）
+- [~] 测试验证（node语法检查已通过，待浏览器黑盒测试）
+- [ ] 文档更新+git提交
 
 ---
 
