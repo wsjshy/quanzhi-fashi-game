@@ -1218,9 +1218,9 @@ const UI = {
                                     const color = colors[effect.type] || '#fff';
                                     const desc = descriptions[effect.type] || '';
                                     const stacks = effect.stacks ? `×${effect.stacks}` : '';
-                                    const value = effect.value ? ` ${effect.value}` : '';
-                                    const duration = effect.duration ? ` (${effect.duration}回合)` : '';
-                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}${duration}${desc ? '\\n' + desc : ''}">${icon}${stacks}${value}</span>`;
+                                    const value = effect.shieldAmount ? ` ${effect.shieldAmount}` : (effect.value ? ` ${effect.value}` : '');
+                                    const duration = effect.type === 'shield' ? '' : (effect.duration ? ` (${effect.duration}回合)` : '');
+                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}${effect.type === 'shield' ? ' (' + effect.shieldAmount + '护盾)' : duration}${desc ? '\\n' + desc : ''}">${icon}${stacks}${value}</span>`;
                                 }).join('')}
                             </div>
                         ` : ''}
@@ -1380,9 +1380,9 @@ const UI = {
                                     const color = colors[effect.type] || '#fff';
                                     const desc = descriptions[effect.type] || '';
                                     const stacks = effect.stacks ? `×${effect.stacks}` : '';
-                                    const value = effect.value ? ` ${effect.value}` : '';
-                                    const duration = effect.duration ? ` (${effect.duration}回合)` : '';
-                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}${duration}${desc ? '\\n' + desc : ''}">${icon}${stacks}${value}</span>`;
+                                    const value = effect.shieldAmount ? ` ${effect.shieldAmount}` : (effect.value ? ` ${effect.value}` : '');
+                                    const duration = effect.type === 'shield' ? '' : (effect.duration ? ` (${effect.duration}回合)` : '');
+                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}${effect.type === 'shield' ? ' (' + effect.shieldAmount + '护盾)' : duration}${desc ? '\\n' + desc : ''}">${icon}${stacks}${value}</span>`;
                                 }).join('')}
                             </div>
                         ` : ''}
