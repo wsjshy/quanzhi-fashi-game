@@ -581,6 +581,42 @@ const DataCharacters = {
           ]
         }
       }
+    },
+    growth: {
+      base: {
+        level: 1,
+        elements: ["thunder", "fire"],
+        skills: ["basic_attack"],
+        equipment: [],
+        traits: [],
+        title: "天生双系",
+        growthType: "mage",
+      },
+      events: [
+        {
+          after: "star_path_awaken",
+          level: 3,
+          addSkills: ["thunder_bolt", "fire_bolt"],
+          title: "初阶法师·双系",
+        },
+        {
+          after: "bocheng_disaster",
+          level: 10,
+          addElements: ["shadow"],
+          addSkills: ["thunder_fury", "fire_fist", "shadow_step"],
+          addEquipment: ["blood_beast_boots"],
+          addTraits: ["fire_spirit_seed_basic"],
+          title: "中阶法师·三系",
+        },
+        {
+          after: "mingzhu_entrance",
+          level: 15,
+          addElements: ["summon"],
+          addSkills: ["dimensional_summon", "shadow_spike"],
+          addEquipment: ["sickle_bone_shield"],
+          title: "中阶法师·四系",
+        }
+      ]
     }
   },
   mo_jiaxing: {
@@ -1163,22 +1199,29 @@ const DataCharacters = {
   zhao_manyan: {
     id: "zhao_manyan",
     name: "赵满延",
-    title: "光系富二代",
-    description: "赵氏家族的少爷，光系法师，家境富裕，性格开朗，有点小贪财，但很讲义气。",
+    title: "光系中阶法师",
+    description: "赵氏家族的少爷，光系中阶法师。看似花花公子，实则防御极强，光佑·圣盾能挡下统领级攻击。有点小贪财，但非常讲义气。",
     elements: [
       "light"
     ],
-    level: 3,
-    maxHp: 120,
-    maxMp: 70,
-    attack: 12,
-    defense: 10,
-    speed: 10,
+    level: 10,
+    maxHp: 500,
+    maxMp: 250,
+    attack: 20,
+    defense: 35,
+    speed: 18,
+    spirit: 25,
     skills: [
       "basic_attack",
-      "light_ray"
+      "light_ray",
+      "light_blessing",
+      "light_sanctuary",
+      "light_purify"
     ],
-    spriteColor: "#ffff99",
+    aiType: "defensive",
+    growthType: "support",
+    canDuel: true,
+    spriteColor: "#FFD700",
     location: "tianlan_school",
     availableTimes: [
       "morning",
@@ -1502,6 +1545,26 @@ const DataCharacters = {
           ]
         }
       }
+    },
+    growth: {
+      base: {
+        level: 3,
+        elements: ["light"],
+        skills: ["basic_attack", "light_ray"],
+        equipment: [],
+        traits: [],
+        title: "光系初阶法师",
+        growthType: "support",
+      },
+      events: [
+        {
+          after: "mingzhu_entrance",
+          level: 10,
+          addSkills: ["light_blessing", "light_sanctuary", "light_purify"],
+          title: "光系中阶法师",
+          unlocks: ["duel"],
+        }
+      ]
     }
   },
   mu_ningxue: {
@@ -5949,6 +6012,211 @@ const DataCharacters = {
           choices: [{ text: "受教了", next: "default", action: "back" }]
         }
       }
+    }
+  },
+
+  // ========== 明珠学府篇新NPC ==========
+
+  mu_nujiao: {
+    id: "mu_nujiao",
+    name: "牧奴娇",
+    title: "明珠女神",
+    description: "牧家大小姐，全校公认的女神。天仙之姿，却嗜战如魔。风系+植物系双系中阶法师，战斗经验丰富。",
+    elements: ["wind", "plant"],
+    level: 10,
+    maxHp: 600,
+    maxMp: 200,
+    attack: 35,
+    defense: 20,
+    speed: 28,
+    spirit: 30,
+    skills: ["basic_attack", "wind_track_phantom", "wind_tornado", "plant_vine_bind", "plant_forest_prison"],
+    aiType: "tactical",
+    growthType: "mage",
+    canDuel: true,
+    spriteColor: "#98FB98",
+    location: "mingzhu_qing_campus",
+    availableTimes: ["morning", "afternoon", "evening"],
+    dialogue: [
+      { trigger: "default", text: "..." }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.85, kind: 0.5, honest: 0.7, impulsive: 0.3,
+      loyal: 0.6, arrogant: 0.4, greedy: 0.1, curious: 0.6
+    },
+    giftPreferences: {
+      loved: ["demon_core_command", "spirit_seed_plant"],
+      liked: ["magic_stone", "mana_potion"],
+      disliked: [],
+      baseOpinionGain: 5, lovedMultiplier: 3, likedMultiplier: 1.5, dislikedMultiplier: 0.5, dailyGiftLimit: 1
+    },
+    relationshipCap: {
+      maxOpinion: 100, maxTrust: 100, canRomance: true, canBeMentor: false, canBeRival: true
+    },
+    relationships: {
+      mo_fan: { opinion: 25, trust: 10, type: "rival", label: "斗兽大赛对手" }
+    },
+    growth: {
+      base: {
+        level: 5,
+        elements: ["wind", "plant"],
+        skills: ["basic_attack", "wind_track_phantom", "plant_vine_bind"],
+        title: "牧家大小姐",
+        growthType: "mage",
+      },
+      events: [
+        {
+          after: "mingzhu_entrance",
+          level: 10,
+          addSkills: ["wind_tornado", "plant_forest_prison"],
+          title: "双系中阶·明珠女神",
+          unlocks: ["duel"],
+        }
+      ]
+    }
+  },
+
+  lingling: {
+    id: "lingling",
+    name: "灵灵",
+    title: "猎人大师",
+    description: "包老头的孙女，年仅12岁却是猎人大师。智商极高，擅长分析和情报，是莫凡猎人搭档。",
+    elements: [],
+    level: 1,
+    maxHp: 80,
+    maxMp: 100,
+    attack: 5,
+    defense: 3,
+    speed: 12,
+    spirit: 40,
+    skills: ["basic_attack"],
+    growthType: "support",
+    canDuel: false,
+    spriteColor: "#FFB6C1",
+    location: "qingtian_hunter_office",
+    availableTimes: ["morning", "afternoon", "evening"],
+    dialogue: [
+      { trigger: "default", text: "有任务找我爷爷，别烦我。" }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.4, kind: 0.5, honest: 0.8, impulsive: 0.1,
+      loyal: 0.7, arrogant: 0.3, greedy: 0.2, curious: 0.9
+    },
+    giftPreferences: {
+      loved: ["rare_demon_core", "ancient_book"],
+      liked: ["magic_stone", "health_potion"],
+      disliked: [],
+      baseOpinionGain: 5, lovedMultiplier: 3, likedMultiplier: 1.5, dislikedMultiplier: 0.5, dailyGiftLimit: 1
+    },
+    relationshipCap: {
+      maxOpinion: 100, maxTrust: 100, canRomance: false, canBeMentor: true, canBeRival: false
+    },
+    relationships: {
+      mo_fan: { opinion: 20, trust: 15, type: "partner", label: "猎人搭档" }
+    }
+  },
+
+  luo_song: {
+    id: "luo_song",
+    name: "罗宋",
+    title: "土冰双系中阶",
+    description: "富家子弟，土系+冰系双系中阶法师。为人傲慢，与莫凡有竞争关系。",
+    elements: ["earth", "ice"],
+    level: 10,
+    maxHp: 550,
+    maxMp: 180,
+    attack: 28,
+    defense: 30,
+    speed: 15,
+    spirit: 20,
+    skills: ["basic_attack", "ice_vine", "ice_lock", "earth_sink"],
+    aiType: "aggressive",
+    growthType: "mage",
+    canDuel: true,
+    spriteColor: "#87CEEB",
+    location: "mingzhu_qing_campus",
+    availableTimes: ["morning", "afternoon"],
+    dialogue: [
+      { trigger: "default", text: "哼，又是你。" }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.6, kind: 0.2, honest: 0.4, impulsive: 0.7,
+      loyal: 0.3, arrogant: 0.9, greedy: 0.5, curious: 0.3
+    },
+    giftPreferences: {
+      loved: ["rare_metal", "ice_spirit_seed"],
+      liked: ["magic_stone", "mana_potion"],
+      disliked: ["cheap_item"],
+      baseOpinionGain: 3, lovedMultiplier: 2, likedMultiplier: 1.2, dislikedMultiplier: 0, dailyGiftLimit: 1
+    },
+    relationshipCap: {
+      maxOpinion: 100, maxTrust: 50, canRomance: false, canBeMentor: false, canBeRival: true
+    },
+    relationships: {
+      mo_fan: { opinion: -30, trust: 0, type: "rival", label: "竞争对手" }
+    },
+    growth: {
+      base: {
+        level: 8,
+        elements: ["earth", "ice"],
+        skills: ["basic_attack", "ice_vine", "earth_sink"],
+        title: "富家子弟",
+        growthType: "mage",
+      },
+      events: [
+        {
+          after: "mingzhu_entrance",
+          level: 10,
+          addSkills: ["ice_lock"],
+          title: "土冰双系中阶",
+          unlocks: ["duel"],
+        }
+      ]
+    }
+  },
+
+  bai_cangfeng: {
+    id: "bai_cangfeng",
+    name: "白藏锋",
+    title: "白家子弟",
+    description: "白家子弟，风系中阶法师。为人高傲，实力不俗。",
+    elements: ["wind"],
+    level: 10,
+    maxHp: 450,
+    maxMp: 200,
+    attack: 30,
+    defense: 15,
+    speed: 30,
+    spirit: 22,
+    skills: ["basic_attack", "wind_track_phantom"],
+    aiType: "aggressive",
+    growthType: "mage",
+    canDuel: true,
+    spriteColor: "#F0F8FF",
+    location: "mingzhu_main_campus",
+    availableTimes: ["afternoon", "evening"],
+    dialogue: [
+      { trigger: "default", text: "..." }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.7, kind: 0.3, honest: 0.5, impulsive: 0.5,
+      loyal: 0.5, arrogant: 0.8, greedy: 0.3, curious: 0.4
+    },
+    giftPreferences: {
+      loved: ["wind_spirit_seed"],
+      liked: ["magic_stone", "mana_potion"],
+      disliked: [],
+      baseOpinionGain: 3, lovedMultiplier: 2.5, likedMultiplier: 1.3, dislikedMultiplier: 0.3, dailyGiftLimit: 1
+    },
+    relationshipCap: {
+      maxOpinion: 100, maxTrust: 60, canRomance: false, canBeMentor: false, canBeRival: true
+    },
+    relationships: {
+      mo_fan: { opinion: -20, trust: 0, type: "rival", label: "白家" }
     }
   }
 };

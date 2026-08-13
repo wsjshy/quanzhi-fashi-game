@@ -26,8 +26,8 @@
 
 ### 非战斗内容（明珠学府篇）
 - [ ] 添加明珠学府新地点到locations.js（青校区/主校区/青斗馆/宿舍/国贸中心拍卖场）
-- [ ] 统一赵满延数据（characters.js从Lv3更新为Lv10）
-- [ ] 将新NPC添加到characters.js（牧奴娇/灵灵/罗宋/白藏锋/猎王西明/醋醋）
+- [x] 统一赵满延数据（characters.js从Lv3更新为Lv10，加growth）
+- [x] 将新NPC添加到characters.js（牧奴娇/灵灵/罗宋/白藏锋已加，猎王西明/醋醋待加）
 - [ ] 整理quests.js重复任务（quest_xuefeng_expedition/quest_training_camp/quest_one_eye_wolf）
 - [ ] 主线任务链：明珠学府篇（鳞皮妖母事件后续）
 
@@ -38,16 +38,19 @@
 - [ ] 战斗数值平衡（基于阶级加成后的数据）
 
 ### 系统增强
-- [ ] **NPC成长系统实现**（设计见docs/非战斗系统可扩展性设计.md 2.7节）
-  - [ ] 新建engine/npc-growth.js：NPCGrowthService.getNpcState(npcId, storyStage)
-  - [ ] 实现getDuelData(npcId, storyStage)：切磋用战斗数据
-  - [ ] 实现getHistoricalState(npcId, storyStage)：回忆切磋
-  - [ ] 给主要NPC加growth数据（莫凡/赵满延/牧奴娇/罗宋/白藏锋等）
-  - [ ] 给召唤兽加growth数据（幽狼兽进化线）
-  - [ ] 给会成长的妖魔加growth数据（蜕皮女妖/男妖多形态）
-  - [ ] 切磋/挑战功能UI入口（NPC对话中"切磋"选项）
-  - [ ] 战斗中触发进化（battle_molt_X事件）
-  - [ ] 黑盒测试：不同storyStage下NPC状态正确
+- [x] **NPC成长系统实现**（设计见docs/非战斗系统可扩展性设计.md 2.7节）
+  - [x] 新建engine/npc-growth.js：NPCGrowthService.getNpcState(npcId, storyStage)
+  - [x] 实现getDuelData(npcId, storyStage)：切磋用战斗数据
+  - [x] 实现getHistoricalState(npcId, storyStage)：回忆切磋
+  - [x] 给主要NPC加growth数据（莫凡/赵满延/牧奴娇/罗宋）
+  - [x] 给召唤兽加growth数据（幽狼兽进化线）
+  - [x] 给会成长的妖魔加growth数据（蜕皮女妖多形态）
+  - [x] 切磋/挑战功能UI入口（NPC对话中"切磋"按钮）
+  - [x] 战斗中触发进化（applyBattleEvolution）
+  - [x] 单元测试：10项测试全部通过
+  - [ ] 黑盒测试：浏览器中实际切磋战斗验证
+  - [ ] 回忆切磋UI（选择历史阶段）
+  - [ ] 给更多NPC加growth数据（张小侯/穆宁雪等）
 - [ ] 任务系统增强（统一条件/效果、分支对话、更多objective类型）
 - [ ] 猎人悬赏基础（bounties.js数据+接取流程）
 - [ ] 主校区考核（exams.js数据+考核流程）

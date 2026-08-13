@@ -822,6 +822,71 @@ const Game = {
         BattleSystem.startBattle(enemy, options);
         UI.renderBattleScreen();
     },
+
+    // 与NPC切磋/挑战
+    startDuel(npcId) {
+        const npc = DataManager.getCharacter(npcId);
+        if (!npc) {
+            UI.showMessage('找不到该NPC');
+            return;
+        }
+
+        // 关闭对话
+        this._closeDialogue();
+
+        // 获取NPC当前状态的战斗数据
+        let duelData;
+        if (typeof NPCGrowthService !== 'undefined') {
+            duelData = NPCGrowthService.getDuelData(npcId);
+        }
+
+        // 如果没有growth数据，用原始数据
+        if (!duelData) {
+            duelData = {
+                id: npcId,
+                name: npc.name,
+                title: npc.title || '',
+                level: npc.level || 1,
+                elements: npc.elements || [],
+                skills: npc.skills || ['basic_attack'],
+                maxHp: npc.maxHp || 100,
+                hp: npc.maxHp || 100,
+                maxMp: npc.maxMp || 50,
+                mp: npc.maxMp || 50,
+                attack: npc.attack || 10,
+                defense: npc.defense || 5,
+                speed: npc.speed || 10,
+                spirit: npc.spirit || 10,
+                aiType: npc.aiType || 'balanced',
+                enemyType: 'human',
+                isEnemy: false,
+                isAlly: false,
+                isDuel: true,
+            };
+        }
+
+        duelData.isDuel = true;
+        duelData.isEnemy = false;
+
+        // 切磋不致死，HP降到1就结束
+        const options = {
+            isDuel: true,
+            duelNpcId: npcId,
+            noDeath: true,
+            onWin: () => {
+                UI.showMessage(`你赢了${npc.name}！切磋结束。`);
+                // 切磋胜利可以加少量好感度
+                if (typeof NPCStateSystem !== 'undefined') {
+                    NPCStateSystem.changeOpinion(npcId, 3, '切磋胜利');
+                }
+            },
+            onLose: () => {
+                UI.showMessage(`你输给了${npc.name}，再接再厉！`);
+            }
+        };
+
+        this.startBattle(duelData, null, options);
+    },
     
     // 再次挑战上一次的敌人
     rematch() {
@@ -1694,6 +1759,22 @@ const Game = {
                             ${choice.text}
                         </div>
                     `).join('')}
+                    ${npc.canDuel ? `
+                        <div onclick="Game.startDuel('${npc.id}')" style="
+                            padding: 12px 20px;
+                            background: rgba(80, 30, 30, 0.8);
+                            border: 2px solid #aa4444;
+                            border-radius: 8px;
+                            color: #ffaaaa;
+                            cursor: pointer;
+                            text-align: center;
+                            transition: all 0.3s;
+                            font-size: 15px;
+                            margin-top: 8px;
+                        " onmouseover="this.style.borderColor='#ff6666'; this.style.background='rgba(120, 40, 40, 0.9)'" onmouseout="this.style.borderColor='#aa4444'; this.style.background='rgba(80, 30, 30, 0.8)'">
+                            ⚔️ 切磋/挑战
+                        </div>
+                    ` : ''}
                 </div>
             </div>
             </div>

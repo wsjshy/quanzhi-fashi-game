@@ -111,7 +111,28 @@ const DataEnemies = {
     locations: [
       "xuefeng_mountain",
       "baicao_valley"
-    ]
+    ],
+    growth: {
+      base: {
+        level: 5,
+        elements: ["dark", "earth"],
+        skills: ["basic_attack", "demon_sand_breath", "demon_wild_charge", "battle_howl"],
+        traits: [],
+        form: "normal_wolf",
+        title: "奴仆级幽狼兽",
+        growthType: "summon",
+      },
+      events: [
+        {
+          after: "wolf_evolution_1",
+          level: 12,
+          form: "advanced_wolf",
+          addSkills: ["demon_three_burst", "demon_rage_frenzy"],
+          addTraits: ["demon_rage_frenzy"],
+          title: "进阶期幽狼兽",
+        }
+      ]
+    }
   },
   demon_wolf_pack: {
     id: "demon_wolf_pack",
@@ -1789,7 +1810,27 @@ const DataEnemies = {
     goldReward: 150,
     dropItems: [
       { itemId: "demon_core", chance: 0.8, min: 1, max: 3 }
-    ]
+    ],
+    growth: {
+      base: {
+        level: 5,
+        elements: ["dark"],
+        skills: ["basic_attack", "demon_life_drain", "demon_climb"],
+        traits: ["scale_armor", "wall_climbing", "blood_sucker", "cunning"],
+        form: "human_form",
+        title: "人皮伪装",
+        growthType: "demon",
+      },
+      events: [
+        {
+          after: "battle_molt_1",
+          level: 8,
+          form: "demon_form",
+          addSkills: ["demon_shadow_claw"],
+          title: "蜕皮女妖",
+        }
+      ]
+    }
   },
 
   molting_brute: {
