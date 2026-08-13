@@ -1280,7 +1280,7 @@ const UI = {
                             <span style="font-size: 14px; color: #ffcc66;">Lv.${state.enemy.level}</span>
                             ${state.enemy.isElite ? '<span style="color: #ff6600;"> ⭐精英</span>' : ''}
                         </div>
-                        <div style="font-size: 12px; color: #aaa; margin-bottom: 8px;">Lv.${state.enemy.level}</div>
+                        ${state.enemy.title ? `<div style="font-size: 12px; color: #ff9966; margin-bottom: 8px;">${state.enemy.title}</div>` : ''}
                         <!-- 敌人元素系 -->
                         ${state.enemy.elements && state.enemy.elements.length > 0 ? `
                             <div style="margin-bottom: 8px; display: flex; gap: 4px; justify-content: center;">
