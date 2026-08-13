@@ -354,9 +354,9 @@ const BattleSystem = {
                 atkBonus = 0.1;  // 攻击+10%
                 defBonus = 0.05; // 防御+5%
             } else if (tier === 'warrior' || tier === '战将级') {
-                hpBonus = 0.4;   // HP+40%
-                atkBonus = 0.25; // 攻击+25%
-                defBonus = 0.15; // 防御+15%
+                hpBonus = 0.3;   // HP+30%
+                atkBonus = 0.2;  // 攻击+20%
+                defBonus = 0.1;  // 防御+10%
             } else if (tier === 'commander' || tier === '统领级') {
                 hpBonus = 0.8;   // HP+80%
                 atkBonus = 0.4;  // 攻击+40%
