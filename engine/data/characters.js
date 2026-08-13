@@ -6425,6 +6425,85 @@ const DataCharacters = {
     },
     relationships: {
       mo_fan: { opinion: 20, trust: 15, type: "partner", label: "猎人搭档" }
+    },
+    dialogueTree: {
+      npcId: "lingling",
+      nodes: {
+        default: {
+          id: "default",
+          texts: [
+            "有任务找我爷爷，别烦我。",
+            "……又是你。有事说事。",
+            "你身上有妖魔的血腥味，刚从野外回来？"
+          ],
+          mood: "annoyed",
+          choices: [
+            { id: "ask_hunt", text: "有猎魔任务吗？", condition: { minOpinion: 5 }, nextNode: "hunt_info" },
+            { id: "ask_intel", text: "最近有什么妖魔情报？", condition: { minOpinion: 15 }, effects: { exp: 10 }, nextNode: "demon_intel" },
+            { id: "ask_age", text: "你多大了？", condition: { notNpcFlags: ["asked_age"] }, effects: { opinion: -5, npcFlags: { asked_age: true } }, nextNode: "age_talk" },
+            { id: "chat", text: "随便聊聊", condition: { minOpinion: 20 }, nextNode: "casual_chat" },
+            { id: "give_gift", text: "送你东西", action: "open_gift" },
+            { id: "leave", text: "打扰了", nextNode: null }
+          ]
+        },
+        hunt_info: {
+          id: "hunt_info",
+          texts: [
+            "猎魔任务都在公告板上，自己看。不过……最近有个追踪黑教廷的任务，你感兴趣的话我可以帮你留意。",
+            "你实力还行，比那些只会耍嘴皮子的猎人强。有合适的任务我会通知你。",
+            "别接超出能力的任务，死了我可懒得给你收尸。"
+          ],
+          choices: [
+            { id: "thanks", text: "谢了", effects: { opinion: 2 }, nextNode: "default" }
+          ]
+        },
+        demon_intel: {
+          id: "demon_intel",
+          texts: [
+            "根据我收集的数据，最近主校区附近暗影系妖魔活动频繁。不只是普通妖魔——有组织的痕迹。",
+            "黑教廷在明珠有眼线，你小心点。他们的目标可能是地圣泉。",
+            "还有，黑畜妖不是妖魔。那是被咒法奴役的人。这个情报别外传。"
+          ],
+          condition: { minTrust: 20 },
+          effects: { giveInfo: "black_church_in_mingzhu" },
+          choices: [
+            { id: "back", text: "我知道了", effects: { trust: 3 }, nextNode: "default" }
+          ]
+        },
+        age_talk: {
+          id: "age_talk",
+          texts: [
+            "……12。怎么，有意见？",
+            "别用那种眼神看我。智商和年龄没关系，你这种肌肉脑不会懂的。",
+            "下次再问这种无聊的问题，任务情报减半。"
+          ],
+          choices: [
+            { id: "apologize", text: "抱歉，我不该问", effects: { opinion: 2 }, nextNode: "default" },
+            { id: "tease", text: "12岁就当猎人大师？", effects: { opinion: -3 }, nextNode: "age_defense" }
+          ]
+        },
+        age_defense: {
+          id: "age_defense",
+          texts: [
+            "猎人认证看的是实绩不是年龄。我分析过的妖魔案例比你吃过的饭还多。",
+            "……算了，跟你说这些干嘛。"
+          ],
+          choices: [
+            { id: "back", text: "服了", nextNode: "default" }
+          ]
+        },
+        casual_chat: {
+          id: "casual_chat",
+          texts: [
+            "你知道吗，猎人联盟里大部分人都是蠢货。明明数据摆在眼前还要硬来。",
+            "爷爷总说我太冷漠。但分析妖魔的时候，感情只会影响判断。",
+            "……你和别的法师不太一样。你身上有妖魔的气息，但你还是人。有意思。"
+          ],
+          choices: [
+            { id: "back", text: "你也挺有意思的", effects: { opinion: 3 }, nextNode: "default" }
+          ]
+        }
+      }
     }
   },
 
