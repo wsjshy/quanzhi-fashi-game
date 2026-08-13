@@ -1188,7 +1188,8 @@ const UI = {
                                     const color = colors[effect.type] || '#fff';
                                     const stacks = effect.stacks ? `×${effect.stacks}` : '';
                                     const value = effect.value ? ` ${effect.value}` : '';
-                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}">${icon}${stacks}${value}</span>`;
+                                    const duration = effect.duration ? ` (${effect.duration}回合)` : '';
+                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}${duration}">${icon}${stacks}${value}</span>`;
                                 }).join('')}
                             </div>
                         ` : ''}
@@ -1337,7 +1338,8 @@ const UI = {
                                     const color = colors[effect.type] || '#fff';
                                     const stacks = effect.stacks ? `×${effect.stacks}` : '';
                                     const value = effect.value ? ` ${effect.value}` : '';
-                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}">${icon}${stacks}${value}</span>`;
+                                    const duration = effect.duration ? ` (${effect.duration}回合)` : '';
+                                    return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}${duration}">${icon}${stacks}${value}</span>`;
                                 }).join('')}
                             </div>
                         ` : ''}
