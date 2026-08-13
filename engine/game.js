@@ -1052,7 +1052,22 @@ const Game = {
                 if (rating) {
                     const ratingColors = { S: '🌟', A: '⭐', B: '✨', C: '👍', D: '💪' };
                     message += `${ratingColors[rating.level] || ''} 评价：${rating.level}级\n`;
-                    message += `得分：${rating.score}分\n\n`;
+                    message += `得分：${rating.score}分\n`;
+                    // 评分详情
+                    if (rating.details) {
+                        const details = [];
+                        if (rating.details.turnBonus) details.push(`回合${rating.details.turnBonus > 0 ? '+' : ''}${rating.details.turnBonus}`);
+                        if (rating.details.hpBonus) details.push(`血量+${rating.details.hpBonus}`);
+                        if (rating.details.itemPenalty) details.push(`道具${rating.details.itemPenalty}`);
+                        if (rating.details.critBonus) details.push(`暴击+${rating.details.critBonus}`);
+                        if (rating.details.interruptBonus) details.push(`打断+${rating.details.interruptBonus}`);
+                        if (rating.details.noDamageBonus) details.push(`无伤+${rating.details.noDamageBonus}`);
+                        if (rating.details.levelBonus) details.push(`等级差${rating.details.levelBonus > 0 ? '+' : ''}${rating.details.levelBonus}`);
+                        if (details.length > 0) {
+                            message += `(${details.join('，')})\n`;
+                        }
+                    }
+                    message += '\n';
                 }
                 
                 // 战斗统计
