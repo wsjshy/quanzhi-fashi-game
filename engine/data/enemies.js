@@ -12,7 +12,7 @@ const DataEnemies = {
     elements: [
       "dark"
     ],
-    level: 4,
+    level: 6,
     maxHp: 180,
     maxMp: 0,
     attack: 22,
@@ -32,7 +32,7 @@ const DataEnemies = {
     demonTier: "servant",
     spriteColor: "#553322",
     isEnemy: true,
-    expReward: 100,
+    expReward: 73,
     goldReward: 60,
     dropItems: [
       {
@@ -67,7 +67,7 @@ const DataEnemies = {
     elements: [
       "dark", "earth"
     ],
-    level: 5,
+    level: 8,
     maxHp: 200,
     maxMp: 50,
     attack: 22,
@@ -86,7 +86,7 @@ const DataEnemies = {
     isSummon: true,
     canEnrage: true,
     aiType: "aggressive",
-    expReward: 150,
+    expReward: 114,
     goldReward: 100,
     dropItems: [
       {
@@ -140,7 +140,7 @@ const DataEnemies = {
     title: "奴仆级妖魔群",
     description: "博城灾难中涌入城市的魔狼群，由数只独眼魔狼组成，凶残无比。它们在黑教廷的引导下对博城发动了突袭。",
     elements: ["dark"],
-    level: 5,
+    level: 8,
     maxHp: 350,
     maxMp: 80,
     attack: 20,
@@ -153,7 +153,7 @@ const DataEnemies = {
     isEnemy: true,
     isElite: true,
     aiType: "aggressive",
-    expReward: 250,
+    expReward: 114,
     goldReward: 120,
     dropItems: [
       { itemId: "demon_core", chance: 1, min: 2, max: 3 },
@@ -170,7 +170,7 @@ const DataEnemies = {
     elements: [
       "dark"
     ],
-    level: 2,
+    level: 3,
     maxHp: 90,
     maxMp: 0,
     attack: 14,
@@ -188,7 +188,7 @@ const DataEnemies = {
     demonTier: "servant",
     spriteColor: "#442266",
     isEnemy: true,
-    expReward: 50,
+    expReward: 37,
     goldReward: 25,
     dropItems: [
       {
@@ -216,7 +216,7 @@ const DataEnemies = {
     elements: [
       "earth"
     ],
-    level: 4,
+    level: 6,
     maxHp: 240,
     maxMp: 0,
     attack: 20,
@@ -234,7 +234,7 @@ const DataEnemies = {
     demonTier: "servant",
     spriteColor: "#996633",
     isEnemy: true,
-    expReward: 100,
+    expReward: 73,
     goldReward: 50,
     dropItems: [
       {
@@ -262,7 +262,7 @@ const DataEnemies = {
     elements: [
       "wind"
     ],
-    level: 2,
+    level: 3,
     maxHp: 70,
     maxMp: 50,
     attack: 10,
@@ -280,7 +280,7 @@ const DataEnemies = {
     demonTier: "servant",
     spriteColor: "#88ccaa",
     isEnemy: true,
-    expReward: 45,
+    expReward: 37,
     goldReward: 20,
     dropItems: [
       {
@@ -308,7 +308,7 @@ const DataEnemies = {
     elements: [
       "water"
     ],
-    level: 3,
+    level: 5,
     maxHp: 90,
     maxMp: 60,
     attack: 12,
@@ -326,7 +326,7 @@ const DataEnemies = {
     demonTier: "servant",
     spriteColor: "#6699cc",
     isEnemy: true,
-    expReward: 60,
+    expReward: 58,
     goldReward: 30,
     dropItems: [
       {
@@ -354,7 +354,7 @@ const DataEnemies = {
     elements: [
       "fire"
     ],
-    level: 3,
+    level: 5,
     maxHp: 100,
     maxMp: 50,
     attack: 18,
@@ -372,7 +372,7 @@ const DataEnemies = {
     spriteColor: "#ff6633",
     isEnemy: true,
     aiType: "burst",
-    expReward: 65,
+    expReward: 58,
     goldReward: 35,
     dropItems: [
       {
@@ -400,7 +400,7 @@ const DataEnemies = {
     elements: [
       "earth"
     ],
-    level: 2,
+    level: 3,
     maxHp: 100,
     maxMp: 20,
     attack: 8,
@@ -417,7 +417,7 @@ const DataEnemies = {
     spriteColor: "#ccaa33",
     isEnemy: true,
     aiType: "defensive",
-    expReward: 40,
+    expReward: 37,
     goldReward: 25,
     dropItems: [
       {
@@ -445,7 +445,7 @@ const DataEnemies = {
     elements: [
       "light"
     ],
-    level: 2,
+    level: 3,
     maxHp: 60,
     maxMp: 70,
     attack: 9,
@@ -461,7 +461,7 @@ const DataEnemies = {
     spriteColor: "#ffff99",
     isEnemy: true,
     aiType: "kiter",
-    expReward: 45,
+    expReward: 37,
     goldReward: 30,
     dropItems: [
       {
@@ -489,7 +489,7 @@ const DataEnemies = {
     elements: [
       "thunder"
     ],
-    level: 4,
+    level: 6,
     maxHp: 130,
     maxMp: 60,
     attack: 24,
@@ -507,7 +507,7 @@ const DataEnemies = {
     demonTier: "servant",
     spriteColor: "#9966ff",
     isEnemy: true,
-    expReward: 90,
+    expReward: 73,
     goldReward: 50,
     dropItems: [
       {
@@ -535,7 +535,7 @@ const DataEnemies = {
     elements: [
       "ice"
     ],
-    level: 3,
+    level: 5,
     maxHp: 110,
     maxMp: 50,
     attack: 11,
@@ -552,7 +552,7 @@ const DataEnemies = {
     spriteColor: "#99ddff",
     isEnemy: true,
     aiType: "controller",
-    expReward: 55,
+    expReward: 58,
     goldReward: 30,
     dropItems: [
       {
@@ -580,7 +580,7 @@ const DataEnemies = {
     elements: [
       "dark"
     ],
-    level: 3,
+    level: 5,
     maxHp: 75,
     maxMp: 45,
     attack: 14,
@@ -597,7 +597,7 @@ const DataEnemies = {
     spriteColor: "#553377",
     isEnemy: true,
     aiType: "kiter",
-    expReward: 60,
+    expReward: 58,
     goldReward: 35,
     dropItems: [
       {
@@ -625,7 +625,7 @@ const DataEnemies = {
     elements: [
       "wind"
     ],
-    level: 7,
+    level: 10,
     maxHp: 450,
     maxMp: 0,
     attack: 38,
@@ -643,7 +643,7 @@ const DataEnemies = {
     spriteColor: "#aa6633",
     isEnemy: true,
     demonTier: "warrior",
-    expReward: 300,
+    expReward: 238,
     goldReward: 150,
     dropItems: [
       {
@@ -677,7 +677,7 @@ const DataEnemies = {
     elements: [
       "earth"
     ],
-    level: 8,
+    level: 14,
     maxHp: 750,
     maxMp: 80,
     attack: 48,
@@ -696,7 +696,7 @@ const DataEnemies = {
     isEnemy: true,
     demonTier: "warrior",
     aiType: "defensive",
-    expReward: 400,
+    expReward: 304,
     goldReward: 200,
     dropItems: [
       {
@@ -730,7 +730,7 @@ const DataEnemies = {
     elements: [
       "dark"
     ],
-    level: 4,
+    level: 6,
     maxHp: 140,
     maxMp: 60,
     attack: 16,
@@ -746,7 +746,7 @@ const DataEnemies = {
     isEnemy: true,
     enemyType: "human",
     faction: "black_church",
-    expReward: 80,
+    expReward: 61,
     goldReward: 50,
     dropItems: [
       {
@@ -776,7 +776,7 @@ const DataEnemies = {
       "dark",
       "fire"
     ],
-    level: 7,
+    level: 10,
     maxHp: 300,
     maxMp: 150,
     attack: 34,
@@ -791,7 +791,7 @@ const DataEnemies = {
     isEnemy: true,
     enemyType: "human",
     faction: "black_church",
-    expReward: 200,
+    expReward: 149,
     goldReward: 150,
     dropItems: [
       {
@@ -826,7 +826,7 @@ const DataEnemies = {
       "dark",
       "ice"
     ],
-    level: 10,
+    level: 20,
     maxHp: 500,
     maxMp: 300,
     attack: 45,
@@ -844,7 +844,7 @@ const DataEnemies = {
     enemyType: "human",
     faction: "black_church",
     isBoss: true,
-    expReward: 500,
+    expReward: 439,
     goldReward: 500,
     dropItems: [
       {
@@ -880,7 +880,7 @@ const DataEnemies = {
     title: "奴仆级妖魔",
     description: "潜伏在人类城市中的妖魔，拥有邪眼可以中邪蛊惑人心，还能释放沼毒。猎者联盟长期追踪的危险妖魔，发现后会发布浅色警戒，示意市民不要外出到深山。",
     elements: ["dark", "water"],
-    level: 5,
+    level: 8,
     maxHp: 180,
     maxMp: 80,
     attack: 16,
@@ -892,7 +892,7 @@ const DataEnemies = {
     spriteColor: "#556b2f",
     isEnemy: true,
     aiType: "controller",
-    expReward: 150,
+    expReward: 114,
     goldReward: 100,
     dropItems: [
       { itemId: "demon_core", chance: 0.9, min: 1, max: 2 },
@@ -907,7 +907,7 @@ const DataEnemies = {
     title: "奴仆级妖魔",
     description: "速度极快的妖魔，后肢力量惊人，是制作履魔具的上等材料。奔妖后肢皮附魔风轨法纹，配合风石提供能量，可以让穿戴者跑得比独眼魔狼还快。",
     elements: ["wind"],
-    level: 4,
+    level: 6,
     maxHp: 100,
     maxMp: 30,
     attack: 14,
@@ -919,7 +919,7 @@ const DataEnemies = {
     spriteColor: "#8fbc8f",
     isEnemy: true,
     aiType: "kiter",
-    expReward: 120,
+    expReward: 73,
     goldReward: 70,
     dropItems: [
       { itemId: "demon_core", chance: 0.7, min: 1, max: 1 },
@@ -934,7 +934,7 @@ const DataEnemies = {
     title: "奴仆级植物妖魔",
     description: "生长在百草谷的植物系妖魔，藤蔓带荆棘倒刺，能捆绑敌人。怕火，对雷系有较强抗性。",
     elements: ["earth", "neutral"],
-    level: 3,
+    level: 5,
     maxHp: 150,
     maxMp: 40,
     attack: 12,
@@ -949,7 +949,7 @@ const DataEnemies = {
     isPlant: true,
     fireWeakness: 1.8,
     thunderResistance: 0.5,
-    expReward: 100,
+    expReward: 58,
     goldReward: 50,
     dropItems: [
       { itemId: "demon_core", chance: 0.5, min: 1, max: 1 },
@@ -963,7 +963,7 @@ const DataEnemies = {
     name: "巨眼猩鼠",
     title: "奴仆级妖魔",
     description: "长期生活在土壤里的妖魔，挖地洞的能手，更喜欢生存在城市下水道和垃圾场。脖子可以伸长，篮球大的眼睛会释放穿透腥红暗光束。繁衍速度极快，生存能力强，一般只吃人类残羹冷炙，饥饿到一定程度才会吃人。",
-    level: 4,
+    level: 6,
     elements: ["dark"],
     maxHp: 120,
     attack: 18,
@@ -978,7 +978,7 @@ const DataEnemies = {
     isEnemy: true,
     canBurrow: true,
     ignoreDefense: 0.3,
-    expReward: 80,
+    expReward: 73,
     goldReward: 40,
     dropItems: [
       { itemId: "demon_core", chance: 0.3, min: 1, max: 1 },
@@ -993,7 +993,7 @@ const DataEnemies = {
     title: "战将级妖魔（进阶中）",
     description: "偷吸了博城地圣泉能量的独眼魔狼，正处在进阶期，肌肉骨骼正在蜕变，战斗力远超普通独眼魔狼。雷系魔法对其有特效。",
     elements: ["dark"],
-    level: 10,
+    level: 20,
     maxHp: 400,
     maxMp: 80,
     attack: 35,
@@ -1010,7 +1010,7 @@ const DataEnemies = {
     canEnrage: true,
     thunderWeakness: 2.0,
     fireResistance: 0.5,
-    expReward: 300,
+    expReward: 703,
     goldReward: 200,
     dropItems: [
       { itemId: "demon_core", chance: 0.8, min: 1, max: 2 },
@@ -1026,7 +1026,7 @@ const DataEnemies = {
     title: "穆氏养子 / 冰系天才",
     description: "穆卓云的养子，冰系天才，已掌握3级冰蔓·覆盖。身上有地波履魔具，可以快速移动。成年礼决斗的对手。",
     elements: ["ice"],
-    level: 8,
+    level: 14,
     maxHp: 250,
     maxMp: 120,
     attack: 28,
@@ -1039,7 +1039,7 @@ const DataEnemies = {
     isEnemy: true,
     isBoss: true,
     dodgeEvery: 3,
-    expReward: 500,
+    expReward: 190,
     goldReward: 300,
     dropItems: [
       { itemId: "ice_crystal", chance: 0.5, min: 1, max: 1 },
@@ -1054,7 +1054,7 @@ const DataEnemies = {
     title: "战将级妖魔",
     description: "战将级妖魔，魔狼种群的统领级之下的高级战将。三只眼睛拥有270度视角，浑身骨刺如钢铁般坚硬。率领数百只独眼魔狼进攻博城的先锋将领。",
     elements: ["dark", "earth"],
-    level: 12,
+    level: 25,
     maxHp: 800,
     maxMp: 150,
     attack: 60,
@@ -1071,7 +1071,7 @@ const DataEnemies = {
     summonSkill: "wolf_howl",
     summonEnemy: "one_eye_wolf",
     summonCount: 2,
-    expReward: 1200,
+    expReward: 1414,
     goldReward: 800,
     dropItems: [
       { itemId: "demon_core", chance: 0.6, min: 1, max: 1 },
@@ -1087,7 +1087,7 @@ const DataEnemies = {
     title: "天澜魔法高中学生",
     description: "一个和你一样刚觉醒魔法不久的学生，想和你切磋一下。",
     elements: ["fire"],
-    level: 3,
+    level: 5,
     maxHp: 120,
     maxMp: 60,
     attack: 12,
@@ -1098,7 +1098,7 @@ const DataEnemies = {
     spriteColor: "#cc4422",
     isEnemy: true,
     isHuman: true,
-    expReward: 60,
+    expReward: 48,
     goldReward: 20,
     dropItems: [],
     locations: ["tianlan_school", "city_street"]
@@ -1111,7 +1111,7 @@ const DataEnemies = {
     title: "战将级妖魔",
     description: "体型巨大的鼠类妖魔，身上布满血色纹路，拥有极快的速度和锋利的爪子。地圣泉奇袭的元凶之一。",
     elements: ["dark", "earth"],
-    level: 9,
+    level: 17,
     maxHp: 700,
     maxMp: 120,
     attack: 45,
@@ -1123,7 +1123,7 @@ const DataEnemies = {
     isEnemy: true,
     demonTier: "warrior",
     isBoss: false,
-    expReward: 500,
+    expReward: 462,
     goldReward: 250,
     dropItems: [
       { itemId: "demon_core", chance: 1, min: 3, max: 5 },
@@ -1139,7 +1139,7 @@ const DataEnemies = {
     title: "奴仆级妖魔（黑教廷）",
     description: "黑教廷的标志生物，由活人炼制而成，速度极快，爪子锋利，与主人灵魂相连。主人死亡时也会随之死亡。",
     elements: ["dark"],
-    level: 6,
+    level: 9,
     maxHp: 250,
     maxMp: 60,
     attack: 30,
@@ -1152,7 +1152,7 @@ const DataEnemies = {
     demonTier: "servant",
     isBlackChurch: true,
     blindImmune: true,  // 没有眼睛，不受失明影响
-    expReward: 200,
+    expReward: 142,
     goldReward: 80,
     dropItems: [
       { itemId: "demon_core", chance: 0.7, min: 1, max: 2 },
@@ -1167,7 +1167,7 @@ const DataEnemies = {
     title: "统领级妖魔",
     description: "博城灾难的元凶，统领级妖魔，背生双翼，能飞天遁地，实力远超战将级。率领无数魔狼进攻博城，造成了巨大的灾难。",
     elements: ["wind", "dark"],
-    level: 15,
+    level: 34,
     maxHp: 4000,
     maxMp: 500,
     attack: 150,
@@ -1183,7 +1183,7 @@ const DataEnemies = {
     summonSkill: "wolf_howl",
     summonEnemy: "one_eye_wolf",
     summonCount: 3,
-    expReward: 5000,
+    expReward: 6743,
     goldReward: 3000,
     dropItems: [
       { itemId: "demon_core", chance: 1, min: 10, max: 20 },
@@ -1206,7 +1206,7 @@ const DataEnemies = {
     title: "初阶法师",
     description: "天澜魔法高中的学生，初阶法师，用来切磋练习。",
     elements: ["fire"],
-    level: 3,
+    level: 5,
     maxHp: 100,
     maxMp: 80,
     attack: 10,
@@ -1222,7 +1222,7 @@ const DataEnemies = {
     spriteColor: "#ff6633",
     isEnemy: true,
     isMage: true,
-    expReward: 80,
+    expReward: 48,
     goldReward: 40,
     dropItems: [
       { itemId: "magic_stone", chance: 0.5, min: 1, max: 2 },
@@ -1236,7 +1236,7 @@ const DataEnemies = {
     title: "冰系初阶法师",
     description: "穆氏家族的天才，冰系初阶法师，性格高傲，实力在班级中名列前茅。",
     elements: ["ice"],
-    level: 5,
+    level: 8,
     maxHp: 150,
     maxMp: 120,
     attack: 15,
@@ -1254,7 +1254,7 @@ const DataEnemies = {
     isEnemy: true,
     isMage: true,
     isNoble: true,
-    expReward: 200,
+    expReward: 95,
     goldReward: 150,
     dropItems: [
       { itemId: "magic_stone", chance: 0.8, min: 2, max: 4 },
@@ -1269,7 +1269,7 @@ const DataEnemies = {
     title: "土系初阶法师",
     description: "土系法师，性格憨厚，防御很强，是穆白的跟班。",
     elements: ["earth"],
-    level: 4,
+    level: 6,
     maxHp: 180,
     maxMp: 80,
     attack: 12,
@@ -1286,7 +1286,7 @@ const DataEnemies = {
     spriteColor: "#cc9966",
     isEnemy: true,
     isMage: true,
-    expReward: 150,
+    expReward: 61,
     goldReward: 100,
     dropItems: [
       { itemId: "magic_stone", chance: 0.7, min: 2, max: 3 },
@@ -1300,7 +1300,7 @@ const DataEnemies = {
     title: "暗影系法师",
     description: "黑教廷的执事，暗影系法师，擅长诅咒和暗杀，非常危险。",
     elements: ["dark"],
-    level: 7,
+    level: 10,
     maxHp: 200,
     maxMp: 150,
     attack: 25,
@@ -1319,7 +1319,7 @@ const DataEnemies = {
     isEnemy: true,
     isMage: true,
     isBlackChurch: true,
-    expReward: 400,
+    expReward: 149,
     goldReward: 250,
     dropItems: [
       { itemId: "demon_core", chance: 0.8, min: 2, max: 4 },
@@ -1337,7 +1337,7 @@ const DataEnemies = {
     title: "奴仆级妖魔",
     description: "生活在地下的恶心妖魔，能喷射腐蚀酸液溶解骨骼，喜欢从地下突然袭击猎物。",
     elements: ["earth"],
-    level: 3,
+    level: 5,
     maxHp: 140,
     maxMp: 0,
     attack: 18,
@@ -1353,7 +1353,7 @@ const DataEnemies = {
     demonTier: "servant",
     spriteColor: "#8B4513",
     isEnemy: true,
-    expReward: 80,
+    expReward: 58,
     goldReward: 50,
     dropItems: [
       { itemId: "demon_core", chance: 0.6, min: 1, max: 1 },
@@ -1372,7 +1372,7 @@ const DataEnemies = {
     isCanon: false,
     canonNote: "非原著妖魔，游戏原创",
     elements: ["dark"],
-    level: 4,
+    level: 6,
     maxHp: 150,
     maxMp: 0,
     attack: 18,
@@ -1388,7 +1388,7 @@ const DataEnemies = {
     enemyType: "undead",
     spriteColor: "#e8e8e8",
     isEnemy: true,
-    expReward: 80,
+    expReward: 61,
     goldReward: 40,
     dropItems: [
       { itemId: "demon_core", chance: 0.7, min: 1, max: 2 },
@@ -1405,7 +1405,7 @@ const DataEnemies = {
     isCanon: false,
     canonNote: "非原著妖魔，游戏原创",
     elements: ["dark"],
-    level: 5,
+    level: 8,
     maxHp: 120,
     maxMp: 60,
     attack: 14,
@@ -1424,7 +1424,7 @@ const DataEnemies = {
     spriteColor: "#a0a0ff",
     isEnemy: true,
     isInsubstantial: true,
-    expReward: 120,
+    expReward: 95,
     goldReward: 60,
     dropItems: [
       { itemId: "demon_core", chance: 0.8, min: 1, max: 2 },
@@ -1441,7 +1441,7 @@ const DataEnemies = {
     isCanon: false,
     canonNote: "非原著妖魔，游戏原创",
     elements: ["earth", "dark"],
-    level: 6,
+    level: 9,
     maxHp: 280,
     maxMp: 30,
     attack: 22,
@@ -1460,7 +1460,7 @@ const DataEnemies = {
     demonTier: "servant",
     spriteColor: "#8b4513",
     isEnemy: true,
-    expReward: 150,
+    expReward: 142,
     goldReward: 80,
     dropItems: [
       { itemId: "demon_core", chance: 0.9, min: 1, max: 2 },
@@ -1478,7 +1478,7 @@ const DataEnemies = {
     isCanon: false,
     canonNote: "非原著妖魔，游戏原创",
     elements: ["thunder", "wind"],
-    level: 7,
+    level: 10,
     maxHp: 200,
     maxMp: 80,
     attack: 25,
@@ -1498,7 +1498,7 @@ const DataEnemies = {
     spriteColor: "#4169e1",
     isEnemy: true,
     isFlying: true,
-    expReward: 180,
+    expReward: 178,
     goldReward: 100,
     dropItems: [
       { itemId: "demon_core", chance: 0.9, min: 1, max: 2 },
@@ -1517,7 +1517,7 @@ const DataEnemies = {
     title: "通缉犯·药剂师",
     description: "小说原著人物。火系和诅咒系中阶法师，同时是药剂师。狡猾阴险，拥有岩军魔铠和水饶之盾。为争夺玫炎灵种杀害多名法师，被审判会通缉。",
     elements: ["fire", "curse"],
-    level: 10,
+    level: 20,
     maxHp: 650,
     maxMp: 200,
     attack: 35,
@@ -1539,7 +1539,7 @@ const DataEnemies = {
     canonSource: "第131章 暴火唐月",
     // 朝赫有岩军魔铠（已在战斗中被唐月烧毁，这里作为初始防御加成）
     traits: ["apothecary", "cunning"],
-    expReward: 500,
+    expReward: 439,
     goldReward: 300,
     dropItems: [
       { itemId: "demon_core", chance: 1, min: 2, max: 4 },
@@ -1561,7 +1561,7 @@ const DataEnemies = {
     title: "明珠学府新生·双系中阶",
     description: "小说原著人物。富家子弟，土系+冰系双系中阶法师，性格傲慢。入学测试时与莫凡竞争，被莫凡的霹雳震慑。",
     elements: ["earth", "ice"],
-    level: 8,
+    level: 14,
     maxHp: 450,
     maxMp: 180,
     attack: 28,
@@ -1580,7 +1580,7 @@ const DataEnemies = {
     isEnemy: true,
     isCanon: true,
     canonSource: "第143章 入学试炼",
-    expReward: 300,
+    expReward: 190,
     goldReward: 200,
     dropItems: [
       { itemId: "magic_stone", chance: 0.8, min: 1, max: 3 }
@@ -1600,7 +1600,7 @@ const DataEnemies = {
     title: "奴仆级召唤兽",
     description: "海大富的召唤兽。虫族妖魔，三角头颅遍布角刺，前肢如斧钺，全身白色金属铠甲，后肢有骨镰。视觉弱但感知强，铠甲抗雷但怕火。",
     elements: ["earth"],
-    level: 6,
+    level: 9,
     maxHp: 350,
     maxMp: 40,
     attack: 30,
@@ -1621,7 +1621,7 @@ const DataEnemies = {
     isCanon: true,
     canonSource: "第149章/第152章",
     traits: ["armor_resist_thunder", "weak_vision", "weak_to_fire"],
-    expReward: 180,
+    expReward: 142,
     goldReward: 80,
     dropItems: [
       { itemId: "demon_core", chance: 0.6, min: 1, max: 2 }
@@ -1637,7 +1637,7 @@ const DataEnemies = {
     title: "奴仆级召唤兽",
     description: "郑冰晓的召唤兽。岩石构成的人形召唤兽，力量与防御极强，不怕火雷，能操控土石。速度极慢但一拳威力巨大。",
     elements: ["earth"],
-    level: 7,
+    level: 10,
     maxHp: 500,
     maxMp: 60,
     attack: 35,
@@ -1659,7 +1659,7 @@ const DataEnemies = {
     isCanon: true,
     canonSource: "第149章/第153章",
     traits: ["fire_resist", "thunder_resist", "slow_movement"],
-    expReward: 220,
+    expReward: 178,
     goldReward: 100,
     dropItems: [
       { itemId: "demon_core", chance: 0.7, min: 1, max: 2 }
@@ -1672,7 +1672,7 @@ const DataEnemies = {
     title: "奴仆级召唤兽",
     description: "王力挺的召唤兽。形如秃鹰，背生肉翼，飞行极快。狡猾敏捷，能在法师连星轨时突袭，轻易闪避初阶魔法。物理防御较弱。",
     elements: ["dark", "wind"],
-    level: 7,
+    level: 10,
     maxHp: 250,
     maxMp: 80,
     attack: 28,
@@ -1693,7 +1693,7 @@ const DataEnemies = {
     isCanon: true,
     canonSource: "第149章/第153章",
     traits: ["flying", "high_evasion", "fragile_body"],
-    expReward: 200,
+    expReward: 178,
     goldReward: 90,
     dropItems: [
       { itemId: "demon_core", chance: 0.6, min: 1, max: 2 }
@@ -1706,7 +1706,7 @@ const DataEnemies = {
     title: "奴仆级巅峰·进阶期",
     description: "莫凡的幽狼兽经历殊死战斗后进入进阶期，半只脚踏入战将级。可连续三段爆发冲刺，飞沙走石化为小型沙暴，实力远超普通奴仆级。",
     elements: ["dark", "earth", "wind"],
-    level: 9,
+    level: 17,
     maxHp: 450,
     maxMp: 100,
     attack: 42,
@@ -1729,7 +1729,7 @@ const DataEnemies = {
     isCanon: true,
     canonSource: "第156-158章 进阶期幽狼兽",
     traits: ["triple_burst", "sandstorm_breath", "advanced_stage"],
-    expReward: 400,
+    expReward: 346,
     goldReward: 200,
     dropItems: [
       { itemId: "demon_core", chance: 0.9, min: 2, max: 4 }
@@ -1746,7 +1746,7 @@ const DataEnemies = {
     title: "明珠女神·双系中阶",
     description: "牧家大小姐，全校公认的女神。天仙之姿，嗜战如魔。风系+植物系双系中阶，能释放风盘·龙卷和坤之森·囚牢。战斗经验丰富，对中阶魔法理解极深。",
     elements: ["wind", "plant"],
-    level: 10,
+    level: 20,
     maxHp: 600,
     maxMp: 200,
     attack: 35,
@@ -1766,7 +1766,7 @@ const DataEnemies = {
     isCanon: true,
     canonSource: "第165-168章 斗兽大赛决战",
     traits: ["double_element_mid", "battle_experienced", "plant_master"],
-    expReward: 500,
+    expReward: 439,
     goldReward: 300,
     dropItems: [
       { itemId: "spirit_gold_coin", chance: 0.5, min: 1, max: 2 }
@@ -1785,7 +1785,7 @@ const DataEnemies = {
     title: "变身型妖魔",
     description: "伪装成人类女性的妖魔，夜晚蜕皮现出原形。满身鳞片，长舌，能在垂直墙面攀爬跳跃，喜吸年轻女性鲜血，尤其魔法师的血。狡猾，会利用同伴当垫背。",
     elements: ["dark"],
-    level: 8,
+    level: 14,
     maxHp: 350,
     maxMp: 60,
     attack: 32,
@@ -1806,7 +1806,7 @@ const DataEnemies = {
     isCanon: true,
     canonSource: "第177-180章 蜕皮女妖",
     traits: ["scale_armor", "wall_climbing", "blood_sucker", "cunning"],
-    expReward: 300,
+    expReward: 304,
     goldReward: 150,
     dropItems: [
       { itemId: "demon_core", chance: 0.8, min: 1, max: 3 }
@@ -1839,7 +1839,7 @@ const DataEnemies = {
     title: "变身型妖魔",
     description: "伪装成人类男性的妖魔，蜕皮后手臂可膨胀伸长如铁球摆拳，力大无穷。鳞片防御高，雷系伤害减半。行动较迟缓但破坏力惊人。",
     elements: ["dark", "earth"],
-    level: 9,
+    level: 17,
     maxHp: 500,
     maxMp: 40,
     attack: 45,
@@ -1859,7 +1859,7 @@ const DataEnemies = {
     isCanon: true,
     canonSource: "第179-180章 蜕皮男妖",
     traits: ["scale_armor", "thunder_resist", "extendable_limbs", "super_strength"],
-    expReward: 350,
+    expReward: 462,
     goldReward: 180,
     dropItems: [
       { itemId: "demon_core", chance: 0.8, min: 1, max: 3 }
@@ -1873,7 +1873,7 @@ const DataEnemies = {
     title: "猎人大师·青天猎所",
     description: "包老头的孙女，约12岁，双马尾小萝莉。猎人大师称谓，智商极高，擅长推理和情报分析。毒舌，人小鬼大，前搭档小鼎牺牲后与莫凡组队。",
     elements: ["none"],
-    level: 5,
+    level: 8,
     maxHp: 100,
     maxMp: 200,
     attack: 5,
@@ -1884,6 +1884,7 @@ const DataEnemies = {
     aiType: "tactical",
     enemyType: "human",
     spriteColor: "#FFB6C1",
+    expReward: 95,
     isEnemy: false,
     isAlly: true,
     isCanon: true,
@@ -1901,7 +1902,7 @@ const DataEnemies = {
     title: "寄生型妖魔",
     description: "青黄色鳞片覆盖的寄生妖魔，奴仆级。被寄生者夜晚蜕皮变为此形态，利爪锋利，能在墙面天花板攀爬。怕光，光系魔法对其有特效。智力低下，不知恐惧。",
     elements: ["dark"],
-    level: 5,
+    level: 8,
     maxHp: 180,
     maxMp: 20,
     attack: 22,
@@ -1921,7 +1922,7 @@ const DataEnemies = {
     isCanon: true,
     canonSource: "第183-188章 鳞皮妖兵",
     traits: ["parasite", "wall_climbing", "light_weakness", "hive_mind"],
-    expReward: 80,
+    expReward: 114,
     goldReward: 30,
     dropItems: [
       { itemId: "demon_core", chance: 0.3, min: 1, max: 1 }
@@ -1934,7 +1935,7 @@ const DataEnemies = {
     title: "寄生母体",
     description: "鳞皮妖的母体，战将级以上。有智慧，控制所有妖兵。可命令妖兵集体自杀抽干被寄生者生命。藏于高处俯视全局，通过妖兵汲取养分。",
     elements: ["dark"],
-    level: 12,
+    level: 25,
     maxHp: 1200,
     maxMp: 200,
     attack: 40,
@@ -1956,7 +1957,7 @@ const DataEnemies = {
     isCanon: true,
     canonSource: "第189-190章 鳞皮妖母",
     traits: ["parasite_mother", "hive_mind_control", "light_weakness", "intelligent", "can_command_suicide"],
-    expReward: 800,
+    expReward: 1414,
     goldReward: 500,
     dropItems: [
       { itemId: "demon_core", chance: 1.0, min: 2, max: 5 },
@@ -1971,7 +1972,7 @@ const DataEnemies = {
     title: "光系中阶法师",
     description: "莫凡舍友，黄头发，看似花花公子实则光系中阶法师。光佑·圣盾防御极强，光耀·净化对黑暗生物特效。团队型法师，不擅单挑。",
     elements: ["light"],
-    level: 10,
+    level: 20,
     maxHp: 500,
     maxMp: 250,
     attack: 20,
@@ -1986,6 +1987,7 @@ const DataEnemies = {
     aiType: "defensive",
     enemyType: "human",
     spriteColor: "#FFD700",
+    expReward: 439,
     isEnemy: false,
     isAlly: true,
     isCanon: true,
@@ -2003,7 +2005,7 @@ const DataEnemies = {
     title: "白家大少",
     description: "白家大少爷，中阶法师，新生大赛热门人选。性格傲慢，看不起平民出身的法师。在新生大赛上被莫凡一招霹雳秒杀。",
     elements: ["wind", "earth"],
-    level: 9,
+    level: 17,
     maxHp: 450,
     maxMp: 180,
     attack: 28,
@@ -2020,6 +2022,7 @@ const DataEnemies = {
     aiType: "aggressive",
     enemyType: "human",
     spriteColor: "#87CEEB",
+    expReward: 289,
     isEnemy: true,
     isCanon: true,
     canonSource: "第200章 白藏锋登场",
@@ -2037,7 +2040,7 @@ const DataEnemies = {
     title: "猎王",
     description: "猎者联盟的猎王，实力深不可测。骑乘一头青蓝色巨兽，统领猎妖队。在鳞皮妖母事件中率队支援，尊重每一个生命。",
     elements: ["wind", "water"],
-    level: 25,
+    level: 55,
     maxHp: 2500,
     maxMp: 800,
     attack: 80,
@@ -2054,6 +2057,7 @@ const DataEnemies = {
     aiType: "tactical",
     enemyType: "human",
     spriteColor: "#4169E1",
+    expReward: 30357,
     isEnemy: false,
     isAlly: true,
     isCanon: true,
@@ -2082,6 +2086,7 @@ const DataEnemies = {
     aiType: "defensive",
     enemyType: "civilian",
     spriteColor: "#FF69B4",
+    expReward: 0,
     isEnemy: false,
     isAlly: false,
     isCanon: true,
