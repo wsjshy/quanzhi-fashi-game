@@ -253,6 +253,11 @@ const QuestSystem = {
                 }
             }, 1500);
         }
+
+        // 前往明珠任务完成后设置flag
+        if (questId === 'quest_journey_to_mingzhu') {
+            Player.flags['arrived_mingzhu'] = true;
+        }
         
         // 任务成就检查
         if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
@@ -276,6 +281,15 @@ const QuestSystem = {
                 }
             } catch (e) {
                 console.warn('[Quest] 任务成就检查失败:', e);
+            }
+        }
+
+        // 章节系统检查
+        if (typeof StoryChapterSystem !== 'undefined') {
+            try {
+                StoryChapterSystem.update();
+            } catch (e) {
+                console.warn('[Quest] 章节系统更新失败:', e);
             }
         }
 

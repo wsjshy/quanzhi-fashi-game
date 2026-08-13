@@ -1843,7 +1843,8 @@ const DataCharacters = {
       "quest_collect_herbs",
       "quest_hunt_wolf_pack",
       "quest_collect_more_herbs",
-      "quest_explore_mountain"
+      "quest_explore_mountain",
+      "quest_journey_to_mingzhu"
     ],
     personality: {
       brave: 0.6,

@@ -4,6 +4,29 @@
  */
 
 const DataQuests = {
+  // ========== 第一章·觉醒 ==========
+  quest_awakening_ceremony: {
+    id: "quest_awakening_ceremony",
+    name: "觉醒仪式",
+    description: "魔法高考，在天澜魔法高中的觉醒石上觉醒你的天赋。",
+    giver: "tang_yue",
+    type: "story",
+    objectives: [
+      { type: "talk", npcId: "tang_yue", count: 1, description: "与唐月老师对话" }
+    ],
+    rewards: {
+      exp: 50,
+      gold: 50
+    },
+    prerequisites: [],
+    nextQuest: "quest_intro",
+    isMainQuest: true,
+    dialogueStart: "今天是魔法高考的日子。将手放在觉醒石上，感受星子的存在……你觉醒了！",
+    dialogueInProgress: "觉醒只是第一步，接下来要学会引导星子。",
+    dialogueComplete: "恭喜你正式成为魔法学徒！"
+  },
+
+  // ========== 第二章·学校生活 ==========
   quest_intro: {
     id: "quest_intro",
     name: "初识魔法",
@@ -2057,5 +2080,31 @@ const DataQuests = {
     dialogueStart: "宇昂！博城的账，许昭霆的命，今天一起算！",
     dialogueInProgress: "宇昂很强，小心！",
     dialogueComplete: "结束了……许昭霆，你看到了吗。"
+  },
+
+  // ========== 第七章·离开博城 ==========
+  quest_journey_to_mingzhu: {
+    id: "quest_journey_to_mingzhu",
+    name: "前往明珠",
+    description: "博城灾后重建已毕，是时候前往明珠学府了。那里有更广阔的天地。",
+    giver: "tang_yue",
+    type: "story",
+    objectives: [
+      { type: "talk", npcId: "tang_yue", count: 1, description: "向唐月老师告别" }
+    ],
+    rewards: {
+      exp: 500,
+      gold: 1000,
+      items: [
+        { itemId: "health_potion", count: 5 },
+        { itemId: "mana_potion", count: 5 }
+      ]
+    },
+    prerequisites: ["quest_second_element"],
+    nextQuest: "quest_school_competition",
+    isMainQuest: true,
+    dialogueStart: "博城的事告一段落了。以你的天赋，不该困在这里。去明珠吧，那里有最好的资源。",
+    dialogueInProgress: "去了明珠要更加努力，别给天澜丢脸。",
+    dialogueComplete: "一路顺风。明珠……会是你新的开始。"
   }
 };

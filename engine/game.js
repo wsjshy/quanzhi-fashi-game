@@ -65,6 +65,14 @@ const Game = {
         
         // 初始化对话树
         DialogueTree.init();
+
+        // 设置章节系统回调
+        StoryChapterSystem.onChapterStart = (chapter) => {
+            console.log(`[剧情] 开始新章节: ${chapter.name}`);
+        };
+        StoryChapterSystem.onChapterComplete = (chapter) => {
+            UI.showMessage(`🎉 章节完成：${chapter.name}\n\n获得章节奖励！`);
+        };
         
         // 检查存档
         if (Player.hasSave()) {
@@ -93,6 +101,7 @@ const Game = {
         if (Player.load()) {
             MapSystem.init();
             BigEventSystem.init();
+            StoryChapterSystem.init();
             DailySystem.checkDailyReset();
             this.state = 'map';
             UI.renderMapScreen();
@@ -112,13 +121,18 @@ const Game = {
         
         // 初始化大事件系统
         BigEventSystem.init();
-        
+
+        // 初始化章节系统
+        StoryChapterSystem.init();
+
+        // 觉醒仪式在创建角色时已完成（玩家已选择元素）
+        Player.flags['awakening_ceremony_done'] = true;
+        Player.flags['arrived_mingzhu'] = false; // 第七章完成时设置
+        QuestSystem.completeQuest('quest_awakening_ceremony');
+
         // 初始化日常系统
         DailySystem.initNewGame();
         DailySystem.checkDailyReset();
-        
-        // 自动接取新手引导任务
-        QuestSystem.acceptQuest('quest_intro');
         
         // 保存游戏
         Player.save();

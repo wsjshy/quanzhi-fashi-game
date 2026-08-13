@@ -625,17 +625,29 @@ const UI = {
             return `有 ${Player.attributePoints} 点属性点未分配！点击「角色」分配属性点提升实力`;
         }
         
-        // 3. 有进行中的任务，显示任务目标
+        // 3. 有进行中的任务，优先显示主线任务
         const activeQuests = QuestSystem.activeQuests;
         if (activeQuests && activeQuests.length > 0) {
-            const quest = activeQuests[0]; // 显示第一个任务
+            // 优先找主线任务
+            let mainQuest = null;
+            let sideQuest = null;
+            for (const aq of activeQuests) {
+                const qd = QuestSystem.getQuest(aq.questId);
+                if (qd && qd.isMainQuest) {
+                    mainQuest = aq;
+                    break;
+                }
+                if (!sideQuest) sideQuest = aq;
+            }
+            const quest = mainQuest || sideQuest || activeQuests[0];
             const questData = QuestSystem.getQuest(quest.questId);
             if (questData) {
                 const firstObjective = questData.objectives[0];
                 const current = quest.progress[0] || 0;
                 const total = firstObjective?.count || 1;
                 const done = current >= total;
-                return `当前任务：${questData.name}（${current}/${total}）${done ? ' ✅ 可交付' : ''}`;
+                const prefix = questData.isMainQuest ? '📖 主线' : '📌 支线';
+                return `${prefix}：${questData.name}（${current}/${total}）${done ? ' ✅ 可交付' : ''}`;
             }
         }
         
@@ -711,6 +723,13 @@ const UI = {
                 ">
                     <div style="display: flex; gap: 30px; align-items: center;">
                         <div style="color: #ffd700; font-size: 20px; font-weight: bold;">${location?.name || '未知地点'}</div>
+                        ${(() => {
+                            const chapter = (typeof StoryChapterSystem !== 'undefined') ? StoryChapterSystem.getCurrentChapter() : null;
+                            if (chapter) {
+                                return `<div style="color: #cc99ff; font-size: 13px; background: rgba(80, 40, 120, 0.5); padding: 4px 12px; border-radius: 10px; border: 1px solid #9966cc;">📖 ${chapter.name}</div>`;
+                            }
+                            return '';
+                        })()}
                         <div style="color: #aaa; font-size: 14px;">📅 ${TimeSystem.getDateString()} ${TimeSystem.getDayOfWeekName()} ${TimeSystem.getCurrentPeriodInfo().icon} ${TimeSystem.getCurrentPeriodInfo().name} ${Player.hour}:00</div>
                         ${(() => {
                             const currentClass = TimeSystem.getCurrentClass(location);
