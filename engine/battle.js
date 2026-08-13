@@ -2971,18 +2971,46 @@ const BattleSystem = {
     applyDamage(target, damage, attacker) {
         let amount = damage.amount;
         
+        // 玩家灵种元素抗性（小说第134章：灵火改变体质，对火焰有抗性）
+        if (target === this.player && damage.element && typeof Player !== 'undefined') {
+            const resistanceKey = damage.element + 'Resistance';
+            const seedEffects = Player.getElementSpiritSeedEffects(damage.element);
+            if (seedEffects && seedEffects[resistanceKey]) {
+                const resist = seedEffects[resistanceKey];
+                const originalAmount = amount;
+                amount = Math.floor(amount * (1 - resist));
+                if (amount < originalAmount) {
+                    this.addLog(`🔥 灵火体质减免了 ${originalAmount - amount} 点火焰伤害！`, 'buff');
+                }
+            }
+        }
+        
+        // 雷穿水盾：雷系技能可穿透水系护盾（小说第133章）
+        const isThunder = damage.element === 'thunder';
+        
         // 护盾吸收
         const shield = target.statusEffects.find(e => e.type === 'shield');
         if (shield && shield.value > 0) {
-            const absorbed = Math.min(shield.value, amount);
-            shield.value -= absorbed;
-            amount -= absorbed;
-            if (absorbed > 0) {
+            // 检查是否是水盾
+            const isWaterShield = shield.name && (shield.name.includes('水') || shield.name.includes('water'));
+            
+            if (isThunder && isWaterShield) {
+                // 雷穿水盾：忽略水盾
                 const targetName = target === this.player ? '你' : this.enemy.name;
-                this.addLog(`${targetName} 的护盾吸收了 ${absorbed} 点伤害`, 'buff');
-            }
-            if (shield.value <= 0) {
+                this.addLog(`⚡ 雷系技能穿透了 ${targetName} 的水盾！`, 'element');
+                // 直接破掉水盾
                 target.statusEffects = target.statusEffects.filter(e => e.type !== 'shield');
+            } else {
+                const absorbed = Math.min(shield.value, amount);
+                shield.value -= absorbed;
+                amount -= absorbed;
+                if (absorbed > 0) {
+                    const targetName = target === this.player ? '你' : this.enemy.name;
+                    this.addLog(`${targetName} 的护盾吸收了 ${absorbed} 点伤害`, 'buff');
+                }
+                if (shield.value <= 0) {
+                    target.statusEffects = target.statusEffects.filter(e => e.type !== 'shield');
+                }
             }
         }
 

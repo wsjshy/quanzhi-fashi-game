@@ -459,10 +459,10 @@ const DataEnemies = {
     speed: 15,
     skills: [
       "basic_attack",
-      "thunder_bolt",
+      "demon_lightning_arrow",
       "thunder_charge",
       "lightning_fur",
-      "thunder_strike"
+      "demon_thunder_strike"
     ],
     aiType: "burst",
     spriteColor: "#9966ff",
@@ -1529,8 +1529,8 @@ const DataEnemies = {
     spirit: 15,
     skills: [
       "basic_attack",
-      "thunder_bolt",
-      "thunder_strike",
+      "demon_lightning_arrow",
+      "demon_thunder_strike",
       "thunder_dive",
       "speed_burst"
     ],
@@ -1547,5 +1547,51 @@ const DataEnemies = {
       { itemId: "wind_crystal", chance: 0.3, min: 1, max: 1 }
     ],
     locations: ["thunder_mountain", "sky_plateau"]
+  },
+
+  // ========== 小说原著人类敌人（第131-140章） ==========
+
+  // 第131章 朝赫 - 通缉犯，火系+诅咒系中阶法师，药剂师
+  chao_he: {
+    id: "chao_he",
+    name: "朝赫",
+    title: "通缉犯·药剂师",
+    description: "小说原著人物。火系和诅咒系中阶法师，同时是药剂师。狡猾阴险，拥有岩军魔铠和水饶之盾。为争夺玫炎灵种杀害多名法师，被审判会通缉。",
+    elements: ["fire", "curse"],
+    level: 10,
+    maxHp: 650,
+    maxMp: 200,
+    attack: 35,
+    defense: 15,
+    speed: 18,
+    spirit: 25,
+    skills: [
+      "basic_attack",
+      "fire_fist",
+      "curse_spider_trap",
+      "water_shield"
+    ],
+    aiType: "tactical",
+    enemyType: "human", // 人类法师，不是妖魔
+    spriteColor: "#8B0000",
+    isEnemy: true,
+    isBoss: true,
+    isCanon: true,
+    canonSource: "第131章 暴火唐月",
+    // 朝赫有岩军魔铠（已在战斗中被唐月烧毁，这里作为初始防御加成）
+    traits: ["apothecary", "cunning"],
+    expReward: 500,
+    goldReward: 300,
+    dropItems: [
+      { itemId: "demon_core", chance: 1, min: 2, max: 4 },
+      { itemId: "fire_spirit_stone", chance: 0.5, min: 1, max: 2 }
+    ],
+    locations: ["xishui_town"],
+    // 战斗对话
+    battleQuotes: {
+      start: "你以为能抓住我？",
+      lowHp: "可恶...你这小子！",
+      death: "不可能...我怎么会死在这里..."
+    }
   }
 };

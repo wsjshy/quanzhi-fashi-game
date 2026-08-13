@@ -45,6 +45,40 @@ const DataSpiritSeeds = {
     },
     price: 10000000,
   },
+  // 小说原著灵种 - 玫炎（第134章，莫凡获得）
+  meiyan: {
+    id: 'meiyan',
+    name: '玫炎',
+    element: 'fire',
+    grade: 'spirit', // 灵种
+    rarity: 'epic',
+    description: '小说原著灵种。玫瑰色的灵火，威力比凡火高两倍多，炼化后改变体质，对火焰有一定免疫。莫凡在戏水镇获得。',
+    effects: {
+      damageBonus: 1.2, // 120%伤害加成（两倍多威力）
+      burnChance: 0.3,
+      fireResistance: 0.3, // 30%火焰抗性（灵火改变体质）
+    },
+    price: 5000000,
+    isCanon: true,
+    canonSource: '第134章 炼化玫炎',
+  },
+  // 小说原著灵种 - 雀炎（第131章，唐月持有）
+  queyan: {
+    id: 'queyan',
+    name: '雀炎',
+    element: 'fire',
+    grade: 'spirit',
+    rarity: 'epic',
+    description: '小说原著灵种。唐月老师的灵种火焰，朱红色，有高贵血统感，霸道无比。',
+    effects: {
+      damageBonus: 1.0,
+      burnChance: 0.4,
+      burnDamage: 0.15,
+    },
+    price: 5000000,
+    isCanon: true,
+    canonSource: '第131章 暴火唐月',
+  },
 
   // ========== 冰系 ==========
   ice_basic: {

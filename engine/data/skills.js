@@ -1264,19 +1264,23 @@ const DataSkills = {
   },
   thunder_praise: {
     id: "thunder_praise",
-    name: "礼赞",
-    description: "中阶雷系魔法，召唤雷电从天而降，威力惊人，高几率麻痹敌人。",
+    name: "霹雳·轰顶",
+    description: "中阶雷系魔法。手指向天，紫色霹雳毫无征兆落下，简单粗暴。雷可穿水，水系防御对其无效。高几率麻痹敌人。",
     element: "thunder",
     type: "damage",
     mpCost: 40,
-    baseDamage: 90,
-    damageMultiplier: 1.7,
-    hitRate: 0.8,
+    baseDamage: 95,
+    damageMultiplier: 1.8,
+    hitRate: 0.9,
     critRate: 0.2,
     targetType: "enemy",
     cooldown: 0,
     tier: "中阶",
     realmRequired: "middle",
+    // 小说第133章：雷系中阶无明显起手式，速度极快
+    castSpeed: "fast",
+    // 小说第133章：雷可穿水，水盾无效
+    pierceWaterShield: true,
     statusEffects: [
       {
         name: "雷麻",
@@ -1527,8 +1531,111 @@ const DataSkills = {
       }
     ]
   },
-  
-  // ==================== 妖魔种族技能 ====================
+
+  // ========== 小说原著中阶技能（第131-140章） ==========
+
+  // 第131章 唐月使用，火系中阶3级
+  fire_fist_nine: {
+    id: "fire_fist_nine",
+    name: "烈拳·九宫",
+    description: "火系中阶3级魔法。一拳轰地，九道地烈火柱同时喷发，范围百米，火浪翻腾如凶兽。小说第131章唐月使用。",
+    element: "fire",
+    type: "damage",
+    mpCost: 50,
+    baseDamage: 60,
+    damageMultiplier: 2.2,
+    hitRate: 0.95,
+    critRate: 0.2,
+    targetType: "all_enemies", // 范围攻击
+    cooldown: 3,
+    tier: "中阶3级",
+    realmRequired: "middle",
+    skillLevelRequired: 3,
+    isCanon: true,
+    canonSource: "第131章 暴火唐月",
+    statusEffects: [
+      {
+        name: "九宫灼烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 20,
+        duration: 4,
+        chance: 0.8,
+        stacks: 2,
+        maxStacks: 5
+      }
+    ]
+  },
+
+  // 第132章 朝赫使用，水系防御
+  water_shield: {
+    id: "water_shield",
+    name: "水饶之盾",
+    description: "水系中阶防御魔法。蓝色水凝聚成半弧形盾牌，可抵御中阶火系魔法，但雷系可穿透水盾。小说第132章朝赫使用。",
+    element: "water",
+    type: "defense",
+    mpCost: 30,
+    defenseValue: 80,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 2,
+    tier: "中阶",
+    realmRequired: "middle",
+    isCanon: true,
+    canonSource: "第132章 激战",
+    // 小说第133章：雷可穿水，水盾对雷无效
+    weakness: ["thunder"],
+    statusEffects: [
+      {
+        name: "水盾守护",
+        type: "shield",
+        value: 80,
+        duration: 3,
+        chance: 1
+      }
+    ]
+  },
+
+  // 第132章 朝赫使用，诅咒系
+  curse_spider_trap: {
+    id: "curse_spider_trap",
+    name: "邪蛛之阱",
+    description: "诅咒系中阶魔法。黑色无形蛛丝缠绕敌人，持续吸取生命力，可束缚行动。光系和心灵系可克制。小说第132章朝赫使用。",
+    element: "curse",
+    type: "damage",
+    mpCost: 35,
+    baseDamage: 25,
+    damageMultiplier: 1.2,
+    hitRate: 0.85,
+    critRate: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "中阶",
+    realmRequired: "middle",
+    isCanon: true,
+    canonSource: "第132章 激战",
+    // 小说：光系/心灵系克制诅咒
+    counteredBy: ["light", "mind"],
+    statusEffects: [
+      {
+        name: "蛛丝束缚",
+        type: "bind",
+        duration: 2,
+        chance: 0.6
+      },
+      {
+        name: "生命汲取",
+        type: "drain",
+        dotDamage: 12,
+        healPercent: 0.5, // 吸取50%伤害为自身回复
+        duration: 4,
+        chance: 0.9
+      }
+    ]
+  },
+
+  // ========== 妖魔种族技能 ==========
   // 妖魔使用种族天赋能力，不是人类魔法
   
   // 通用妖魔技能
@@ -2471,8 +2578,8 @@ const DataSkills = {
     ]
   },
 
-  thunder_strike: {
-    id: "thunder_strike",
+  demon_thunder_strike: {
+    id: "demon_thunder_strike",
     name: "雷霆一击",
     description: "召唤雷电劈向目标，造成高额雷系伤害并有几率麻痹",
     element: "thunder",
@@ -2595,8 +2702,8 @@ const DataSkills = {
     ]
   },
 
-  earth_shield: {
-    id: "earth_shield",
+  demon_earth_shield: {
+    id: "demon_earth_shield",
     name: "大地之盾",
     description: "召唤岩石护盾，吸收伤害并提升防御",
     element: "earth",
@@ -2845,8 +2952,8 @@ const DataSkills = {
     ]
   },
 
-  thunder_bolt: {
-    id: "thunder_bolt",
+  demon_lightning_arrow: {
+    id: "demon_lightning_arrow",
     name: "雷电箭",
     description: "召唤雷电箭矢攻击敌人，有几率麻痹",
     element: "thunder",
