@@ -3149,5 +3149,43 @@ const DataSkills = {
     statusEffects: [
       { name: "钢躯", type: "defense_up", duration: 3, chance: 1, statModifiers: { defense: 15 } }
     ]
+  },
+
+  // 血纹巨魔鼠：利爪撕裂（小说描述爪子锋利，轻松没入石砖）
+  claw_tear: {
+    id: "claw_tear",
+    name: "利爪撕裂",
+    description: "用锋利的爪子撕裂敌人，造成大量物理伤害并降低防御",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 1.5,
+    statusEffects: [
+      { name: "撕裂", type: "defense_down", duration: 2, chance: 0.5, statModifiers: { defense: -8 } },
+      { name: "流血", type: "bleed", duration: 2, chance: 0.4, dotDamage: 8 }
+    ]
+  },
+
+  // 血纹巨魔鼠：高速冲撞（小说描述三四十米一眨眼就到）
+  speed_charge: {
+    id: "speed_charge",
+    name: "高速冲撞",
+    description: "以极快的速度冲撞敌人，必定命中且有几率眩晕",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 1.8,
+    guaranteedHit: true,
+    statusEffects: [
+      { name: "眩晕", type: "stun", duration: 1, chance: 0.3 }
+    ]
   }
 };
