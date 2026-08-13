@@ -1269,10 +1269,16 @@ const BattleSystem = {
             let totalMissCount = 0;
             let lastDamage = null;
 
+            // 无视防御支持
+            let effectiveDefense = targetData.defense;
+            if (skill.ignoreDefense) {
+                effectiveDefense = Math.floor(targetData.defense * (1 - skill.ignoreDefense));
+            }
+
             for (let hit = 0; hit < hitCount; hit++) {
                 const damage = this.calculateDamage(
                     baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus,
-                    targetData.defense,
+                    effectiveDefense,
                     1.0,
                     skillCritRate,
                     skillHitRate,
@@ -1377,19 +1383,19 @@ const BattleSystem = {
             this.addLog(`${casterName} 释放了 ${skill.name}，造成 ${damage.amount} 点伤害${damage.isCrit && (!damage.hitCount || damage.hitCount === 1) ? '（暴击！）' : ''}${damage.isMiss && (!damage.hitCount || damage.hitCount === 1) ? '（未命中！）' : ''}${hitText}${elementEffectText}${reactionText}`,
                 damage.isCrit ? 'crit' : 'magic');
             
-            // 显示浮动伤害数字
-            if (!damage.isMiss) {
+            // 显示浮动伤害数字（至少命中一段才显示）
+            if (totalMissCount < hitCount) {
                 let dmgType = 'magic';
                 if (damage.isCrit) dmgType = 'crit';
                 else if (damage.elementEffect === 'super') dmgType = 'counter';
                 else if (damage.elementEffect === 'weak') dmgType = 'weakness';
-                
+
                 const target = isPlayer ? 'enemy' : 'player';
                 this.showDamageNumber(target, damage.amount, dmgType);
             }
             
-            // 元素反应：处理状态变化
-            if (damage.elementReaction && !damage.isMiss && targetData.statusEffects) {
+            // 元素反应：处理状态变化（至少命中一段才触发）
+            if (damage.elementReaction && totalMissCount < hitCount && targetData.statusEffects) {
                 // 蒸发/感电/冻结都会消耗水状态
                 if (damage.elementReaction === 'vaporize' || 
                     damage.elementReaction === 'electro' || 
@@ -1446,8 +1452,9 @@ const BattleSystem = {
             if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
                 const attacker = isPlayer ? 'player' : 'enemy';
                 const target = isPlayer ? 'enemy' : 'player';
-                
-                if (damage.isMiss) {
+
+                const allMiss = totalMissCount >= hitCount;
+                if (allMiss) {
                     BattleEventBus.emit(BattleEvents.MISS, {
                         attacker: attacker,
                         target: target,
@@ -1466,7 +1473,7 @@ const BattleSystem = {
                         skill: skill,
                         elementEffect: damage.elementEffect
                     });
-                    
+
                     if (damage.isCrit) {
                         BattleEventBus.emit(BattleEvents.CRIT, {
                             attacker: attacker,
@@ -1477,7 +1484,7 @@ const BattleSystem = {
                             skill: skill
                         });
                     }
-                    
+
                     BattleEventBus.emit(BattleEvents.DAMAGE, {
                         target: target,
                         attacker: attacker,
@@ -1495,8 +1502,8 @@ const BattleSystem = {
                 this.applyStatusEffects(targetData, skill.statusEffects, !isPlayer);
             }
             
-            // 灵种特殊效果（仅玩家）
-            if (isPlayer && typeof Player !== 'undefined' && typeof SpiritSeedSystem !== 'undefined' && !damage.isMiss) {
+            // 灵种特殊效果（仅玩家，至少命中一段才触发）
+            if (isPlayer && typeof Player !== 'undefined' && typeof SpiritSeedSystem !== 'undefined' && totalMissCount < hitCount) {
                 this.applySpiritSeedEffects(targetData, skill.element);
             }
 

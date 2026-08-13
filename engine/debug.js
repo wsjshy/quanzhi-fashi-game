@@ -350,18 +350,39 @@ const DebugPanel = {
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                             <button onclick="DebugPanel.startBattle('giant_eye_rat')" style="background: #886644; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐀 巨眼猩鼠</button>
                             <button onclick="DebugPanel.startBattle('one_eye_wolf')" style="background: #666688; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐺 独眼魔狼</button>
-                            <button onclick="DebugPanel.startBattle('bone_eating_worm')" style="background: #aa8866; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐛 噬骨虫</button>
-                            <button onclick="DebugPanel.startBattle('shadow_demon')" style="background: #444466; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">👤 暗影魔</button>
+                            <button onclick="DebugPanel.startBattle('demon_wolf_pack')" style="background: #554433; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐺 魔狼群</button>
+                            <button onclick="DebugPanel.startBattle('shadow_creature')" style="background: #444466; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">👤 暗影怪</button>
+                            <button onclick="DebugPanel.startBattle('shadow_snake')" style="background: #553377; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐍 影蛇</button>
+                            <button onclick="DebugPanel.startBattle('rock_monster')" style="background: #888844; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🪨 石怪</button>
+                            <button onclick="DebugPanel.startBattle('thunder_beast')" style="background: #9966ff; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚡ 雷兽</button>
+                            <button onclick="DebugPanel.startBattle('black_beast')" style="background: #333344; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">👹 黑畜妖</button>
                         </div>
                     </div>
                     
                     <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">🐛 奴仆级（新增）</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.startBattle('bone_eating_worm')" style="background: #8B4513; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐛 噬骨虫</button>
+                            <button onclick="DebugPanel.startBattle('blood_pattern_rat')" style="background: #8B0000; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐀 血纹巨魔鼠</button>
+                            <button onclick="DebugPanel.startBattle('skeleton_warrior')" style="background: #e8e8e8; color: #333; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">💀 骷髅战士</button>
+                            <button onclick="DebugPanel.startBattle('ghost')" style="background: #a0a0ff; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">👻 幽灵</button>
+                            <button onclick="DebugPanel.startBattle('iron_scorpion')" style="background: #8b4513; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🦂 铁甲蝎</button>
+                            <button onclick="DebugPanel.startBattle('thunder_hawk')" style="background: #4169e1; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🦅 雷鹰</button>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">🦅 战将级（新增）</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.startBattle('winged_wolf')" style="background: #4682B4; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🦅 翼苍狼</button>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
                         <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">👹 战将级妖魔（进阶）</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                            <button onclick="DebugPanel.startBattle('three_eye_wolf')" style="background: #aa6644; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">👁️ 三眼魔狼</button>
-                            <button onclick="DebugPanel.startBattle('blood_pattern_rat')" style="background: #cc4444; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐀 血纹巨魔鼠</button>
-                            <button onclick="DebugPanel.startBattle('black_beast_demon')" style="background: #333344; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">👹 黑畜妖</button>
-                            <button onclick="DebugPanel.startBattle('bone_spike_wolf')" style="background: #886666; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🦴 骨刺狰狼</button>
+                            <button onclick="DebugPanel.startBattle('bone_spike_zheng')" style="background: #886666; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🦴 骨刺狰</button>
+                            <button onclick="DebugPanel.startBattle('black_church_deacon')" style="background: #663366; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🌑 黑教廷执事</button>
                         </div>
                     </div>
                     
@@ -1169,17 +1190,16 @@ const DebugPanel = {
             if (typeof BattleSystem !== 'undefined' && BattleSystem.startBattle) {
                 // ID兼容映射（旧ID → 新ID）
                 const idMap = {
+                    // 旧版ID兼容
                     'shadow_demon': 'shadow_creature',
                     'bone_spike_wolf': 'bone_spike_zheng',
                     'stone_troll': 'rock_monster',
                     'black_church_mage': 'black_church_deacon',
-                    'bone_eating_worm': 'gold_ant', // 临时用金甲蚁代替
-                    'three_eye_wolf': 'one_eye_wolf_advanced', // 进阶独眼魔狼代替
-                    'blood_pattern_rat': 'giant_eye_rat', // 巨眼猩鼠代替
-                    'black_beast_demon': 'black_beast', // 黑畜妖
-                    'winged_wolf': 'bone_spike_zheng', // 骨刺狰代替
-                    'flame_queen': 'black_church_blue_deacon', // 蓝衣执事代替
-                    'ice_saint': 'mu_bai_duel' // 穆白代替
+                    'black_beast_demon': 'black_beast',
+                    // 未实现的妖魔临时映射
+                    'three_eye_wolf': 'one_eye_wolf',
+                    'flame_queen': 'black_church_blue_deacon',
+                    'ice_saint': 'mu_bai_duel'
                 };
                 
                 // 如果有映射，用新ID

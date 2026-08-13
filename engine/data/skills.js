@@ -2823,5 +2823,90 @@ const DataSkills = {
     isDemonSkill: true,
     statModifiers: { defense: 8, dodge: 0.3 },
     duration: 3
+  },
+
+  // ===== 第七批妖魔技能 =====
+  bone_slash: {
+    id: "bone_slash",
+    name: "骨刃斩",
+    description: "用骨剑挥出锋利的斩击，造成物理伤害并有几率流血",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.3,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 2, chance: 0.4, dotDamage: 5 }
+    ]
+  },
+
+  thunder_bolt: {
+    id: "thunder_bolt",
+    name: "雷电箭",
+    description: "召唤雷电箭矢攻击敌人，有几率麻痹",
+    element: "thunder",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.0,
+    statusEffects: [
+      { name: "麻痹", type: "paralyze", duration: 1, chance: 0.25 }
+    ]
+  },
+
+  phase_strike: {
+    id: "phase_strike",
+    name: "虚体打击",
+    description: "穿过防御直接攻击灵魂，无视50%防御",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.1,
+    ignoreDefense: 0.5
+  },
+
+  iron_defense: {
+    id: "iron_defense",
+    name: "铁甲防御",
+    description: "蜷缩身体进入防御姿态，防御大幅提升但速度降低",
+    element: "earth",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "铁甲防御", type: "defense_up", duration: 3, chance: 1, statModifiers: { defense: 15 } },
+      { name: "蜷缩", type: "slow", duration: 3, chance: 1, statModifiers: { speed: -5 } }
+    ]
+  },
+
+  thunder_dive: {
+    id: "thunder_dive",
+    name: "雷霆俯冲",
+    description: "带着雷电俯冲攻击，造成大量雷系伤害",
+    element: "thunder",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.8,
+    guaranteedHit: true,
+    statusEffects: [
+      { name: "麻痹", type: "paralyze", duration: 1, chance: 0.4 }
+    ]
   }
 };

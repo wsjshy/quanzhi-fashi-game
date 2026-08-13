@@ -1403,5 +1403,140 @@ const DataEnemies = {
       { itemId: "magic_stone", chance: 0.6, min: 2, max: 3 }
     ],
     locations: ["xuefeng_mountain", "sky_plateau"]
+  },
+
+  // ===== 新妖魔 =====
+  skeleton_warrior: {
+    id: "skeleton_warrior",
+    name: "骷髅战士",
+    title: "奴仆级亡灵",
+    description: "黑教廷用亡灵魔法召唤的骷髅兵，手持骨剑，不知疼痛，防御较高。",
+    elements: ["dark"],
+    level: 4,
+    maxHp: 150,
+    maxMp: 0,
+    attack: 18,
+    defense: 12,
+    speed: 10,
+    spirit: 5,
+    skills: [
+      "basic_attack",
+      "double_strike",
+      "bone_slash"
+    ],
+    aiType: "aggressive",
+    enemyType: "undead",
+    spriteColor: "#e8e8e8",
+    isEnemy: true,
+    expReward: 80,
+    goldReward: 40,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.7, min: 1, max: 2 },
+      { itemId: "bone_fragment", chance: 0.5, min: 1, max: 2 }
+    ],
+    locations: ["ancient_tomb", "bo_city_outskirts"]
+  },
+
+  ghost: {
+    id: "ghost",
+    name: "幽灵",
+    title: "奴仆级亡灵",
+    description: "飘忽不定的灵体，闪避极高，能吸取生命精华。物理攻击对其效果减半。",
+    elements: ["dark"],
+    level: 5,
+    maxHp: 120,
+    maxMp: 60,
+    attack: 14,
+    defense: 5,
+    speed: 22,
+    spirit: 20,
+    skills: [
+      "basic_attack",
+      "life_drain",
+      "shadow_step_strike",
+      "phase_strike",
+      "terror_screech"
+    ],
+    aiType: "kiter",
+    enemyType: "undead",
+    spriteColor: "#a0a0ff",
+    isEnemy: true,
+    isInsubstantial: true,
+    expReward: 120,
+    goldReward: 60,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.8, min: 1, max: 2 },
+      { itemId: "soul_fragment", chance: 0.3, min: 1, max: 1 }
+    ],
+    locations: ["ancient_tomb", "abandoned_church"]
+  },
+
+  iron_scorpion: {
+    id: "iron_scorpion",
+    name: "铁甲蝎",
+    title: "奴仆级妖魔",
+    description: "全身覆盖铁甲的巨蝎，防御极高，尾刺带有剧毒。",
+    elements: ["earth", "dark"],
+    level: 6,
+    maxHp: 280,
+    maxMp: 30,
+    attack: 22,
+    defense: 20,
+    speed: 8,
+    spirit: 8,
+    skills: [
+      "basic_attack",
+      "poison_fang",
+      "armor_break",
+      "stone_skin",
+      "iron_defense"
+    ],
+    aiType: "defensive",
+    enemyType: "demon",
+    spriteColor: "#8b4513",
+    isEnemy: true,
+    expReward: 150,
+    goldReward: 80,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.9, min: 1, max: 2 },
+      { itemId: "scorpion_tail", chance: 0.4, min: 1, max: 1 },
+      { itemId: "iron_shell", chance: 0.3, min: 1, max: 1 }
+    ],
+    locations: ["desert_ruins", "rocky_canyon"]
+  },
+
+  thunder_hawk: {
+    id: "thunder_hawk",
+    name: "雷鹰",
+    title: "奴仆级妖魔",
+    description: "翱翔于雷云之中的猛禽，速度极快，能召唤雷电攻击。",
+    elements: ["thunder", "wind"],
+    level: 7,
+    maxHp: 200,
+    maxMp: 80,
+    attack: 25,
+    defense: 8,
+    speed: 32,
+    spirit: 15,
+    skills: [
+      "basic_attack",
+      "thunder_bolt",
+      "thunder_strike",
+      "thunder_dive",
+      "speed_burst"
+    ],
+    aiType: "kiter",
+    enemyType: "demon",
+    spriteColor: "#4169e1",
+    isEnemy: true,
+    isFlying: true,
+    expReward: 180,
+    goldReward: 100,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.9, min: 1, max: 2 },
+      { itemId: "thunder_feather", chance: 0.5, min: 1, max: 2 },
+      { itemId: "wind_crystal", chance: 0.3, min: 1, max: 1 }
+    ],
+    locations: ["thunder_mountain", "sky_plateau"]
   }
 };
