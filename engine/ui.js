@@ -1162,6 +1162,7 @@ const UI = {
                         " id="player-sprite"></div>
                         <div style="font-size: 18px; font-weight: bold; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
                             ${state.player.name}
+                            <span style="font-size: 14px; color: #66ccff;">Lv.${state.player.level}</span>
                         </div>
                         <div style="margin-top: 8px; width: 120px;">
                             <div style="display: flex; justify-content: space-between; font-size: 12px; color: #ff6666; margin-bottom: 2px;">
@@ -1272,6 +1273,7 @@ const UI = {
                         " id="enemy-sprite"></div>
                         <div style="font-size: 18px; font-weight: bold; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
                             ${state.enemy.name}
+                            <span style="font-size: 14px; color: #ffcc66;">Lv.${state.enemy.level}</span>
                             ${state.enemy.isElite ? '<span style="color: #ff6600;"> ⭐精英</span>' : ''}
                         </div>
                         <div style="font-size: 12px; color: #aaa; margin-bottom: 8px;">Lv.${state.enemy.level}</div>
