@@ -368,6 +368,33 @@ const DataSkills = {
       }
     ]
   },
+  light_blind: {
+    id: "light_blind",
+    name: "光耀·失明",
+    description: "光系初阶魔法，近距离爆发强光，高概率使目标失明。对视觉依赖型敌人效果显著，对虫族等视觉弱的敌人效果减半。",
+    element: "light",
+    type: "debuff",
+    mpCost: 12,
+    baseDamage: 0,
+    damageMultiplier: 0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "光耀失明",
+        type: "blind",
+        element: "light",
+        duration: 3,
+        chance: 0.85,
+        hitRateMod: -0.5
+      }
+    ],
+    isCanon: true,
+    source: "第152章 谢文峰使用光耀·失明"
+  },
   dark_bolt: {
     id: "dark_bolt",
     name: "暗影·腐蚀",
@@ -1705,7 +1732,141 @@ const DataSkills = {
     isCanon: true,
     source: "第144章 幽狼兽使用飞沙走石吐息攻击"
   },
-  
+
+  demon_axe_slam: {
+    id: "demon_axe_slam",
+    name: "斧钺劈斩",
+    description: "白铠战蛰用巨大斧钺前肢劈下，造成高额物理伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 5,
+    baseDamage: 25,
+    damageMultiplier: 1.6,
+    hitRate: 0.85,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第152章 白铠战蛰斧钺前肢"
+  },
+
+  demon_bone_sickle: {
+    id: "demon_bone_sickle",
+    name: "骨镰横扫",
+    description: "白铠战蛰用后肢骨镰横扫，可攻击后方目标",
+    element: "physical",
+    type: "damage",
+    mpCost: 4,
+    baseDamage: 18,
+    damageMultiplier: 1.3,
+    hitRate: 0.9,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第152章 白铠战蛰后肢骨镰"
+  },
+
+  demon_rock_fist: {
+    id: "demon_rock_fist",
+    name: "岩石重拳",
+    description: "岩魔士重拳轰击，造成高额土系伤害",
+    element: "earth",
+    type: "damage",
+    mpCost: 6,
+    baseDamage: 28,
+    damageMultiplier: 1.5,
+    hitRate: 0.75,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第153章 岩魔士"
+  },
+
+  demon_earth_spike: {
+    id: "demon_earth_spike",
+    name: "地刺",
+    description: "岩魔士操控地面升起岩刺攻击敌人",
+    element: "earth",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 20,
+    damageMultiplier: 1.2,
+    hitRate: 0.9,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第153章 岩魔士操控土"
+  },
+
+  demon_dive_strike: {
+    id: "demon_dive_strike",
+    name: "俯冲猎杀",
+    description: "食骨妖从高空俯冲攻击，优先攻击施法中的目标",
+    element: "physical",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 22,
+    damageMultiplier: 1.4,
+    hitRate: 0.95,
+    critRate: 0.2,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第153章 食骨妖俯冲"
+  },
+
+  demon_wing_slash: {
+    id: "demon_wing_slash",
+    name: "翼刃斩",
+    description: "食骨妖用肉翼边缘斩击，速度极快",
+    element: "wind",
+    type: "damage",
+    mpCost: 5,
+    baseDamage: 15,
+    damageMultiplier: 1.2,
+    hitRate: 0.95,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 1,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第153章 食骨妖"
+  },
+
+  demon_triple_burst: {
+    id: "demon_triple_burst",
+    name: "三段爆发",
+    description: "进阶期幽狼兽特有能力，连续三次爆发冲刺，每次伤害递增",
+    element: "physical",
+    type: "damage",
+    mpCost: 15,
+    baseDamage: 15,
+    damageMultiplier: 1.0,
+    hitCount: 3,
+    hitRate: 0.9,
+    critRate: 0.2,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第157-158章 进阶期幽狼兽三段爆发"
+  },
+
   fierce_roar: {
     id: "fierce_roar",
     name: "凶猛咆哮",

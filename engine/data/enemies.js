@@ -1570,5 +1570,151 @@ const DataEnemies = {
       lowHp: "你...你到底是什么人！",
       death: "不可能...我可是双系中阶..."
     }
+  },
+
+  // ===== 明珠学府斗兽大赛召唤兽 =====
+  white_armor_beetle: {
+    id: "white_armor_beetle",
+    name: "白铠战蛰",
+    title: "奴仆级召唤兽",
+    description: "海大富的召唤兽。虫族妖魔，三角头颅遍布角刺，前肢如斧钺，全身白色金属铠甲，后肢有骨镰。视觉弱但感知强，铠甲抗雷但怕火。",
+    elements: ["earth"],
+    level: 6,
+    maxHp: 350,
+    maxMp: 40,
+    attack: 30,
+    defense: 25,
+    speed: 12,
+    spirit: 8,
+    skills: [
+      "basic_attack",
+      "demon_axe_slam",
+      "demon_bone_sickle"
+    ],
+    aiType: "aggressive",
+    enemyType: "demon",
+    demonTier: "servant",
+    spriteColor: "#E8E8E8",
+    isEnemy: true,
+    isSummon: true,
+    isCanon: true,
+    canonSource: "第149章/第152章",
+    traits: ["armor_resist_thunder", "weak_vision", "weak_to_fire"],
+    expReward: 180,
+    goldReward: 80,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.6, min: 1, max: 2 }
+    ],
+    battleQuotes: {
+      start: "嗤——！！"
+    }
+  },
+
+  rock_golem_summon: {
+    id: "rock_golem_summon",
+    name: "岩魔士",
+    title: "奴仆级召唤兽",
+    description: "郑冰晓的召唤兽。岩石构成的人形召唤兽，力量与防御极强，不怕火雷，能操控土石。速度极慢但一拳威力巨大。",
+    elements: ["earth"],
+    level: 7,
+    maxHp: 500,
+    maxMp: 60,
+    attack: 35,
+    defense: 35,
+    speed: 6,
+    spirit: 5,
+    skills: [
+      "basic_attack",
+      "demon_rock_fist",
+      "demon_earth_spike",
+      "demon_earth_shield"
+    ],
+    aiType: "defensive",
+    enemyType: "demon",
+    demonTier: "servant",
+    spriteColor: "#8B7355",
+    isEnemy: true,
+    isSummon: true,
+    isCanon: true,
+    canonSource: "第149章/第153章",
+    traits: ["fire_resist", "thunder_resist", "slow_movement"],
+    expReward: 220,
+    goldReward: 100,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.7, min: 1, max: 2 }
+    ]
+  },
+
+  bone_eating_demon_summon: {
+    id: "bone_eating_demon_summon",
+    name: "食骨妖",
+    title: "奴仆级召唤兽",
+    description: "王力挺的召唤兽。形如秃鹰，背生肉翼，飞行极快。狡猾敏捷，能在法师连星轨时突袭，轻易闪避初阶魔法。物理防御较弱。",
+    elements: ["dark", "wind"],
+    level: 7,
+    maxHp: 250,
+    maxMp: 80,
+    attack: 28,
+    defense: 8,
+    speed: 30,
+    spirit: 12,
+    skills: [
+      "basic_attack",
+      "demon_dive_strike",
+      "demon_wing_slash"
+    ],
+    aiType: "kiter",
+    enemyType: "demon",
+    demonTier: "servant",
+    spriteColor: "#4A4A4A",
+    isEnemy: true,
+    isSummon: true,
+    isCanon: true,
+    canonSource: "第149章/第153章",
+    traits: ["flying", "high_evasion", "fragile_body"],
+    expReward: 200,
+    goldReward: 90,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.6, min: 1, max: 2 }
+    ]
+  },
+
+  demon_wolf_advanced: {
+    id: "demon_wolf_advanced",
+    name: "进阶期幽狼兽",
+    title: "奴仆级巅峰·进阶期",
+    description: "莫凡的幽狼兽经历殊死战斗后进入进阶期，半只脚踏入战将级。可连续三段爆发冲刺，飞沙走石化为小型沙暴，实力远超普通奴仆级。",
+    elements: ["dark", "earth", "wind"],
+    level: 9,
+    maxHp: 450,
+    maxMp: 100,
+    attack: 42,
+    defense: 15,
+    speed: 32,
+    spirit: 18,
+    skills: [
+      "basic_attack",
+      "demon_sand_breath",
+      "demon_triple_burst",
+      "demon_wild_charge",
+      "battle_howl"
+    ],
+    aiType: "aggressive",
+    enemyType: "demon",
+    demonTier: "servant",
+    spriteColor: "#2F4F4F",
+    isEnemy: true,
+    isSummon: true,
+    isCanon: true,
+    canonSource: "第156-158章 进阶期幽狼兽",
+    traits: ["triple_burst", "sandstorm_breath", "advanced_stage"],
+    expReward: 400,
+    goldReward: 200,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.9, min: 2, max: 4 }
+    ],
+    battleQuotes: {
+      start: "呃呜——！！"
+    }
   }
 };
