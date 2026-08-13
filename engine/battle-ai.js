@@ -383,12 +383,15 @@ const BattleAI = {
         let score = 0.5;
         
         // 基础伤害分（支持baseDamage固定值和power基于攻击力倍率两种）
-        let baseDamage = skill.baseDamage || (skill.power ? self.attack * skill.power : 10);
-        const damageMultiplier = skill.damageMultiplier || 1;
+        let baseDamage;
+        if (skill.power) {
+            baseDamage = self.attack * skill.power;
+        } else {
+            baseDamage = (skill.baseDamage || 0) + self.attack * (skill.damageMultiplier || 1);
+        }
         // 多段攻击：总伤害 = 单段伤害 × 攻击次数
         const hitCount = skill.hitCount || 1;
-        baseDamage *= hitCount;
-        const totalDamage = baseDamage * damageMultiplier;
+        const totalDamage = baseDamage * hitCount;
         
         const damageRatio = totalDamage / opponent.maxHp;
         score += damageRatio * profile.weights.damage * 2;

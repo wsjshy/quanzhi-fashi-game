@@ -1249,7 +1249,16 @@ const BattleSystem = {
             // 伤害技能（含攻击者状态修正）
             const casterMods = this.getStatusModifiers(casterData);
             const effectiveAttack = casterData.attack + casterMods.attackMod;
-            const baseDamage = skill.baseDamage + effectiveAttack * (skill.damageMultiplier || 1.0);
+
+            // 基础伤害计算：支持power（攻击力倍率）和baseDamage+damageMultiplier两种方式
+            let baseDamage;
+            if (skill.power) {
+                // power方式：基础伤害 = 攻击力 × power倍率
+                baseDamage = effectiveAttack * skill.power;
+            } else {
+                // baseDamage方式：基础伤害 = 固定值 + 攻击力 × 倍率
+                baseDamage = (skill.baseDamage || 0) + effectiveAttack * (skill.damageMultiplier || 1.0);
+            }
             
             // 精神力加成
             const spirit = casterData.spirit || 10;
@@ -1338,7 +1347,10 @@ const BattleSystem = {
 
             // 技能吸血效果（基于总伤害）
             if (skill.lifesteal && skill.lifesteal > 0 && totalDamage > 0) {
-                const healAmount = Math.floor(totalDamage * skill.lifesteal);
+                let healAmount = Math.floor(totalDamage * skill.lifesteal);
+                // 应用治疗降低效果
+                const healMultiplier = this.getHealingMultiplier(casterData);
+                healAmount = Math.floor(healAmount * healMultiplier);
                 if (healAmount > 0 && casterData.hp < casterData.maxHp) {
                     casterData.hp = Math.min(casterData.maxHp, casterData.hp + healAmount);
                     const casterName = isPlayer ? '你' : this.enemy.name;
@@ -1549,7 +1561,10 @@ const BattleSystem = {
             }
             // 治疗目标：self类型治疗自己，否则治疗targetData
             const healTarget = (skill.targetType === 'self') ? casterData : targetData;
-            healTarget.hp = Math.min(healTarget.maxHp, healTarget.hp + healAmount);
+            // 应用治疗降低效果（如坏血）
+            const healMultiplier = this.getHealingMultiplier(healTarget);
+            const actualHeal = Math.floor(healAmount * healMultiplier);
+            healTarget.hp = Math.min(healTarget.maxHp, healTarget.hp + actualHeal);
 
             // 治疗技能的附加状态效果（如净化、复苏）
             if (skill.statusEffects) {
@@ -1559,7 +1574,11 @@ const BattleSystem = {
 
             const casterName = isPlayer ? '你' : this.enemy.name;
             const targetName = skill.targetType === 'self' ? casterName : (isPlayer ? this.enemy.name : '你');
-            this.addLog(`${casterName} 使用 ${skill.name}，${targetName} 恢复了 ${healAmount} 点生命`, 'heal');
+            if (healMultiplier < 1) {
+                this.addLog(`${casterName} 使用 ${skill.name}，${targetName} 恢复了 ${actualHeal} 点生命（治疗效果降低${Math.round((1-healMultiplier)*100)}%）`, 'heal');
+            } else {
+                this.addLog(`${casterName} 使用 ${skill.name}，${targetName} 恢复了 ${actualHeal} 点生命`, 'heal');
+            }
             
             // 发布治疗事件
             if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
@@ -1732,9 +1751,12 @@ const BattleSystem = {
         let healMsg = '';
         if (item.effects) {
             if (item.effects.hp) {
-                const healAmount = Math.min(item.effects.hp, this.player.maxHp - this.player.hp);
+                // 应用治疗降低效果
+                const healMultiplier = this.getHealingMultiplier(this.player);
+                let rawHeal = Math.floor(item.effects.hp * healMultiplier);
+                const healAmount = Math.min(rawHeal, this.player.maxHp - this.player.hp);
                 this.player.hp += healAmount;
-                healMsg += `恢复了 ${healAmount} 点生命值 `;
+                healMsg += `恢复了 ${healAmount} 点生命${healMultiplier < 1 ? '（治疗效果降低）' : ''} `;
             }
             if (item.effects.mp) {
                 const mpAmount = Math.min(item.effects.mp, this.player.maxMp - this.player.mp);
@@ -1783,7 +1805,7 @@ const BattleSystem = {
 
         // 处理净化类道具
         if (item.effects && item.effects.cleanse) {
-            const debuffTypes = ['burn', 'freeze', 'frozen', 'stun', 'wet', 'slow', 'poison', 'curse', 'electrified', 'mud', 'steam', 'paralyze'];
+            const debuffTypes = ['burn', 'freeze', 'frozen', 'stun', 'wet', 'slow', 'poison', 'curse', 'electrified', 'mud', 'steam', 'paralyze', 'weakness', 'bleed', 'healing_reduction', 'bind', 'blind', 'confuse'];
             this.player.statusEffects = this.player.statusEffects.filter(e => !debuffTypes.includes(e.type));
             this.addLog('净化了所有负面状态！', 'buff');
         }
@@ -2691,7 +2713,8 @@ const BattleSystem = {
         }
         
         this.isPlayerTurn = true;
-        
+        this.isProcessingAction = false; // 重置行动锁，允许下一次行动
+
         // 更新UI
         if (typeof UI !== 'undefined') {
             UI.updateBattleScreen();
@@ -3097,7 +3120,10 @@ const BattleSystem = {
             
             // 吸血效果
             if (attackerMods.lifesteal > 0) {
-                const healAmount = Math.floor(amount * attackerMods.lifesteal);
+                let healAmount = Math.floor(amount * attackerMods.lifesteal);
+                // 应用治疗降低效果
+                const healMultiplier = this.getHealingMultiplier(attacker);
+                healAmount = Math.floor(healAmount * healMultiplier);
                 if (healAmount > 0 && attacker.hp < attacker.maxHp) {
                     attacker.hp = Math.min(attacker.maxHp, attacker.hp + healAmount);
                     this.addLog(`${attackerName} 吸取了 ${healAmount} 点生命！`, 'heal');
@@ -3173,7 +3199,10 @@ const BattleSystem = {
         for (const trait of unit.traits) {
             // 回合结束恢复HP
             if (trait.type === 'on_turn_end' && trait.effects && trait.effects.hpRegenPercent) {
-                const regenAmount = Math.floor(unit.maxHp * trait.effects.hpRegenPercent);
+                let regenAmount = Math.floor(unit.maxHp * trait.effects.hpRegenPercent);
+                // 应用治疗降低效果
+                const healMultiplier = this.getHealingMultiplier(unit);
+                regenAmount = Math.floor(regenAmount * healMultiplier);
                 if (regenAmount > 0 && unit.hp < unit.maxHp) {
                     unit.hp = Math.min(unit.maxHp, unit.hp + regenAmount);
                     this.addLog(`${unitName} 的【${trait.name}】生效，恢复了 ${regenAmount} 点生命`, 'heal');
@@ -3427,7 +3456,7 @@ const BattleSystem = {
             // 净化效果：清除所有负面状态
             if (effect.type === 'cleanse') {
                 if (Math.random() < (effect.chance || 1.0)) {
-                    const debuffTypes = ['burn', 'freeze', 'frozen', 'stun', 'wet', 'slow', 'poison', 'curse', 'electrified', 'mud', 'steam', 'paralyze', 'weakness'];
+                    const debuffTypes = ['burn', 'freeze', 'frozen', 'stun', 'wet', 'slow', 'poison', 'curse', 'electrified', 'mud', 'steam', 'paralyze', 'weakness', 'bleed', 'healing_reduction', 'bind', 'blind', 'confuse'];
                     const removedEffects = target.statusEffects.filter(e => debuffTypes.includes(e.type));
                     target.statusEffects = target.statusEffects.filter(e => !debuffTypes.includes(e.type));
                     const removed = removedEffects.length;
@@ -3619,7 +3648,7 @@ const BattleSystem = {
             // 光系灵种：净化（自身增益）
             if (element === 'light' && seedEffects.purifyChance) {
                 if (Math.random() < seedEffects.purifyChance) {
-                    const debuffTypes = ['burn', 'freeze', 'frozen', 'stun', 'wet', 'slow', 'poison', 'curse', 'electrified', 'mud', 'steam', 'paralyze', 'weakness'];
+                    const debuffTypes = ['burn', 'freeze', 'frozen', 'stun', 'wet', 'slow', 'poison', 'curse', 'electrified', 'mud', 'steam', 'paralyze', 'weakness', 'bleed', 'healing_reduction', 'bind', 'blind', 'confuse'];
                     const beforeCount = Player.statusEffects ? Player.statusEffects.length : 0;
                     if (Player.statusEffects) {
                         Player.statusEffects = Player.statusEffects.filter(e => !debuffTypes.includes(e.type));
@@ -3720,19 +3749,25 @@ const BattleSystem = {
 
             effect.duration--;
 
-            // DOT伤害（按层数计算）
-            if (effect.dotDamage) {
+            // DOT伤害（按层数计算），支持dotDamage和damagePerTurn两种字段名
+            const dotDamage = effect.dotDamage || effect.damagePerTurn;
+            if (dotDamage) {
                 const stacks = effect.stacks || 1;
-                const damage = { amount: Math.floor(effect.dotDamage * stacks), isCrit: false, isMiss: false };
+                const damage = { amount: Math.floor(dotDamage * stacks), isCrit: false, isMiss: false };
                 this.applyDamage(target, damage, null);
                 this.addLog(`${targetName} 受到 ${effect.name} 伤害 ${damage.amount} 点（${stacks}层）`, 'damage');
             }
 
             // REG恢复（每回合恢复HP）
             if (effect.regen) {
-                const healAmount = Math.floor(effect.regen);
-                target.hp = Math.min(target.maxHp, target.hp + healAmount);
-                this.addLog(`${targetName} 受到 ${effect.name} 恢复 ${healAmount} 点生命`, 'heal');
+                let healAmount = Math.floor(effect.regen);
+                // 应用治疗降低效果
+                const healMultiplier = this.getHealingMultiplier(target);
+                healAmount = Math.floor(healAmount * healMultiplier);
+                if (healAmount > 0) {
+                    target.hp = Math.min(target.maxHp, target.hp + healAmount);
+                    this.addLog(`${targetName} 受到 ${effect.name} 恢复 ${healAmount} 点生命`, 'heal');
+                }
             }
 
             // 效果结束
@@ -3906,6 +3941,21 @@ const BattleSystem = {
         }
 
         return mods;
+    },
+
+    /**
+     * 获取目标的治疗乘数（受healing_reduction等状态影响）
+     */
+    getHealingMultiplier(target) {
+        let multiplier = 1.0;
+        if (target.statusEffects) {
+            target.statusEffects.forEach(effect => {
+                if (effect.type === 'healing_reduction' && effect.value) {
+                    multiplier *= (1 - effect.value);
+                }
+            });
+        }
+        return Math.max(0, multiplier);
     },
 
     /**
