@@ -2284,5 +2284,30 @@ const DataEvents = {
         resultText: "你礼貌地向老法师道谢，他的几句话让你茅塞顿开。"
       }
     ]
+  },
+  event_tang_yue_roof: {
+    id: "event_tang_yue_roof",
+    name: "天台上的身影",
+    description: "你在学校天台附近散步时，看到一个熟悉的身影……",
+    trigger: "exploring",
+    chance: 0.08,
+    conditions: [
+      { type: "location", value: "tianlan_school", operator: "==" },
+      { type: "day", value: 15, operator: ">=" },
+      { type: "flag", value: "saw_tang_yue_roof", operator: "!=" }
+    ],
+    once: true,
+    choices: [
+      {
+        text: "悄悄靠近看看",
+        effects: { setFlag: "saw_tang_yue_roof" },
+        resultText: "你悄悄靠近，看到唐月老师站在天台边缘，手里拿着一枚传讯石在低声说话。她的表情前所未有的严肃，和平时温柔的样子判若两人。\n\n'……我知道了。继续监视，不要打草惊蛇。'\n\n她似乎察觉到了什么，突然回头。你赶紧躲到墙后，心跳加速。\n\n（你获得了一条信息碎片：唐月似乎在调查什么……）"
+      },
+      {
+        text: "装作没看到离开",
+        effects: {},
+        resultText: "你觉得不该打扰老师的私事，默默离开了。"
+      }
+    ]
   }
 };

@@ -888,6 +888,155 @@ const DataCharacters = {
       likedMultiplier: 1.5,
       dislikedMultiplier: 0.3,
       dailyGiftLimit: 2
+    },
+    dialogueTree: {
+      npcId: "mu_bai",
+      nodes: {
+        default: {
+          id: "default",
+          texts: [
+            "（面带标准微笑）你好，有什么事吗？",
+            "哦，是你啊。（语气平淡，听不出情绪）",
+            "有话直说，我还要修炼。"
+          ],
+          mood: "polite",
+          choices: [
+            {
+              id: "ask_training",
+              text: "想请教冰系修炼",
+              condition: { minOpinion: 10 },
+              effects: { opinion: 1 },
+              nextNode: "ice_advice"
+            },
+            {
+              id: "ask_mu_family",
+              text: "穆氏家族很厉害吧？",
+              condition: { notNpcFlags: ["asked_about_family"] },
+              effects: { opinion: 2, npcFlags: { asked_about_family: true } },
+              nextNode: "about_family"
+            },
+            {
+              id: "challenge",
+              text: "切磋一下？",
+              condition: { minOpinion: 20, minLevel: 3 },
+              effects: { opinion: 3 },
+              nextNode: "challenge_response",
+              action: "start_battle",
+              actionData: { enemyId: "mu_bai_spar" }
+            },
+            {
+              id: "provoke",
+              text: "你是不是看不起平民？",
+              condition: { maxOpinion: 10, notNpcFlags: ["provoked_mu_bai"] },
+              effects: { opinion: -10, npcFlags: { provoked_mu_bai: true } },
+              nextNode: "provoked"
+            },
+            {
+              id: "about_ningxue",
+              text: "你和穆宁雪很熟？",
+              condition: { minOpinion: 25, notNpcFlags: ["asked_about_ningxue"] },
+              effects: { opinion: -3, npcFlags: { asked_about_ningxue: true } },
+              nextNode: "about_ningxue"
+            },
+            {
+              id: "leave",
+              text: "打扰了",
+              effects: {},
+              nextNode: null
+            }
+          ]
+        },
+        ice_advice: {
+          id: "ice_advice",
+          texts: [
+            "冰系？哼，你连星子都没连稳，问这些做什么。",
+            "（顿了顿）……冰系的精髓在于控制。不是一味攻击，而是让敌人按照你的节奏行动。",
+            "就像这样——（他指尖凝出一朵冰花，又瞬间消散）懂了吗？"
+          ],
+          mood: "condescending",
+          effects: { exp: 15 },
+          choices: [
+            { id: "thanks", text: "受教了", effects: { opinion: 1 }, nextNode: "default" },
+            { id: "more", text: "能再演示一下吗？", condition: { minOpinion: 30 }, effects: { exp: 20, opinion: 1 }, nextNode: "ice_demo" }
+          ]
+        },
+        ice_demo: {
+          id: "ice_demo",
+          texts: [
+            "（他看了你一眼，似乎有些意外你会追问。）",
+            "……你倒是有点意思。看好了。",
+            "（他抬手，空气中的水汽瞬间凝结成数道冰锥，又在半空划出弧线精准命中远处的树干。）",
+            "冰是活的，不是死的。让它去哪里，它就去哪里。"
+          ],
+          mood: "focused",
+          effects: { exp: 25, opinion: 3 },
+          choices: [
+            { id: "back", text: "明白了，谢谢", effects: {}, nextNode: "default" }
+          ]
+        },
+        about_family: {
+          id: "about_family",
+          texts: [
+            "穆氏？那是自然。博城穆氏，传承数百年，出过不知多少强者。",
+            "（他理了理衣领，语气中带着不加掩饰的自豪。）",
+            "不像某些人，连星尘魔器是什么都不知道，就敢说自己要当法师。"
+          ],
+          mood: "arrogant",
+          choices: [
+            { id: "back", text: "……", effects: {}, nextNode: "default" },
+            { id: "argue", text: "出身不代表一切", condition: { minOpinion: -50 }, effects: { opinion: -5 }, nextNode: "argue_birth" }
+          ]
+        },
+        argue_birth: {
+          id: "argue_birth",
+          texts: [
+            "（他冷笑一声）出身不代表一切？说得好听。",
+            "你知道穆氏给我们提供了多少资源吗？星尘魔器、灵种、功法……这些是你修炼十年也得不到的。",
+            "不过……（他突然收了笑）你说的也不全错。资源是一回事，能不能用好是另一回事。"
+          ],
+          mood: "cold",
+          choices: [
+            { id: "back", text: "……", effects: {}, nextNode: "default" }
+          ]
+        },
+        challenge_response: {
+          id: "challenge_response",
+          texts: [
+            "和你切磋？（他上下打量你一眼）……行，我也想看看平民法师有多少斤两。",
+            "别说我欺负你，我让你三招。"
+          ],
+          mood: "confident",
+          choices: [
+            { id: "fight", text: "不需要你让！", effects: {}, nextNode: null }
+          ]
+        },
+        provoked: {
+          id: "provoked",
+          texts: [
+            "（微笑瞬间消失，眼神冷了下来。）",
+            "看不起平民？我没有看不起任何人。我只是……陈述事实。",
+            "这个世界本来就是弱肉强食。你若觉得被冒犯，那是你太脆弱。",
+            "（他转身离开，留下一句）好自为之。"
+          ],
+          mood: "cold",
+          choices: [
+            { id: "back", text: "……", effects: {}, nextNode: null }
+          ]
+        },
+        about_ningxue: {
+          id: "about_ningxue",
+          texts: [
+            "（他的表情有一瞬间的不自然。）",
+            "宁雪……她是穆家的骄傲。天生冰系天赋，整个博城找不出第二个。",
+            "（他的语气变得柔和了些，但随即又恢复了冷淡。）",
+            "你问这个做什么？别打她的主意，你不配。"
+          ],
+          mood: "jealous",
+          choices: [
+            { id: "back", text: "我只是随便问问", effects: {}, nextNode: "default" }
+          ]
+        }
+      }
     }
   },
   zhao_kunsan: {
