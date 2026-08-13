@@ -5412,6 +5412,13 @@ const DataCharacters = {
               effects: {},
               next: "about_anomaly"
             },
+            {
+              id: "farewell_zhan",
+              text: "斩空教官，我要离开博城了",
+              condition: { hasFlag: "bocheng_disaster_happened", notNpcFlags: ["said_farewell"] },
+              effects: { npcFlags: { said_farewell: true } },
+              next: "farewell_node"
+            },
             { text: "告辞。", next: null, action: "close" }
           ]
         },
@@ -5443,6 +5450,29 @@ const DataCharacters = {
           effects: { trust: 5, giveInfo: "zhan_kong_knows_anomaly" },
           choices: [
             { id: "back", text: "我明白了", effects: {}, next: "default" }
+          ]
+        },
+        farewell_node: {
+          id: "farewell_node",
+          texts: [
+            "（斩空放下手中的酒壶，看了你一眼。）",
+            "要走了？明珠学府？",
+            "（他沉默了一会儿，从怀里摸出一个东西扔给你——是一枚军牌。）",
+            "拿着。到了明珠，去猎者联盟分会出示这个，会有人帮你。",
+            "（他站起身，望向远方，语气变得低沉。）",
+            "小子，你比那些学生强。但明珠不比博城，那里水很深。",
+            "有些人……表面上人模狗样，背地里比妖魔还脏。",
+            "（他顿了顿，似乎想说什么，但最终只是挥了挥手。）",
+            "去吧。别死在外面。"
+          ],
+          mood: "serious",
+          effects: {
+            giveItem: "zhan_kong_token",
+            exp: 150,
+            trust: 10
+          },
+          choices: [
+            { id: "thanks", text: "斩空教官，保重", effects: { opinion: 10 }, next: "default" }
           ]
         }
       }

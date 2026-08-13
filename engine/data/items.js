@@ -755,6 +755,19 @@ const DataItems = {
     rarity: "稀有",
     lore: "唐月说：'如果遇到解决不了的麻烦，可以联系我。'这不仅仅是一张传讯符，更是一份承诺。"
   },
+  zhan_kong_token: {
+    id: "zhan_kong_token",
+    name: "斩空的军牌",
+    description: "斩空教官给你的军牌，上面刻着猎者联盟的徽章和一串编号。他说到了明珠，去猎者联盟分会出示这个，会有人帮你。军牌上还残留着淡淡的火系魔力和硝烟味。",
+    type: "special",
+    icon: "🪖",
+    price: 0,
+    stackable: false,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    lore: "斩空说：'有些人表面上人模狗样，背地里比妖魔还脏。'这枚军牌，是他在博城三年的信任。"
+  },
   spirit_star_dust_device: {
     id: "spirit_star_dust_device",
     name: "灵级星尘魔器",

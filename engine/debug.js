@@ -168,6 +168,7 @@ const DebugPanel = {
                 <div class="debug-tab" data-tab="teleport" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">传送</div>
                 <div class="debug-tab" data-tab="time" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">时间</div>
                 <div class="debug-tab" data-tab="save" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">存档</div>
+                <div class="debug-tab" data-tab="story" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">剧情</div>
                 <div class="debug-tab" data-tab="other" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">其他</div>
             </div>
             
@@ -509,6 +510,68 @@ const DebugPanel = {
                     </div>
                 </div>
                 
+                <!-- 剧情标签页 -->
+                <div id="debug-tab-story" class="debug-tab-content" style="display: none;">
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #8888ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">设置Flag</div>
+                        <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+                            <input type="text" id="debug-flag-name" placeholder="flag名称" style="flex:1; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px;">
+                            <button onclick="DebugPanel.setFlag(true)" style="background: #448844; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">设置</button>
+                            <button onclick="DebugPanel.setFlag(false)" style="background: #884444; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">清除</button>
+                        </div>
+                        <div style="font-size: 11px; color: #888; line-height: 1.6;">
+                            常用flag：bocheng_disaster_happened, saw_tang_yue_roof, witnessed_demon_migration, found_ancient_cave, saw_mu_he_stranger, heard_spring_whisper
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #8888ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">快速设置剧情阶段</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                            <button onclick="DebugPanel.storyPhase('start')" style="background: #444466; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;">游戏开始</button>
+                            <button onclick="DebugPanel.storyPhase('school')" style="background: #444466; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;">天澜高中</button>
+                            <button onclick="DebugPanel.storyPhase('before_disaster')" style="background: #664444; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;">灾难前夕</button>
+                            <button onclick="DebugPanel.storyPhase('after_disaster')" style="background: #884422; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;">博城灾难后</button>
+                            <button onclick="DebugPanel.storyPhase('leave')" style="background: #446644; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;">离开博城</button>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #8888ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">触发事件</div>
+                        <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+                            <input type="text" id="debug-event-id" placeholder="event_id" style="flex:1; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px;">
+                            <button onclick="DebugPanel.triggerEvent()" style="background: #664488; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">触发</button>
+                        </div>
+                        <div style="font-size: 11px; color: #888; line-height: 1.8;">
+                            博城篇事件：<br>
+                            event_tang_yue_roof - 唐月天台密谈<br>
+                            event_demon_migration - 妖魔异常迁徙<br>
+                            event_ancient_cave - 古代山洞符文<br>
+                            event_wounded_demon - 受伤的妖魔<br>
+                            event_mu_he_stranger - 穆贺密会<br>
+                            event_eve_of_disaster - 灾难前夕<br>
+                            event_earth_spring_depths - 泉底低语<br>
+                            event_farewell_bocheng - 告别博城
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #8888ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">NPC好感度</div>
+                        <div style="display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap;">
+                            <input type="text" id="debug-npc-id" placeholder="npc_id" style="width: 100px; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px;">
+                            <input type="number" id="debug-opinion" placeholder="好感" value="80" style="width: 60px; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px;">
+                            <input type="number" id="debug-trust" placeholder="信任" value="60" style="width: 60px; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px;">
+                            <button onclick="DebugPanel.setNpcRel()" style="background: #448888; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">设置</button>
+                        </div>
+                        <div style="font-size: 11px; color: #888;">tang_yue, zhang_xiaohou, zhan_kong, mu_bai, yu_ang, mu_he</div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #8888ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">当前剧情状态</div>
+                        <button onclick="DebugPanel.showStoryState()" style="width: 100%; background: #444466; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 12px;">查看当前Flag和信息碎片</button>
+                        <div id="debug-story-state" style="margin-top: 8px; font-size: 11px; color: #aaa; max-height: 200px; overflow-y: auto; background: #1a1a2a; padding: 8px; border-radius: 4px;"></div>
+                    </div>
+                </div>
+
                 <!-- 其他标签页 -->
                 <div id="debug-tab-other" class="debug-tab-content" style="display: none;">
                     <div style="margin-bottom: 15px;">
@@ -1405,6 +1468,110 @@ const DebugPanel = {
         }
     },
     
+    // ========== 剧情调试 ==========
+
+    setFlag(value) {
+        try {
+            const name = document.getElementById('debug-flag-name').value.trim();
+            if (!name) return;
+            if (typeof WorldState !== 'undefined') {
+                if (value) {
+                    WorldState.setFlag(name, true);
+                    console.log(`[Debug] Flag设置: ${name} = true`);
+                } else {
+                    WorldState.setFlag(name, false);
+                    console.log(`[Debug] Flag清除: ${name}`);
+                }
+                this.showStoryState();
+            }
+        } catch (e) {
+            console.error('[Debug] setFlag错误:', e);
+        }
+    },
+
+    storyPhase(phase) {
+        try {
+            if (typeof WorldState === 'undefined') return;
+            const flags = {
+                start: [],
+                school: ['quest_intro_completed'],
+                before_disaster: ['quest_intro_completed', 'witnessed_demon_migration', 'saw_mu_he_stranger', 'saw_tang_yue_roof'],
+                after_disaster: ['bocheng_disaster_happened', 'quest_intro_completed'],
+                leave: ['bocheng_disaster_happened', 'quest_journey_to_mingzhu_active']
+            };
+            // 先清除所有剧情flag
+            ['bocheng_disaster_happened','witnessed_demon_migration','saw_mu_he_stranger','saw_tang_yue_roof','found_ancient_cave','heard_spring_whisper','found_black_church_mark','eve_of_disaster_witnessed'].forEach(f => WorldState.setFlag(f, false));
+            // 设置对应阶段flag
+            (flags[phase] || []).forEach(f => WorldState.setFlag(f, true));
+            // 设置对应天数和等级
+            if (typeof Player !== 'undefined') {
+                if (phase === 'before_disaster') Player.day = 42;
+                if (phase === 'after_disaster') Player.day = 45;
+                if (phase === 'leave') Player.day = 50;
+                if (phase === 'before_disaster' || phase === 'after_disaster' || phase === 'leave') Player.level = 8;
+            }
+            this.showStoryState();
+            if (typeof UI !== 'undefined' && UI.renderMapScreen) UI.renderMapScreen();
+            console.log(`[Debug] 剧情阶段: ${phase}`);
+        } catch (e) {
+            console.error('[Debug] storyPhase错误:', e);
+        }
+    },
+
+    triggerEvent() {
+        try {
+            const id = document.getElementById('debug-event-id').value.trim();
+            if (!id) return;
+            if (typeof EventSystem !== 'undefined') {
+                EventSystem.triggerEvent(id);
+                this.toggle();
+                console.log(`[Debug] 触发事件: ${id}`);
+            }
+        } catch (e) {
+            console.error('[Debug] triggerEvent错误:', e);
+        }
+    },
+
+    setNpcRel() {
+        try {
+            const npcId = document.getElementById('debug-npc-id').value.trim();
+            const opinion = parseInt(document.getElementById('debug-opinion').value) || 50;
+            const trust = parseInt(document.getElementById('debug-trust').value) || 50;
+            if (!npcId) return;
+            if (typeof NpcState !== 'undefined') {
+                const state = NpcState.getNPCState(npcId);
+                state.opinion = opinion;
+                state.trust = trust;
+                console.log(`[Debug] ${npcId} 好感=${opinion} 信任=${trust}`);
+            }
+        } catch (e) {
+            console.error('[Debug] setNpcRel错误:', e);
+        }
+    },
+
+    showStoryState() {
+        try {
+            const el = document.getElementById('debug-story-state');
+            if (!el) return;
+            let html = '';
+            // Flags
+            if (typeof WorldState !== 'undefined') {
+                const allFlags = WorldState.globalFlags || {};
+                const trueFlags = Object.keys(allFlags).filter(k => allFlags[k]);
+                html += '<b style="color:#88aaff;">已激活的Flag:</b><br>';
+                html += trueFlags.length ? trueFlags.map(f => `✓ ${f}`).join('<br>') : '（无）';
+                html += '<br><br>';
+                // 信息碎片
+                const known = WorldState.knownInfo || [];
+                html += '<b style="color:#aaff88;">已收集的信息碎片:</b><br>';
+                html += known.length ? known.map(i => `📋 ${i}`).join('<br>') : '（无）';
+            }
+            el.innerHTML = html;
+        } catch (e) {
+            console.error('[Debug] showStoryState错误:', e);
+        }
+    },
+
     // 关闭debug模式
     disable() {
         try {

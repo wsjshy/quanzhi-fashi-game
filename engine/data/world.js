@@ -903,6 +903,26 @@ const DataWorld = {
         credibility: 0.8,
         relatedEvent: null,
         unlockDay: 45
+      },
+      mu_nujiao_has_nebula_artifact: {
+        id: "mu_nujiao_has_nebula_artifact",
+        title: "穆奴教与星云魔器",
+        content: "穆家似乎拥有一件星云魔器级别的宝物，这在世家之中也是极为罕见的。穆奴教对此事守口如瓶，但隐约透露出这件魔器与穆宁雪有关。",
+        category: "intel",
+        source: "穆家内部",
+        credibility: 0.6,
+        relatedEvent: null,
+        unlockDay: 10
+      },
+      black_church_in_mingzhu: {
+        id: "black_church_in_mingzhu",
+        title: "黑教廷在明珠",
+        content: "黑教廷的势力不仅仅在博城。根据线索，他们的触角已经延伸到了明珠学府——那个全国最高魔法学府之中，可能潜伏着黑教廷的人。",
+        category: "warning",
+        source: "玲玲",
+        credibility: 0.7,
+        relatedEvent: null,
+        unlockDay: 50
       }
     }
   },
