@@ -639,7 +639,7 @@ const DebugPanel = {
                     Player.speed = 10;
                     Player.spirit = 10;
                     Player.attributePoints = 0;
-                    Player.expToNext = 100;
+                    Player.expToNext = 80;
                     // 再升到目标等级
                     while (Player.level < targetLevel) {
                         Player.levelUp();
@@ -991,7 +991,7 @@ const DebugPanel = {
                 Player.speed = 10;
                 Player.spirit = 10;
                 Player.attributePoints = 0;
-                Player.expToNext = 100;
+                Player.expToNext = 80;
                 Player.skills = [];
                 
                 // 升到目标等级
@@ -1113,13 +1113,29 @@ const DebugPanel = {
     // 觉醒全部元素
     awakenAllElements() {
         try {
-            const elements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'summon'];
+            const elements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'summon', 'shadow', 'plant', 'poison', 'sound'];
             let count = 0;
-            
-            if (typeof Player !== 'undefined' && Player.awakenElement) {
+
+            if (typeof Player !== 'undefined') {
                 for (const element of elements) {
-                    if (Player.awakenElement(element)) {
-                        count++;
+                    if (!Player.elements.includes(element)) {
+                        const result = Player.awakenElement(element);
+                        if (result && result.success) {
+                            count++;
+                        } else {
+                            // 强制觉醒（debug模式绕过等级限制）
+                            Player.elements.push(element);
+                            if (typeof TalentSystem !== 'undefined' && TalentSystem.initTalentForElement) {
+                                Player.talents[element] = TalentSystem.initTalentForElement(element);
+                            }
+                            const starterTable = typeof SKILL_UNLOCK_TABLE !== 'undefined' ? SKILL_UNLOCK_TABLE[element] : null;
+                            if (starterTable && starterTable[1]) {
+                                starterTable[1].forEach(skillId => {
+                                    if (!Player.skills.includes(skillId)) Player.skills.push(skillId);
+                                });
+                            }
+                            count++;
+                        }
                     }
                 }
                 this.refreshUI();
@@ -1137,7 +1153,7 @@ const DebugPanel = {
         try {
             if (typeof RealmSystem !== 'undefined' && RealmSystem.breakthrough) {
                 // 先确保等级足够
-                const levelReq = { initial: 1, middle: 7, high: 20, super: 40 };
+                const levelReq = { initial: 1, middle: 11, high: 31, super: 56 };
                 if (Player.level < levelReq[realm]) {
                     Player.level = levelReq[realm];
                     if (Player.updateStats) Player.updateStats();

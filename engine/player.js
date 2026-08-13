@@ -5,68 +5,93 @@
 
 // 游戏版本号 - 用于存档兼容性
 const GAME_VERSION = '0.8.4';
-const SAVE_VERSION = '0.8.0';
+const SAVE_VERSION = '0.8.6';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
 const SKILL_UNLOCK_TABLE = {
     fire: {
         1: ['fire_bolt'],
-        2: ['fire_soul'],
-        3: ['fire_rain'],
-        5: ['fire_burst']
+        3: ['fire_soul'],
+        5: ['fire_rain'],
+        8: ['fire_burst']
     },
     ice: {
         1: ['ice_spike'],
-        2: ['ice_frost'],
-        3: ['ice_shield'],
-        5: ['ice_storm']
+        3: ['ice_frost'],
+        5: ['ice_shield'],
+        8: ['ice_storm']
     },
     thunder: {
         1: ['thunder_bolt'],
-        2: ['thunder_drive'],
-        3: ['thunder_chain'],
-        5: ['thunder_strike']
+        3: ['thunder_drive'],
+        5: ['thunder_chain'],
+        8: ['thunder_strike']
     },
     earth: {
         1: ['earth_shield'],
-        2: ['earth_mud'],
-        3: ['earth_spike'],
-        5: ['earth_quake']
+        3: ['earth_mud'],
+        5: ['earth_spike'],
+        8: ['earth_quake']
     },
     wind: {
         1: ['wind_blade'],
-        2: ['wind_barrier'],
-        3: ['wind_speed'],
-        5: ['wind_tornado']
+        3: ['wind_barrier'],
+        5: ['wind_speed'],
+        8: ['wind_tornado']
     },
     water: {
         1: ['water_heal'],
-        2: ['water_moist'],
-        3: ['water_chain'],
-        5: ['water_wave']
+        3: ['water_moist'],
+        5: ['water_chain'],
+        8: ['water_wave']
     },
     light: {
         1: ['light_ray'],
-        2: ['light_blessing'],
-        3: ['light_shield'],
-        5: ['light_judgment']
+        3: ['light_blessing'],
+        5: ['light_shield'],
+        8: ['light_judgment']
     },
     dark: {
         1: ['dark_bolt'],
-        2: ['dark_weakness'],
-        3: ['dark_cloak'],
-        5: ['dark_curse']
+        3: ['dark_weakness'],
+        5: ['dark_cloak'],
+        8: ['dark_curse']
     },
     heal: {
         1: ['heal_light'],
-        3: ['heal_holy', 'heal_cleanse'],
-        5: ['heal_revive']
+        5: ['heal_holy', 'heal_cleanse'],
+        8: ['heal_revive']
     },
     summon: {
         1: ['summon_beast'],
-        2: ['summon_strengthen'],
-        3: ['summon_rage'],
-        5: ['summon_return']
+        3: ['summon_strengthen'],
+        5: ['summon_rage'],
+        8: ['summon_return']
+    },
+    // 中阶技能（Lv12-28解锁）
+    shadow: {
+        1: ['shadow_step'],
+        12: ['shadow_bind'],
+        18: ['shadow_swap'],
+        25: ['shadow_possession']
+    },
+    plant: {
+        1: ['vine_whip'],
+        12: ['vine_bind'],
+        18: ['plant_prison'],
+        25: ['plant_wall']
+    },
+    poison: {
+        1: ['poison_dart'],
+        12: ['poison_cloud'],
+        18: ['poison_corrode'],
+        25: ['poison_plague']
+    },
+    sound: {
+        1: ['sound_wave'],
+        12: ['sound_stun'],
+        18: ['sound_barrier'],
+        25: ['sound_destruction']
     }
 };
 
@@ -75,7 +100,7 @@ const Player = {
     name: '冒险者',
     level: 1,
     exp: 0,
-    expToNext: 100,
+    expToNext: 80,
     attributePoints: 0,
 
     // 基础属性
@@ -357,6 +382,8 @@ const Player = {
                     { id: 'level_5', value: 5 },
                     { id: 'level_10', value: 10 },
                     { id: 'level_20', value: 20 },
+                    { id: 'level_30', value: 30 },
+                    { id: 'level_50', value: 50 },
                 ];
                 
                 levelAchievements.forEach(ach => {
@@ -385,41 +412,47 @@ const Player = {
 
     /**
      * 计算升级所需经验
-     * 分段函数：前期快、中期慢、后期极慢
+     * 新等级体系（v0.8.6）：
+     * 初阶 Lv1-10：base 80, rate 1.25（快速上手，每级打1-6场）
+     * 中阶 Lv11-30：base 500, rate 1.15（稳步成长，每级打2-10场）
+     * 高阶 Lv31-55：base 8000, rate 1.12（长期目标，每级打5-20场）
+     * 超阶 Lv56-80：base 120000, rate 1.10（终局内容，每级打10-50场）
      */
     _calcExpToNext(level) {
-        // 分段设计：
-        // 1-5级：快速上手，每级×1.4
-        // 6-10级：初阶后期，每级×1.8
-        // 11-15级：中阶初期，每级×2.2
-        // 16-20级：中阶后期，每级×2.6
-        // 21-25级：高阶初期，每级×3.0
-        // 26级以上：高阶后期/超阶，每级×3.5
-        
-        let baseExp = 100;
-        let multiplier = 1;
-        
-        if (level <= 5) {
-            // 1-5级：快速上手
-            multiplier = Math.pow(1.4, level - 1);
-        } else if (level <= 10) {
-            // 6-10级：初阶后期，明显变慢
-            multiplier = Math.pow(1.4, 4) * Math.pow(1.8, level - 5);
-        } else if (level <= 15) {
-            // 11-15级：中阶初期，非常慢
-            multiplier = Math.pow(1.4, 4) * Math.pow(1.8, 5) * Math.pow(2.2, level - 10);
-        } else if (level <= 20) {
-            // 16-20级：中阶后期，极慢
-            multiplier = Math.pow(1.4, 4) * Math.pow(1.8, 5) * Math.pow(2.2, 5) * Math.pow(2.6, level - 15);
-        } else if (level <= 25) {
-            // 21-25级：高阶初期，传说级慢
-            multiplier = Math.pow(1.4, 4) * Math.pow(1.8, 5) * Math.pow(2.2, 5) * Math.pow(2.6, 5) * Math.pow(3.0, level - 20);
+        if (level <= 10) {
+            // 初阶：80 ~ 596
+            return Math.floor(80 * Math.pow(1.25, level - 1));
+        } else if (level <= 30) {
+            // 中阶：500 ~ 7116
+            return Math.floor(500 * Math.pow(1.15, level - 11));
+        } else if (level <= 55) {
+            // 高阶：8000 ~ 121429
+            return Math.floor(8000 * Math.pow(1.12, level - 31));
         } else {
-            // 26级以上：高阶后期/超阶，神话级慢
-            multiplier = Math.pow(1.4, 4) * Math.pow(1.8, 5) * Math.pow(2.2, 5) * Math.pow(2.6, 5) * Math.pow(3.0, 5) * Math.pow(3.5, level - 25);
+            // 超阶：120000 ~ 1181968
+            return Math.floor(120000 * Math.pow(1.10, level - 56));
         }
-        
-        return Math.floor(baseExp * multiplier);
+    },
+
+    /**
+     * 获取当前等级每级的属性成长值
+     * 按境界递增：初阶少→中阶中→高阶多→超阶多
+     */
+    _getLevelGrowth() {
+        const level = this.level;
+        if (level <= 10) {
+            // 初阶：每级小成长
+            return { hp: 12, mp: 6, atk: 2, def: 1, spd: 1, spr: 1, apt: 2 };
+        } else if (level <= 30) {
+            // 中阶：每级中成长
+            return { hp: 15, mp: 10, atk: 3, def: 2, spd: 1, spr: 2, apt: 3 };
+        } else if (level <= 55) {
+            // 高阶：每级大成长
+            return { hp: 20, mp: 15, atk: 4, def: 3, spd: 2, spr: 3, apt: 4 };
+        } else {
+            // 超阶：每级巨成长
+            return { hp: 25, mp: 20, atk: 5, def: 4, spd: 2, spr: 4, apt: 5 };
+        }
     },
     
     /**
@@ -428,16 +461,19 @@ const Player = {
     levelUp() {
         this.level++;
         this.expToNext = this._calcExpToNext(this.level);
-        this.attributePoints += 3;
-        
+
+        // 根据境界给不同的属性成长（越到后期每级加越多）
+        const growth = this._getLevelGrowth();
+        this.attributePoints += growth.apt;
+
         // 基础属性提升
-        this.maxHp += 15;
-        this.maxMp += 8;
-        this.attack += 2;
-        this.defense += 1;
-        this.speed += 1;
-        this.spirit += 2;
-        
+        this.maxHp += growth.hp;
+        this.maxMp += growth.mp;
+        this.attack += growth.atk;
+        this.defense += growth.def;
+        this.speed += growth.spd;
+        this.spirit += growth.spr;
+
         // 满血满蓝
         this.hp = this.maxHp;
         this.mp = this.maxMp;
@@ -514,17 +550,17 @@ const Player = {
             return { success: false, message: '你已经觉醒了该元素系' };
         }
 
-        // 检查觉醒条件：第二系需要8级（中阶），第三系需要15级（高阶）
+        // 检查觉醒条件：第二系Lv10（中阶），第三系Lv30（高阶），第四系Lv55（超阶）
         const currentElementCount = this.elements.length;
-        const requiredLevel = currentElementCount === 0 ? 1 : currentElementCount === 1 ? 8 : 15;
+        const requiredLevel = currentElementCount === 0 ? 1 : currentElementCount === 1 ? 10 : currentElementCount === 2 ? 30 : 55;
         if (this.level < requiredLevel) {
-            const rankName = requiredLevel >= 15 ? '高阶' : '中阶';
+            const rankName = requiredLevel >= 55 ? '超阶' : requiredLevel >= 30 ? '高阶' : '中阶';
             return { success: false, message: `需要达到${rankName}（${requiredLevel}级）才能觉醒新元素系` };
         }
 
-        // 最多觉醒3系
-        if (currentElementCount >= 3) {
-            return { success: false, message: '最多只能觉醒3个元素系' };
+        // 最多觉醒4系
+        if (currentElementCount >= 4) {
+            return { success: false, message: '最多只能觉醒4个元素系' };
         }
 
         // 觉醒
@@ -566,8 +602,7 @@ const Player = {
                 const awakenCount = this.elements.length;
                 const awakenAchievements = [
                     { id: 'awaken_2', value: 2 },
-                    { id: 'awaken_5', value: 5 },
-                    { id: 'awaken_all', value: 10 },
+                    { id: 'awaken_4', value: 4 },
                 ];
                 
                 awakenAchievements.forEach(ach => {
@@ -1047,8 +1082,9 @@ const Player = {
      */
     canAwakenNewElement() {
         const count = this.elements.length;
-        if (count >= 3) return false;
-        const requiredLevel = count === 0 ? 1 : count === 1 ? 8 : 15;
+        if (count >= 4) return false;
+        // 新等级体系：初阶1系→中阶2系→高阶3系→超阶4系
+        const requiredLevel = count === 0 ? 1 : count === 1 ? 10 : count === 2 ? 30 : 55;
         return this.level >= requiredLevel;
     },
 
@@ -1574,6 +1610,69 @@ const Player = {
             // 确保新字段有默认值
             if (!migrated.flags) migrated.flags = {};
             if (!migrated.attributePoints) migrated.attributePoints = 0;
+        }
+
+        // 从0.8.0迁移到0.8.6（新等级体系）
+        if (this._compareVersion(fromVersion, '0.8.6') < 0) {
+            console.log('[存档迁移] 从 0.8.x 迁移到 0.8.6（新等级体系）');
+            const oldLevel = migrated.level || 1;
+            let newLevel;
+            // 旧→新等级映射
+            if (oldLevel <= 7) {
+                newLevel = Math.max(1, Math.ceil(oldLevel * 10 / 7));
+            } else if (oldLevel <= 14) {
+                newLevel = 11 + Math.ceil((oldLevel - 7) * 19 / 7);
+            } else if (oldLevel <= 25) {
+                newLevel = 31 + Math.ceil((oldLevel - 14) * 24 / 11);
+            } else {
+                newLevel = 56 + (oldLevel - 25);
+            }
+            console.log(`[存档迁移] 等级映射：旧Lv${oldLevel} → 新Lv${newLevel}`);
+            migrated.level = newLevel;
+
+            // 重新计算基础属性（不含装备/灵种加成）
+            // 新体系初始属性
+            let baseHp = 100, baseMp = 50, baseAtk = 10, baseDef = 5, baseSpd = 10, baseSpr = 10;
+            for (let lv = 2; lv <= newLevel; lv++) {
+                if (lv <= 10) {
+                    baseHp += 12; baseMp += 6; baseAtk += 2; baseDef += 1; baseSpd += 1; baseSpr += 1;
+                } else if (lv <= 30) {
+                    baseHp += 15; baseMp += 10; baseAtk += 3; baseDef += 2; baseSpd += 1; baseSpr += 2;
+                } else if (lv <= 55) {
+                    baseHp += 20; baseMp += 15; baseAtk += 4; baseDef += 3; baseSpd += 2; baseSpr += 3;
+                } else {
+                    baseHp += 25; baseMp += 20; baseAtk += 5; baseDef += 4; baseSpd += 2; baseSpr += 4;
+                }
+            }
+            // 境界突破百分比加成
+            if (newLevel >= 56) {
+                baseHp = Math.floor(baseHp * 2.0); baseMp = Math.floor(baseMp * 3.0);
+                baseAtk = Math.floor(baseAtk * 2.0); baseDef = Math.floor(baseDef * 2.0);
+                baseSpd = Math.floor(baseSpd * 1.5); baseSpr = Math.floor(baseSpr * 2.0);
+                migrated.realm = 'super';
+            } else if (newLevel >= 31) {
+                baseHp = Math.floor(baseHp * 1.6); baseMp = Math.floor(baseMp * 2.0);
+                baseAtk = Math.floor(baseAtk * 1.5); baseDef = Math.floor(baseDef * 1.5);
+                baseSpd = Math.floor(baseSpd * 1.3); baseSpr = Math.floor(baseSpr * 1.6);
+                migrated.realm = 'high';
+            } else if (newLevel >= 11) {
+                baseHp = Math.floor(baseHp * 1.3); baseMp = Math.floor(baseMp * 1.5);
+                baseAtk = Math.floor(baseAtk * 1.2); baseDef = Math.floor(baseDef * 1.2);
+                baseSpd = Math.floor(baseSpd * 1.1); baseSpr = Math.floor(baseSpr * 1.3);
+                migrated.realm = 'middle';
+            } else {
+                migrated.realm = 'initial';
+            }
+            migrated.maxHp = baseHp;
+            migrated.maxMp = baseMp;
+            migrated.attack = baseAtk;
+            migrated.defense = baseDef;
+            migrated.speed = baseSpd;
+            migrated.spirit = baseSpr;
+            migrated.hp = baseHp;
+            migrated.mp = baseMp;
+            migrated.expToNext = this._calcExpToNext(newLevel);
+            migrated.exp = 0; // 重置当前经验，避免负数
         }
         
         // 更新版本号

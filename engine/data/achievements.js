@@ -126,6 +126,28 @@ const DataAchievements = {
     reward: { gold: 5000 },
     condition: { type: 'level', value: 20 }
   },
+
+  level_30: {
+    id: 'level_30',
+    name: '高阶法师',
+    description: '达到30级，突破高阶',
+    category: 'growth',
+    rarity: 'epic',
+    icon: '🔥',
+    reward: { gold: 10000 },
+    condition: { type: 'level', value: 30 }
+  },
+
+  level_50: {
+    id: 'level_50',
+    name: '星河强者',
+    description: '达到50级',
+    category: 'growth',
+    rarity: 'legendary',
+    icon: '⭐',
+    reward: { gold: 30000 },
+    condition: { type: 'level', value: 50 }
+  },
   
   awaken_2: {
     id: 'awaken_2',
@@ -138,15 +160,15 @@ const DataAchievements = {
     condition: { type: 'awaken_count', value: 2 }
   },
   
-  awaken_5: {
-    id: 'awaken_5',
-    name: '五系全才',
-    description: '觉醒五个元素系',
+  awaken_4: {
+    id: 'awaken_4',
+    name: '四系全才',
+    description: '觉醒四个元素系',
     category: 'growth',
     rarity: 'epic',
     icon: '🌈',
     reward: { gold: 5000 },
-    condition: { type: 'awaken_count', value: 5 }
+    condition: { type: 'awaken_count', value: 4 }
   },
   
   awaken_all: {

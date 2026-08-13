@@ -31,19 +31,19 @@ const NPCGrowthService = {
         summon:   { maxHp: 22, maxMp: 0,  attack: 3, defense: 2, speed: 2, spirit: 0 },
     },
 
-    // 境界加成
+    // 境界加成（固定值，按新等级体系调整）
     _realmBonus: {
         initial: { maxHp: 0, maxMp: 0, attack: 0, defense: 0, speed: 0, spirit: 0 },
-        middle:  { maxHp: 100, maxMp: 50, attack: 10, defense: 8, speed: 3, spirit: 5 },
-        high:    { maxHp: 300, maxMp: 150, attack: 25, defense: 20, speed: 8, spirit: 15 },
-        super:   { maxHp: 800, maxMp: 400, attack: 60, defense: 50, speed: 20, spirit: 40 },
+        middle:  { maxHp: 150, maxMp: 80, attack: 15, defense: 12, speed: 5, spirit: 10 },
+        high:    { maxHp: 500, maxMp: 250, attack: 40, defense: 30, speed: 12, spirit: 25 },
+        super:   { maxHp: 1200, maxMp: 600, attack: 90, defense: 70, speed: 25, spirit: 50 },
     },
 
-    // 根据等级推断境界
+    // 根据等级推断境界（新等级体系：初阶1-10，中阶11-30，高阶31-55，超阶56+）
     _inferRealm(level) {
-        if (level >= 40) return "super";
-        if (level >= 20) return "high";
-        if (level >= 8) return "middle";
+        if (level >= 56) return "super";
+        if (level >= 31) return "high";
+        if (level >= 11) return "middle";
         return "initial";
     },
 

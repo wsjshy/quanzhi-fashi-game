@@ -88,28 +88,28 @@ const RealmSystem = {
         initial_to_middle: {
             fromRealm: 'initial',
             toRealm: 'middle',
-            requiredLevel: 7,
+            requiredLevel: 10,
             requiredItems: [
                 // { itemId: 'earth_spring', amount: 1 }  // 地圣泉
             ],
             baseSuccessRate: 0.7,  // 基础成功率70%
-            description: '初阶突破到中阶，需要等级7级'
+            description: '初阶突破到中阶，需要等级10级'
         },
         middle_to_high: {
             fromRealm: 'middle',
             toRealm: 'high',
-            requiredLevel: 14,
+            requiredLevel: 30,
             requiredItems: [],
             baseSuccessRate: 0.5,  // 基础成功率50%
-            description: '中阶突破到高阶，需要等级14级'
+            description: '中阶突破到高阶，需要等级30级'
         },
         high_to_super: {
             fromRealm: 'high',
             toRealm: 'super',
-            requiredLevel: 25,
+            requiredLevel: 55,
             requiredItems: [],
             baseSuccessRate: 0.3,  // 基础成功率30%
-            description: '高阶突破到超阶，需要等级25级'
+            description: '高阶突破到超阶，需要等级55级'
         }
     },
 

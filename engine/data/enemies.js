@@ -114,7 +114,7 @@ const DataEnemies = {
     ],
     growth: {
       base: {
-        level: 5,
+        level: 7,
         elements: ["dark", "earth"],
         skills: ["basic_attack", "demon_sand_breath", "demon_wild_charge", "battle_howl"],
         traits: [],
@@ -125,7 +125,7 @@ const DataEnemies = {
       events: [
         {
           after: "wolf_evolution_1",
-          level: 12,
+          level: 22,
           form: "advanced_wolf",
           addSkills: ["demon_three_burst", "demon_rage_frenzy"],
           addTraits: ["demon_rage_frenzy"],
@@ -1813,7 +1813,7 @@ const DataEnemies = {
     ],
     growth: {
       base: {
-        level: 5,
+        level: 7,
         elements: ["dark"],
         skills: ["basic_attack", "demon_life_drain", "demon_climb"],
         traits: ["scale_armor", "wall_climbing", "blood_sucker", "cunning"],
@@ -1824,7 +1824,7 @@ const DataEnemies = {
       events: [
         {
           after: "battle_molt_1",
-          level: 8,
+          level: 11,
           form: "demon_form",
           addSkills: ["demon_shadow_claw"],
           title: "蜕皮女妖",

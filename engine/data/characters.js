@@ -595,13 +595,13 @@ const DataCharacters = {
       events: [
         {
           after: "star_path_awaken",
-          level: 3,
+          level: 4,
           addSkills: ["thunder_bolt", "fire_bolt"],
           title: "初阶法师·双系",
         },
         {
           after: "bocheng_disaster",
-          level: 10,
+          level: 18,
           addElements: ["shadow"],
           addSkills: ["thunder_fury", "fire_fist", "shadow_step"],
           addEquipment: ["blood_beast_boots"],
@@ -610,7 +610,7 @@ const DataCharacters = {
         },
         {
           after: "mingzhu_entrance",
-          level: 15,
+          level: 28,
           addElements: ["summon"],
           addSkills: ["dimensional_summon", "shadow_spike"],
           addEquipment: ["sickle_bone_shield"],
@@ -1548,7 +1548,7 @@ const DataCharacters = {
     },
     growth: {
       base: {
-        level: 3,
+        level: 4,
         elements: ["light"],
         skills: ["basic_attack", "light_ray"],
         equipment: [],
@@ -1559,7 +1559,7 @@ const DataCharacters = {
       events: [
         {
           after: "mingzhu_entrance",
-          level: 10,
+          level: 18,
           addSkills: ["light_blessing", "light_sanctuary", "light_purify"],
           title: "光系中阶法师",
           unlocks: ["duel"],
@@ -6059,7 +6059,7 @@ const DataCharacters = {
     },
     growth: {
       base: {
-        level: 5,
+        level: 7,
         elements: ["wind", "plant"],
         skills: ["basic_attack", "wind_track_phantom", "plant_vine_bind"],
         title: "牧家大小姐",
@@ -6068,7 +6068,7 @@ const DataCharacters = {
       events: [
         {
           after: "mingzhu_entrance",
-          level: 10,
+          level: 18,
           addSkills: ["wind_tornado", "plant_forest_prison"],
           title: "双系中阶·明珠女神",
           unlocks: ["duel"],
@@ -6160,7 +6160,7 @@ const DataCharacters = {
     },
     growth: {
       base: {
-        level: 8,
+        level: 10,
         elements: ["earth", "ice"],
         skills: ["basic_attack", "ice_vine", "earth_sink"],
         title: "富家子弟",
@@ -6169,7 +6169,7 @@ const DataCharacters = {
       events: [
         {
           after: "mingzhu_entrance",
-          level: 10,
+          level: 18,
           addSkills: ["ice_lock"],
           title: "土冰双系中阶",
           unlocks: ["duel"],
@@ -6184,13 +6184,13 @@ const DataCharacters = {
     title: "白家子弟",
     description: "白家子弟，风系中阶法师。为人高傲，实力不俗。",
     elements: ["wind"],
-    level: 10,
-    maxHp: 450,
-    maxMp: 200,
-    attack: 30,
-    defense: 15,
-    speed: 30,
-    spirit: 22,
+    level: 18,
+    maxHp: 500,
+    maxMp: 280,
+    attack: 35,
+    defense: 18,
+    speed: 32,
+    spirit: 28,
     skills: ["basic_attack", "wind_track_phantom"],
     aiType: "aggressive",
     growthType: "mage",
