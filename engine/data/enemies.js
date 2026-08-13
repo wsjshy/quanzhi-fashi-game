@@ -1755,5 +1755,101 @@ const DataEnemies = {
       lowHp: "你比我想象的强。",
       death: "我输了。"
     }
+  },
+
+  // ===== 蜕皮妖（变身型妖魔） =====
+  molting_succubus: {
+    id: "molting_succubus",
+    name: "蜕皮女妖",
+    title: "变身型妖魔",
+    description: "伪装成人类女性的妖魔，夜晚蜕皮现出原形。满身鳞片，长舌，能在垂直墙面攀爬跳跃，喜吸年轻女性鲜血，尤其魔法师的血。狡猾，会利用同伴当垫背。",
+    elements: ["dark"],
+    level: 8,
+    maxHp: 350,
+    maxMp: 60,
+    attack: 32,
+    defense: 20,
+    speed: 25,
+    spirit: 15,
+    skills: [
+      "basic_attack",
+      "demon_claw_strike",
+      "demon_tongue_whip",
+      "demon_wall_climb"
+    ],
+    aiType: "kiter",
+    enemyType: "demon",
+    demonTier: "warrior",
+    spriteColor: "#4A0080",
+    isEnemy: true,
+    isCanon: true,
+    canonSource: "第177-180章 蜕皮女妖",
+    traits: ["scale_armor", "wall_climbing", "blood_sucker", "cunning"],
+    expReward: 300,
+    goldReward: 150,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.8, min: 1, max: 3 }
+    ]
+  },
+
+  molting_brute: {
+    id: "molting_brute",
+    name: "蜕皮男妖",
+    title: "变身型妖魔",
+    description: "伪装成人类男性的妖魔，蜕皮后手臂可膨胀伸长如铁球摆拳，力大无穷。鳞片防御高，雷系伤害减半。行动较迟缓但破坏力惊人。",
+    elements: ["dark", "earth"],
+    level: 9,
+    maxHp: 500,
+    maxMp: 40,
+    attack: 45,
+    defense: 30,
+    speed: 10,
+    spirit: 8,
+    skills: [
+      "basic_attack",
+      "demon_ball_fist",
+      "demon_extend_arm"
+    ],
+    aiType: "aggressive",
+    enemyType: "demon",
+    demonTier: "warrior",
+    spriteColor: "#5C4033",
+    isEnemy: true,
+    isCanon: true,
+    canonSource: "第179-180章 蜕皮男妖",
+    traits: ["scale_armor", "thunder_resist", "extendable_limbs", "super_strength"],
+    expReward: 350,
+    goldReward: 180,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.8, min: 1, max: 3 }
+    ]
+  },
+
+  // ===== 青天猎所 =====
+  lingling: {
+    id: "lingling",
+    name: "灵灵",
+    title: "猎人大师·青天猎所",
+    description: "包老头的孙女，约12岁，双马尾小萝莉。猎人大师称谓，智商极高，擅长推理和情报分析。毒舌，人小鬼大，前搭档小鼎牺牲后与莫凡组队。",
+    elements: ["none"],
+    level: 5,
+    maxHp: 100,
+    maxMp: 200,
+    attack: 5,
+    defense: 3,
+    speed: 15,
+    spirit: 40,
+    skills: [],
+    aiType: "tactical",
+    enemyType: "human",
+    spriteColor: "#FFB6C1",
+    isEnemy: false,
+    isAlly: true,
+    isCanon: true,
+    canonSource: "第174-180章 青天猎所",
+    traits: ["hunter_master", "genius_intellect", "surveillance_expert"],
+    battleQuotes: {
+      start: "你年纪太嫩了。"
+    }
   }
 };

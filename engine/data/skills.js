@@ -1927,6 +1927,107 @@ const DataSkills = {
     source: "第157-158章 进阶期幽狼兽三段爆发"
   },
 
+  demon_claw_strike: {
+    id: "demon_claw_strike",
+    name: "利爪撕裂",
+    description: "蜕皮女妖用利爪撕裂敌人",
+    element: "physical",
+    type: "damage",
+    mpCost: 4,
+    baseDamage: 22,
+    damageMultiplier: 1.3,
+    hitRate: 0.9,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 1,
+    tier: "战将级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第178章 蜕皮女妖"
+  },
+
+  demon_tongue_whip: {
+    id: "demon_tongue_whip",
+    name: "长舌鞭击",
+    description: "蜕皮女妖伸长舌头鞭打，有概率缠绕",
+    element: "physical",
+    type: "damage",
+    mpCost: 6,
+    baseDamage: 18,
+    damageMultiplier: 1.1,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "舌缚", type: "bind", duration: 1, chance: 0.3 }
+    ],
+    isCanon: true,
+    source: "第178章 蜕皮女妖长舌"
+  },
+
+  demon_wall_climb: {
+    id: "demon_wall_climb",
+    name: "壁虎游墙",
+    description: "蜕皮女妖在墙面攀爬跳跃，大幅提升闪避",
+    element: "physical",
+    type: "buff",
+    mpCost: 5,
+    baseDamage: 0,
+    damageMultiplier: 0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "攀爬", type: "evasion_up", duration: 2, chance: 1.0, evasionBonus: 0.4 }
+    ],
+    isCanon: true,
+    source: "第178章 蜕皮女妖两楼间攀爬"
+  },
+
+  demon_ball_fist: {
+    id: "demon_ball_fist",
+    name: "铁球摆拳",
+    description: "蜕皮男妖膨胀手臂如铁球横扫，范围伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 35,
+    damageMultiplier: 1.5,
+    hitRate: 0.8,
+    critRate: 0.1,
+    targetType: "all_enemies",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第179章 蜕皮男妖铁球摆拳"
+  },
+
+  demon_extend_arm: {
+    id: "demon_extend_arm",
+    name: "伸缩长臂",
+    description: "蜕皮男妖伸长手臂攻击远处目标",
+    element: "physical",
+    type: "damage",
+    mpCost: 6,
+    baseDamage: 28,
+    damageMultiplier: 1.3,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "战将级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第179章 蜕皮男妖手臂伸长"
+  },
+
   fierce_roar: {
     id: "fierce_roar",
     name: "凶猛咆哮",
