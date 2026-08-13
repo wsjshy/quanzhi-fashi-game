@@ -1989,7 +1989,201 @@ const DataSkills = {
         type: "damage_reflect",
         duration: 3,
         chance: 1,
-        reflectPercent: 0.3  // 反弹30%伤害
+        reflectPercent: 0.3
+      }
+    ]
+  },
+  
+  // ========== 奴仆级妖魔特色技能 ==========
+  
+  wind_step: {
+    id: "wind_step",
+    name: "疾风步",
+    description: "风系妖魔高速移动，速度和闪避大幅提升",
+    element: "wind",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "疾风步",
+        type: "speed_up",
+        duration: 3,
+        chance: 1,
+        value: 0.3
+      },
+      {
+        name: "疾风步",
+        type: "evasion_up",
+        duration: 3,
+        chance: 1,
+        value: 0.2
+      }
+    ]
+  },
+  
+  fire_burst: {
+    id: "fire_burst",
+    name: "火焰爆发",
+    description: "火系妖魔爆发火焰，造成大量伤害并有几率灼烧",
+    element: "fire",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.5,
+    statusEffects: [
+      {
+        name: "灼烧",
+        type: "burn",
+        duration: 2,
+        chance: 0.4,
+        damagePerTurn: 8
+      }
+    ]
+  },
+  
+  thunder_charge: {
+    id: "thunder_charge",
+    name: "雷电充能",
+    description: "雷系妖魔积蓄雷电力量，攻击力大幅提升",
+    element: "thunder",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "雷电充能",
+        type: "attack_up",
+        duration: 3,
+        chance: 1,
+        value: 0.35
+      }
+    ]
+  },
+  
+  frost_breath: {
+    id: "frost_breath",
+    name: "冰冻吐息",
+    description: "冰系妖魔吐出寒气，伤害不高但有很大几率冻结目标",
+    element: "ice",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.8,
+    statusEffects: [
+      {
+        name: "冻结",
+        type: "frozen",
+        duration: 1,
+        chance: 0.5
+      }
+    ]
+  },
+  
+  poison_fang: {
+    id: "poison_fang",
+    name: "毒牙",
+    description: "毒蛇类妖魔咬击，注入剧毒造成持续伤害",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.9,
+    statusEffects: [
+      {
+        name: "中毒",
+        type: "poison",
+        duration: 3,
+        chance: 0.6,
+        dotDamage: 6
+      }
+    ]
+  },
+  
+  web_bind: {
+    id: "web_bind",
+    name: "蛛网束缚",
+    description: "蜘蛛类妖魔吐出蛛网，束缚目标并降低速度",
+    element: "water",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.6,
+    statusEffects: [
+      {
+        name: "减速",
+        type: "slow",
+        duration: 2,
+        chance: 0.7,
+        value: 0.3
+      },
+      {
+        name: "束缚",
+        type: "bind",
+        duration: 1,
+        chance: 0.3
+      }
+    ]
+  },
+  
+  hard_shell: {
+    id: "hard_shell",
+    name: "坚硬外壳",
+    description: "甲壳类妖魔收缩身体，防御力大幅提升",
+    element: "earth",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "坚硬外壳",
+        type: "defense_up",
+        duration: 3,
+        chance: 1,
+        value: 0.5
+      }
+    ]
+  },
+  
+  blind_dust: {
+    id: "blind_dust",
+    name: "致盲粉尘",
+    description: "飞蛾类妖魔散播磷粉，降低目标命中率",
+    element: "light",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "致盲",
+        type: "accuracy_down",
+        duration: 3,
+        chance: 0.7,
+        value: 0.3
       }
     ]
   }

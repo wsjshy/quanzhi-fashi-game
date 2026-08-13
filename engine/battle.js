@@ -3363,6 +3363,7 @@ const BattleSystem = {
             e.type === 'stun' || 
             e.type === 'frozen' || 
             e.type === 'paralyze' ||
+            e.type === 'bind' ||
             e.skipTurn === true
         );
     },
@@ -3413,6 +3414,14 @@ const BattleSystem = {
             // 伤害反弹
             if (effect.type === 'damage_reflect' && effect.reflectPercent) {
                 mods.damageReflect += effect.reflectPercent;
+            }
+            // 致盲/命中降低
+            if (effect.type === 'accuracy_down' && effect.value) {
+                mods.hitRateMod -= effect.value;
+            }
+            // 中毒持续伤害（在回合结束处理，这里只标记）
+            if (effect.type === 'poison' && effect.damage) {
+                // 中毒伤害在turnEnd中处理
             }
         });
         

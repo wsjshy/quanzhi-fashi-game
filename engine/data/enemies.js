@@ -234,7 +234,8 @@ const DataEnemies = {
     speed: 18,
     skills: [
       "basic_attack",
-      "wind_blade"
+      "wind_blade",
+      "wind_step"
     ],
     aiType: "kiter",
     spriteColor: "#88ccaa",
@@ -275,7 +276,8 @@ const DataEnemies = {
     speed: 10,
     skills: [
       "basic_attack",
-      "water_chain"
+      "water_chain",
+      "web_bind"
     ],
     aiType: "controller",
     spriteColor: "#6699cc",
@@ -316,7 +318,8 @@ const DataEnemies = {
     speed: 13,
     skills: [
       "basic_attack",
-      "fire_bolt"
+      "fire_bolt",
+      "fire_burst"
     ],
     spriteColor: "#ff6633",
     isEnemy: true,
@@ -357,7 +360,8 @@ const DataEnemies = {
     speed: 7,
     skills: [
       "basic_attack",
-      "earth_spike"
+      "earth_spike",
+      "hard_shell"
     ],
     spriteColor: "#ccaa33",
     isEnemy: true,
@@ -398,7 +402,8 @@ const DataEnemies = {
     speed: 15,
     skills: [
       "basic_attack",
-      "light_ray"
+      "light_ray",
+      "blind_dust"
     ],
     spriteColor: "#ffff99",
     isEnemy: true,
@@ -439,7 +444,8 @@ const DataEnemies = {
     speed: 15,
     skills: [
       "basic_attack",
-      "thunder_bolt"
+      "thunder_bolt",
+      "thunder_charge"
     ],
     aiType: "burst",
     spriteColor: "#9966ff",
@@ -480,7 +486,8 @@ const DataEnemies = {
     speed: 7,
     skills: [
       "basic_attack",
-      "ice_spike"
+      "ice_spike",
+      "frost_breath"
     ],
     spriteColor: "#99ddff",
     isEnemy: true,
@@ -521,7 +528,8 @@ const DataEnemies = {
     speed: 16,
     skills: [
       "basic_attack",
-      "dark_bolt"
+      "dark_bolt",
+      "poison_fang"
     ],
     spriteColor: "#553377",
     isEnemy: true,
