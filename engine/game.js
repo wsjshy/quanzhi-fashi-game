@@ -10,6 +10,9 @@ const Game = {
     // 当前事件
     currentEvent: null,
     currentEventChoices: null,
+    
+    // 上一次战斗（用于再次挑战）
+    lastBattle: null,  // { enemy, options }
 
     // 初始化
     init() {
@@ -808,11 +811,29 @@ const Game = {
     },
 
     // ========== 战斗界面 ==========
-    startBattle(enemy, endCallback) {
+    startBattle(enemy, endCallback, options = {}) {
         this.state = 'battle';
         this.battleEndCallback = endCallback || null;
-        BattleSystem.startBattle(enemy);
+        // 保存上一次战斗数据（用于再次挑战）
+        this.lastBattle = {
+            enemy: JSON.parse(JSON.stringify(enemy)),  // 深拷贝
+            options: options
+        };
+        BattleSystem.startBattle(enemy, options);
         UI.renderBattleScreen();
+    },
+    
+    // 再次挑战上一次的敌人
+    rematch() {
+        if (!this.lastBattle) {
+            UI.showMessage('没有可再次挑战的敌人');
+            return;
+        }
+        // 恢复玩家HP/MP到战斗前状态？不，玩家应该保持当前状态
+        // 重新创建敌人（深拷贝）
+        const enemy = JSON.parse(JSON.stringify(this.lastBattle.enemy));
+        const options = this.lastBattle.options || {};
+        this.startBattle(enemy, null, options);
     },
     
     // 开始车轮战

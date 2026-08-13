@@ -857,6 +857,28 @@ const UI = {
                             `}).join('')}
                         </div>
                         
+                        <!-- 再次挑战 -->
+                        ${Game.lastBattle ? `
+                        <button onclick="Game.rematch()" style="
+                            margin-top: 15px;
+                            width: 100%;
+                            padding: 15px 25px;
+                            background: linear-gradient(135deg, rgba(120, 40, 40, 0.8), rgba(160, 60, 60, 0.8));
+                            border: 2px solid #aa4444;
+                            border-radius: 10px;
+                            color: #ffdddd;
+                            cursor: pointer;
+                            text-align: left;
+                            transition: all 0.3s;
+                            font-size: 16px;
+                        " onmouseover="this.style.borderColor='#ff6666'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#aa4444'; this.style.transform='translateX(0)'">
+                            <div style="font-size: 18px; margin-bottom: 5px;">
+                                ⚔️ 再次挑战：${Game.lastBattle.enemy.name || '未知敌人'}
+                            </div>
+                            <div style="font-size: 13px; color: #cc9999;">重新挑战上一次的敌人</div>
+                        </button>
+                        ` : ''}
+                        
                         <!-- 等待时间 -->
                         <h3 style="color: #ffd700; margin: 30px 0 20px; font-size: 22px;">⏰ 时间</h3>
                         <div style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 15px;">
