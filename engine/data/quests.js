@@ -1906,5 +1906,156 @@ const DataQuests = {
     dialogueStart: "嘿，快到饭点了，一起去食堂吃饭吧？我听说今天有红烧肉！",
     dialogueInProgress: "快点快点，去晚了就没好吃的了！",
     dialogueComplete: "呼，吃得好饱啊！下午的课才有精神嘛。"
+  },
+
+  // ========== 明珠学府·主校区考核任务链（第201-230章）==========
+
+  quest_mingzhu_exam_notice: {
+    id: "quest_mingzhu_exam_notice",
+    name: "主校区考核",
+    description: "导师通知：主校区考核即将开始，目标是在主校区捕获一只暗影妖兽。通过者可入主校区。",
+    giver: "mo_fan",
+    type: "story",
+    objectives: [
+      { type: "talk", npcId: "mo_fan", count: 1, description: "与莫凡讨论考核" }
+    ],
+    rewards: { exp: 200, gold: 100 },
+    prerequisites: [],
+    nextQuest: "quest_mingzhu_partner",
+    isMainQuest: true,
+    dialogueStart: "主校区考核要开始了。目标是暗影妖兽，在主校区里。你知道这意味着什么吗——不只是抓妖兽，还有其他学生的竞争。",
+    dialogueInProgress: "想好了吗？这次考核不简单。",
+    dialogueComplete: "好，准备一下，考核见。"
+  },
+
+  quest_mingzhu_partner: {
+    id: "quest_mingzhu_partner",
+    name: "选择搭档",
+    description: "考核前可以和同学交流。去和艾图图、牧奴娇聊聊，了解她们的想法。",
+    giver: "ai_tutu",
+    type: "story",
+    objectives: [
+      { type: "talk", npcId: "ai_tutu", count: 1, description: "和艾图图聊聊" },
+      { type: "talk", npcId: "mu_nujiao", count: 1, description: "和牧奴娇聊聊" }
+    ],
+    rewards: { exp: 150, gold: 50 },
+    prerequisites: ["quest_mingzhu_exam_notice"],
+    nextQuest: "quest_catch_shadow_beast",
+    isMainQuest: true,
+    dialogueStart: "大魔头！你也要参加考核吗？牧姐姐说她要去，我也想去看看！",
+    dialogueInProgress: "考核要小心哦，听说主校区很危险的。",
+    dialogueComplete: "好，考核加油！"
+  },
+
+  quest_catch_shadow_beast: {
+    id: "quest_catch_shadow_beast",
+    name: "捕获暗影妖兽",
+    description: "进入主校区，找到并击败暗影妖兽。注意：其他学生也在争夺。",
+    giver: "mo_fan",
+    type: "hunt",
+    objectives: [
+      { type: "kill", enemyId: "shadow_beast", count: 1, description: "击败暗影妖兽" }
+    ],
+    rewards: {
+      exp: 500,
+      gold: 300,
+      reputation: { mingzhu_school: 10 }
+    },
+    prerequisites: ["quest_mingzhu_partner"],
+    nextQuest: "quest_black_church_encounter",
+    isMainQuest: true,
+    dialogueStart: "暗影妖兽在主校区出没。找到它，击败它。但小心——不只是妖兽在暗处。",
+    dialogueInProgress: "找到暗影妖兽了吗？",
+    dialogueComplete: "干得好。但事情没那么简单……"
+  },
+
+  quest_black_church_encounter: {
+    id: "quest_black_church_encounter",
+    name: "黑教廷现身",
+    description: "考核中出现了黑教廷的灰衣人！击败他们，保护同学。",
+    giver: "mo_fan",
+    type: "hunt",
+    objectives: [
+      { type: "kill", enemyId: "black_church_gray", count: 3, description: "击败3名黑教廷灰衣人" }
+    ],
+    rewards: {
+      exp: 800,
+      gold: 500,
+      reputation: { hunter_guild: 15, mingzhu_school: 10 }
+    },
+    prerequisites: ["quest_catch_shadow_beast"],
+    nextQuest: "quest_xu_zhaoting_farewell",
+    isMainQuest: true,
+    dialogueStart: "是黑教廷！他们怎么会在这里？！小心，这些人不是普通学生！",
+    dialogueInProgress: "灰衣人不止一个，小心！",
+    dialogueComplete: "解决了……但还有更糟的事。"
+  },
+
+  quest_xu_zhaoting_farewell: {
+    id: "quest_xu_zhaoting_farewell",
+    name: "最后的告别",
+    description: "许昭霆被黑教廷变成了诅咒畜妖。在他残存的意识消失前，完成他最后的心愿。",
+    giver: "mo_fan",
+    type: "story",
+    objectives: [
+      { type: "talk", npcId: "mo_fan", count: 1, description: "听莫凡讲述经过" }
+    ],
+    rewards: {
+      exp: 1000,
+      items: [{ itemId: "shen_shizhe_name_list", count: 1 }],
+      reputation: { hunter_guild: 20 }
+    },
+    prerequisites: ["quest_black_church_encounter"],
+    nextQuest: "quest_da_hun_zhan",
+    isMainQuest: true,
+    dialogueStart: "许昭霆……他用最后的意识把神侍者的名字交给了我。他求我结束他的痛苦。帕特农救不了他。我……用玫炎送了他和张璐璐最后一程。",
+    dialogueInProgress: "……",
+    dialogueComplete: "他的仇，我来报。神侍者的名字，我会追查到底。"
+  },
+
+  quest_da_hun_zhan: {
+    id: "quest_da_hun_zhan",
+    name: "大混战",
+    description: "莫凡用暗影妖兽引蛇出洞，近千学生在驯兽铁笼前混战。在混乱中击败黑教廷的党羽。",
+    giver: "mo_fan",
+    type: "hunt",
+    objectives: [
+      { type: "kill", enemyId: "shen_mingxiao", count: 1, description: "击败沈明笑" },
+      { type: "kill", enemyId: "wang_liting", count: 1, description: "击败王力挺" }
+    ],
+    rewards: {
+      exp: 1500,
+      gold: 1000,
+      reputation: { mingzhu_school: 20, hunter_guild: 10 }
+    },
+    prerequisites: ["quest_xu_zhaoting_farewell"],
+    nextQuest: "quest_yu_ang_final",
+    isMainQuest: true,
+    dialogueStart: "我把暗影妖兽带到驯兽铁笼，宣布地圣泉在它肚子里。所有学生都疯了——黑教廷的人也一定会出手。在混乱中，找到他们。",
+    dialogueInProgress: "混战中注意辨别目标！",
+    dialogueComplete: "杂鱼清完了。宇昂——该你了。"
+  },
+
+  quest_yu_ang_final: {
+    id: "quest_yu_ang_final",
+    name: "对决宇昂",
+    description: "宇昂伪装在学生中，最终现身。与他决一死战，为许昭霆报仇！",
+    giver: "mo_fan",
+    type: "hunt",
+    objectives: [
+      { type: "kill", enemyId: "yu_ang_black_church", count: 1, description: "击败宇昂（黑教廷教士）" }
+    ],
+    rewards: {
+      exp: 3000,
+      gold: 5000,
+      items: [{ itemId: "dark_church_badge", count: 1 }],
+      reputation: { mingzhu_school: 50, hunter_guild: 50, tianlan_school: 30 }
+    },
+    prerequisites: ["quest_da_hun_zhan"],
+    nextQuest: null,
+    isMainQuest: true,
+    dialogueStart: "宇昂！博城的账，许昭霆的命，今天一起算！",
+    dialogueInProgress: "宇昂很强，小心！",
+    dialogueComplete: "结束了……许昭霆，你看到了吗。"
   }
 };

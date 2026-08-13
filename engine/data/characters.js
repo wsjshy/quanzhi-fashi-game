@@ -237,6 +237,19 @@ const DataCharacters = {
               nextNode: "become_brothers"
             },
             {
+              id: "mingzhu_exam",
+              text: "主校区考核的事……",
+              condition: {
+                minOpinion: 10,
+                notFlags: ["quest_mingzhu_exam_notice_started"]
+              },
+              effects: {
+                startQuest: "quest_mingzhu_exam_notice",
+                flags: { quest_mingzhu_exam_notice_started: true }
+              },
+              nextNode: "mingzhu_exam_intro"
+            },
+            {
               id: "leave",
               text: "没什么事，先走了",
               effects: {},
@@ -576,6 +589,23 @@ const DataCharacters = {
               id: "back",
               text: "谢谢兄弟！",
               effects: {},
+              nextNode: "default"
+            }
+          ]
+        },
+        mingzhu_exam_intro: {
+          id: "mingzhu_exam_intro",
+          texts: [
+            "主校区考核要开始了。目标是暗影妖兽，在主校区里。",
+            "你知道这意味着什么吧？不只是抓妖兽——还有其他学生的竞争。送到驯兽铁笼才算完成，所以一定会有人抢。",
+            "更重要的是……我怀疑黑教廷的人会混在里面。你自己小心。"
+          ],
+          mood: "serious",
+          choices: [
+            {
+              id: "accept",
+              text: "我知道了，考核见。",
+              effects: { opinion: 3 },
               nextNode: "default"
             }
           ]
@@ -6074,10 +6104,109 @@ const DataCharacters = {
           unlocks: ["duel"],
         }
       ]
-    }
-  },
-
-  ai_tutu: {
+    },
+    dialogueTree: {
+      npcId: "mu_nujiao",
+      nodes: {
+        default: {
+          id: "default",
+          texts: [
+            "……什么事？",
+            "嗯？",
+            "是你。"
+          ],
+          mood: "cold",
+          choices: [
+            { id: "chat", text: "随便聊聊", condition: { minOpinion: 10 }, nextNode: "small_talk" },
+            { id: "ask_training", text: "请教修炼问题", condition: { minOpinion: 15 }, effects: { exp: 15, opinion: 2 }, nextNode: "training_advice" },
+            { id: "duel", text: "切磋一下？", condition: { minOpinion: 30, minLevel: 5 }, effects: { opinion: 5 }, nextNode: "duel_response", action: "start_battle", actionData: { enemyId: "mu_nujiao" } },
+            { id: "ask_plant", text: "你的植物系很厉害", condition: { minOpinion: 20 }, nextNode: "plant_magic" },
+            { id: "about_battle", text: "新生大赛那场……", condition: { minOpinion: 25, npcFlags: { "battle_mu_nujiao_done": true } }, nextNode: "rematch_talk" },
+            { id: "give_gift", text: "送你东西", action: "open_gift" },
+            { id: "leave", text: "告辞", nextNode: null }
+          ]
+        },
+        small_talk: {
+          id: "small_talk",
+          texts: [
+            "我不太擅长闲聊。如果你想切磋，我可以奉陪。",
+            "艾图图又拉着你说话了？她就是话多。",
+            "在学校还习惯吗？明珠不像博城，这里竞争激烈得多。"
+          ],
+          choices: [
+            { id: "back", text: "那我不打扰了", nextNode: "default" }
+          ]
+        },
+        training_advice: {
+          id: "training_advice",
+          texts: [
+            "修炼没有捷径，但有方法。星子的连接不是靠蛮力，是靠感知。",
+            "你雷系速度很快，但控制力不足。试试在引导时放慢速度，感受每一颗星子的律动。",
+            "中阶之后，星图的描画需要精神力高度集中。你的精神力……比一般初阶强得多。"
+          ],
+          choices: [
+            { id: "thanks", text: "受教了", effects: { opinion: 3 }, nextNode: "default" }
+          ]
+        },
+        duel_response: {
+          id: "duel_response",
+          texts: [
+            "好。我也想看看，你到底有多少实力。",
+            "希望你比白藏锋强一点。",
+            "来吧，我不会手下留情。"
+          ],
+          choices: [
+            { id: "start", text: "请", nextNode: null }
+          ]
+        },
+        plant_magic: {
+          id: "plant_magic",
+          texts: [
+            "植物系不只是攻击，更重要的是控制。藤条缠绕、荆棘束缚，能为队友创造机会。",
+            "我见过你战斗，你太依赖雷系的爆发。真正的战斗，控制比伤害更重要。",
+            "……当然，你的雷系威力确实不一般。那种紫色的雷，不是凡种吧？"
+          ],
+          condition: { minOpinion: 35 },
+          choices: [
+            { id: "reveal", text: "是灵种", condition: { minOpinion: 50 }, effects: { opinion: 5, trust: 5, giveInfo: "mu_knows_spirit_seed" }, nextNode: "spirit_seed_reveal" },
+            { id: "deflect", text: "秘密", effects: { opinion: -2 }, nextNode: "secret_kept" },
+            { id: "back", text: "多谢指点", nextNode: "default" }
+          ]
+        },
+        spirit_seed_reveal: {
+          id: "spirit_seed_reveal",
+          texts: [
+            "果然……我就觉得不对。灵级雷种，难怪白藏锋挡不住。",
+            "你放心，我不会告诉别人。每个人都有自己的机缘。",
+            "不过你也要小心，灵种这种东西，被人知道了会招来麻烦。"
+          ],
+          choices: [
+            { id: "thanks", text: "谢谢", effects: { trust: 5 }, nextNode: "default" }
+          ]
+        },
+        secret_kept: {
+          id: "secret_kept",
+          texts: [
+            "……也罢。谁都有秘密。",
+            "不想说就算了。"
+          ],
+          choices: [
+            { id: "back", text: "告辞", nextNode: "default" }
+          ]
+        },
+        rematch_talk: {
+          id: "rematch_talk",
+          texts: [
+            "那场战斗……我输得心服口服。你的霹雳夜叉，我挡不住。",
+            "但下次就不一定了。我也在进步。",
+            "莫凡，你是个值得认真对待的对手。"
+          ],
+          choices: [
+            { id: "rematch", text: "随时奉陪", effects: { opinion: 5, trust: 3 }, nextNode: "default" }
+          ]
+        }
+      }
+    },
     id: "ai_tutu",
     name: "艾图图",
     title: "白兔少女",
@@ -6118,6 +6247,141 @@ const DataCharacters = {
     relationships: {
       mu_nujiao: { opinion: 90, trust: 85, type: "best_friend", label: "好闺蜜" },
       mo_fan: { opinion: 40, trust: 20, type: "roommate", label: "合租室友" }
+    },
+    dialogueTree: {
+      npcId: "ai_tutu",
+      nodes: {
+        default: {
+          id: "default",
+          texts: [
+            "大魔头！你又在偷懒！",
+            "嘿，莫凡，今天有没有什么好玩的事？",
+            "回来啦？牧姐姐不在，你可别偷看我！"
+          ],
+          mood: "playful",
+          choices: [
+            { id: "chat_daily", text: "今天过得怎么样？", nextNode: "daily_chat" },
+            { id: "ask_shield", text: "当挡箭牌的事还算数吗？", condition: { minOpinion: 10 }, nextNode: "shield_business" },
+            { id: "ask_mu", text: "牧奴娇在干嘛？", condition: { minOpinion: 5 }, nextNode: "about_mu" },
+            { id: "ask_cultivation", text: "你修炼得怎么样了？", condition: { minOpinion: 15 }, nextNode: "cultivation_chat" },
+            { id: "tease", text: "你那些追求者又来了？", condition: { minOpinion: 25 }, effects: { opinion: -2 }, nextNode: "suitors" },
+            { id: "give_gift", text: "我有东西给你", action: "open_gift" },
+            { id: "leave", text: "先走了", effects: {}, nextNode: null }
+          ]
+        },
+        daily_chat: {
+          id: "daily_chat",
+          texts: [
+            "无聊死了！修炼修炼修炼，每天除了修炼就是修炼，那些追求者又烦得要死。",
+            "今天韩洛又送花来了，被我直接扔垃圾桶了。还有那个贾文清，一副自以为是的样子。",
+            "牧姐姐今天又在修炼，她真的好努力啊……我就不行，坐不住。"
+          ],
+          choices: [
+            { id: "back", text: "回去", nextNode: "default" }
+          ]
+        },
+        shield_business: {
+          id: "shield_business",
+          texts: [
+            "当然算数！一次五万，概不赊账。你当我挡箭牌，我给你钱，公平交易！",
+            "说好了啊，那些烦人的追求者来了你得帮我挡着。特别是韩洛和贾文清，跟苍蝇一样。"
+          ],
+          effects: { npcFlags: { knows_shield_deal: true } },
+          choices: [
+            { id: "accept", text: "成交，有钱不赚王八蛋", effects: { opinion: 5, npcFlags: { shield_deal: true } }, nextNode: "deal_accepted" },
+            { id: "decline", text: "五万太少了吧", effects: { opinion: -1 }, nextNode: "haggle" },
+            { id: "back", text: "算了", nextNode: "default" }
+          ]
+        },
+        deal_accepted: {
+          id: "deal_accepted",
+          texts: [
+            "爽快！我就喜欢你这种痛快人。大魔头，以后你就是我艾图图的御用挡箭牌了！",
+            "嘻嘻，有你在那些人就不敢烦我了。说真的，你打架的样子还挺帅的……啊我什么都没说！"
+          ],
+          choices: [
+            { id: "back", text: "回去", nextNode: "default" }
+          ]
+        },
+        haggle: {
+          id: "haggle",
+          texts: [
+            "喂！五万还少？你知不知道那些人有多烦！算了算了，六万，不能再多了！",
+            "你个大魔头还缺钱？你不是新生大赛赢了不少吗？"
+          ],
+          choices: [
+            { id: "accept2", text: "行，六万就六万", effects: { opinion: 3, npcFlags: { shield_deal: true } }, nextNode: "deal_accepted" },
+            { id: "back", text: "再想想", nextNode: "default" }
+          ]
+        },
+        about_mu: {
+          id: "about_mu",
+          texts: [
+            "牧姐姐啊，她又在修炼了。她有星云魔器，修炼速度比我快好多，羡慕死了。",
+            "牧姐姐其实挺在意你的，别看她表面冷冰冰的。你上次在新生大赛把白藏锋劈了，她回来念叨了好几天呢。",
+            "牧姐姐就是太好强了，什么都要争第一。其实她挺累的。"
+          ],
+          condition: { minOpinion: 20 },
+          effects: { giveInfo: "mu_nujiao_has_nebula_artifact" },
+          choices: [
+            { id: "more", text: "她念叨我什么？", condition: { minOpinion: 40 }, effects: { opinion: 3 }, nextNode: "mu_gossip" },
+            { id: "back", text: "这样啊", nextNode: "default" }
+          ]
+        },
+        mu_gossip: {
+          id: "mu_gossip",
+          texts: [
+            "她说……说你战斗的时候像变了个人，跟平时那个吊儿郎当的样子完全不一样。还说你的雷系很奇怪，不像是凡种。",
+            "哎呀我是不是说太多了？你可别告诉牧姐姐是我说的！她会杀了我的！"
+          ],
+          choices: [
+            { id: "back", text: "我保密", effects: { opinion: 5, trust: 3 }, nextNode: "default" }
+          ]
+        },
+        cultivation_chat: {
+          id: "cultivation_chat",
+          texts: [
+            "我光系才Lv5，好慢啊……牧姐姐都中阶了，我还在初阶晃悠。",
+            "光系修炼好无聊啊，就是打坐打坐打坐。我看你又是雷又是火的，多帅啊！",
+            "你说我什么时候才能到中阶啊？爸说要给我买灵种，可光系灵种好贵的。"
+          ],
+          choices: [
+            { id: "encourage", text: "慢慢来，你可以的", effects: { opinion: 3 }, nextNode: "encouraged" },
+            { id: "tease2", text: "你就偷懒吧", effects: { opinion: -2 }, nextNode: "teased" },
+            { id: "back", text: "加油", nextNode: "default" }
+          ]
+        },
+        encouraged: {
+          id: "encouraged",
+          texts: [
+            "哼，你倒是会说。不过……谢啦，大魔头也会说人话嘛。",
+            "好！我决定了，明天开始认真修炼！……明天一定！"
+          ],
+          choices: [
+            { id: "back", text: "回去", nextNode: "default" }
+          ]
+        },
+        teased: {
+          id: "teased",
+          texts: [
+            "喂！我哪有偷懒！我……我只是比较活泼而已！",
+            "不理你了！大魔头最讨厌了！"
+          ],
+          choices: [
+            { id: "back", text: "好好好", nextNode: "default" }
+          ]
+        },
+        suitors: {
+          id: "suitors",
+          texts: [
+            "别提了！韩洛那个伪君子，贾文清那个莽夫，还有些连名字都记不住的。烦都烦死了！",
+            "不过说真的，有你当挡箭牌之后清净多了。他们看到你就跟见了鬼似的，哈哈哈！"
+          ],
+          choices: [
+            { id: "back", text: "那我继续当", effects: { opinion: 2 }, nextNode: "default" }
+          ]
+        }
+      }
     },
     isCanon: true,
     canonSource: "第204章 合租"

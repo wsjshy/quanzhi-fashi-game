@@ -2244,5 +2244,33 @@ const DataItems = {
     source: "第200章 拍卖会",
     lore: "亡魂器皿是亡灵系法师的杰作，可以将精魄保存其中不消散。普通法师击杀妖魔时精魄会直接消散，有了亡魂器皿就能收集起来。",
     specialEffect: "collect_soul_essence"
+  },
+
+  // ===== 任务物品 =====
+  shen_shizhe_name_list: {
+    id: "shen_shizhe_name_list",
+    name: "神侍者名单",
+    description: "许昭霆用生命换来的皮革，上面记载着与撒朗直接接触的神侍者名字。交给审判会可获得大量声望。",
+    type: "quest",
+    rarity: "传说",
+    stackable: false,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    isCanon: true,
+    source: "第227-228章 许昭霆遗物",
+    specialEffect: "turn_in_to_judiciary"
+  },
+
+  dark_church_badge: {
+    id: "dark_church_badge",
+    name: "黑教廷教士徽章",
+    description: "从宇昂身上获得的黑教廷教士徽章，可作为剿灭黑教廷的凭证。",
+    type: "quest",
+    rarity: "史诗",
+    stackable: false,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    isCanon: true,
+    source: "第230章 击败宇昂"
   }
 };
