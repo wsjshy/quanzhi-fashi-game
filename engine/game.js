@@ -1094,8 +1094,13 @@ const Game = {
                 
                 // 奖励
                 message += '🎁 奖励\n';
-                message += `经验：+${rewards.exp}\n`;
-                message += `金币：+${rewards.gold}\n`;
+                message += `经验：+${rewards.exp}`;
+                if (rewards.ratingBonus) message += ` (评价+${Math.floor(rewards.ratingBonus * 100)}%)`;
+                message += '\n';
+                message += `金币：+${rewards.gold}`;
+                if (rewards.goldCrit) message += ' 💰暴击！';
+                if (rewards.ratingBonus) message += ` (评价+${Math.floor(rewards.ratingBonus * 100)}%)`;
+                message += '\n';
                 if (rewards.items.length > 0) {
                     rewards.items.forEach(item => {
                         message += `${item.name}：x${item.count}\n`;
