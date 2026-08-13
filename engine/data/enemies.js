@@ -2033,6 +2033,72 @@ const DataEnemies = {
     }
   },
 
+  // ===== 韩洛（艾图图追求者，世家子弟）=====
+  han_luo: {
+    id: "han_luo",
+    name: "韩洛",
+    title: "世家子弟",
+    description: "艾图图的追求者之一，戴眼镜的儒雅男子。表面彬彬有礼，实则心胸狭窄。与莫凡在金源公寓冲突。",
+    elements: ["wind"],
+    level: 10,
+    maxHp: 280,
+    maxMp: 120,
+    attack: 20,
+    defense: 12,
+    speed: 18,
+    spirit: 16,
+    skills: [
+      "basic_attack",
+      "wind_blade",
+      "wind_track_phantom"
+    ],
+    aiType: "tactical",
+    enemyType: "human",
+    spriteColor: "#9370DB",
+    goldReward: 500,
+    expReward: 180,
+    isCanon: true,
+    canonSource: "第205章 斗跟班！",
+    traits: ["hypocrite", "rich_family"],
+    battleQuotes: {
+      start: "你这种人也配住在这里？",
+      defeat: "等着...我不会放过你的..."
+    }
+  },
+
+  // ===== 贾文清（艾图图追求者，中阶火系）=====
+  jia_wenqing: {
+    id: "jia_wenqing",
+    name: "贾文清",
+    title: "中阶火系",
+    description: "艾图图的追求者之一，奶油斯文男。中阶火系法师，在青校区有一定实力，但表里不一。",
+    elements: ["fire"],
+    level: 12,
+    maxHp: 320,
+    maxMp: 150,
+    attack: 25,
+    defense: 10,
+    speed: 16,
+    spirit: 18,
+    skills: [
+      "basic_attack",
+      "fire_fire",
+      "fire_burst"
+    ],
+    aiType: "aggressive",
+    enemyType: "human",
+    spriteColor: "#FF6347",
+    goldReward: 800,
+    expReward: 280,
+    isCanon: true,
+    canonSource: "第205章 斗跟班！",
+    traits: ["arrogant", "rich_family", "mid_tier"],
+    battleQuotes: {
+      start: "滚出去，这里不是你该来的地方！",
+      defeat: "可恶...你给我记住..."
+    }
+  },
+
   // ===== 猎王西明 =====
   xi_ming: {
     id: "xi_ming",

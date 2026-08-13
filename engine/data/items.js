@@ -1744,6 +1744,43 @@ const DataItems = {
     },
     lore: "穆氏家族的上等盾魔具，冰埃之盾。"
   },
+  mingli_shield: {
+    id: "mingli_shield",
+    name: "冥离盾",
+    description: "高级盾魔具，可轻松抵挡战将级生物的全力一击。关键时可从盾牌中释放棱刺，造成强力的贯穿反击。莫凡以1700万拍得。",
+    type: "equipment",
+    slot: "armor",
+    icon: "🛡️",
+    price: 17000000,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "史诗",
+    equipStats: { defense: 50, maxHp: 120 },
+    magicToolType: "shield",
+    magicToolGrade: "spirit",
+    magicToolSkill: {
+      id: "skill_mingli_shield",
+      name: "冥离盾·棱刺反击",
+      description: "催动冥离盾，获得吸收200点伤害的护盾；若护盾被击破，对攻击者造成150点贯穿伤害",
+      cooldown: 5,
+      effects: [
+        {
+          type: "shield",
+          value: 200
+        },
+        {
+          type: "counter_thorns",
+          value: 150,
+          trigger: "on_shield_break"
+        }
+      ]
+    },
+    lore: "拍卖会上以1700万拍得的高级盾魔具，攻防一体。",
+    isCanon: true,
+    canonSource: "第203章 千万身价的男人"
+  },
 
   // 铠魔具（全身防御魔具）
   ice_silk_armor_magic: {

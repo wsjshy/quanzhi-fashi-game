@@ -6077,6 +6077,52 @@ const DataCharacters = {
     }
   },
 
+  ai_tutu: {
+    id: "ai_tutu",
+    name: "艾图图",
+    title: "白兔少女",
+    description: "牧奴娇的闺蜜，出身豪门。娇小活泼，性格大大咧咧，有很多追求者。与莫凡、牧奴娇合租金源公寓。",
+    elements: ["light"],
+    level: 5,
+    maxHp: 200,
+    maxMp: 150,
+    attack: 12,
+    defense: 8,
+    speed: 15,
+    spirit: 18,
+    skills: ["basic_attack"],
+    aiType: "support",
+    growthType: "mage",
+    canDuel: false,
+    spriteColor: "#FFC0CB",
+    location: "jinyuan_apartment",
+    availableTimes: ["morning", "afternoon", "evening"],
+    dialogue: [
+      { trigger: "default", text: "大魔头！你又在偷懒！" },
+      { trigger: "greeting_morning", text: "早啊大魔头，今天有没有什么好玩的事？" }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.4, kind: 0.7, honest: 0.6, impulsive: 0.8,
+      loyal: 0.7, arrogant: 0.2, greedy: 0.3, curious: 0.9
+    },
+    giftPreferences: {
+      loved: ["snack", "cute_doll"],
+      liked: ["mana_potion", "magic_stone"],
+      disliked: [],
+      baseOpinionGain: 5, lovedMultiplier: 3, likedMultiplier: 1.5, dislikedMultiplier: 0.5, dailyGiftLimit: 1
+    },
+    relationshipCap: {
+      maxOpinion: 100, maxTrust: 100, canRomance: true, canBeMentor: false, canBeRival: false
+    },
+    relationships: {
+      mu_nujiao: { opinion: 90, trust: 85, type: "best_friend", label: "好闺蜜" },
+      mo_fan: { opinion: 40, trust: 20, type: "roommate", label: "合租室友" }
+    },
+    isCanon: true,
+    canonSource: "第204章 合租"
+  },
+
   lingling: {
     id: "lingling",
     name: "灵灵",

@@ -147,6 +147,24 @@ const DataSpiritSeeds = {
     },
     price: 3000000, // 雷系灵种更贵
   },
+  thunder_qianjun: {
+    id: 'thunder_qianjun',
+    name: '千钧',
+    element: 'thunder',
+    grade: 'spirit',
+    rarity: 'epic',
+    description: '采自天山与雷云相接的峰顶，释放雷系魔法时产生极强的空气冲击和空间震荡，威力远超普通灵种。采集猎人因此殒命。',
+    effects: {
+      damageBonus: 0.6,
+      stunChance: 0.2,
+      shockwave: true, // 空间震荡：对周围目标造成30%溅射伤害
+      shockwaveRadius: 0.3,
+    },
+    price: 28000000,
+    isNamed: true, // 命名灵种
+    canonSource: '第201章 灵雷，千钧！',
+    isCanon: true,
+  },
   thunder_soul: {
     id: 'thunder_soul',
     name: '灭魂雷',
