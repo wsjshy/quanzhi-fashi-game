@@ -2555,5 +2555,273 @@ const DataSkills = {
     statusEffects: [
       { name: "虚弱", type: "curse", duration: 2, chance: 0.5 }
     ]
+  },
+
+  // ===== 第六批妖魔技能（护盾/反伤/连击）=====
+  flame_shield: {
+    id: "flame_shield",
+    name: "火焰护盾",
+    description: "凝结火焰护盾，吸收伤害并对近战攻击者造成火焰反伤",
+    element: "fire",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 6,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    shieldValue: 0.15,
+    shieldType: "fire",
+    reflectDamage: 8,
+    statusEffects: [
+      { name: "火焰护盾", type: "shield", duration: 3, chance: 1 }
+    ]
+  },
+
+  water_barrier: {
+    id: "water_barrier",
+    name: "水之屏障",
+    description: "召唤水之屏障，吸收大量伤害",
+    element: "water",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    shieldValue: 0.25,
+    shieldType: "water",
+    statusEffects: [
+      { name: "水之屏障", type: "shield", duration: 3, chance: 1 }
+    ]
+  },
+
+  earth_shield: {
+    id: "earth_shield",
+    name: "大地之盾",
+    description: "召唤岩石护盾，吸收伤害并提升防御",
+    element: "earth",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 6,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    shieldValue: 0.2,
+    shieldType: "earth",
+    statusEffects: [
+      { name: "大地之盾", type: "shield", duration: 3, chance: 1 },
+      { name: "岩石护体", type: "defense_up", duration: 3, chance: 1, statModifiers: { defense: 8 } }
+    ]
+  },
+
+  double_strike: {
+    id: "double_strike",
+    name: "连击",
+    description: "快速攻击两次，每次造成0.7倍伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.7,
+    hitCount: 2
+  },
+
+  triple_slash: {
+    id: "triple_slash",
+    name: "三连斩",
+    description: "快速斩击三次，每次造成0.5倍伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.5,
+    hitCount: 3
+  },
+
+  life_steal_bite: {
+    id: "life_steal_bite",
+    name: "吸血撕咬",
+    description: "撕咬目标造成1.2倍伤害，回复造成伤害50%的生命",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.2,
+    lifesteal: 0.5
+  },
+
+  speed_burst: {
+    id: "speed_burst",
+    name: "极速爆发",
+    description: "短时间内速度大幅提升，闪避率提高",
+    element: "wind",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "极速", type: "speed_up", duration: 2, chance: 1, statModifiers: { speed: 15 } },
+      { name: "极速", type: "dodge_up", duration: 2, chance: 1, statModifiers: { evasion: 0.3 } }
+    ]
+  },
+
+  // 统领级技能
+  demon_domain: {
+    id: "demon_domain",
+    name: "妖魔领域",
+    description: "释放妖魔领域，降低目标全属性并提升自身攻击",
+    element: "dark",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 8,
+    tier: "统领级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "领域压制", type: "curse", duration: 3, chance: 0.8 },
+      { name: "领域压制", type: "defense_down", duration: 3, chance: 0.8, statModifiers: { defense: -10 } },
+      { name: "领域压制", type: "slow", duration: 3, chance: 0.8, statModifiers: { speed: -10 } }
+    ],
+    selfBuff: [
+      { name: "领域加持", type: "attack_up", duration: 3, chance: 1, statModifiers: { attack: 10 } }
+    ]
+  },
+
+  // ========== 新妖魔特色技能 ==========
+
+  // 噬骨虫技能
+  acid_spray: {
+    id: "acid_spray",
+    name: "酸液喷射",
+    description: "喷射腐蚀性酸液，造成土系伤害并大幅降低目标防御，持续腐蚀",
+    element: "earth",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.1,
+    statusEffects: [
+      { name: "腐蚀", type: "defense_down", duration: 3, chance: 0.9, value: -10 },
+      { name: "酸蚀", type: "poison", duration: 3, chance: 0.7, dotDamage: 5 }
+    ]
+  },
+
+  burrow_attack: {
+    id: "burrow_attack",
+    name: "掘地突袭",
+    description: "钻入地下后突然从下方袭击，造成高额伤害并有几率眩晕目标",
+    element: "earth",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.8,
+    guaranteedHit: true,
+    statusEffects: [
+      { name: "眩晕", type: "stun", duration: 1, chance: 0.35 }
+    ]
+  },
+
+  // 血纹巨魔鼠技能
+  blood_frenzy: {
+    id: "blood_frenzy",
+    name: "血纹狂暴",
+    description: "激活血纹力量进入狂暴状态，攻击力大幅提升，但持续损失生命值",
+    element: "dark",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 6,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statModifiers: { attack: 12, speed: 8 },
+    duration: 3,
+    selfStatusEffects: [
+      { name: "反噬", type: "burn", duration: 3, dotDamage: 8 }
+    ]
+  },
+
+  gnaw_bite: {
+    id: "gnaw_bite",
+    name: "撕咬啃噬",
+    description: "疯狂撕咬目标，造成暗系伤害并吸取生命值",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.3,
+    lifesteal: 0.3,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 2, chance: 0.5, dotDamage: 4 }
+    ]
+  },
+
+  // 翼苍狼技能
+  wind_blade_barrage: {
+    id: "wind_blade_barrage",
+    name: "风刃连斩",
+    description: "快速挥动翅膀发射多道风刃，连续攻击目标三次",
+    element: "wind",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 0.7,
+    hitCount: 3,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 2, chance: 0.4, dotDamage: 6 }
+    ]
+  },
+
+  aerial_dive: {
+    id: "aerial_dive",
+    name: "俯冲突袭",
+    description: "从高空俯冲攻击，造成巨额风系伤害并击退目标（降低速度）",
+    element: "wind",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 2.2,
+    statusEffects: [
+      { name: "迟缓", type: "slow", duration: 2, chance: 0.8, speedMod: -10 }
+    ]
+  },
+
+  feather_dance: {
+    id: "feather_dance",
+    name: "羽盾护体",
+    description: "用风元素凝聚羽毛护盾，大幅提升闪避率和防御力",
+    element: "wind",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 6,
+    tier: "战将级",
+    isDemonSkill: true,
+    statModifiers: { defense: 8, dodge: 0.3 },
+    duration: 3
   }
 };

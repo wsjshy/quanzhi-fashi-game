@@ -1262,23 +1262,47 @@ const BattleSystem = {
                 skillCritRate += skill.critBonus;
             }
 
-            const damage = this.calculateDamage(
-                baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus,
-                targetData.defense,
-                1.0,
-                skillCritRate,
-                skillHitRate,
-                skill.element,
-                targetData.elements?.[0] || 'neutral',
-                targetData,
-                casterData
-            );
+            // 多段攻击支持
+            const hitCount = skill.hitCount || 1;
+            let totalDamage = 0;
+            let totalCritCount = 0;
+            let totalMissCount = 0;
+            let lastDamage = null;
 
-            this.applyDamage(targetData, damage, casterData);
-            
-            // 技能吸血效果
-            if (skill.lifesteal && skill.lifesteal > 0 && !damage.isMiss && damage.amount > 0) {
-                const healAmount = Math.floor(damage.amount * skill.lifesteal);
+            for (let hit = 0; hit < hitCount; hit++) {
+                const damage = this.calculateDamage(
+                    baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus,
+                    targetData.defense,
+                    1.0,
+                    skillCritRate,
+                    skillHitRate,
+                    skill.element,
+                    targetData.elements?.[0] || 'neutral',
+                    targetData,
+                    casterData
+                );
+
+                if (!damage.isMiss) {
+                    this.applyDamage(targetData, damage, casterData);
+                    totalDamage += damage.amount;
+                    if (damage.isCrit) totalCritCount++;
+                } else {
+                    totalMissCount++;
+                }
+                lastDamage = damage;
+            }
+
+            // 使用第一段伤害的结果用于后续显示（但总伤害是累加的）
+            const damage = lastDamage;
+            damage.amount = totalDamage;
+            damage.isCrit = totalCritCount > 0;
+            damage.hitCount = hitCount;
+            damage.critCount = totalCritCount;
+            damage.missCount = totalMissCount;
+
+            // 技能吸血效果（基于总伤害）
+            if (skill.lifesteal && skill.lifesteal > 0 && totalDamage > 0) {
+                const healAmount = Math.floor(totalDamage * skill.lifesteal);
                 if (healAmount > 0 && casterData.hp < casterData.maxHp) {
                     casterData.hp = Math.min(casterData.maxHp, casterData.hp + healAmount);
                     const casterName = isPlayer ? '你' : this.enemy.name;
@@ -1287,7 +1311,7 @@ const BattleSystem = {
             }
 
             // 自身负面效果（如狂暴冲锋后防御降低）
-            if (skill.selfStatusEffects && !damage.isMiss) {
+            if (skill.selfStatusEffects && totalMissCount < hitCount) {
                 this.applyStatusEffects(casterData, skill.selfStatusEffects, isPlayer);
             }
             
@@ -1340,7 +1364,17 @@ const BattleSystem = {
                 reactionText = `（${reactionNames[damage.elementReaction]}！）`;
             }
             
-            this.addLog(`${casterName} 释放了 ${skill.name}，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}${elementEffectText}${reactionText}`, 
+            // 多段攻击日志
+            let hitText = '';
+            if (damage.hitCount && damage.hitCount > 1) {
+                const hits = damage.hitCount - damage.missCount;
+                hitText = `（${hits}连击`;
+                if (damage.critCount > 0) hitText += `，${damage.critCount}次暴击`;
+                if (damage.missCount > 0) hitText += `，${damage.missCount}次未命中`;
+                hitText += '）';
+            }
+
+            this.addLog(`${casterName} 释放了 ${skill.name}，造成 ${damage.amount} 点伤害${damage.isCrit && (!damage.hitCount || damage.hitCount === 1) ? '（暴击！）' : ''}${damage.isMiss && (!damage.hitCount || damage.hitCount === 1) ? '（未命中！）' : ''}${hitText}${elementEffectText}${reactionText}`,
                 damage.isCrit ? 'crit' : 'magic');
             
             // 显示浮动伤害数字
@@ -1456,8 +1490,8 @@ const BattleSystem = {
                 }
             }
 
-            // 状态效果
-            if (skill.statusEffects && !damage.isMiss) {
+            // 状态效果（至少命中一段才应用）
+            if (skill.statusEffects && totalMissCount < hitCount) {
                 this.applyStatusEffects(targetData, skill.statusEffects, !isPlayer);
             }
             
@@ -1504,6 +1538,14 @@ const BattleSystem = {
         } else if (skill.type === 'buff') {
             // 增益技能
             if (skill.statusEffects) {
+                // 处理护盾值：基于最大HP百分比计算
+                if (skill.shieldValue) {
+                    skill.statusEffects.forEach(effect => {
+                        if (effect.type === 'shield') {
+                            effect.value = Math.floor(casterData.maxHp * skill.shieldValue);
+                        }
+                    });
+                }
                 if (skill.element === 'summon' && isPlayer && this.summon) {
                     // 召唤系增益应用到召唤兽
                     this.applyStatusEffects(this.summon, skill.statusEffects, !isPlayer);
@@ -1511,6 +1553,10 @@ const BattleSystem = {
                 } else {
                     this.applyStatusEffects(casterData, skill.statusEffects, isPlayer);
                 }
+            }
+            // 自身buff同时对敌人施加debuff（如妖魔领域）
+            if (skill.selfBuff && skill.targetType === 'enemy') {
+                this.applyStatusEffects(casterData, skill.selfBuff, isPlayer);
             }
             const casterName = isPlayer ? '你' : this.enemy.name;
             if (skill.element !== 'summon') {
@@ -1521,6 +1567,10 @@ const BattleSystem = {
             // 减益技能（对敌人施加负面状态）
             if (skill.statusEffects) {
                 this.applyStatusEffects(targetData, skill.statusEffects, !isPlayer);
+            }
+            // 同时给自己加buff（如妖魔领域）
+            if (skill.selfBuff) {
+                this.applyStatusEffects(casterData, skill.selfBuff, isPlayer);
             }
             const casterName = isPlayer ? '你' : this.enemy.name;
             const targetName = isPlayer ? this.enemy.name : '你';

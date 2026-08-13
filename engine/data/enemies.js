@@ -24,7 +24,8 @@ const DataEnemies = {
       "shadow_assault",
       "fierce_roar",
       "berserk_charge",
-      "charge_attack"
+      "charge_attack",
+      "double_strike"
     ],
     aiType: "aggressive",
     enemyType: "demon",
@@ -198,7 +199,8 @@ const DataEnemies = {
       "basic_attack",
       "rock_throw",
       "demon_regeneration",
-      "stone_skin"
+      "stone_skin",
+      "earth_shield"
     ],
     aiType: "defensive",
     enemyType: "demon",
@@ -242,7 +244,8 @@ const DataEnemies = {
       "basic_attack",
       "wind_blade",
       "wind_step",
-      "wind_barrier"
+      "wind_barrier",
+      "speed_burst"
     ],
     aiType: "kiter",
     spriteColor: "#88ccaa",
@@ -285,7 +288,8 @@ const DataEnemies = {
       "basic_attack",
       "water_chain",
       "web_bind",
-      "water_recovery"
+      "water_recovery",
+      "water_barrier"
     ],
     aiType: "controller",
     spriteColor: "#6699cc",
@@ -328,7 +332,8 @@ const DataEnemies = {
       "basic_attack",
       "fire_bolt",
       "fire_burst",
-      "flame_cloak"
+      "flame_cloak",
+      "flame_shield"
     ],
     spriteColor: "#ff6633",
     isEnemy: true,
@@ -640,7 +645,8 @@ const DataEnemies = {
       "earth_shield",
       "war_stomp",
       "demon_regeneration",
-      "thorn_armor"
+      "thorn_armor",
+      "triple_slash"
     ],
     spriteColor: "#888888",
     isEnemy: true,
@@ -1113,7 +1119,7 @@ const DataEnemies = {
     attack: 30,
     defense: 10,
     speed: 30,
-    skills: ["basic_attack", "dark_bolt", "dark_claw", "life_drain", "terror_screech"],
+    skills: ["basic_attack", "dark_bolt", "dark_claw", "life_drain", "terror_screech", "life_steal_bite"],
     aiType: "aggressive",
     spriteColor: "#222222",
     isEnemy: true,
@@ -1140,7 +1146,7 @@ const DataEnemies = {
     attack: 150,
     defense: 75,
     speed: 40,
-    skills: ["basic_attack", "wolf_bite", "wind_blade", "dark_bolt", "wolf_howl", "sky_dive", "fear_roar", "demon_rage"],
+    skills: ["basic_attack", "wolf_bite", "wind_blade", "dark_bolt", "wolf_howl", "sky_dive", "fear_roar", "demon_rage", "demon_domain"],
     aiType: "tactical",
     spriteColor: "#555555",
     isEnemy: true,
@@ -1294,5 +1300,108 @@ const DataEnemies = {
       { itemId: "black_robe_fragment", chance: 0.3, min: 1, max: 1 },
       { itemId: "forbidden_spell_book", chance: 0.1, min: 1, max: 1 }
     ]
+  },
+
+  // ========== 新增妖魔 ==========
+
+  bone_eating_worm: {
+    id: "bone_eating_worm",
+    name: "噬骨虫",
+    title: "奴仆级妖魔",
+    description: "生活在地下的恶心妖魔，能喷射腐蚀酸液溶解骨骼，喜欢从地下突然袭击猎物。",
+    elements: ["earth"],
+    level: 3,
+    maxHp: 140,
+    maxMp: 0,
+    attack: 18,
+    defense: 12,
+    speed: 8,
+    skills: [
+      "basic_attack",
+      "acid_spray",
+      "burrow_attack"
+    ],
+    aiType: "tactical",
+    enemyType: "demon",
+    spriteColor: "#8B4513",
+    isEnemy: true,
+    expReward: 80,
+    goldReward: 50,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.6, min: 1, max: 1 },
+      { itemId: "worm_shell", chance: 0.4, min: 1, max: 1 },
+      { itemId: "magic_stone", chance: 0.2, min: 1, max: 1 }
+    ],
+    locations: ["bo_city_outskirts", "underground_caves"]
+  },
+
+  blood_pattern_rat: {
+    id: "blood_pattern_rat",
+    name: "血纹巨魔鼠",
+    title: "奴仆级精英妖魔",
+    description: "巨眼猩鼠的变异体，身上布满血色纹路，进入狂暴状态后攻击力惊人，但会持续失血。",
+    elements: ["dark"],
+    level: 6,
+    maxHp: 280,
+    maxMp: 0,
+    attack: 30,
+    defense: 10,
+    speed: 20,
+    skills: [
+      "basic_attack",
+      "gnaw_bite",
+      "blood_frenzy",
+      "charge_attack"
+    ],
+    aiType: "aggressive",
+    enemyType: "demon",
+    spriteColor: "#8B0000",
+    isEnemy: true,
+    expReward: 200,
+    goldReward: 120,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.9, min: 1, max: 3 },
+      { itemId: "rat_fang", chance: 0.7, min: 1, max: 2 },
+      { itemId: "blood_crystal", chance: 0.3, min: 1, max: 1 },
+      { itemId: "magic_stone", chance: 0.5, min: 1, max: 2 }
+    ],
+    locations: ["xuefeng_mountain", "bo_city_outskirts"]
+  },
+
+  winged_wolf: {
+    id: "winged_wolf",
+    name: "翼苍狼",
+    title: "战将级妖魔",
+    description: "长有翅膀的苍狼，风系妖魔，能在空中高速飞行并发射风刃，俯冲突袭威力巨大。",
+    elements: ["wind"],
+    level: 9,
+    maxHp: 450,
+    maxMp: 80,
+    attack: 38,
+    defense: 14,
+    speed: 28,
+    spirit: 15,
+    skills: [
+      "basic_attack",
+      "wind_blade_barrage",
+      "aerial_dive",
+      "feather_dance",
+      "claw_slash"
+    ],
+    aiType: "kiter",
+    enemyType: "demon",
+    spriteColor: "#4682B4",
+    isEnemy: true,
+    isFlying: true,
+    expReward: 500,
+    goldReward: 300,
+    dropItems: [
+      { itemId: "demon_core", chance: 1.0, min: 2, max: 4 },
+      { itemId: "wolf_fang", chance: 0.8, min: 2, max: 3 },
+      { itemId: "wind_crystal", chance: 0.5, min: 1, max: 2 },
+      { itemId: "wing_feather", chance: 0.4, min: 1, max: 2 },
+      { itemId: "magic_stone", chance: 0.6, min: 2, max: 3 }
+    ],
+    locations: ["xuefeng_mountain", "sky_plateau"]
   }
 };
