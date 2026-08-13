@@ -286,6 +286,8 @@ const BattleSystem = {
         this.tookDamage = false;  // 战斗中是否受到伤害（用于毫发无伤成就）
         this.consecutiveCrits = 0;  // 连续暴击次数（用于幸运儿成就）
         this.rating = null;  // 战斗评价
+        this.bossPhase2 = false;  // Boss战第二阶段标记
+        this.huntFled = false;  // 狩猎战妖魔逃跑标记
         
         // 战斗模式选项
         this.battleOptions = {
@@ -2565,6 +2567,36 @@ const BattleSystem = {
         }
 
         target.hp = Math.max(0, target.hp - amount);
+        
+        // Boss战模式：阶段转换检查
+        if (this.battleOptions.mode === 'boss' && target === this.enemy && !this.bossPhase2) {
+            const hpPercent = target.hp / target.maxHp;
+            if (hpPercent <= 0.5 && amount > 0) {
+                // 进入第二阶段：狂暴
+                this.bossPhase2 = true;
+                this.addLog(`⚠️ ${this.enemy.name} 进入狂暴状态！攻击力大幅提升！`, 'crit');
+                
+                // 狂暴加成：攻击+30%，速度+20%，防御-10%
+                this.enemy.attack = Math.floor(this.enemy.attack * 1.3);
+                this.enemy.speed = Math.floor(this.enemy.speed * 1.2);
+                this.enemy.defense = Math.floor(this.enemy.defense * 0.9);
+                
+                // 狂暴阶段新增技能（如果是妖魔）
+                if (this.enemy.enemyType === 'demon' || this.enemy.demonTier) {
+                    if (!this.enemy.skills.includes('berserk_mode')) {
+                        this.enemy.skills.push('berserk_mode');
+                    }
+                }
+                
+                // 发布阶段转换事件
+                if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                    BattleEventBus.emit('bossPhaseChange', {
+                        phase: 2,
+                        enemy: this.enemy
+                    });
+                }
+            }
+        }
         
         // 更新战斗统计
         if (target === this.enemy) {
