@@ -38,6 +38,16 @@
 - [ ] 战斗数值平衡（基于阶级加成后的数据）
 
 ### 系统增强
+- [ ] **NPC成长系统实现**（设计见docs/非战斗系统可扩展性设计.md 2.7节）
+  - [ ] 新建engine/npc-growth.js：NPCGrowthService.getNpcState(npcId, storyStage)
+  - [ ] 实现getDuelData(npcId, storyStage)：切磋用战斗数据
+  - [ ] 实现getHistoricalState(npcId, storyStage)：回忆切磋
+  - [ ] 给主要NPC加growth数据（莫凡/赵满延/牧奴娇/罗宋/白藏锋等）
+  - [ ] 给召唤兽加growth数据（幽狼兽进化线）
+  - [ ] 给会成长的妖魔加growth数据（蜕皮女妖/男妖多形态）
+  - [ ] 切磋/挑战功能UI入口（NPC对话中"切磋"选项）
+  - [ ] 战斗中触发进化（battle_molt_X事件）
+  - [ ] 黑盒测试：不同storyStage下NPC状态正确
 - [ ] 任务系统增强（统一条件/效果、分支对话、更多objective类型）
 - [ ] 猎人悬赏基础（bounties.js数据+接取流程）
 - [ ] 主校区考核（exams.js数据+考核流程）
@@ -48,7 +58,7 @@
 
 ### 新系统
 - [ ] 拍卖系统（auctions.js，国贸中心拍卖场）
-- [ ] 炼兽/召唤兽进化（beast-taming.js）
+- [ ] 召唤兽培养深化（喂养/进化/技能学习，复用NPC成长系统）
 - [ ] 物品合成系统（crafting.js）
 - [ ] 精神力作为独立资源（消耗/恢复/耗尽眩晕）
 - [ ] 元素环境/天气加成
