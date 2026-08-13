@@ -6264,5 +6264,51 @@ const DataCharacters = {
     relationships: {
       mo_fan: { opinion: -20, trust: 0, type: "rival", label: "白家" }
     }
+  },
+
+  xu_zhaoting: {
+    id: "xu_zhaoting",
+    name: "许昭霆",
+    title: "博城幸存者",
+    description: "博城灾难中失去全家的幸存者，雷系+风系双系中阶法师。对黑教廷恨之入骨，性格刚烈勇敢。与张璐璐是情侣。",
+    elements: ["thunder", "wind"],
+    level: 12,
+    maxHp: 350,
+    maxMp: 180,
+    attack: 28,
+    defense: 12,
+    speed: 24,
+    spirit: 20,
+    skills: ["basic_attack", "thunder_bolt", "wind_blade", "wind_track_phantom"],
+    aiType: "aggressive",
+    growthType: "mage",
+    canDuel: true,
+    spriteColor: "#9966FF",
+    location: "mingzhu_qing_campus",
+    availableTimes: ["morning", "afternoon", "evening"],
+    dialogue: [
+      { trigger: "default", text: "黑教廷...我绝不会放过他们。" },
+      { trigger: "greeting", text: "莫凡，你也是博城出来的吧。" }
+    ],
+    givesQuests: [],
+    personality: {
+      brave: 0.9, kind: 0.6, honest: 0.8, impulsive: 0.7,
+      loyal: 0.8, arrogant: 0.2, greedy: 0.1, curious: 0.5
+    },
+    giftPreferences: {
+      loved: ["thunder_spirit_seed", "rare_demon_core"],
+      liked: ["mana_potion", "magic_stone"],
+      disliked: [],
+      baseOpinionGain: 5, lovedMultiplier: 3, likedMultiplier: 1.5, dislikedMultiplier: 0.5, dailyGiftLimit: 1
+    },
+    relationshipCap: {
+      maxOpinion: 100, maxTrust: 100, canRomance: false, canBeMentor: false, canBeRival: false
+    },
+    relationships: {
+      mo_fan: { opinion: 60, trust: 50, type: "fellow_survivor", label: "博城战友" },
+      zhang_lulu: { opinion: 90, trust: 90, type: "lover", label: "恋人" }
+    },
+    isCanon: true,
+    canonSource: "第220章 误闯陷阱"
   }
 };

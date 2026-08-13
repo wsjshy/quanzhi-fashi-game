@@ -2158,5 +2158,137 @@ const DataEnemies = {
     isCanon: true,
     canonSource: "第192章 妖母伪装成技师对醋醋下手",
     traits: ["celebrity", "civilian", "damsel_in_distress"]
+  },
+
+  // ===== 暗影妖兽（主校区考核目标）=====
+  shadow_beast: {
+    id: "shadow_beast",
+    name: "暗影妖兽",
+    title: "半驯化暗影兽",
+    description: "政府军驯化的暗影系妖兽，拥有暗影隐身能力，夜间几乎不可见。不主动攻击人类，但受攻击时会狂暴，危险程度仅次于妖魔。爱吃牛肉，尾毛会发荧光。",
+    elements: ["shadow"],
+    level: 10,
+    maxHp: 350,
+    maxMp: 200,
+    attack: 22,
+    defense: 12,
+    speed: 30,
+    spirit: 15,
+    skills: [
+      "basic_attack",
+      "shadow_step",
+      "shadow_claw"
+    ],
+    aiType: "evasive",
+    enemyType: "demon",
+    demonTier: "servant",
+    spriteColor: "#2F2F4F",
+    expReward: 150,
+    goldReward: 0,
+    isCanon: true,
+    canonSource: "第218章 大狩猎！",
+    traits: ["shadow_stealth", "nocturnal", "capture_target", "flee_when_low"],
+    captureable: true,
+    battleQuotes: {
+      start: "*暗影中传来低沉的嘶吼*",
+      defeat: "*暗影妖兽被制服了*"
+    }
+  },
+
+  // ===== 宇昂（黑教廷教士版）=====
+  yu_ang_black_church: {
+    id: "yu_ang_black_church",
+    name: "宇昂",
+    title: "黑教廷教士",
+    description: "穆氏养子，实为黑教廷教士。半张面具遮脸，饲养黑畜妖，心狠手辣。誓言将莫凡变成自己的奴隶。",
+    elements: ["ice", "shadow"],
+    level: 18,
+    maxHp: 600,
+    maxMp: 300,
+    attack: 35,
+    defense: 20,
+    speed: 25,
+    spirit: 30,
+    skills: [
+      "basic_attack",
+      "ice_spike",
+      "ice_freeze",
+      "shadow_step",
+      "shadow_claw"
+    ],
+    aiType: "tactical",
+    enemyType: "human",
+    spriteColor: "#4A0080",
+    expReward: 800,
+    goldReward: 2000,
+    isCanon: true,
+    canonSource: "第213章 三步塔",
+    traits: ["black_church", "masked", "summons_demons", "nemesis"],
+    battleQuotes: {
+      start: "莫凡，我会把你变成我的奴隶！",
+      defeat: "不可能...黑教廷不会放过你的..."
+    }
+  },
+
+  // ===== 黑教廷灰衣人 =====
+  black_church_gray: {
+    id: "black_church_gray",
+    name: "灰衣教士",
+    title: "黑教廷成员",
+    description: "黑教廷灰衣教士，穿着灰色斗篷，与黑畜妖一同行动。擅长布置陷阱和围攻。",
+    elements: ["shadow"],
+    level: 12,
+    maxHp: 300,
+    maxMp: 150,
+    attack: 25,
+    defense: 15,
+    speed: 20,
+    spirit: 18,
+    skills: [
+      "basic_attack",
+      "shadow_step",
+      "shadow_claw"
+    ],
+    aiType: "aggressive",
+    enemyType: "human",
+    spriteColor: "#555555",
+    expReward: 250,
+    goldReward: 500,
+    isCanon: true,
+    canonSource: "第220章 误闯陷阱",
+    traits: ["black_church", "ambusher", "works_with_demons"]
+  },
+
+  // ===== 傅天明（被利用的风系学长）=====
+  fu_tianming: {
+    id: "fu_tianming",
+    name: "傅天明",
+    title: "风系中阶学长",
+    description: "被贾文清利用来教训莫凡的风系中阶学长，被莫凡一脚踢碎假山重伤。后被宇昂以贾文清名义操纵。",
+    elements: ["wind"],
+    level: 11,
+    maxHp: 280,
+    maxMp: 140,
+    attack: 22,
+    defense: 10,
+    speed: 22,
+    spirit: 16,
+    skills: [
+      "basic_attack",
+      "wind_blade",
+      "wind_track_phantom"
+    ],
+    aiType: "balanced",
+    enemyType: "human",
+    spriteColor: "#87CEEB",
+    expReward: 200,
+    goldReward: 300,
+    isCanon: true,
+    canonSource: "第211章 误下重手！",
+    traits: ["manipulated", "mid_tier"],
+    battleQuotes: {
+      start: "教训一下这个不知天高地厚的小子！",
+      defeat: "呃...骨头...碎了..."
+    }
   }
 };
