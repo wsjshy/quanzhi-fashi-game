@@ -1196,7 +1196,14 @@ const BattleSystem = {
 
         } else if (skill.type === 'heal') {
             // 治疗技能
-            const healAmount = Math.floor(skill.baseHeal * (1 + casterData.spirit * 0.01));
+            let healAmount;
+            if (skill.healPercent) {
+                // 按百分比恢复
+                healAmount = Math.floor(casterData.maxHp * skill.healPercent);
+            } else {
+                // 固定数值恢复
+                healAmount = Math.floor(skill.baseHeal * (1 + casterData.spirit * 0.01));
+            }
             // 治疗目标：self类型治疗自己，否则治疗targetData
             const healTarget = (skill.targetType === 'self') ? casterData : targetData;
             healTarget.hp = Math.min(healTarget.maxHp, healTarget.hp + healAmount);

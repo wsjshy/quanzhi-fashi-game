@@ -1955,5 +1955,20 @@ const DataSkills = {
         }
       }
     ]
+  },
+  
+  demon_regeneration: {
+    id: "demon_regeneration",
+    name: "妖魔再生",
+    description: "战将级妖魔施展再生之力，恢复自身大量生命值",
+    element: "physical",
+    type: "heal",
+    mpCost: 0,
+    targetType: "self",
+    baseHeal: 0,  // 按百分比恢复
+    healPercent: 0.2,  // 恢复20%最大HP
+    cooldown: 4,
+    tier: "战将级",
+    isDemonSkill: true
   }
 };

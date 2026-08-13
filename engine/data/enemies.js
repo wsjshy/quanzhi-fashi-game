@@ -191,7 +191,8 @@ const DataEnemies = {
     speed: 6,
     skills: [
       "basic_attack",
-      "rock_throw"
+      "rock_throw",
+      "demon_regeneration"
     ],
     aiType: "defensive",
     enemyType: "demon",
@@ -615,7 +616,8 @@ const DataEnemies = {
       "basic_attack",
       "earth_spike",
       "earth_shield",
-      "war_stomp"
+      "war_stomp",
+      "demon_regeneration"
     ],
     spriteColor: "#888888",
     isEnemy: true,
