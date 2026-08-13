@@ -330,9 +330,10 @@ const BattleAI = {
             score *= 0.3;
         }
         
-        // 高伤害技能额外加分（支持baseDamage和power两种）
-        const skillDamage = skill.baseDamage || (skill.power ? self.attack * skill.power : 0);
-        if (skillDamage > 30 || (skill.power && skill.power >= 1.3)) {
+        // 高伤害技能额外加分（支持baseDamage和power两种，考虑多段攻击）
+        let skillDamage = skill.baseDamage || (skill.power ? self.attack * skill.power : 0);
+        skillDamage *= (skill.hitCount || 1);
+        if (skillDamage > 30 || (skill.power && skill.power * (skill.hitCount || 1) >= 1.3)) {
             score += 0.2 * profile.weights.damage;
         }
         
@@ -382,8 +383,11 @@ const BattleAI = {
         let score = 0.5;
         
         // 基础伤害分（支持baseDamage固定值和power基于攻击力倍率两种）
-        const baseDamage = skill.baseDamage || (skill.power ? self.attack * skill.power : 10);
+        let baseDamage = skill.baseDamage || (skill.power ? self.attack * skill.power : 10);
         const damageMultiplier = skill.damageMultiplier || 1;
+        // 多段攻击：总伤害 = 单段伤害 × 攻击次数
+        const hitCount = skill.hitCount || 1;
+        baseDamage *= hitCount;
         const totalDamage = baseDamage * damageMultiplier;
         
         const damageRatio = totalDamage / opponent.maxHp;
@@ -508,6 +512,35 @@ const BattleAI = {
             score += 0.35 * profile.weights.damage;
         }
         
+        // 自身debuff处理（如狂暴冲锋：高伤害但降防）
+        if (skill.selfStatusEffects && skill.selfStatusEffects.length > 0) {
+            const selfHpPercent = self.hp / self.maxHp;
+            for (const effect of skill.selfStatusEffects) {
+                if (effect.type === 'defense_down') {
+                    // 降防debuff：自身血量高时影响小，血量低时风险大
+                    if (selfHpPercent > 0.7) {
+                        score -= 0.05; // 血量高，轻微减分
+                    } else if (selfHpPercent > 0.4) {
+                        score -= 0.15; // 中等血量，适度减分
+                    } else {
+                        score -= 0.3; // 血量低，大幅减分（风险太大）
+                    }
+                }
+                if (effect.type === 'attack_down' || effect.type === 'slow') {
+                    score -= 0.1;
+                }
+            }
+            // 但如果伤害足够高（power>=1.5），即使有debuff也值得用
+            if (skill.power && skill.power >= 1.5) {
+                score += 0.15;
+            }
+        }
+        
+        // 妖魔特色技能额外加分
+        if (skill.isDemonSkill) {
+            score += 0.1;
+        }
+        
         return score;
     },
     
@@ -549,59 +582,78 @@ const BattleAI = {
      * 评分：buff技能
      */
     scoreBuffSkill(skill, self, opponent, profile) {
-        let score = 0.3;
+        let score = 0.5; // 提高基础分，让妖魔更愿意用特色技能
+        
+        // 妖魔特色技能额外加分（isDemonSkill标记）
+        if (skill.isDemonSkill) {
+            score += 0.2;
+        }
         
         // 战斗开始时buff更有价值（前3回合或双方满血）
         const turn = self._battleTurn || 1;
         if (turn <= 3) {
-            score += 0.25 * profile.weights.buff;
+            score += 0.35 * profile.weights.buff;
         }
         if (self.hp / self.maxHp > 0.8 && opponent.hp / opponent.maxHp > 0.8) {
-            score += 0.2 * profile.weights.buff;
+            score += 0.25 * profile.weights.buff;
         }
         
         // 检查是否已经有相同buff（同时检查buffs和statusEffects）
         const hasBuff = self.buffs?.some(b => b.name === skill.name) || 
                         self.statusEffects?.some(e => e.name === skill.name);
         if (hasBuff) {
-            score -= 0.3; // 已有相同buff，降低优先级
+            score -= 0.4; // 已有相同buff，降低优先级
         }
 
         // 提取buff效果（支持skill.statModifiers和statusEffects中的statModifiers两种格式）
         let buffStats = skill.statModifiers || {};
         let hasDodgeBuff = false;
+        let dodgeAmount = 0;
         if (skill.statusEffects && skill.statusEffects.length > 0) {
             for (const effect of skill.statusEffects) {
                 if (effect.statModifiers) {
                     buffStats = { ...buffStats, ...effect.statModifiers };
                 }
-                if (effect.type === 'dodge_up' || effect.dodgeMod) {
+                // 闪避类buff：dodge_up类型或有dodgeMod/dodgeBonus属性
+                if (effect.type === 'dodge_up' || effect.dodgeMod || effect.dodgeBonus) {
                     hasDodgeBuff = true;
+                    dodgeAmount = effect.dodgeMod || effect.dodgeBonus || 0.3;
                 }
             }
+        }
+        // 技能根级别也可能有dodgeBonus
+        if (skill.dodgeBonus) {
+            hasDodgeBuff = true;
+            dodgeAmount = Math.max(dodgeAmount, skill.dodgeBonus);
         }
 
         // 攻击型buff（攻击+、暴击+）在激进型AI中更有价值
         if (buffStats.attack || skill.critBonus) {
-            score += 0.15 * (profile.weights.damage || 1);
+            const attackBonus = buffStats.attack || 0;
+            // 按攻击加成比例加分
+            score += 0.2 * (profile.weights.damage || 1) + attackBonus * 0.02;
             if (profile.name === 'aggressive' || profile.name === 'burst') {
-                score += 0.15;
+                score += 0.2;
             }
         }
 
         // 防御型buff（防御+、闪避+）在保守型AI中更有价值
-        if (buffStats.defense || hasDodgeBuff || skill.dodgeBonus) {
-            score += 0.1 * (profile.weights.survival || 1);
-            if (profile.name === 'defensive') {
-                score += 0.1;
+        if (buffStats.defense || hasDodgeBuff) {
+            const defenseBonus = buffStats.defense || 0;
+            score += 0.15 * (profile.weights.survival || 1) + defenseBonus * 0.015;
+            if (hasDodgeBuff) {
+                score += dodgeAmount * 0.5; // 闪避率越高越有价值
+            }
+            if (profile.name === 'defensive' || profile.name === 'kiter') {
+                score += 0.15;
             }
         }
 
         // 速度型buff在游击型AI中更有价值
         if (buffStats.speed) {
-            score += 0.15;
+            score += 0.2 + buffStats.speed * 0.02;
             if (profile.name === 'kiter') {
-                score += 0.1;
+                score += 0.15;
             }
         }
         

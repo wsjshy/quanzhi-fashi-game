@@ -2825,7 +2825,7 @@ const DataSkills = {
     duration: 3
   },
 
-  // ===== 第七批妖魔技能 =====
+  // ===== 第七批妖魔技能（部分非原著）=====
   bone_slash: {
     id: "bone_slash",
     name: "骨刃斩",
@@ -2837,6 +2837,8 @@ const DataSkills = {
     cooldown: 3,
     tier: "奴仆级",
     isDemonSkill: true,
+    isCanon: false,
+    canonNote: "非原著技能，游戏设计（骷髅战士）",
     power: 1.3,
     statusEffects: [
       { name: "流血", type: "bleed", duration: 2, chance: 0.4, dotDamage: 5 }
@@ -2854,6 +2856,8 @@ const DataSkills = {
     cooldown: 2,
     tier: "奴仆级",
     isDemonSkill: true,
+    isCanon: false,
+    canonNote: "非原著技能，游戏设计（雷兽）",
     power: 1.0,
     statusEffects: [
       { name: "麻痹", type: "paralyze", duration: 1, chance: 0.25 }
@@ -2871,6 +2875,8 @@ const DataSkills = {
     cooldown: 4,
     tier: "奴仆级",
     isDemonSkill: true,
+    isCanon: false,
+    canonNote: "非原著技能，游戏设计（幽灵）",
     power: 1.1,
     ignoreDefense: 0.5
   },
@@ -2886,6 +2892,8 @@ const DataSkills = {
     cooldown: 5,
     tier: "奴仆级",
     isDemonSkill: true,
+    isCanon: false,
+    canonNote: "非原著技能，游戏设计（铁甲蝎）",
     statusEffects: [
       { name: "铁甲防御", type: "defense_up", duration: 3, chance: 1, statModifiers: { defense: 15 } },
       { name: "蜷缩", type: "slow", duration: 3, chance: 1, statModifiers: { speed: -5 } }
@@ -2903,6 +2911,8 @@ const DataSkills = {
     cooldown: 5,
     tier: "奴仆级",
     isDemonSkill: true,
+    isCanon: false,
+    canonNote: "非原著技能，游戏设计（雷鹰）",
     power: 1.8,
     guaranteedHit: true,
     statusEffects: [
@@ -3053,6 +3063,91 @@ const DataSkills = {
     statusEffects: [
       { name: "缠绕", type: "bind", duration: 2, chance: 0.6 },
       { name: "藤刺", type: "bleed", duration: 2, chance: 0.5, dotDamage: 3 }
+    ]
+  },
+
+  // 进阶期独眼魔狼：棘骨横扫（骨骼生长后从背部和肩部伸出的棘骨攻击）
+  spine_sweep: {
+    id: "spine_sweep",
+    name: "棘骨横扫",
+    description: "用肩部和背部生长出的锋利棘骨横扫敌人，造成大量物理伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 1.6,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 2, chance: 0.5, dotDamage: 6 }
+    ]
+  },
+
+  // 进阶期独眼魔狼：魔狼吐息（小说提到独眼魔狼有吐息）
+  wolf_breath: {
+    id: "wolf_breath",
+    name: "魔狼吐息",
+    description: "喷出带有腐臭气息的黑暗吐息，造成暗系伤害",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.0,
+    statusEffects: [
+      { name: "腐蚀", type: "defense_down", duration: 2, chance: 0.4, statModifiers: { defense: -5 } }
+    ]
+  },
+
+  // 骨刺狰狼/三眼魔狼：骨刺投掷（小说提到会扔东西）
+  bone_throw: {
+    id: "bone_throw",
+    name: "骨刺投掷",
+    description: "拔下身上的骨刺用力投向敌人，远程物理攻击",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 1.3
+  },
+
+  // 三眼魔狼：三眼视界（270度视角，免疫偷袭和暴击）
+  third_eye_sight: {
+    id: "third_eye_sight",
+    name: "三眼视界",
+    description: "三只眼睛拥有270度视角，能洞察敌人动向，大幅提升闪避和暴击抵抗",
+    element: "neutral",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "视界", type: "dodge_up", duration: 3, chance: 1, statModifiers: { evasion: 0.3 } }
+    ]
+  },
+
+  // 三眼魔狼：钢铁之躯（小说描述钢铁般结实的身躯）
+  iron_body: {
+    id: "iron_body",
+    name: "钢铁之躯",
+    description: "钢铁般结实的身躯，大幅提升防御力",
+    element: "neutral",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "钢躯", type: "defense_up", duration: 3, chance: 1, statModifiers: { defense: 15 } }
     ]
   }
 };
