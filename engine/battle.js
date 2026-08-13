@@ -336,6 +336,20 @@ const BattleSystem = {
                         </ul>
                     </div>
                     
+                    <div style="margin-bottom: 16px;">
+                        <h3 style="color: #66ccff; margin-bottom: 8px; font-size: 16px;">⌨️ 快捷键</h3>
+                        <div style="color: #ccc; font-size: 14px; line-height: 1.8;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                                <span><b>1-9</b>：使用技能</span>
+                                <span><b>空格</b>：普通攻击</span>
+                                <span><b>D</b>：防御</span>
+                                <span><b>F</b>：逃跑</span>
+                                <span><b>A</b>：自动战斗</span>
+                                <span><b>S</b>：切换速度</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div style="text-align: center; margin-top: 20px;">
                         <button onclick="BattleSystem.closeHelp()" style="
                             padding: 10px 30px;
