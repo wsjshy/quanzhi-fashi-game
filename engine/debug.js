@@ -128,6 +128,17 @@ const DebugPanel = {
                 });
             });
             
+            // 输入框获得焦点时自动全选
+            const inputs = panel.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.select();
+                });
+                input.addEventListener('click', function() {
+                    this.select();
+                });
+            });
+            
             // 初始化传送列表（延迟一下，等数据加载完成）
             setTimeout(() => this.initTeleportList(), 1000);
             
@@ -1199,7 +1210,16 @@ const DebugPanel = {
                 }
                 
                 if (enemyData) {
+                    // 切换到战斗状态
+                    if (typeof Game !== 'undefined') {
+                        Game.state = 'battle';
+                        Game.battleEndCallback = null;
+                    }
                     BattleSystem.startBattle(enemyData, options);
+                    // 渲染战斗界面
+                    if (typeof UI !== 'undefined' && UI.renderBattleScreen) {
+                        UI.renderBattleScreen();
+                    }
                     this.toggle(); // 关闭调试面板
                     console.log(`[Debug] 开始战斗: ${enemyId}`, options);
                 } else {
