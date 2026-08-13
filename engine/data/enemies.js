@@ -898,7 +898,7 @@ const DataEnemies = {
     attack: 18,
     defense: 8,
     speed: 14,
-    skills: ["basic_attack", "dark_bolt"],
+    skills: ["basic_attack", "dark_bolt", "shadow_assault"],
     aiType: "kiter",
     specialAbility: "腥红光束：远程穿透攻击，无视部分防御",
     spriteColor: "#8b4513",
