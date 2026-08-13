@@ -2488,5 +2488,54 @@ const DataEvents = {
         resultText: "你看了一眼那个奇怪的涂鸦，没在意，继续前行。"
       }
     ]
+  },
+  event_earth_spring_depths: {
+    id: "event_earth_spring_depths",
+    name: "泉底低语",
+    description: "在地圣泉冥想时，你听到了来自深处的声音……",
+    trigger: "exploring",
+    chance: 0.1,
+    conditions: [
+      { type: "location", value: "earth_spring", operator: "==" },
+      { type: "level", value: 8, operator: ">=" },
+      { type: "flag", value: "heard_spring_whisper", operator: "!=" }
+    ],
+    once: true,
+    choices: [
+      {
+        text: "凝神细听",
+        effects: { setFlag: "heard_spring_whisper", giveInfo: "ancient_presence_below", mp: -30 },
+        resultText: "你闭上眼睛，将精神力延伸到泉水深处。灵泉的水流声渐渐远去，取而代之的是……心跳声。\n\n不是你的心跳。是来自地下极深处的、缓慢而沉重的心跳。\n\n咚……咚……\n\n伴随着心跳，一个古老而威严的声音在你脑海中响起，不是用语言，而是直接灌入你的意识：\n\n'……谁……扰我长眠……'\n\n你猛地睁开眼，浑身冷汗。灵泉依旧平静地流淌，仿佛什么都没发生。\n\n但你知道，地圣泉下面，沉睡着什么东西。\n\n（消耗30MP，获得信息碎片：泉底的古老存在。）"
+      },
+      {
+        text: "太过诡异，停止冥想",
+        effects: {},
+        resultText: "你感到一阵莫名的恐惧，立刻停止了冥想，离开了泉边。"
+      }
+    ]
+  },
+  event_farewell_bocheng: {
+    id: "event_farewell_bocheng",
+    name: "告别博城",
+    description: "你即将离开博城前往明珠学府，最后看一眼这座城市……",
+    trigger: "exploring",
+    chance: 0.5,
+    conditions: [
+      { type: "quest", value: "quest_journey_to_mingzhu", operator: "==" },
+      { type: "flag", value: "bade_farewell_bocheng", operator: "!=" }
+    ],
+    once: true,
+    choices: [
+      {
+        text: "去学校告别",
+        effects: { setFlag: "bade_farewell_bocheng", exp: 50 },
+        resultText: "你来到天澜高中。学校正在重建，唐月老师在临时教室里整理资料。\n\n'要走了吗？'她微笑着，但眼底有一丝不舍。'去吧，明珠学府是更大的舞台。'\n\n张小侯拍着你的肩膀：'到了明珠别忘了我们！等我毕业了也去考！'\n\n你环顾熟悉的校园，深吸一口气，转身离开。\n\n博城，这座承载了你法师之路起点的城市，你会回来的。"
+      },
+      {
+        text: "直接出发",
+        effects: { setFlag: "left_without_farewell" },
+        resultText: "你选择不告而别。背着行囊，你最后看了一眼博城的方向，踏上了前往上海的列车。\n\n也许有些遗憾，但前方有更广阔的世界在等你。"
+      }
+    ]
   }
 };
