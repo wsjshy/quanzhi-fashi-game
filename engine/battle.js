@@ -161,12 +161,13 @@ const BattleSystem = {
             this.playerAttack();
         } catch (e) {
             console.error('[Battle] 自动战斗出错，回退到普通攻击:', e);
-            this.addLog('自动战斗出现异常，使用普通攻击', 'system');
+            this.addLog(`自动战斗出错: ${e.message}，使用普通攻击`, 'system');
             // 出错时安全回退到普通攻击
             try {
                 this.playerAttack();
             } catch (e2) {
                 console.error('[Battle] 普通攻击也失败了:', e2);
+                this.addLog(`普通攻击也失败: ${e2.message}，跳过回合`, 'system');
                 // 最后手段：直接结束玩家回合
                 this.endPlayerTurn();
             }

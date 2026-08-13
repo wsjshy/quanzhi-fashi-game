@@ -1405,8 +1405,8 @@ const DataSkills = {
       }
     ]
   },
-  light_blessing: {
-    id: "light_blessing",
+  light_sanctuary: {
+    id: "light_sanctuary",
     name: "圣佑",
     description: "中阶光系魔法，神圣之光护体，大幅提升防御并净化负面状态。",
     element: "light",
@@ -1568,8 +1568,8 @@ const DataSkills = {
   },
 
   // 第132章 朝赫使用，水系防御
-  water_shield: {
-    id: "water_shield",
+  water_arc_shield: {
+    id: "water_arc_shield",
     name: "水饶之盾",
     description: "水系中阶防御魔法。蓝色水凝聚成半弧形盾牌，可抵御中阶火系魔法，但雷系可穿透水盾。小说第132章朝赫使用。",
     element: "water",
@@ -1667,8 +1667,8 @@ const DataSkills = {
     ]
   },
   
-  wild_charge: {
-    id: "wild_charge",
+  demon_wild_charge: {
+    id: "demon_wild_charge",
     name: "狂暴冲撞",
     description: "妖魔全力冲撞敌人，造成高额物理伤害，有几率击退敌人",
     element: "physical",
@@ -2035,21 +2035,6 @@ const DataSkills = {
     ]
   },
   
-  demon_regeneration: {
-    id: "demon_regeneration",
-    name: "妖魔再生",
-    description: "战将级妖魔施展再生之力，恢复自身大量生命值",
-    element: "physical",
-    type: "heal",
-    mpCost: 0,
-    targetType: "self",
-    baseHeal: 0,  // 按百分比恢复
-    healPercent: 0.2,  // 恢复20%最大HP
-    cooldown: 4,
-    tier: "战将级",
-    isDemonSkill: true
-  },
-  
   thorn_armor: {
     id: "thorn_armor",
     name: "荆棘护甲",
@@ -2103,8 +2088,8 @@ const DataSkills = {
     ]
   },
   
-  fire_burst: {
-    id: "fire_burst",
+  demon_fire_burst: {
+    id: "demon_fire_burst",
     name: "火焰爆发",
     description: "火系妖魔爆发火焰，造成大量伤害并有几率灼烧",
     element: "fire",
@@ -2428,8 +2413,8 @@ const DataSkills = {
   },
 
   // ===== 第四批妖魔特色技能 =====
-  wind_barrier: {
-    id: "wind_barrier",
+  demon_wind_barrier: {
+    id: "demon_wind_barrier",
     name: "风之屏障",
     description: "在身边形成风之屏障，2回合内闪避率大幅提升",
     element: "wind",
@@ -2525,23 +2510,6 @@ const DataSkills = {
     ]
   },
 
-  demon_rage: {
-    id: "demon_rage",
-    name: "妖魔之怒",
-    description: "进入狂暴状态，攻击力大幅提升但防御降低，持续3回合",
-    element: "physical",
-    type: "buff",
-    mpCost: 0,
-    targetType: "self",
-    cooldown: 6,
-    tier: "战将级",
-    isDemonSkill: true,
-    statusEffects: [
-      { name: "狂暴", type: "attack_up", duration: 3, chance: 1, statModifiers: { attack: 15 } },
-      { name: "狂暴", type: "defense_down", duration: 3, chance: 1, statModifiers: { defense: -5 } }
-    ]
-  },
-
   // ===== 第五批妖魔技能（带新机制）=====
   charge_attack: {
     id: "charge_attack",
@@ -2626,23 +2594,6 @@ const DataSkills = {
     statusEffects: [
       { name: "中毒", type: "poison", duration: 3, chance: 0.8, dotDamage: 6 },
       { name: "致盲", type: "accuracy_down", duration: 2, chance: 0.6 }
-    ]
-  },
-
-  rock_throw: {
-    id: "rock_throw",
-    name: "巨石投掷",
-    description: "投掷巨石砸向目标，造成高额土系伤害并有几率眩晕",
-    element: "earth",
-    type: "damage",
-    mpCost: 0,
-    targetType: "enemy",
-    cooldown: 4,
-    tier: "奴仆级",
-    isDemonSkill: true,
-    power: 1.6,
-    statusEffects: [
-      { name: "眩晕", type: "stun", duration: 1, chance: 0.25 }
     ]
   },
 
@@ -3156,8 +3107,8 @@ const DataSkills = {
   },
 
   // 妖藤：缠绕束缚
-  vine_bind: {
-    id: "vine_bind",
+  demon_vine_bind: {
+    id: "demon_vine_bind",
     name: "藤蔓缠绕",
     description: "用藤蔓缠绕目标，使其无法行动并持续受到伤害",
     element: "earth",

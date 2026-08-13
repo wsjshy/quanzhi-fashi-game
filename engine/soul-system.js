@@ -64,20 +64,57 @@ const SoulSystem = {
       };
     }
 
-    // 掉落成功，添加到玩家背包
+    // 掉落成功
     const soulItemId = this.soulTypes[soulType].itemId;
     const soulName = this.soulTypes[soulType].name;
     const soulIcon = this.soulTypes[soulType].icon;
+    const soulExp = this.soulTypes[soulType].baseExp;
 
-    // 添加到背包
-    if (player.addItem) {
-      player.addItem(soulItemId, 1);
-    }
-
-    // 有小泥鳅坠的话，自动吸收并显示提示
+    // 有小泥鳅坠的话，自动吸收并获得经验
     let message = `获得 ${soulIcon} ${soulName} x1`;
     if (hasLoach) {
-      message = `${soulIcon} 小泥鳅坠自动吸收了${soulName}！`;
+      // 直接给小泥鳅坠加经验，不进背包
+      const artifactData = player.starDustArtifacts.all;
+      const currentLevel = artifactData.level || 1;
+      const currentExp = artifactData.exp || 0;
+      
+      // 获取小泥鳅坠最大等级
+      const artifact = StarDustArtifactSystem.getArtifact(artifactData.id);
+      const maxLevel = artifact?.maxLevel || 10;
+      
+      if (currentLevel >= maxLevel) {
+        // 已满级，残魄进背包
+        if (player.addItem) {
+          player.addItem(soulItemId, 1);
+        }
+        message = `${soulIcon} 小泥鳅坠已满级，${soulName}收入背包`;
+      } else {
+        // 吸收经验
+        let newLevel = currentLevel;
+        let newExp = currentExp + soulExp;
+        
+        while (newExp >= StarDustArtifactSystem.getExpToNextLevel(newLevel) && newLevel < maxLevel) {
+          newExp -= StarDustArtifactSystem.getExpToNextLevel(newLevel);
+          newLevel++;
+        }
+        
+        player.starDustArtifacts.all = {
+          ...artifactData,
+          level: newLevel,
+          exp: newExp
+        };
+        
+        if (newLevel > currentLevel) {
+          message = `${soulIcon} 小泥鳅坠吸收${soulName}，升级到 Lv.${newLevel}！`;
+        } else {
+          message = `${soulIcon} 小泥鳅坠自动吸收了${soulName}（+${soulExp}经验）`;
+        }
+      }
+    } else {
+      // 没有小泥鳅坠，残魄进背包
+      if (player.addItem) {
+        player.addItem(soulItemId, 1);
+      }
     }
 
     return {

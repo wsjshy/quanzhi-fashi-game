@@ -75,7 +75,7 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "dark_bolt",
-      "wild_charge",
+      "demon_wild_charge",
       "battle_howl"
     ],
     spriteColor: "#4a7c3f",
@@ -200,7 +200,7 @@ const DataEnemies = {
       "rock_throw",
       "demon_regeneration",
       "stone_skin",
-      "earth_shield"
+      "demon_earth_shield"
     ],
     aiType: "defensive",
     enemyType: "demon",
@@ -244,7 +244,7 @@ const DataEnemies = {
       "basic_attack",
       "wind_blade",
       "wind_step",
-      "wind_barrier",
+      "demon_wind_barrier",
       "speed_burst"
     ],
     aiType: "kiter",
@@ -331,7 +331,7 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "fire_bolt",
-      "fire_burst",
+      "demon_fire_burst",
       "flame_cloak",
       "flame_shield"
     ],
@@ -591,7 +591,7 @@ const DataEnemies = {
       "basic_attack",
       "claw_slash",
       "wind_slash",
-      "wild_charge",
+      "demon_wild_charge",
       "blood_bite"
     ],
     aiType: "kiter",
@@ -642,7 +642,7 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "earth_spike",
-      "earth_shield",
+      "demon_earth_shield",
       "war_stomp",
       "demon_regeneration",
       "thorn_armor",
@@ -892,7 +892,7 @@ const DataEnemies = {
     attack: 12,
     defense: 10,
     speed: 6,
-    skills: ["basic_attack", "vine_bind", "thorn_shot"],
+    skills: ["basic_attack", "demon_vine_bind", "thorn_shot"],
     spriteColor: "#228b22",
     isEnemy: true,
     aiType: "controller",
@@ -1253,7 +1253,7 @@ const DataEnemies = {
     skills: [
       "basic_attack",
       "earth_spike",
-      "earth_shield"
+      "demon_earth_shield"
     ],
     aiType: "defensive",
     enemyType: "mage",

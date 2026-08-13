@@ -294,7 +294,7 @@ const RealmSystem = {
                     earth: 'earth_wave',
                     wind: 'wind_wing',
                     water: 'water_tide',
-                    light: 'light_blessing',
+                    light: 'light_sanctuary',
                     dark: 'dark_spike',
                     heal: 'heal_holy_light',
                     summon: 'summon_beast_empower'
