@@ -614,11 +614,66 @@ const BattleSystem = {
             }, 500);
         }
 
+        // 绑定键盘快捷键
+        this._keyHandler = (e) => this.handleKeyPress(e);
+        document.addEventListener('keydown', this._keyHandler);
+
         return {
             player: this.player,
             enemy: this.enemy,
             isPlayerTurn: this.isPlayerTurn
         };
+    },
+
+    /**
+     * 处理键盘快捷键
+     */
+    handleKeyPress(e) {
+        if (!this.active || !this.isPlayerTurn) return;
+        // 忽略输入框中的按键
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        const key = e.key.toLowerCase();
+
+        // 数字键1-9：使用对应技能
+        if (key >= '1' && key <= '9') {
+            const skillIndex = parseInt(key) - 1;
+            if (this.player.skills && this.player.skills[skillIndex]) {
+                const skillId = this.player.skills[skillIndex];
+                const skill = SkillSystem.getSkill(skillId);
+                if (skill && this.player.mp >= skill.mpCost) {
+                    this.playerUseSkill(skillId);
+                }
+            }
+            e.preventDefault();
+        }
+        // 空格键：普通攻击
+        else if (key === ' ') {
+            this.playerAttack();
+            e.preventDefault();
+        }
+        // D键：防御
+        else if (key === 'd') {
+            this.playerDefend();
+            e.preventDefault();
+        }
+        // F键：逃跑
+        else if (key === 'f') {
+            if (this.battleOptions.canFlee) {
+                this.playerFlee();
+            }
+            e.preventDefault();
+        }
+        // A键：自动战斗
+        else if (key === 'a') {
+            this.toggleAutoBattle();
+            e.preventDefault();
+        }
+        // S键：切换速度
+        else if (key === 's') {
+            this.toggleSpeed();
+            e.preventDefault();
+        }
     },
     
     /**
@@ -3997,6 +4052,12 @@ const BattleSystem = {
         this.playerCasting = null;
         this.enemyCasting = null;
         this.autoBattle = false; // 结束战斗时关闭自动战斗
+
+        // 移除键盘快捷键监听
+        if (this._keyHandler) {
+            document.removeEventListener('keydown', this._keyHandler);
+            this._keyHandler = null;
+        }
         
         // 同步玩家状态
         Player.hp = this.player.hp;
