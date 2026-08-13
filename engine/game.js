@@ -1059,13 +1059,22 @@ const Game = {
                 message += '📊 战斗统计\n';
                 message += `回合数：${BattleSystem.turn}\n`;
                 message += `总伤害：${stats.totalDamageDealt || 0}\n`;
+                message += `受到伤害：${stats.totalDamageTaken || 0}\n`;
+                if (stats.totalHealingDone > 0) {
+                    message += `治疗量：${stats.totalHealingDone}\n`;
+                }
                 if (stats.critCount > 0) {
                     message += `暴击次数：${stats.critCount}\n`;
                 }
                 if (stats.interruptCount > 0) {
                     message += `打断次数：${stats.interruptCount}\n`;
                 }
-                message += `受到伤害：${stats.totalDamageTaken || 0}\n`;
+                if (stats.missCount > 0) {
+                    message += `闪避次数：${stats.missCount}\n`;
+                }
+                if (stats.skillsUsed > 0) {
+                    message += `使用技能：${stats.skillsUsed}次\n`;
+                }
                 message += `\n`;
                 
                 // 奖励
