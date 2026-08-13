@@ -181,8 +181,8 @@ const BattleSystem = {
                 const damage = skill.baseDamage || 0;
                 // 元素克制加分
                 let finalDamage = damage;
-                if (skill.element && enemy.elements) {
-                    for (const elem of enemy.elements) {
+                if (skill.element && this.enemy.elements) {
+                    for (const elem of this.enemy.elements) {
                         if (this.isElementStrong(skill.element, elem)) {
                             finalDamage *= 1.5;
                         }

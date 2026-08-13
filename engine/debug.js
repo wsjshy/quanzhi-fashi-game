@@ -1176,7 +1176,7 @@ const DebugPanel = {
                     'bone_eating_worm': 'gold_ant', // 临时用金甲蚁代替
                     'three_eye_wolf': 'one_eye_wolf_advanced', // 进阶独眼魔狼代替
                     'blood_pattern_rat': 'giant_eye_rat', // 巨眼猩鼠代替
-                    'black_beast_demon': 'black_church_blue_deacon', // 蓝衣执事代替
+                    'black_beast_demon': 'black_beast', // 黑畜妖
                     'winged_wolf': 'bone_spike_zheng', // 骨刺狰代替
                     'flame_queen': 'black_church_blue_deacon', // 蓝衣执事代替
                     'ice_saint': 'mu_bai_duel' // 穆白代替

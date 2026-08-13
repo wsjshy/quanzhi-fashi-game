@@ -330,8 +330,9 @@ const BattleAI = {
             score *= 0.3;
         }
         
-        // 高伤害技能额外加分
-        if (skill.baseDamage > 30) {
+        // 高伤害技能额外加分（支持baseDamage和power两种）
+        const skillDamage = skill.baseDamage || (skill.power ? self.attack * skill.power : 0);
+        if (skillDamage > 30 || (skill.power && skill.power >= 1.3)) {
             score += 0.2 * profile.weights.damage;
         }
         
@@ -380,8 +381,8 @@ const BattleAI = {
     scoreDamageSkill(skill, self, opponent, profile) {
         let score = 0.5;
         
-        // 基础伤害分
-        const baseDamage = skill.baseDamage || 10;
+        // 基础伤害分（支持baseDamage固定值和power基于攻击力倍率两种）
+        const baseDamage = skill.baseDamage || (skill.power ? self.attack * skill.power : 10);
         const damageMultiplier = skill.damageMultiplier || 1;
         const totalDamage = baseDamage * damageMultiplier;
         
@@ -559,25 +560,49 @@ const BattleAI = {
             score += 0.2 * profile.weights.buff;
         }
         
-        // 检查是否已经有相同buff
-        const hasBuff = self.buffs?.some(b => b.name === skill.name);
+        // 检查是否已经有相同buff（同时检查buffs和statusEffects）
+        const hasBuff = self.buffs?.some(b => b.name === skill.name) || 
+                        self.statusEffects?.some(e => e.name === skill.name);
         if (hasBuff) {
             score -= 0.3; // 已有相同buff，降低优先级
         }
-        
+
+        // 提取buff效果（支持skill.statModifiers和statusEffects中的statModifiers两种格式）
+        let buffStats = skill.statModifiers || {};
+        let hasDodgeBuff = false;
+        if (skill.statusEffects && skill.statusEffects.length > 0) {
+            for (const effect of skill.statusEffects) {
+                if (effect.statModifiers) {
+                    buffStats = { ...buffStats, ...effect.statModifiers };
+                }
+                if (effect.type === 'dodge_up' || effect.dodgeMod) {
+                    hasDodgeBuff = true;
+                }
+            }
+        }
+
         // 攻击型buff（攻击+、暴击+）在激进型AI中更有价值
-        if (skill.statModifiers && (skill.statModifiers.attack || skill.critBonus)) {
-            score += 0.1 * (profile.weights.damage || 1);
+        if (buffStats.attack || skill.critBonus) {
+            score += 0.15 * (profile.weights.damage || 1);
+            if (profile.name === 'aggressive' || profile.name === 'burst') {
+                score += 0.15;
+            }
         }
-        
+
         // 防御型buff（防御+、闪避+）在保守型AI中更有价值
-        if (skill.statModifiers && (skill.statModifiers.defense || skill.dodgeBonus)) {
+        if (buffStats.defense || hasDodgeBuff || skill.dodgeBonus) {
             score += 0.1 * (profile.weights.survival || 1);
+            if (profile.name === 'defensive') {
+                score += 0.1;
+            }
         }
-        
+
         // 速度型buff在游击型AI中更有价值
-        if (skill.statModifiers && skill.statModifiers.speed) {
+        if (buffStats.speed) {
             score += 0.15;
+            if (profile.name === 'kiter') {
+                score += 0.1;
+            }
         }
         
         return score;
