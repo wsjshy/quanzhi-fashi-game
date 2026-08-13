@@ -335,6 +335,42 @@ const BattleAI = {
             score += 0.2 * profile.weights.damage;
         }
         
+        // 技能状态效果智能评分
+        if (skill.statusEffects && skill.statusEffects.length > 0) {
+            const selfHpPercent = self.hp / self.maxHp;
+            const opponentHpPercent = opponent.hp / opponent.maxHp;
+            
+            skill.statusEffects.forEach(effect => {
+                // 控制类效果：目标没被控制时额外加分
+                if (['stun', 'freeze', 'frozen', 'paralyze', 'bind'].includes(effect.type)) {
+                    const alreadyControlled = opponent.statusEffects?.some(e => 
+                        ['stun', 'freeze', 'frozen', 'paralyze', 'bind'].includes(e.type)
+                    );
+                    if (!alreadyControlled && opponentHpPercent > 0.2) {
+                        score += 0.25 * (effect.chance || 0.5);
+                    }
+                }
+                
+                // 吸血效果：自身血量低时额外加分
+                if (skill.lifesteal && skill.lifesteal > 0 && selfHpPercent < 0.6) {
+                    score += (0.6 - selfHpPercent) * 0.5;
+                }
+                
+                // DOT效果（灼烧、中毒）：目标血量高时更有价值
+                if (['burn', 'poison'].includes(effect.type) && opponentHpPercent > 0.5) {
+                    score += 0.1;
+                }
+                
+                // 减速效果：目标没被减速时加分
+                if (effect.type === 'slow') {
+                    const alreadySlowed = opponent.statusEffects?.some(e => e.type === 'slow');
+                    if (!alreadySlowed) {
+                        score += 0.1;
+                    }
+                }
+            });
+        }
+        
         return score;
     },
     
@@ -514,15 +550,34 @@ const BattleAI = {
     scoreBuffSkill(skill, self, opponent, profile) {
         let score = 0.3;
         
-        // 战斗开始时buff更有价值
+        // 战斗开始时buff更有价值（前3回合或双方满血）
+        const turn = self._battleTurn || 1;
+        if (turn <= 3) {
+            score += 0.25 * profile.weights.buff;
+        }
         if (self.hp / self.maxHp > 0.8 && opponent.hp / opponent.maxHp > 0.8) {
-            score += 0.3 * profile.weights.buff;
+            score += 0.2 * profile.weights.buff;
         }
         
         // 检查是否已经有相同buff
         const hasBuff = self.buffs?.some(b => b.name === skill.name);
         if (hasBuff) {
             score -= 0.3; // 已有相同buff，降低优先级
+        }
+        
+        // 攻击型buff（攻击+、暴击+）在激进型AI中更有价值
+        if (skill.statModifiers && (skill.statModifiers.attack || skill.critBonus)) {
+            score += 0.1 * (profile.weights.damage || 1);
+        }
+        
+        // 防御型buff（防御+、闪避+）在保守型AI中更有价值
+        if (skill.statModifiers && (skill.statModifiers.defense || skill.dodgeBonus)) {
+            score += 0.1 * (profile.weights.survival || 1);
+        }
+        
+        // 速度型buff在游击型AI中更有价值
+        if (skill.statModifiers && skill.statModifiers.speed) {
+            score += 0.15;
         }
         
         return score;

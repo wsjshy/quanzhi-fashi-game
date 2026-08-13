@@ -1861,7 +1861,8 @@ const BattleSystem = {
                     buffs: this.enemy.buffs || [],
                     statusEffects: this.enemy.statusEffects || [],
                     skillCooldowns: this.enemy.skillCooldowns || {},
-                    elements: this.enemy.elements || []
+                    elements: this.enemy.elements || [],
+                    _battleTurn: this.turn || 1
                 };
                 
                 // 准备对手状态
