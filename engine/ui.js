@@ -1476,7 +1476,9 @@ const UI = {
                             opacity: ${state.isPlayerTurn ? 1 : 0.5};
                         ">👊 普攻</button>
                         
-                        <button onclick="Game.battleDefend()" ${!state.isPlayerTurn ? 'disabled' : ''} style="
+                        <button onclick="Game.battleDefend()" ${!state.isPlayerTurn ? 'disabled' : ''} 
+                                title="防御：减少50%受到的伤害，并恢复10%最大MP"
+                                style="
                             padding: 10px 20px;
                             background: linear-gradient(135deg, #334455, #445566);
                             border: 2px solid #556677;
