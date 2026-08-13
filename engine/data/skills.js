@@ -395,6 +395,36 @@ const DataSkills = {
     isCanon: true,
     source: "第152章 谢文峰使用光耀·失明"
   },
+
+  light_purify: {
+    id: "light_purify",
+    name: "光耀·净化",
+    description: "光系初阶一级魔法，弹丸状净化之光。对黑暗生物、寄生妖魔有奇效，命中后造成圣灼伤害并净化寄生状态。",
+    element: "light",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 15,
+    damageMultiplier: 1.0,
+    hitRate: 0.9,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 1,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "圣灼",
+        type: "holy_burn",
+        element: "light",
+        duration: 2,
+        chance: 0.8,
+        dotDamage: 8,
+        vsDarkBonus: 3.0
+      }
+    ],
+    isCanon: true,
+    source: "第188章 赵满延使用光耀·净化秒杀鳞皮妖兵"
+  },
+
   dark_bolt: {
     id: "dark_bolt",
     name: "暗影·腐蚀",
@@ -425,6 +455,35 @@ const DataSkills = {
       }
     ]
   },
+
+  shadow_spike: {
+    id: "shadow_spike",
+    name: "巨影钉",
+    description: "暗影系中阶魔法，凝聚暗影尖钉刺向敌人，造成暗影伤害并束缚目标。在阴影环境中威力提升。",
+    element: "dark",
+    type: "damage",
+    mpCost: 25,
+    baseDamage: 45,
+    damageMultiplier: 1.4,
+    hitRate: 0.9,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "中阶",
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "影钉束缚",
+        type: "bind",
+        element: "dark",
+        duration: 2,
+        chance: 0.6
+      }
+    ],
+    isCanon: true,
+    source: "第181章 暗影系中阶技能巨影钉"
+  },
+
   light_shield: {
     id: "light_shield",
     name: "光系·圣盾",
@@ -2026,6 +2085,50 @@ const DataSkills = {
     isDemonSkill: true,
     isCanon: true,
     source: "第179章 蜕皮男妖手臂伸长"
+  },
+
+  demon_parasite_bite: {
+    id: "demon_parasite_bite",
+    name: "寄生撕咬",
+    description: "鳞皮妖母撕咬目标，注入寄生妖血。被寄生者夜晚会变妖。",
+    element: "dark",
+    type: "damage",
+    mpCost: 10,
+    baseDamage: 25,
+    damageMultiplier: 1.2,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "寄生", type: "parasite", duration: 99, chance: 0.3 }
+    ],
+    isCanon: true,
+    source: "第189章 鳞皮妖母寄生"
+  },
+
+  demon_hive_suicide: {
+    id: "demon_hive_suicide",
+    name: "巢群自杀令",
+    description: "鳞皮妖母命令所有妖兵自杀，将生命能量输送给母体。被寄生者也会被抽干生命。",
+    element: "dark",
+    type: "special",
+    mpCost: 30,
+    baseDamage: 0,
+    damageMultiplier: 0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "all_allies",
+    cooldown: 99,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "巢群献祭", type: "hive_sacrifice", duration: 1, chance: 1.0 }
+    ],
+    isCanon: true,
+    source: "第189章 鳞皮妖母集体自杀指令"
   },
 
   fierce_roar: {

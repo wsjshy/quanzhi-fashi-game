@@ -1851,5 +1851,107 @@ const DataEnemies = {
     battleQuotes: {
       start: "你年纪太嫩了。"
     }
+  },
+
+  // ===== 鳞皮妖（寄生型妖魔） =====
+  scale_soldier: {
+    id: "scale_soldier",
+    name: "鳞皮妖兵",
+    title: "寄生型妖魔",
+    description: "青黄色鳞片覆盖的寄生妖魔，奴仆级。被寄生者夜晚蜕皮变为此形态，利爪锋利，能在墙面天花板攀爬。怕光，光系魔法对其有特效。智力低下，不知恐惧。",
+    elements: ["dark"],
+    level: 5,
+    maxHp: 180,
+    maxMp: 20,
+    attack: 22,
+    defense: 8,
+    speed: 22,
+    spirit: 5,
+    skills: [
+      "basic_attack",
+      "demon_claw_slash",
+      "demon_wall_climb"
+    ],
+    aiType: "aggressive",
+    enemyType: "demon",
+    demonTier: "servant",
+    spriteColor: "#9ACD32",
+    isEnemy: true,
+    isCanon: true,
+    canonSource: "第183-188章 鳞皮妖兵",
+    traits: ["parasite", "wall_climbing", "light_weakness", "hive_mind"],
+    expReward: 80,
+    goldReward: 30,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.3, min: 1, max: 1 }
+    ]
+  },
+
+  scale_mother: {
+    id: "scale_mother",
+    name: "鳞皮妖母",
+    title: "寄生母体",
+    description: "鳞皮妖的母体，战将级以上。有智慧，控制所有妖兵。可命令妖兵集体自杀抽干被寄生者生命。藏于高处俯视全局，通过妖兵汲取养分。",
+    elements: ["dark"],
+    level: 12,
+    maxHp: 1200,
+    maxMp: 200,
+    attack: 40,
+    defense: 25,
+    speed: 18,
+    spirit: 35,
+    skills: [
+      "basic_attack",
+      "demon_claw_slash",
+      "demon_parasite_bite",
+      "demon_hive_suicide",
+      "demon_tongue_whip"
+    ],
+    aiType: "controller",
+    enemyType: "demon",
+    demonTier: "warrior",
+    spriteColor: "#2F4F4F",
+    isEnemy: true,
+    isCanon: true,
+    canonSource: "第189-190章 鳞皮妖母",
+    traits: ["parasite_mother", "hive_mind_control", "light_weakness", "intelligent", "can_command_suicide"],
+    expReward: 800,
+    goldReward: 500,
+    dropItems: [
+      { itemId: "demon_core", chance: 1.0, min: 2, max: 5 },
+      { itemId: "spirit_gold_coin", chance: 0.5, min: 1, max: 3 }
+    ]
+  },
+
+  // ===== 赵满延 =====
+  zhao_manyan: {
+    id: "zhao_manyan",
+    name: "赵满延",
+    title: "光系中阶法师",
+    description: "莫凡舍友，黄头发，看似花花公子实则光系中阶法师。光佑·圣盾防御极强，光耀·净化对黑暗生物特效。团队型法师，不擅单挑。",
+    elements: ["light"],
+    level: 10,
+    maxHp: 500,
+    maxMp: 250,
+    attack: 20,
+    defense: 35,
+    speed: 18,
+    spirit: 25,
+    skills: [
+      "light_blessing",
+      "light_sanctuary",
+      "light_purify"
+    ],
+    aiType: "defensive",
+    enemyType: "human",
+    spriteColor: "#FFD700",
+    isEnemy: false,
+    isAlly: true,
+    isCanon: true,
+    canonSource: "第187-188章 赵满延光系中阶",
+    traits: ["light_mage", "defensive_support", "hidden_power"],
+    battleQuotes: {
+      start: "别慌，我罩着你。"
+    }
   }
 };
