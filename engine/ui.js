@@ -1381,10 +1381,28 @@ const UI = {
                         ⏩ ${state.speed || 1}x 速度
                     </button>
                     
+                    <!-- 自动战斗按钮 -->
+                    <button onclick="BattleSystem.toggleAutoBattle()" style="
+                        position: absolute;
+                        top: 120px;
+                        right: 20px;
+                        padding: 8px 16px;
+                        background: ${state.autoBattle ? 'linear-gradient(135deg, #663333, #aa4444)' : 'linear-gradient(135deg, #666633, #888844)'};
+                        border: 2px solid ${state.autoBattle ? '#ff6666' : '#aaaa66'};
+                        border-radius: 8px;
+                        color: ${state.autoBattle ? '#ffaaaa' : '#ddddaa'};
+                        cursor: pointer;
+                        font-size: 14px;
+                        font-weight: bold;
+                        z-index: 10;
+                    " onmouseover="this.style.boxShadow='0 0 10px rgba(200, 200, 100, 0.5)'" onmouseout="this.style.boxShadow='none'">
+                        ${state.autoBattle ? '🤖 自动中' : '🤖 自动'}
+                    </button>
+                    
                     <!-- 战斗帮助按钮 -->
                     <button onclick="BattleSystem.showHelp()" style="
                         position: absolute;
-                        top: 120px;
+                        top: 170px;
                         right: 20px;
                         padding: 8px 16px;
                         background: linear-gradient(135deg, #336633, #448844);

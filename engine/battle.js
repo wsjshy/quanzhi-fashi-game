@@ -43,6 +43,9 @@ const BattleSystem = {
     speedLevels: [1, 2, 4],
     currentSpeedIndex: 0,
     
+    // 自动战斗
+    autoBattle: false,
+    
     // 元素克制关系（小说设定）
     // 火克冰、冰克风、风克土、土克雷、雷克水、水克火
     // 光暗互克
@@ -79,6 +82,119 @@ const BattleSystem = {
         if (typeof UI !== 'undefined' && UI.updateBattleScreen) {
             UI.updateBattleScreen();
         }
+    },
+    
+    /**
+     * 切换自动战斗
+     */
+    toggleAutoBattle() {
+        this.autoBattle = !this.autoBattle;
+        this.addLog(this.autoBattle ? '🤖 自动战斗已开启' : '🤖 自动战斗已关闭', 'system');
+        if (typeof UI !== 'undefined' && UI.updateBattleScreen) {
+            UI.updateBattleScreen();
+        }
+        // 如果开启自动战斗且是玩家回合，立即执行
+        if (this.autoBattle && this.isPlayerTurn && this.player.hp > 0) {
+            setTimeout(() => this.autoPlayerTurn(), this.getDelay(500));
+        }
+    },
+    
+    /**
+     * 自动战斗玩家AI
+     */
+    autoPlayerTurn() {
+        if (!this.autoBattle || !this.isPlayerTurn || this.player.hp <= 0) return;
+        
+        const player = this.player;
+        const enemy = this.enemy;
+        const hpPercent = player.hp / player.maxHp;
+        const mpPercent = player.mp / player.maxMp;
+        
+        // 1. HP低于30%，优先治疗
+        if (hpPercent < 0.3) {
+            // 找治疗技能
+            const healSkill = this.findBestHealSkill();
+            if (healSkill && player.mp >= healSkill.mpCost) {
+                this.useSkill(healSkill.id);
+                return;
+            }
+            // 用治疗药水
+            const healPotion = Player.items.find(i => i.id === 'hp_potion' && i.count > 0);
+            if (healPotion) {
+                this.useItem('hp_potion');
+                return;
+            }
+        }
+        
+        // 2. MP低于20%，用蓝药
+        if (mpPercent < 0.2) {
+            const mpPotion = Player.items.find(i => i.id === 'mp_potion' && i.count > 0);
+            if (mpPotion) {
+                this.useItem('mp_potion');
+                return;
+            }
+        }
+        
+        // 3. 使用伤害最高的可用技能
+        const damageSkill = this.findBestDamageSkill();
+        if (damageSkill && player.mp >= damageSkill.mpCost) {
+            this.useSkill(damageSkill.id);
+            return;
+        }
+        
+        // 4. 普通攻击
+        this.playerAttack();
+    },
+    
+    /**
+     * 找最好的治疗技能
+     */
+    findBestHealSkill() {
+        const availableSkills = this.getAvailableSkills(this.player);
+        let bestSkill = null;
+        let bestHeal = 0;
+        
+        for (const skillId of availableSkills) {
+            const skill = SkillSystem.getSkill(skillId);
+            if (skill && skill.type === 'heal') {
+                const healAmount = skill.baseHeal || skill.healPercent * this.player.maxHp || 0;
+                if (healAmount > bestHeal && this.player.mp >= skill.mpCost) {
+                    bestHeal = healAmount;
+                    bestSkill = skill;
+                }
+            }
+        }
+        return bestSkill;
+    },
+    
+    /**
+     * 找伤害最高的技能
+     */
+    findBestDamageSkill() {
+        const availableSkills = this.getAvailableSkills(this.player);
+        let bestSkill = null;
+        let bestDamage = 0;
+        
+        for (const skillId of availableSkills) {
+            const skill = SkillSystem.getSkill(skillId);
+            if (skill && skill.type === 'damage' && !skill.isDemonSkill) {
+                const damage = skill.baseDamage || 0;
+                // 元素克制加分
+                let finalDamage = damage;
+                if (skill.element && enemy.elements) {
+                    for (const elem of enemy.elements) {
+                        if (this.isElementStrong(skill.element, elem)) {
+                            finalDamage *= 1.5;
+                        }
+                    }
+                }
+                if (finalDamage > bestDamage && this.player.mp >= skill.mpCost) {
+                    bestDamage = finalDamage;
+                    bestSkill = skill;
+                }
+            }
+        }
+        return bestSkill;
     },
     
     /**
@@ -2338,6 +2454,11 @@ const BattleSystem = {
         if (typeof UI !== 'undefined') {
             UI.updateBattleScreen();
         }
+        
+        // 自动战斗
+        if (this.autoBattle && this.player.hp > 0) {
+            setTimeout(() => this.autoPlayerTurn(), this.getDelay(600));
+        }
     },
 
     /**
@@ -3837,6 +3958,7 @@ const BattleSystem = {
             rewards: this.rewards || null,
             log: this.log.slice(-10), // 最近10条
             speed: this.speed, // 战斗速度
+            autoBattle: this.autoBattle, // 自动战斗
             options: this.battleOptions, // 战斗模式选项
             magicTools: this.magicTools // 魔具技能
         };
@@ -3849,6 +3971,7 @@ const BattleSystem = {
         this.active = false;
         this.playerCasting = null;
         this.enemyCasting = null;
+        this.autoBattle = false; // 结束战斗时关闭自动战斗
         
         // 同步玩家状态
         Player.hp = this.player.hp;
