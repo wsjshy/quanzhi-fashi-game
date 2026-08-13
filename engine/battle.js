@@ -105,6 +105,9 @@ const BattleSystem = {
     autoPlayerTurn() {
         if (!this.autoBattle || !this.isPlayerTurn || this.player.hp <= 0) return;
         
+        // 如果玩家正在引导技能，不要打断
+        if (this.playerCasting) return;
+        
         try {
             const player = this.player;
             const enemy = this.enemy;
@@ -116,8 +119,8 @@ const BattleSystem = {
                 // 找治疗技能
                 const healSkill = this.findBestHealSkill();
                 if (healSkill && player.mp >= healSkill.mpCost) {
-                    this.playerCastSkill(healSkill.id);
-                    return;
+                    const result = this.playerCastSkill(healSkill.id);
+                    if (result !== null) return;
                 }
                 // 用治疗药水
                 if (this.hasItem('hp_potion')) {
@@ -137,11 +140,24 @@ const BattleSystem = {
             // 3. 使用伤害最高的可用技能（考虑元素克制）
             const damageSkill = this.findBestDamageSkill();
             if (damageSkill && player.mp >= damageSkill.mpCost) {
-                this.playerCastSkill(damageSkill.id);
-                return;
+                const result = this.playerCastSkill(damageSkill.id);
+                if (result !== null) return;
+                // 如果技能释放失败（如冷却中），继续尝试下一个选项
             }
             
-            // 4. 普通攻击（安全回退）
+            // 4. 尝试使用其他可用技能（buff类等）
+            const availableSkills = this.getAvailableSkills(player);
+            for (const skillId of availableSkills) {
+                const skill = SkillSystem.getSkill(skillId);
+                if (skill && !skill.isDemonSkill && skill.type !== 'damage' && skill.type !== 'heal') {
+                    if (skill.targetType === 'self' || skill.type === 'buff') {
+                        const result = this.playerCastSkill(skillId);
+                        if (result !== null) return;
+                    }
+                }
+            }
+            
+            // 5. 普通攻击（安全回退）
             this.playerAttack();
         } catch (e) {
             console.error('[Battle] 自动战斗出错，回退到普通攻击:', e);
