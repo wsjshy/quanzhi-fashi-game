@@ -617,6 +617,66 @@ const DataSkills = {
       }
     ]
   },
+
+  // ===== 植物系技能 =====
+  plant_vine_bind: {
+    id: "plant_vine_bind",
+    name: "藤变·缠绕",
+    description: "植物系初阶魔法，从地面催生藤蔓束缚敌人，使其无法行动。对力量型敌人可被挣脱。",
+    element: "plant",
+    type: "control",
+    mpCost: 10,
+    baseDamage: 5,
+    damageMultiplier: 0.5,
+    hitRate: 0.85,
+    critRate: 0,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "藤蔓束缚",
+        type: "bind",
+        element: "plant",
+        duration: 2,
+        chance: 0.75,
+        canBeBrokenByStrength: true
+      }
+    ],
+    isCanon: true,
+    source: "第161章 庄离风使用藤变·缠绕"
+  },
+
+  plant_forest_prison: {
+    id: "plant_forest_prison",
+    name: "坤之森·囚牢",
+    description: "植物系中阶魔法，投下种子催生大片怪树怪藤形成森林囚牢，追踪生命封锁一切位移。暗影系可借阴影穿行。",
+    element: "plant",
+    type: "control",
+    mpCost: 30,
+    baseDamage: 10,
+    damageMultiplier: 0.3,
+    hitRate: 0.95,
+    critRate: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "中阶",
+    statusEffects: [
+      {
+        name: "森之囚牢",
+        type: "bind",
+        element: "plant",
+        duration: 4,
+        chance: 0.9,
+        blocksMovement: true,
+        blocksDodge: true,
+        shadowCanPass: true
+      }
+    ],
+    isCanon: true,
+    source: "第167章 牧奴娇使用坤之森·囚牢"
+  },
+
   water_wave: {
     id: "water_wave",
     name: "水系·巨浪",

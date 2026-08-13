@@ -1716,5 +1716,44 @@ const DataEnemies = {
     battleQuotes: {
       start: "呃呜——！！"
     }
+  },
+
+  // ===== 明珠学府重要NPC =====
+  mu_nujiao: {
+    id: "mu_nujiao",
+    name: "牧奴娇",
+    title: "明珠女神·双系中阶",
+    description: "牧家大小姐，全校公认的女神。天仙之姿，嗜战如魔。风系+植物系双系中阶，能释放风盘·龙卷和坤之森·囚牢。战斗经验丰富，对中阶魔法理解极深。",
+    elements: ["wind", "plant"],
+    level: 10,
+    maxHp: 600,
+    maxMp: 200,
+    attack: 35,
+    defense: 20,
+    speed: 28,
+    spirit: 30,
+    skills: [
+      "wind_track_phantom",
+      "wind_tornado",
+      "plant_vine_bind",
+      "plant_forest_prison"
+    ],
+    aiType: "tactical",
+    enemyType: "human",
+    spriteColor: "#98FB98",
+    isEnemy: true,
+    isCanon: true,
+    canonSource: "第165-168章 斗兽大赛决战",
+    traits: ["double_element_mid", "battle_experienced", "plant_master"],
+    expReward: 500,
+    goldReward: 300,
+    dropItems: [
+      { itemId: "spirit_gold_coin", chance: 0.5, min: 1, max: 2 }
+    ],
+    battleQuotes: {
+      start: "开始吧。",
+      lowHp: "你比我想象的强。",
+      death: "我输了。"
+    }
   }
 };
