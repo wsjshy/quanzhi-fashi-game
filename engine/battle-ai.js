@@ -320,6 +320,16 @@ const BattleAI = {
             score -= mpRatio * 0.2;
         }
         
+        // MP管理：MP低时，技能分数大幅降低，优先用普通攻击
+        const selfMpPercent = self.mp / self.maxMp;
+        if (selfMpPercent < 0.3) {
+            // MP低于30%，技能分数降低
+            score *= (0.4 + selfMpPercent);
+        } else if (selfMpPercent < 0.15) {
+            // MP低于15%，技能分数大幅降低
+            score *= 0.3;
+        }
+        
         // 高伤害技能额外加分
         if (skill.baseDamage > 30) {
             score += 0.2 * profile.weights.damage;
@@ -367,6 +377,15 @@ const BattleAI = {
             // 高伤害技能在对手被控制时价值更高
             if (totalDamage > self.attack * 1.5) {
                 score += 0.2 * profile.weights.damage;
+            }
+        }
+        
+        // 对手在引导魔法时，伤害技能更有价值（可以打断）
+        if (opponent.isCasting) {
+            score += 0.5 * profile.weights.damage;
+            // 高伤害技能打断成功率更高，额外加分
+            if (totalDamage > self.attack * 1.5) {
+                score += 0.3 * profile.weights.damage;
             }
         }
         
@@ -464,14 +483,25 @@ const BattleAI = {
         const selfHpPercent = self.hp / self.maxHp;
         
         // 血量越低，治疗价值越高
-        if (selfHpPercent < profile.threshold.healHpPercent) {
-            const healAmount = skill.healAmount || 20;
+        if (selfHpPercent < profile.thresholds.healHpPercent) {
+            // 计算治疗量：支持固定数值和百分比两种
+            let healAmount;
+            if (skill.healPercent) {
+                healAmount = Math.floor(self.maxHp * skill.healPercent);
+            } else {
+                healAmount = skill.healAmount || skill.baseHeal || 20;
+            }
             const healRatio = healAmount / self.maxHp;
             score += healRatio * profile.weights.heal * 3;
             
             // 血量很低时大幅加分
             if (selfHpPercent < 0.2) {
                 score += 0.5 * profile.weights.survival;
+            }
+            
+            // 能直接回满的话，价值更高
+            if (self.hp + healAmount >= self.maxHp) {
+                score += 0.2 * profile.weights.survival;
             }
         }
         
