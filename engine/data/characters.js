@@ -4802,20 +4802,64 @@ const DataCharacters = {
           choices: [
             { text: "关于年度考核...", next: "about_exam" },
             { text: "穆宁雪学姐今天会来吗？", next: "about_ningxue" },
-            { text: "告辞。", next: "default", action: "back" }
+            {
+              id: "ask_security",
+              text: "最近学校安全吗？我听说山里不太平",
+              condition: { minOpinion: 15, notNpcFlags: ["asked_security"] },
+              effects: { npcFlags: { asked_security: true } },
+              next: "about_security"
+            },
+            {
+              id: "saw_stranger",
+              text: "那天看到您和一个穿灰衣的人说话...",
+              condition: { minOpinion: 25, hasFlag: "saw_mu_he_stranger", notNpcFlags: ["confronted_mu_he"] },
+              effects: { opinion: -10, npcFlags: { confronted_mu_he: true } },
+              next: "mu_he_stranger"
+            },
+            { text: "告辞。", next: null, action: "close" }
           ]
         },
         about_exam: {
           id: "about_exam",
           texts: ["年度考核是公正的，不合格的学生自然会被请离学校。", "学校资源有限，必须留给有天赋的学生。"],
           effects: { opinion: -2 },
-          choices: [{ text: "我明白了。", next: "default", action: "back" }]
+          choices: [{ text: "我明白了。", next: "default" }]
         },
         about_ningxue: {
           id: "about_ningxue",
           texts: ["宁雪是我们穆氏的骄傲，博城的旗帜。", "她今天会来观看年度考核，你们好好表现。"],
           effects: { familiarity: 2 },
-          choices: [{ text: "多谢告知。", next: "default", action: "back" }]
+          choices: [{ text: "多谢告知。", next: "default" }]
+        },
+        about_security: {
+          id: "about_security",
+          texts: [
+            "（他眼睛一亮，但很快恢复了常态。）",
+            "安全？哼，学校的防御法阵是穆氏出资修建的，固若金汤。",
+            "不过……你倒是提醒了我。最近确实有些不安分的东西在附近游荡。",
+            "（他似乎在自言自语）结界的节点……嗯，我会让人检查的。"
+          ],
+          mood: "thoughtful",
+          effects: { giveInfo: "mu_he_interest_defense", opinion: 1 },
+          choices: [
+            { text: "那就好", next: "default" }
+          ]
+        },
+        mu_he_stranger: {
+          id: "mu_he_stranger",
+          texts: [
+            "（他的表情瞬间冷了下来，但随即哈哈大笑。）",
+            "灰衣人？你看错了吧。学校里人来人往的，我每天要见多少人。",
+            "（他拍了拍你的肩膀，力道大得有些不自然。）",
+            "年轻人，想象力丰富是好事。但有些事……不要乱说，免得惹祸上身。",
+            "（他的眼神变得锐利，和平时那个市侩的校董判若两人。）"
+          ],
+          mood: "threatening",
+          effects: { giveInfo: "mu_he_warning" },
+          choices: [
+            { text: "……我记错了", effects: { opinion: -5 }, next: "default" },
+            { text: "我不会乱说的", effects: { trust: 2 }, next: "default" }
+          ]
         }
       }
     }
@@ -5347,20 +5391,45 @@ const DataCharacters = {
           choices: [
             { text: "教官，关于历练任务...", next: "about_training" },
             { text: "您杀过多少妖魔？", next: "about_demon" },
-            { text: "告辞。", next: "default", action: "back" }
+            {
+              id: "ask_anomaly",
+              text: "教官，最近山里的妖魔是不是不太对劲？",
+              condition: { minOpinion: 20, minTrust: 15, hasFlag: "witnessed_demon_migration" },
+              effects: {},
+              next: "about_anomaly"
+            },
+            { text: "告辞。", next: null, action: "close" }
           ]
         },
         about_training: {
           id: "about_training",
           texts: ["历练？哼，你们这群温室里的花朵。", "完成悬赏就全部A，完不成就全部不合格。", "别觉得我苛刻，野外的妖魔可不会跟你讲道理。"],
           effects: { familiarity: 3 },
-          choices: [{ text: "我们会完成的。", next: "default", action: "back" }]
+          choices: [{ text: "我们会完成的。", next: "default" }]
         },
         about_demon: {
           id: "about_demon",
           texts: ["多少？记不清了。", "奴仆级的蝼蚁不算数，战将级的倒是有几十只。", "年轻人，想杀妖魔，先活下来再说。"],
           effects: { opinion: 2 },
-          choices: [{ text: "受教了。", next: "default", action: "back" }]
+          choices: [{ text: "受教了。", next: "default" }]
+        },
+        about_anomaly: {
+          id: "about_anomaly",
+          texts: [
+            "（斩空的动作顿了一下，抬眼看你。）",
+            "……你也看到了？",
+            "（他沉默了片刻，望向雪峰山深处的方向。）",
+            "我在这山里待了三年，从来没见过这种事。妖魔在迁徙，不是为了觅食，是在逃。",
+            "它们在逃什么……我也不知道。但我已经上报了。",
+            "（他收回目光，语气变得严厉。）",
+            "这件事不要对其他学生说，免得引起恐慌。你自己也小心，别往深处走。",
+            "……有些东西，不是你们现在能应付的。"
+          ],
+          mood: "serious",
+          effects: { trust: 5, giveInfo: "zhan_kong_knows_anomaly" },
+          choices: [
+            { id: "back", text: "我明白了", effects: {}, next: "default" }
+          ]
         }
       }
     }

@@ -2389,5 +2389,30 @@ const DataEvents = {
         resultText: "你犹豫了一下，还是用治愈魔法为它处理了伤口。光芒闪过，它的伤口以肉眼可见的速度愈合。\n\n它抬头看了你一眼，那双眼睛里竟然流露出……感激？\n\n它叼起一块发光的石头放在你脚边，然后跑进了树林深处。\n\n（获得了一块神秘的石头，消耗15MP。这只妖魔似乎记住了你。）"
       }
     ]
+  },
+  event_mu_he_stranger: {
+    id: "event_mu_he_stranger",
+    name: "校董的密会",
+    description: "你在学校走廊的拐角处看到了不该看到的一幕……",
+    trigger: "exploring",
+    chance: 0.06,
+    conditions: [
+      { type: "location", value: "tianlan_school", operator: "==" },
+      { type: "day", value: 30, operator: ">=" },
+      { type: "flag", value: "saw_mu_he_stranger", operator: "!=" }
+    ],
+    once: true,
+    choices: [
+      {
+        text: "躲起来偷听",
+        effects: { setFlag: "saw_mu_he_stranger", giveInfo: "mu_he_gray_clothes_meeting" },
+        resultText: "你躲在柱子后面，看到穆贺校董正和一个穿灰衣的人低声交谈。那人的脸藏在兜帽里，看不清面容。\n\n'……结界的节点已经摸清了。'穆贺的声音压得很低。\n\n'主教大人说了，时候到了自然会通知你。'灰衣人的声音沙哑难听。\n\n'我知道了。但那个斩空……他不太好对付。'\n\n'放心，会有人处理他的。'\n\n他们察觉到了什么，突然分开。你赶紧溜走，心跳如鼓。\n\n（你获得了重要信息：穆贺和可疑人物有勾结，他们在计划什么……）"
+      },
+      {
+        text: "假装没看到",
+        effects: {},
+        resultText: "你觉得不该偷听别人的私事，转身离开了。"
+      }
+    ]
   }
 };
