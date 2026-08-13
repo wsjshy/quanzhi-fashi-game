@@ -288,6 +288,7 @@ const BattleSystem = {
         this.rating = null;  // 战斗评价
         this.bossPhase2 = false;  // Boss战第二阶段标记
         this.huntFled = false;  // 狩猎战妖魔逃跑标记
+        this.huntFailed = false;  // 狩猎战妖魔逃跑失败标记
         
         // 战斗模式选项
         this.battleOptions = {
@@ -1586,7 +1587,15 @@ const BattleSystem = {
         if (this.battleOptions.mode === 'hunt' && this.enemy.hp / this.enemy.maxHp < 0.3) {
             // 基础逃跑概率30%，速度差每多1点+2%成功率
             const speedDiff = this.enemy.speed - this.player.speed;
-            const fleeChance = Math.min(0.8, Math.max(0.1, 0.3 + speedDiff * 0.02));
+            let fleeChance = Math.min(0.8, Math.max(0.1, 0.3 + speedDiff * 0.02));
+            
+            // 被减速/控制时逃跑成功率降低
+            const enemyHasSlow = this.enemy.statusEffects?.some(e => 
+                e.type === 'slow' || e.type === 'bind' || e.type === 'stun' || e.type === 'frozen' || e.type === 'paralyze'
+            );
+            if (enemyHasSlow) {
+                fleeChance *= 0.4;  // 被控制时逃跑成功率大幅降低
+            }
             
             if (Math.random() < fleeChance) {
                 this.addLog(`${this.enemy.name} 见势不妙，转身逃跑了！`, 'system');
@@ -1598,6 +1607,12 @@ const BattleSystem = {
                 return;
             } else {
                 this.addLog(`${this.enemy.name} 试图逃跑，但被你拦住了！`, 'system');
+                // 逃跑失败后，妖魔会更狂暴（攻击+15%）
+                if (!this.huntFailed) {
+                    this.huntFailed = true;
+                    this.enemy.attack = Math.floor(this.enemy.attack * 1.15);
+                    this.addLog(`${this.enemy.name} 逃跑失败，变得更加狂暴了！`, 'crit');
+                }
             }
         }
 
