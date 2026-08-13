@@ -200,6 +200,19 @@ const DataCharacters = {
               nextNode: "casual_chat"
             },
             {
+              id: "ask_family",
+              text: "你家里人呢？",
+              condition: {
+                minOpinion: 25,
+                notNpcFlags: ["asked_about_family"]
+              },
+              effects: {
+                opinion: 1,
+                npcFlags: { asked_about_family: true }
+              },
+              nextNode: "about_family"
+            },
+            {
               id: "training_insights",
               text: "聊聊修炼心得",
               condition: {
@@ -606,6 +619,58 @@ const DataCharacters = {
               id: "accept",
               text: "我知道了，考核见。",
               effects: { opinion: 3 },
+              nextNode: "default"
+            }
+          ]
+        },
+        about_family: {
+          id: "about_family",
+          texts: [
+            "我爸啊，在穆家做司机，老实人一个，为了我上学把房子都卖了。",
+            "还有...我有个义妹，叫心夏。",
+            "（提到心夏时，莫凡的语气难得柔和下来。）",
+            "她身体不太好，从小就弱，走路都费劲。我爸收养她之后，她就一直跟着我们。",
+            "我修炼变强，有一半原因也是为了她。要是我能成为厉害的法师，说不定能找到治好她的方法。"
+          ],
+          mood: "soft",
+          effects: {
+            giveInfo: "ye_xinxia_intro",
+            opinion: 3
+          },
+          choices: [
+            {
+              id: "ask_more",
+              text: "她是什么系的？",
+              condition: { minOpinion: 35 },
+              effects: {},
+              nextNode: "about_xinxia_more"
+            },
+            {
+              id: "back",
+              text: "你一定能保护好她的",
+              effects: { opinion: 2 },
+              nextNode: "default"
+            }
+          ]
+        },
+        about_xinxia_more: {
+          id: "about_xinxia_more",
+          texts: [
+            "她啊...觉醒的时候出了点问题，一直没能成功觉醒。",
+            "（莫凡皱了皱眉。）",
+            "医生说她精神力太弱，承受不了星子的连接。但我总觉得不对劲，心夏她...有时候能感觉到一些奇怪的东西。",
+            "说不上来，就好像她对某些特殊的能量特别敏感。",
+            "算了，说这些你也不懂。总之，我不会让任何人欺负她。"
+          ],
+          mood: "worried",
+          effects: {
+            giveInfo: "ye_xinxia_condition"
+          },
+          choices: [
+            {
+              id: "back",
+              text: "希望她能好起来",
+              effects: { opinion: 2 },
               nextNode: "default"
             }
           ]
@@ -1984,6 +2049,35 @@ const DataCharacters = {
               nextNode: "demon_warning"
             },
             {
+              id: "ask_about_you",
+              text: "老师，你来学校之前是做什么的？",
+              condition: {
+                minOpinion: 35,
+                notNpcFlags: ["asked_about_past"]
+              },
+              effects: {
+                opinion: 1,
+                npcFlags: { asked_about_past: true }
+              },
+              nextNode: "about_past"
+            },
+            {
+              id: "saw_on_roof",
+              text: "老师，昨晚我好像在天台看到你了……",
+              condition: {
+                minOpinion: 45,
+                minTrust: 30,
+                hasFlag: "saw_tang_yue_roof",
+                notNpcFlags: ["confronted_roof"]
+              },
+              effects: {
+                opinion: -3,
+                npcFlags: { confronted_roof: true },
+                giveInfo: "tang_yue_secret"
+              },
+              nextNode: "roof_confrontation"
+            },
+            {
               id: "leave",
               text: "谢谢老师，我先走了",
               effects: {},
@@ -2075,6 +2169,106 @@ const DataCharacters = {
               effects: {},
               nextNode: "default"
             }
+          ]
+        },
+        about_past: {
+          id: "about_past",
+          texts: [
+            "我吗？我之前...在魔法协会做过一段时间的研究员。",
+            "后来觉得还是想教书，就来天澜了。跟年轻人在一起，感觉自己也年轻了。",
+            "（她的眼神有一瞬间的闪烁，似乎没有完全说实话。）"
+          ],
+          mood: "gentle",
+          choices: [
+            {
+              id: "press",
+              text: "只是研究员？",
+              condition: { minTrust: 40 },
+              effects: { opinion: -2 },
+              nextNode: "about_past_pressed"
+            },
+            {
+              id: "accept",
+              text: "原来如此，老师真厉害",
+              effects: { opinion: 2 },
+              nextNode: "default"
+            }
+          ]
+        },
+        about_past_pressed: {
+          id: "about_past_pressed",
+          texts: [
+            "...你这孩子，观察力倒是挺敏锐的。",
+            "有些事情，知道太多对你没有好处。",
+            "你只需要知道，我不会害你，也不会害学校里任何一个学生。",
+            "等你再强一些...或许我会告诉你更多。"
+          ],
+          mood: "serious",
+          effects: {
+            npcFlags: { knows_tang_yue_has_secret: true },
+            trust: 5
+          },
+          choices: [
+            {
+              id: "back",
+              text: "我明白了",
+              effects: {},
+              nextNode: "default"
+            }
+          ]
+        },
+        roof_confrontation: {
+          id: "roof_confrontation",
+          texts: [
+            "（唐月的表情瞬间变了，那是你从未见过的警惕。）",
+            "...你看到了？",
+            "听着，昨晚的事不要告诉任何人。我在天台只是...处理一些私人事务。",
+            "我知道你很好奇，但有些事不知道比知道安全。相信我。"
+          ],
+          mood: "cold",
+          effects: {
+            trust: 3,
+            giveInfo: "tang_yue_roof_secret"
+          },
+          choices: [
+            {
+              id: "trust",
+              text: "好，我不会说的",
+              effects: { trust: 5, opinion: 3 },
+              nextNode: "roof_trust"
+            },
+            {
+              id: "doubt",
+              text: "你是不是在隐瞒什么？",
+              effects: { opinion: -5 },
+              nextNode: "roof_doubt"
+            }
+          ]
+        },
+        roof_trust: {
+          id: "roof_trust",
+          texts: [
+            "（她看了你一会儿，表情缓和下来。）",
+            "...谢谢你。你比我想象的要成熟。",
+            "记住，在这个世界上，有些真相是需要实力来承载的。",
+            "等你足够强了，我会告诉你一切。"
+          ],
+          mood: "gentle",
+          choices: [
+            { id: "back", text: "我会变强的", effects: {}, nextNode: "default" }
+          ]
+        },
+        roof_doubt: {
+          id: "roof_doubt",
+          texts: [
+            "（她叹了口气。）",
+            "我没有必要向你解释什么。",
+            "但你要记住，今晚的事如果传出去，不只是我，你也会有危险。",
+            "就当什么都没看到，好吗？"
+          ],
+          mood: "tired",
+          choices: [
+            { id: "back", text: "...好", effects: {}, nextNode: "default" }
           ]
         }
       }

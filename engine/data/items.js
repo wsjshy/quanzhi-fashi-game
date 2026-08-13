@@ -397,15 +397,15 @@ const DataItems = {
   small_loach_pendant: {
     id: "small_loach_pendant",
     name: "小泥鳅坠",
-    description: "黑乎乎泥鳅状的坠子，学校后山门卫老头嬴老头的遗物。莫凡戴着它在后山茅屋睡觉后世界大变。看似普通，实则是天下绝品的成长型星尘魔器，与莫凡有不可斩断的灵魂联系。可以吸纳其他星尘魔器内的魔魂之能自我提升，吸纳足够多可能成长为灵级。",
+    description: "一枚黑漆漆的泥鳅状坠子，材质不明，入手微凉。据说是学校后山一位嬴老头的遗物，看起来平平无奇，甚至有些丑陋。但偶尔在冥想时，会感觉到它似乎在微微发热……",
     type: "special",
     icon: "🐟",
     price: 0,
     stackable: false,
     usableInBattle: false,
     usableOutOfBattle: false,
-    rarity: "传说",
-    lore: "成长型星尘魔器，莫凡专属。全年无休使用，甩别人一条街的修炼神器。成长需要精魄和其他星尘魔器为代价。",
+    rarity: "稀有",
+    lore: "来历不明的黑色坠子，似乎隐藏着什么秘密。随着实力提升，或许能发现它的真正价值。",
     isSoulBound: true,
     growthStage: "mortal",
     growthProgress: 0
@@ -1587,7 +1587,7 @@ const DataItems = {
   little_loach_pendant: {
     id: "little_loach_pendant",
     name: "小泥鳅坠",
-    description: "一枚看似普通的黑色吊坠，形似小泥鳅。据说可以吸收其他星尘魔器来成长，是极为稀有的成长型魔器。对所有元素系都有加成效果。",
+    description: "一枚黑色泥鳅状坠子。你意外发现它竟然是一枚星尘魔器，能加速修炼。但它的能力似乎不止于此——偶尔你能感觉到它在吸收周围的能量，仿佛……在成长。",
     type: "star_dust_artifact",
     icon: "🐉",
     price: 999999,
@@ -1595,12 +1595,12 @@ const DataItems = {
     maxStack: 1,
     usableInBattle: false,
     usableOutOfBattle: true,
-    rarity: "传说",
+    rarity: "史诗",
     element: "all",
     grade: "growth",
     artifactId: "little_loach",
     boundToPlayer: true,
-    lore: "来历成谜的成长型星尘魔器，传说中可以无限成长，最终蜕变为神器。"
+    lore: "来历成谜的成长型坠子，似乎能吸收其他魔器的力量。它的极限在哪里，无人知晓。"
   },
 
   // ========== 魔具系统深化 ==========
