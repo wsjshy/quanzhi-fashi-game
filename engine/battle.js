@@ -569,6 +569,31 @@ const BattleSystem = {
 
         this.addLog(`遭遇了 ${this.enemy.name}！`, 'system');
         
+        // 难度提示
+        const levelDiff = this.enemy.level - this.player.level;
+        let difficultyText = '';
+        let difficultyColor = '';
+        if (levelDiff <= -5) {
+            difficultyText = '【简单】敌人远弱于你';
+            difficultyColor = '#44ff44';
+        } else if (levelDiff <= -2) {
+            difficultyText = '【较易】敌人略弱于你';
+            difficultyColor = '#88ff88';
+        } else if (levelDiff <= 1) {
+            difficultyText = '【普通】势均力敌';
+            difficultyColor = '#ffff44';
+        } else if (levelDiff <= 3) {
+            difficultyText = '【困难】敌人较强，小心应对';
+            difficultyColor = '#ffaa44';
+        } else if (levelDiff <= 5) {
+            difficultyText = '【危险】敌人远强于你！';
+            difficultyColor = '#ff6644';
+        } else {
+            difficultyText = '【致命】九死一生！';
+            difficultyColor = '#ff2222';
+        }
+        this.addLog(difficultyText, 'system');
+        
         // 先手判定：速度高的先行动
         if (this.enemy.speed > this.player.speed) {
             this.isPlayerTurn = false;
