@@ -1437,6 +1437,68 @@ const DataSkills = {
       }
     ]
   },
+  thunder_praise_yecha: {
+    id: "thunder_praise_yecha",
+    name: "霹雳·夜叉",
+    description: "中阶雷系第二级。粗壮紫色惊雷下落途中分裂为五道叉状闪电，同时轰击五个目标。配合灵种千钧时附带空气震荡，覆盖区域内敌人受到碾压伤害。",
+    element: "thunder",
+    type: "damage",
+    mpCost: 60,
+    baseDamage: 80,
+    damageMultiplier: 1.6,
+    hitRate: 0.95,
+    critRate: 0.25,
+    targetType: "all_enemies",
+    maxTargets: 5,
+    cooldown: 2,
+    tier: "中阶",
+    skillLevel: 2,
+    realmRequired: "middle",
+    castSpeed: "fast",
+    pierceWaterShield: true,
+    shockwave: true,
+    shockwaveDamage: 0.3,
+    statusEffects: [
+      {
+        name: "雷麻",
+        type: "stun",
+        element: "thunder",
+        duration: 1,
+        chance: 0.4
+      }
+    ],
+    isCanon: true,
+    canonSource: "第222章 千钧·霹雳·夜叉！"
+  },
+  thunder_qianjun_yinji: {
+    id: "thunder_qianjun_yinji",
+    name: "千钧·雷印·怒击",
+    description: "灵级雷种千钧强化的初阶雷印。雷电呈紫黑色，带动空气剧烈震荡形成碾压之力，单体攻击可将奴仆级妖魔直接打成肉酱。",
+    element: "thunder",
+    type: "damage",
+    mpCost: 25,
+    baseDamage: 70,
+    damageMultiplier: 2.2,
+    hitRate: 0.95,
+    critRate: 0.3,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    realmRequired: "initial",
+    castSpeed: "instant",
+    requiresSpiritSeed: "thunder_qianjun",
+    statusEffects: [
+      {
+        name: "震荡",
+        type: "stun",
+        element: "thunder",
+        duration: 1,
+        chance: 0.6
+      }
+    ],
+    isCanon: true,
+    canonSource: "第222章 千钧·雷印·怒击！"
+  },
   ice_lock: {
     id: "ice_lock",
     name: "冰锁",

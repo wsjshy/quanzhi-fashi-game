@@ -2290,5 +2290,108 @@ const DataEnemies = {
       start: "教训一下这个不知天高地厚的小子！",
       defeat: "呃...骨头...碎了..."
     }
+  },
+
+  // ===== 诅咒畜妖（许昭霆被咒法后）=====
+  cursed_demon_xu: {
+    id: "cursed_demon_xu",
+    name: "诅咒畜妖",
+    title: "被咒法的许昭霆",
+    description: "许昭霆被黑教廷咒法变成的强化黑畜妖。保留部分意识，比普通黑畜妖强大数倍，被灵魂锁链控制。脸上有未腐烂的人皮，眼中充满痛苦与怨恨。速度力量远超普通黑畜妖，黑色爪芒可远程切割。",
+    elements: ["thunder", "shadow"],
+    level: 15,
+    maxHp: 800,
+    maxMp: 200,
+    attack: 45,
+    defense: 20,
+    speed: 35,
+    spirit: 25,
+    skills: [
+      "basic_attack",
+      "shadow_claw",
+      "thunder_bolt",
+      "cursed_claw_barrage"
+    ],
+    aiType: "berserker",
+    enemyType: "cursed_human",
+    spriteColor: "#1a0a2e",
+    expReward: 500,
+    goldReward: 0,
+    isCanon: true,
+    canonSource: "第225-227章 诅咒气息黑畜妖/被咒法的许昭霆",
+    traits: ["cursed", "retains_consciousness", "tragic", "soul_chained", "black_church"],
+    specialAbility: "痛苦之力：HP低于50%时攻击力+50%；灵魂锁链：无法自我了断",
+    battleQuotes: {
+      start: "*痛苦的嘶吼* 咕...咕咕...",
+      defeat: "*眼中恢复一丝清明，向莫凡点头*"
+    }
+  },
+
+  // ===== 沈明笑（学校风云人物）=====
+  shen_mingxiao: {
+    id: "shen_mingxiao",
+    name: "沈明笑",
+    title: "沈家子弟/学校风云人物",
+    description: "明珠学校风云人物，沈家势力，哥哥沈林在猎者联盟。傲慢自大，认为明珠应由他呼风唤雨。冰系中阶，与罗宋勾结。",
+    elements: ["ice"],
+    level: 13,
+    maxHp: 350,
+    maxMp: 180,
+    attack: 28,
+    defense: 15,
+    speed: 18,
+    spirit: 20,
+    skills: [
+      "basic_attack",
+      "ice_spike",
+      "ice_lock",
+      "ice_freeze"
+    ],
+    aiType: "balanced",
+    enemyType: "human",
+    spriteColor: "#88CCEE",
+    expReward: 300,
+    goldReward: 800,
+    isCanon: true,
+    canonSource: "第219/229章",
+    traits: ["arrogant", "noble_family", "rival"],
+    battleQuotes: {
+      start: "乡野小子也配在明珠耍威风？",
+      defeat: "不可能...我沈家..."
+    }
+  },
+
+  // ===== 王力挺（食骨妖召唤者）=====
+  wang_liting: {
+    id: "wang_liting",
+    name: "王力挺",
+    title: "食骨妖召唤者",
+    description: "召唤系中阶法师，契约食骨妖。心狠手辣，大混战中率先出手，食骨妖羽毛飞射瞬间杀十几人。有言在先：召唤兽嗜血难控，死伤自负。",
+    elements: ["summon"],
+    level: 14,
+    maxHp: 400,
+    maxMp: 200,
+    attack: 25,
+    defense: 18,
+    speed: 16,
+    spirit: 22,
+    skills: [
+      "basic_attack",
+      "summon_bone_eating_demon",
+      "feather_barrage"
+    ],
+    aiType: "aggressive",
+    enemyType: "human",
+    spriteColor: "#8B4513",
+    expReward: 350,
+    goldReward: 600,
+    isCanon: true,
+    canonSource: "第230章 大混战（上）",
+    traits: ["ruthless", "summoner", "bone_eating_demon"],
+    specialAbility: "食骨妖：嗜血召唤兽，羽毛飞射范围攻击，连主人都难完全控制",
+    battleQuotes: {
+      start: "我有言在先，死了别怪我！",
+      defeat: "食骨妖...回来..."
+    }
   }
 };
