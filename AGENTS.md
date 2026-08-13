@@ -154,10 +154,13 @@
 ```
 
 ### Git规范
-- 路径：`D:\Git\bin\git.exe`
-- 提交格式：`类型：描述`
-- Gitee稳定，优先推Gitee
+- 路径：`D:\Git\bin\git.exe`（不在系统PATH中，必须用完整路径）
+- 提交格式：`类型：描述`（feat/fix/docs/refactor等）
+- Gitee稳定，优先推Gitee；GitHub需走代理
 - PowerShell用分号`;`分隔命令，不用`&&`
+- Gitee/GitHub push时exit code 1但stdout显示`xxx..xxx master -> master`是成功的（remote信息走stderr）
+- **GitHub代理**：用户开了Clash代理（127.0.0.1:7890），浏览器自动走系统代理但git不会。已配置`git config --global http.https://github.com.proxy http://127.0.0.1:7890`，只对GitHub走代理，不影响Gitee直连。如果代理端口变了需重新配置
+- 远程仓库：Gitee（gitee.com/wsjshy/quanzhi-fashi-game.git）+ GitHub（github.com/wsjshy/quanzhi-fashi-game.git）
 
 ---
 
@@ -245,6 +248,8 @@
 11. 白藏锋原著是光系中阶（不是风系），技能应有光系技能
 12. 事件trigger为"location"时chance设1.0，靠conditions控制触发顺序
 13. 事件链用flag串联：前一个事件setFlag，后一个事件检查该flag作为condition
+14. GitHub push失败（连不上443）：浏览器能开但git不行，是因为git不走系统代理。解决：`git config --global http.https://github.com.proxy http://127.0.0.1:7890`（Clash默认端口）
+15. git不在系统PATH中，PowerShell里直接敲git会报CommandNotFoundException，必须用完整路径`D:\Git\bin\git.exe`
 
 ### 代码修改检查清单
 - [ ] `node --check` 语法通过
