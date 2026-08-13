@@ -18,16 +18,20 @@
 - ✅ 更新three_eye_demon_wolf为新格式（加level/enemyType/demonTier）
 - ✅ 修复朝赫技能ID（water_shield→water_arc_shield）
 
+### 测试修复（黑盒测试中发现并修复）
+- ✅ 修复自动战斗衍生bug：battle.js缺失isElementStrong/isElementWeak方法（P0）
+- ✅ 黑盒测试通过：8个重点修复项全部验证，3场自动战斗+手动战斗正常
+
 ### 数据完善
-- ✅ 所有妖魔补demonTier字段（28个妖魔，奴仆/战将/统领/君主）
+- ✅ 所有妖魔补demonTier字段（34个妖魔，奴仆/战将/统领/君主）
 - ✅ 所有妖魔补enemyType字段
 - ✅ 非原著妖魔标记isCanon: false（骷髅战士/幽灵/铁甲蝎/雷鹰）
 
 ### 文档整理
-- ✅ 重写AGENTS.md为项目入口仪表盘
-- ✅ 重写TODO.md为可执行任务清单
-- ✅ 创建docs/战斗系统状态.md权威文档
-- ✅ 归档15个旧文档到docs/archive/
+- ✅ 重写AGENTS.md为清晰的单一入口，分四层管理文档
+- ✅ 更新TODO.md标记v0.8.4任务完成
+- ✅ 生成v0.8.4黑盒测试报告归档
+- ✅ 根目录旧文档归档到docs/archive/
 
 ---
 

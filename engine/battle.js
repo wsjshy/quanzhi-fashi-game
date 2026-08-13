@@ -274,6 +274,40 @@ const BattleSystem = {
     },
     
     /**
+     * 元素克制判断 - 攻击方是否克制防守方
+     */
+    isElementStrong(attackElement, defendElement) {
+        const strongAgainst = {
+            fire: 'ice',      // 火克冰
+            ice: 'wind',      // 冰克风
+            wind: 'earth',    // 风克土
+            earth: 'thunder', // 土克雷
+            thunder: 'water', // 雷克水
+            water: 'fire',    // 水克火
+            light: 'dark',    // 光克暗
+            dark: 'light'     // 暗克光
+        };
+        return strongAgainst[attackElement] === defendElement;
+    },
+    
+    /**
+     * 元素被克判断 - 攻击方是否被防守方克制
+     */
+    isElementWeak(attackElement, defendElement) {
+        const weakAgainst = {
+            fire: 'water',
+            ice: 'fire',
+            wind: 'ice',
+            earth: 'wind',
+            thunder: 'earth',
+            water: 'thunder',
+            light: 'dark',
+            dark: 'light'
+        };
+        return weakAgainst[attackElement] === defendElement;
+    },
+    
+    /**
      * 显示战斗帮助
      */
     showHelp() {

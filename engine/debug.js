@@ -374,7 +374,6 @@ const DebugPanel = {
                     <div style="margin-bottom: 15px;">
                         <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">🦅 战将级（新增）</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                            <button onclick="DebugPanel.startBattle('winged_wolf')" style="background: #4682B4; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🦅 翼苍狼</button>
                         </div>
                     </div>
 
@@ -389,8 +388,8 @@ const DebugPanel = {
                     <div style="margin-bottom: 15px;">
                         <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">🐺 统领级妖魔（挑战）</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                            <button onclick="DebugPanel.startBattle('winged_wolf')" style="background: #ff4400; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🦅 翼苍狼</button>
-                            <button onclick="DebugPanel.startBattle('stone_troll')" style="background: #888844; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🗿 石巨魔</button>
+                            <button onclick="DebugPanel.startBattle('winged_gray_wolf')" style="background: #ff4400; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🦅 翼苍狼</button>
+                            <button onclick="DebugPanel.startBattle('three_eye_demon_wolf')" style="background: #884422; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐺 三眼魔狼</button>
                         </div>
                     </div>
                     

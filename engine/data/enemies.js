@@ -1342,44 +1342,6 @@ const DataEnemies = {
     locations: ["bo_city_outskirts", "underground_caves"]
   },
 
-  winged_wolf: {
-    id: "winged_wolf",
-    name: "翼苍狼",
-    title: "战将级妖魔",
-    description: "长有翅膀的苍狼，风系妖魔，能在空中高速飞行并发射风刃，俯冲突袭威力巨大。",
-    elements: ["wind"],
-    level: 9,
-    maxHp: 450,
-    maxMp: 80,
-    attack: 38,
-    defense: 14,
-    speed: 28,
-    spirit: 15,
-    skills: [
-      "basic_attack",
-      "wind_blade_barrage",
-      "aerial_dive",
-      "feather_dance",
-      "claw_slash"
-    ],
-    aiType: "kiter",
-    enemyType: "demon",
-    demonTier: "warrior",
-    spriteColor: "#4682B4",
-    isEnemy: true,
-    isFlying: true,
-    expReward: 500,
-    goldReward: 300,
-    dropItems: [
-      { itemId: "demon_core", chance: 1.0, min: 2, max: 4 },
-      { itemId: "wolf_fang", chance: 0.8, min: 2, max: 3 },
-      { itemId: "wind_crystal", chance: 0.5, min: 1, max: 2 },
-      { itemId: "wing_feather", chance: 0.4, min: 1, max: 2 },
-      { itemId: "magic_stone", chance: 0.6, min: 2, max: 3 }
-    ],
-    locations: ["xuefeng_mountain", "sky_plateau"]
-  },
-
   // ===== 新妖魔 =====
   skeleton_warrior: {
     id: "skeleton_warrior",
