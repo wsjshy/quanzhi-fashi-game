@@ -1553,7 +1553,9 @@ const UI = {
                                         ${isCounter ? '<span style="color: #ff6600; font-size: 10px;">克制!</span>' : isWeak ? '<span style="color: #888; font-size: 10px;">不利</span>' : ''}
                                         ${state.player.skillLevels && state.player.skillLevels[skillId] ? `<span style="font-size: 11px; color: #ffcc66;"> Lv.${state.player.skillLevels[skillId].level || 1}</span>` : ''}
                                     </div>
-                                    <div style="font-size: 12px; color: #aaccff;">MP: ${skill.mpCost}</div>
+                                    <div style="font-size: 12px; color: ${state.player.mp >= skill.mpCost ? '#aaccff' : '#ff6666'};">
+                                        MP: ${skill.mpCost}${state.player.mp < skill.mpCost ? ' (不足)' : ''}
+                                    </div>
                                 </button>
                             `;
                         }).join('')}
