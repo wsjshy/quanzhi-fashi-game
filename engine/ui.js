@@ -1380,8 +1380,16 @@ const UI = {
                         border-radius: 8px;
                         font-size: 16px;
                         color: ${state.isPlayerTurn ? '#66ff66' : '#ff6666'};
+                        text-align: right;
                     ">
-                        第 ${state.turn} 回合 - ${state.isPlayerTurn ? '你的回合' : '敌人回合'}
+                        ${state.battleOptions && state.battleOptions.mode !== 'normal' ? `<div style="font-size: 12px; color: #ffcc66; margin-bottom: 4px;">${
+                            state.battleOptions.mode === 'duel' ? '⚔️ 决斗模式' :
+                            state.battleOptions.mode === 'gauntlet' ? '🔄 车轮战' :
+                            state.battleOptions.mode === 'hunt' ? '🏹 狩猎战' :
+                            state.battleOptions.mode === 'boss' ? '👑 Boss战' :
+                            state.battleOptions.mode
+                        }</div>` : ''}
+                        <div>第 ${state.turn} 回合 - ${state.isPlayerTurn ? '你的回合' : '敌人回合'}</div>
                     </div>
                     
                     <!-- 战斗速度按钮 -->
