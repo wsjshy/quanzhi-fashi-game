@@ -105,43 +105,56 @@ const BattleSystem = {
     autoPlayerTurn() {
         if (!this.autoBattle || !this.isPlayerTurn || this.player.hp <= 0) return;
         
-        const player = this.player;
-        const enemy = this.enemy;
-        const hpPercent = player.hp / player.maxHp;
-        const mpPercent = player.mp / player.maxMp;
-        
-        // 1. HP低于30%，优先治疗
-        if (hpPercent < 0.3) {
-            // 找治疗技能
-            const healSkill = this.findBestHealSkill();
-            if (healSkill && player.mp >= healSkill.mpCost) {
-                this.playerUseSkill(healSkill.id);
+        try {
+            const player = this.player;
+            const enemy = this.enemy;
+            const hpPercent = player.hp / player.maxHp;
+            const mpPercent = player.mp / player.maxMp;
+            
+            // 1. HP低于30%，优先治疗
+            if (hpPercent < 0.3) {
+                // 找治疗技能
+                const healSkill = this.findBestHealSkill();
+                if (healSkill && player.mp >= healSkill.mpCost) {
+                    this.playerCastSkill(healSkill.id);
+                    return;
+                }
+                // 用治疗药水
+                if (this.hasItem('hp_potion')) {
+                    this.playerUseItem('hp_potion');
+                    return;
+                }
+            }
+            
+            // 2. MP低于20%，用蓝药
+            if (mpPercent < 0.2) {
+                if (this.hasItem('mp_potion')) {
+                    this.playerUseItem('mp_potion');
+                    return;
+                }
+            }
+            
+            // 3. 使用伤害最高的可用技能（考虑元素克制）
+            const damageSkill = this.findBestDamageSkill();
+            if (damageSkill && player.mp >= damageSkill.mpCost) {
+                this.playerCastSkill(damageSkill.id);
                 return;
             }
-            // 用治疗药水
-            if (this.hasItem('hp_potion')) {
-                this.playerUseItem('hp_potion');
-                return;
+            
+            // 4. 普通攻击（安全回退）
+            this.playerAttack();
+        } catch (e) {
+            console.error('[Battle] 自动战斗出错，回退到普通攻击:', e);
+            this.addLog('自动战斗出现异常，使用普通攻击', 'system');
+            // 出错时安全回退到普通攻击
+            try {
+                this.playerAttack();
+            } catch (e2) {
+                console.error('[Battle] 普通攻击也失败了:', e2);
+                // 最后手段：直接结束玩家回合
+                this.endPlayerTurn();
             }
         }
-        
-        // 2. MP低于20%，用蓝药
-        if (mpPercent < 0.2) {
-            if (this.hasItem('mp_potion')) {
-                this.playerUseItem('mp_potion');
-                return;
-            }
-        }
-        
-        // 3. 使用伤害最高的可用技能（考虑元素克制）
-        const damageSkill = this.findBestDamageSkill();
-        if (damageSkill && player.mp >= damageSkill.mpCost) {
-            this.playerUseSkill(damageSkill.id);
-            return;
-        }
-        
-        // 4. 普通攻击
-        this.playerAttack();
     },
     
     /**
@@ -702,7 +715,7 @@ const BattleSystem = {
                 const skillId = this.player.skills[skillIndex];
                 const skill = SkillSystem.getSkill(skillId);
                 if (skill && this.player.mp >= skill.mpCost) {
-                    this.playerUseSkill(skillId);
+                    this.playerCastSkill(skillId);
                 }
             }
             e.preventDefault();
@@ -3386,6 +3399,12 @@ const BattleSystem = {
                 const spirit = target.spirit || 30;
                 const resist = spirit * 0.003; // 每点精神力抵抗0.3%
                 hitChance = Math.max(0.5, hitChance - resist); // 最低50%命中
+            }
+            
+            // 失明免疫检查（如黑畜妖没有眼睛）
+            if (effect.type === 'blind' && target.blindImmune) {
+                this.addLog(`${targetName} 没有眼睛，不受失明影响！`, 'system');
+                return;
             }
             
             if (Math.random() < hitChance) {

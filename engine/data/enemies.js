@@ -1125,6 +1125,7 @@ const DataEnemies = {
     isEnemy: true,
     demonTier: "servant",
     isBlackChurch: true,
+    blindImmune: true,  // 没有眼睛，不受失明影响
     expReward: 200,
     goldReward: 80,
     dropItems: [
