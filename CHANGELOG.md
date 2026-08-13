@@ -4,6 +4,33 @@
 
 ---
 
+## [v0.8.4] - 2026-08-13
+
+### Bug修复
+- ✅ 修复自动战斗函数名错误（playerUseSkill→playerCastSkill），P0级
+- ✅ 修复技能ID冲突：妖魔技能加demon_前缀，避免覆盖玩家技能，P0级
+- ✅ 修复healing_reduction坏血效果未在治疗计算中应用
+- ✅ 修复小泥鳅坠自动吸收残魄/精魄不获得经验
+- ✅ 修复UI敌人状态效果重复显示
+- ✅ 修复自动战斗isProcessingAction未重置导致第二回合后停止
+- ✅ 修复blood_pattern_rat重复定义（6级奴仆版本覆盖9级战将版本）
+- ✅ 删除旧格式blood_rune_giant_rat条目
+- ✅ 更新three_eye_demon_wolf为新格式（加level/enemyType/demonTier）
+- ✅ 修复朝赫技能ID（water_shield→water_arc_shield）
+
+### 数据完善
+- ✅ 所有妖魔补demonTier字段（28个妖魔，奴仆/战将/统领/君主）
+- ✅ 所有妖魔补enemyType字段
+- ✅ 非原著妖魔标记isCanon: false（骷髅战士/幽灵/铁甲蝎/雷鹰）
+
+### 文档整理
+- ✅ 重写AGENTS.md为项目入口仪表盘
+- ✅ 重写TODO.md为可执行任务清单
+- ✅ 创建docs/战斗系统状态.md权威文档
+- ✅ 归档15个旧文档到docs/archive/
+
+---
+
 ## [v0.8.5] - 2026-08-13（开发中）
 
 ### 新增
