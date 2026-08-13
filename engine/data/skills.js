@@ -1970,5 +1970,27 @@ const DataSkills = {
     cooldown: 4,
     tier: "战将级",
     isDemonSkill: true
+  },
+  
+  thorn_armor: {
+    id: "thorn_armor",
+    name: "荆棘护甲",
+    description: "战将级妖魔体表长出尖刺，反弹受到的物理伤害",
+    element: "physical",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "荆棘护甲",
+        type: "damage_reflect",
+        duration: 3,
+        chance: 1,
+        reflectPercent: 0.3  // 反弹30%伤害
+      }
+    ]
   }
 };

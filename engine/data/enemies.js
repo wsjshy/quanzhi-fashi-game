@@ -617,7 +617,8 @@ const DataEnemies = {
       "earth_spike",
       "earth_shield",
       "war_stomp",
-      "demon_regeneration"
+      "demon_regeneration",
+      "thorn_armor"
     ],
     spriteColor: "#888888",
     isEnemy: true,

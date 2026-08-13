@@ -3366,6 +3366,10 @@ const BattleSystem = {
             if (effect.type === 'frozen') {
                 mods.fireDamageMod *= 2;
             }
+            // 伤害反弹
+            if (effect.type === 'damage_reflect' && effect.reflectPercent) {
+                mods.damageReflect += effect.reflectPercent;
+            }
         });
         
         // 处理增益效果（buffs）
