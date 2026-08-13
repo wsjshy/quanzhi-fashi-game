@@ -2309,5 +2309,85 @@ const DataEvents = {
         resultText: "你觉得不该打扰老师的私事，默默离开了。"
       }
     ]
+  },
+  event_demon_migration: {
+    id: "event_demon_migration",
+    name: "异常迁徙",
+    description: "你注意到雪峰山的妖魔行为有些反常……",
+    trigger: "exploring",
+    chance: 0.12,
+    conditions: [
+      { type: "location", value: "xuefeng_mountain", operator: "==" },
+      { type: "day", value: 20, operator: ">=" },
+      { type: "flag", value: "witnessed_demon_migration", operator: "!=" }
+    ],
+    once: true,
+    choices: [
+      {
+        text: "仔细观察",
+        effects: { setFlag: "witnessed_demon_migration", giveInfo: "demon_migration_anomaly" },
+        resultText: "你躲在岩石后观察，发现成群的妖魔正从深山方向往外逃窜。它们不是在觅食，而是在……逃跑？\n\n更奇怪的是，这些妖魔身上似乎有黑色的纹路在蠕动，像是被什么东西感染了。\n\n一只独眼魔狼跑过你藏身的岩石旁，它的眼睛是血红色的，完全没有寻常妖魔的凶性——只有恐惧。\n\n（你获得了信息碎片：妖魔在逃离什么东西……）"
+      },
+      {
+        text: "赶紧离开",
+        effects: {},
+        resultText: "你感到一阵不安，决定立刻离开这个地方。"
+      }
+    ]
+  },
+  event_ancient_cave: {
+    id: "event_ancient_cave",
+    name: "隐秘山洞",
+    description: "你在雪峰山的岩壁上发现了一个被藤蔓遮掩的洞口……",
+    trigger: "exploring",
+    chance: 0.05,
+    conditions: [
+      { type: "location", value: "xuefeng_mountain", operator: "==" },
+      { type: "level", value: 4, operator: ">=" },
+      { type: "flag", value: "found_ancient_cave", operator: "!=" }
+    ],
+    once: true,
+    choices: [
+      {
+        text: "进去探索",
+        effects: { setFlag: "found_ancient_cave", giveInfo: "ancient_cave_runes", exp: 80 },
+        resultText: "你小心翼翼地钻进山洞。洞内出乎意料地干燥，墙壁上刻满了古老的符文，在火把的映照下泛着微弱的蓝光。\n\n这些符文……你在课本上见过类似的，那是至少数百年前的魔法文明遗迹！\n\n在洞穴最深处，你发现了一枚散发着寒气的晶石碎片。当你触碰它时，脑海中闪过一个画面——一座巨大的地下宫殿，以及……一个被锁链缠绕的古老存在。\n\n画面转瞬即逝，晶石碎片化作粉末消散。你带着满腹疑惑离开了山洞。\n\n（获得经验80，信息碎片：雪峰山下似乎有什么古老的东西……）"
+      },
+      {
+        text: "太危险了，不进",
+        effects: {},
+        resultText: "你看了看黑漆漆的洞口，决定不冒这个险。"
+      }
+    ]
+  },
+  event_wounded_demon: {
+    id: "event_wounded_demon",
+    name: "受伤的妖魔",
+    description: "你发现了一只受伤的小妖魔，它看起来毫无威胁……",
+    trigger: "exploring",
+    chance: 0.08,
+    conditions: [
+      { type: "location", value: "xuefeng_mountain", operator: "==" },
+      { type: "flag", value: "spared_wounded_demon", operator: "!=" },
+      { type: "flag", value: "killed_wounded_demon", operator: "!=" }
+    ],
+    once: true,
+    choices: [
+      {
+        text: "放它一条生路",
+        effects: { setFlag: "spared_wounded_demon", exp: 30 },
+        resultText: "你看着这只受伤的小妖魔，它发出呜咽声，不像是凶恶的怪物，倒像是一只受伤的小狗。\n\n你收起武器，退开一步。它看了你一眼，一瘸一拐地逃进了树林。\n\n（你放过了这只妖魔。也许以后还会再见……）"
+      },
+      {
+        text: "杀了它，以防万一",
+        effects: { setFlag: "killed_wounded_demon", exp: 20, gold: 15 },
+        resultText: "你举起法杖，一道魔法击中了它。小妖魔倒在地上，抽搐了几下便不动了。\n\n从它身上你找到了一枚劣质的魔核，能卖几个钱。\n\n（你选择了斩草除根。）"
+      },
+      {
+        text: "用治愈魔法帮它",
+        effects: { setFlag: "helped_wounded_demon", mp: -15, exp: 50 },
+        resultText: "你犹豫了一下，还是用治愈魔法为它处理了伤口。光芒闪过，它的伤口以肉眼可见的速度愈合。\n\n它抬头看了你一眼，那双眼睛里竟然流露出……感激？\n\n它叼起一块发光的石头放在你脚边，然后跑进了树林深处。\n\n（获得了一块神秘的石头，消耗15MP。这只妖魔似乎记住了你。）"
+      }
+    ]
   }
 };
