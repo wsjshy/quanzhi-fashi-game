@@ -1179,7 +1179,11 @@ const UI = {
                                 <span>MP</span><span>${state.player.mp}/${state.player.maxMp}</span>
                             </div>
                             <div style="height: 6px; background: #333; border-radius: 3px; overflow: hidden;">
-                                <div style="height: 100%; width: ${(state.player.mp / state.player.maxMp * 100).toFixed(1)}%; background: linear-gradient(90deg, #4444ff, #6666ff); transition: width 0.5s;"></div>
+                                <div style="height: 100%; width: ${(state.player.mp / state.player.maxMp * 100).toFixed(1)}%; background: ${
+                                    state.player.mp / state.player.maxMp > 0.3 ? 'linear-gradient(90deg, #4444ff, #6666ff)' :
+                                    state.player.mp / state.player.maxMp > 0.1 ? 'linear-gradient(90deg, #ffaa00, #ffcc44)' :
+                                    'linear-gradient(90deg, #ff2222, #ff4444)'
+                                }; transition: width 0.5s;"></div>
                             </div>
                         </div>
                         
@@ -1313,7 +1317,11 @@ const UI = {
                                 <span>MP</span><span>${state.enemy.mp}/${state.enemy.maxMp}</span>
                             </div>
                             <div style="height: 6px; background: #333; border-radius: 3px; overflow: hidden;">
-                                <div style="height: 100%; width: ${(state.enemy.mp / state.enemy.maxMp * 100).toFixed(1)}%; background: linear-gradient(90deg, #4444ff, #6666ff); transition: width 0.5s;"></div>
+                                <div style="height: 100%; width: ${(state.enemy.mp / state.enemy.maxMp * 100).toFixed(1)}%; background: ${
+                                    state.enemy.mp / state.enemy.maxMp > 0.3 ? 'linear-gradient(90deg, #4444ff, #6666ff)' :
+                                    state.enemy.mp / state.enemy.maxMp > 0.1 ? 'linear-gradient(90deg, #ffaa00, #ffcc44)' :
+                                    'linear-gradient(90deg, #ff2222, #ff4444)'
+                                }; transition: width 0.5s;"></div>
                             </div>
                             ` : ''}
                         </div>
