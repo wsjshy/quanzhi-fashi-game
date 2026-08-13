@@ -2414,5 +2414,79 @@ const DataEvents = {
         resultText: "你觉得不该偷听别人的私事，转身离开了。"
       }
     ]
+  },
+  event_eve_of_disaster: {
+    id: "event_eve_of_disaster",
+    name: "不安的夜晚",
+    description: "今夜的博城异常安静，安静得让人不安……",
+    trigger: "exploring",
+    chance: 0.3,
+    conditions: [
+      { type: "day", value: 42, operator: ">=" },
+      { type: "day", value: 45, operator: "<" },
+      { type: "flag", value: "eve_of_disaster_witnessed", operator: "!=" }
+    ],
+    once: true,
+    choices: [
+      {
+        text: "仔细观察周围",
+        effects: { setFlag: "eve_of_disaster_witnessed", giveInfo: "calm_before_storm" },
+        resultText: "你站在街头，发现今夜的博城异常诡异。\n\n天空是暗红色的，没有星星。连虫鸣都消失了，仿佛整个城市都在屏住呼吸。\n\n街角的狗在狂吠，却不敢往前走一步。几只老鼠从下水道里跑出来，疯狂地向城外逃窜。\n\n远处雪峰山的方向，有黑色的雾气在升腾。\n\n你的心跳加速，一种不祥的预感笼罩着你。\n\n（有什么大事要发生了……）"
+      },
+      {
+        text: "回家睡觉",
+        effects: {},
+        resultText: "你摇摇头，觉得自己想多了，回家休息了。"
+      }
+    ]
+  },
+  event_after_disaster_survivor: {
+    id: "event_after_disaster_survivor",
+    name: "废墟中的呼救",
+    description: "博城灾难后，你在废墟中听到了微弱的呼救声……",
+    trigger: "exploring",
+    chance: 0.25,
+    conditions: [
+      { type: "flag", value: "bocheng_disaster_happened", operator: "==" },
+      { type: "flag", value: "rescued_survivor", operator: "!=" },
+      { type: "flag", value: "ignored_survivor", operator: "!=" }
+    ],
+    once: true,
+    choices: [
+      {
+        text: "立刻去救人",
+        effects: { setFlag: "rescued_survivor", exp: 100, reputation: { city: 15 } },
+        resultText: "你循着声音跑过去，在倒塌的房屋下发现了一个被困的小女孩。你用魔法移开碎石，将她救了出来。\n\n'谢谢……谢谢你……'她哭着说。\n\n你把她送到了临时救助站。医生说如果再晚一会儿，她可能就撑不住了。\n\n（你救了一条生命，获得100经验和城市声望。）"
+      },
+      {
+        text: "我自己都难保，走吧",
+        effects: { setFlag: "ignored_survivor" },
+        resultText: "你犹豫了一下，但看着周围还在燃烧的废墟和远处妖魔的嚎叫，你选择了自保。\n\n你转身离开，呼救声渐渐微弱，最终消失了。\n\n（你选择了活下去。但那个声音，也许会留在你心里很久。）"
+      }
+    ]
+  },
+  event_black_church_mark: {
+    id: "event_black_church_mark",
+    name: "黑色印记",
+    description: "灾难后的废墟中，你发现了一个奇怪的符号……",
+    trigger: "exploring",
+    chance: 0.15,
+    conditions: [
+      { type: "flag", value: "bocheng_disaster_happened", operator: "==" },
+      { type: "flag", value: "found_black_church_mark", operator: "!=" }
+    ],
+    once: true,
+    choices: [
+      {
+        text: "仔细查看",
+        effects: { setFlag: "found_black_church_mark", giveInfo: "black_church_symbol" },
+        resultText: "在一面断墙上，你发现了一个用黑色颜料画的符号——一只扭曲的眼睛，瞳孔是倒十字。\n\n符号周围的墙壁被灼烧过，散发着恶臭。你注意到符号下方还有一行小字，但已经模糊不清。\n\n你想起唐月老师曾提过的一个名字……黑教廷。\n\n这不是普通的妖魔袭击。这是一场有预谋的入侵。\n\n（你获得了重要信息：黑教廷的印记。）"
+      },
+      {
+        text: "没什么特别的",
+        effects: {},
+        resultText: "你看了一眼那个奇怪的涂鸦，没在意，继续前行。"
+      }
+    ]
   }
 };
