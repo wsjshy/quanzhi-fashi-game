@@ -1163,6 +1163,16 @@ const UI = {
                         <div style="font-size: 18px; font-weight: bold; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
                             ${state.player.name}
                             <span style="font-size: 14px; color: #66ccff;">Lv.${state.player.level}</span>
+                            ${state.player.realm ? `<span style="font-size: 11px; color: ${
+                                state.player.realm === 'super' ? '#ff66ff' :
+                                state.player.realm === 'high' ? '#ff9966' :
+                                state.player.realm === 'middle' ? '#66ccff' : '#99cc99'
+                            };">${
+                                state.player.realm === 'initial' ? '初阶' :
+                                state.player.realm === 'middle' ? '中阶' :
+                                state.player.realm === 'high' ? '高阶' :
+                                state.player.realm === 'super' ? '超阶' : state.player.realm
+                            }</span>` : ''}
                         </div>
                         <div style="margin-top: 8px; width: 120px;">
                             <div style="display: flex; justify-content: space-between; font-size: 12px; color: #ff6666; margin-bottom: 2px;">
