@@ -505,9 +505,10 @@ const Player = {
         let canAwaken = false;
 
         if (!usedElements || usedElements.length === 0) {
-            // 没指定使用系，所有系平分全额经验
+            // 没指定使用系，所有系平分经验
+            const share = Math.floor(amount / this.elements.length);
             for (const el of this.elements) {
-                const result = this.gainElementExp(el, amount);
+                const result = this.gainElementExp(el, share);
                 allLevelUps.push(...result.levelUps);
                 allNewSkills.push(...result.newSkills);
                 if (result.canAwaken) canAwaken = true;
