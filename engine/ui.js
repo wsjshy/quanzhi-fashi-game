@@ -1518,26 +1518,39 @@ const UI = {
                             const skill = SkillSystem.getSkill(skillId);
                             if (!skill) return '';
                             const canUse = state.isPlayerTurn && state.player.mp >= skill.mpCost;
+                            // 检查元素克制
+                            let isCounter = false;
+                            let isWeak = false;
+                            if (skill.element && state.enemy.elements && BattleSystem.checkElementCounter) {
+                                for (const enemyElem of state.enemy.elements) {
+                                    const counter = BattleSystem.checkElementCounter(skill.element, enemyElem);
+                                    if (counter.effect === 'super') isCounter = true;
+                                    if (counter.effect === 'weak') isWeak = true;
+                                }
+                            }
+                            const borderColor = isCounter ? '#ff6600' : isWeak ? '#666666' : SkillSystem.getElementColor(skill.element);
                             return `
                                 <button onclick="Game.battleUseSkill('${skillId}')" ${!canUse ? 'disabled' : ''}
-                                        title="${skill.description}"
+                                        title="${skill.description}${isCounter ? ' [克制敌人！伤害+50%]' : isWeak ? ' [被克制，伤害-30%]' : ''}"
                                         style="
                                     padding: 12px;
-                                    background: linear-gradient(135deg, ${SkillSystem.getElementColor(skill.element)}22, ${SkillSystem.getElementColor(skill.element)}44);
-                                    border: 2px solid ${SkillSystem.getElementColor(skill.element)};
+                                    background: linear-gradient(135deg, ${isCounter ? '#ff6600' : SkillSystem.getElementColor(skill.element)}22, ${isCounter ? '#ff9933' : SkillSystem.getElementColor(skill.element)}44);
+                                    border: 2px solid ${borderColor};
                                     border-radius: 8px;
                                     color: #fff;
                                     cursor: ${canUse ? 'pointer' : 'not-allowed'};
                                     text-align: center;
                                     opacity: ${canUse ? 1 : 0.4};
                                     transition: all 0.2s;
-                                " ${canUse ? 'onmouseover="this.style.boxShadow=\'0 0 15px ' + SkillSystem.getElementColor(skill.element) + '80\'" onmouseout="this.style.boxShadow=\'none\'"' : ''}>
+                                    ${isCounter ? 'box-shadow: 0 0 10px #ff660080;' : ''}
+                                " ${canUse ? 'onmouseover="this.style.boxShadow=\'0 0 15px ' + (isCounter ? '#ff6600' : SkillSystem.getElementColor(skill.element)) + '80\'" onmouseout="this.style.boxShadow=\'' + (isCounter ? '0 0 10px #ff660080' : 'none') + '\'"' : ''}>
                                     <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">
                                         ${(() => {
                                             const elemIcons = { fire: '🔥', ice: '❄️', thunder: '⚡', earth: '🪨', wind: '🌪️', water: '💧', light: '✨', dark: '🌑', heal: '💚', summon: '🐺', neutral: '⚔️' };
                                             return elemIcons[skill.element] || '';
                                         })()}
                                         ${skill.name}
+                                        ${isCounter ? '<span style="color: #ff6600; font-size: 10px;">克制!</span>' : isWeak ? '<span style="color: #888; font-size: 10px;">不利</span>' : ''}
                                         ${state.player.skillLevels && state.player.skillLevels[skillId] ? `<span style="font-size: 11px; color: #ffcc66;"> Lv.${state.player.skillLevels[skillId].level || 1}</span>` : ''}
                                     </div>
                                     <div style="font-size: 12px; color: #aaccff;">MP: ${skill.mpCost}</div>
