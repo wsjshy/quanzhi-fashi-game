@@ -2600,6 +2600,12 @@ const BattleSystem = {
             return result;
         }
 
+        // 应用目标的防御修饰符（如恐惧尖叫降低防御、buff提升防御等）
+        if (target) {
+            const targetMods = this.getStatusModifiers(target);
+            defense = Math.max(0, defense + targetMods.defenseMod);
+        }
+
         // 基础伤害
         let damage = Math.max(1, (attack - defense * 0.5) * multiplier);
 
