@@ -2908,5 +2908,151 @@ const DataSkills = {
     statusEffects: [
       { name: "麻痹", type: "paralyze", duration: 1, chance: 0.4 }
     ]
+  },
+
+  // ===== 小说原著技能 =====
+  // 巨眼猩鼠：眼睛释放腥红暗光束
+  crimson_beam: {
+    id: "crimson_beam",
+    name: "腥红光束",
+    description: "从巨大的眼睛中释放腥红色暗光束，远程攻击目标",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    baseDamage: 25,
+    guaranteedHit: true,
+    statusEffects: [
+      { name: "暗蚀", type: "curse", duration: 2, chance: 0.3 }
+    ]
+  },
+
+  // 黑畜妖：阴影中潜行，速度极快
+  shadow_lurk: {
+    id: "shadow_lurk",
+    name: "暗影潜行",
+    description: "潜入阴影中，大幅提升闪避率，下次攻击必定暴击",
+    element: "dark",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "潜行", type: "dodge_up", duration: 2, chance: 1, statModifiers: { evasion: 0.5 } },
+      { name: "伏击", type: "crit_up", duration: 2, chance: 1, statModifiers: { critRate: 1.0 } }
+    ]
+  },
+
+  // 黑畜妖：协同攻击
+  coordinated_assault: {
+    id: "coordinated_assault",
+    name: "协同扑杀",
+    description: "与同伴配合从两侧同时攻击，造成1.5倍伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.5,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 2, chance: 0.5, dotDamage: 4 }
+    ]
+  },
+
+  // 翼苍狼：兽王咆哮，号令群妖
+  beast_king_roar: {
+    id: "beast_king_roar",
+    name: "兽王咆哮",
+    description: "发出震慑百兽的咆哮，降低目标攻击力并造成恐惧",
+    element: "wind",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 6,
+    tier: "统领级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "恐惧", type: "attack_down", duration: 3, chance: 0.8, statModifiers: { attack: -12 } },
+      { name: "震慑", type: "stun", duration: 1, chance: 0.3 }
+    ]
+  },
+
+  // 翼苍狼：坏血爪，附带坏血效果
+  blood_decay_claw: {
+    id: "blood_decay_claw",
+    name: "坏血利爪",
+    description: "附带坏血效果的利爪攻击，造成伤害并使目标持续流血，治疗效果降低",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "统领级",
+    isDemonSkill: true,
+    power: 1.4,
+    statusEffects: [
+      { name: "坏血", type: "bleed", duration: 3, chance: 0.7, dotDamage: 8 },
+      { name: "坏血", type: "healing_reduction", duration: 3, chance: 0.7, value: 0.5 }
+    ]
+  },
+
+  // 翼苍狼：风刃连斩（已有wind_blade_barrage），补充兽风
+  beast_wind: {
+    id: "beast_wind",
+    name: "兽风",
+    description: "喷吐血色兽风，造成风系伤害并击退目标",
+    element: "wind",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "统领级",
+    isDemonSkill: true,
+    power: 1.2,
+    statusEffects: [
+      { name: "击退", type: "slow", duration: 2, chance: 0.6, statModifiers: { speed: -8 } }
+    ]
+  },
+
+  // 邪眼沼妖：精神迷惑
+  mind_confuse: {
+    id: "mind_confuse",
+    name: "邪眼迷惑",
+    description: "用邪眼迷惑目标心智，使其混乱，可能攻击友方或无法行动",
+    element: "dark",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "迷惑", type: "confuse", duration: 2, chance: 0.5 }
+    ]
+  },
+
+  // 妖藤：缠绕束缚
+  vine_bind: {
+    id: "vine_bind",
+    name: "藤蔓缠绕",
+    description: "用藤蔓缠绕目标，使其无法行动并持续受到伤害",
+    element: "earth",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "缠绕", type: "bind", duration: 2, chance: 0.6 },
+      { name: "藤刺", type: "bleed", duration: 2, chance: 0.5, dotDamage: 3 }
+    ]
   }
 };
