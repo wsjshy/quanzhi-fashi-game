@@ -2870,15 +2870,15 @@ const UI = {
                                 if (!itemData) return false;
                                 if (this.inventoryFilter === 'all') return true;
                                 if (this.inventoryFilter === 'consumable') return itemData.type === 'consumable' || itemData.usableOutOfBattle;
-                                if (this.inventoryFilter === 'equipment') return itemData.type === 'weapon' || itemData.type === 'armor' || itemData.type === 'accessory';
+                                if (this.inventoryFilter === 'equipment') return itemData.type === 'weapon' || itemData.type === 'armor' || itemData.type === 'accessory' || itemData.type === 'equipment';
                                 if (this.inventoryFilter === 'material') return itemData.type === 'material';
                                 if (this.inventoryFilter === 'quest') return itemData.type === 'quest';
                                 return true;
                             }).map(item => {
                                 const itemData = item.data;
                                 if (!itemData) return '';
-                                const isEquip = itemData.type === 'weapon' || itemData.type === 'armor' || itemData.type === 'accessory';
-                                const canUse = itemData.usableOutOfBattle;
+                                const isEquip = itemData.type === 'weapon' || itemData.type === 'armor' || itemData.type === 'accessory' || itemData.type === 'equipment';
+                                const canUse = itemData.usableOutOfBattle && !isEquip;
                                 
                                 return `
                                     <div style="
@@ -3818,9 +3818,36 @@ const UI = {
                                     </span>
                                 </div>
                             ` : ''}
+                            ${Player.innateTalent && typeof InnateTalentSystem !== 'undefined' ? `
+                            <div style="margin-bottom: 15px; text-align: left;">
+                                <div style="color: #ff88ff; font-size: 13px; margin-bottom: 8px;">✦ 天生天赋</div>
+                                ${(() => {
+                                    const display = InnateTalentSystem.getTalentDisplay();
+                                    if (!display) return '';
+                                    return `
+                                        <div style="
+                                            padding: 10px 14px;
+                                            background: ${display.rarityColor}15;
+                                            border: 2px solid ${display.rarityColor};
+                                            border-radius: 8px;
+                                        ">
+                                            <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                                                <span style="font-size: 22px; margin-right: 8px;">${display.icon}</span>
+                                                <div>
+                                                    <span style="color: ${display.rarityColor}; font-weight: bold; font-size: 16px;">${display.name}</span>
+                                                    <span style="color: ${display.rarityColor}; font-size: 11px; margin-left: 8px;">【${display.rarityName}】</span>
+                                                </div>
+                                            </div>
+                                            <div style="color: #ccc; font-size: 12px; margin-bottom: 4px;">${display.description}</div>
+                                            <div style="color: #66ff99; font-size: 12px; font-weight: bold;">${display.effectDesc}</div>
+                                        </div>
+                                    `;
+                                })()}
+                            </div>
+                            ` : ''}
                             ${Player.talents && Object.keys(Player.talents).length > 0 ? `
                             <div style="margin-bottom: 15px; text-align: left;">
-                                <div style="color: #aaa; font-size: 13px; margin-bottom: 8px;">🌟 天赋</div>
+                                <div style="color: #aaa; font-size: 13px; margin-bottom: 8px;">🌟 系别天赋</div>
                                 ${Player.elements.map(elem => {
                                     const talentData = Player.talents[elem];
                                     if (!talentData || typeof TalentSystem === 'undefined') return '';

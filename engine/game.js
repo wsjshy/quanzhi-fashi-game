@@ -134,11 +134,12 @@ const Game = {
         DailySystem.initNewGame();
         DailySystem.checkDailyReset();
         
-        // 设置标志：新游戏创建中，等待天赋选择后进入地图
+        // 设置标志：新游戏创建中，等待自身天赋选择后进入系天赋选择
         this._pendingNewGame = true;
+        this._pendingElement = element;
         
-        // 弹出天赋选择面板
-        this.showTalentSelection(element);
+        // 先选择自身天赋（3选1）
+        this.showInnateTalentSelection();
     },
 
     // ========== 地图界面 ==========
@@ -694,7 +695,7 @@ const Game = {
         UI.renderMapScreen();
     },
 
-    // 原地休息（不消耗时间，恢复少量HP/MP/体力）
+    // 原地休息（消耗1小时，恢复少量HP/MP/体力，可能遇敌）
     quickRest() {
         const hpRecover = Math.floor(Player.maxHp * 0.3);
         const mpRecover = Math.floor(Player.maxMp * 0.2);
@@ -712,12 +713,47 @@ const Game = {
         const actualMp = Player.mp - oldMp;
         const actualStamina = Player.stamina - oldStamina;
 
-        let msg = '你稍作休息，恢复了';
+        // 推进1小时
+        const events = TimeSystem.advanceTime(1);
+
+        let msg = '你原地打坐休息了1小时，恢复了';
         const parts = [];
         if (actualHp > 0) parts.push(`${actualHp} HP`);
         if (actualMp > 0) parts.push(`${actualMp} MP`);
         if (actualStamina > 0) parts.push(`${actualStamina} 体力`);
         msg += parts.join('、') + '。';
+
+        // 有概率遇到敌人（10%概率，野外）
+        if (Player.currentLocation && Player.currentLocation !== 'bo_cheng' && Math.random() < 0.1) {
+            msg += '\n休息时被魔物发现了！';
+            Player.save();
+            UI.showMessage(msg);
+            // 触发战斗
+            setTimeout(() => {
+                if (typeof EncounterSystem !== 'undefined') {
+                    EncounterSystem.triggerRandomEncounter();
+                }
+            }, 500);
+            return;
+        }
+
+        // 处理时间事件
+        if (events && events.length > 0) {
+            // 有定时事件触发
+            Player.save();
+            UI.showMessage(msg);
+            setTimeout(() => {
+                if (typeof EventSystem !== 'undefined') {
+                    for (const evt of events) {
+                        if (evt.type === 'scheduled') {
+                            EventSystem.triggerScheduledEvent(evt.eventId);
+                            break;
+                        }
+                    }
+                }
+            }, 500);
+            return;
+        }
 
         UI.showMessage(msg);
         Player.save();
@@ -1411,7 +1447,17 @@ const Game = {
     buyItem(itemId, count = 1) {
         try {
             const result = ShopSystem.buyItem(itemId, count);
-            UI.showMessage(result.message);
+            if (result.success) {
+                const item = Inventory.getItem(itemId);
+                const isEquip = item && (item.type === 'weapon' || item.type === 'armor' || item.type === 'accessory' || item.type === 'equipment');
+                let msg = result.message;
+                if (isEquip) {
+                    msg += '\n装备已放入背包，可在背包中点击"装备"穿戴。';
+                }
+                UI.showMessage(msg);
+            } else {
+                UI.showMessage(result.message);
+            }
             UI.updateShopScreen();
             Player.save();
         } catch (e) {
@@ -2137,6 +2183,24 @@ const Game = {
                     </div>
                 </div>
                 <div style="margin-bottom: 20px;">
+                    <div onclick="Game.randomAwaken()" style="
+                        padding: 15px 20px;
+                        background: linear-gradient(135deg, #ff660033, #ffaa0033);
+                        border: 2px solid #ff8800;
+                        border-radius: 12px;
+                        cursor: pointer;
+                        text-align: center;
+                        margin-bottom: 15px;
+                        transition: all 0.2s;
+                    " onmouseover="this.style.background='linear-gradient(135deg, #ff660055, #ffaa0055)'" onmouseout="this.style.background='linear-gradient(135deg, #ff660033, #ffaa0033)'">
+                        <div style="font-size: 18px; font-weight: bold; color: #ffaa00; margin-bottom: 4px;">
+                            🎲 随机觉醒
+                        </div>
+                        <div style="color: #ccc; font-size: 13px;">
+                            听天由命，随机觉醒一个系（小说中觉醒本就是随机的）
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: #666; font-size: 13px; margin-bottom: 15px;">—— 或选择你想要的系 ——</div>
                     ${elementsHtml}
                 </div>
                 <div onclick="Game.openCharacterPanel()" style="
@@ -2150,6 +2214,22 @@ const Game = {
                 ">返回</div>
             </div>
         `;
+    },
+
+    // 随机觉醒
+    randomAwaken() {
+        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'summon'];
+        const availableElements = allElements.filter(e => !Player.elements.includes(e));
+        if (availableElements.length === 0) {
+            UI.showMessage('没有可觉醒的系了！');
+            return;
+        }
+        const randomElement = availableElements[Math.floor(Math.random() * availableElements.length)];
+        const elementName = SkillSystem.getElementName(randomElement);
+        UI.showMessage(`命运的齿轮转动...你觉醒了 ${elementName}！`);
+        setTimeout(() => {
+            this.awakenElement(randomElement);
+        }, 800);
     },
 
     getElementDescription(element) {
@@ -2191,6 +2271,91 @@ const Game = {
 
         UI.showMessage(msg);
         this.openCharacterPanel();
+    },
+
+    // ========== 自身天赋选择 ==========
+    showInnateTalentSelection() {
+        InnateTalentSystem.init();
+        const choices = InnateTalentSystem.rollTalents(3);
+
+        let choicesHtml = choices.map((talentId, idx) => {
+            const talent = InnateTalentSystem.getTalent(talentId);
+            if (!talent) return '';
+            const rarity = InnateTalentSystem.getRarityConfig(talent.rarity);
+
+            return `
+                <div onclick="Game.confirmInnateTalent('${talentId}')" style="
+                    padding: 18px;
+                    background: ${rarity.color}15;
+                    border: 2px solid ${rarity.color};
+                    border-radius: 12px;
+                    cursor: pointer;
+                    margin-bottom: 12px;
+                    transition: all 0.3s;
+                " onmouseover="this.style.background='${rarity.color}30'; this.style.transform='scale(1.02)'" onmouseout="this.style.background='${rarity.color}15'; this.style.transform='scale(1)'">
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 28px; margin-right: 10px;">${talent.icon}</span>
+                        <div>
+                            <div style="font-size: 20px; font-weight: bold; color: ${rarity.color};">
+                                ${talent.name}
+                            </div>
+                            <div style="font-size: 12px; color: ${rarity.color};">【${rarity.name}】</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 14px; color: #ccc; margin-bottom: 6px;">${talent.description}</div>
+                    <div style="font-size: 13px; color: #66ff99; font-weight: bold;">效果：${talent.effectDesc}</div>
+                </div>
+            `;
+        }).join('');
+
+        UI.elements.gameContainer.innerHTML = `
+            <div style="max-width: 600px; margin: 0 auto; padding: 30px 20px;">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div style="font-size: 30px; font-weight: bold; color: #ffd700; margin-bottom: 10px;">
+                        ✦ 天生天赋 ✦
+                    </div>
+                    <div style="color: #aaa; font-size: 15px; line-height: 1.6;">
+                        每个人在觉醒时都可能获得独特的天生天赋<br>
+                        <span style="color: #ff88ff;">这是决定你法师之路的重要选择</span>
+                    </div>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    ${choicesHtml}
+                </div>
+                <div style="text-align: center; color: #666; font-size: 12px;">
+                    请选择一个天赋（无法更改）
+                </div>
+            </div>
+        `;
+    },
+
+    confirmInnateTalent(talentId) {
+        const talent = InnateTalentSystem.getTalent(talentId);
+        if (!talent) return;
+
+        InnateTalentSystem.setInnateTalent(talentId);
+
+        let msg = `你获得了天生天赋：${talent.name}！\n${talent.effectDesc}`;
+
+        // 如果额外觉醒了一系，提示
+        if (Player.innateEffects && Player.innateEffects.extraElement) {
+            const extraName = SkillSystem.getElementName(Player.innateEffects.extraElement);
+            msg += `\n\n你天生就觉醒了第二系：${extraName}！`;
+        }
+
+        UI.showMessage(msg);
+
+        // 继续选择系天赋
+        setTimeout(() => {
+            // 如果有额外系，需要为两个系都选天赋
+            if (Player.innateEffects && Player.innateEffects.extraElement) {
+                this._pendingElements = [this._pendingElement, Player.innateEffects.extraElement];
+                this._currentTalentElementIndex = 0;
+                this.showTalentSelection(this._pendingElements[0]);
+            } else {
+                this.showTalentSelection(this._pendingElement);
+            }
+        }, 500);
     },
 
     // 显示天赋选择面板
@@ -2273,7 +2438,6 @@ const Game = {
     // 确认选择天赋
     confirmTalent(element, talentId) {
         Player.talents[element] = TalentSystem.selectTalent(talentId);
-        Player.save();
 
         const talent = TalentSystem.getTalent(talentId);
         const elementName = SkillSystem.getElementName(element);
@@ -2282,14 +2446,34 @@ const Game = {
         document.getElementById('talent-selection-dialog')?.remove();
         document.getElementById('talent-selection-overlay')?.remove();
 
-        UI.showMessage(`觉醒成功！你选择了${elementName}系天赋：${talent.name}`);
+        UI.showMessage(`你选择了${elementName}系天赋：${talent.name}`);
+
+        // 如果有多个系需要选择天赋（天生双系）
+        if (this._pendingElements && this._currentTalentElementIndex !== undefined) {
+            this._currentTalentElementIndex++;
+            if (this._currentTalentElementIndex < this._pendingElements.length) {
+                // 继续选择下一系的天赋
+                setTimeout(() => {
+                    this.showTalentSelection(this._pendingElements[this._currentTalentElementIndex]);
+                }, 500);
+                return;
+            } else {
+                // 所有系天赋选择完毕
+                this._pendingElements = null;
+                this._currentTalentElementIndex = null;
+            }
+        }
+
+        Player.save();
 
         // 如果是新游戏创建流程，进入地图并显示开场剧情
         if (this._pendingNewGame) {
             this._pendingNewGame = false;
             this.state = 'map';
             UI.renderMapScreen();
-            UI.showOpeningStory(element);
+            // 开场剧情用第一系
+            UI.showOpeningStory(this._pendingElement || element);
+            this._pendingElement = null;
         } else {
             this.openCharacterPanel();
         }

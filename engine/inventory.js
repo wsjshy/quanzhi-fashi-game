@@ -117,6 +117,11 @@ const Inventory = {
         const item = this.getItem(itemId);
         if (!item) return { success: false, message: '物品不存在' };
 
+        // 装备类型不能"使用"，只能"装备"
+        if (item.type === 'weapon' || item.type === 'armor' || item.type === 'accessory' || item.type === 'equipment') {
+            return { success: false, message: '装备请点击"装备"按钮，而不是"使用"' };
+        }
+
         // 检查是否可以使用
         if (inBattle && !item.usableInBattle) {
             return { success: false, message: '战斗中无法使用此物品' };

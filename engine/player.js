@@ -186,7 +186,9 @@ const Player = {
         this.skills = ['basic_attack'];
         this.skillLevels = {};  // 技能等级
         this.realm = 'initial';  // 境界
-        this.talents = {};  // 天赋系统
+        this.talents = {};  // 系别天赋
+        this.innateTalent = null;  // 自身天赋（天生天赋）
+        this.innateEffects = {};  // 自身天赋效果
         this.gold = 50;
         this.equipment = { weapon: null, armor: null, accessory: null };
         this.enhanceLevels = { weapon: 0, armor: 0, accessory: 0 };
@@ -798,6 +800,18 @@ const Player = {
                     totalEffects[key] = (totalEffects[key] || 0) + effects[key];
                 } else {
                     totalEffects[key] = effects[key];
+                }
+            }
+        }
+
+        // 合并自身天赋效果（InnateTalent）
+        if (this.innateEffects) {
+            for (const key in this.innateEffects) {
+                const val = this.innateEffects[key];
+                if (typeof val === 'number') {
+                    totalEffects[key] = (totalEffects[key] || 0) + val;
+                } else {
+                    totalEffects[key] = val;
                 }
             }
         }
