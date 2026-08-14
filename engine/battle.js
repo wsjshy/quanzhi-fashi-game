@@ -627,6 +627,18 @@ const BattleSystem = {
             this.enemy.baseAttack = this.enemy.attack;
             this.enemy.baseDefense = this.enemy.defense;
         }
+
+        // v0.9.0: 普通敌人强化（补偿战后恢复80%的平衡）
+        // Boss/精英/决斗/试炼不强化（这些战斗本身就有挑战性）
+        const battleMode = this.battleOptions?.mode;
+        const isSpecialBattle = this.enemy.isBoss || this.enemy.isElite 
+            || this.enemy.tier === 'commander' || this.enemy.demonTier === 'commander'
+            || battleMode === 'duel' || battleMode === 'trial' || battleMode === 'boss';
+        if (!isSpecialBattle) {
+            this.enemy.attack = Math.floor(this.enemy.attack * 1.1);  // 攻击力+10%
+            this.enemy.maxHp = Math.floor(this.enemy.maxHp * 1.15);   // HP+15%
+            this.enemy.hp = this.enemy.maxHp;
+        }
         
         // 初始化精神力
         if (!this.enemy.spirit) {
@@ -1196,8 +1208,13 @@ const BattleSystem = {
                 debuffedBonus = this.player.talentEffects.debuffedDamageBonus;
             }
         }
+        // v0.9.0: 体力效率修正（体力低时伤害降低）
+        const staminaEff = (typeof Player !== 'undefined' && Player.getStaminaEfficiency) 
+            ? Player.getStaminaEfficiency() 
+            : { battleDamage: 1.0 };
+
         const damage = this.calculateDamage(
-            this.player.attack * (1 + firstStrikeBonus + summonMasterDmgBonus + debuffedBonus) + attackerMods.attackMod,
+            this.player.attack * (1 + firstStrikeBonus + summonMasterDmgBonus + debuffedBonus) * staminaEff.battleDamage + attackerMods.attackMod,
             this.enemy.defense * (this.enemy.isDefending ? 2 : 1), // 防御时防御翻倍
             1.0,
             this.player.critRate,
@@ -1871,6 +1888,12 @@ const BattleSystem = {
                 if (hasDebuff) debuffedSkillBonus = 1 + this.player.talentEffects.debuffedDamageBonus;
             }
 
+            // v0.9.0: 体力效率修正（仅玩家，体力低时伤害降低）
+            let staminaSkillBonus = 1.0;
+            if (isPlayer && typeof Player !== 'undefined' && Player.getStaminaEfficiency) {
+                staminaSkillBonus = Player.getStaminaEfficiency().battleDamage;
+            }
+
             // 技能特殊属性：必中、额外暴击率
             let skillCritRate = casterData.critRate || 0.05;
             let skillHitRate = skill.hitRate || 0.9;
@@ -1896,7 +1919,7 @@ const BattleSystem = {
 
             for (let hit = 0; hit < hitCount; hit++) {
                 const damage = this.calculateDamage(
-                    baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus * elementLevelBonus * (1 + talentSkillLevelBonus) * summonMasterSkillBonus * debuffedSkillBonus,
+                    baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus * elementLevelBonus * (1 + talentSkillLevelBonus) * summonMasterSkillBonus * debuffedSkillBonus * staminaSkillBonus,
                     effectiveDefense,
                     1.0,
                     skillCritRate,

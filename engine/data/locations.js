@@ -127,7 +127,7 @@ const DataLocations = {
         timeCost: 2,
         staminaCost: 25,
         effects: {
-          exp: 30,
+          exp: 24,
           hp: -10,
           mp: -20
         },
@@ -145,7 +145,7 @@ const DataLocations = {
         timeCost: 2,
         staminaCost: 10,
         effects: {
-          exp: 8,
+          exp: 6,
           mp: 40,
           hp: 10
         },

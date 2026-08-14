@@ -147,17 +147,8 @@ const MapSystem = {
             return { success: false, message: '地点不存在' };
         }
 
-        // 检查体力
-        const travelStaminaCost = 5;
-        if (Player.stamina < travelStaminaCost) {
-            return { 
-                success: false, 
-                message: `体力不足！移动需要 ${travelStaminaCost} 点体力，当前只有 ${Player.stamina} 点。` 
-            };
-        }
-
-        // 消耗体力
-        Player.useStamina(travelStaminaCost);
+        // v0.9.0: 移动不再消耗体力（消除探索的物理成本）
+        // 体力只影响效率，不阻止行动
 
         // 消耗时间（城市内移动半小时）
         const travelTime = 0.5;
@@ -176,7 +167,7 @@ const MapSystem = {
         let randomBattle = null;
         if (location.enemies && location.enemies.length > 0) {
             const encounterRate = location.enemyRate || 0.2;
-            if (Math.random() < encounterRate * 0.3) { // 旅行时遇敌概率低一些
+            if (Math.random() < encounterRate * 0.15) { // v0.9.0: 旅行时遇敌概率降低（从0.3降到0.15），减少探索打断
                 randomBattle = this.triggerRandomBattle(location);
             }
         }
@@ -204,16 +195,9 @@ const MapSystem = {
             return { success: false, message: '行动不存在' };
         }
 
-        // 检查体力
+        // v0.9.0: 体力不再作为硬限制，移除检查
+        // 体力消耗仍保留（修炼等），但useStamina不会阻止行动
         const staminaCost = action.staminaCost !== undefined ? action.staminaCost : 10;
-        if (Player.stamina < staminaCost) {
-            return { 
-                success: false, 
-                message: `体力不足！需要 ${staminaCost} 点体力，当前只有 ${Player.stamina} 点。休息或睡觉可以恢复体力。` 
-            };
-        }
-
-        // 消耗体力
         Player.useStamina(staminaCost);
 
         const result = {

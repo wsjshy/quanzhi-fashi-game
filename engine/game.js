@@ -426,17 +426,9 @@ const Game = {
             { hours: 12, bonus: 1.5, label: '闭关（12小时）', desc: '闭关修炼，+50%收益' }
         ];
         
-        // 过滤掉体力不够的选项
-        const availableOptions = options.filter(opt => {
-            const multiplier = opt.hours / baseTime;
-            const staminaCost = Math.ceil(baseStamina * multiplier * 0.5); // 时间越长单位体力消耗越少，向上取整和实际消耗一致
-            return Player.stamina >= staminaCost;
-        });
-        
-        if (availableOptions.length === 0) {
-            UI.showMessage('体力不足，无法修炼！');
-            return;
-        }
+        // v0.9.0: 体力不再作为硬限制，不过滤选项
+        // 体力低时修炼经验会通过getStaminaEfficiency()降低
+        const availableOptions = options;
         
         const dialog = document.createElement('div');
         dialog.style.cssText = `
@@ -528,11 +520,13 @@ const Game = {
             const multiplier = hours / baseTime;
             
             // 计算实际效果：按时间倍数 × 收益加成
+            // v0.9.0: 加入体力效率修正（体力低时修炼经验降低）
+            const staminaEff = Player.getStaminaEfficiency ? Player.getStaminaEfficiency() : { trainExp: 1.0 };
             const result = {
                 success: true,
                 timeCost: hours,
                 effects: {
-                    exp: Math.floor((action.effects?.exp || 0) * multiplier * bonus),
+                    exp: Math.floor((action.effects?.exp || 0) * multiplier * bonus * staminaEff.trainExp),
                     hp: Math.floor((action.effects?.hp || 0) * multiplier),
                     mp: Math.floor((action.effects?.mp || 0) * multiplier),
                     stamina: Math.floor(-(action.staminaCost || 10) * multiplier * 0.5) // 时间越长单位体力消耗越少
@@ -645,6 +639,17 @@ const Game = {
             // 日常追踪：访问地点
             DailySystem.trackActivity('visit', 1, locationId);
 
+            // v0.9.0: 首次探索奖励（鼓励玩家探索新地点）
+            let firstExploreReward = null;
+            if (!Player.exploredLocations.includes(locationId)) {
+                Player.exploredLocations.push(locationId);
+                const expReward = 50;
+                const goldReward = 20;
+                Player.gainExp(expReward);
+                Player.gold += goldReward;
+                firstExploreReward = { exp: expReward, gold: goldReward };
+            }
+
             // 保存游戏
             Player.save();
 
@@ -674,6 +679,10 @@ const Game = {
             let travelMsg = `来到了 ${result.location.name}`;
             if (result.timeEvents && result.timeEvents.some(e => e.type === 'force_sleep')) {
                 travelMsg = `😴 你熬夜赶路，不知不觉昏睡了过去...\n\n（第二天醒来，体力只恢复了50%）\n\n` + travelMsg;
+            }
+            // v0.9.0: 首次探索奖励显示
+            if (firstExploreReward) {
+                travelMsg += `\n\n🗺️ 首次探索！\n经验 +${firstExploreReward.exp}\n金币 +${firstExploreReward.gold}`;
             }
             UI.showMessage(travelMsg);
         } catch (e) {
@@ -1231,6 +1240,33 @@ const Game = {
                 const rewards = BattleSystem.rewards;
                 const stats = BattleSystem.stats;
                 const rating = BattleSystem.rating;
+                
+                // v0.9.0: 战后恢复（Chained Echoes模式）
+                // 普通战斗胜利后恢复80%HP/MP，清除debuff
+                // Boss战/决斗/试炼不恢复（高难度挑战）
+                const battleMode = BattleSystem.battleOptions?.mode;
+                const isBossBattle = battleMode === 'boss' || battleMode === 'duel' || battleMode === 'trial' 
+                    || BattleSystem.enemy?.isBoss || BattleSystem.enemy?.tier === 'commander';
+                let postBattleRecover = null;
+                if (!isBossBattle) {
+                    const hpBefore = Player.hp;
+                    const mpBefore = Player.mp;
+                    const targetHp = Math.floor(Player.maxHp * 0.8);
+                    const targetMp = Math.floor(Player.maxMp * 0.8);
+                    Player.hp = Math.max(Player.hp, targetHp);
+                    Player.mp = Math.max(Player.mp, targetMp);
+                    // 清除玩家负面状态
+                    if (BattleSystem.player?.statusEffects) {
+                        BattleSystem.player.statusEffects = BattleSystem.player.statusEffects.filter(
+                            e => !['burn','freeze','frozen','stun','slow','poison','curse','paralyze','weakness','bleed','bind','blind','fear','shock','attack_down','defense_down'].includes(e.type)
+                        );
+                    }
+                    postBattleRecover = {
+                        hp: Player.hp - hpBefore,
+                        mp: Player.mp - mpBefore
+                    };
+                }
+                
                 let message = '⚔️ 战斗胜利！\n\n';
                 
                 // 战斗评价
@@ -1291,6 +1327,13 @@ const Game = {
                         message += `${item.name}：x${item.count}\n`;
                     });
                 }
+                // v0.9.0: 战后恢复显示
+                if (postBattleRecover && (postBattleRecover.hp > 0 || postBattleRecover.mp > 0)) {
+                    message += `\n💚 战后恢复\n`;
+                    if (postBattleRecover.hp > 0) message += `HP：+${postBattleRecover.hp}（恢复到80%）\n`;
+                    if (postBattleRecover.mp > 0) message += `MP：+${postBattleRecover.mp}（恢复到80%）\n`;
+                    message += `负面状态：已清除\n`;
+                }
                 if (rewards.levelUps.length > 0) {
                     message += `\n🎉 升级了！当前等级 ${Player.level}\n`;
                     message += `获得属性点（当前可分配：${Player.attributePoints} 点）`;
@@ -1338,9 +1381,15 @@ const Game = {
                     return;
                 }
                 
-                // 普通战斗失败 - 死亡惩罚
-                const deathResult = MapSystem.handleDeath();
-                UI.showMessage(deathResult.message);
+                // v0.9.0: 普通战斗失败 - 轻惩罚（鼓励玩家大胆尝试）
+                // 恢复50%HP/MP，不扣金币/时间，回到当前地点
+                Player.hp = Math.max(1, Math.floor(Player.maxHp * 0.5));
+                Player.mp = Math.floor(Player.maxMp * 0.5);
+                // 清除负面状态
+                if (BattleSystem.player?.statusEffects) {
+                    BattleSystem.player.statusEffects = [];
+                }
+                UI.showMessage('💀 战斗失败！\n\n你被击败了，但没有受太重的伤。\nHP/MP恢复到50%，可以调整后再次挑战。');
                 this.state = 'map';
                 UI.renderMapScreen();
                 Player.save();
@@ -1732,6 +1781,17 @@ const Game = {
         if (!dialogueData) {
             UI.showMessage('对话失败。');
             return;
+        }
+
+        // v0.9.0: 首次对话奖励（鼓励玩家与NPC交流）
+        if (!Player.exploredNPCs.includes(npcId)) {
+            Player.exploredNPCs.push(npcId);
+            Player.gainExp(20);
+            Player.save();
+            // 延迟显示奖励，避免和对话界面冲突
+            setTimeout(() => {
+                UI.showMessage(`💬 首次与 ${npc.name} 对话！\n经验 +20`);
+            }, 500);
         }
 
         this.state = 'dialogue';

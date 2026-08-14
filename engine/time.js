@@ -247,16 +247,9 @@ const TimeSystem = {
             hoursToWait = 24 - Player.hour + targetHour;
         }
         
-        // 等待消耗少量体力
+        // v0.9.0: 体力不再作为硬限制，移除检查
+        // 等待消耗少量体力（useStamina不会阻止行动）
         const staminaCost = Math.max(1, Math.floor(hoursToWait * 0.3));
-        if (Player.stamina < staminaCost) {
-            return { 
-                success: false, 
-                message: `体力不足！等待需要 ${staminaCost} 点体力，当前只有 ${Player.stamina} 点。` 
-            };
-        }
-        
-        // 消耗体力
         Player.useStamina(staminaCost);
         
         // 推进时间

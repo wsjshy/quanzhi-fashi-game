@@ -520,7 +520,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.8.28 · 体验优化版</div>
+                ">v0.9.0 · 减负大改版</div>
             </div>
         `;
 
@@ -997,7 +997,27 @@ const UI = {
                         <span style="color: #ffd700;">💰 ${Player.gold}</span>
                         <span style="color: #ff6666;">❤️ ${Player.hp}/${stats.maxHp}</span>
                         <span style="color: #6666ff;">💧 ${Player.mp}/${stats.maxMp}</span>
-                        <span style="color: #66ffaa;">⚡ ${Player.stamina}/${Player.maxStamina}</span>
+                        ${(() => {
+                            // v0.9.0: 体力颜色提示
+                            const staminaRatio = Player.stamina / (Player.maxStamina || 100);
+                            let staminaColor = '#66ffaa'; // 绿色：精力充沛
+                            let staminaIcon = '⚡';
+                            if (staminaRatio <= 0) {
+                                staminaColor = '#ff4444'; // 红色：精疲力竭
+                                staminaIcon = '😫';
+                            } else if (staminaRatio <= 0.3) {
+                                staminaColor = '#ff8844'; // 橙色：非常疲惫
+                                staminaIcon = '😓';
+                            } else if (staminaRatio <= 0.6) {
+                                staminaColor = '#ffcc44'; // 黄色：有些疲惫
+                                staminaIcon = '😅';
+                            }
+                            const staminaEff = Player.getStaminaEfficiency ? Player.getStaminaEfficiency() : null;
+                            const staminaTitle = staminaEff 
+                                ? `体力状态：${staminaRatio > 0.6 ? '精力充沛' : staminaRatio > 0.3 ? '有些疲惫（修炼70%/战斗90%）' : staminaRatio > 0 ? '非常疲惫（修炼40%/战斗75%）' : '精疲力竭（修炼20%/战斗60%）'}`
+                                : '体力';
+                            return `<span style="color: ${staminaColor};" title="${staminaTitle}">${staminaIcon} ${Player.stamina}/${Player.maxStamina}</span>`;
+                        })()}
                         <span style="color: #66ff66;">Lv.${Player.level}</span>
                     </div>
                 </div>

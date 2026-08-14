@@ -4,7 +4,7 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.8.28';
+const GAME_VERSION = '0.9.0';
 const SAVE_VERSION = '0.8.7';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
@@ -212,6 +212,8 @@ const Player = {
         this.summonData = null;  // 召唤兽数据（契约后初始化）
         this.summonBeasts = [];  // 多召唤兽数组
         this.activeSummonIndex = 0;
+        this.exploredLocations = [];  // v0.9.0: 已探索的地点（用于首次探索奖励）
+        this.exploredNPCs = [];  // v0.9.0: 已对话的NPC（用于首次对话奖励）
 
         // 如果选了元素，给对应的初始技能
         if (element) {
@@ -1283,12 +1285,45 @@ const Player = {
     },
 
     /**
-     * 消耗体力
+     * 消耗体力（v0.9.0软化：不再阻止行动，只扣到0）
      */
     useStamina(amount) {
-        if (this.stamina < amount) return false;
-        this.stamina -= amount;
+        // v0.9.0: 体力不再作为硬限制，即使不足也允许行动
+        // 体力低时通过getStaminaEfficiency()降低效率
+        this.stamina = Math.max(0, this.stamina - amount);
         return true;
+    },
+
+    /**
+     * v0.9.0: 获取体力状态等级
+     * @returns {string} energetic/tired/very_tired/exhausted
+     */
+    getStaminaLevel() {
+        const ratio = this.stamina / (this.maxStamina || 100);
+        if (ratio > 0.6) return 'energetic';      // 精力充沛
+        if (ratio > 0.3) return 'tired';          // 有些疲惫
+        if (ratio > 0) return 'very_tired';       // 非常疲惫
+        return 'exhausted';                        // 精疲力竭
+    },
+
+    /**
+     * v0.9.0: 获取体力效率修正
+     * @returns {Object} { trainExp: 修炼经验修正, battleDamage: 战斗伤害修正, injuryChance: 受伤概率 }
+     */
+    getStaminaEfficiency() {
+        const level = this.getStaminaLevel();
+        switch (level) {
+            case 'energetic':
+                return { trainExp: 1.0, battleDamage: 1.0, injuryChance: 0 };
+            case 'tired':
+                return { trainExp: 0.7, battleDamage: 0.9, injuryChance: 0 };
+            case 'very_tired':
+                return { trainExp: 0.4, battleDamage: 0.75, injuryChance: 0.1 };
+            case 'exhausted':
+                return { trainExp: 0.2, battleDamage: 0.6, injuryChance: 0.2 };
+            default:
+                return { trainExp: 1.0, battleDamage: 1.0, injuryChance: 0 };
+        }
     },
 
     /**
@@ -1534,6 +1569,8 @@ const Player = {
             tempShopDiscountExpireDay: this.tempShopDiscountExpireDay,
             summonBeasts: this.summonBeasts || [],
             activeSummonIndex: this.activeSummonIndex || 0,
+            exploredLocations: this.exploredLocations || [],
+            exploredNPCs: this.exploredNPCs || [],
             inventory: Inventory.getSaveData(),
             worldState: typeof WorldState !== 'undefined' ? WorldState.getSaveData() : null,
             npcStates: typeof NPCStateSystem !== 'undefined' ? NPCStateSystem.getSaveData() : null,
@@ -1634,6 +1671,10 @@ const Player = {
                 this.activeSummonIndex = 0;
             }
             this.migrateSummonData();
+
+            // v0.9.0: 加载探索记录（兼容旧存档）
+            this.exploredLocations = data.exploredLocations || [];
+            this.exploredNPCs = data.exploredNPCs || [];
             
             // 加载背包
             if (data.inventory) {
