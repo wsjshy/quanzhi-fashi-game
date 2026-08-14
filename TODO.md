@@ -51,6 +51,11 @@
 - [x] 雷系斩杀（thunderExecute，低HP概率直接击杀）
 - [x] 致盲命中降低（hitMod在状态修正中生效）
 
+### v0.8.10 第四批已完成 - 暴击穿防/暗影标记/诅咒
+- [x] 暴击穿防（critArmorPenetration，暴击时忽略部分防御）
+- [x] 暗影标记（darkMark，暗系伤害+50%）
+- [x] 诅咒（curseChance，降低敌人攻防15%）
+
 ### v0.8.10 待做 - 复杂效果（后续版本）
 - [ ] 闪电连锁（chainLightning多目标跳跃）
 - [ ] 召唤兽相关天赋（beastTide/summonBuff等）

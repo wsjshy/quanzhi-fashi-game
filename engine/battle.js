@@ -1209,6 +1209,22 @@ const BattleSystem = {
                 });
                 this.addLog(`👁️ ${this.enemy.name} 被致盲！`, 'element');
             }
+            // 暗影标记：受到暗系伤害增加
+            if (te.darkMark && Math.random() < (te.darkMarkChance || 0.3)) {
+                this.addStatusEffect(this.enemy, {
+                    type: 'darkMark', name: '暗影标记', duration: te.darkMarkDuration || 3,
+                    darkDamageBonus: te.darkMarkDamage || 0.5
+                });
+                this.addLog(`🌑 ${this.enemy.name} 被暗影标记！`, 'element');
+            }
+            // 诅咒：降低攻防
+            if (te.curseChance && Math.random() < te.curseChance) {
+                this.addStatusEffect(this.enemy, {
+                    type: 'curse', name: '诅咒', duration: te.curseDuration || 3,
+                    atkMod: -(te.curseAtkDown || 0.15), defMod: -(te.curseDefDown || 0.15)
+                });
+                this.addLog(`💀 ${this.enemy.name} 被诅咒！`, 'element');
+            }
         }
 
         // 天赋吸血：普攻造成伤害回复HP
@@ -3384,6 +3400,7 @@ const BattleSystem = {
             if (element === 'fire') damage *= mods.fireDamageMod;
             if (element === 'thunder') damage *= mods.thunderDamageMod;
             if (element === 'ice') damage *= mods.iceDamageMod;
+            if (element === 'dark') damage *= (mods.darkDamageMod || 1);
         }
         
         // 天赋：伤害减免
@@ -3409,6 +3426,11 @@ const BattleSystem = {
             if (attacker && attacker.talentEffects) {
                 const cd = attacker.talentEffects.critDamageBonus || attacker.talentEffects.critDamage;
                 if (cd) critMult += cd;
+                // 暴击穿防：暴击时忽略部分防御
+                if (attacker.talentEffects.critArmorPenetration) {
+                    const pen = attacker.talentEffects.critArmorPenetration;
+                    damage += defense * pen * 0.3;
+                }
             }
             damage *= critMult;
         }
@@ -4416,6 +4438,7 @@ const BattleSystem = {
             fireDamageMod: 1,
             thunderDamageMod: 1,
             iceDamageMod: 1,
+            darkDamageMod: 1,
             fireResistanceMod: 0,
             lifesteal: 0,
             damageReflect: 0,
@@ -4438,6 +4461,15 @@ const BattleSystem = {
             if (effect.hitRateMod) mods.hitRateMod += effect.hitRateMod;
             if (effect.hitMod) mods.hitRateMod += effect.hitMod;
             if (effect.evasionMod) mods.evasionMod += effect.evasionMod;
+            // 诅咒：降低攻防
+            if (effect.type === 'curse') {
+                if (effect.atkMod) mods.attackMod = (mods.attackMod || 0) + effect.atkMod;
+                if (effect.defMod) mods.defenseMod = (mods.defenseMod || 0) + effect.defMod;
+            }
+            // 暗影标记：暗系伤害增加
+            if (effect.type === 'darkMark' && effect.darkDamageBonus) {
+                mods.darkDamageMod = (mods.darkDamageMod || 1) + effect.darkDamageBonus;
+            }
             // 湿润状态受雷系伤害×2
             if (effect.type === 'wet' || effect.type === 'electrified') {
                 mods.thunderDamageMod *= 2;
