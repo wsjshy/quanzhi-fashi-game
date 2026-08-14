@@ -5,431 +5,324 @@
 
 ---
 
-## P0 - 天赋进化效果落地（v0.8.10进行中）
+## P0 - 天赋进化效果落地（v0.8.10）
 
-### v0.8.10 已完成 - 核心战斗效果落地
-- [x] 基础属性加成：暴击率/闪避/速度/防御/HP/伤害减免/MP消耗减少
-- [x] 元素穿透（firePenetration/icePenetration等各系穿透）
-- [x] 低HP增伤（enrageDamage/炎怒/暗之力）
-- [x] 暴击伤害加成（critDamage）
-- [x] 技能等级加成（skillLevelBonus，每级+15%伤害）
-- [x] 吸血（lifesteal，普攻和技能都触发）
-- [x] 连击（comboChance，概率追加攻击）
-- [x] 反伤（damageReflect/烈焰护体）
-- [x] 岩刺反伤（rockSpikes，近战基于防御反伤）
-- [x] 坚岩减伤（hardRockChance/hardRockReduction）
-- [x] 开场护盾（iceShield冰甲/crystalShield晶化盾）
-- [x] 免死（divineProtection/autoRevive，HP归零时恢复）
-- [x] 火焰光环（fireAura，每回合%HP伤害）
-- [x] 冰霜光环（frostAura，每回合减速）
-- [x] 治疗光环（healAura，每回合回血）
-- [x] 普攻异常状态：燃烧/冰冻/麻痹/眩晕/减速概率触发
-- [x] 暴击雷鸣（thunderRoar，暴击概率麻痹）
-- [x] 暴击得护盾（shieldOnCrit）
-- [x] 暗影形态（shadowForm，战斗开始隐身）
-- [x] 绝对零度领域（absoluteZeroField，开场冻结）
-- [x] 兽王威压（kingIntimidate，降敌人攻防）
-- [x] 开场雷罚（openingThunder）
-- [x] 击杀回血（killHeal）/击杀回蓝（killMpRestore）
+### 已完成效果（4批，约90个效果键）
 
-### v0.8.10 第二批已完成 - 更多战斗效果
-- [x] 风刃追加（windBladeChance/windBladeCount/windBladeDamage）
-- [x] 治疗增强（healBonus/healCritRate/healCritDouble）
-- [x] 燃烧爆炸（burnExplode/burnStackMax/burnExplodeDamage，3层爆炸）
-- [x] 闪避后效果（dodgeCritBuff/dodgeHeal/dodgeMpRestore）
-- [x] 元素抗性/免疫（fireResistance/fireImmunity等各系）
-- [x] 冰吸收（iceAbsorb，冰伤回血）
-- [x] 紧急回复（emergencyHeal，低HP自动回血）
-- [x] 击杀减CD（killCooldownReduce）
-- [x] MP消耗减少（mpCostReduction，技能释放时实际消耗减少）
+**第一批 - 基础战斗效果**
+- [x] 基础属性：damageBonus/critRate/critDamage/dodgeBonus/speedBonus/defenseBonus/hpBonus/damageReduction/mpCostReduction
+- [x] 元素穿透：firePenetration/icePenetration/thunderPenetration/earthPenetration/windPenetration
+- [x] 低HP增伤：enrageDamage/lowHpDamageBonus/enrageThreshold
+- [x] 技能等级加成：skillLevelBonus（每级+15%技能伤害）
+- [x] 吸血：lifesteal（普攻和技能都触发）
+- [x] 连击：comboChance/comboDamageMult（概率追加攻击）
+- [x] 反伤：damageReflect（烈焰护体）
+- [x] 岩刺：rockSpikes/rockSpikesDamage（近战基于防御反伤）
+- [x] 坚岩：hardRockChance/hardRockReduction（概率减伤）
+- [x] 开场护盾：iceShield（冰甲）/crystalShield（晶化盾）
+- [x] 免死：divineProtection/autoRevive/autoReviveHp
+- [x] 光环：fireAura（每回合%HP火伤）/frostAura（减速）/healAura（回血）
+- [x] 普攻异常：burnChance/burnDamage/freezeChance/freezeDuration/paralyzeChance/paralyzeDuration/stunChance/slowChance
+- [x] 暴击雷鸣：thunderRoar/thunderRoarChance（暴击概率麻痹）
+- [x] 暴击得护盾：shieldOnCrit/shieldOnCritAmount
+- [x] 开场效果：shadowForm（隐身）/absoluteZeroField（开场冻结）/kingIntimidate（降攻防）/openingThunder（开场雷罚）
+- [x] 击杀：killHeal/killMpRestore
+- [x] 回复加成：hpRegen/mpRegen
 
-### v0.8.10 第三批已完成 - 控制/斩杀效果
-- [x] 冰霜新星（frostNova，每3回合自动冰伤+减速）
-- [x] 时间冻结（timeStopChance，概率时停1回合）
-- [x] 恐惧（fearChance，概率让敌人跳过回合）
-- [x] 致盲（blindChance，概率降低敌人命中50%）
-- [x] 雷系斩杀（thunderExecute，低HP概率直接击杀）
-- [x] 致盲命中降低（hitMod在状态修正中生效）
+**第二批 - 进阶效果**
+- [x] 风刃追加：windBladeChance/windBladeCount/windBladeDamage
+- [x] 治疗增强：healBonus/healCritRate/healCritDouble
+- [x] 燃烧爆炸：burnExplode/burnStackMax/burnExplodeDamage/burnSpread
+- [x] 闪避后：dodgeCritBuff/dodgeHeal/dodgeMpRestore
+- [x] 元素抗性/免疫：fireResistance/fireImmunity等各系
+- [x] 冰吸收：iceAbsorb（冰伤回血）
+- [x] 紧急回复：emergencyHeal/emergencyThreshold/emergencyHealAmount
+- [x] 击杀减CD：killCooldownReduce
+- [x] MP消耗减少：mpCostReduction在技能释放时实际生效
 
-### v0.8.10 第四批已完成 - 暴击穿防/暗影标记/诅咒
-- [x] 暴击穿防（critArmorPenetration，暴击时忽略部分防御）
-- [x] 暗影标记（darkMark，暗系伤害+50%）
-- [x] 诅咒（curseChance，降低敌人攻防15%）
+**第三批 - 控制/斩杀**
+- [x] 冰霜新星：frostNova/frostNovaInterval/frostNovaDamage/frostNovaSlow
+- [x] 时间冻结：timeStopChance/timeStopDuration
+- [x] 恐惧：fearChance（跳过回合）
+- [x] 致盲：blindChance/blindDuration（命中-50%）
+- [x] 雷系斩杀：thunderExecute/executeThreshold/executeChance
+- [x] 致盲hitMod在状态修正中生效
+- [x] isStunned添加fear类型
 
-### v0.8.10 待做 - 复杂效果（后续版本）
-- [ ] 闪电连锁（chainLightning多目标跳跃）
-- [ ] 召唤兽相关天赋（beastTide/summonBuff等）
-- [ ] 团队buff（teamAtkBonus/teamDefBonus等）
-- [ ] 自动复活（autoRevive完整逻辑）
-- [ ] 潮汐/海啸自动循环
-- [ ] 陨石/火雨等多回合效果
-- [ ] 黑暗领域/光明领域等领域效果
-- [ ] 暗影标记/诅咒传播
-- [ ] 多目标/范围效果架构
+**第四批 - 增伤/减益**
+- [x] 暴击穿防：critArmorPenetration
+- [x] 暗影标记：darkMark/darkMarkDuration/darkMarkDamage
+- [x] 诅咒：curseChance/curseDuration/curseAtkDown/curseDefDown
+- [x] 状态系统支持darkDamageMod/atkMod/defMod
+
+---
+
+### 待实现效果详细清单
+
+#### A类：现有框架可直接实现（不需要架构改动，优先级高）
+
+**雷系蓄电机制**
+- [ ] chargeStack/chargeMax/chargePerStack - 攻击叠加蓄电层数，每层+麻痹概率
+- [ ] fullChargeCrit/fullChargeDamage - 满层时暴击率/暴击伤害提升
+- [ ] paralyzeNoDodge - 麻痹时不可闪避
+- [ ] paralyzeDamage/paralyzeChain - 麻痹时额外伤害/连锁
+- [ ] shockDebuff/shockDuration/shockThunderBonus - 感电状态，雷伤+30%
+- [ ] shockParalyzeChance - 感电时额外麻痹概率
+- [ ] skyThunderChance/skyThunderDamage - 天雷引：30%概率随机落雷
+- [ ] critParalyze - 暴击必麻痹
+- [ ] thunderCounter/thunderCounterDamage - 雷反：被攻击时20%反击
+- [ ] thunderRoarCooldown/thunderRoarParalyze - 雷鸣CD和麻痹全体
+
+**连击/多段攻击升级**
+- [ ] doubleStrikeChance/secondHitRatio - 二连斩（风系连袭Lv3）
+- [ ] tripleStrikeChance/thirdHitRatio - 三连斩（Lv5）
+- [ ] attackSpeedStack/attackSpeedMax - 风魔：每层速度+5%
+- [ ] hitCritStack/hitCritMax - 命中叠加暴击
+- [ ] comboDamageIncrease/comboMpReduction - 连段伤害递增/MP递减
+- [ ] firstStrikeChance/firstStrikeDamage - 先手攻击加成
+- [ ] dodgeNextHitBonus/dodgeCritDamage - 闪避后下次必暴/暴伤
+
+**燃烧/冰霜深化**
+- [ ] burnDefenseDown - 燃烧时防御-15%
+- [ ] burnUnpurgeable - 燃烧不可驱散
+- [ ] frostSlow/frostStackMax/frostFreezeOnMax - 冰霜减速叠加，满层冻结
+- [ ] freezeDefenseDown/freezeUnpurgeable - 冻结降防/不可驱散
+- [ ] frozenIceDamageBonus/frozenDamageTaken - 冻结时冰伤+50%/受伤+20%
+- [ ] frostExplosion/frostExplosionRange - 霜爆：解冻时范围伤害
+- [ ] frozenHpDrain/freezeSpread - 冻结掉血/扩散
+- [ ] frozenCritGuaranteed - 对冻结目标必暴
+- [ ] slowBonus/slowUnpurgeable - 减速效果增强/不可驱散
+- [ ] lowHpFreezeChance - 低HP时30%冻结攻击者
+- [ ] fieldIceResDown - 绝对零度领域冰抗-30%
+
+**土系防御深化**
+- [ ] shieldChance/shieldRatio - 岩盾概率/比例
+- [ ] shieldDefenseBonus/shieldBreakDamage - 护盾时防御+30%/破碎反伤
+- [ ] shieldRegen/shieldReflect - 护盾每回合回复/反射
+- [ ] permanentShield/critImmunity - 常驻30%HP护盾/免暴
+- [ ] defenseStack/defenseStackMax - 大地祝福防御叠加
+- [ ] knockbackImmunity - 免击退
+- [ ] earthquakeChance/earthquakeDamage/earthquakeSlow - 地震
+- [ ] defenseToDamage - 防御50%转伤害
+- [ ] stunnedDamageBonus/stunExtendChance - 对眩晕目标+50%/延长眩晕
+- [ ] meteor/meteorInterval/meteorDamage/meteorStunChance - 陨石（4回合延迟）
+
+**风系机动深化**
+- [ ] hurricaneChance/hurricaneDuration/hurricaneVulnerable - 飓风卷起
+- [ ] tornadoChance/tornadoDamage/tornadoKnockback - 龙卷风
+- [ ] windDotBonus - 风系持续+50%
+- [ ] enemySpeedDown/allySpeedBonus - 寒冰领域：敌速-15%我速+10%
+- [ ] teamSpeedBonus/teamDodgeBonus - 风暴领域团队buff
+- [ ] stormPunishChance/stormPunishDamage/stormPunishStun - 天罚风暴
+
+**水系治疗深化**
+- [ ] waterGuardChance/waterGuardReduction - 水之盾减伤
+- [ ] healExtraHp - 治疗额外5%上限HP
+- [ ] healPurifyChance/purifyOnHealChance - 治疗时净化
+- [ ] autoHeal/autoHealTarget - 自动治疗最低HP友方
+- [ ] regenChance/regenAmount/regenDuration/regenMp - 滋润持续回复
+- [ ] regenDamageReduction/regenDefenseBonus - 滋润时减伤/加防
+- [ ] regenUnpurgeable/lowHpRegenDouble - 滋润不可驱散/低HP翻倍
+- [ ] tide/tideInterval/tideHeal/tideCleanse - 潮汐：3回合全体治疗+解控
+- [ ] tideDamageStack/tideDamageMax/tideHealStack/tideHealMax - 涨潮叠加
+- [ ] tsunamiChance/tsunamiDamage/tsunamiAtkDown - 海啸
+- [ ] tideShield/tideShieldDuration/autoTide - 潮汐护盾/自动潮汐
+- [ ] healShield/healShieldDuration - 治疗量30%转护盾
+- [ ] healToDamage - 治疗10%转伤害
+- [ ] healMpRestore - 治疗时回MP
+- [ ] emergencyCooldown - 紧急回复CD
+
+**光系深化**
+- [ ] lightShield - 光之护封盾
+- [ ] blindImmunity - 免致盲
+- [ ] judgmentChance/judgmentDamage/judgmentTrueDamage - 圣光审判
+- [ ] teamAtkBonus/teamDefBonus - 圣光加持团队buff
+- [ ] purifyChance/aoePurify/purifyCount - 净化
+- [ ] purifyHeal/purifyDebuff/purifyAtkDown/purifyDefDown - 净化附带效果
+- [ ] purifyTeamHeal/purifyDamage - 净化团队回血/对敌伤害
+- [ ] holyShield/holyShieldDuration/holyShieldTarget - 圣盾
+- [ ] shieldDebuffImmunity - 护盾时免负面
+- [ ] debuffedDamageBonus - 对负面目标+50%
+- [ ] angelInterval/angelDamage/angelHeal - 天使降临
+- [ ] debuffImmunity - 免疫负面
+- [ ] lightDamageBonus/darkDamageBonus - 对暗/对光伤害加成
+
+**暗系深化**
+- [ ] stealthOnStart/stealthFirstHitBonus - 暗影形态（已部分实现）
+- [ ] lowHpDodgeBonus/lowHpDamageScaling - 低HP闪避/伤害递增
+- [ ] shadowFormHeal - 暗影击杀回血
+- [ ] enemyHitDown - 黑暗领域：敌命中-15%
+- [ ] teamDarkBonus - 黑暗领域团队暗伤+20%
+- [ ] ignoreDodgeChance - 潜行攻击无视闪避
+- [ ] stealthDamageBonus/stealthCritBonus - 潜行伤害/暴击
+- [ ] reStealthChance/reStealthDuration/reStealthCrit - 影杀重新隐身
+- [ ] markNoStealth/autoStealthChance - 暗影标记禁隐身/自动隐身
+- [ ] curseEndDamage/curseSpreadChance/curseUnpurgeable - 诅咒结束伤害/传播/不可驱散
+- [ ] curseKillHeal/guaranteedCrit - 诅咒击杀回血/必暴
+- [ ] curseCritDown/curseDodgeDown/curseCritDamageTaken - 诅咒降暴击/闪避/受暴伤
+
+**治愈系深化**
+- [ ] lifeLink/lifeLinkDuration/lifeLinkTransfer/linkDamageReduction - 生命链接分担伤害
+- [ ] blessAtkBonus/blessDefBonus/blessDuration - 祝福之环
+- [ ] lifeSeed/lifeSeedDelay/lifeSeedHeal - 生命之种延迟爆发
+- [ ] revive/reviveHp/reviveCount/reviveBuff - 复活
+- [ ] purifyAll/autoPurify - 全净化/自动净化
+- [ ] protectionDuration - 神圣庇护持续
+- [ ] teamHpRegen/cooldownReduction - 团队回血/冷却缩减
+- [ ] reviveUnlocked - 解锁复活
+
+**召唤系深化（需要召唤系统完善，优先级中）**
+- [ ] summonDamageBonus/summonHpBonus - 召唤兽伤害/HP
+- [ ] inheritStats/summonInheritHp - 继承属性
+- [ ] summonLevelBonus/summonAllStats - 等级+2/全属性+15%
+- [ ] beastTideChance/beastTideDamage/beastTideDuration - 兽潮
+- [ ] summonCritRate/summonCritDamage - 召唤兽暴击
+- [ ] damageShare/sharedHpRegen - 生命共享
+- [ ] summonMasterDamageBonus/summonMasterDefBonus - 灵魂融合
+- [ ] summonDeathBurst/summonDeathHeal - 灵魂爆发
+- [ ] summonDebuffImmunity - 人兽合一免负面
+- [ ] doubleSummonChance/packBonus/maxSummons - 双重/兽群/数量
+- [ ] summonDurationBonus/extraSummonChance - 持续时间/额外召唤
+- [ ] chainSummonChance/intimidateDuration - 连续召唤/威压持续
+- [ ] summonChargeChance/summonChargeDamage - 兽群冲锋
+- [ ] summonEnrage/openingSummon/summonHasTalent - 兽王之怒/开场野兽/自带天赋
+
+#### B类：需要小架构改动（优先级中）
+
+**多目标/范围效果**
+- [ ] chainChance/chainTargets/chainDamageRatio/chainNoDecay - 闪电连锁跳跃
+- [ ] explosionChance/explosionDamage/explosionRangeBonus - 爆炸
+- [ ] chainExplosionChance/chainExplosionDamage - 连环爆炸
+- [ ] explosionCritGuaranteed - 爆炸必暴
+- [ ] fireGround/fireGroundDuration/fireGroundDamage - 火海地面
+- [ ] fireRain/fireRainDuration/fireRainDamage - 火雨
+- [ ] aoeHeal/aoeHealRatio - 范围治疗
+- [ ] iceRangeBonus/earthRangeBonus - 范围+1
+
+**延迟/多回合效果**
+- [ ] meteor - 陨石（4回合后落下）
+- [ ] fireRain - 火雨（2回合）
+- [ ] angelInterval - 天使降临（4回合）
+- [ ] lifeSeed - 生命之种（3回合后爆发）
+
+**伤害转移/链接**
+- [ ] lifeLink - 生命链接分担30%伤害
+- [ ] damageShare - 伤害共享
+
+#### C类：需要大架构改动（优先级低，后续版本）
+
+- [ ] 团队buff系统（需要队友/组队架构）
+- [ ] 领域系统（field系统，影响全场）
+- [ ] 召唤兽AI和操控（召唤系统完善）
+- [ ] 多目标战斗架构（同时打多个敌人）
+- [ ] 地面效果系统（fireGround等持续地形）
+- [ ] 自动复活完整流程（revive动画/状态恢复）
+- [ ] 双天赋/多天赋槽
+
+---
+
+## P1 - 系统测试与优化（v0.8.10完成后）
+
+- [ ] 黑盒测试：实际浏览器中验证各天赋效果
+- [ ] 自动化测试：为新效果编写测试用例
+- [ ] 数值平衡：检查各天赋进化路线强度
+- [ ] 性能检查：大量效果叠加时的性能
+- [ ] Bug修复：测试中发现的问题
 
 ---
 
 ## P0 - 天赋进化系统（v0.8.9已完成）
 
-### v0.8.9 已完成 - 天赋进化系统
-- [x] 设计5阶段进化体系：Lv1觉醒→Lv3特性→Lv5形态进化→Lv7延伸→Lv10终极
-- [x] 重写talent.js引擎：支持evolutions数组、进化检测、效果合并
-- [x] 重写talents.js数据：50个天赋全部改为进化路线格式（10先天+40成长）
-- [x] 先天型天赋1级即终极形态（伤害+40%、免疫本系、必触发异常等）
-- [x] 每个进化阶段有独立名称和描述（如"烈焰形态""冰霜领主""雷霆之怒"）
-- [x] 30+种新效果键设计
-- [x] UI更新：选择面板预览进化路线、角色面板显示当前/下一阶段、战斗日志进化提示
-- [x] 37项自动化测试全部通过
+- [x] 5阶段进化体系：Lv1觉醒→Lv3特性→Lv5形态进化→Lv7延伸→Lv10终极
+- [x] talent.js引擎重写：evolutions数组、进化检测、效果合并
+- [x] talents.js数据：50个天赋全部进化路线格式
+- [x] 先天型天赋1级即终极形态
+- [x] 进化时战斗日志特殊提示（🔮粉紫色）
+- [x] 37项自动化测试通过
 
 ---
 
 ## P0 - 游戏体验优化（v0.8.8已完成）
 
-### v0.8.8 已完成 - 游戏体验全面优化
-- [x] 时间消耗优化：聊天/商店/酒馆/拜访不耗时间体力，地图移动0.5h/5体力，图书馆1h/5体力
-- [x] 恢复手段：原地休息按钮（0时间，30%HP/20%MP/30体力），宿舍休息恢复量提升
-- [x] 战斗平衡：防御系数0.5→0.3，避免高防御完全免伤
-- [x] 战斗自动回复：每回合回HP（等级+1%最大HP）和MP（等级+精神力+2%最大MP）
-- [x] 战斗冥想：🧘冥想指令，跳过回合回25%MP+10%HP
-- [x] 天赋可选系统：觉醒时3选1，先天型/成长型分类
-- [x] Tooltips：技能/属性/天赋hover显示详细信息
-- [x] 修复精神力属性点无法分配bug
-- [x] 黑盒测试修复：新游戏创建弹出天赋选择、Player.hasQuest缺失、battle-effect日志错误
-- [x] 黑盒测试：12项游戏体验测试全部通过
+- [x] 时间消耗优化、原地休息、战斗平衡
+- [x] 战斗自动回复、冥想系统
+- [x] 天赋3选1系统、Tooltips
+- [x] 12项黑盒测试通过
 
 ---
 
 ## P0 - 剧情系统（已齐平230章）
 
-### 已完成 - 博城篇+明珠篇剧情填充
-
-**博城篇（1-7章，小说1-120章）：**
-- [x] 唐月/莫凡/张小侯/穆宁雪/穆白/斩空/宇昂/穆贺对话树深化
-- [x] 小泥鳅坠dynamicLore伏笔
-- [x] 博城灾难大事件分支（追击宇昂5阶段+3结局）
-- [x] 唐月/张小侯/斩空/穆宁雪/穆白告别对话
-- [x] 第二系觉醒剧情/章节完成总结/开场剧情
-- [x] 灵种发现事件/异常迁徙/古代山洞/受伤妖魔三分支
-- [x] 穆贺密会/灾难氛围/废墟救人/黑教廷印记
-- [x] 泉底古老存在/告别博城事件
-- [x] debug剧情工具
-
-**明珠篇（8-10章，小说121-230章）：**
-- [x] 白藏锋对话树（5节点，光系，白家背景）
-- [x] 许昭霆对话树（5节点，博城幸存者，张璐璐）
-- [x] 包老头NPC+对话树（5节点，青天猎所所长）
-- [x] 灵灵对话树加深（3新节点：寄生妖魔/许昭霆之死/黑教廷等级）
-- [x] 9个明珠篇事件链（唐月身份→玫炎→暗影觉醒→斗兽大赛→青天猎所→寄生妖魔→三步塔→许昭霆之死→宇昂终局）
-- [x] 11条明珠篇信息碎片
-- [x] 白藏锋元素修正为光系（原著）
-
-**数据统计：**
+### 博城篇（1-7章）+ 明珠篇（8-10章）已完成
 - 127物品 / 70信息碎片 / 114事件 / 48NPC / 260对话节点 / 59任务
-- 黑盒测试：29通过，0失败
 
-### 后续方向（已规划，按优先级执行）
-
-#### P0-A：随机觉醒+天赋扩展系统（部分完成！）
-
-**设计理念：** 小说里觉醒系别是随机的，用魔石引导只增加概率不保证；天生天赋也是随机的，极少数人有特殊天赋。游戏需要还原这种随机性，同时保证玩家体验不会太差。
-
-**1. 随机觉醒机制**
-- [ ] 首次觉醒改为"3选1"：随机出3个候选元素，玩家选1个（保证随机性但不至于太非）
-- [ ] 后续觉醒（第二/三/四系）改为完全随机，但可用"引导魔石"增加指定系概率
-- [ ] 引导魔石道具：使用后下次觉醒指定系概率+50%，稀有系基础概率更低
-- [ ] 元素基础概率表：常见系（火/水/土/风）各15%，雷/冰/光各8%，暗影/植物/召唤各5%，治愈3%
-- [ ] 觉醒动画/仪式感：随机过程有视觉反馈（觉醒石光芒→元素显现）
-- [ ] 保底机制：如果随机出的3个都是同一稀有度层级，重roll一次；后续觉醒连续两次同一系则第三次必不同
-
-**2. 天赋可选系统（v0.8.8已完成）**
-- [x] 觉醒时3选1：随机出3个天赋候选，玩家选择1个
-- [x] 天赋分两类：先天型（innate，1级满级不可升级）和成长型（growth，可升级到10级）
-- [x] 传说级天赋为先天型，其余为成长型
-- [x] 天赋数据格式：type字段、levelBonus对象格式
-- [x] 天赋选择UI面板（稀有度颜色、效果预览）
-- [ ] 神赋（mythic稀有度）：第6种稀有度，权重0.3%，改变玩法级效果
-  - 天生双系：觉醒时额外获得一个随机系
-  - 元素共鸣：两系技能可同时释放
-  - 无限星海：MP上限+50%，MP消耗-30%
-  - 星语者：技能引导速度翻倍
-  - 天生灵体：修炼速度+100%
-  - 元素之心：对应系伤害+100%但受克制+50%
-- [ ] 神赋特殊视觉效果（金色/彩虹边框）
-
-**3. 天赋效果扩展（可扩展性）**
-- [ ] 天赋数据结构扩展：支持triggerType（passive/onCrit/onHit/onKill/onHurt/onCast/belowHp）
-- [ ] 支持条件效果：againstElement（对特定系加成）、hpBelowPercent（低血触发）
-- [ ] 战斗系统接入触发式天赋：onCrit爆炸、onKill回血、onHurt反伤等
-- [ ] 天赋效果类型注册表：新效果类型只需在talent.js注册，不改战斗核心
-- [ ] 双天赋/多天赋：高阶后可解锁第二个天赋槽（类似小说里灵种+魂种叠加）
-
-**4. 觉醒石/引导石系统**
-- [ ] 觉醒石数据：不同系的引导石，商店/任务/掉落获取
-- [ ] 觉醒石使用UI：觉醒前选择是否使用引导石
-- [ ] 高级觉醒石：增加稀有系概率更多
-- [ ] 小说里的"觉醒石"是觉醒仪式必需品，引导石是额外消耗品
-
-**5. 天赋UI完善**
-- [x] 角色面板天赋详情：显示效果数值、升级进度
-- [x] 天赋获得时选择面板：3选1，稀有度颜色
-- [x] 天赋hover tooltip显示详细效果
-- [ ] 神赋获得特殊弹窗和成就
+### 后续方向
+- [ ] 随机觉醒机制（3选1元素、引导石、概率表）
+- [ ] 神赋系统（mythic稀有度，0.3%权重）
+- [ ] 三步塔修炼游戏化
+- [ ] 召唤兽培养深化
+- [ ] 猎法师等级+悬赏系统
+- [ ] 继续拆小说231章+
 
 ---
 
-#### P0-B：三步塔修炼游戏化
+## P1 - 各系独立修炼（v0.8.7已完成）
 
-- [ ] 三步塔地点+爬塔玩法：每层元素浓度递增，修炼效率递增但精神压力递增
-- [ ] 选择机制：冲层（高风险高回报）/稳扎（安全但慢）/放弃（保留当前收益）
-- [ ] 精神压力系统：类似"san值"，过高有负面效果（MP消耗增加/眩晕）
-- [ ] 三层塔不同环境：1层土系重压、2层风系撕裂、3层元素风暴
-- [ ] 每层有小概率遇到元素精灵/宝箱/事件
-- [ ] 修炼收益：经验/灵种碎片/元素亲和度
-- [ ] 每日限次（小说里三步塔使用有限制）
-- [ ] 与境界系统挂钩：中阶才能上2层，高阶才能上3层
+- [x] 各系独立等级/经验、新系加速、技能按系解锁
+- [x] 境界判定、战斗经验分配、UI显示
 
 ---
 
-#### P0-C：召唤兽培养深化
+## P1 - 软系统内容
 
-- [ ] 召唤兽属性面板：等级/忠诚度/饥饿度/技能
-- [ ] 喂养系统：不同食物影响成长方向
-- [ ] 进化系统：幽狼兽→进阶幽狼兽→（小说里的进化路线）
-- [ ] 技能学习：召唤兽可学习技能，不是固定技能
-- [ ] 忠诚度系统：影响战斗表现和是否听话
-- [ ] 复用npc-growth.js框架
+### 对话/NPC
+- [ ] 唐月/灵灵/赵满延/张小侯/穆宁雪对话树
+- [ ] 好感度事件系统
+- [ ] 更多NPC（西明/醋醋等）
 
----
-
-#### P1：猎法师等级+悬赏系统
-
-- [ ] 猎法师星级：学徒→猎法师→猎人大师→猎王
-- [ ] 悬赏板：不同星级悬赏，接取→猎杀→交付
-- [ ] 青天猎所专属高难度委托
-- [ ] 猎人声望/称号
+### 战斗数据
+- [ ] 全妖魔2-3个技能
+- [ ] 植物系克制、光系对暗克制
+- [ ] 数值平衡
 
 ---
 
-#### P1：其他系统
+## P2 - 新系统（v0.9.x）
 
-- [ ] 拍卖行系统（竞价玩法，千钧雷种2800万情节）
-- [ ] 灵种前缀名显示（玫炎/千均等名字显示在装备栏）
-- [ ] 新系统教学引导（第一次获得灵种/第一次突破等）
-- [ ] 西明NPC数据（青天猎所师兄）
-- [ ] 手机端触控优化
-- [ ] 继续拆小说231章+（剧情+战斗同时填充）
-
----
-
-## P1 - v0.8.7 各系独立修炼系统
-
-### 核心设计（已确认）
-- 各系独立等级和经验，不再全局齐步走
-- 全局等级 = 最高系等级，决定基础属性和境界
-- 新系修炼加速：中阶×2/高阶×4/超阶×8
-- 技能解锁按各系等级，魔法威力 = 基础×(1+该系等级×0.05)
-- 境界判定：至少一个系到中阶 = 中阶法师
-- 境界突破保留（加属性%），触发条件为最高系达到阈值
-
-### 开发任务
-- [x] player.js数据结构：elementLevels/elementExp对象，init初始化
-- [x] player.js核心方法：getPlayerLevel()返回最高系等级，getElementLevel(element)
-- [x] player.js经验系统：gainElementExp(element, amount)，含新系加速系数
-- [x] player.js升级逻辑：_elementLevelUp(element)，全局等级提升时才加属性
-- [x] player.js技能解锁：checkSkillUnlocks改为按各系等级检查，新增_checkElementSkillUnlocks
-- [x] player.js觉醒系统：canAwakenNewElement基于getPlayerLevel()，新系从Lv1开始
-- [x] player.js境界系统：getRealm()保留realm字段，突破条件基于最高系等级
-- [x] player.js存档迁移：0.8.6→0.8.7，旧全局等级→各系等级
-- [x] battle.js伤害计算：魔法威力受该系等级加成（elementLevelBonus = 1 + elLevel * 0.05）
-- [x] battle.js经验分配：战斗胜利经验分配给使用的技能所属系（usedElements追踪）
-- [x] realm.js：canBreakthrough用getPlayerLevel()替代player.level
-- [x] ui.js：角色面板元素显示各系等级+境界简称
-- [x] debug.js：setLevel重写为设置各系等级，loadPresetSave兼容
-- [x] npc-growth.js：NPC不需要elementLevels（伤害加成仅对玩家）
-- [~] 测试验证（node语法检查已通过，待浏览器黑盒测试）
-- [ ] 文档更新+git提交
-
----
-
-## P1 - v0.8.6
-
-### 等级体系重构（已完成）
-- [x] 新等级划分：初阶Lv1-10/中阶Lv11-30/高阶Lv31-55/超阶Lv56-80
-- [x] 新经验曲线：初阶base80*1.25/中阶base500*1.15/高阶base8000*1.12/超阶base120000*1.10
-- [x] 每级属性成长按境界递增（不再固定值）
-- [x] 突破等级改为10/30/55
-- [x] 技能解锁表重新映射（初阶Lv1/3/5/8，中阶Lv1/12/18/25）
-- [x] 觉醒新系等级：第二系Lv10/第三系Lv30/第四系Lv55
-- [x] 新增shadow/plant/poison/sound四系中阶技能解锁表
-- [x] NPC growth数据等级更新（莫凡/赵满延/牧奴娇/罗宋/白藏锋/幽狼兽/蜕皮女妖）
-- [x] npc-growth.js境界阈值和固定值加成更新
-- [x] 存档迁移：0.8.0→0.8.6（旧等级映射+重算基础属性）
-- [x] debug面板修复（觉醒全元素/突破等级/expToNext默认值）
-- [x] 新增level_30/level_50成就，awaken_5改为awaken_4
-- [x] 怪物经验奖励调整以匹配新曲线
-- [x] enemies.js中54个怪物等级显示数字更新
-
-### v0.8.5遗留
-- [x] NPC成长系统+切磋功能（已commit 0c0c218）
-- [ ] 黑盒测试：浏览器中实际切磋战斗验证
-- [ ] 回忆切磋UI（选择历史阶段）
-- [ ] 给更多NPC加growth数据（张小侯/穆宁雪等）
-
-### 小说拆解与转化
-- [x] 第141-150章拆解+转化（幽狼兽/炼兽之血/罗宋/飞沙走石）
-- [x] 第151-160章拆解+转化（光耀失明/白铠战蛰/岩魔士/食骨妖/进阶幽狼兽）
-- [x] 第161-170章拆解+转化（植物系/牧奴娇）
-- [x] 第171-180章拆解+转化（蜕皮女妖/男妖/灵灵/5个妖魔技能）
-- [x] 第181-190章拆解+转化（鳞皮妖兵/妖母/赵满延/巨影钉/光耀净化）
-- [x] 第191-200章拆解+转化（白藏锋/猎王西明/醋醋/精魄/亡魂器皿）
-- [x] 141-200章非战斗维度补充（人物/地点/世界观/关系/伏笔/可游戏化）
-- [x] NPC成长系统设计（基础+成长事件，支持NPC/召唤兽/妖魔进化）
-- [x] 第201-210章拆解+转化（千钧灵雷/冥离盾/艾图图/韩洛/贾文清/契约召唤设定）
-- [x] 第211-220章拆解+转化（三步塔/宇昂回归/许昭霆/暗影妖兽/主校区考核）
-- [x] 第221-230章拆解+转化（霹雳·夜叉/诅咒畜妖/大混战/黑畜妖真相）
-
----
-
-## P1 - 软系统内容填充（对话/好感度/任务/声望）
-
-### 已完成
-- [x] 艾图图完整对话树（挡箭牌/牧奴娇八卦/修炼/追求者）
-- [x] 牧奴娇完整对话树（修炼指点/切磋/灵种秘密/战后）
-- [x] 主校区考核7步主线任务链（第201-230章）
-- [x] 任务奖励物品（神侍者名单/黑教廷徽章）
-- [x] 莫凡对话树添加考核任务入口
-- [x] 确认声望→商店折扣已接通
-
-### 待做
-- [ ] 唐月对话树（老师/引导者/黑教廷情报）
-- [ ] 灵灵对话树（情报/猎妖联盟/妹妹感）
-- [ ] 白藏锋对话树（对手/切磋/世家）
-- [ ] 赵满延对话树（兄弟/光系/搞笑）
-- [ ] 张小侯对话树（兄弟/风系/忠诚）
-- [ ] 穆宁雪对话树（冰系/旧识/高冷）
-- [ ] 好感度事件系统（好感度达到阈值触发特殊事件/剧情）
-- [ ] 博城篇主线任务链（第1-120章回顾）
-- [ ] 更多NPC对话树（许昭霆/韩洛/贾文清/沈明笑）
-- [ ] 声望影响NPC态度（高声望NPC主动打招呼/低声望拒绝对话）
-
-### 非战斗内容（明珠学府篇）
-- [ ] 添加明珠学府新地点到locations.js（青校区/主校区/青斗馆/宿舍/国贸中心拍卖场）
-- [x] 统一赵满延数据（characters.js从Lv3更新为Lv10，加growth）
-- [x] 将新NPC添加到characters.js（牧奴娇/灵灵/罗宋/白藏锋已加，猎王西明/醋醋待加）
-- [ ] 整理quests.js重复任务（quest_xuefeng_expedition/quest_training_camp/quest_one_eye_wolf）
-- [ ] 主线任务链：明珠学府篇（鳞皮妖母事件后续）
-
-### 战斗数据完善
-- [ ] 给所有妖魔配置2-3个技能（部分妖魔只有普攻）
-- [ ] 植物系元素克制关系配置
-- [ ] 光系对黑暗生物通用克制机制
-- [ ] 战斗数值平衡（基于阶级加成后的数据）
-
-### 系统增强
-- [x] **NPC成长系统实现**（设计见docs/非战斗系统可扩展性设计.md 2.7节）
-  - [x] 新建engine/npc-growth.js：NPCGrowthService.getNpcState(npcId, storyStage)
-  - [x] 实现getDuelData(npcId, storyStage)：切磋用战斗数据
-  - [x] 实现getHistoricalState(npcId, storyStage)：回忆切磋
-  - [x] 给主要NPC加growth数据（莫凡/赵满延/牧奴娇/罗宋）
-  - [x] 给召唤兽加growth数据（幽狼兽进化线）
-  - [x] 给会成长的妖魔加growth数据（蜕皮女妖多形态）
-  - [x] 切磋/挑战功能UI入口（NPC对话中"切磋"按钮）
-  - [x] 战斗中触发进化（applyBattleEvolution）
-  - [x] 单元测试：10项测试全部通过
-  - [ ] 黑盒测试：浏览器中实际切磋战斗验证
-  - [ ] 回忆切磋UI（选择历史阶段）
-  - [ ] 给更多NPC加growth数据（张小侯/穆宁雪等）
-- [ ] 任务系统增强（统一条件/效果、分支对话、更多objective类型）
-- [ ] 猎人悬赏基础（bounties.js数据+接取流程）
-- [ ] 主校区考核（exams.js数据+考核流程）
-
----
-
-## P2 - v0.8.6/v0.9.x
-
-### 新系统
-- [ ] 拍卖系统（auctions.js，国贸中心拍卖场）
-- [ ] 召唤兽培养深化（喂养/进化/技能学习，复用NPC成长系统）
-- [ ] 物品合成系统（crafting.js）
-- [ ] 精神力作为独立资源（消耗/恢复/耗尽眩晕）
+- [ ] 拍卖系统、物品合成
+- [ ] 精神力独立资源
 - [ ] 元素环境/天气加成
-- [ ] 同时施法精神压制
-
-### 战斗深化
-- [ ] 领域系统（高阶/统领级）
-- [ ] 召唤兽深化（技能/属性/AI）
 - [ ] 双元素融合魔法
-- [ ] 多阶段Boss变身
-- [ ] 防御层次系统（护盾/结界/护体）
-- [ ] 信息差/侦察（猎妖手册）
-
-### 内容扩充
-- [ ] 继续拆小说（201章+）
-- [ ] 更多妖魔/技能/灵种/魔具
-- [ ] 新法系（诅咒系/空间系/冰系等）
-- [ ] 非原著技能标记isCanon: false
+- [ ] 领域系统
+- [ ] 多阶段Boss
 
 ---
 
-## P3 - 远期（v1.0及以后）
+## P3 - 远期（v1.0+）
 
-- [ ] 第一卷博城篇完整剧情线
-- [ ] 第二卷明珠学府篇完整剧情线
+- [ ] 博城篇/明珠篇完整剧情线
 - [ ] 团队战斗/多对多
-- [ ] 战斗中改变地形
-- [ ] 天气系统深化
 - [ ] 多周目/新游戏+
-- [ ] 成就完善
 - [ ] UI/美术优化
-- [ ] 战斗新手引导
 
 ---
 
-## 已完成历史
+## 下一步计划
 
-### v0.8.5（当前开发中）
-- [x] 小说拆解141-200章（60章）
-- [x] 141-150章：demon_sand_breath/幽狼兽更新/炼兽之血/罗宋
-- [x] 151-160章：光耀失明/7个妖魔技能/白铠战蛰/岩魔士/食骨妖/进阶幽狼兽
-- [x] 161-170章：植物系技能(藤变缠绕/坤之森囚牢)/牧奴娇
-- [x] 171-180章：蜕皮女妖/男妖/灵灵/5个妖魔技能
-- [x] 181-190章：鳞皮妖兵/妖母/赵满延/巨影钉/光耀净化/巢群自杀令
-- [x] 191-200章：白藏锋/猎王西明/醋醋/奴仆/战将/统领精魄/亡魂器皿
-- [x] 非战斗系统可扩展性设计文档
-- [x] 191-200章非战斗维度补充
-- [x] 赵满延技能ID确认无问题
+### 立即执行：第五批效果（A类中最有"进化感"的）
 
-### v0.8.4
-- [x] 修复自动战斗函数名错误
-- [x] 修复技能ID冲突（妖魔技能demon_前缀）
-- [x] 修复healing_reduction坏血效果
-- [x] 修复小泥鳅坠自动吸收
-- [x] 修复UI状态效果重复显示
-- [x] 修复自动战斗isProcessingAction
-- [x] 修复isElementStrong/isElementWeak缺失
-- [x] 删除错误的战将级翼苍狼
-- [x] 所有妖魔补demonTier字段
-- [x] 黑盒测试通过
+1. **雷系蓄电+感电** - 雷系天赋的核心机制，攻击蓄电，满层爆发
+2. **连击升级（二连/三连/风魔）** - 风系连袭天赋的进化路线
+3. **冰霜减速叠加+满层冻结** - 冰系控制深化
+4. **治疗护盾+生命种子+复活** - 治愈系核心机制
+5. **暗影潜行+重新隐身** - 暗系潜行天赋的进化
+6. **潮汐/海啸自动循环** - 水系潮汐天赋
+7. **冷却缩减+自动净化** - 通用辅助效果
 
-### v0.8.3
-- [x] 经验曲线重设计（分段函数）
-- [x] 等级差惩罚/奖励
-- [x] 妖魔阶级加成
-- [x] 新灵种/新技能/新Boss朝赫
-- [x] 雷穿水盾/灵火抗性/范围攻击
-- [x] 非原著妖魔标记
+### 之后：黑盒测试
 
-### v0.8.2
-- [x] 技能等级系统
-- [x] 境界突破系统
-- [x] 战斗模式（决斗/车轮/狩猎/Boss）
-- [x] 残魄/精魄系统
-- [x] 魔具战斗系统
-- [x] 元素反应系统
-- [x] 战斗AI独立模块
-- [x] 42个成就
+在浏览器中实际测试v0.8.10所有效果，记录Bug并修复。
 
-### v0.8.0-v0.8.1
-- [x] 灵种/魂种系统
-- [x] 星尘魔器系统
-- [x] 天赋升级系统
+### 然后：B类效果（需要小架构改动）
+
+闪电连锁、范围爆炸、火雨/陨石等多回合延迟效果。
