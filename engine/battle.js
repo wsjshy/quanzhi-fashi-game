@@ -798,6 +798,12 @@ const BattleSystem = {
                 this.addStatusEffect(this.player, { type: 'shield', name: '不破之盾', value: shieldAmount, duration: 999 });
                 this.addLog(`🛡️ 不破之盾生效！常驻 ${shieldAmount} 点护盾！`, 'buff');
             }
+            // 光之护封（lightShield）：15%HP护盾
+            if (te.lightShield) {
+                const shieldAmount = Math.floor(this.player.maxHp * te.lightShield);
+                this.addStatusEffect(this.player, { type: 'shield', name: '光之护封', value: shieldAmount, duration: 3 });
+                this.addLog(`✨ 光之护封！获得 ${shieldAmount} 点护盾！`, 'buff');
+            }
             // 绝对零度领域：开场冻结
             if (te.absoluteZeroField && this.enemy.hp > 0) {
                 this.addStatusEffect(this.enemy, {
@@ -1369,7 +1375,9 @@ const BattleSystem = {
 
             // 天赋：二连斩（风系连袭Lv3）
             if (te.doubleStrikeChance && Math.random() < te.doubleStrikeChance) {
-                const ratio = te.secondHitRatio || 0.85;
+                let ratio = te.secondHitRatio || 0.85;
+                // 连击伤害加成（comboDamage）
+                if (te.comboDamage) ratio += te.comboDamage;
                 const secondDmg = this.calculateDamage(
                     this.player.attack * ratio,
                     this.enemy.defense,
@@ -1384,7 +1392,8 @@ const BattleSystem = {
 
                     // 三连斩（在二连斩触发后判定）
                     if (te.tripleStrikeChance && Math.random() < te.tripleStrikeChance) {
-                        const thirdRatio = te.thirdHitRatio || 0.6;
+                        let thirdRatio = te.thirdHitRatio || 0.6;
+                        if (te.comboDamage) thirdRatio += te.comboDamage;
                         const thirdDmg = this.calculateDamage(
                             this.player.attack * thirdRatio,
                             this.enemy.defense,
@@ -2004,6 +2013,10 @@ const BattleSystem = {
             if (isPlayer && this.player.tideHealBonus) {
                 actualHeal = Math.floor(actualHeal * (1 + this.player.tideHealBonus));
             }
+            // 治疗额外HP（healExtraHp）：额外治疗5%最大HP
+            if (isPlayer && this.player.talentEffects && this.player.talentEffects.healExtraHp && healTarget === this.player) {
+                actualHeal += Math.floor(this.player.maxHp * this.player.talentEffects.healExtraHp);
+            }
             // 天赋治疗暴击
             if (isPlayer && this.player.talentEffects && this.player.talentEffects.healCritRate) {
                 if (Math.random() < this.player.talentEffects.healCritRate) {
@@ -2596,6 +2609,9 @@ const BattleSystem = {
                 if (te.dodgeCritBuff) {
                     this.player._dodgeCritBuff = te.dodgeCritBuff;
                     this.addLog(`🌪️ 风遁！下次攻击暴击伤害提升！`, 'buff');
+                }
+                if (te.dodgeCritDamage) {
+                    this.player._dodgeCritDamage = te.dodgeCritDamage;
                 }
                 if (te.dodgeHeal) {
                     const healAmount = Math.floor(this.player.maxHp * te.dodgeHeal);
@@ -3301,6 +3317,11 @@ const BattleSystem = {
                 this.addLog(`💚 大地祝福恢复 ${regen} 点HP！`, 'heal');
                 this.showDamageNumber('player', regen, 'heal');
             }
+            // MP回复（mpRegen）：每回合回3%MP
+            if (te.mpRegen) {
+                const mpRegen = Math.floor(this.player.maxMp * te.mpRegen);
+                this.player.mp = Math.min(this.player.maxMp, this.player.mp + mpRegen);
+            }
             // 大地祝福：防御叠加（defenseStack/defenseStackMax）
             if (te.defenseStack) {
                 if (!this.player._defenseStacks) this.player._defenseStacks = 0;
@@ -3433,6 +3454,19 @@ const BattleSystem = {
             if (isParalyzed && attacker && attacker.talentEffects && attacker.talentEffects.paralyzeNoDodge) {
                 evasion = 0;
             }
+            // 无视闪避（ignoreDodgeChance）
+            if (attacker && attacker.talentEffects && attacker.talentEffects.ignoreDodgeChance) {
+                if (Math.random() < attacker.talentEffects.ignoreDodgeChance) evasion = 0;
+            }
+            // 低HP闪避加成（lowHpDodgeBonus）
+            if (target === this.player && target.talentEffects && target.talentEffects.lowHpDodgeBonus) {
+                if (target.hp / target.maxHp < 0.3) evasion += target.talentEffects.lowHpDodgeBonus;
+            }
+            // 免疫致盲（blindImmunity）：致盲状态不影响命中
+            if (attacker === this.player && attacker.talentEffects && attacker.talentEffects.blindImmunity) {
+                // 清除致盲的命中惩罚
+                if (attackerMods && attackerMods.hitMod) attackerMods.hitMod = 0;
+            }
 
             // 下次必定闪避
             if (mods.nextDodgeGuaranteed) {
@@ -3542,6 +3576,21 @@ const BattleSystem = {
                 damage *= 0.7; // 被克制：伤害-30%
             } else if (counterResult.effect === 'resist') {
                 damage *= 0.8; // 同系抗性：伤害-20%
+            }
+        }
+
+        // 光系对暗系伤害加成（darkDamageBonus）
+        if (attacker && attacker.talentEffects && attacker.talentEffects.darkDamageBonus) {
+            const targetIsDark = targetElement === 'dark' || (target.element === 'dark');
+            if (targetIsDark) damage *= (1 + attacker.talentEffects.darkDamageBonus);
+        }
+        // 圣光审判（judgmentChance）：30%对暗系造成15%最大HP真实伤害
+        if (attacker && attacker.talentEffects && attacker.talentEffects.judgmentChance && target === this.enemy) {
+            const targetIsDark = targetElement === 'dark' || target.element === 'dark';
+            if (targetIsDark && Math.random() < attacker.talentEffects.judgmentChance) {
+                const trueDmg = Math.floor(target.maxHp * (attacker.talentEffects.judgmentDamage || 0.15));
+                damage += trueDmg;
+                this.addLog(`✨ 圣光审判！额外造成 ${trueDmg} 点真实伤害！`, 'crit');
             }
         }
         
@@ -3738,7 +3787,8 @@ const BattleSystem = {
 
         // 暴击判定
         const targetHasCritImmunity = target && target.talentEffects && target.talentEffects.critImmunity;
-        if (!targetHasCritImmunity && (frozenCritGuaranteed || Math.random() < critRate + chargeCritBonus + windDemonCritBonus)) {
+        const attackerGuaranteedCrit = attacker && attacker.talentEffects && attacker.talentEffects.guaranteedCrit;
+        if (!targetHasCritImmunity && (attackerGuaranteedCrit || frozenCritGuaranteed || Math.random() < critRate + chargeCritBonus + windDemonCritBonus)) {
             result.isCrit = true;
             let critMult = 1.5 + Math.random() * 0.5; // 1.5-2.0倍暴击
             // 天赋：暴击伤害加成
@@ -3751,6 +3801,15 @@ const BattleSystem = {
                 if (attacker.talentEffects.critArmorPenetration) {
                     const pen = attacker.talentEffects.critArmorPenetration;
                     damage += defense * pen * 0.5;
+                }
+                // 风遁：闪避后暴击伤害加成
+                if (attacker._dodgeCritBuff) {
+                    critMult += attacker._dodgeCritBuff;
+                    attacker._dodgeCritBuff = null;
+                }
+                if (attacker._dodgeCritDamage) {
+                    critMult += attacker._dodgeCritDamage;
+                    attacker._dodgeCritDamage = null;
                 }
             }
             damage *= critMult;
@@ -3982,6 +4041,20 @@ const BattleSystem = {
                     target._hardRockUsed = true;
                     this.addLog(`🪨 坚岩发动！伤害减少${Math.round(reduction*100)}%！`, 'defense');
                 }
+            }
+            // 水之盾（waterGuardChance）：20%概率减伤30%
+            if (te.waterGuardChance && Math.random() < te.waterGuardChance) {
+                const reduction = te.waterGuardReduction || 0.3;
+                const reduced = Math.floor(amount * reduction);
+                target.hp += reduced;
+                amount -= reduced;
+                this.addLog(`💧 水之盾！伤害减少${Math.round(reduction*100)}%！`, 'defense');
+            }
+            // 常驻减伤（damageReduction）
+            if (te.damageReduction) {
+                const reduced = Math.floor(amount * te.damageReduction);
+                target.hp += reduced;
+                amount -= reduced;
             }
             // 岩盾：受击时概率获得护盾
             if (te.shieldChance && amount > 0 && Math.random() < te.shieldChance) {
