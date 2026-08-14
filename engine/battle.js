@@ -690,7 +690,14 @@ const BattleSystem = {
             buffs: [],
             statusEffects: [],
             isDefending: false,
-            talentEffects: (typeof Player !== 'undefined' && Player.getAllTalentEffects) ? Player.getAllTalentEffects() : {}
+            talentEffects: (typeof Player !== 'undefined' && Player.getAllTalentEffects) ? Player.getAllTalentEffects() : {},
+            // 第五批效果：战斗状态计数器
+            chargeStack: 0,       // 雷系蓄电层数
+            chargeMax: 5,         // 最大蓄电层数
+            comboCount: 0,        // 连斩计数（本回合连击数）
+            tideStack: 0,         // 潮汐层数
+            stealthActive: false, // 是否处于隐身状态
+            reviveUsed: false     // 本局是否已用过复活
         };
 
         // 应用天赋基础属性加成
@@ -776,7 +783,14 @@ const BattleSystem = {
             // 暗影形态：战斗开始隐身
             if (te.shadowForm) {
                 this.addStatusEffect(this.player, { type: 'stealth', name: '暗影潜行', duration: te.shadowFormDuration || 1 });
+                this.player.stealthActive = true;
                 this.addLog(`🌑 暗影形态！进入隐身，首次攻击伤害翻倍！`, 'buff');
+            }
+            // 潜行天赋：战斗开始概率隐身
+            if (te.stealthChance && !te.shadowForm && Math.random() < te.stealthChance) {
+                this.addStatusEffect(this.player, { type: 'stealth', name: '潜行', duration: 99 });
+                this.player.stealthActive = true;
+                this.addLog(`🌑 进入潜行状态！`, 'buff');
             }
             // 绝对零度领域：开场冻结
             if (te.absoluteZeroField && this.enemy.hp > 0) {
@@ -1183,10 +1197,30 @@ const BattleSystem = {
             }
             // 减速
             if (te.slowChance && Math.random() < te.slowChance) {
-                this.applyStatusEffects(this.enemy, [{
-                    type: 'slow', name: '减速', speedMod: -0.3, duration: 2
-                }], true);
-                this.addLog(`🐌 ${this.enemy.name} 被减速了！`, 'element');
+                // 冰霜叠加：检查是否已有减速状态
+                const existingSlow = this.enemy.statusEffects.find(e => e.type === 'slow' || e.type === 'frost');
+                if (te.frostStackMax && existingSlow) {
+                    // 叠加层数
+                    existingSlow.stacks = (existingSlow.stacks || 1) + 1;
+                    existingSlow.speedMod = -0.15 * existingSlow.stacks;
+                    existingSlow.duration = 2;
+                    this.addLog(`❄️ 冰霜叠加 ${existingSlow.stacks}/${te.frostStackMax}！`, 'element');
+                    // 满层冻结
+                    if (existingSlow.stacks >= te.frostStackMax) {
+                        this.addStatusEffect(this.enemy, {
+                            type: 'freeze', name: '冰霜冻结', duration: te.frostFreezeDuration || 1
+                        });
+                        this.addLog(`❄️ 冰霜满层！${this.enemy.name} 被冻结！`, 'element');
+                        // 移除减速状态
+                        this.enemy.statusEffects = this.enemy.statusEffects.filter(e => e !== existingSlow);
+                    }
+                } else {
+                    this.applyStatusEffects(this.enemy, [{
+                        type: te.frostStackMax ? 'frost' : 'slow', name: te.frostStackMax ? '冰霜' : '减速',
+                        speedMod: -0.3, duration: 2, stacks: 1
+                    }], true);
+                    this.addLog(`🐌 ${this.enemy.name} 被减速了！`, 'element');
+                }
             }
             // 时间冻结：概率时停
             if (te.timeStopChance && Math.random() < te.timeStopChance) {
@@ -1224,6 +1258,31 @@ const BattleSystem = {
                     atkMod: -(te.curseAtkDown || 0.15), defMod: -(te.curseDefDown || 0.15)
                 });
                 this.addLog(`💀 ${this.enemy.name} 被诅咒！`, 'element');
+            }
+        }
+
+        // 天赋：雷系蓄电 - 每次攻击命中叠加蓄电层数
+        if (!damage.isMiss && damage.amount > 0 && this.player.talentEffects) {
+            const te = this.player.talentEffects;
+            if (te.chargeMax && te.chargeMax > 0) {
+                this.player.chargeStack = Math.min(te.chargeMax, this.player.chargeStack + 1);
+                const perStack = te.chargePerStack || 0.1;
+                const bonusParalyze = this.player.chargeStack * perStack;
+                // 满层时额外效果
+                if (this.player.chargeStack >= te.chargeMax) {
+                    this.addLog(`⚡ 蓄电已满！暴击率和暴击伤害大幅提升！`, 'buff');
+                } else {
+                    this.addLog(`⚡ 蓄电 ${this.player.chargeStack}/${te.chargeMax}（麻痹+${Math.floor(bonusParalyze*100)}%）`, 'element');
+                }
+                // 蓄电层数增加麻痹概率（在麻痹判定时已经过了，这里给感电效果）
+                // 感电状态：雷伤+30%
+                if (te.shockDebuff && Math.random() < (te.shockChance || 0.3) + bonusParalyze) {
+                    this.addStatusEffect(this.enemy, {
+                        type: 'shock', name: '感电', duration: te.shockDuration || 3,
+                        thunderDamageBonus: te.shockThunderBonus || 0.3
+                    });
+                    this.addLog(`⚡ ${this.enemy.name} 进入感电状态，受到雷伤增加！`, 'element');
+                }
             }
         }
 
@@ -1278,6 +1337,54 @@ const BattleSystem = {
                 if (totalBladeDmg > 0) {
                     this.addLog(`🌪️ 风刃乱舞！${bladeCount}道风刃造成 ${totalBladeDmg} 点伤害！`, 'element');
                     this.showDamageNumber('enemy', totalBladeDmg, 'normal');
+                }
+            }
+
+            // 天赋：二连斩（风系连袭Lv3）
+            if (te.doubleStrikeChance && Math.random() < te.doubleStrikeChance) {
+                const ratio = te.secondHitRatio || 0.85;
+                const secondDmg = this.calculateDamage(
+                    this.player.attack * ratio,
+                    this.enemy.defense,
+                    1.0, 0.1, this.player.hitRate,
+                    'wind', null, this.enemy, this.player
+                );
+                if (!secondDmg.isMiss) {
+                    this.applyDamage(this.enemy, secondDmg, this.player);
+                    totalAttackDamage += secondDmg.amount;
+                    this.addLog(`⚔️ 二连斩！追加 ${secondDmg.amount} 点伤害！`, 'counter');
+                    this.showDamageNumber('enemy', secondDmg.amount, 'normal');
+
+                    // 三连斩（在二连斩触发后判定）
+                    if (te.tripleStrikeChance && Math.random() < te.tripleStrikeChance) {
+                        const thirdRatio = te.thirdHitRatio || 0.6;
+                        const thirdDmg = this.calculateDamage(
+                            this.player.attack * thirdRatio,
+                            this.enemy.defense,
+                            1.0, 0.15, this.player.hitRate,
+                            'wind', null, this.enemy, this.player
+                        );
+                        if (!thirdDmg.isMiss) {
+                            this.applyDamage(this.enemy, thirdDmg, this.player);
+                            totalAttackDamage += thirdDmg.amount;
+                            this.addLog(`⚔️⚔️ 三连斩！再追加 ${thirdDmg.amount} 点伤害！`, 'counter');
+                            this.showDamageNumber('enemy', thirdDmg.amount, 'normal');
+                        }
+                    }
+                }
+            }
+
+            // 天赋：风魔 - 每次命中叠加攻速和暴击
+            if (te.attackSpeedStack) {
+                this.player.comboCount = (this.player.comboCount || 0) + 1;
+                const maxStack = te.attackSpeedMax || 6;
+                const stack = Math.min(this.player.comboCount, maxStack);
+                const speedBonus = stack * (te.attackSpeedStack || 0.05);
+                const critBonus = stack * (te.hitCritStack || 0.03);
+                this.player.speed = Math.floor(this.player.speed * (1 + speedBonus * 0.1));
+                if (critBonus > 0) this.player.critRate += critBonus * 0.1;
+                if (stack >= maxStack) {
+                    this.addLog(`🌪️ 风魔满层！速度和暴击达到巅峰！`, 'buff');
                 }
             }
         }
@@ -1853,6 +1960,10 @@ const BattleSystem = {
             if (isPlayer && this.player.talentEffects && this.player.talentEffects.healBonus) {
                 actualHeal = Math.floor(actualHeal * (1 + this.player.talentEffects.healBonus));
             }
+            // 潮汐涨潮治疗加成
+            if (isPlayer && this.player.tideHealBonus) {
+                actualHeal = Math.floor(actualHeal * (1 + this.player.tideHealBonus));
+            }
             // 天赋治疗暴击
             if (isPlayer && this.player.talentEffects && this.player.talentEffects.healCritRate) {
                 if (Math.random() < this.player.talentEffects.healCritRate) {
@@ -1862,6 +1973,33 @@ const BattleSystem = {
                 }
             }
             healTarget.hp = Math.min(healTarget.maxHp, healTarget.hp + actualHeal);
+
+            // 天赋：过量治疗转护盾
+            if (isPlayer && this.player.talentEffects && this.player.talentEffects.overhealShield) {
+                const overheal = (healTarget.hp + actualHeal) - healTarget.maxHp;
+                if (overheal > 0 && healTarget === this.player) {
+                    const shieldAmount = Math.floor(overheal * this.player.talentEffects.overhealShield);
+                    if (shieldAmount > 0) {
+                        const existingShield = healTarget.statusEffects.find(e => e.type === 'shield');
+                        if (existingShield) {
+                            existingShield.value += shieldAmount;
+                        } else {
+                            this.addStatusEffect(healTarget, { type: 'shield', name: '治疗护盾', value: shieldAmount, duration: 3 });
+                        }
+                        this.addLog(`💚 过量治疗转化为 ${shieldAmount} 点护盾！`, 'heal');
+                    }
+                }
+            }
+            // 天赋：治疗时净化
+            if (isPlayer && this.player.talentEffects && this.player.talentEffects.cleanseOnHeal && healTarget === this.player) {
+                const cleansable = healTarget.statusEffects.filter(e =>
+                    ['burn', 'freeze', 'paralyze', 'stun', 'slow', 'poison', 'bleed', 'curse', 'blind', 'fear'].includes(e.type)
+                );
+                if (cleansable.length > 0 && Math.random() < this.player.talentEffects.cleanseOnHeal) {
+                    healTarget.statusEffects = healTarget.statusEffects.filter(e => !cleansable.includes(e));
+                    this.addLog(`✨ 治疗净化了 ${cleansable.length} 个负面状态！`, 'heal');
+                }
+            }
 
             // 治疗技能的附加状态效果（如净化、复苏）
             if (skill.statusEffects) {
@@ -3103,6 +3241,17 @@ const BattleSystem = {
                     this.addLog(`✨ 治疗光环恢复 ${auraHeal} 点生命！`, 'heal');
                 }
             }
+            // 潮汐涨潮：每回合伤害和治疗递增
+            if (te.tideStackMax) {
+                this.player.tideStack = Math.min(te.tideStackMax, (this.player.tideStack || 0) + 1);
+                const dmgBonus = this.player.tideStack * (te.tideDamagePerStack || 0.05);
+                const healBonus = this.player.tideStack * (te.tideHealPerStack || 0.03);
+                this.player.tideDamageBonus = dmgBonus;
+                this.player.tideHealBonus = healBonus;
+                if (this.player.tideStack >= te.tideStackMax) {
+                    this.addLog(`🌊 潮汐满潮！伤害+${Math.floor(dmgBonus*100)}%，治疗+${Math.floor(healBonus*100)}%！`, 'buff');
+                }
+            }
             // 紧急回复：低HP时自动回血
             if (te.emergencyHeal && !this.player._emergencyUsed) {
                 const threshold = te.emergencyThreshold || 0.2;
@@ -3249,6 +3398,22 @@ const BattleSystem = {
                     damage *= (1 + enrage);
                 }
             }
+            // 潮汐涨潮伤害加成
+            if (attacker.tideDamageBonus) {
+                damage *= (1 + attacker.tideDamageBonus);
+            }
+            // 对眩晕/冻结目标增伤
+            if (te.stunnedDamageBonus && target && target.statusEffects) {
+                const isStunned = target.statusEffects.some(e => e.type === 'stun' || e.type === 'freeze');
+                if (isStunned) {
+                    damage *= (1 + te.stunnedDamageBonus);
+                }
+            }
+            // 防御转伤害（土系大地之怒）
+            if (te.defenseToDamage && target === this.enemy) {
+                const bonusDmg = this.player.defense * te.defenseToDamage;
+                damage += bonusDmg;
+            }
         }
 
         // 天赋：暴击伤害加成
@@ -3290,6 +3455,12 @@ const BattleSystem = {
             const hasFreeze = target.statusEffects.some(e => e.type === 'freeze' || e.type === 'frozen');
             const hasBurn = target.statusEffects.some(e => e.type === 'burn');
             const hasElectro = target.statusEffects.some(e => e.type === 'electrified' || e.type === 'paralyze');
+            const hasShock = target.statusEffects.find(e => e.type === 'shock');
+
+            // 感电状态：雷伤+30%（或天赋指定值）
+            if (element === 'thunder' && hasShock) {
+                damage *= (1 + (hasShock.thunderDamageBonus || 0.3));
+            }
             
             // 火 + 水 = 蒸发
             if (element === 'fire' && hasWet) {
@@ -3418,18 +3589,45 @@ const BattleSystem = {
         // 随机浮动 ±15%
         damage *= 0.85 + Math.random() * 0.3;
 
+        // 天赋：对冻结目标必暴击+增伤
+        let frozenCritGuaranteed = false;
+        if (attacker && attacker.talentEffects && target && target.statusEffects) {
+            const isFrozen = target.statusEffects.some(e => e.type === 'freeze' || e.type === 'frozen');
+            if (isFrozen) {
+                if (attacker.talentEffects.frozenCritGuaranteed) frozenCritGuaranteed = true;
+                if (attacker.talentEffects.frozenIceDamageBonus && (element === 'ice' || !element)) {
+                    damage *= (1 + attacker.talentEffects.frozenIceDamageBonus);
+                }
+                if (attacker.talentEffects.frozenDamageTaken) {
+                    damage *= (1 + attacker.talentEffects.frozenDamageTaken);
+                }
+            }
+        }
+
+        // 天赋：雷系蓄电满层暴击加成
+        let chargeCritBonus = 0;
+        let chargeCritDamageBonus = 0;
+        if (attacker && attacker.chargeStack && attacker.talentEffects && attacker.talentEffects.chargeMax) {
+            if (attacker.chargeStack >= attacker.talentEffects.chargeMax) {
+                chargeCritBonus = attacker.talentEffects.fullChargeCrit || 0.3;
+                chargeCritDamageBonus = attacker.talentEffects.fullChargeDamage || 0.5;
+            }
+        }
+
         // 暴击判定
-        if (Math.random() < critRate) {
+        if (frozenCritGuaranteed || Math.random() < critRate + chargeCritBonus) {
             result.isCrit = true;
             let critMult = 1.5 + Math.random() * 0.5; // 1.5-2.0倍暴击
             // 天赋：暴击伤害加成
             if (attacker && attacker.talentEffects) {
                 const cd = attacker.talentEffects.critDamageBonus || attacker.talentEffects.critDamage;
                 if (cd) critMult += cd;
+                // 蓄电满层暴伤加成
+                if (chargeCritDamageBonus) critMult += chargeCritDamageBonus;
                 // 暴击穿防：暴击时忽略部分防御
                 if (attacker.talentEffects.critArmorPenetration) {
                     const pen = attacker.talentEffects.critArmorPenetration;
-                    damage += defense * pen * 0.3;
+                    damage += defense * pen * 0.5;
                 }
             }
             damage *= critMult;
@@ -3582,6 +3780,17 @@ const BattleSystem = {
                     e.type === 'shield' || e.type === 'attack_up' || e.type === 'defense_up'
                 );
             }
+            // 复活之光/生命源泉：更强力的复活，恢复更多HP，净化负面
+            if (te.revive && !target.reviveUsed) {
+                target.reviveUsed = true;
+                const reviveHp = Math.floor(target.maxHp * (te.reviveHp || 0.3));
+                target.hp = reviveHp;
+                // 净化所有负面状态
+                target.statusEffects = target.statusEffects.filter(e =>
+                    ['shield', 'attack_up', 'defense_up', 'speed_up', 'regen'].includes(e.type)
+                );
+                this.addLog(`✨ 复活之光！恢复 ${reviveHp} 点生命，净化所有负面状态！`, 'heal');
+            }
         }
 
         // 冰甲反伤：近战攻击有几率冰冻攻击者
@@ -3610,6 +3819,22 @@ const BattleSystem = {
                 if (thornDmg > 0) {
                     attacker.hp = Math.max(0, attacker.hp - thornDmg);
                     this.addLog(`🪨 岩刺反弹 ${thornDmg} 点伤害！`, 'counter');
+                }
+            }
+            // 雷反：被攻击时概率反击雷伤
+            if (te.thunderCounter && Math.random() < te.thunderCounter) {
+                const counterDmg = Math.floor(this.player.attack * (te.thunderCounterDamage || 0.5));
+                if (counterDmg > 0) {
+                    this.applyDamage(attacker, { amount: counterDmg, element: 'thunder', isCrit: false, isMiss: false }, this.player);
+                    this.addLog(`⚡ 雷反！对 ${attacker.name || '敌人'} 造成 ${counterDmg} 点雷伤！`, 'counter');
+                    // 雷反概率麻痹
+                    if (te.paralyzeChance || te.chargeStack) {
+                        const paraChance = te.paralyzeChance || 0.1 + (this.player.chargeStack || 0) * 0.1;
+                        if (Math.random() < paraChance) {
+                            this.addStatusEffect(attacker, { type: 'paralyze', name: '麻痹', duration: 1 });
+                            this.addLog(`⚡ ${attacker.name || '敌人'} 被麻痹了！`, 'element');
+                        }
+                    }
                 }
             }
             // 坚岩：概率大幅减伤
@@ -4346,6 +4571,12 @@ const BattleSystem = {
                             this.addLog(`🔥 火势蔓延！`, 'element');
                         }
                     }
+                    // 燃烧降防：燃烧时敌人防御降低
+                    if (te.burnDefenseDown && !effect._defDownApplied) {
+                        effect._defDownApplied = true;
+                        this.enemy.defense = Math.floor(this.enemy.defense * (1 - te.burnDefenseDown));
+                        this.addLog(`🔥 燃烧削弱！${this.enemy.name} 防御降低！`, 'debuff');
+                    }
                 }
             }
 
@@ -4615,6 +4846,15 @@ const BattleSystem = {
                         this.player.skillCooldowns[sid] = Math.max(0, this.player.skillCooldowns[sid] - reduce);
                     }
                     this.addLog(`💀 击杀减少技能冷却 ${reduce} 回合！`, 'buff');
+                }
+                // 天赋：击杀后重新隐身（潜行Lv7影杀）
+                if (te.reStealthChance && Math.random() < te.reStealthChance) {
+                    const existingStealth = this.player.statusEffects.find(e => e.type === 'stealth');
+                    if (!existingStealth) {
+                        this.addStatusEffect(this.player, { type: 'stealth', name: '暗影潜行', duration: 99 });
+                        this.player.stealthActive = true;
+                        this.addLog(`🌑 影杀！重新进入潜行状态！`, 'buff');
+                    }
                 }
             }
             
