@@ -2395,14 +2395,48 @@ const BattleSystem = {
                     casterData.mp += skill.mpCost; // 退还MP
                     return { success: false };
                 }
+                // 初始化或读取召唤兽持久化数据
+                if (!Player.summonData || Player.summonData.id !== skill.summonData.id) {
+                    Player.summonData = {
+                        id: skill.summonData.id,
+                        name: skill.summonData.name,
+                        icon: skill.summonData.icon,
+                        level: 1,
+                        exp: 0,
+                        expToNext: 50,
+                        loyalty: 50,
+                        baseMaxHp: skill.summonData.maxHp,
+                        baseAttack: skill.summonData.attack,
+                        baseDefense: skill.summonData.defense,
+                        baseSpeed: skill.summonData.speed,
+                        skills: [],
+                        kills: 0
+                    };
+                }
+                // 根据等级计算属性
+                const sd = Player.summonData;
+                const levelBonus = (sd.level - 1) * 0.15; // 每级+15%属性
+                const loyaltyBonus = 1 + (sd.loyalty - 50) / 200; // 忠诚50为基准，100忠诚+25%
+                const summonMaxHp = Math.floor(sd.baseMaxHp * (1 + levelBonus) * loyaltyBonus);
+                const summonAtk = Math.floor(sd.baseAttack * (1 + levelBonus) * loyaltyBonus);
+                const summonDef = Math.floor(sd.baseDefense * (1 + levelBonus) * loyaltyBonus);
+                const summonSpd = Math.floor(sd.baseSpeed * (1 + levelBonus) * loyaltyBonus);
+
                 this.summon = {
                     ...skill.summonData,
-                    hp: skill.summonData.maxHp,
+                    level: sd.level,
+                    loyalty: sd.loyalty,
+                    maxHp: summonMaxHp,
+                    hp: summonMaxHp,
+                    attack: summonAtk,
+                    defense: summonDef,
+                    speed: summonSpd,
                     remainingDuration: skill.summonData.duration,
                     buffs: [],
-                    statusEffects: []
+                    statusEffects: [],
+                    expGained: 0
                 };
-                this.addLog(`你召唤了 ${skill.summonData.icon} ${skill.summonData.name}！（持续${skill.summonData.duration}回合）`, 'magic');
+                this.addLog(`你召唤了 ${skill.summonData.icon} ${skill.summonData.name}（Lv.${sd.level}，忠诚${sd.loyalty}）！（持续${skill.summonData.duration}回合）`, 'magic');
                 
                 // 发布召唤事件
                 if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
@@ -2685,12 +2719,12 @@ const BattleSystem = {
         if (!this.summon || !this.enemy || this.enemy.hp <= 0) return;
 
         const summon = this.summon;
-        
+
         // 计算召唤兽属性加成（强化/狂暴状态）
         let attackMultiplier = 1;
         let defenseMultiplier = 1;
         let speedMultiplier = 1;
-        
+
         if (summon.statusEffects) {
             summon.statusEffects.forEach(effect => {
                 if (effect.type === 'summon_buff') {
@@ -2704,14 +2738,56 @@ const BattleSystem = {
             });
         }
 
-        const effectiveAttack = Math.floor(summon.attack * attackMultiplier);
+        // 召唤兽技能选择
+        const summonLevel = summon.level || 1;
+        const availableSkills = [
+            { id: 'bite', name: '撕咬', minLevel: 1, damageMult: 1.0, critBonus: 0 },
+            { id: 'howl', name: '狼嚎', minLevel: 3, type: 'buff', attackBuff: 0.3, duration: 2 },
+            { id: 'shadow_strike', name: '暗影突袭', minLevel: 5, damageMult: 1.5, critBonus: 0.3 },
+            { id: 'frenzy_bite', name: '狂暴撕咬', minLevel: 8, damageMult: 2.0, hpCost: 0.1 }
+        ];
+
+        // 筛选可用技能
+        const usable = availableSkills.filter(s => summonLevel >= s.minLevel);
+
+        // 随机选择技能（30%概率用特殊技能，70%普通攻击）
+        let chosenSkill = usable[0]; // 默认撕咬
+        if (usable.length > 1 && Math.random() < 0.35) {
+            const specialSkills = usable.filter(s => s.id !== 'bite');
+            chosenSkill = specialSkills[Math.floor(Math.random() * specialSkills.length)];
+        }
+
+        // 处理技能效果
+        if (chosenSkill.type === 'buff') {
+            // 增益技能
+            summon.statusEffects = summon.statusEffects || [];
+            summon.statusEffects.push({
+                name: chosenSkill.name,
+                type: 'summon_buff',
+                duration: chosenSkill.duration,
+                attackBonus: chosenSkill.attackBuff
+            });
+            attackMultiplier += chosenSkill.attackBuff;
+            this.addLog(`${summon.icon} ${summon.name} 使用「${chosenSkill.name}」，攻击力提升${Math.floor(chosenSkill.attackBuff * 100)}%！`, 'buff');
+            return;
+        }
+
+        // 攻击技能
+        if (chosenSkill.hpCost) {
+            const hpCost = Math.floor(summon.maxHp * chosenSkill.hpCost);
+            summon.hp = Math.max(1, summon.hp - hpCost);
+            this.addLog(`${summon.icon} ${summon.name} 使用「${chosenSkill.name}」，消耗${hpCost}点生命！`, 'system');
+        }
+
+        const effectiveAttack = Math.floor(summon.attack * attackMultiplier * chosenSkill.damageMult);
         const baseDamage = effectiveAttack;
-        
+        const critChance = 0.05 + chosenSkill.critBonus;
+
         const damage = this.calculateDamage(
             baseDamage,
             this.enemy.defense,
             1.0,
-            0.05,
+            critChance,
             0.9,
             'neutral',
             this.enemy.elements?.[0] || 'neutral',
@@ -2720,7 +2796,8 @@ const BattleSystem = {
         );
 
         this.applyDamage(this.enemy, damage, summon);
-        this.addLog(`${summon.icon} ${summon.name} 发动攻击，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}`, 'magic');
+        const skillPrefix = chosenSkill.id !== 'bite' ? `使用「${chosenSkill.name}」，` : '';
+        this.addLog(`${summon.icon} ${summon.name} ${skillPrefix}造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}`, 'magic');
     },
 
     /**
@@ -3468,6 +3545,23 @@ const BattleSystem = {
                 const skill = SkillSystem.getSkill(id);
                 return skill && entity.mp >= skill.mpCost;
             });
+    },
+
+    /**
+     * 召唤兽获得经验
+     */
+    gainSummonExp(amount) {
+        if (!Player.summonData) return false;
+        const sd = Player.summonData;
+        sd.exp += amount;
+        let leveledUp = false;
+        while (sd.exp >= sd.expToNext && sd.level < 20) {
+            sd.exp -= sd.expToNext;
+            sd.level++;
+            sd.expToNext = Math.floor(50 * Math.pow(1.3, sd.level - 1));
+            leveledUp = true;
+        }
+        return leveledUp;
     },
 
     /**
@@ -6012,6 +6106,17 @@ const BattleSystem = {
                     for (const evo of talentResult.evolutions) {
                         this.addLog(`✨ 进化！【${evo.stage}】${evo.name}：${evo.description}`, 'evolution');
                     }
+                }
+            }
+        }
+
+        // 召唤兽经验：如果召唤兽参与战斗，获得30%的玩家经验
+        if (this.summon && Player.summonData) {
+            const summonExp = Math.floor(rewards.exp * 0.3);
+            if (summonExp > 0) {
+                const summonLevelUp = this.gainSummonExp(summonExp);
+                if (summonLevelUp) {
+                    this.addLog(`🎉 ${Player.summonData.name}升级了！当前Lv.${Player.summonData.level}`, 'buff');
                 }
             }
         }

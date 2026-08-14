@@ -2347,5 +2347,51 @@ const DataItems = {
     usableOutOfBattle: true,
     isCanon: true,
     source: "第230章 击败宇昂"
+  },
+  // 召唤兽食物
+  beast_food: {
+    id: "beast_food",
+    name: "兽粮",
+    description: "召唤兽的食物，喂养后恢复召唤兽30%HP，忠诚+5",
+    type: "consumable",
+    icon: "🍖",
+    price: 20,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    effects: {
+      summonFeed: { hpPercent: 0.3, loyalty: 5 }
+    }
+  },
+  fresh_meat: {
+    id: "fresh_meat",
+    name: "新鲜魔肉",
+    description: "高品质的妖魔肉，喂养后恢复召唤兽60%HP，忠诚+15",
+    type: "consumable",
+    icon: "🥩",
+    price: 60,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    effects: {
+      summonFeed: { hpPercent: 0.6, loyalty: 15 }
+    }
+  },
+  spirit_grass: {
+    id: "spirit_grass",
+    name: "灵草",
+    description: "蕴含灵气的药草，喂养后召唤兽获得少量经验，忠诚+10",
+    type: "consumable",
+    icon: "🌿",
+    price: 80,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    effects: {
+      summonFeed: { exp: 30, loyalty: 10 }
+    }
   }
 };

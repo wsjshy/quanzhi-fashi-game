@@ -58,6 +58,11 @@ const DataShops = {
         itemId: "iron_potion",
         price: 70,
         stock: 10
+      },
+      {
+        itemId: "beast_food",
+        price: 20,
+        stock: -1
       }
     ]
   },
@@ -257,6 +262,21 @@ const DataShops = {
       {
         itemId: "soul_fragment",
         price: 120,
+        stock: 5
+      },
+      {
+        itemId: "beast_food",
+        price: 20,
+        stock: -1
+      },
+      {
+        itemId: "fresh_meat",
+        price: 60,
+        stock: 10
+      },
+      {
+        itemId: "spirit_grass",
+        price: 80,
         stock: 5
       }
     ]

@@ -514,7 +514,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.8.21 · 开放世界版</div>
+                ">v0.8.22 · 开放世界版</div>
             </div>
         `;
 
@@ -4101,6 +4101,39 @@ const UI = {
                                         </div>
                                     `;
                                 }).join('')}
+                            </div>
+                            ` : ''}
+                            ${Player.summonData ? `
+                            <div style="margin-bottom: 15px; text-align: left;">
+                                <div style="color: #aa88ff; font-size: 13px; margin-bottom: 8px;">🐺 召唤兽</div>
+                                <div style="
+                                    padding: 12px 15px;
+                                    background: rgba(100, 80, 150, 0.2);
+                                    border: 2px solid #8866cc;
+                                    border-radius: 10px;
+                                ">
+                                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                        <span style="font-size: 28px; margin-right: 10px;">${Player.summonData.icon}</span>
+                                        <div>
+                                            <div style="color: #cc99ff; font-weight: bold; font-size: 16px;">${Player.summonData.name}</div>
+                                            <div style="color: #999; font-size: 12px;">Lv.${Player.summonData.level} · 忠诚 ${Player.summonData.loyalty}/100</div>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 15px; font-size: 12px; color: #aaa; margin-bottom: 6px;">
+                                        <span>❤️ ${Math.floor(Player.summonData.baseMaxHp * (1 + (Player.summonData.level - 1) * 0.15))}</span>
+                                        <span>⚔️ ${Math.floor(Player.summonData.baseAttack * (1 + (Player.summonData.level - 1) * 0.15))}</span>
+                                        <span>🛡️ ${Math.floor(Player.summonData.baseDefense * (1 + (Player.summonData.level - 1) * 0.15))}</span>
+                                    </div>
+                                    ${Player.summonData.level < 20 ? `
+                                    <div style="height: 4px; background: #333; border-radius: 2px; overflow: hidden;">
+                                        <div style="height: 100%; width: ${(Player.summonData.exp / Player.summonData.expToNext * 100).toFixed(1)}%; background: linear-gradient(90deg, #aa66ff, #cc99ff);"></div>
+                                    </div>
+                                    <div style="color: #666; font-size: 10px; text-align: right; margin-top: 2px;">${Player.summonData.exp} / ${Player.summonData.expToNext}</div>
+                                    ` : '<div style="color: #ffd700; font-size: 11px;">已满级</div>'}
+                                    <div style="color: #888; font-size: 10px; margin-top: 6px;">
+                                        技能：${Player.summonData.level >= 8 ? '撕咬/狼嚎/暗影突袭/狂暴撕咬' : Player.summonData.level >= 5 ? '撕咬/狼嚎/暗影突袭' : Player.summonData.level >= 3 ? '撕咬/狼嚎' : '撕咬'}
+                                    </div>
+                                </div>
                             </div>
                             ` : ''}
                             ${Player.canAwakenNewElement() ? `

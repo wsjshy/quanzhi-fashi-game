@@ -315,7 +315,42 @@ const Inventory = {
 
         // 应用效果
         const result = { success: true, message: '', effects: {} };
-        
+
+        // 召唤兽喂养
+        if (item.effects && item.effects.summonFeed) {
+            if (!Player.summonData) {
+                // 还没有召唤兽，退还物品
+                this.addItem(itemId, 1);
+                return { success: false, message: '你还没有召唤兽，无法喂养' };
+            }
+            const feed = item.effects.summonFeed;
+            const sd = Player.summonData;
+            const feedMsgs = [];
+
+            if (feed.hpPercent) {
+                // 恢复召唤兽HP（下次召唤时满血，这里只记录）
+                sd.loyalty = Math.min(100, sd.loyalty + (feed.loyalty || 0));
+                feedMsgs.push(`忠诚+${feed.loyalty || 0}`);
+            }
+            if (feed.loyalty) {
+                sd.loyalty = Math.min(100, sd.loyalty + feed.loyalty);
+                if (!feed.hpPercent) feedMsgs.push(`忠诚+${feed.loyalty}`);
+            }
+            if (feed.exp) {
+                sd.exp += feed.exp;
+                while (sd.exp >= sd.expToNext && sd.level < 20) {
+                    sd.exp -= sd.expToNext;
+                    sd.level++;
+                    sd.expToNext = Math.floor(50 * Math.pow(1.3, sd.level - 1));
+                    feedMsgs.push(`升级到Lv.${sd.level}！`);
+                }
+                feedMsgs.push(`经验+${feed.exp}`);
+            }
+
+            result.message = `喂养了${sd.name}：${feedMsgs.join('，')}`;
+            return result;
+        }
+
         if (item.effects) {
             if (item.effects.hp) {
                 Player.heal(item.effects.hp);

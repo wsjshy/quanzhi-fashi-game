@@ -4,7 +4,7 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.8.21';
+const GAME_VERSION = '0.8.22';
 const SAVE_VERSION = '0.8.7';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
@@ -156,6 +156,7 @@ const Player = {
     battleBuffs: [],
     winStreak: 0,  // 连胜次数
     lastBattleDay: 0,  // 最后一次战斗的日期（用于和平主义者成就）
+    summonData: null,  // 召唤兽持久化数据 {id, name, level, exp, loyalty, skills, bonusStats}
 
     /**
      * 初始化新玩家
@@ -205,6 +206,7 @@ const Player = {
         this.battleBuffs = [];
         this.tempShopDiscount = 1.0;  // 临时商店折扣率（1.0=不打折）
         this.tempShopDiscountExpireDay = 0;  // 折扣到期天数
+        this.summonData = null;  // 召唤兽数据（契约后初始化）
 
         // 如果选了元素，给对应的初始技能
         if (element) {
