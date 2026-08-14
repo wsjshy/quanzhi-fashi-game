@@ -837,6 +837,10 @@ const BattleSystem = {
                 });
                 this.addLog(`🌑 黑暗领域降临！${this.enemy.name} 命中率降低！`, 'element');
             }
+            // v0.8.27: 开场自动召唤（openingSummon）
+            if (te.openingSummon && Player.summonData && !this.summon) {
+                this.performSummonFromTalent();
+            }
         }
 
         return {
@@ -1177,8 +1181,23 @@ const BattleSystem = {
 
         // 计算伤害（含攻击者状态修正）
         const attackerMods = this.getStatusModifiers(this.player);
+        // v0.8.27: 召唤兽在场时玩家伤害加成
+        let summonMasterDmgBonus = 0;
+        if (this.summon && this.player.talentEffects?.summonMasterDamageBonus) {
+            summonMasterDmgBonus = this.player.talentEffects.summonMasterDamageBonus;
+        }
+        // v0.8.27: 对有debuff敌人增伤（debuffedDamageBonus，光系）
+        let debuffedBonus = 0;
+        if (this.player.talentEffects?.debuffedDamageBonus) {
+            const enemyDebuffs = this.enemy.statusEffects.filter(e =>
+                ['burn','freeze','frozen','stun','slow','poison','curse','paralyze','weakness','bleed','bind','blind','fear','shock','attack_down','defense_down'].includes(e.type)
+            );
+            if (enemyDebuffs.length > 0) {
+                debuffedBonus = this.player.talentEffects.debuffedDamageBonus;
+            }
+        }
         const damage = this.calculateDamage(
-            this.player.attack * (1 + firstStrikeBonus) + attackerMods.attackMod,
+            this.player.attack * (1 + firstStrikeBonus + summonMasterDmgBonus + debuffedBonus) + attackerMods.attackMod,
             this.enemy.defense * (this.enemy.isDefending ? 2 : 1), // 防御时防御翻倍
             1.0,
             this.player.critRate,
@@ -1838,6 +1857,20 @@ const BattleSystem = {
                 }
             }
 
+            // v0.8.27: 召唤兽在场时玩家技能伤害加成
+            let summonMasterSkillBonus = 1.0;
+            if (isPlayer && this.summon && this.player.talentEffects?.summonMasterDamageBonus) {
+                summonMasterSkillBonus = 1 + this.player.talentEffects.summonMasterDamageBonus;
+            }
+            // v0.8.27: 对有debuff敌人增伤
+            let debuffedSkillBonus = 1.0;
+            if (isPlayer && this.player.talentEffects?.debuffedDamageBonus) {
+                const hasDebuff = targetData.statusEffects.some(e =>
+                    ['burn','freeze','frozen','stun','slow','poison','curse','paralyze','weakness','bleed','bind','blind','fear','shock','attack_down','defense_down'].includes(e.type)
+                );
+                if (hasDebuff) debuffedSkillBonus = 1 + this.player.talentEffects.debuffedDamageBonus;
+            }
+
             // 技能特殊属性：必中、额外暴击率
             let skillCritRate = casterData.critRate || 0.05;
             let skillHitRate = skill.hitRate || 0.9;
@@ -1863,7 +1896,7 @@ const BattleSystem = {
 
             for (let hit = 0; hit < hitCount; hit++) {
                 const damage = this.calculateDamage(
-                    baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus * elementLevelBonus * (1 + talentSkillLevelBonus),
+                    baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus * elementLevelBonus * (1 + talentSkillLevelBonus) * summonMasterSkillBonus * debuffedSkillBonus,
                     effectiveDefense,
                     1.0,
                     skillCritRate,
@@ -2412,11 +2445,52 @@ const BattleSystem = {
                 // 等级和忠诚加成
                 const levelBonus = 1 + (sd.level - 1) * 0.15;
                 const loyaltyBonus = 1 + (sd.loyalty - 50) / 200;
-                const summonMaxHp = Math.floor(baseStats.maxHp * levelBonus * loyaltyBonus);
-                const summonAtk = Math.floor(baseStats.attack * levelBonus * loyaltyBonus);
-                const summonDef = Math.floor(baseStats.defense * levelBonus * loyaltyBonus);
-                const summonSpd = Math.floor(baseStats.speed * levelBonus * loyaltyBonus);
-                const duration = 5;
+                let summonMaxHp = Math.floor(baseStats.maxHp * levelBonus * loyaltyBonus);
+                let summonAtk = Math.floor(baseStats.attack * levelBonus * loyaltyBonus);
+                let summonDef = Math.floor(baseStats.defense * levelBonus * loyaltyBonus);
+                let summonSpd = Math.floor(baseStats.speed * levelBonus * loyaltyBonus);
+                let duration = 5;
+
+                // v0.8.27: 召唤系天赋加成
+                const te = this.player.talentEffects;
+                if (te) {
+                    // 召唤兽等级加成
+                    if (te.summonLevelBonus) {
+                        const bonusLevelMult = 1 + te.summonLevelBonus * 0.15;
+                        summonAtk = Math.floor(summonAtk * bonusLevelMult);
+                        summonDef = Math.floor(summonDef * bonusLevelMult);
+                        summonMaxHp = Math.floor(summonMaxHp * bonusLevelMult);
+                        summonSpd = Math.floor(summonSpd * bonusLevelMult);
+                    }
+                    // 全属性加成
+                    if (te.summonAllStats) {
+                        summonAtk = Math.floor(summonAtk * (1 + te.summonAllStats));
+                        summonDef = Math.floor(summonDef * (1 + te.summonAllStats));
+                        summonMaxHp = Math.floor(summonMaxHp * (1 + te.summonAllStats));
+                        summonSpd = Math.floor(summonSpd * (1 + te.summonAllStats));
+                    }
+                    // HP加成
+                    if (te.summonHpBonus) {
+                        summonMaxHp = Math.floor(summonMaxHp * (1 + te.summonHpBonus));
+                    }
+                    // 伤害加成（直接加在攻击上）
+                    if (te.summonDamageBonus) {
+                        summonAtk = Math.floor(summonAtk * (1 + te.summonDamageBonus));
+                    }
+                    // 继承玩属性
+                    if (te.inheritStats) {
+                        summonAtk += Math.floor(this.player.attack * te.inheritStats);
+                        summonDef += Math.floor(this.player.defense * te.inheritStats);
+                    }
+                    // 继承玩家HP
+                    if (te.summonInheritHp) {
+                        summonMaxHp += Math.floor(this.player.maxHp * te.summonInheritHp);
+                    }
+                    // 持续时间加成
+                    if (te.summonDurationBonus) {
+                        duration += te.summonDurationBonus;
+                    }
+                }
 
                 this.summon = {
                     id: sd.id,
@@ -2424,7 +2498,7 @@ const BattleSystem = {
                     name: sd.name,
                     icon: sd.icon,
                     evolutionStage: sd.evolutionStage || 0,
-                    level: sd.level,
+                    level: sd.level + (te?.summonLevelBonus || 0),
                     loyalty: sd.loyalty,
                     maxHp: summonMaxHp,
                     hp: summonMaxHp,
@@ -2434,7 +2508,9 @@ const BattleSystem = {
                     remainingDuration: duration,
                     buffs: [],
                     statusEffects: [],
-                    expGained: 0
+                    expGained: 0,
+                    critRate: te?.summonCritRate || 0.05,
+                    critDamage: 1.5 + (te?.summonCritDamage || 0)
                 };
                 this.addLog(`你召唤了 ${sd.icon} ${sd.name}（Lv.${sd.level}，忠诚${sd.loyalty}）！（持续${duration}回合）`, 'magic');
                 
@@ -2833,10 +2909,21 @@ const BattleSystem = {
         }
 
         const effectiveAttack = Math.floor(summon.attack * attackMultiplier * (chosenSkill.damageMult || 1.0));
-        const critChance = 0.05 + (chosenSkill.critBonus || 0);
+        // v0.8.27: 召唤兽暴击率/暴击伤害（来自天赋）
+        let critChance = summon.critRate || 0.05;
+        let critMult = summon.critDamage || 1.5;
+        critChance += (chosenSkill.critBonus || 0);
 
+        // v0.8.27: 召唤兽狂暴（低HP增伤）
+        let enrageMult = 1;
+        if (this.player.talentEffects?.summonEnrage && summon.hp / summon.maxHp < 0.3) {
+            enrageMult = 1 + this.player.talentEffects.summonEnrage;
+            this.addLog(`🔥 ${summon.name} 陷入狂暴！伤害+${Math.floor(this.player.talentEffects.summonEnrage * 100)}%！`, 'buff');
+        }
+
+        const finalAttack = Math.floor(effectiveAttack * enrageMult);
         const damage = this.calculateDamage(
-            effectiveAttack,
+            finalAttack,
             Math.floor(this.enemy.defense * defenseMultiplier),
             1.0,
             critChance,
@@ -2846,10 +2933,21 @@ const BattleSystem = {
             this.enemy,
             summon
         );
+        // 应用暴击伤害倍率
+        if (damage.isCrit) {
+            damage.amount = Math.floor(damage.amount * critMult / 1.5);
+        }
 
         this.applyDamage(this.enemy, damage, summon);
         const skillPrefix = chosenSkill.id !== usable[0].id ? `使用「${chosenSkill.name}」，` : '';
         this.addLog(`${summon.icon} ${summon.name} ${skillPrefix}造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}`, 'magic');
+
+        // v0.8.27: 召唤兽冲锋（对全体造成伤害）
+        if (this.player.talentEffects?.summonChargeChance && Math.random() < this.player.talentEffects.summonChargeChance) {
+            const chargeDmg = Math.floor(summon.attack * (this.player.talentEffects.summonChargeDamage || 1.5));
+            this.applyDamage(this.enemy, { amount: chargeDmg, element: 'neutral', isMiss: false, isCrit: false }, summon);
+            this.addLog(`💨 ${summon.name} 发动冲锋！追加 ${chargeDmg} 点伤害！`, 'special');
+        }
 
         // 附加效果：中毒
         if (chosenSkill.poisonChance && Math.random() < chosenSkill.poisonChance) {
@@ -2901,8 +2999,67 @@ const BattleSystem = {
     },
 
     /**
-     * 敌人回合
+     * v0.8.27: 召唤兽死亡时触发效果（灵魂爆发+治疗）
      */
+    triggerSummonDeath() {
+        if (!this.summon) return;
+        const te = this.player.talentEffects;
+        if (!te) return;
+        // 灵魂爆发：对敌人造成召唤兽攻击力200%伤害
+        if (te.summonDeathBurst) {
+            const burstDmg = Math.floor(this.summon.attack * te.summonDeathBurst);
+            this.applyDamage(this.enemy, { amount: burstDmg, element: 'neutral', isMiss: false, isCrit: true }, this.player);
+            this.addLog(`💥 灵魂爆发！${this.summon.name} 释放最后的力量，造成 ${burstDmg} 点伤害！`, 'special');
+        }
+        // 灵魂治愈：恢复玩家50%HP
+        if (te.summonDeathHeal) {
+            const healAmt = Math.floor(this.player.maxHp * te.summonDeathHeal);
+            this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmt);
+            this.addLog(`💜 灵魂治愈！你恢复了 ${healAmt} 点生命！`, 'heal');
+        }
+    },
+
+    /**
+     * v0.8.27: 从天赋自动召唤（开场召唤）
+     */
+    performSummonFromTalent() {
+        if (!Player.summonData) return;
+        const sd = Player.summonData;
+        const currentData = typeof getBeastCurrentData === 'function' ? getBeastCurrentData(sd) : null;
+        const baseStats = currentData ? currentData.effectiveStats : {
+            maxHp: sd.baseMaxHp, attack: sd.baseAttack, defense: sd.baseDefense, speed: sd.baseSpeed
+        };
+        const levelBonus = 1 + (sd.level - 1) * 0.15;
+        const loyaltyBonus = 1 + (sd.loyalty - 50) / 200;
+        let summonMaxHp = Math.floor(baseStats.maxHp * levelBonus * loyaltyBonus);
+        let summonAtk = Math.floor(baseStats.attack * levelBonus * loyaltyBonus);
+        let summonDef = Math.floor(baseStats.defense * levelBonus * loyaltyBonus);
+        let summonSpd = Math.floor(baseStats.speed * levelBonus * loyaltyBonus);
+        let duration = 5;
+        const te = this.player.talentEffects;
+        if (te) {
+            if (te.summonLevelBonus) {
+                const m = 1 + te.summonLevelBonus * 0.15;
+                summonAtk = Math.floor(summonAtk * m); summonDef = Math.floor(summonDef * m);
+                summonMaxHp = Math.floor(summonMaxHp * m); summonSpd = Math.floor(summonSpd * m);
+            }
+            if (te.summonAllStats) { const m = 1 + te.summonAllStats; summonAtk = Math.floor(summonAtk*m); summonDef = Math.floor(summonDef*m); summonMaxHp = Math.floor(summonMaxHp*m); summonSpd = Math.floor(summonSpd*m); }
+            if (te.summonHpBonus) summonMaxHp = Math.floor(summonMaxHp * (1 + te.summonHpBonus));
+            if (te.summonDamageBonus) summonAtk = Math.floor(summonAtk * (1 + te.summonDamageBonus));
+            if (te.inheritStats) { summonAtk += Math.floor(this.player.attack * te.inheritStats); summonDef += Math.floor(this.player.defense * te.inheritStats); }
+            if (te.summonInheritHp) summonMaxHp += Math.floor(this.player.maxHp * te.summonInheritHp);
+            if (te.summonDurationBonus) duration += te.summonDurationBonus;
+        }
+        this.summon = {
+            id: sd.id, baseId: sd.baseId || sd.id, name: sd.name, icon: sd.icon,
+            evolutionStage: sd.evolutionStage || 0, level: sd.level + (te?.summonLevelBonus || 0),
+            loyalty: sd.loyalty, maxHp: summonMaxHp, hp: summonMaxHp, attack: summonAtk,
+            defense: summonDef, speed: summonSpd, remainingDuration: duration,
+            buffs: [], statusEffects: [], expGained: 0,
+            critRate: te?.summonCritRate || 0.05, critDamage: 1.5 + (te?.summonCritDamage || 0)
+        };
+        this.addLog(`🌟 兽王天赋！${sd.icon} ${sd.name} 自动出现助战！（持续${duration}回合）`, 'evolution');
+    },
     enemyTurn() {
         if (!this.active || this.result) return;
 
@@ -3017,7 +3174,7 @@ const BattleSystem = {
             
             const damage = this.calculateDamage(
                 this.enemy.attack + enemyMods.attackMod,
-                this.player.defense * (this.player.isDefending ? 2 : 1), // 防御时防御翻倍
+                this.player.defense * (this.player.isDefending ? 2 : 1) * (this.summon && this.player.talentEffects?.summonMasterDefBonus ? (1 + this.player.talentEffects.summonMasterDefBonus) : 1),
                 1.0 + firstStrikeBonus,
                 critRate,
                 0.9,
@@ -3745,6 +3902,15 @@ const BattleSystem = {
 
         // 处理召唤兽持续时间和状态
         if (this.summon) {
+            // v0.8.27: 共享回复（sharedHpRegen）：双方每回合回复HP
+            if (this.player.talentEffects?.sharedHpRegen) {
+                const regenPct = this.player.talentEffects.sharedHpRegen;
+                const playerRegen = Math.floor(this.player.maxHp * regenPct);
+                const summonRegen = Math.floor(this.summon.maxHp * regenPct);
+                this.player.hp = Math.min(this.player.maxHp, this.player.hp + playerRegen);
+                this.summon.hp = Math.min(this.summon.maxHp, this.summon.hp + summonRegen);
+                this.addLog(`🔗 灵魂链接：双方各回复 ${playerRegen} HP！`, 'heal');
+            }
             this.summon.remainingDuration--;
             if (this.summon.statusEffects) {
                 this.summon.statusEffects = this.summon.statusEffects.filter(effect => {
@@ -3753,6 +3919,10 @@ const BattleSystem = {
                 });
             }
             if (this.summon.remainingDuration <= 0 || this.summon.hp <= 0) {
+                // v0.8.27: 召唤兽死亡爆发/治疗
+                if (this.summon.hp <= 0) {
+                    this.triggerSummonDeath();
+                }
                 this.addLog(`${this.summon.icon} ${this.summon.name} 消失了`, 'system');
                 this.summon = null;
             }
@@ -4492,6 +4662,7 @@ const BattleSystem = {
      */
     applyDamage(target, damage, attacker) {
         let amount = damage.amount;
+        const te = this.player.talentEffects;
 
         // 玩家天赋伤害减免
         if (target === this.player && target.damageReduction) {
@@ -4504,21 +4675,17 @@ const BattleSystem = {
                 amount = Math.floor(amount * (1 - target.talentEffects.regenDamageReduction));
             }
         }
-        // 生命链接（lifeLink）：玩家受伤害时部分转移给召唤兽
-        if (target === this.player && target.talentEffects && target.talentEffects.lifeLink && this.summon && this.summon.hp > 0) {
+        // v0.8.27: 伤害共享（damageShare）：玩家受伤害时部分转移给召唤兽
+        if (target === this.player && target.talentEffects && target.talentEffects.damageShare && this.summon && this.summon.hp > 0) {
             const te = target.talentEffects;
-            const transferRatio = te.lifeLinkTransfer || 0.3;
-            const damageReduction = te.linkDamageReduction || 0.2;
-            // 先减伤
-            amount = Math.floor(amount * (1 - damageReduction));
-            // 转移部分伤害给召唤兽
-            const transferDmg = Math.floor(amount * transferRatio);
+            const shareRatio = te.damageShare;
+            const transferDmg = Math.floor(amount * shareRatio);
             if (transferDmg > 0) {
                 amount -= transferDmg;
                 this.summon.hp = Math.max(0, this.summon.hp - transferDmg);
-                this.addLog(`🔗 生命链接：${this.summon.name} 分担了 ${transferDmg} 点伤害！`, 'buff');
+                this.addLog(`🔗 灵魂链接：${this.summon.name} 分担了 ${transferDmg} 点伤害！`, 'buff');
                 if (this.summon.hp <= 0) {
-                    this.addLog(`💔 ${this.summon.name} 因生命链接倒下了！`, 'damage');
+                    this.triggerSummonDeath();
                 }
             }
         }
@@ -4563,6 +4730,12 @@ const BattleSystem = {
         // 雷穿水盾：雷系技能可穿透水系护盾（小说第133章）
         const isThunder = damage.element === 'thunder';
         
+        // 护盾存在时防御加成（shieldDefenseBonus）
+        const hasShield = target.statusEffects.some(e => e.type === 'shield' && e.value > 0);
+        if (hasShield && target === this.player && te?.shieldDefenseBonus) {
+            amount = Math.floor(amount * (1 - te.shieldDefenseBonus));
+        }
+
         // 护盾吸收
         const shield = target.statusEffects.find(e => e.type === 'shield');
         if (shield && shield.value > 0) {
@@ -5285,6 +5458,13 @@ const BattleSystem = {
         if (isPlayerTarget && target.talentEffects && target.talentEffects.debuffImmunity) {
             if (debuffTypes.includes(effect.type)) return false;
         }
+        // v0.8.27: 召唤兽在场时玩家免疫负面（summonDebuffImmunity）
+        if (isPlayerTarget && target.talentEffects && target.talentEffects.summonDebuffImmunity && this.summon && this.summon.hp > 0) {
+            if (debuffTypes.includes(effect.type)) {
+                this.addLog(`🔗 人兽合一！${this.summon.name} 为你抵挡了负面状态！`, 'buff');
+                return false;
+            }
+        }
 
         // knockbackImmune：玩家免疫击退/眩晕
         if (isPlayerTarget && target.talentEffects && target.talentEffects.knockbackImmune) {
@@ -5557,6 +5737,13 @@ const BattleSystem = {
                 if ((effect.value || 0) <= 0) {
                     removedEffects.push({ effect, reason: 'broken' });
                     return false;
+                }
+                // v0.8.27: 护盾每回合回复（shieldRegen）
+                if (isPlayer && this.player.talentEffects?.shieldRegen) {
+                    const regenPct = this.player.talentEffects.shieldRegen;
+                    const maxShield = effect._maxValue || effect.value;
+                    const regenAmt = Math.floor(this.player.maxHp * regenPct);
+                    effect.value = Math.min(maxShield, effect.value + regenAmt);
                 }
                 return true;
             }

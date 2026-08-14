@@ -1,11 +1,29 @@
 # TODO - 全职法师游戏
 
-> 当前版本：v0.8.26 | 最后更新：2026-08-14
+> 当前版本：v0.8.27 | 最后更新：2026-08-14
 > 状态说明：[ ]待做 [~]进行中 [x]完成
 
 ---
 
 ## P0 - 已完成
+
+### v0.8.27 召唤系天赋战斗效果+剩余A类（2026-08-14）
+- [x] 召唤兽属性计算加入天赋加成（等级/全属性/HP/伤害/继承/持续时间）
+- [x] 召唤兽攻击加入暴击率/暴击伤害（来自天赋）
+- [x] 召唤兽狂暴（HP<30%时+50%伤害）
+- [x] 召唤兽冲锋（30%概率追加150%伤害）
+- [x] 开场自动召唤（openingSummon）
+- [x] 召唤兽在场时玩家攻防+25%（summonMasterDamageBonus/DefBonus）
+- [x] 伤害共享（damageShare 50%）替代旧lifeLink
+- [x] 共享回复（sharedHpRegen 每回合3%HP）
+- [x] 召唤兽死亡爆发（200%攻击必暴伤害）
+- [x] 召唤兽死亡治疗（玩家回50%HP）
+- [x] 召唤兽在场时玩家免疫负面（summonDebuffImmunity）
+- [x] 光系对debuff敌人+50%伤害（debuffedDamageBonus）
+- [x] 护盾防御+30%（shieldDefenseBonus）
+- [x] 护盾每回合回复（shieldRegen）
+- [x] 修复applyDamage中te未定义bug（护盾反射/破碎反伤）
+- [x] 65项node测试全部通过
 
 ### v0.8.26 多召唤兽契约+bug修复（2026-08-14）
 - [x] 多召唤兽架构：summonBeasts[]数组+activeSummonIndex

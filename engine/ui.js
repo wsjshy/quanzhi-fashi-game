@@ -519,7 +519,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.8.26 · 多兽契约版</div>
+                ">v0.8.27 · 天赋战斗版</div>
             </div>
         `;
 
