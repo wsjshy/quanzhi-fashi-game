@@ -397,6 +397,9 @@ const DataLocations = {
       "baicao_valley"
     ],
     enemies: [
+      "shadow_rat",
+      "stray_wolf",
+      "mountain_ape",
       "demon_wolf",
       "shadow_creature",
       "rock_monster",

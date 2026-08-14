@@ -3043,10 +3043,10 @@ const BattleSystem = {
         if (this.player.hp > 0) {
             const playerLevel = Player.level || 1;
             const playerSpirit = Player.spirit || 10;
-            // HP回复：每回合回复等级*1 + 最大HP的1%
-            const hpRegen = Math.max(1, Math.floor(playerLevel * 1 + this.player.maxHp * 0.01));
-            // MP回复：每回合回复等级*1 + 精神力*0.5 + 最大MP的2%
-            const mpRegen = Math.max(1, Math.floor(playerLevel * 1 + playerSpirit * 0.5 + this.player.maxMp * 0.02));
+            // HP回复：每回合回复等级*0.5 + 最大HP的0.3%（战斗中回复有限，主要靠技能/药品）
+            const hpRegen = Math.max(1, Math.floor(playerLevel * 0.5 + this.player.maxHp * 0.003));
+            // MP回复：每回合回复等级*0.5 + 精神力*0.1 + 最大MP的0.5%（普攻也能回MP）
+            const mpRegen = Math.max(1, Math.floor(playerLevel * 0.5 + playerSpirit * 0.1 + this.player.maxMp * 0.005));
 
             // 天赋加成：hpRegen/mpRegen
             let talentHpBonus = 0, talentMpBonus = 0;
@@ -3220,8 +3220,8 @@ const BattleSystem = {
             defense = Math.max(0, defense + targetMods.defenseMod);
         }
 
-        // 基础伤害（防御系数0.3，避免高防御完全免伤）
-        let damage = Math.max(1, (attack - defense * 0.3) * multiplier);
+        // 基础伤害（防御系数0.5，让防御有意义但不导致完全免伤）
+        let damage = Math.max(1, (attack - defense * 0.5) * multiplier);
 
         // 天赋：元素穿透 - 忽略部分防御
         if (attacker && attacker.talentEffects) {
@@ -3234,7 +3234,7 @@ const BattleSystem = {
             if (te.elementPenetration) pen = Math.max(pen, te.elementPenetration);
             if (pen > 0) {
                 const ignoredDef = defense * pen;
-                damage += ignoredDef * 0.3;
+                damage += ignoredDef * 0.5;
             }
         }
 

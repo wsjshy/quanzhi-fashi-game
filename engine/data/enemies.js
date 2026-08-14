@@ -4,6 +4,82 @@
  */
 
 const DataEnemies = {
+  // ===== 低级怪（Lv1-3，新手区域）=====
+  stray_wolf: {
+    id: "stray_wolf",
+    name: "独狼兽",
+    title: "奴仆级妖魔",
+    description: "在雪峰山外围游荡的孤狼，实力较弱，是刚觉醒魔法师的练手对象。",
+    elements: ["dark"],
+    level: 2,
+    maxHp: 50,
+    maxMp: 0,
+    attack: 10,
+    defense: 3,
+    speed: 12,
+    skills: ["basic_attack", "claw_slash"],
+    aiType: "aggressive",
+    enemyType: "demon",
+    demonTier: "servant",
+    spriteColor: "#443322",
+    isEnemy: true,
+    expReward: 20,
+    goldReward: 15,
+    dropItems: [
+      { itemId: "wolf_fang", chance: 0.3, min: 1, max: 1 },
+      { itemId: "demon_core", chance: 0.2, min: 1, max: 1 }
+    ]
+  },
+  shadow_rat: {
+    id: "shadow_rat",
+    name: "影鼠",
+    title: "奴仆级妖魔",
+    description: "体型如猫的黑暗鼠类，数量众多但单体不强，常成群出没。",
+    elements: ["dark"],
+    level: 1,
+    maxHp: 35,
+    maxMp: 0,
+    attack: 8,
+    defense: 2,
+    speed: 15,
+    skills: ["basic_attack"],
+    aiType: "aggressive",
+    enemyType: "demon",
+    demonTier: "servant",
+    spriteColor: "#333344",
+    isEnemy: true,
+    expReward: 12,
+    goldReward: 8,
+    dropItems: [
+      { itemId: "rat_tail", chance: 0.4, min: 1, max: 1 }
+    ]
+  },
+  mountain_ape: {
+    id: "mountain_ape",
+    name: "山猿",
+    title: "奴仆级妖魔",
+    description: "栖息在山林中的猿类妖魔，力气不小但动作迟缓。",
+    elements: ["earth"],
+    level: 3,
+    maxHp: 80,
+    maxMp: 0,
+    attack: 14,
+    defense: 5,
+    speed: 8,
+    skills: ["basic_attack", "fierce_roar"],
+    aiType: "aggressive",
+    enemyType: "demon",
+    demonTier: "servant",
+    spriteColor: "#554433",
+    isEnemy: true,
+    expReward: 30,
+    goldReward: 20,
+    dropItems: [
+      { itemId: "demon_core", chance: 0.4, min: 1, max: 1 },
+      { itemId: "herb", chance: 0.3, min: 1, max: 2 }
+    ]
+  },
+  // ===== 原有怪物 =====
   one_eye_wolf: {
     id: "one_eye_wolf",
     name: "独眼魔狼",
