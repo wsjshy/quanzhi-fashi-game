@@ -27,6 +27,35 @@ const MapSystem = {
     },
 
     /**
+     * v0.9.1: 获取探索进度
+     * 返回已探索地点数/已解锁地点数
+     */
+    getExplorationProgress() {
+        const allLocations = DataLocations || {};
+        const unlockedIds = Player.unlockedLocations || [];
+        const exploredIds = Player.exploredLocations || [];
+
+        let total = 0;
+        let explored = 0;
+
+        for (const locId of unlockedIds) {
+            if (allLocations[locId]) {
+                total++;
+                if (exploredIds.includes(locId)) {
+                    explored++;
+                }
+            }
+        }
+
+        return {
+            explored: explored,
+            total: total,
+            percent: total > 0 ? Math.floor((explored / total) * 100) : 0,
+            isComplete: total > 0 && explored >= total
+        };
+    },
+
+    /**
      * 获取当前地点
      */
     getCurrentLocation() {

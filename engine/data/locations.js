@@ -186,7 +186,7 @@ const DataLocations = {
         description: "去图书馆看书（1小时），学习魔法知识，有概率领悟新技能或获得情报",
         icon: "📖",
         timeCost: 1,
-        staminaCost: 5,
+        staminaCost: 0,  // v0.9.1: 阅读不消耗体力
         effects: {
           exp: 15,
           mp: -5
@@ -693,7 +693,7 @@ const DataLocations = {
         description: "参加穆氏家族的宴会，结识博城各界人物",
         icon: "🍷",
         timeCost: 1,
-        staminaCost: 10,
+        staminaCost: 0,  // v0.9.1: 社交活动不消耗体力
         effects: { reputation_mu_family: 5, exp: 10 },
         eventChance: 0.5,
         events: ["event_mu_banquet", "event_meet_important_people"]
@@ -831,7 +831,7 @@ const DataLocations = {
         description: "与驿站的猎者交流，获取野外经验和情报",
         icon: "💬",
         timeCost: 2,
-        staminaCost: 10,
+        staminaCost: 0,  // v0.9.1: 对话交流不消耗体力
         effects: {
           exp: 8
         },
@@ -1031,7 +1031,7 @@ const DataLocations = {
         description: "在学校图书馆阅读，提升知识",
         icon: "📚",
         timeCost: 2,
-        staminaCost: 5,
+        staminaCost: 0,  // v0.9.1: 阅读不消耗体力
         effects: { exp: 20, mp: 10 },
         eventChance: 0.2,
         events: ["event_library_study"]

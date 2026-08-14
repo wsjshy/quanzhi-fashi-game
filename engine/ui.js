@@ -520,7 +520,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.9.0 · 减负大改版</div>
+                ">v0.9.1 · 减负续作</div>
             </div>
         `;
 
@@ -968,6 +968,16 @@ const UI = {
                     <div style="display: flex; gap: 30px; align-items: center;">
                         <div style="color: #ffd700; font-size: 20px; font-weight: bold;">${location?.name || '未知地点'}</div>
                         ${(() => {
+                            // v0.9.1: 探索度显示
+                            if (typeof MapSystem.getExplorationProgress === 'function') {
+                                const progress = MapSystem.getExplorationProgress();
+                                const color = progress.isComplete ? '#66ff66' : progress.percent >= 50 ? '#ffcc44' : '#ff8844';
+                                const icon = progress.isComplete ? '🏆' : '🗺️';
+                                return `<div style="color: ${color}; font-size: 13px; background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 10px; border: 1px solid ${color};" title="已探索 ${progress.explored}/${progress.total} 个地点">${icon} 探索度 ${progress.percent}%</div>`;
+                            }
+                            return '';
+                        })()}
+                        ${(() => {
                             const chapter = (typeof StoryChapterSystem !== 'undefined') ? StoryChapterSystem.getCurrentChapter() : null;
                             if (chapter) {
                                 return `<div style="color: #cc99ff; font-size: 13px; background: rgba(80, 40, 120, 0.5); padding: 4px 12px; border-radius: 10px; border: 1px solid #9966cc;">📖 ${chapter.name}</div>`;
@@ -1181,6 +1191,27 @@ const UI = {
                                 <span style="font-size: 12px; color: #ffcc88; float: right;">消耗1小时</span>
                             </div>
                             <div style="font-size: 13px; color: #99bb99;">稍作休息，恢复30%HP、20%MP和30点体力（战斗外随时可用）</div>
+                        </button>
+
+                        <!-- v0.9.1: 快速休息（恢复全部状态） -->
+                        <button onclick="Game.quickRestFull()" style="
+                            margin-top: 10px;
+                            width: 100%;
+                            padding: 15px 25px;
+                            background: linear-gradient(135deg, rgba(60, 40, 80, 0.8), rgba(100, 60, 140, 0.8));
+                            border: 2px solid #8855aa;
+                            border-radius: 10px;
+                            color: #eeddff;
+                            cursor: pointer;
+                            text-align: left;
+                            transition: all 0.3s;
+                            font-size: 16px;
+                        " onmouseover="this.style.borderColor='#aa77cc'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#8855aa'; this.style.transform='translateX(0)'">
+                            <div style="font-size: 18px; margin-bottom: 5px;">
+                                💜 快速休息
+                                <span style="font-size: 12px; color: #ffcc88; float: right;">消耗1小时</span>
+                            </div>
+                            <div style="font-size: 13px; color: #bb99dd;">充分休息，HP/MP/体力全部恢复到满，消除疲劳（状态全满时不消耗时间）</div>
                         </button>
 
                         <!-- 事件追踪 -->

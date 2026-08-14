@@ -727,6 +727,20 @@ const BattleSystem = {
             if (te.mpCostReduction) this.player.mpCostReduction = te.mpCostReduction;
         }
 
+        // v0.9.1: 应用疲劳减益（低体力战斗后受伤，休息后清除）
+        if (typeof Player !== 'undefined' && Player.fatigueLevel > 0) {
+            if (Player.fatigueLevel >= 2) {
+                // 重伤：攻击-30%，防御-15%
+                this.player.attack = Math.floor(this.player.attack * 0.7);
+                this.player.defense = Math.floor(this.player.defense * 0.85);
+                this.addLog('⚠️ 你受了重伤，攻击力-30%，防御力-15%！', 'debuff');
+            } else {
+                // 疲劳：攻击-15%
+                this.player.attack = Math.floor(this.player.attack * 0.85);
+                this.addLog('⚠️ 你感到疲惫，攻击力-15%！', 'debuff');
+            }
+        }
+
         this.addLog(`遭遇了 ${this.enemy.name}！`, 'system');
         
         // 难度提示

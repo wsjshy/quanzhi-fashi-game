@@ -650,6 +650,20 @@ const Game = {
                 firstExploreReward = { exp: expReward, gold: goldReward };
             }
 
+            // v0.9.1: 100%探索完成奖励
+            let explorationCompleteReward = null;
+            if (firstExploreReward && typeof MapSystem.getExplorationProgress === 'function') {
+                const progress = MapSystem.getExplorationProgress();
+                if (progress.isComplete && !Player.explorationComplete.includes('all_locations')) {
+                    Player.explorationComplete.push('all_locations');
+                    const completeExp = 100;
+                    const completeGold = 50;
+                    Player.gainExp(completeExp);
+                    Player.gold += completeGold;
+                    explorationCompleteReward = { exp: completeExp, gold: completeGold };
+                }
+            }
+
             // 保存游戏
             Player.save();
 
@@ -683,6 +697,10 @@ const Game = {
             // v0.9.0: 首次探索奖励显示
             if (firstExploreReward) {
                 travelMsg += `\n\n🗺️ 首次探索！\n经验 +${firstExploreReward.exp}\n金币 +${firstExploreReward.gold}`;
+            }
+            // v0.9.1: 100%探索完成奖励显示
+            if (explorationCompleteReward) {
+                travelMsg += `\n\n🏆 探索完成！\n你已探索所有已解锁地点！\n经验 +${explorationCompleteReward.exp}\n金币 +${explorationCompleteReward.gold}`;
             }
             UI.showMessage(travelMsg);
         } catch (e) {
@@ -750,6 +768,10 @@ const Game = {
         Player.mp = Math.min(Player.maxMp, Player.mp + mpRecover);
         Player.stamina = Math.min(Player.maxStamina || 100, Player.stamina + staminaRecover);
 
+        // v0.9.1: 休息后清除疲劳
+        const oldFatigue = Player.fatigueLevel;
+        Player.fatigueLevel = 0;
+
         const actualHp = Player.hp - oldHp;
         const actualMp = Player.mp - oldMp;
         const actualStamina = Player.stamina - oldStamina;
@@ -762,6 +784,7 @@ const Game = {
         if (actualHp > 0) parts.push(`${actualHp} HP`);
         if (actualMp > 0) parts.push(`${actualMp} MP`);
         if (actualStamina > 0) parts.push(`${actualStamina} 体力`);
+        if (oldFatigue > 0) parts.push('疲劳状态已消除');
         msg += parts.join('、') + '。';
 
         // 有概率遇到敌人（10%概率，野外）
@@ -789,6 +812,66 @@ const Game = {
                         if (evt.type === 'scheduled') {
                             EventSystem.triggerScheduledEvent(evt.eventId);
                             break;
+                        }
+                    }
+                }
+            }, 500);
+            return;
+        }
+
+        Player.save();
+        UI.renderMapScreen();
+        UI.showMessage(msg);
+    },
+
+    // v0.9.1: 快速休息（恢复全部状态到满，消耗1小时）
+    quickRestFull() {
+        // 检查是否已经全满
+        const hpFull = Player.hp >= Player.maxHp;
+        const mpFull = Player.mp >= Player.maxMp;
+        const staminaFull = Player.stamina >= (Player.maxStamina || 100);
+        const fatigueClear = Player.fatigueLevel <= 0;
+
+        if (hpFull && mpFull && staminaFull && fatigueClear) {
+            UI.showMessage('✨ 状态良好，HP/MP/体力全满，无需休息！');
+            return;
+        }
+
+        const oldHp = Player.hp;
+        const oldMp = Player.mp;
+        const oldStamina = Player.stamina;
+        const oldFatigue = Player.fatigueLevel;
+
+        // 恢复到满
+        Player.hp = Player.maxHp;
+        Player.mp = Player.maxMp;
+        Player.stamina = Player.maxStamina || 100;
+        Player.fatigueLevel = 0;
+
+        const actualHp = Player.hp - oldHp;
+        const actualMp = Player.mp - oldMp;
+        const actualStamina = Player.stamina - oldStamina;
+
+        // 推进1小时
+        const events = TimeSystem.advanceTime(1);
+
+        let msg = '你充分休息了1小时，完全恢复了状态！\n';
+        const parts = [];
+        if (actualHp > 0) parts.push(`HP +${actualHp}`);
+        if (actualMp > 0) parts.push(`MP +${actualMp}`);
+        if (actualStamina > 0) parts.push(`体力 +${actualStamina}`);
+        if (oldFatigue > 0) parts.push('疲劳已消除');
+        msg += parts.join('，');
+
+        // 处理时间事件
+        if (events && events.length > 0) {
+            Player.save();
+            UI.showMessage(msg);
+            setTimeout(() => {
+                if (typeof EventSystem !== 'undefined') {
+                    for (const evt of events) {
+                        if (evt.type === 'scheduled') {
+                            EventSystem.triggerScheduledEvent(evt.eventId);
                         }
                     }
                 }
@@ -1266,6 +1349,29 @@ const Game = {
                         mp: Player.mp - mpBefore
                     };
                 }
+
+                // v0.9.1: 低体力受伤机制（体力软限制的实际后果）
+                // 普通战斗后，体力过低有概率受伤，影响下一场战斗
+                let fatigueResult = null;
+                if (!isBossBattle) {
+                    const staminaRatio = Player.stamina / (Player.maxStamina || 100);
+                    let injuryChance = 0;
+                    let newFatigue = 0;
+                    if (staminaRatio <= 0) {
+                        injuryChance = 0.2;  // 精疲力竭：20%概率重伤
+                        newFatigue = 2;
+                    } else if (staminaRatio <= 0.3) {
+                        injuryChance = 0.1;  // 非常疲惫：10%概率疲劳
+                        newFatigue = 1;
+                    }
+                    if (injuryChance > 0 && Math.random() < injuryChance) {
+                        // 不降级：如果已有更高等级疲劳，保持
+                        if (newFatigue > Player.fatigueLevel) {
+                            Player.fatigueLevel = newFatigue;
+                        }
+                        fatigueResult = { level: Player.fatigueLevel };
+                    }
+                }
                 
                 let message = '⚔️ 战斗胜利！\n\n';
                 
@@ -1333,6 +1439,14 @@ const Game = {
                     if (postBattleRecover.hp > 0) message += `HP：+${postBattleRecover.hp}（恢复到80%）\n`;
                     if (postBattleRecover.mp > 0) message += `MP：+${postBattleRecover.mp}（恢复到80%）\n`;
                     message += `负面状态：已清除\n`;
+                }
+                // v0.9.1: 低体力受伤显示
+                if (fatigueResult) {
+                    if (fatigueResult.level === 2) {
+                        message += `\n⚠️ 体力耗尽，你受了重伤！\n下一场战斗攻击-30%，防御-15%\n（休息后恢复）\n`;
+                    } else {
+                        message += `\n⚠️ 体力过低，你感到疲惫！\n下一场战斗攻击-15%\n（休息后恢复）\n`;
+                    }
                 }
                 if (rewards.levelUps.length > 0) {
                     message += `\n🎉 升级了！当前等级 ${Player.level}\n`;

@@ -4,7 +4,7 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.9.0';
+const GAME_VERSION = '0.9.1';
 const SAVE_VERSION = '0.8.7';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
@@ -214,6 +214,8 @@ const Player = {
         this.activeSummonIndex = 0;
         this.exploredLocations = [];  // v0.9.0: 已探索的地点（用于首次探索奖励）
         this.exploredNPCs = [];  // v0.9.0: 已对话的NPC（用于首次对话奖励）
+        this.fatigueLevel = 0;  // v0.9.1: 疲劳等级（0=正常，1=疲劳，2=重伤），低体力战斗后概率获得，休息后清除
+        this.explorationComplete = [];  // v0.9.1: 已100%探索完成的区域ID列表
 
         // 如果选了元素，给对应的初始技能
         if (element) {
@@ -1571,6 +1573,8 @@ const Player = {
             activeSummonIndex: this.activeSummonIndex || 0,
             exploredLocations: this.exploredLocations || [],
             exploredNPCs: this.exploredNPCs || [],
+            fatigueLevel: this.fatigueLevel || 0,
+            explorationComplete: this.explorationComplete || [],
             inventory: Inventory.getSaveData(),
             worldState: typeof WorldState !== 'undefined' ? WorldState.getSaveData() : null,
             npcStates: typeof NPCStateSystem !== 'undefined' ? NPCStateSystem.getSaveData() : null,
@@ -1675,6 +1679,9 @@ const Player = {
             // v0.9.0: 加载探索记录（兼容旧存档）
             this.exploredLocations = data.exploredLocations || [];
             this.exploredNPCs = data.exploredNPCs || [];
+            // v0.9.1: 加载疲劳等级和探索完成记录
+            this.fatigueLevel = data.fatigueLevel || 0;
+            this.explorationComplete = data.explorationComplete || [];
             
             // 加载背包
             if (data.inventory) {
