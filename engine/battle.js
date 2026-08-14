@@ -786,11 +786,11 @@ const BattleSystem = {
                 this.player.stealthActive = true;
                 this.addLog(`🌑 暗影形态！进入隐身，首次攻击伤害翻倍！`, 'buff');
             }
-            // 潜行天赋：战斗开始概率隐身
-            if (te.stealthChance && !te.shadowForm && Math.random() < te.stealthChance) {
-                this.addStatusEffect(this.player, { type: 'stealth', name: '潜行', duration: 99 });
+            // 潜行天赋（stealthOnStart）：战斗开始隐身
+            if (te.stealthOnStart && !te.shadowForm) {
+                this.addStatusEffect(this.player, { type: 'stealth', name: '潜行', duration: te.stealthOnStart });
                 this.player.stealthActive = true;
-                this.addLog(`🌑 进入潜行状态！`, 'buff');
+                this.addLog(`🌑 进入潜行状态！首次攻击伤害大幅提升！`, 'buff');
             }
             // 绝对零度领域：开场冻结
             if (te.absoluteZeroField && this.enemy.hp > 0) {
@@ -1141,12 +1141,14 @@ const BattleSystem = {
 
         this.player.isDefending = false;
 
-        // 首攻加成：战斗中第一次攻击伤害+50%
+        // 首攻加成：20%概率先手，伤害+50%
         let firstStrikeBonus = 0;
-        if (this.player.talentEffects && this.player.talentEffects.firstStrikeBonus && !this._playerHasAttacked) {
-            firstStrikeBonus = this.player.talentEffects.firstStrikeBonus;
-            this._playerHasAttacked = true;
-            this.addLog(`⚡ 先手攻击！伤害+${Math.floor(firstStrikeBonus * 100)}%！`, 'buff');
+        if (this.player.talentEffects && this.player.talentEffects.firstStrikeChance && !this._playerHasAttacked) {
+            if (Math.random() < this.player.talentEffects.firstStrikeChance) {
+                firstStrikeBonus = this.player.talentEffects.firstStrikeDamage || 0.5;
+                this._playerHasAttacked = true;
+                this.addLog(`⚡ 先手攻击！伤害+${Math.floor(firstStrikeBonus * 100)}%！`, 'buff');
+            }
         }
 
         // 计算伤害（含攻击者状态修正）
@@ -1213,10 +1215,10 @@ const BattleSystem = {
                     existingSlow.speedMod = -0.15 * existingSlow.stacks;
                     existingSlow.duration = 2;
                     this.addLog(`❄️ 冰霜叠加 ${existingSlow.stacks}/${te.frostStackMax}！`, 'element');
-                    // 满层冻结
-                    if (existingSlow.stacks >= te.frostStackMax) {
+                    // 满层冻结（frostFreezeOnMax）
+                    if (existingSlow.stacks >= te.frostStackMax && te.frostFreezeOnMax) {
                         this.addStatusEffect(this.enemy, {
-                            type: 'freeze', name: '冰霜冻结', duration: te.frostFreezeDuration || 1
+                            type: 'freeze', name: '冰霜冻结', duration: 1
                         });
                         this.addLog(`❄️ 冰霜满层！${this.enemy.name} 被冻结！`, 'element');
                         // 移除减速状态
@@ -1283,13 +1285,16 @@ const BattleSystem = {
                     this.addLog(`⚡ 蓄电 ${this.player.chargeStack}/${te.chargeMax}（麻痹+${Math.floor(bonusParalyze*100)}%）`, 'element');
                 }
                 // 蓄电层数增加麻痹概率（在麻痹判定时已经过了，这里给感电效果）
-                // 感电状态：雷伤+30%
-                if (te.shockDebuff && Math.random() < (te.shockChance || 0.3) + bonusParalyze) {
-                    this.addStatusEffect(this.enemy, {
-                        type: 'shock', name: '感电', duration: te.shockDuration || 3,
-                        thunderDamageBonus: te.shockThunderBonus || 0.3
-                    });
-                    this.addLog(`⚡ ${this.enemy.name} 进入感电状态，受到雷伤增加！`, 'element');
+                // 感电状态：雷伤+30%（shockDebuff为true时，30%基础概率+蓄电加成）
+                if (te.shockDebuff) {
+                    const shockBaseChance = 0.3;
+                    if (Math.random() < shockBaseChance + bonusParalyze) {
+                        this.addStatusEffect(this.enemy, {
+                            type: 'shock', name: '感电', duration: te.shockDuration || 3,
+                            thunderDamageBonus: te.shockThunderBonus || 0.3
+                        });
+                        this.addLog(`⚡ ${this.enemy.name} 进入感电状态，受到雷伤增加！`, 'element');
+                    }
                 }
             }
         }
@@ -1992,28 +1997,27 @@ const BattleSystem = {
             }
             healTarget.hp = Math.min(healTarget.maxHp, healTarget.hp + actualHeal);
 
-            // 天赋：过量治疗转护盾
-            if (isPlayer && this.player.talentEffects && this.player.talentEffects.overhealShield) {
-                const overheal = (healTarget.hp + actualHeal) - healTarget.maxHp;
-                if (overheal > 0 && healTarget === this.player) {
-                    const shieldAmount = Math.floor(overheal * this.player.talentEffects.overhealShield);
-                    if (shieldAmount > 0) {
-                        const existingShield = healTarget.statusEffects.find(e => e.type === 'shield');
-                        if (existingShield) {
-                            existingShield.value += shieldAmount;
-                        } else {
-                            this.addStatusEffect(healTarget, { type: 'shield', name: '治疗护盾', value: shieldAmount, duration: 3 });
-                        }
-                        this.addLog(`💚 过量治疗转化为 ${shieldAmount} 点护盾！`, 'heal');
+            // 天赋：治疗转护盾（healShield：治疗量20%转为护盾）
+            if (isPlayer && this.player.talentEffects && this.player.talentEffects.healShield && healTarget === this.player) {
+                const shieldRatio = this.player.talentEffects.healShield;
+                const shieldDuration = this.player.talentEffects.healShieldDuration || 2;
+                const shieldAmount = Math.floor(actualHeal * shieldRatio);
+                if (shieldAmount > 0) {
+                    const existingShield = healTarget.statusEffects.find(e => e.type === 'shield');
+                    if (existingShield) {
+                        existingShield.value += shieldAmount;
+                    } else {
+                        this.addStatusEffect(healTarget, { type: 'shield', name: '治疗护盾', value: shieldAmount, duration: shieldDuration });
                     }
+                    this.addLog(`💚 治疗转化为 ${shieldAmount} 点护盾！`, 'heal');
                 }
             }
-            // 天赋：治疗时净化
-            if (isPlayer && this.player.talentEffects && this.player.talentEffects.cleanseOnHeal && healTarget === this.player) {
+            // 天赋：治疗时净化（purifyOnHealChance）
+            if (isPlayer && this.player.talentEffects && this.player.talentEffects.purifyOnHealChance && healTarget === this.player) {
                 const cleansable = healTarget.statusEffects.filter(e =>
                     ['burn', 'freeze', 'paralyze', 'stun', 'slow', 'poison', 'bleed', 'curse', 'blind', 'fear'].includes(e.type)
                 );
-                if (cleansable.length > 0 && Math.random() < this.player.talentEffects.cleanseOnHeal) {
+                if (cleansable.length > 0 && Math.random() < this.player.talentEffects.purifyOnHealChance) {
                     healTarget.statusEffects = healTarget.statusEffects.filter(e => !cleansable.includes(e));
                     this.addLog(`✨ 治疗净化了 ${cleansable.length} 个负面状态！`, 'heal');
                 }
@@ -3270,14 +3274,15 @@ const BattleSystem = {
                     this.addLog(`✨ 治疗光环恢复 ${auraHeal} 点生命！`, 'heal');
                 }
             }
-            // 潮汐涨潮：每回合伤害和治疗递增
-            if (te.tideStackMax) {
-                this.player.tideStack = Math.min(te.tideStackMax, (this.player.tideStack || 0) + 1);
-                const dmgBonus = this.player.tideStack * (te.tideDamagePerStack || 0.05);
-                const healBonus = this.player.tideStack * (te.tideHealPerStack || 0.03);
+            // 潮汐涨潮：每回合伤害和治疗递增（tideDamageStack/tideDamageMax/tideHealStack/tideHealMax）
+            if (te.tideDamageStack) {
+                const maxStacks = Math.floor((te.tideDamageMax || 0.3) / te.tideDamageStack);
+                this.player.tideStack = Math.min(maxStacks, (this.player.tideStack || 0) + 1);
+                const dmgBonus = Math.min(te.tideDamageMax || 0.3, this.player.tideStack * te.tideDamageStack);
+                const healBonus = Math.min(te.tideHealMax || 0.18, this.player.tideStack * (te.tideHealStack || 0.03));
                 this.player.tideDamageBonus = dmgBonus;
                 this.player.tideHealBonus = healBonus;
-                if (this.player.tideStack >= te.tideStackMax) {
+                if (this.player.tideStack >= maxStacks) {
                     this.addLog(`🌊 潮汐满潮！伤害+${Math.floor(dmgBonus*100)}%，治疗+${Math.floor(healBonus*100)}%！`, 'buff');
                 }
             }
@@ -3806,16 +3811,6 @@ const BattleSystem = {
                 if (target.hp / target.maxHp < threshold && Math.random() < chance) {
                     target.hp = 0;
                     this.addLog(`⚡ 雷劫！${this.enemy.name} 被天雷斩杀！`, 'crit');
-                    this.showDamageNumber('enemy', 999, 'crit');
-                }
-            }
-            // 暗系斩杀：低HP时概率死亡之触
-            if (te.executeLowHp) {
-                const threshold = te.executeThreshold || 0.15;
-                const chance = te.executeChance || 0.15;
-                if (target.hp / target.maxHp < threshold && Math.random() < chance) {
-                    target.hp = 0;
-                    this.addLog(`💀 死亡之触！${this.enemy.name} 被暗影吞噬！`, 'crit');
                     this.showDamageNumber('enemy', 999, 'crit');
                 }
             }
