@@ -603,7 +603,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.11.0 · 战斗策略</div>
+                ">v0.12.0 · 召唤兽优化</div>
             </div>
         `;
 
@@ -4591,19 +4591,48 @@ const UI = {
                                 html += `<div style="color: #aa88ff; font-size: 13px; margin-bottom: 8px;">🐺 召唤兽 (${beasts.length}/${maxCount} · ${realmNames[Player.realm]})</div>`;
                                 beasts.forEach((sd, idx) => {
                                     const isActive = idx === Player.activeSummonIndex;
-                                    const borderColor = isActive ? '#aa66ff' : '#555';
-                                    const bgColor = isActive ? 'rgba(100, 80, 150, 0.2)' : 'rgba(50, 50, 70, 0.2)';
-                                    html += `<div style="padding: 12px 15px; background: ${bgColor}; border: 2px solid ${borderColor}; border-radius: 10px; margin-bottom: ${isActive ? '10px' : '6px'};">`;
+                                    // v0.12.0: 稀有度配色（和装备一致）
+                                    const rarityColors = { '普通': '#aaaaaa', '优秀': '#66ff66', '稀有': '#6699ff', '史诗': '#cc66ff', '传说': '#ffaa44' };
+                                    const rarityColor = rarityColors[sd.rarity] || '#aaaaaa';
+                                    // v0.12.0: 召唤兽评分计算
+                                    const calcBeastScore = (beastData) => {
+                                        const currentData = typeof getBeastCurrentData === 'function' ? getBeastCurrentData(beastData) : null;
+                                        const stats = currentData ? currentData.effectiveStats : {
+                                            maxHp: beastData.baseMaxHp, attack: beastData.baseAttack, defense: beastData.baseDefense, speed: beastData.baseSpeed
+                                        };
+                                        const lb = 1 + (beastData.level - 1) * 0.15;
+                                        return Math.floor((stats.maxHp || 0) * 0.1 * lb + (stats.attack || 0) * 2 * lb + (stats.defense || 0) * 1.5 * lb + (stats.speed || 0) * 2 * lb);
+                                    };
+                                    const beastScore = calcBeastScore(sd);
+                                    const borderColor = isActive ? rarityColor : '#555';
+                                    const bgColor = isActive ? `${rarityColor}22` : 'rgba(50, 50, 70, 0.2)';
+                                    html += `<div style="padding: 12px 15px; background: ${bgColor}; border: 2px solid ${borderColor}; border-radius: 10px; margin-bottom: ${isActive ? '10px' : '6px'}; ${isActive ? `box-shadow: 0 0 10px ${rarityColor}44;` : ''}">`;
                                     html += `<div style="display: flex; align-items: center; margin-bottom: 8px;">`;
                                     html += `<span style="font-size: 28px; margin-right: 10px;">${sd.icon}</span>`;
                                     html += `<div style="flex: 1;">`;
-                                    html += `<div style="color: #cc99ff; font-weight: bold; font-size: 16px;">${sd.name}${isActive ? ' <span style="color:#ffaa00;font-size:11px;">出战中</span>' : ''}</div>`;
-                                    html += `<div style="color: #999; font-size: 12px;">Lv.${sd.level} · 忠诚 ${sd.loyalty}/100 · ${sd.rarity || '普通'}</div>`;
+                                    html += `<div style="color: ${rarityColor}; font-weight: bold; font-size: 16px;">${sd.name}${isActive ? ' <span style="color:#ffaa00;font-size:11px;">出战中</span>' : ''} <span style="font-size: 10px; color: #ffd700; background: rgba(100, 80, 20, 0.5); padding: 1px 5px; border-radius: 5px;">⭐${beastScore}</span></div>`;
+                                    html += `<div style="color: #999; font-size: 12px;">Lv.${sd.level} · 忠诚 ${sd.loyalty}/100 · <span style="color: ${rarityColor};">${sd.rarity || '普通'}</span></div>`;
                                     html += `</div>`;
                                     if (!isActive) {
                                         html += `<div onclick="Game.switchSummon(${idx})" style="padding: 4px 10px; background: #554488; border-radius: 5px; cursor: pointer; color: #fff; font-size: 11px;">出战</div>`;
                                     }
                                     html += `</div>`;
+                                    // v0.12.0: 未出战召唤兽也显示简要属性
+                                    if (!isActive) {
+                                        html += (() => {
+                                            const currentData = typeof getBeastCurrentData === 'function' ? getBeastCurrentData(sd) : null;
+                                            const stats = currentData ? currentData.effectiveStats : {
+                                                maxHp: sd.baseMaxHp, attack: sd.baseAttack, defense: sd.baseDefense, speed: sd.baseSpeed
+                                            };
+                                            const lb = 1 + (sd.level - 1) * 0.15;
+                                            return `<div style="display: flex; gap: 12px; font-size: 11px; color: #888;">
+                                                <span>❤️${Math.floor(stats.maxHp * lb)}</span>
+                                                <span>⚔️${Math.floor(stats.attack * lb)}</span>
+                                                <span>🛡️${Math.floor(stats.defense * lb)}</span>
+                                                <span>💨${Math.floor(stats.speed * lb)}</span>
+                                            </div>`;
+                                        })();
+                                    }
                                     // 只显示当前出战召唤兽的详细信息
                                     if (isActive) {
                                         html += (() => {
@@ -4656,16 +4685,31 @@ const UI = {
                                             if (evoInfo.canEvolve) {
                                                 return `<div onclick="Game.evolveSummon()" style="margin-top: 8px; padding: 8px; background: linear-gradient(135deg, #9966ff, #cc66ff); border-radius: 6px; text-align: center; cursor: pointer; color: #fff; font-weight: bold; font-size: 13px; animation: pulse 1.5s infinite;">✨ 进化为 ${next.icon} ${next.name}！</div>`;
                                             }
-                                            const conditions = [];
-                                            if (sd.level < next.minBeastLevel) conditions.push(`Lv${next.minBeastLevel}(当前${sd.level})`);
-                                            if (sd.loyalty < next.minLoyalty) conditions.push(`忠诚${next.minLoyalty}(当前${sd.loyalty})`);
+                                            // v0.12.0: 进化条件优化，显示进度和颜色
                                             const realmNames2 = { initial: '初阶', primary: '初阶', middle: '中阶', high: '高阶' };
                                             const realmOrder = { initial: 1, primary: 1, middle: 2, high: 3 };
-                                            if ((realmOrder[Player.realm] || 1) < (realmOrder[next.minPlayerRealm] || 1)) {
-                                                conditions.push(`${realmNames2[next.minPlayerRealm]}法师`);
-                                            }
-                                            return `<div style="margin-top: 8px; padding: 6px; background: rgba(150,100,200,0.1); border-radius: 4px; font-size: 10px; color: #9988aa;">
-                                                下一形态：${next.icon} ${next.name} · 需要：${conditions.join('、')}
+                                            const levelMet = sd.level >= next.minBeastLevel;
+                                            const loyaltyMet = sd.loyalty >= next.minLoyalty;
+                                            const realmMet = (realmOrder[Player.realm] || 1) >= (realmOrder[next.minPlayerRealm] || 1);
+                                            const levelPercent = Math.min(100, (sd.level / next.minBeastLevel) * 100);
+                                            const loyaltyPercent = Math.min(100, (sd.loyalty / next.minLoyalty) * 100);
+                                            return `<div style="margin-top: 8px; padding: 8px; background: rgba(150,100,200,0.1); border: 1px solid #8866aa; border-radius: 6px;">
+                                                <div style="color: #cc99ff; font-size: 12px; margin-bottom: 6px; font-weight: bold;">下一形态：${next.icon} ${next.name}</div>
+                                                <div style="font-size: 10px; margin-bottom: 4px;">
+                                                    <span style="color: ${levelMet ? '#66ff66' : '#ff6666'};">等级: ${sd.level}/${next.minBeastLevel} ${levelMet ? '✓' : ''}</span>
+                                                    <div style="height: 3px; background: #333; border-radius: 2px; margin-top: 2px; overflow: hidden;">
+                                                        <div style="height: 100%; width: ${levelPercent}%; background: ${levelMet ? '#66ff66' : '#ffaa44'};"></div>
+                                                    </div>
+                                                </div>
+                                                <div style="font-size: 10px; margin-bottom: 4px;">
+                                                    <span style="color: ${loyaltyMet ? '#66ff66' : '#ff6666'};">忠诚: ${sd.loyalty}/${next.minLoyalty} ${loyaltyMet ? '✓' : ''}</span>
+                                                    <div style="height: 3px; background: #333; border-radius: 2px; margin-top: 2px; overflow: hidden;">
+                                                        <div style="height: 100%; width: ${loyaltyPercent}%; background: ${loyaltyMet ? '#66ff66' : '#ffaa44'};"></div>
+                                                    </div>
+                                                </div>
+                                                <div style="font-size: 10px;">
+                                                    <span style="color: ${realmMet ? '#66ff66' : '#ff6666'};">境界: ${realmNames2[Player.realm]}/${realmNames2[next.minPlayerRealm]} ${realmMet ? '✓' : ''}</span>
+                                                </div>
                                             </div>`;
                                         })();
                                     }
