@@ -56,6 +56,59 @@ const MapSystem = {
     },
 
     /**
+     * v0.9.2: 获取地点危险等级
+     * 根据该地点可能遇到的妖魔等级，计算建议等级和危险程度
+     */
+    getLocationDangerLevel(locId) {
+        const loc = DataManager.getLocation(locId);
+        if (!loc || !loc.enemies || loc.enemies.length === 0) {
+            return { level: 0, maxLevel: 0, enemyCount: 0, danger: 'safe', label: '安全' };
+        }
+
+        let totalLevel = 0;
+        let maxLevel = 0;
+        let validEnemies = 0;
+
+        for (const enemyId of loc.enemies) {
+            const enemy = DataManager.getEnemy(enemyId);
+            if (enemy && enemy.level) {
+                totalLevel += enemy.level;
+                maxLevel = Math.max(maxLevel, enemy.level);
+                validEnemies++;
+            }
+        }
+
+        if (validEnemies === 0) {
+            return { level: 0, maxLevel: 0, enemyCount: loc.enemies.length, danger: 'safe', label: '安全' };
+        }
+
+        const avgLevel = Math.floor(totalLevel / validEnemies);
+        const playerLevel = Player.level || 1;
+
+        // 危险程度判断
+        let danger = 'safe';
+        let label = '安全';
+        if (maxLevel > playerLevel + 3) {
+            danger = 'danger';
+            label = '危险';
+        } else if (maxLevel > playerLevel + 1) {
+            danger = 'warning';
+            label = '适中';
+        } else {
+            danger = 'safe';
+            label = '安全';
+        }
+
+        return {
+            level: avgLevel,
+            maxLevel: maxLevel,
+            enemyCount: loc.enemies.length,
+            danger: danger,
+            label: label
+        };
+    },
+
+    /**
      * 获取当前地点
      */
     getCurrentLocation() {

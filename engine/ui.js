@@ -520,7 +520,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.9.1 · 减负续作</div>
+                ">v0.9.2 · UI减负</div>
             </div>
         `;
 
@@ -978,6 +978,16 @@ const UI = {
                             return '';
                         })()}
                         ${(() => {
+                            // v0.9.2: 疲劳状态显示
+                            const fatigue = Player.fatigueLevel || 0;
+                            if (fatigue >= 2) {
+                                return `<div style="color: #ff4444; font-size: 13px; background: rgba(120, 20, 20, 0.6); padding: 4px 12px; border-radius: 10px; border: 1px solid #ff4444; animation: pulse 1s infinite;" title="重伤状态：攻击-30%，防御-15%">⚠️ 重伤</div>`;
+                            } else if (fatigue === 1) {
+                                return `<div style="color: #ffaa44; font-size: 13px; background: rgba(100, 60, 20, 0.5); padding: 4px 12px; border-radius: 10px; border: 1px solid #ffaa44;" title="疲劳状态：攻击-15%">😓 疲劳</div>`;
+                            }
+                            return '';
+                        })()}
+                        ${(() => {
                             const chapter = (typeof StoryChapterSystem !== 'undefined') ? StoryChapterSystem.getCurrentChapter() : null;
                             if (chapter) {
                                 return `<div style="color: #cc99ff; font-size: 13px; background: rgba(80, 40, 120, 0.5); padding: 4px 12px; border-radius: 10px; border: 1px solid #9966cc;">📖 ${chapter.name}</div>`;
@@ -1178,14 +1188,15 @@ const UI = {
                             width: 100%;
                             padding: 15px 25px;
                             background: linear-gradient(135deg, rgba(40, 80, 40, 0.8), rgba(60, 120, 60, 0.8));
-                            border: 2px solid #448844;
+                            border: 2px solid ${Player.stamina < Player.maxStamina * 0.3 ? '#ff8844' : '#448844'};
                             border-radius: 10px;
                             color: #ddffdd;
                             cursor: pointer;
                             text-align: left;
                             transition: all 0.3s;
                             font-size: 16px;
-                        " onmouseover="this.style.borderColor='#66bb66'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#448844'; this.style.transform='translateX(0)'">
+                            ${Player.stamina < Player.maxStamina * 0.3 ? 'box-shadow: 0 0 10px rgba(255, 136, 68, 0.5);' : ''}
+                        " onmouseover="this.style.borderColor='${Player.stamina < Player.maxStamina * 0.3 ? '#ffaa66' : '#66bb66'}'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='${Player.stamina < Player.maxStamina * 0.3 ? '#ff8844' : '#448844'}'; this.style.transform='translateX(0)'">
                             <div style="font-size: 18px; margin-bottom: 5px;">
                                 💚 原地休息
                                 <span style="font-size: 12px; color: #ffcc88; float: right;">消耗1小时</span>
@@ -1199,20 +1210,52 @@ const UI = {
                             width: 100%;
                             padding: 15px 25px;
                             background: linear-gradient(135deg, rgba(60, 40, 80, 0.8), rgba(100, 60, 140, 0.8));
-                            border: 2px solid #8855aa;
+                            border: 2px solid ${Player.stamina < Player.maxStamina * 0.3 ? '#ff8844' : '#8855aa'};
                             border-radius: 10px;
                             color: #eeddff;
                             cursor: pointer;
                             text-align: left;
                             transition: all 0.3s;
                             font-size: 16px;
-                        " onmouseover="this.style.borderColor='#aa77cc'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#8855aa'; this.style.transform='translateX(0)'">
+                            ${Player.stamina < Player.maxStamina * 0.3 ? 'box-shadow: 0 0 10px rgba(255, 136, 68, 0.5);' : ''}
+                        " onmouseover="this.style.borderColor='${Player.stamina < Player.maxStamina * 0.3 ? '#ffaa66' : '#aa77cc'}'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='${Player.stamina < Player.maxStamina * 0.3 ? '#ff8844' : '#8855aa'}'; this.style.transform='translateX(0)'">
                             <div style="font-size: 18px; margin-bottom: 5px;">
                                 💜 快速休息
                                 <span style="font-size: 12px; color: #ffcc88; float: right;">消耗1小时</span>
                             </div>
                             <div style="font-size: 13px; color: #bb99dd;">充分休息，HP/MP/体力全部恢复到满，消除疲劳（状态全满时不消耗时间）</div>
                         </button>
+
+                        <!-- v0.9.2: 一键恢复（自动使用药品） -->
+                        ${(() => {
+                            const hpRatio = Player.hp / Player.maxHp;
+                            const mpRatio = Player.mp / Player.maxMp;
+                            if (hpRatio < 0.8 || mpRatio < 0.8) {
+                                return `
+                                <button onclick="Game.quickHeal()" style="
+                                    margin-top: 10px;
+                                    width: 100%;
+                                    padding: 15px 25px;
+                                    background: linear-gradient(135deg, rgba(80, 60, 20, 0.8), rgba(140, 100, 40, 0.8));
+                                    border: 2px solid #aa8833;
+                                    border-radius: 10px;
+                                    color: #ffeecc;
+                                    cursor: pointer;
+                                    text-align: left;
+                                    transition: all 0.3s;
+                                    font-size: 16px;
+                                    animation: pulse 2s infinite;
+                                " onmouseover="this.style.borderColor='#ccaa55'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#aa8833'; this.style.transform='translateX(0)'">
+                                    <div style="font-size: 18px; margin-bottom: 5px;">
+                                        💊 一键恢复
+                                        <span style="font-size: 12px; color: #ffaa66; float: right;">不耗时间</span>
+                                    </div>
+                                    <div style="font-size: 13px; color: #ddbb88;">自动使用背包中的恢复药品，优先使用小药品避免浪费</div>
+                                </button>
+                                `;
+                            }
+                            return '';
+                        })()}
 
                         <!-- 事件追踪 -->
                         <button onclick="EncounterSystem.showEventTracker()" style="
@@ -1263,6 +1306,16 @@ const UI = {
                             ${location.connectedLocations.map(locId => {
                                 const loc = DataManager.getLocation(locId);
                                 const unlocked = Player.unlockedLocations.includes(locId);
+                                // v0.9.2: 探索提示 - 危险等级
+                                let dangerInfo = '';
+                                if (unlocked && typeof MapSystem.getLocationDangerLevel === 'function') {
+                                    const danger = MapSystem.getLocationDangerLevel(locId);
+                                    if (danger.enemyCount > 0) {
+                                        const dangerColors = { safe: '#66ff66', warning: '#ffcc44', danger: '#ff6666' };
+                                        const color = dangerColors[danger.danger] || '#888';
+                                        dangerInfo = `<span style="font-size: 12px; color: ${color}; float: right; margin-right: 10px;">⚠️ Lv.${danger.level}+ (${danger.label})</span>`;
+                                    }
+                                }
                                 return `
                                     <button onclick="Game.travelTo('${locId}')" 
                                             ${!unlocked ? 'disabled' : ''}
@@ -1278,6 +1331,7 @@ const UI = {
                                         font-size: 16px;
                                     " ${unlocked ? 'onmouseover="this.style.borderColor=\'#9977cc\'" onmouseout="this.style.borderColor=\'#7755aa\'"' : ''}>
                                         ${unlocked ? '🚪' : '🔒'} ${loc?.name || locId}
+                                        ${dangerInfo}
                                         <span style="font-size: 13px; color: #888; float: right;">旅行 0.5小时</span>
                                     </button>
                                 `;
