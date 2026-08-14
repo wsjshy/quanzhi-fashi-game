@@ -603,7 +603,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.9.5 · 状态栏优化</div>
+                ">v0.9.6 · 课程与探索</div>
             </div>
         `;
 
@@ -1244,6 +1244,33 @@ const UI = {
                             `;
                         })()}
                         <h3 style="color: #ffd700; margin-bottom: 20px; font-size: 22px;">📍 可执行的行动</h3>
+                        <!-- v0.9.6: 一键上完全天课程（仅在学校时显示） -->
+                        ${(() => {
+                            if (location?.classSchedule && (location.id === 'tianlan_school' || location.id === 'mingwen_girls_school')) {
+                                const dayOfWeek = TimeSystem.getDayOfWeek();
+                                const hasMorningClass = location.classSchedule.morning && location.classSchedule.morning[dayOfWeek];
+                                const hasAfternoonClass = location.classSchedule.afternoon && location.classSchedule.afternoon[dayOfWeek];
+                                if ((hasMorningClass && Player.hour <= 12) || (hasAfternoonClass && Player.hour <= 18)) {
+                                    return `<button onclick="Game.attendAllClasses()" style="
+                                        margin-bottom: 15px;
+                                        width: 100%;
+                                        padding: 15px 25px;
+                                        background: linear-gradient(135deg, rgba(30, 80, 60, 0.8), rgba(50, 120, 90, 0.8));
+                                        border: 2px solid #44aa88;
+                                        border-radius: 10px;
+                                        color: #aaffcc;
+                                        cursor: pointer;
+                                        font-size: 16px;
+                                        font-weight: bold;
+                                        text-align: left;
+                                    " onmouseover="this.style.borderColor='#66ccaa'; this.style.background='linear-gradient(135deg, rgba(50, 100, 80, 0.8), rgba(70, 140, 110, 0.8))'" onmouseout="this.style.borderColor='#44aa88'; this.style.background='linear-gradient(135deg, rgba(30, 80, 60, 0.8), rgba(50, 120, 90, 0.8))'">
+                                        📚 一键上完全天课程
+                                        <span style="font-size: 13px; color: #88ccaa; float: right;">自动参加今天所有课程，推进到放学</span>
+                                    </button>`;
+                                }
+                            }
+                            return '';
+                        })()}
                         <!-- v0.9.4: 体力低/疲劳建议休息提示 -->
                         ${(() => {
                             const staminaRatio = Player.stamina / (Player.maxStamina || 100);

@@ -643,13 +643,22 @@ const Game = {
             let firstExploreReward = null;
             if (!Player.exploredLocations.includes(locationId)) {
                 Player.exploredLocations.push(locationId);
-                const expReward = 50;
-                const goldReward = 20;
+                // v0.9.6: 增加首次探索奖励
+                const expReward = 80;
+                const goldReward = 50;
                 Player.gainExp(expReward);
                 Player.gold += goldReward;
                 firstExploreReward = { exp: expReward, gold: goldReward };
                 // v0.9.4: 每日统计
                 if (Player.dailyStats) Player.dailyStats.locationsExplored = (Player.dailyStats.locationsExplored || 0) + 1;
+                // v0.9.6: 隐藏发现奖励 - 15%概率获得额外奖励
+                if (Math.random() < 0.15) {
+                    const hiddenExp = 50;
+                    const hiddenGold = 30;
+                    Player.gainExp(hiddenExp);
+                    Player.gold += hiddenGold;
+                    firstExploreReward.hiddenFind = { exp: hiddenExp, gold: hiddenGold };
+                }
             }
 
             // v0.9.1: 100%探索完成奖励
@@ -658,8 +667,9 @@ const Game = {
                 const progress = MapSystem.getExplorationProgress();
                 if (progress.isComplete && !Player.explorationComplete.includes('all_locations')) {
                     Player.explorationComplete.push('all_locations');
-                    const completeExp = 100;
-                    const completeGold = 50;
+                    // v0.9.6: 增加100%探索奖励
+                    const completeExp = 200;
+                    const completeGold = 100;
                     Player.gainExp(completeExp);
                     Player.gold += completeGold;
                     explorationCompleteReward = { exp: completeExp, gold: completeGold };
@@ -699,6 +709,10 @@ const Game = {
             // v0.9.0: 首次探索奖励显示
             if (firstExploreReward) {
                 travelMsg += `\n\n🗺️ 首次探索！\n经验 +${firstExploreReward.exp}\n金币 +${firstExploreReward.gold}`;
+                // v0.9.6: 隐藏发现奖励显示
+                if (firstExploreReward.hiddenFind) {
+                    travelMsg += `\n\n✨ 意外发现！\n你在探索中发现了隐藏的宝物！\n经验 +${firstExploreReward.hiddenFind.exp}\n金币 +${firstExploreReward.hiddenFind.gold}`;
+                }
             }
             // v0.9.1: 100%探索完成奖励显示
             if (explorationCompleteReward) {
@@ -1174,6 +1188,76 @@ const Game = {
                 });
             }, 500);
         }
+    },
+
+    // v0.9.6: 一键上完全天课程
+    attendAllClasses() {
+        const location = MapSystem.getCurrentLocation();
+        if (!location || !location.classSchedule) {
+            UI.showMessage('这里没有课程安排。');
+            return;
+        }
+
+        const dayOfWeek = TimeSystem.getDayOfWeek();
+        const currentPeriod = TimeSystem.getCurrentPeriod();
+        
+        // 计算今天剩余的课程
+        let totalExp = 0;
+        let classesAttended = 0;
+        let targetHour = Player.hour;
+
+        // 上午课程（8点开始）
+        if (location.classSchedule.morning) {
+            const morningClass = location.classSchedule.morning[dayOfWeek];
+            if (morningClass && Player.hour <= 12) {
+                totalExp += morningClass.exp || 30;
+                classesAttended++;
+                targetHour = 12;
+            }
+        }
+
+        // 下午课程（14点开始）
+        if (location.classSchedule.afternoon) {
+            const afternoonClass = location.classSchedule.afternoon[dayOfWeek];
+            if (afternoonClass && Player.hour <= 18) {
+                totalExp += afternoonClass.exp || 30;
+                classesAttended++;
+                targetHour = 18;
+            }
+        }
+
+        if (classesAttended === 0) {
+            UI.showMessage('今天已经没有课程了。');
+            return;
+        }
+
+        // 计算需要推进的时间
+        let hoursToAdvance = targetHour - Player.hour;
+        if (hoursToAdvance <= 0) {
+            UI.showMessage('今天的课程已经结束了。');
+            return;
+        }
+
+        // 消耗体力（每节课消耗10体力）
+        const staminaCost = classesAttended * 10;
+        Player.useStamina(staminaCost);
+
+        // 获得经验
+        Player.gainExp(totalExp);
+
+        // 推进时间
+        TimeSystem.advanceTime(hoursToAdvance);
+
+        Player.save();
+        UI.renderMapScreen();
+
+        let msg = `📚 一键上完全天课程！\n\n`;
+        msg += `参加了 ${classesAttended} 节课\n`;
+        msg += `获得经验：+${totalExp}\n`;
+        msg += `消耗体力：${staminaCost}\n`;
+        msg += `时间推进：${hoursToAdvance}小时`;
+        
+        UI.showMessage(msg);
     },
     
     // 计算到目标时段需要多少小时
