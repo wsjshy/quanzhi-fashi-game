@@ -787,6 +787,7 @@ const DataSummonBeastEvolutions = {
 | **TODO.md** | 具体任务清单 |
 | **CHANGELOG.md** | 版本历史 |
 | [docs/减负设计方案.md](docs/减负设计方案.md) | **v0.9.0核心设计**：体力软化/战后恢复/移动零消耗/探索奖励 |
+| [docs/NPC关系与恋爱系统设计.md](docs/NPC关系与恋爱系统设计.md) | **v0.18.0核心设计**：关系阶段/约会系统/恋爱事件 |
 | [docs/剧情系统架构.md](docs/剧情系统架构.md) | 剧情系统设计、章节规划、深度设计 |
 | [docs/战斗系统状态.md](docs/战斗系统状态.md) | 战斗系统状态 |
 

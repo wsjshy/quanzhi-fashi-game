@@ -2378,6 +2378,28 @@ const Game = {
                     <div style="font-size: 16px; color: ${relationLevel.color}; margin-top: 10px; font-weight: bold;">
                         ${relationLevel.name}
                     </div>
+                    ${(() => {
+                        // v0.18.0: 下一阶段提示
+                        const score = npcState.opinion * 0.6 + npcState.trust * 0.3 + npcState.familiarity * 0.1;
+                        const thresholds = [
+                            { score: 5, name: '友善', hint: '多对话和送礼' },
+                            { score: 15, name: '熟人', hint: '完成相关任务' },
+                            { score: 30, name: '熟络', hint: '一起修炼/猎魔' },
+                            { score: 45, name: '朋友', hint: '深入对话' },
+                            { score: 60, name: '好友', hint: '约会邀请' },
+                            { score: 75, name: '挚友', hint: '共同经历大事件' },
+                            { score: 90, name: '知己', hint: '告白/特殊事件' }
+                        ];
+                        const next = thresholds.find(t => score < t.score);
+                        if (next && score < 90) {
+                            const need = Math.ceil(next.score - score);
+                            return `<div style="font-size: 11px; color: #888; margin-top: 5px;">下一阶段：${next.name}（还需${need}分，${next.hint}）</div>`;
+                        }
+                        if (score >= 90 && !npcState.flags?.is_lover) {
+                            return `<div style="font-size: 11px; color: #ff99cc; margin-top: 5px;">💖 关系已达顶峰，尝试告白吧！</div>`;
+                        }
+                        return '';
+                    })()}
                     <div style="font-size: 12px; color: #888; margin-top: 3px;">
                         语气：${dialogueTone}
                     </div>

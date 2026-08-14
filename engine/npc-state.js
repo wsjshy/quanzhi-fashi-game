@@ -79,6 +79,7 @@ const NPCStateSystem = {
      */
     changeOpinion(npcId, amount, reason = '') {
         const state = this.getNPCState(npcId);
+        const oldRelLevel = this.getRelationshipLevel(npcId);
         
         // 计算实际变化（受性格和当前关系影响）
         let actualChange = amount;
@@ -109,6 +110,16 @@ const NPCStateSystem = {
         
         this._save();
         
+        // v0.18.0: 关系等级变化检测
+        const newRelLevel = this.getRelationshipLevel(npcId);
+        if (newRelLevel.level !== oldRelLevel.level && typeof UI !== 'undefined' && typeof UI.showMessage === 'function') {
+            const npcData = typeof DataManager !== 'undefined' ? DataManager.getCharacter(npcId) : null;
+            const npcName = npcData ? npcData.name : npcId;
+            const levelOrder = { mortal_enemy:0, hostile:1, dislike:2, unfriendly:3, cold:4, stranger:5, friendly:6, acquaintance:7, good_acquaintance:8, friend:9, close_friend:10, best_friend:11, soulmate:12, lover:13, mentor:14, disciple:15, rival_special:16 };
+            const direction = (levelOrder[newRelLevel.level] || 0) > (levelOrder[oldRelLevel.level] || 0) ? '↑' : '↓';
+            UI.showMessage(`${direction} 与${npcName}的关系变化：${oldRelLevel.name} → ${newRelLevel.name}`);
+        }
+        
         // 社交成就检查
         if (typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
             try {
@@ -120,7 +131,7 @@ const NPCStateSystem = {
         
         return state.opinion;
     },
-    
+
     /**
      * 检查社交成就
      */
