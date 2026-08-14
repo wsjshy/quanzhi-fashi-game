@@ -657,7 +657,7 @@ const Player = {
             defense: { stat: 'defense', amount: 2 },
             speed: { stat: 'speed', amount: 2 },
             vitality: { stat: 'maxHp', amount: 20, also: 'hp' },
-            spirit: { stat: 'maxMp', amount: 10, also: 'mp' }
+            spirit: { stat: 'maxMp', amount: 10, also: 'mp', extra: { stat: 'spirit', amount: 1 } }
         };
 
         const config = attrMap[attr];
@@ -666,6 +666,9 @@ const Player = {
         this[config.stat] += config.amount;
         if (config.also) {
             this[config.also] += config.amount;
+        }
+        if (config.extra) {
+            this[config.extra.stat] += config.extra.amount;
         }
         
         this.attributePoints--;

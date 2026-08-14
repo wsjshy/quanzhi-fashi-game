@@ -148,19 +148,19 @@ const MapSystem = {
         }
 
         // 检查体力
-        const travelStaminaCost = 10;
+        const travelStaminaCost = 5;
         if (Player.stamina < travelStaminaCost) {
             return { 
                 success: false, 
-                message: `体力不足！旅行需要 ${travelStaminaCost} 点体力，当前只有 ${Player.stamina} 点。` 
+                message: `体力不足！移动需要 ${travelStaminaCost} 点体力，当前只有 ${Player.stamina} 点。` 
             };
         }
 
         // 消耗体力
         Player.useStamina(travelStaminaCost);
 
-        // 消耗时间
-        const travelTime = 2; // 旅行消耗2小时
+        // 消耗时间（城市内移动半小时）
+        const travelTime = 0.5;
         const timeEvents = TimeSystem.advanceTime(travelTime);
 
         // 加载新地点

@@ -697,7 +697,37 @@ const Game = {
         // 刷新界面
         UI.renderMapScreen();
     },
-    
+
+    // 原地休息（不消耗时间，恢复少量HP/MP/体力）
+    quickRest() {
+        const hpRecover = Math.floor(Player.maxHp * 0.3);
+        const mpRecover = Math.floor(Player.maxMp * 0.2);
+        const staminaRecover = 30;
+
+        const oldHp = Player.hp;
+        const oldMp = Player.mp;
+        const oldStamina = Player.stamina;
+
+        Player.hp = Math.min(Player.maxHp, Player.hp + hpRecover);
+        Player.mp = Math.min(Player.maxMp, Player.mp + mpRecover);
+        Player.stamina = Math.min(Player.maxStamina || 100, Player.stamina + staminaRecover);
+
+        const actualHp = Player.hp - oldHp;
+        const actualMp = Player.mp - oldMp;
+        const actualStamina = Player.stamina - oldStamina;
+
+        let msg = '你稍作休息，恢复了';
+        const parts = [];
+        if (actualHp > 0) parts.push(`${actualHp} HP`);
+        if (actualMp > 0) parts.push(`${actualMp} MP`);
+        if (actualStamina > 0) parts.push(`${actualStamina} 体力`);
+        msg += parts.join('、') + '。';
+
+        UI.showMessage(msg);
+        Player.save();
+        UI.renderMapScreen();
+    },
+
     // 显示等待选择界面
     showWaitMenu() {
         const periods = TimeSystem.getAllPeriods();
@@ -1011,6 +1041,18 @@ const Game = {
         BattleSystem.playerDefend();
         UI.updateBattleScreen();
         
+        if (!BattleSystem.active) {
+            this.endBattle();
+        }
+    },
+
+    // 玩家冥想（回蓝回血）
+    battleMeditate() {
+        if (!BattleSystem.isPlayerTurn) return;
+
+        BattleSystem.playerMeditate();
+        UI.updateBattleScreen();
+
         if (!BattleSystem.active) {
             this.endBattle();
         }
@@ -2137,6 +2179,12 @@ const Game = {
             return;
         }
 
+        // 弹出天赋选择面板
+        if (typeof TalentSystem !== 'undefined') {
+            this.showTalentSelection(element);
+            return; // 天赋选择后再保存和刷新
+        }
+
         Player.save();
 
         let msg = result.message;
@@ -2146,6 +2194,86 @@ const Game = {
         }
 
         UI.showMessage(msg);
+        this.openCharacterPanel();
+    },
+
+    // 显示天赋选择面板
+    showTalentSelection(element) {
+        const choices = TalentSystem.getTalentChoices(element);
+        if (choices.length === 0) {
+            Player.save();
+            UI.showMessage('觉醒成功！');
+            this.openCharacterPanel();
+            return;
+        }
+
+        const elementName = SkillSystem.getElementName(element);
+        const elementColor = SkillSystem.getElementColor(element);
+
+        let choicesHtml = choices.map((talentId, idx) => {
+            const talent = TalentSystem.getTalent(talentId);
+            if (!talent) return '';
+            const rarityConfig = TalentSystem.getRarityConfig(talent.rarity);
+            const effects = TalentSystem.getTalentEffects(talentId, talent.type === 'innate' ? (talent.maxLevel || 1) : 1);
+            const typeName = talent.type === 'innate' ? '【先天·不可成长】' : '【成长·可升级】';
+            const effectText = Object.entries(effects).map(([k, v]) => {
+                const names = {damageBonus:'伤害', healBonus:'治疗', defenseBonus:'防御', speedBonus:'速度', hpBonus:'生命', mpBonus:'魔法', critRate:'暴击率', critDamage:'暴击伤害', mpCostReduction:'耗蓝减少', dodgeBonus:'闪避', hpRegen:'HP回复', mpRegen:'MP回复', burnChance:'灼烧', freezeChance:'冰冻', paralyzeChance:'麻痹'};
+                return `${names[k]||k}+${(v*100).toFixed(0)}%`;
+            }).join(' ');
+
+            return `
+                <div onclick="Game.confirmTalent('${element}', '${talentId}')" style="
+                    padding: 15px;
+                    background: ${rarityConfig.color}15;
+                    border: 2px solid ${rarityConfig.color};
+                    border-radius: 10px;
+                    cursor: pointer;
+                    margin-bottom: 10px;
+                    transition: all 0.3s;
+                " onmouseover="this.style.background='${rarityConfig.color}30'; this.style.transform='scale(1.02)'" onmouseout="this.style.background='${rarityConfig.color}15'; this.style.transform='scale(1)'">
+                    <div style="font-size: 18px; font-weight: bold; color: ${rarityConfig.color}; margin-bottom: 5px;">
+                        ${talent.name} <span style="font-size: 12px; color: #999;">${typeName}</span>
+                    </div>
+                    <div style="font-size: 13px; color: #bbb; margin-bottom: 5px;">${talent.description}</div>
+                    <div style="font-size: 13px; color: ${elementColor};">${effectText}</div>
+                </div>
+            `;
+        }).join('');
+
+        const dialog = document.createElement('div');
+        dialog.style.cssText = `
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(10, 10, 30, 0.98); border: 2px solid ${elementColor};
+            border-radius: 15px; padding: 30px; min-width: 450px; max-width: 600px;
+            z-index: 1000; box-shadow: 0 0 30px ${elementColor}44;
+        `;
+        dialog.id = 'talent-selection-dialog';
+        dialog.innerHTML = `
+            <h2 style="color: ${elementColor}; text-align: center; margin-bottom: 10px;">✨ ${elementName}系天赋觉醒</h2>
+            <p style="color: #aaa; text-align: center; margin-bottom: 20px; font-size: 14px;">选择一个天赋，它将伴随你的${elementName}系成长</p>
+            ${choicesHtml}
+        `;
+
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:999;';
+        overlay.id = 'talent-selection-overlay';
+        document.body.appendChild(overlay);
+        document.body.appendChild(dialog);
+    },
+
+    // 确认选择天赋
+    confirmTalent(element, talentId) {
+        Player.talents[element] = TalentSystem.selectTalent(talentId);
+        Player.save();
+
+        const talent = TalentSystem.getTalent(talentId);
+        const elementName = SkillSystem.getElementName(element);
+
+        // 移除对话框
+        document.getElementById('talent-selection-dialog')?.remove();
+        document.getElementById('talent-selection-overlay')?.remove();
+
+        UI.showMessage(`觉醒成功！你选择了${elementName}系天赋：${talent.name}`);
         this.openCharacterPanel();
     },
 

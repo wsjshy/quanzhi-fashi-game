@@ -1779,6 +1779,30 @@ const BattleSystem = {
     },
 
     /**
+     * 玩家行动：冥想（集中精神回蓝回血，跳过攻击）
+     */
+    playerMeditate() {
+        if (!this.active || !this.isPlayerTurn) return null;
+
+        // 冥想恢复25%最大MP和10%最大HP
+        const mpRecover = Math.floor(this.player.maxMp * 0.25);
+        const hpRecover = Math.floor(this.player.maxHp * 0.10);
+
+        const oldMp = this.player.mp;
+        const oldHp = this.player.hp;
+        this.player.mp = Math.min(this.player.maxMp, this.player.mp + mpRecover);
+        this.player.hp = Math.min(this.player.maxHp, this.player.hp + hpRecover);
+
+        const actualMp = this.player.mp - oldMp;
+        const actualHp = this.player.hp - oldHp;
+
+        this.addLog(`你闭目冥想，恢复了 ${actualMp} 点MP和 ${actualHp} 点HP`, 'heal');
+
+        this.endPlayerTurn();
+        return { meditate: true, mpRecover: actualMp, hpRecover: actualHp };
+    },
+
+    /**
      * 玩家行动：使用道具
      */
     playerUseItem(itemId) {
@@ -2743,6 +2767,42 @@ const BattleSystem = {
         this.turn++;
         this.player.isDefending = false;
 
+        // 每回合自动回复HP/MP（基于等级和精神力）
+        if (this.player.hp > 0) {
+            const playerLevel = Player.level || 1;
+            const playerSpirit = Player.spirit || 10;
+            // HP回复：每回合回复等级*1 + 最大HP的1%
+            const hpRegen = Math.max(1, Math.floor(playerLevel * 1 + this.player.maxHp * 0.01));
+            // MP回复：每回合回复等级*1 + 精神力*0.5 + 最大MP的2%
+            const mpRegen = Math.max(1, Math.floor(playerLevel * 1 + playerSpirit * 0.5 + this.player.maxMp * 0.02));
+
+            // 天赋加成：hpRegen/mpRegen
+            let talentHpBonus = 0, talentMpBonus = 0;
+            if (typeof Player !== 'undefined' && typeof TalentSystem !== 'undefined') {
+                const allTalentEffects = Player.getAllTalentEffects ? Player.getAllTalentEffects() : {};
+                if (allTalentEffects.hpRegen) talentHpBonus = allTalentEffects.hpRegen;
+                if (allTalentEffects.mpRegen) talentMpBonus = allTalentEffects.mpRegen;
+            }
+
+            const finalHpRegen = Math.floor(hpRegen * (1 + talentHpBonus));
+            const finalMpRegen = Math.floor(mpRegen * (1 + talentMpBonus));
+
+            if (finalHpRegen > 0 && this.player.hp < this.player.maxHp) {
+                const oldHp = this.player.hp;
+                this.player.hp = Math.min(this.player.maxHp, this.player.hp + finalHpRegen);
+                if (this.player.hp > oldHp) {
+                    this.addLog(`恢复了 ${this.player.hp - oldHp} 点HP`, 'heal');
+                }
+            }
+            if (finalMpRegen > 0 && this.player.mp < this.player.maxMp) {
+                const oldMp = this.player.mp;
+                this.player.mp = Math.min(this.player.maxMp, this.player.mp + finalMpRegen);
+                if (this.player.mp > oldMp) {
+                    this.addLog(`恢复了 ${this.player.mp - oldMp} 点MP`, 'heal');
+                }
+            }
+        }
+
         // 玩家被眩晕/冻结/麻痹，自动跳过回合
         if (this.isStunned(this.player)) {
             const stunEffect = this.player.statusEffects.find(e => 
@@ -2826,8 +2886,8 @@ const BattleSystem = {
             defense = Math.max(0, defense + targetMods.defenseMod);
         }
 
-        // 基础伤害
-        let damage = Math.max(1, (attack - defense * 0.5) * multiplier);
+        // 基础伤害（防御系数0.3，避免高防御完全免伤）
+        let damage = Math.max(1, (attack - defense * 0.3) * multiplier);
 
         // 元素克制计算
         if (element && targetElement) {

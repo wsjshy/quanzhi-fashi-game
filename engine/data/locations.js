@@ -156,14 +156,14 @@ const DataLocations = {
       {
         id: "rest",
         name: "休息",
-        description: "在宿舍休息一会儿（1小时），恢复 HP、MP 和部分体力",
+        description: "在宿舍休息一会儿（1小时），恢复 HP、MP 和体力",
         icon: "😴",
         timeCost: 1,
         staminaCost: 0,
         effects: {
-          hp: 20,
-          mp: 15,
-          stamina: 20
+          hp: 50,
+          mp: 40,
+          stamina: 50
         }
       },
       {
@@ -184,8 +184,8 @@ const DataLocations = {
         name: "图书馆",
         description: "去图书馆看书（2小时），学习魔法知识，有概率领悟新技能或获得情报",
         icon: "📖",
-        timeCost: 2,
-        staminaCost: 10,
+        timeCost: 1,
+        staminaCost: 5,
         effects: {
           exp: 15,
           mp: -5
@@ -203,8 +203,8 @@ const DataLocations = {
         name: "小卖部",
         description: "学校的小卖部，购买药水和基础物品",
         icon: "🛒",
-        timeCost: 1,
-        staminaCost: 5,
+        timeCost: 0,
+        staminaCost: 0,
         shopId: "school_shop"
       },
       {
@@ -212,8 +212,8 @@ const DataLocations = {
         name: "找人聊天",
         description: "和学校里的 NPC 对话，可能接任务或获得信息",
         icon: "💬",
-        timeCost: 1,
-        staminaCost: 5,
+        timeCost: 0,
+        staminaCost: 0,
         npcs: [
           "mo_fan",
           "zhang_xiaohou",
@@ -247,8 +247,8 @@ const DataLocations = {
         name: "逛街",
         description: "在街上闲逛，有概率捡到钱、遇到神秘商人或商店打折",
         icon: "🚶",
-        timeCost: 2,
-        staminaCost: 15,
+        timeCost: 1,
+        staminaCost: 10,
         effects: {
           exp: 5
         },
@@ -267,8 +267,8 @@ const DataLocations = {
         name: "魔法商店",
         description: "专业魔法商店，购买装备、药水和材料",
         icon: "🏪",
-        timeCost: 1,
-        staminaCost: 10,
+        timeCost: 0,
+        staminaCost: 0,
         shopId: "magic_shop"
       },
       {
@@ -276,8 +276,8 @@ const DataLocations = {
         name: "酒馆",
         description: "猎者聚集的酒馆，有概率接到猎魔任务或发生冲突",
         icon: "🍺",
-        timeCost: 1,
-        staminaCost: 15,
+        timeCost: 0,
+        staminaCost: 0,
         eventChance: 0.4,
         events: [
           "event_tavern_quest",
@@ -289,8 +289,8 @@ const DataLocations = {
         name: "找人聊天",
         description: "和街上的 NPC 对话，可能接任务或获得信息",
         icon: "💬",
-        timeCost: 1,
-        staminaCost: 10,
+        timeCost: 0,
+        staminaCost: 0,
         npcs: [
           "hunter_li",
           "book_shop_owner",
@@ -309,8 +309,8 @@ const DataLocations = {
         name: "猎者联盟大厅",
         description: "猎者联盟大厅，接悬赏、加入猎妖队的地方。墙上的大屏幕公布着最新悬赏。",
         icon: "🏛️",
-        timeCost: 1,
-        staminaCost: 5,
+        timeCost: 0,
+        staminaCost: 0,
         effects: { exp: 10 },
         eventChance: 0.3,
         events: ["event_hunter_recruit", "event_hunter_bounty"],
@@ -511,8 +511,8 @@ const DataLocations = {
         name: "找莫凡聊天",
         description: "去莫凡家找他聊天，可能会听到一些秘密",
         icon: "🏠",
-        timeCost: 2,
-        staminaCost: 10,
+        timeCost: 0,
+        staminaCost: 0,
         effects: {
           npcOpinion: {
             npcId: "mo_fan",
@@ -529,8 +529,8 @@ const DataLocations = {
         name: "和莫叔叔聊聊",
         description: "和莫凡的父亲莫家兴聊天，他是个憨厚的中年人",
         icon: "👨",
-        timeCost: 1,
-        staminaCost: 5,
+        timeCost: 0,
+        staminaCost: 0,
         effects: {
           npcOpinion: {
             npcId: "mo_jiaxing",
@@ -579,8 +579,8 @@ const DataLocations = {
         name: "参观庄园",
         description: "参观穆家庄园，感受一下大家族的气派",
         icon: "🏛️",
-        timeCost: 2,
-        staminaCost: 10,
+        timeCost: 0,
+        staminaCost: 0,
         effects: {
           exp: 5
         },
@@ -594,8 +594,8 @@ const DataLocations = {
         name: "找穆宁雪",
         description: "去穆家庄园找穆宁雪，可能会遇到她",
         icon: "❄️",
-        timeCost: 2,
-        staminaCost: 10,
+        timeCost: 0,
+        staminaCost: 0,
         condition: {
           minOpinion: {
             npcId: "mu_ningxue",
@@ -625,7 +625,7 @@ const DataLocations = {
         name: "参加宴会",
         description: "参加穆氏家族的宴会，结识博城各界人物",
         icon: "🍷",
-        timeCost: 3,
+        timeCost: 1,
         staminaCost: 10,
         effects: { reputation_mu_family: 5, exp: 10 },
         eventChance: 0.5,
@@ -674,8 +674,8 @@ const DataLocations = {
         name: "查看城门",
         description: "看看城门的情况，了解一下外面的消息",
         icon: "🏯",
-        timeCost: 1,
-        staminaCost: 5,
+        timeCost: 0,
+        staminaCost: 0,
         effects: {
           exp: 3
         },
@@ -736,8 +736,8 @@ const DataLocations = {
         name: "探索驿站",
         description: "在驿站内探索，熟悉环境，可能遇到猎者或商贩",
         icon: "🏘️",
-        timeCost: 2,
-        staminaCost: 10,
+        timeCost: 0,
+        staminaCost: 0,
         effects: {
           exp: 5
         },
@@ -753,8 +753,8 @@ const DataLocations = {
         name: "逛商铺",
         description: "驿站主道有商铺小摊，卖魔法师战斗修炼用品，包括履魔具、魔石等",
         icon: "🛒",
-        timeCost: 1,
-        staminaCost: 5,
+        timeCost: 0,
+        staminaCost: 0,
         effects: {},
         shopId: "station_shop"
       },
@@ -797,8 +797,8 @@ const DataLocations = {
         name: "进入雪峰山",
         description: "离开驿站安界，进入雪峰山野外区域",
         icon: "⛰️",
-        timeCost: 1,
-        staminaCost: 10,
+        timeCost: 0,
+        staminaCost: 0,
         effects: {}
       }
     ],
@@ -898,8 +898,8 @@ const DataLocations = {
         name: "与同学交流",
         description: "与一同历练的同学交流",
         icon: "💬",
-        timeCost: 1,
-        staminaCost: 5,
+        timeCost: 0,
+        staminaCost: 0,
         effects: {},
         npcs: ["bai_yang", "mu_bai", "zhou_min", "xu_zhaoting", "wang_sanpang", "zhang_xiaohou"]
       }
@@ -941,8 +941,8 @@ const DataLocations = {
         name: "探索校园",
         description: "在空旷的校园中探索，寻找线索",
         icon: "🔍",
-        timeCost: 2,
-        staminaCost: 10,
+        timeCost: 0,
+        staminaCost: 0,
         effects: { exp: 15 },
         eventChance: 0.4,
         events: ["event_mingwen_explore", "event_mingwen_clue"]
@@ -974,8 +974,8 @@ const DataLocations = {
         name: "探望叶心夏",
         description: "探望在小姑家休养的叶心夏",
         icon: "👧",
-        timeCost: 1,
-        staminaCost: 5,
+        timeCost: 0,
+        staminaCost: 0,
         effects: { happiness: 10 },
         npcs: ["ye_xinxia"],
         npcRate: 0.8
@@ -1013,8 +1013,8 @@ const DataLocations = {
         name: "使用寻妖粉",
         description: "撒下寻妖粉，检测妖魔留下的气息足迹",
         icon: "✨",
-        timeCost: 1,
-        staminaCost: 5,
+        timeCost: 0,
+        staminaCost: 0,
         effects: {},
         eventChance: 0.8,
         events: ["event_demon_powder_reveal"]
@@ -1035,8 +1035,8 @@ const DataLocations = {
         name: "疏散居民",
         description: "通知老街区的居民和老人撤离危险区域",
         icon: "🚨",
-        timeCost: 2,
-        staminaCost: 10,
+        timeCost: 0,
+        staminaCost: 0,
         effects: { reputation_city: 10, exp: 10 },
         eventChance: 0.3,
         events: ["event_evacuate_residents"]
@@ -1046,8 +1046,8 @@ const DataLocations = {
         name: "与猎妖队汇合",
         description: "与城市猎妖队汇合，共同对付妖魔",
         icon: "⚔️",
-        timeCost: 1,
-        staminaCost: 5,
+        timeCost: 0,
+        staminaCost: 0,
         effects: {},
         npcs: ["xu_dahuang", "guo_caitang", "xiao_ke", "li_wenjie", "fei_shi", "yang_zuohe"],
         npcRate: 0.7
@@ -1087,8 +1087,8 @@ const DataLocations = {
         name: "与守卫交谈",
         description: "与地圣泉的守卫们聊天，了解情况",
         icon: "💬",
-        timeCost: 1,
-        staminaCost: 5,
+        timeCost: 0,
+        staminaCost: 0,
         effects: {},
         npcs: ["liang_bin", "lin_yuxin"],
         npcRate: 0.8

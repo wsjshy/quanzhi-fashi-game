@@ -1006,7 +1006,28 @@ const UI = {
                             <div style="font-size: 13px; color: #cc9999;">重新挑战上一次的敌人</div>
                         </button>
                         ` : ''}
-                        
+
+                        <!-- 原地休息（所有地点可用） -->
+                        <button onclick="Game.quickRest()" style="
+                            margin-top: 15px;
+                            width: 100%;
+                            padding: 15px 25px;
+                            background: linear-gradient(135deg, rgba(40, 80, 40, 0.8), rgba(60, 120, 60, 0.8));
+                            border: 2px solid #448844;
+                            border-radius: 10px;
+                            color: #ddffdd;
+                            cursor: pointer;
+                            text-align: left;
+                            transition: all 0.3s;
+                            font-size: 16px;
+                        " onmouseover="this.style.borderColor='#66bb66'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#448844'; this.style.transform='translateX(0)'">
+                            <div style="font-size: 18px; margin-bottom: 5px;">
+                                💚 原地休息
+                                <span style="font-size: 12px; color: #88cc88; float: right;">不消耗时间</span>
+                            </div>
+                            <div style="font-size: 13px; color: #99bb99;">稍作休息，恢复30%HP、20%MP和30点体力（战斗外随时可用）</div>
+                        </button>
+
                         <!-- 等待时间 -->
                         <h3 style="color: #ffd700; margin: 30px 0 20px; font-size: 22px;">⏰ 时间</h3>
                         <div style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 15px;">
@@ -1612,6 +1633,19 @@ const UI = {
                             opacity: ${state.isPlayerTurn ? 1 : 0.5};
                         ">🛡️ 防御</button>
                         
+                        <button onclick="Game.battleMeditate()" ${!state.isPlayerTurn ? 'disabled' : ''} 
+                                title="冥想：集中精神恢复25%最大MP和10%最大HP，本回合无法行动"
+                                style="
+                            padding: 10px 20px;
+                            background: linear-gradient(135deg, #443355, #554466);
+                            border: 2px solid #665577;
+                            border-radius: 8px;
+                            color: #ddccff;
+                            cursor: ${state.isPlayerTurn ? 'pointer' : 'not-allowed'};
+                            font-size: 15px;
+                            opacity: ${state.isPlayerTurn ? 1 : 0.5};
+                        ">🧘 冥想</button>
+                        
                         <button onclick="Game.battleFlee()" ${!state.isPlayerTurn || !state.options?.canFlee ? 'disabled' : ''} style="
                             padding: 10px 20px;
                             background: linear-gradient(135deg, #555533, #666644);
@@ -1654,7 +1688,7 @@ const UI = {
                             const borderColor = isCounter ? '#ff6600' : isWeak ? '#666666' : SkillSystem.getElementColor(skill.element);
                             return `
                                 <button onclick="Game.battleUseSkill('${skillId}')" ${!canUse ? 'disabled' : ''}
-                                        title="${skill.description}${isCounter ? ' [克制敌人！伤害+50%]' : isWeak ? ' [被克制，伤害-30%]' : ''}"
+                                        title="${this.getSkillTooltipText(skill)}${isCounter ? ' [克制！伤害+50%]' : isWeak ? ' [被克制，伤害-30%]' : ''}"
                                         style="
                                     padding: 12px;
                                     background: linear-gradient(135deg, ${isCounter ? '#ff6600' : SkillSystem.getElementColor(skill.element)}22, ${isCounter ? '#ff9933' : SkillSystem.getElementColor(skill.element)}44);
@@ -3795,6 +3829,13 @@ const UI = {
                                     const maxLevel = talent.maxLevel || 10;
                                     const expToNext = TalentSystem.getExpToNextLevel(talentData.level);
                                     const expPercent = talentData.level >= maxLevel ? 100 : (talentData.exp / expToNext * 100);
+                                    const effects = TalentSystem.getTalentEffects(talentData.talentId, talentData.level);
+                                    const effectDesc = Object.entries(effects).map(([k, v]) => {
+                                        const names = {damageBonus:'伤害加成', healBonus:'治疗加成', defenseBonus:'防御加成', speedBonus:'速度加成', hpBonus:'生命加成', critRate:'暴击率', critDamage:'暴击伤害', mpCostReduction:'耗蓝减少', dodgeBonus:'闪避率', hpRegen:'HP回复', mpRegen:'MP回复', burnChance:'灼烧概率', freezeChance:'冰冻概率', paralyzeChance:'麻痹概率'};
+                                        const pct = (v * 100).toFixed(0);
+                                        return `${names[k]||k}+${pct}%`;
+                                    }).join(', ');
+                                    const talentTooltip = `${talent.description || ''} [Lv.${talentData.level}] ${effectDesc}`;
                                     return `
                                         <div style="
                                             padding: 8px 12px;
@@ -3803,7 +3844,7 @@ const UI = {
                                             border-radius: 8px;
                                             margin-bottom: 6px;
                                             font-size: 13px;
-                                        ">
+                                        " title="${talentTooltip}">
                                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                                                 <span>
                                                     <span style="color: ${SkillSystem.getElementColor(elem)}; font-weight: bold;">${SkillSystem.getElementName(elem)}</span>
@@ -4012,12 +4053,34 @@ const UI = {
         `;
     },
 
+    // 生成技能tooltip文本
+    getSkillTooltipText(skill) {
+        let tip = skill.description || skill.name;
+        tip += ` | MP消耗: ${skill.mpCost || 0}`;
+        if (skill.power) tip += ` | 伤害倍率: ${skill.power}x攻击`;
+        if (skill.baseDamage) tip += ` | 基础伤害: ${skill.baseDamage}`;
+        if (skill.damageMultiplier && skill.damageMultiplier !== 1) tip += ` | 伤害系数: ${skill.damageMultiplier}`;
+        if (skill.hitCount && skill.hitCount > 1) tip += ` | 攻击次数: ${skill.hitCount}`;
+        if (skill.cooldown) tip += ` | 冷却: ${skill.cooldown}回合`;
+        if (skill.effect) tip += ` | 效果: ${skill.effect}`;
+        if (skill.chance) tip += ` (${Math.round(skill.chance * 100)}%)`;
+        return tip;
+    },
+
     // 渲染属性行
     renderAttributeRow(icon, name, value, max, attrKey) {
         const canAdd = attrKey && Player.attributePoints > 0 && ['attack', 'defense', 'speed', 'vitality', 'spirit'].includes(attrKey);
-        
+        const attrDescriptions = {
+            vitality: '体质：每点+20最大HP和当前HP，提高生存能力',
+            spirit: '精神力：每点+10最大MP和1精神力，提高魔法伤害和MP上限',
+            attack: '攻击：每点+2攻击力，提高物理和魔法伤害',
+            defense: '防御：每点+2防御力，减少受到的伤害',
+            speed: '速度：每点+2速度，影响行动顺序和闪避'
+        };
+        const titleText = attrKey ? attrDescriptions[attrKey] : (name === '暴击率' ? '暴击率：攻击时造成双倍伤害的概率' : name === '命中率' ? '命中率：攻击命中目标的概率' : '');
+
         return `
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #335555;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #335555;" title="${titleText}">
                 <div style="font-size: 16px; color: #ccc;">
                     ${icon} ${name}
                 </div>
