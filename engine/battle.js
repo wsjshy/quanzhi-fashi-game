@@ -1076,7 +1076,7 @@ const BattleSystem = {
                 const removed = [];
                 this.player.statusEffects = this.player.statusEffects.filter(s => {
                     const isDebuff = ['burn', 'freeze', 'frozen', 'stun', 'poison', 'slow', 'curse', 'blind', 'bind', 'paralyze', 'electrified'].includes(s.type);
-                    if (isDebuff) {
+                    if (isDebuff && !s.unpurgeable) {
                         removed.push(s.name || s.type);
                         return false;
                     }
@@ -1192,14 +1192,20 @@ const BattleSystem = {
             if (te.burnChance && Math.random() < te.burnChance) {
                 const burnDmg = te.burnDamage || 0.05;
                 this.applyStatusEffects(this.enemy, [{
-                    type: 'burn', name: '燃烧', damage: burnDmg, duration: 3
+                    type: 'burn', name: '燃烧', damage: burnDmg, duration: 3,
+                    unpurgeable: te.burnUnpurgeable || false,
+                    defenseDown: te.burnDefenseDown || 0
                 }], true);
                 this.addLog(`🔥 ${this.enemy.name} 被点燃了！`, 'element');
             }
             // 冰冻
             if (te.freezeChance && Math.random() < te.freezeChance) {
                 this.applyStatusEffects(this.enemy, [{
-                    type: 'freeze', name: '冰冻', duration: te.freezeDuration || 1
+                    type: 'freeze', name: '冰冻', duration: te.freezeDuration || 1,
+                    unpurgeable: te.freezeUnpurgeable || false,
+                    defenseDown: te.freezeDefenseDown || 0,
+                    hpDrain: te.frozenHpDrain || 0,
+                    spread: te.freezeSpread || false
                 }], true);
                 this.addLog(`❄️ ${this.enemy.name} 被冻结了！`, 'element');
             }
@@ -1209,6 +1215,19 @@ const BattleSystem = {
                     type: 'paralyze', name: '麻痹', duration: te.paralyzeDuration || 1
                 }], true);
                 this.addLog(`⚡ ${this.enemy.name} 被麻痹了！`, 'element');
+            }
+            // 感电时额外麻痹（shockParalyzeChance）
+            if (te.shockParalyzeChance) {
+                const hasShock = this.enemy.statusEffects.some(e => e.type === 'shock' || e.type === 'electrified');
+                if (hasShock && Math.random() < te.shockParalyzeChance) {
+                    const alreadyParalyzed = this.enemy.statusEffects.some(e => e.type === 'paralyze');
+                    if (!alreadyParalyzed) {
+                        this.applyStatusEffects(this.enemy, [{
+                            type: 'paralyze', name: '麻痹', duration: te.paralyzeDuration || 1
+                        }], true);
+                        this.addLog(`⚡ 感电传导！${this.enemy.name} 被麻痹了！`, 'element');
+                    }
+                }
             }
             // 眩晕
             if (te.stunChance && Math.random() < te.stunChance) {
@@ -1247,7 +1266,8 @@ const BattleSystem = {
                 } else {
                     this.applyStatusEffects(this.enemy, [{
                         type: te.frostStackMax ? 'frost' : 'slow', name: te.frostStackMax ? '冰霜' : '减速',
-                        speedMod: -0.3, duration: 2, stacks: 1
+                        speedMod: -0.3, duration: 2, stacks: 1,
+                        unpurgeable: te.slowUnpurgeable || false
                     }], true);
                     this.addLog(`🐌 ${this.enemy.name} 被减速了！`, 'element');
                 }
@@ -1379,6 +1399,8 @@ const BattleSystem = {
                 let ratio = te.secondHitRatio || 0.85;
                 // 连击伤害加成（comboDamage）
                 if (te.comboDamage) ratio += te.comboDamage;
+                // 连段伤害递增（comboDamageIncrease：第二段+X）
+                if (te.comboDamageIncrease) ratio += te.comboDamageIncrease;
                 const secondDmg = this.calculateDamage(
                     this.player.attack * ratio,
                     this.enemy.defense,
@@ -1395,6 +1417,8 @@ const BattleSystem = {
                     if (te.tripleStrikeChance && Math.random() < te.tripleStrikeChance) {
                         let thirdRatio = te.thirdHitRatio || 0.6;
                         if (te.comboDamage) thirdRatio += te.comboDamage;
+                        // 连段伤害递增（comboDamageIncrease：第三段再+X，共+2X）
+                        if (te.comboDamageIncrease) thirdRatio += te.comboDamageIncrease * 2;
                         const thirdDmg = this.calculateDamage(
                             this.player.attack * thirdRatio,
                             this.enemy.defense,
@@ -2067,7 +2091,7 @@ const BattleSystem = {
             // 天赋：治疗时净化（purifyOnHealChance）
             if (isPlayer && this.player.talentEffects && this.player.talentEffects.purifyOnHealChance && healTarget === this.player) {
                 const cleansable = healTarget.statusEffects.filter(e =>
-                    ['burn', 'freeze', 'paralyze', 'stun', 'slow', 'poison', 'bleed', 'curse', 'blind', 'fear'].includes(e.type)
+                    ['burn', 'freeze', 'paralyze', 'stun', 'slow', 'poison', 'bleed', 'curse', 'blind', 'fear'].includes(e.type) && !e.unpurgeable
                 );
                 if (cleansable.length > 0 && Math.random() < this.player.talentEffects.purifyOnHealChance) {
                     healTarget.statusEffects = healTarget.statusEffects.filter(e => !cleansable.includes(e));
@@ -2077,7 +2101,7 @@ const BattleSystem = {
             // 天赋：全净化（purifyAll）：治疗时净化所有负面
             if (isPlayer && this.player.talentEffects && this.player.talentEffects.purifyAll && healTarget === this.player) {
                 const cleansable = healTarget.statusEffects.filter(e =>
-                    ['burn', 'freeze', 'paralyze', 'stun', 'slow', 'poison', 'bleed', 'curse', 'blind', 'fear'].includes(e.type)
+                    ['burn', 'freeze', 'paralyze', 'stun', 'slow', 'poison', 'bleed', 'curse', 'blind', 'fear'].includes(e.type) && !e.unpurgeable
                 );
                 if (cleansable.length > 0) {
                     healTarget.statusEffects = healTarget.statusEffects.filter(e => !cleansable.includes(e));
@@ -2668,6 +2692,11 @@ const BattleSystem = {
                 if (te.dodgeCritDamage) {
                     this.player._dodgeCritDamage = te.dodgeCritDamage;
                 }
+                // 闪避后下次必暴（dodgeNextHitBonus）
+                if (te.dodgeNextHitBonus) {
+                    this.player._dodgeNextCrit = true;
+                    this.addLog(`🌪️ 看破！下次攻击必定暴击！`, 'buff');
+                }
                 if (te.dodgeHeal) {
                     const healAmount = Math.floor(this.player.maxHp * te.dodgeHeal);
                     this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
@@ -2683,6 +2712,19 @@ const BattleSystem = {
             // 天赋：攻击命中效果（流血等）
             if (!damage.isMiss && damage.amount > 0) {
                 this.processTraitsOnHit(this.enemy, this.player, damage.amount, false);
+            }
+            // 天赋：低HP时冻结攻击者（lowHpFreezeChance）
+            if (!damage.isMiss && this.player.talentEffects && this.player.talentEffects.lowHpFreezeChance) {
+                const hpRatio = this.player.hp / this.player.maxHp;
+                if (hpRatio < 0.3 && Math.random() < this.player.talentEffects.lowHpFreezeChance) {
+                    const alreadyFrozen = this.enemy.statusEffects.some(e => e.type === 'freeze' || e.type === 'frozen');
+                    if (!alreadyFrozen) {
+                        this.addStatusEffect(this.enemy, {
+                            type: 'freeze', name: '寒冰反制', duration: 1
+                        });
+                        this.addLog(`❄️ 寒冰反制！${this.enemy.name} 被冰冻了！`, 'element');
+                    }
+                }
             }
 
             this.addLog(`${this.enemy.name} 发动攻击，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}`, 
@@ -3878,13 +3920,17 @@ const BattleSystem = {
         // 暴击判定
         const targetHasCritImmunity = target && target.talentEffects && target.talentEffects.critImmunity;
         const attackerGuaranteedCrit = attacker && attacker.talentEffects && attacker.talentEffects.guaranteedCrit;
+        // 闪避后下次必暴
+        const dodgeNextCrit = attacker && attacker._dodgeNextCrit;
         // 潜行暴击加成
         let stealthCritBonus = 0;
         if (attacker === this.player && attacker.stealthActive && attacker.talentEffects && attacker.talentEffects.stealthCritBonus) {
             stealthCritBonus = attacker.talentEffects.stealthCritBonus;
         }
-        if (!targetHasCritImmunity && (attackerGuaranteedCrit || frozenCritGuaranteed || Math.random() < critRate + chargeCritBonus + windDemonCritBonus + stealthCritBonus)) {
+        if (!targetHasCritImmunity && (attackerGuaranteedCrit || dodgeNextCrit || frozenCritGuaranteed || Math.random() < critRate + chargeCritBonus + windDemonCritBonus + stealthCritBonus)) {
             result.isCrit = true;
+            // 消耗必暴标记
+            if (dodgeNextCrit) attacker._dodgeNextCrit = false;
             let critMult = 1.5 + Math.random() * 0.5; // 1.5-2.0倍暴击
             // 天赋：暴击伤害加成
             if (attacker && attacker.talentEffects) {
@@ -4899,6 +4945,12 @@ const BattleSystem = {
                     }
                 }
             }
+            // 冻结掉血（frozenHpDrain：每回合损失%最大HP）
+            if ((effect.type === 'freeze' || effect.type === 'frozen') && effect.hpDrain) {
+                const drainDmg = Math.floor(target.maxHp * effect.hpDrain);
+                this.applyDamage(target, { amount: drainDmg, isCrit: false, isMiss: false, element: 'ice' }, null);
+                this.addLog(`❄️ ${targetName} 被冻伤，损失 ${drainDmg} 点生命！`, 'damage');
+            }
 
             // REG恢复（每回合恢复HP）
             if (effect.regen) {
@@ -4914,6 +4966,13 @@ const BattleSystem = {
 
             // 效果结束
             if (effect.duration <= 0) {
+                // 霜爆（frostExplosion）：解冻时造成伤害
+                if ((effect.type === 'freeze' || effect.type === 'frozen') && !isPlayer && this.player.talentEffects && this.player.talentEffects.frostExplosion) {
+                    const explodeDmg = Math.floor(this.enemy.maxHp * this.player.talentEffects.frostExplosion);
+                    this.applyDamage(this.enemy, { amount: explodeDmg, isCrit: false, isMiss: false, element: 'ice' }, this.player);
+                    this.addLog(`❄️ 霜爆！${this.enemy.name} 解冻时受到 ${explodeDmg} 点伤害！`, 'element');
+                    this.showDamageNumber('enemy', explodeDmg, 'magic');
+                }
                 if (effect.type !== 'shield') {
                     this.addLog(`${targetName} 的 ${effect.name} 效果消失了`, 'system');
                 }
@@ -5030,6 +5089,14 @@ const BattleSystem = {
             // 冻结状态受火系伤害×2
             if (effect.type === 'frozen') {
                 mods.fireDamageMod *= 2;
+                // 冻结降防（freezeDefenseDown）
+                if (effect.defenseDown) {
+                    mods.defenseMod -= effect.defenseDown;
+                }
+            }
+            // 冰冻状态降防（freezeDefenseDown）
+            if (effect.type === 'freeze' && effect.defenseDown) {
+                mods.defenseMod -= effect.defenseDown;
             }
             // 伤害反弹
             if (effect.type === 'damage_reflect' && effect.reflectPercent) {
