@@ -31,6 +31,18 @@
 - [x] 低HP增伤：lowHpDamageScaling（HP越低伤害越高）
 - [x] 闪电连锁：chainChance/chainTargets/chainDamageRatio/chainNoDecay
 - [x] debuff增伤：debuffedDamageBonus（对有debuff敌人伤害提升）
+- [x] 自动潜行：autoStealthChance（受击后概率重新潜行）
+- [x] 圣盾：holyShield/holyShieldDuration（致命伤害时保留1HP+无敌）
+- [x] 自动净化：autoPurify（每回合自动净化1个负面状态）
+- [x] 滋润不可驱散：regenUnpurgeable
+- [x] 滋润附加：regenDamageReduction/regenDefenseBonus/regenMp
+- [x] 风系DOT加成：windDotBonus（风助火势，持续伤害+50%）
+- [x] 黑暗领域：enemyHitDown（降低敌人命中）
+- [x] 生命之种：lifeSeed/lifeSeedDelay/lifeSeedHeal（延迟爆发治疗）
+- [x] 击退免疫：knockbackImmune（免疫stun）
+- [x] addStatusEffect方法修复：统一状态添加入口
+- [x] 麻痹不可闪避：paralyzeNoDodge（已有）
+- [x] 岩盾：shieldChance/shieldRatio（已有）
 
 ### v0.8.12 十批A类天赋效果（2026-08-14）
 - [x] 降低战斗自动回复：HP 1%→0.3%，MP 2%→0.5%
@@ -98,7 +110,7 @@
 **雷系蓄电机制**
 - [x] chargeStack/chargeMax/chargePerStack - 攻击叠加蓄电层数，每层+麻痹概率
 - [x] fullChargeCrit/fullChargeDamage - 满层时暴击率/暴击伤害提升
-- [ ] paralyzeNoDodge - 麻痹时不可闪避
+- [x] paralyzeNoDodge - 麻痹时不可闪避
 - [ ] paralyzeDamage/paralyzeChain - 麻痹时额外伤害/连锁
 - [x] shockDebuff/shockDuration/shockThunderBonus - 感电状态，雷伤+30%
 - [x] shockParalyzeChance - 感电时额外麻痹概率
@@ -130,7 +142,7 @@
 - [ ] fieldIceResDown - 绝对零度领域冰抗-30%
 
 **土系防御深化**
-- [ ] shieldChance/shieldRatio - 岩盾概率/比例
+- [x] shieldChance/shieldRatio - 岩盾概率/比例
 - [ ] shieldDefenseBonus/shieldBreakDamage - 护盾时防御+30%/破碎反伤
 - [ ] shieldRegen/shieldReflect - 护盾每回合回复/反射
 - [x] permanentShield/critImmunity - 常驻30%HP护盾/免暴
@@ -144,7 +156,7 @@
 **风系机动深化**
 - [x] hurricaneChance/hurricaneDuration/hurricaneVulnerable - 飓风卷起
 - [ ] tornadoChance/tornadoDamage/tornadoKnockback - 龙卷风（全体）
-- [ ] windDotBonus - 风系持续+50%
+- [x] windDotBonus - 风系持续+50%
 - [ ] enemySpeedDown/allySpeedBonus - 寒冰领域
 - [ ] teamSpeedBonus/teamDodgeBonus - 团队buff（单机无队友）
 - [ ] stormPunishChance/stormPunishDamage/stormPunishStun - 天罚风暴（全体）
@@ -155,8 +167,8 @@
 - [x] healPurifyChance/purifyOnHealChance - 治疗时净化
 - [x] autoHeal - 自动治疗
 - [x] regenChance/regenAmount/regenDuration - 滋润持续回复
-- [ ] regenMp/regenDamageReduction/regenDefenseBonus - 滋润MP/减伤/加防
-- [ ] regenUnpurgeable/lowHpRegenDouble - 滋润不可驱散/低HP翻倍
+- [x] regenMp/regenDamageReduction/regenDefenseBonus - 滋润MP/减伤/加防
+- [x] regenUnpurgeable/lowHpRegenDouble - 滋润不可驱散/低HP翻倍
 - [ ] tide/tideInterval/tideHeal/tideCleanse - 潮汐（全体）
 - [x] tideDamageStack/tideDamageMax/tideHealStack/tideHealMax - 涨潮叠加
 - [x] tsunamiChance/tsunamiDamage/tsunamiAtkDown - 海啸
@@ -174,8 +186,8 @@
 - [ ] purifyChance/aoePurify/purifyCount - 净化
 - [ ] purifyHeal/purifyDebuff/purifyAtkDown/purifyDefDown - 净化附带效果
 - [ ] purifyTeamHeal/purifyDamage - 净化团队回血/对暗伤害
-- [ ] holyShield/holyShieldDuration/holyShieldTarget - 圣盾
-- [ ] shieldDebuffImmunity - 护盾时免负面
+- [x] holyShield/holyShieldDuration/holyShieldTarget - 圣盾
+- [x] shieldDebuffImmunity - 护盾时免负面
 - [ ] debuffedDamageBonus - 对负面目标+50%
 - [ ] angelInterval/angelDamage/angelHeal - 天使降临
 - [x] debuffImmunity - 免疫负面
@@ -185,12 +197,12 @@
 - [x] stealthOnStart - 暗影形态
 - [x] lowHpDodgeBonus - 低HP闪避
 - [ ] shadowFormHeal - 暗影击杀回血
-- [ ] enemyHitDown - 黑暗领域：敌命中-15%
+- [x] enemyHitDown - 黑暗领域：敌命中-15%
 - [ ] teamDarkBonus - 团队暗伤（单机无队友）
 - [x] ignoreDodgeChance - 无视闪避
 - [x] stealthCritBonus - 潜行暴击
 - [x] reStealthChance - 击杀后重新隐身
-- [ ] markNoStealth/autoStealthChance - 暗影标记禁隐身/自动隐身
+- [x] markNoStealth/autoStealthChance - 暗影标记禁隐身/自动隐身
 - [ ] curseEndDamage/curseSpreadChance/curseUnpurgeable - 诅咒结束伤害/传播/不可驱散
 - [ ] curseKillHeal - 诅咒击杀回血
 - [x] guaranteedCrit - 必暴
@@ -199,10 +211,10 @@
 **治愈系深化**
 - [ ] lifeLink - 生命链接（单机无队友）
 - [x] blessAtkBonus/blessDefBonus/blessDuration - 祝福之环
-- [ ] lifeSeed/lifeSeedDelay/lifeSeedHeal - 生命之种延迟爆发
+- [x] lifeSeed/lifeSeedDelay/lifeSeedHeal - 生命之种延迟爆发
 - [x] revive/reviveHp - 复活
 - [x] purifyAll - 全净化
-- [ ] autoPurify - 自动净化
+- [x] autoPurify - 自动净化
 - [ ] protectionDuration - 神圣庇护
 - [x] cooldownReduction - 冷却缩减
 - [x] autoHeal - 自动治疗

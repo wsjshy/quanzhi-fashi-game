@@ -825,6 +825,13 @@ const BattleSystem = {
                 this.addLog(`⚡ 九天应元！开场雷罚造成 ${thunderDmg} 点伤害！`, 'element');
                 this.showDamageNumber('enemy', thunderDmg, 'crit');
             }
+            // 黑暗领域：降低敌人命中
+            if (te.enemyHitDown && this.enemy.hp > 0) {
+                this.addStatusEffect(this.enemy, {
+                    type: 'blind', name: '黑暗领域', duration: 99, hitMod: -te.enemyHitDown
+                });
+                this.addLog(`🌑 黑暗领域降临！${this.enemy.name} 命中率降低！`, 'element');
+            }
         }
 
         return {
@@ -2124,6 +2131,14 @@ const BattleSystem = {
                     }
                     this.addLog(`💚 治疗转化为 ${shieldAmount} 点护盾！`, 'heal');
                 }
+            }
+            // 天赋：生命之种（lifeSeed）：治疗时种下种子，延迟后爆发治疗
+            if (isPlayer && this.player.talentEffects && this.player.talentEffects.lifeSeed && healTarget === this.player) {
+                const delay = this.player.talentEffects.lifeSeedDelay || 3;
+                const healRatio = this.player.talentEffects.lifeSeedHeal || 0.15;
+                healTarget._lifeSeedDelay = delay;
+                healTarget._lifeSeedHeal = Math.floor(healTarget.maxHp * healRatio);
+                this.addLog(`🌱 生命之种下！${delay}回合后爆发治疗！`, 'heal');
             }
             // 天赋：治疗时净化（purifyOnHealChance）
             if (isPlayer && this.player.talentEffects && this.player.talentEffects.purifyOnHealChance && healTarget === this.player) {
@@ -4058,6 +4073,13 @@ const BattleSystem = {
         if (target === this.player && target.damageReduction) {
             amount = Math.floor(amount * (1 - target.damageReduction));
         }
+        // 滋润减伤（regenDamageReduction）
+        if (target === this.player && target.talentEffects && target.talentEffects.regenDamageReduction) {
+            const hasRegen = target.statusEffects.some(e => e.type === 'regen');
+            if (hasRegen) {
+                amount = Math.floor(amount * (1 - target.talentEffects.regenDamageReduction));
+            }
+        }
 
         // 玩家灵种元素抗性（小说第134章：灵火改变体质，对火焰有抗性）
         if (target === this.player && damage.element && typeof Player !== 'undefined') {
@@ -4135,6 +4157,13 @@ const BattleSystem = {
                     }
                 }
             }
+        }
+
+        // 无敌状态（圣盾）：不受伤害
+        if (target.statusEffects.some(e => e.type === 'invulnerable')) {
+            amount = 0;
+            const targetName = target === this.player ? '你' : this.enemy.name;
+            this.addLog(`✨ ${targetName} 在圣盾庇护下，伤害无效！`, 'defense');
         }
 
         target.hp = Math.max(0, target.hp - amount);
@@ -4258,6 +4287,21 @@ const BattleSystem = {
                     this.addStatusEffect(target, { type: 'shield', name: '岩盾', value: shieldAmount, duration: 3 });
                 }
                 this.addLog(`🪨 岩盾发动！获得 ${shieldAmount} 点护盾！`, 'defense');
+            }
+            // 圣盾（holyShield）：受到致命伤害时保留1HP并获得短暂无敌
+            if (te.holyShield && amount >= target.hp && target.hp > 0 && !target._holyShieldUsed) {
+                target._holyShieldUsed = true;
+                target.hp = 1;
+                amount = 0;
+                const holyDuration = te.holyShieldDuration || 1;
+                this.addStatusEffect(target, { type: 'invulnerable', name: '圣盾', duration: holyDuration });
+                this.addLog(`✨ 圣盾降临！免疫伤害！`, 'defense');
+            }
+            // 自动潜行（autoStealthChance）：受击后概率重新潜行
+            if (te.autoStealthChance && amount > 0 && Math.random() < te.autoStealthChance) {
+                this.addStatusEffect(target, { type: 'stealth', name: '潜行', duration: 2 });
+                target.stealthActive = true;
+                this.addLog(`🌑 你重新潜入暗影！`, 'buff');
             }
         }
 
@@ -4789,6 +4833,11 @@ const BattleSystem = {
             if (debuffTypes.includes(effect.type)) return false;
         }
 
+        // knockbackImmune：玩家免疫击退/眩晕
+        if (isPlayerTarget && target.talentEffects && target.talentEffects.knockbackImmune) {
+            if (effect.type === 'stun') return false;
+        }
+
         // shieldDebuffImmune：有护盾时免疫debuff
         if (isPlayerTarget && target.talentEffects && target.talentEffects.shieldDebuffImmune) {
             const hasShield = target.statusEffects.some(e => e.type === 'shield');
@@ -4798,6 +4847,12 @@ const BattleSystem = {
         // 标记unpurgeable
         if (effect.unpurgeable) {
             effect._unpurgeable = true;
+        }
+
+        // 天赋：滋润不可驱散（regenUnpurgeable）
+        if (isPlayerTarget && effect.type === 'regen' && target.talentEffects && target.talentEffects.regenUnpurgeable) {
+            effect._unpurgeable = true;
+            effect.unpurgeable = true;
         }
 
         // 检查是否已有同名效果
@@ -5059,7 +5114,12 @@ const BattleSystem = {
             const dotDamage = effect.dotDamage || effect.damagePerTurn;
             if (dotDamage) {
                 const stacks = effect.stacks || 1;
-                const damage = { amount: Math.floor(dotDamage * stacks), isCrit: false, isMiss: false, element: effect.type === 'burn' ? 'fire' : null };
+                let dotAmount = Math.floor(dotDamage * stacks);
+                // 风系DOT加成（windDotBonus）：风助火势，持续伤害+50%
+                if (!isPlayer && this.player.talentEffects && this.player.talentEffects.windDotBonus) {
+                    dotAmount = Math.floor(dotAmount * (1 + this.player.talentEffects.windDotBonus));
+                }
+                const damage = { amount: dotAmount, isCrit: false, isMiss: false, element: effect.type === 'burn' ? 'fire' : null };
                 this.applyDamage(target, damage, null);
                 this.addLog(`${targetName} 受到 ${effect.name} 伤害 ${damage.amount} 点（${stacks}层）`, 'damage');
 
@@ -5136,6 +5196,40 @@ const BattleSystem = {
 
         // 清除融化加成标记
         if (target._meltBonus) delete target._meltBonus;
+
+        // 自动净化（autoPurify）：每回合自动净化1个负面状态
+        if (isPlayer && this.player.talentEffects && this.player.talentEffects.autoPurify) {
+            const debuffTypes = ['burn', 'freeze', 'frozen', 'stun', 'slow', 'poison', 'curse', 'paralyze', 'weakness', 'bleed', 'bind', 'blind', 'fear', 'shock', 'attack_down', 'defense_down'];
+            const purgeable = target.statusEffects.filter(e => debuffTypes.includes(e.type) && !e._unpurgeable && !e.unpurgeable);
+            if (purgeable.length > 0) {
+                const toRemove = purgeable[0];
+                target.statusEffects = target.statusEffects.filter(e => e !== toRemove);
+                this.addLog(`✨ 自动净化！清除了 ${toRemove.name}！`, 'buff');
+            }
+        }
+
+        // 生命之种（lifeSeed）：延迟治疗，3回合后爆发
+        if (isPlayer && target._lifeSeedDelay > 0) {
+            target._lifeSeedDelay--;
+            if (target._lifeSeedDelay <= 0) {
+                const healAmount = target._lifeSeedHeal || Math.floor(target.maxHp * 0.2);
+                target.hp = Math.min(target.maxHp, target.hp + healAmount);
+                this.addLog(`🌱 生命之种绽放！恢复 ${healAmount} 点生命！`, 'heal');
+                delete target._lifeSeedDelay;
+                delete target._lifeSeedHeal;
+            }
+        }
+
+        // 滋润附加效果（regenDamageReduction/regenDefenseBonus/regenMp）
+        if (isPlayer && this.player.talentEffects) {
+            const te = this.player.talentEffects;
+            const hasRegen = target.statusEffects.some(e => e.type === 'regen');
+            if (hasRegen) {
+                if (te.regenMp) {
+                    target.mp = Math.min(target.maxMp, target.mp + te.regenMp);
+                }
+            }
+        }
         
         // 处理增益效果（buffs）的持续时间
         if (target.buffs && target.buffs.length > 0) {
@@ -5252,6 +5346,20 @@ const BattleSystem = {
                 // 中毒伤害在turnEnd中处理
             }
         });
+
+        // 滋润附加效果（regenDamageReduction/regenDefenseBonus）：有regen状态时减伤/加防
+        if (target === this.player && target.talentEffects) {
+            const te = target.talentEffects;
+            const hasRegen = target.statusEffects.some(e => e.type === 'regen');
+            if (hasRegen) {
+                if (te.regenDamageReduction) {
+                    mods._regenDamageReduction = te.regenDamageReduction;
+                }
+                if (te.regenDefenseBonus) {
+                    mods.defenseMod += te.regenDefenseBonus;
+                }
+            }
+        }
         
         // 处理增益效果（buffs）
         if (target.buffs && target.buffs.length > 0) {

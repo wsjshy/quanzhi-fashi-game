@@ -3,13 +3,47 @@
 > **读这一个文件就够了。**
 > 这里告诉你：项目到哪了、下一步做什么、遇到问题去哪查、具体怎么做。
 >
-> 最后更新：2026-08-14 | 当前版本：**v0.8.13**（自身天赋系统/随机觉醒/装备bug修复/休息耗时间）
+> 最后更新：2026-08-14 | 当前版本：**v0.8.15**（A类战斗效果扩展：圣盾/自动潜行/自动净化/生命之种/黑暗领域/风系DOT加成等）
 
 ---
 
 ## 一、现在是什么状态
 
-### 当前阶段：自身天赋系统+体验修复（2026-08-14）
+### 当前阶段：A类战斗效果扩展（2026-08-14）
+
+**v0.8.14已完成（2026-08-14，两批A类效果）：**
+- ✅ 感电麻痹：shockParalyzeChance（感电状态额外麻痹概率）
+- ✅ 连段增伤：comboDamageIncrease（二连/三连伤害递增）
+- ✅ 闪避必暴：dodgeNextHitBonus（闪避后下次攻击必暴）
+- ✅ 不可驱散：burnUnpurgeable/freezeUnpurgeable/slowUnpurgeable/curseUnpurgeable
+- ✅ 冻结降防：freezeDefenseDown + 冻结掉血frozenHpDrain
+- ✅ 霜爆：frostExplosion（解冻时造成%最大HP伤害）
+- ✅ 低HP反制：lowHpFreezeChance（低HP时冻结攻击者）
+- ✅ 暴击击退：critKnockback（暴击概率眩晕）
+- ✅ 攻击爆炸：explosionChance/explosionDamage/explosionCritGuaranteed
+- ✅ 低HP增伤：lowHpDamageScaling（HP越低伤害越高）
+- ✅ 闪电连锁：chainChance/chainTargets/chainDamageRatio/chainNoDecay
+- ✅ debuff增伤：debuffedDamageBonus（对有debuff敌人伤害提升）
+- ✅ 减速不可驱散：slowUnpurgeable
+
+**v0.8.15已完成（2026-08-14，第十三批A类效果+bug修复）：**
+- ✅ 自动潜行：autoStealthChance（受击后概率重新潜行）
+- ✅ 圣盾：holyShield/holyShieldDuration（致命伤害时保留1HP+短暂无敌）
+- ✅ 自动净化：autoPurify（每回合自动净化1个负面状态）
+- ✅ 生命之种：lifeSeed/lifeSeedDelay/lifeSeedHeal（治疗时种下，3回合后爆发）
+- ✅ 黑暗领域：enemyHitDown（战斗开始降低敌人命中）
+- ✅ 风系DOT加成：windDotBonus（风助火势，持续伤害+50%）
+- ✅ 滋润附加：regenMp/regenDamageReduction/regenDefenseBonus/regenUnpurgeable
+- ✅ 击退免疫：knockbackImmune（免疫stun状态）
+- ✅ addStatusEffect方法修复：统一状态添加入口，支持unpurgeable/debuffImmunity
+- ✅ 无敌状态：invulnerable（圣盾期间不受伤害）
+- 累计约230/352效果键（65%）
+
+**原著审查结论：**
+- 50个系别天赋+22个自身天赋，均基于各系元素特性设计
+- 非原著内容均标记isCanon:false + canonNote
+- 先天型天赋（天生火魂/冰魂等）是合理原创延伸，不偏离小说设定
+- 自身天赋中"天生双系"为isCanon:true（莫凡），其他为游戏性补充
 
 **v0.8.13已完成（2026-08-14，自身天赋系统+体验修复）：**
 - ✅ 自身天赋系统（InnateTalent）：角色创建时3选1，22种天赋分4个稀有度
@@ -106,7 +140,7 @@
 |------|------|--------|------|
 | 战斗核心框架 | ✅ 稳定 | 90% | 回合制/引导/打断/元素反应/AI/5种战斗模式 |
 | 成长系统 | ✅ 完成 | 95% | 天赋/灵种/星尘魔器/技能等级/境界突破/各系独立 |
-| 天赋系统 | ✅ 自身天赋+进化效果 | 90% | 50系别天赋+22自身天赋/5阶段进化/184效果已实装/剩余B/C类复杂效果 |
+| 天赋系统 | ✅ 自身天赋+进化效果 | 90% | 50系别天赋+22自身天赋/5阶段进化/约210效果已实装/剩余B/C类复杂效果 |
 | 觉醒系统 | ✅ 随机+自选 | 80% | 自身天赋3选1/系天赋3选1/随机觉醒按钮/引导石待做 |
 | 章节系统 | ✅ 完成 | 80% | 引擎+10章数据，博城篇+明珠篇剧情已填充到230章 |
 | NPC对话树 | ✅ 丰富 | 80% | 45个NPC有对话树，260+对话节点，博城+明珠主要NPC全覆盖 |
@@ -187,18 +221,19 @@
 
 ## 二、下一步做什么
 
-### 当前：v0.8.10天赋进化效果持续落地
+### 当前：v0.8.14 A类效果持续落地
 
-v0.8.10已完成4批约90个效果键，剩余约200个效果键分三类：
-- **A类（现有框架可直接实现）**：蓄电/感电、连击升级、冰霜叠加、治疗护盾/复活、潜行/重新隐身、潮汐/海啸、冷却缩减等
-- **B类（需小架构改动）**：闪电连锁、范围爆炸、火雨/陨石延迟、生命链接
-- **C类（需大架构改动）**：团队buff、领域系统、召唤兽AI、多目标战斗
+v0.8.14已完成两批约20个新效果键，累计约210/352（60%）。剩余约140个效果键分三类：
+- **A类（现有框架可直接实现）**：自动潜行、圣盾、火地面/火雨、治疗系列、净化附加效果、风系DOT加成等
+- **B类（需小架构改动）**：真正多目标连锁、召唤兽AI深化、生命链接、陨石延迟伤害、龙卷风
+- **C类（需大架构改动）**：团队buff/队伍系统、领域系统、三步塔修炼、猎法师悬赏
 
 **下一步优先级：**
-1. 继续实现A类效果（最有"进化感"的：蓄电、连斩、冰霜叠加、复活、潜行、潮汐）
+1. 继续实现A类剩余效果（自动潜行/圣盾/净化系列/治疗系列）
 2. 黑盒测试验证所有已实现效果
-3. B类效果（闪电连锁等需要小架构的）
-4. 然后考虑随机觉醒3选1、神赋系统等
+3. B类效果（多目标等需小架构改动）
+4. 三步塔修炼玩法（P0-B）
+5. 召唤兽培养深化（P0-C）
 
 详见 TODO.md P0部分的详细分类。
 
@@ -377,6 +412,7 @@ v0.8.10已完成4批约90个效果键，剩余约200个效果键分三类：
 18. battle.js中每回合自动回复引用Player.getAllTalentEffects()，该方法在player.js 790行已存在
 19. quickRest中Player.maxStamina默认100，在player.js 115行和177行初始化
 20. 临时文件（fix-*.js/test-*.js/temp_*.txt/update-*.js/analyze-*.js）不要提交git
+21. battle.js中addStatusEffect(target, effect)是BattleSystem的方法（约4777行），不是character.js的单参数版本。添加状态时用this.addStatusEffect(target, effect)会自动处理日志/事件/unpurgeable/debuffImmunity/shieldDebuffImmune
 
 ### 代码修改检查清单
 - [ ] `node --check` 语法通过
