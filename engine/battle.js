@@ -2400,8 +2400,11 @@ const BattleSystem = {
                     const beastData = typeof getRandomStarterBeast === 'function' ? getRandomStarterBeast() : DataSummonBeasts.shadow_wolf;
                     Player.summonData = {
                         id: beastData.id,
+                        baseId: beastData.id,
                         name: beastData.name,
                         icon: beastData.icon,
+                        rarity: beastData.rarity || '普通',
+                        evolutionStage: 0,
                         level: 1,
                         exp: 0,
                         expToNext: 50,
@@ -2414,20 +2417,27 @@ const BattleSystem = {
                     };
                     this.addLog(`✨ 你与 ${beastData.icon} ${beastData.name} 缔结了契约！`, 'evolution');
                 }
-                // 根据等级计算属性
+                // 获取当前形态数据（考虑进化）
                 const sd = Player.summonData;
-                const levelBonus = (sd.level - 1) * 0.15;
+                const currentData = typeof getBeastCurrentData === 'function' ? getBeastCurrentData(sd) : null;
+                const baseStats = currentData ? currentData.effectiveStats : {
+                    maxHp: sd.baseMaxHp, attack: sd.baseAttack, defense: sd.baseDefense, speed: sd.baseSpeed
+                };
+                // 等级和忠诚加成
+                const levelBonus = 1 + (sd.level - 1) * 0.15;
                 const loyaltyBonus = 1 + (sd.loyalty - 50) / 200;
-                const summonMaxHp = Math.floor(sd.baseMaxHp * (1 + levelBonus) * loyaltyBonus);
-                const summonAtk = Math.floor(sd.baseAttack * (1 + levelBonus) * loyaltyBonus);
-                const summonDef = Math.floor(sd.baseDefense * (1 + levelBonus) * loyaltyBonus);
-                const summonSpd = Math.floor(sd.baseSpeed * (1 + levelBonus) * loyaltyBonus);
+                const summonMaxHp = Math.floor(baseStats.maxHp * levelBonus * loyaltyBonus);
+                const summonAtk = Math.floor(baseStats.attack * levelBonus * loyaltyBonus);
+                const summonDef = Math.floor(baseStats.defense * levelBonus * loyaltyBonus);
+                const summonSpd = Math.floor(baseStats.speed * levelBonus * loyaltyBonus);
                 const duration = 5;
 
                 this.summon = {
                     id: sd.id,
+                    baseId: sd.baseId || sd.id,
                     name: sd.name,
                     icon: sd.icon,
+                    evolutionStage: sd.evolutionStage || 0,
                     level: sd.level,
                     loyalty: sd.loyalty,
                     maxHp: summonMaxHp,
@@ -2751,12 +2761,19 @@ const BattleSystem = {
             this.addLog(`${summon.icon} ${summon.name} 恢复了 ${regen} 点生命！`, 'heal');
         }
 
-        // 获取召唤兽技能列表
-        const beastData = DataSummonBeasts[summon.id];
+        // 获取召唤兽技能列表（支持进化后形态）
+        let availableSkills;
+        if (typeof getBeastCurrentData === 'function') {
+            const currentData = getBeastCurrentData(summon);
+            availableSkills = currentData ? currentData.skills : null;
+        }
+        if (!availableSkills) {
+            const beastData = DataSummonBeasts[summon.id];
+            availableSkills = beastData ? beastData.skills : [
+                { id: 'bite', name: '攻击', minLevel: 1, damageMult: 1.0, critBonus: 0 }
+            ];
+        }
         const summonLevel = summon.level || 1;
-        const availableSkills = beastData ? beastData.skills : [
-            { id: 'bite', name: '攻击', minLevel: 1, damageMult: 1.0, critBonus: 0 }
-        ];
 
         // 筛选可用技能
         const usable = availableSkills.filter(s => summonLevel >= s.minLevel);
@@ -3650,11 +3667,19 @@ const BattleSystem = {
         const sd = Player.summonData;
         sd.exp += amount;
         let leveledUp = false;
-        while (sd.exp >= sd.expToNext && sd.level < 20) {
+        while (sd.exp >= sd.expToNext && sd.level < 30) {
             sd.exp -= sd.expToNext;
             sd.level++;
             sd.expToNext = Math.floor(50 * Math.pow(1.3, sd.level - 1));
             leveledUp = true;
+            this.addLog(`📈 ${sd.icon} ${sd.name} 升到了 Lv.${sd.level}！`, 'evolution');
+        }
+        // 检查进化（非战斗中自动进化，需要在UI中提示）
+        if (leveledUp && typeof canEvolve === 'function') {
+            const evo = canEvolve(sd, Player.realm);
+            if (evo) {
+                this.addLog(`✨ ${sd.icon} ${sd.name} 似乎可以进化了...在角色面板中查看！`, 'evolution');
+            }
         }
         return leveledUp;
     },

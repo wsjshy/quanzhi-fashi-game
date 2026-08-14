@@ -4,7 +4,7 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.8.23';
+const GAME_VERSION = '0.8.24';
 const SAVE_VERSION = '0.8.7';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
@@ -1880,5 +1880,81 @@ const Player = {
      */
     hasSave() {
         return !!localStorage.getItem('quanzhi_fashi_save');
+    },
+
+    /**
+     * 召唤兽进化
+     * @returns {object} {success, message, newName, newIcon}
+     */
+    evolveSummonBeast() {
+        if (!this.summonData) return { success: false, message: '你还没有召唤兽' };
+        if (typeof canEvolve !== 'function') return { success: false, message: '进化系统未就绪' };
+        const evo = canEvolve(this.summonData, this.realm);
+        if (!evo) {
+            // 检查具体原因
+            const evoLine = DataSummonBeastEvolutions[this.summonData.baseId || this.summonData.id];
+            if (!evoLine) return { success: false, message: '这只召唤兽没有进化路线' };
+            const currentStage = this.summonData.evolutionStage || 0;
+            const nextEvo = evoLine.line[currentStage];
+            if (!nextEvo) return { success: false, message: '召唤兽已达到最终形态' };
+            const reasons = [];
+            if (this.summonData.level < nextEvo.minBeastLevel) reasons.push(`需要等级${nextEvo.minBeastLevel}`);
+            if (this.summonData.loyalty < nextEvo.minLoyalty) reasons.push(`需要忠诚${nextEvo.minLoyalty}`);
+            const realmNames = { initial: '初阶', primary: '初阶', middle: '中阶', high: '高阶' };
+            const realmOrder = { initial: 1, primary: 1, middle: 2, high: 3 };
+            if ((realmOrder[this.realm] || 1) < (realmOrder[nextEvo.minPlayerRealm] || 1)) {
+                reasons.push(`需要${realmNames[nextEvo.minPlayerRealm]}法师`);
+            }
+            return { success: false, message: `进化条件不足：${reasons.join('、')}` };
+        }
+
+        // 执行进化
+        const oldName = this.summonData.name;
+        const oldIcon = this.summonData.icon;
+        this.summonData.id = evo.toId;
+        this.summonData.name = evo.name;
+        this.summonData.icon = evo.icon;
+        this.summonData.evolutionStage = (this.summonData.evolutionStage || 0) + 1;
+        // 忠诚+10作为进化奖励
+        this.summonData.loyalty = Math.min(100, this.summonData.loyalty + 10);
+        // 回满HP
+        this.summonData.baseMaxHp = Math.floor(this.summonData.baseMaxHp * (evo.statMultiplier / (this.summonData.evolutionStage > 1 ? 1.5 : 1)));
+        // 重新计算基础属性（基于baseId的原始属性 * 进化倍率）
+        const baseBeast = DataSummonBeasts[this.summonData.baseId];
+        if (baseBeast) {
+            this.summonData.baseMaxHp = Math.floor(baseBeast.baseStats.maxHp * evo.statMultiplier);
+            this.summonData.baseAttack = Math.floor(baseBeast.baseStats.attack * evo.statMultiplier);
+            this.summonData.baseDefense = Math.floor(baseBeast.baseStats.defense * evo.statMultiplier);
+            this.summonData.baseSpeed = Math.floor(baseBeast.baseStats.speed * evo.statMultiplier);
+        }
+
+        return {
+            success: true,
+            message: `${oldIcon} ${oldName} 进化为 ${evo.icon} ${evo.name}！`,
+            oldName, oldIcon,
+            newName: evo.name,
+            newIcon: evo.icon,
+            description: evo.description
+        };
+    },
+
+    /**
+     * 获取召唤兽进化信息（用于UI显示）
+     */
+    getSummonEvolutionInfo() {
+        if (!this.summonData) return null;
+        if (typeof canEvolve !== 'function') return null;
+        const evoLine = DataSummonBeastEvolutions[this.summonData.baseId || this.summonData.id];
+        if (!evoLine) return null;
+        const currentStage = this.summonData.evolutionStage || 0;
+        const nextEvo = evoLine.line[currentStage];
+        const canEvo = canEvolve(this.summonData, this.realm);
+        return {
+            currentStage,
+            maxStage: evoLine.line.length,
+            nextEvolution: nextEvo,
+            canEvolve: !!canEvo,
+            isMaxStage: !nextEvo
+        };
     }
 };

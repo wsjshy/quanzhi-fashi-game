@@ -514,7 +514,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.8.23 · 开放世界版</div>
+                ">v0.8.24 · 召唤兽进化版</div>
             </div>
         `;
 
@@ -4116,20 +4116,31 @@ const UI = {
                                         <span style="font-size: 28px; margin-right: 10px;">${Player.summonData.icon}</span>
                                         <div>
                                             <div style="color: #cc99ff; font-weight: bold; font-size: 16px;">${Player.summonData.name}</div>
-                                            <div style="color: #999; font-size: 12px;">Lv.${Player.summonData.level} · 忠诚 ${Player.summonData.loyalty}/100</div>
+                                            <div style="color: #999; font-size: 12px;">Lv.${Player.summonData.level} · 忠诚 ${Player.summonData.loyalty}/100 · ${Player.summonData.rarity || '普通'}</div>
                                         </div>
                                     </div>
                                     ${(() => {
-                                        const beast = DataSummonBeasts[Player.summonData.id];
+                                        const currentData = typeof getBeastCurrentData === 'function' ? getBeastCurrentData(Player.summonData) : null;
+                                        const beast = currentData || DataSummonBeasts[Player.summonData.id];
                                         return beast && beast.description ? `<div style="color: #888; font-size: 11px; margin-bottom: 6px; font-style: italic;">${beast.description}</div>` : '';
                                     })()}
                                     <div style="display: flex; gap: 15px; font-size: 12px; color: #aaa; margin-bottom: 6px;">
-                                        <span>❤️ ${Math.floor(Player.summonData.baseMaxHp * (1 + (Player.summonData.level - 1) * 0.15))}</span>
-                                        <span>⚔️ ${Math.floor(Player.summonData.baseAttack * (1 + (Player.summonData.level - 1) * 0.15))}</span>
-                                        <span>🛡️ ${Math.floor(Player.summonData.baseDefense * (1 + (Player.summonData.level - 1) * 0.15))}</span>
-                                        <span>💨 ${Math.floor(Player.summonData.baseSpeed * (1 + (Player.summonData.level - 1) * 0.15))}</span>
+                                        ${(() => {
+                                            const currentData = typeof getBeastCurrentData === 'function' ? getBeastCurrentData(Player.summonData) : null;
+                                            const stats = currentData ? currentData.effectiveStats : {
+                                                maxHp: Player.summonData.baseMaxHp,
+                                                attack: Player.summonData.baseAttack,
+                                                defense: Player.summonData.baseDefense,
+                                                speed: Player.summonData.baseSpeed
+                                            };
+                                            const lb = 1 + (Player.summonData.level - 1) * 0.15;
+                                            return `<span>❤️ ${Math.floor(stats.maxHp * lb)}</span>
+                                                <span>⚔️ ${Math.floor(stats.attack * lb)}</span>
+                                                <span>🛡️ ${Math.floor(stats.defense * lb)}</span>
+                                                <span>💨 ${Math.floor(stats.speed * lb)}</span>`;
+                                        })()}
                                     </div>
-                                    ${Player.summonData.level < 20 ? `
+                                    ${Player.summonData.level < 30 ? `
                                     <div style="height: 4px; background: #333; border-radius: 2px; overflow: hidden;">
                                         <div style="height: 100%; width: ${(Player.summonData.exp / Player.summonData.expToNext * 100).toFixed(1)}%; background: linear-gradient(90deg, #aa66ff, #cc99ff);"></div>
                                     </div>
@@ -4137,10 +4148,12 @@ const UI = {
                                     ` : '<div style="color: #ffd700; font-size: 11px;">已满级</div>'}
                                     <div style="color: #888; font-size: 10px; margin-top: 6px;">
                                         ${(() => {
-                                            const beast = DataSummonBeasts[Player.summonData.id];
+                                            const currentData = typeof getBeastCurrentData === 'function' ? getBeastCurrentData(Player.summonData) : null;
+                                            const beast = currentData || DataSummonBeasts[Player.summonData.id];
                                             if (!beast) return '技能：撕咬';
-                                            const unlocked = beast.skills.filter(s => Player.summonData.level >= s.minLevel);
-                                            const locked = beast.skills.filter(s => Player.summonData.level < s.minLevel);
+                                            const allSkills = beast.skills || [];
+                                            const unlocked = allSkills.filter(s => Player.summonData.level >= s.minLevel);
+                                            const locked = allSkills.filter(s => Player.summonData.level < s.minLevel);
                                             let html = '已学：' + unlocked.map(s => s.name).join('/');
                                             if (locked.length > 0) {
                                                 html += ' · 未学：' + locked.map(s => `${s.name}(Lv${s.minLevel})`).join('/');
@@ -4148,6 +4161,30 @@ const UI = {
                                             return html;
                                         })()}
                                     </div>
+                                    ${(() => {
+                                        const evoInfo = typeof Player.getSummonEvolutionInfo === 'function' ? Player.getSummonEvolutionInfo() : null;
+                                        if (!evoInfo) return '';
+                                        if (evoInfo.isMaxStage) {
+                                            return '<div style="color: #ffd700; font-size: 11px; margin-top: 8px; text-align: center;">★ 已达最终形态</div>';
+                                        }
+                                        const next = evoInfo.nextEvolution;
+                                        if (evoInfo.canEvolve) {
+                                            return `<div onclick="Game.evolveSummon()" style="margin-top: 8px; padding: 8px; background: linear-gradient(135deg, #9966ff, #cc66ff); border-radius: 6px; text-align: center; cursor: pointer; color: #fff; font-weight: bold; font-size: 13px; animation: pulse 1.5s infinite;">✨ 进化为 ${next.icon} ${next.name}！</div>`;
+                                        }
+                                        // 显示进化条件
+                                        const sd = Player.summonData;
+                                        const conditions = [];
+                                        if (sd.level < next.minBeastLevel) conditions.push(`Lv${next.minBeastLevel}(当前${sd.level})`);
+                                        if (sd.loyalty < next.minLoyalty) conditions.push(`忠诚${next.minLoyalty}(当前${sd.loyalty})`);
+                                        const realmNames = { initial: '初阶', primary: '初阶', middle: '中阶', high: '高阶' };
+                                        const realmOrder = { initial: 1, primary: 1, middle: 2, high: 3 };
+                                        if ((realmOrder[Player.realm] || 1) < (realmOrder[next.minPlayerRealm] || 1)) {
+                                            conditions.push(`${realmNames[next.minPlayerRealm]}法师`);
+                                        }
+                                        return `<div style="margin-top: 8px; padding: 6px; background: rgba(150,100,200,0.1); border-radius: 4px; font-size: 10px; color: #9988aa;">
+                                            下一形态：${next.icon} ${next.name} · 需要：${conditions.join('、')}
+                                        </div>`;
+                                    })()}
                                 </div>
                             </div>
                             ` : ''}

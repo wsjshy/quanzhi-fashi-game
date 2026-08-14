@@ -2144,6 +2144,18 @@ const Game = {
         UI.renderMapScreen();
     },
 
+    // ========== 召唤兽进化 ==========
+    evolveSummon() {
+        const result = Player.evolveSummonBeast();
+        if (result.success) {
+            UI.showMessage(`${result.oldIcon} ${result.oldName} 进化！\n\n${result.newIcon} ${result.newName}\n\n${result.description}`, '✨ 召唤兽进化 ✨');
+            UI.renderCharacterScreen();
+            UI.saveGame();
+        } else {
+            UI.showMessage(result.message);
+        }
+    },
+
     // ========== 元素觉醒 ==========
     showAwakenPanel() {
         if (!Player.canAwakenNewElement()) {
