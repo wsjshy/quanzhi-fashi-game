@@ -43,6 +43,9 @@
 
 #### Bug修复
 - 修复精神力属性点无法分配的bug（spirit属性缺少extra字段配置）
+- 修复新游戏创建时不弹出天赋选择的bug（createCharacter直接进入地图，改为先选天赋再进入）
+- 修复Player.hasQuest方法缺失导致章节系统初始化失败的bug
+- 修复battle-effect.js控制台输出错误（EffectRegistry.effects应为.handlers）
 
 #### 改动文件
 - engine/talent.js：完全重写，支持3选1/先天型/成长型/效果计算

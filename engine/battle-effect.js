@@ -432,4 +432,4 @@ EffectRegistry.register('multi_strike', {
     }
 });
 
-console.log('[EffectRegistry] 战斗效果注册表已加载，共注册 ' + Object.keys(EffectRegistry.effects).length + ' 种效果类型');
+console.log('[EffectRegistry] 战斗效果注册表已加载，共注册 ' + Object.keys(EffectRegistry.handlers).length + ' 种效果类型');

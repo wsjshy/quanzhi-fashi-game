@@ -1453,6 +1453,13 @@ const Player = {
     },
 
     /**
+     * 检查是否有进行中的任务
+     */
+    hasQuest(questId) {
+        return this.activeQuests.some(q => q.questId === questId);
+    },
+
+    /**
      * 保存游戏
      */
     save() {

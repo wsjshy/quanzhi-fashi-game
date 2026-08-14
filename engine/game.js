@@ -134,15 +134,11 @@ const Game = {
         DailySystem.initNewGame();
         DailySystem.checkDailyReset();
         
-        // 保存游戏
-        Player.save();
+        // 设置标志：新游戏创建中，等待天赋选择后进入地图
+        this._pendingNewGame = true;
         
-        // 进入地图界面
-        this.state = 'map';
-        UI.renderMapScreen();
-
-        // 开场剧情
-        UI.showOpeningStory(element);
+        // 弹出天赋选择面板
+        this.showTalentSelection(element);
     },
 
     // ========== 地图界面 ==========
@@ -2274,7 +2270,16 @@ const Game = {
         document.getElementById('talent-selection-overlay')?.remove();
 
         UI.showMessage(`觉醒成功！你选择了${elementName}系天赋：${talent.name}`);
-        this.openCharacterPanel();
+
+        // 如果是新游戏创建流程，进入地图并显示开场剧情
+        if (this._pendingNewGame) {
+            this._pendingNewGame = false;
+            this.state = 'map';
+            UI.renderMapScreen();
+            UI.showOpeningStory(element);
+        } else {
+            this.openCharacterPanel();
+        }
     },
 
     // ========== 境界突破 ==========
