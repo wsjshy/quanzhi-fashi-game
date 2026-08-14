@@ -108,76 +108,79 @@
 - [ ] shieldChance/shieldRatio - 岩盾概率/比例
 - [ ] shieldDefenseBonus/shieldBreakDamage - 护盾时防御+30%/破碎反伤
 - [ ] shieldRegen/shieldReflect - 护盾每回合回复/反射
-- [ ] permanentShield/critImmunity - 常驻30%HP护盾/免暴
-- [ ] defenseStack/defenseStackMax - 大地祝福防御叠加
-- [ ] knockbackImmunity - 免击退
-- [ ] earthquakeChance/earthquakeDamage/earthquakeSlow - 地震
+- [x] permanentShield/critImmunity - 常驻30%HP护盾/免暴
+- [x] defenseStack/defenseStackMax - 大地祝福防御叠加
+- [x] knockbackImmunity - 免击退
+- [x] earthquakeChance/earthquakeDamage/earthquakeSlow - 地震
 - [x] defenseToDamage - 防御50%转伤害
-- [x] stunnedDamageBonus/stunExtendChance - 对眩晕目标+50%/延长眩晕
+- [x] stunExtendChance - 延长眩晕
 - [ ] meteor/meteorInterval/meteorDamage/meteorStunChance - 陨石（4回合延迟）
 
 **风系机动深化**
-- [ ] hurricaneChance/hurricaneDuration/hurricaneVulnerable - 飓风卷起
-- [ ] tornadoChance/tornadoDamage/tornadoKnockback - 龙卷风
+- [x] hurricaneChance/hurricaneDuration/hurricaneVulnerable - 飓风卷起
+- [ ] tornadoChance/tornadoDamage/tornadoKnockback - 龙卷风（全体）
 - [ ] windDotBonus - 风系持续+50%
-- [ ] enemySpeedDown/allySpeedBonus - 寒冰领域：敌速-15%我速+10%
-- [ ] teamSpeedBonus/teamDodgeBonus - 风暴领域团队buff
-- [ ] stormPunishChance/stormPunishDamage/stormPunishStun - 天罚风暴
+- [ ] enemySpeedDown/allySpeedBonus - 寒冰领域
+- [ ] teamSpeedBonus/teamDodgeBonus - 团队buff（单机无队友）
+- [ ] stormPunishChance/stormPunishDamage/stormPunishStun - 天罚风暴（全体）
 
 **水系治疗深化**
-- [ ] waterGuardChance/waterGuardReduction - 水之盾减伤
-- [ ] healExtraHp - 治疗额外5%上限HP
+- [x] waterGuardChance/waterGuardReduction - 水之盾减伤
+- [x] healExtraHp - 治疗额外5%上限HP
 - [x] healPurifyChance/purifyOnHealChance - 治疗时净化
-- [ ] autoHeal/autoHealTarget - 自动治疗最低HP友方
-- [ ] regenChance/regenAmount/regenDuration/regenMp - 滋润持续回复
-- [ ] regenDamageReduction/regenDefenseBonus - 滋润时减伤/加防
+- [x] autoHeal - 自动治疗
+- [x] regenChance/regenAmount/regenDuration - 滋润持续回复
+- [ ] regenMp/regenDamageReduction/regenDefenseBonus - 滋润MP/减伤/加防
 - [ ] regenUnpurgeable/lowHpRegenDouble - 滋润不可驱散/低HP翻倍
-- [ ] tide/tideInterval/tideHeal/tideCleanse - 潮汐：3回合全体治疗+解控
+- [ ] tide/tideInterval/tideHeal/tideCleanse - 潮汐（全体）
 - [x] tideDamageStack/tideDamageMax/tideHealStack/tideHealMax - 涨潮叠加
-- [ ] tsunamiChance/tsunamiDamage/tsunamiAtkDown - 海啸
+- [x] tsunamiChance/tsunamiDamage/tsunamiAtkDown - 海啸
 - [ ] tideShield/tideShieldDuration/autoTide - 潮汐护盾/自动潮汐
-- [x] healShield/healShieldDuration - 过量治疗转护盾
-- [ ] healToDamage - 治疗10%转伤害
-- [ ] healMpRestore - 治疗时回MP
+- [x] healShield - 治疗转护盾
+- [x] healToDamage - 治疗转伤害
+- [x] healMpRestore - 治疗时回MP
 - [ ] emergencyCooldown - 紧急回复CD
 
 **光系深化**
-- [ ] lightShield - 光之护封盾
-- [ ] blindImmunity - 免致盲
-- [ ] judgmentChance/judgmentDamage/judgmentTrueDamage - 圣光审判
-- [ ] teamAtkBonus/teamDefBonus - 圣光加持团队buff
+- [x] lightShield - 光之护封盾
+- [x] blindImmunity - 免致盲
+- [x] judgmentChance/judgmentDamage - 圣光审判
+- [ ] teamAtkBonus/teamDefBonus - 团队buff（单机无队友）
 - [ ] purifyChance/aoePurify/purifyCount - 净化
 - [ ] purifyHeal/purifyDebuff/purifyAtkDown/purifyDefDown - 净化附带效果
-- [ ] purifyTeamHeal/purifyDamage - 净化团队回血/对敌伤害
+- [ ] purifyTeamHeal/purifyDamage - 净化团队回血/对暗伤害
 - [ ] holyShield/holyShieldDuration/holyShieldTarget - 圣盾
 - [ ] shieldDebuffImmunity - 护盾时免负面
 - [ ] debuffedDamageBonus - 对负面目标+50%
 - [ ] angelInterval/angelDamage/angelHeal - 天使降临
-- [ ] debuffImmunity - 免疫负面
-- [ ] lightDamageBonus/darkDamageBonus - 对暗/对光伤害加成
+- [x] debuffImmunity - 免疫负面
+- [x] darkDamageBonus - 对暗系伤害加成
 
 **暗系深化**
-- [ ] stealthOnStart/stealthFirstHitBonus - 暗影形态（已部分实现）
-- [ ] lowHpDodgeBonus/lowHpDamageScaling - 低HP闪避/伤害递增
+- [x] stealthOnStart - 暗影形态
+- [x] lowHpDodgeBonus - 低HP闪避
 - [ ] shadowFormHeal - 暗影击杀回血
 - [ ] enemyHitDown - 黑暗领域：敌命中-15%
-- [ ] teamDarkBonus - 黑暗领域团队暗伤+20%
-- [ ] ignoreDodgeChance - 潜行攻击无视闪避
-- [ ] stealthDamageBonus/stealthCritBonus - 潜行伤害/暴击
-- [x] reStealthChance/reStealthDuration/reStealthCrit - 影杀重新隐身
+- [ ] teamDarkBonus - 团队暗伤（单机无队友）
+- [x] ignoreDodgeChance - 无视闪避
+- [x] stealthCritBonus - 潜行暴击
+- [x] reStealthChance - 击杀后重新隐身
 - [ ] markNoStealth/autoStealthChance - 暗影标记禁隐身/自动隐身
 - [ ] curseEndDamage/curseSpreadChance/curseUnpurgeable - 诅咒结束伤害/传播/不可驱散
-- [ ] curseKillHeal/guaranteedCrit - 诅咒击杀回血/必暴
-- [ ] curseCritDown/curseDodgeDown/curseCritDamageTaken - 诅咒降暴击/闪避/受暴伤
+- [ ] curseKillHeal - 诅咒击杀回血
+- [x] guaranteedCrit - 必暴
+- [x] curseCritDown/curseDodgeDown - 诅咒降暴击/闪避
 
 **治愈系深化**
-- [ ] lifeLink/lifeLinkDuration/lifeLinkTransfer/linkDamageReduction - 生命链接分担伤害
-- [ ] blessAtkBonus/blessDefBonus/blessDuration - 祝福之环
+- [ ] lifeLink - 生命链接（单机无队友）
+- [x] blessAtkBonus/blessDefBonus/blessDuration - 祝福之环
 - [ ] lifeSeed/lifeSeedDelay/lifeSeedHeal - 生命之种延迟爆发
-- [x] revive/reviveHp/reviveCount/reviveBuff - 复活
-- [ ] purifyAll/autoPurify - 全净化/自动净化
-- [ ] protectionDuration - 神圣庇护持续
-- [ ] teamHpRegen/cooldownReduction - 团队回血/冷却缩减
+- [x] revive/reviveHp - 复活
+- [x] purifyAll - 全净化
+- [ ] autoPurify - 自动净化
+- [ ] protectionDuration - 神圣庇护
+- [x] cooldownReduction - 冷却缩减
+- [x] autoHeal - 自动治疗
 - [ ] reviveUnlocked - 解锁复活
 
 **召唤系深化（需要召唤系统完善，优先级中）**
