@@ -514,7 +514,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.8.22 · 开放世界版</div>
+                ">v0.8.23 · 开放世界版</div>
             </div>
         `;
 
@@ -4119,10 +4119,15 @@ const UI = {
                                             <div style="color: #999; font-size: 12px;">Lv.${Player.summonData.level} · 忠诚 ${Player.summonData.loyalty}/100</div>
                                         </div>
                                     </div>
+                                    ${(() => {
+                                        const beast = DataSummonBeasts[Player.summonData.id];
+                                        return beast && beast.description ? `<div style="color: #888; font-size: 11px; margin-bottom: 6px; font-style: italic;">${beast.description}</div>` : '';
+                                    })()}
                                     <div style="display: flex; gap: 15px; font-size: 12px; color: #aaa; margin-bottom: 6px;">
                                         <span>❤️ ${Math.floor(Player.summonData.baseMaxHp * (1 + (Player.summonData.level - 1) * 0.15))}</span>
                                         <span>⚔️ ${Math.floor(Player.summonData.baseAttack * (1 + (Player.summonData.level - 1) * 0.15))}</span>
                                         <span>🛡️ ${Math.floor(Player.summonData.baseDefense * (1 + (Player.summonData.level - 1) * 0.15))}</span>
+                                        <span>💨 ${Math.floor(Player.summonData.baseSpeed * (1 + (Player.summonData.level - 1) * 0.15))}</span>
                                     </div>
                                     ${Player.summonData.level < 20 ? `
                                     <div style="height: 4px; background: #333; border-radius: 2px; overflow: hidden;">
@@ -4131,7 +4136,17 @@ const UI = {
                                     <div style="color: #666; font-size: 10px; text-align: right; margin-top: 2px;">${Player.summonData.exp} / ${Player.summonData.expToNext}</div>
                                     ` : '<div style="color: #ffd700; font-size: 11px;">已满级</div>'}
                                     <div style="color: #888; font-size: 10px; margin-top: 6px;">
-                                        技能：${Player.summonData.level >= 8 ? '撕咬/狼嚎/暗影突袭/狂暴撕咬' : Player.summonData.level >= 5 ? '撕咬/狼嚎/暗影突袭' : Player.summonData.level >= 3 ? '撕咬/狼嚎' : '撕咬'}
+                                        ${(() => {
+                                            const beast = DataSummonBeasts[Player.summonData.id];
+                                            if (!beast) return '技能：撕咬';
+                                            const unlocked = beast.skills.filter(s => Player.summonData.level >= s.minLevel);
+                                            const locked = beast.skills.filter(s => Player.summonData.level < s.minLevel);
+                                            let html = '已学：' + unlocked.map(s => s.name).join('/');
+                                            if (locked.length > 0) {
+                                                html += ' · 未学：' + locked.map(s => `${s.name}(Lv${s.minLevel})`).join('/');
+                                            }
+                                            return html;
+                                        })()}
                                     </div>
                                 </div>
                             </div>

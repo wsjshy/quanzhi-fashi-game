@@ -2389,41 +2389,45 @@ const BattleSystem = {
 
         } else if (skill.type === 'summon') {
             // 召唤技能
-            if (isPlayer && skill.summonData) {
+            if (isPlayer && skill.id === 'summon_beast') {
                 if (this.summon) {
                     this.addLog(`已有召唤兽 ${this.summon.name}，先收回再召唤！`, 'system');
                     casterData.mp += skill.mpCost; // 退还MP
                     return { success: false };
                 }
-                // 初始化或读取召唤兽持久化数据
-                if (!Player.summonData || Player.summonData.id !== skill.summonData.id) {
+                // 首次召唤：随机契约一只召唤兽
+                if (!Player.summonData) {
+                    const beastData = typeof getRandomStarterBeast === 'function' ? getRandomStarterBeast() : DataSummonBeasts.shadow_wolf;
                     Player.summonData = {
-                        id: skill.summonData.id,
-                        name: skill.summonData.name,
-                        icon: skill.summonData.icon,
+                        id: beastData.id,
+                        name: beastData.name,
+                        icon: beastData.icon,
                         level: 1,
                         exp: 0,
                         expToNext: 50,
                         loyalty: 50,
-                        baseMaxHp: skill.summonData.maxHp,
-                        baseAttack: skill.summonData.attack,
-                        baseDefense: skill.summonData.defense,
-                        baseSpeed: skill.summonData.speed,
-                        skills: [],
+                        baseMaxHp: beastData.baseStats.maxHp,
+                        baseAttack: beastData.baseStats.attack,
+                        baseDefense: beastData.baseStats.defense,
+                        baseSpeed: beastData.baseStats.speed,
                         kills: 0
                     };
+                    this.addLog(`✨ 你与 ${beastData.icon} ${beastData.name} 缔结了契约！`, 'evolution');
                 }
                 // 根据等级计算属性
                 const sd = Player.summonData;
-                const levelBonus = (sd.level - 1) * 0.15; // 每级+15%属性
-                const loyaltyBonus = 1 + (sd.loyalty - 50) / 200; // 忠诚50为基准，100忠诚+25%
+                const levelBonus = (sd.level - 1) * 0.15;
+                const loyaltyBonus = 1 + (sd.loyalty - 50) / 200;
                 const summonMaxHp = Math.floor(sd.baseMaxHp * (1 + levelBonus) * loyaltyBonus);
                 const summonAtk = Math.floor(sd.baseAttack * (1 + levelBonus) * loyaltyBonus);
                 const summonDef = Math.floor(sd.baseDefense * (1 + levelBonus) * loyaltyBonus);
                 const summonSpd = Math.floor(sd.baseSpeed * (1 + levelBonus) * loyaltyBonus);
+                const duration = 5;
 
                 this.summon = {
-                    ...skill.summonData,
+                    id: sd.id,
+                    name: sd.name,
+                    icon: sd.icon,
                     level: sd.level,
                     loyalty: sd.loyalty,
                     maxHp: summonMaxHp,
@@ -2431,12 +2435,12 @@ const BattleSystem = {
                     attack: summonAtk,
                     defense: summonDef,
                     speed: summonSpd,
-                    remainingDuration: skill.summonData.duration,
+                    remainingDuration: duration,
                     buffs: [],
                     statusEffects: [],
                     expGained: 0
                 };
-                this.addLog(`你召唤了 ${skill.summonData.icon} ${skill.summonData.name}（Lv.${sd.level}，忠诚${sd.loyalty}）！（持续${skill.summonData.duration}回合）`, 'magic');
+                this.addLog(`你召唤了 ${sd.icon} ${sd.name}（Lv.${sd.level}，忠诚${sd.loyalty}）！（持续${duration}回合）`, 'magic');
                 
                 // 发布召唤事件
                 if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
@@ -2723,52 +2727,96 @@ const BattleSystem = {
         // 计算召唤兽属性加成（强化/狂暴状态）
         let attackMultiplier = 1;
         let defenseMultiplier = 1;
-        let speedMultiplier = 1;
+        let evasionBonus = 0;
+        let hpRegen = 0;
 
         if (summon.statusEffects) {
             summon.statusEffects.forEach(effect => {
                 if (effect.type === 'summon_buff') {
                     attackMultiplier += effect.attackBonus || 0;
                     defenseMultiplier += effect.defenseBonus || 0;
+                    evasionBonus += effect.evasionBonus || 0;
+                    hpRegen += effect.hpRegen || 0;
                 } else if (effect.type === 'summon_rage') {
                     attackMultiplier += effect.attackBonus || 0;
-                    speedMultiplier += effect.speedBonus || 0;
                     defenseMultiplier -= effect.defenseMalus || 0;
                 }
             });
         }
 
-        // 召唤兽技能选择
+        // 每回合HP回复
+        if (hpRegen > 0) {
+            const regen = Math.floor(summon.maxHp * hpRegen);
+            summon.hp = Math.min(summon.maxHp, summon.hp + regen);
+            this.addLog(`${summon.icon} ${summon.name} 恢复了 ${regen} 点生命！`, 'heal');
+        }
+
+        // 获取召唤兽技能列表
+        const beastData = DataSummonBeasts[summon.id];
         const summonLevel = summon.level || 1;
-        const availableSkills = [
-            { id: 'bite', name: '撕咬', minLevel: 1, damageMult: 1.0, critBonus: 0 },
-            { id: 'howl', name: '狼嚎', minLevel: 3, type: 'buff', attackBuff: 0.3, duration: 2 },
-            { id: 'shadow_strike', name: '暗影突袭', minLevel: 5, damageMult: 1.5, critBonus: 0.3 },
-            { id: 'frenzy_bite', name: '狂暴撕咬', minLevel: 8, damageMult: 2.0, hpCost: 0.1 }
+        const availableSkills = beastData ? beastData.skills : [
+            { id: 'bite', name: '攻击', minLevel: 1, damageMult: 1.0, critBonus: 0 }
         ];
 
         // 筛选可用技能
         const usable = availableSkills.filter(s => summonLevel >= s.minLevel);
 
-        // 随机选择技能（30%概率用特殊技能，70%普通攻击）
-        let chosenSkill = usable[0]; // 默认撕咬
+        // 随机选择技能（35%概率用特殊技能）
+        let chosenSkill = usable[0];
         if (usable.length > 1 && Math.random() < 0.35) {
-            const specialSkills = usable.filter(s => s.id !== 'bite');
+            const specialSkills = usable.filter(s => s.id !== usable[0].id);
             chosenSkill = specialSkills[Math.floor(Math.random() * specialSkills.length)];
         }
 
-        // 处理技能效果
+        // 处理增益技能
         if (chosenSkill.type === 'buff') {
-            // 增益技能
             summon.statusEffects = summon.statusEffects || [];
-            summon.statusEffects.push({
+            const buffEffect = {
                 name: chosenSkill.name,
                 type: 'summon_buff',
-                duration: chosenSkill.duration,
-                attackBonus: chosenSkill.attackBuff
-            });
-            attackMultiplier += chosenSkill.attackBuff;
-            this.addLog(`${summon.icon} ${summon.name} 使用「${chosenSkill.name}」，攻击力提升${Math.floor(chosenSkill.attackBuff * 100)}%！`, 'buff');
+                duration: chosenSkill.duration || 2,
+                attackBonus: chosenSkill.attackBuff || 0,
+                defenseBonus: chosenSkill.defenseBuff || 0,
+                evasionBonus: chosenSkill.evasionBonus || 0,
+                hpRegen: chosenSkill.hpRegen || 0
+            };
+            summon.statusEffects.push(buffEffect);
+            const buffs = [];
+            if (chosenSkill.attackBuff) buffs.push(`攻击+${Math.floor(chosenSkill.attackBuff * 100)}%`);
+            if (chosenSkill.defenseBuff) buffs.push(`防御+${Math.floor(chosenSkill.defenseBuff * 100)}%`);
+            if (chosenSkill.evasionBonus) buffs.push(`闪避+${Math.floor(chosenSkill.evasionBonus * 100)}%`);
+            if (chosenSkill.hpRegen) buffs.push(`每回合回${Math.floor(chosenSkill.hpRegen * 100)}%HP`);
+            this.addLog(`${summon.icon} ${summon.name} 使用「${chosenSkill.name}」，${buffs.join('，')}！`, 'buff');
+            return;
+        }
+
+        // 处理减益技能（对敌人施加debuff）
+        if (chosenSkill.type === 'debuff') {
+            if (chosenSkill.stunChance && Math.random() < chosenSkill.stunChance) {
+                this.addStatusEffect(this.enemy, {
+                    name: chosenSkill.name + '眩晕',
+                    type: 'stun',
+                    duration: chosenSkill.stunDuration || 1,
+                    chance: 1.0
+                });
+                this.addLog(`${summon.icon} ${summon.name} 使用「${chosenSkill.name}」，${this.enemy.name}被眩晕了！`, 'debuff');
+            } else if (chosenSkill.enemyAttackDown) {
+                this.addStatusEffect(this.enemy, {
+                    name: chosenSkill.name + '减攻',
+                    type: 'attack_down',
+                    duration: chosenSkill.duration || 2,
+                    chance: 1.0,
+                    statModifiers: { attack: -Math.floor(chosenSkill.enemyAttackDown * 100) }
+                });
+                this.addLog(`${summon.icon} ${summon.name} 使用「${chosenSkill.name}」，${this.enemy.name}攻击力降低！`, 'debuff');
+            } else {
+                this.addLog(`${summon.icon} ${summon.name} 使用「${chosenSkill.name}」，但效果不明显...`, 'system');
+            }
+            // 减益技能也造成少量伤害
+            const effectiveAttack = Math.floor(summon.attack * attackMultiplier * 0.5);
+            const damage = this.calculateDamage(effectiveAttack, this.enemy.defense, 1.0, 0, 0.9,
+                'neutral', this.enemy.elements?.[0] || 'neutral', this.enemy, summon);
+            this.applyDamage(this.enemy, damage, summon);
             return;
         }
 
@@ -2779,13 +2827,12 @@ const BattleSystem = {
             this.addLog(`${summon.icon} ${summon.name} 使用「${chosenSkill.name}」，消耗${hpCost}点生命！`, 'system');
         }
 
-        const effectiveAttack = Math.floor(summon.attack * attackMultiplier * chosenSkill.damageMult);
-        const baseDamage = effectiveAttack;
-        const critChance = 0.05 + chosenSkill.critBonus;
+        const effectiveAttack = Math.floor(summon.attack * attackMultiplier * (chosenSkill.damageMult || 1.0));
+        const critChance = 0.05 + (chosenSkill.critBonus || 0);
 
         const damage = this.calculateDamage(
-            baseDamage,
-            this.enemy.defense,
+            effectiveAttack,
+            Math.floor(this.enemy.defense * defenseMultiplier),
             1.0,
             critChance,
             0.9,
@@ -2796,8 +2843,56 @@ const BattleSystem = {
         );
 
         this.applyDamage(this.enemy, damage, summon);
-        const skillPrefix = chosenSkill.id !== 'bite' ? `使用「${chosenSkill.name}」，` : '';
+        const skillPrefix = chosenSkill.id !== usable[0].id ? `使用「${chosenSkill.name}」，` : '';
         this.addLog(`${summon.icon} ${summon.name} ${skillPrefix}造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}`, 'magic');
+
+        // 附加效果：中毒
+        if (chosenSkill.poisonChance && Math.random() < chosenSkill.poisonChance) {
+            this.addStatusEffect(this.enemy, {
+                name: '中毒',
+                type: 'poison',
+                duration: chosenSkill.poisonDuration || 3,
+                chance: 1.0,
+                damagePerTurn: chosenSkill.poisonDamage || 5
+            });
+            this.addLog(`${this.enemy.name} 中毒了！每回合受到${chosenSkill.poisonDamage || 5}点伤害`, 'debuff');
+        }
+
+        // 附加效果：束缚
+        if (chosenSkill.bindChance && Math.random() < chosenSkill.bindChance) {
+            this.addStatusEffect(this.enemy, {
+                name: '束缚',
+                type: 'bind',
+                duration: chosenSkill.bindDuration || 1,
+                chance: 1.0,
+                skipTurn: true
+            });
+            this.addLog(`${this.enemy.name} 被束缚了！`, 'debuff');
+        }
+
+        // 附加效果：眩晕
+        if (chosenSkill.aoeStunChance && Math.random() < chosenSkill.aoeStunChance) {
+            this.addStatusEffect(this.enemy, {
+                name: '眩晕',
+                type: 'stun',
+                duration: 1,
+                chance: 1.0
+            });
+            this.addLog(`${this.enemy.name} 被眩晕了！`, 'debuff');
+        }
+
+        // 连击效果
+        if (chosenSkill.doubleHitChance && Math.random() < chosenSkill.doubleHitChance) {
+            this.addLog(`${summon.icon} ${summon.name} 发动连击！`, 'magic');
+            const secondDamage = this.calculateDamage(
+                Math.floor(effectiveAttack * 0.7),
+                this.enemy.defense,
+                1.0, critChance, 0.9,
+                'neutral', this.enemy.elements?.[0] || 'neutral', this.enemy, summon
+            );
+            this.applyDamage(this.enemy, secondDamage, summon);
+            this.addLog(`${summon.icon} ${summon.name} 追加造成 ${secondDamage.amount} 点伤害${secondDamage.isCrit ? '（暴击！）' : ''}`, 'magic');
+        }
     },
 
     /**

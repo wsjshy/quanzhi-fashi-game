@@ -1103,23 +1103,13 @@ const DataSkills = {
   summon_beast: {
     id: "summon_beast",
     name: "召唤·契约",
-    description: "初阶召唤系魔法，召唤一只幽狼兽协助战斗，持续5回合。召唤兽每回合自动攻击敌人。",
+    description: "初阶召唤系魔法，从召唤位面契约一只召唤兽协助战斗。首次使用时随机契约一种召唤兽，之后召唤同一只。",
     element: "summon",
     type: "summon",
     mpCost: 15,
     targetType: "self",
     cooldown: 3,
-    tier: "初阶",
-    summonData: {
-      id: "shadow_wolf",
-      name: "幽狼兽",
-      maxHp: 80,
-      attack: 25,
-      defense: 10,
-      speed: 15,
-      duration: 5,
-      icon: "🐺"
-    }
+    tier: "初阶"
   },
   summon_strengthen: {
     id: "summon_strengthen",
