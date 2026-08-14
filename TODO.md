@@ -71,35 +71,35 @@
 #### A类：现有框架可直接实现（不需要架构改动，优先级高）
 
 **雷系蓄电机制**
-- [ ] chargeStack/chargeMax/chargePerStack - 攻击叠加蓄电层数，每层+麻痹概率
-- [ ] fullChargeCrit/fullChargeDamage - 满层时暴击率/暴击伤害提升
+- [x] chargeStack/chargeMax/chargePerStack - 攻击叠加蓄电层数，每层+麻痹概率
+- [x] fullChargeCrit/fullChargeDamage - 满层时暴击率/暴击伤害提升
 - [ ] paralyzeNoDodge - 麻痹时不可闪避
 - [ ] paralyzeDamage/paralyzeChain - 麻痹时额外伤害/连锁
-- [ ] shockDebuff/shockDuration/shockThunderBonus - 感电状态，雷伤+30%
+- [x] shockDebuff/shockDuration/shockThunderBonus - 感电状态，雷伤+30%
 - [ ] shockParalyzeChance - 感电时额外麻痹概率
 - [ ] skyThunderChance/skyThunderDamage - 天雷引：30%概率随机落雷
 - [ ] critParalyze - 暴击必麻痹
-- [ ] thunderCounter/thunderCounterDamage - 雷反：被攻击时20%反击
+- [x] thunderCounter/thunderCounterDamage - 雷反：被攻击时20%反击
 - [ ] thunderRoarCooldown/thunderRoarParalyze - 雷鸣CD和麻痹全体
 
 **连击/多段攻击升级**
-- [ ] doubleStrikeChance/secondHitRatio - 二连斩（风系连袭Lv3）
-- [ ] tripleStrikeChance/thirdHitRatio - 三连斩（Lv5）
-- [ ] attackSpeedStack/attackSpeedMax - 风魔：每层速度+5%
-- [ ] hitCritStack/hitCritMax - 命中叠加暴击
+- [x] doubleStrikeChance/secondHitRatio - 二连斩（风系连袭Lv3）
+- [x] tripleStrikeChance/thirdHitRatio - 三连斩（Lv5）
+- [x] attackSpeedStack/attackSpeedMax - 风魔：每层速度+5%
+- [x] hitCritStack/hitCritMax - 命中叠加暴击
 - [ ] comboDamageIncrease/comboMpReduction - 连段伤害递增/MP递减
 - [ ] firstStrikeChance/firstStrikeDamage - 先手攻击加成
 - [ ] dodgeNextHitBonus/dodgeCritDamage - 闪避后下次必暴/暴伤
 
 **燃烧/冰霜深化**
-- [ ] burnDefenseDown - 燃烧时防御-15%
+- [x] burnDefenseDown - 燃烧时防御-15%
 - [ ] burnUnpurgeable - 燃烧不可驱散
-- [ ] frostSlow/frostStackMax/frostFreezeOnMax - 冰霜减速叠加，满层冻结
+- [x] frostSlow/frostStackMax/frostFreezeOnMax - 冰霜减速叠加，满层冻结
 - [ ] freezeDefenseDown/freezeUnpurgeable - 冻结降防/不可驱散
-- [ ] frozenIceDamageBonus/frozenDamageTaken - 冻结时冰伤+50%/受伤+20%
+- [x] frozenIceDamageBonus/frozenDamageTaken - 冻结时冰伤+50%/受伤+20%
 - [ ] frostExplosion/frostExplosionRange - 霜爆：解冻时范围伤害
 - [ ] frozenHpDrain/freezeSpread - 冻结掉血/扩散
-- [ ] frozenCritGuaranteed - 对冻结目标必暴
+- [x] frozenCritGuaranteed - 对冻结目标必暴
 - [ ] slowBonus/slowUnpurgeable - 减速效果增强/不可驱散
 - [ ] lowHpFreezeChance - 低HP时30%冻结攻击者
 - [ ] fieldIceResDown - 绝对零度领域冰抗-30%
@@ -112,8 +112,8 @@
 - [ ] defenseStack/defenseStackMax - 大地祝福防御叠加
 - [ ] knockbackImmunity - 免击退
 - [ ] earthquakeChance/earthquakeDamage/earthquakeSlow - 地震
-- [ ] defenseToDamage - 防御50%转伤害
-- [ ] stunnedDamageBonus/stunExtendChance - 对眩晕目标+50%/延长眩晕
+- [x] defenseToDamage - 防御50%转伤害
+- [x] stunnedDamageBonus/stunExtendChance - 对眩晕目标+50%/延长眩晕
 - [ ] meteor/meteorInterval/meteorDamage/meteorStunChance - 陨石（4回合延迟）
 
 **风系机动深化**
@@ -127,16 +127,16 @@
 **水系治疗深化**
 - [ ] waterGuardChance/waterGuardReduction - 水之盾减伤
 - [ ] healExtraHp - 治疗额外5%上限HP
-- [ ] healPurifyChance/purifyOnHealChance - 治疗时净化
+- [x] healPurifyChance/purifyOnHealChance - 治疗时净化
 - [ ] autoHeal/autoHealTarget - 自动治疗最低HP友方
 - [ ] regenChance/regenAmount/regenDuration/regenMp - 滋润持续回复
 - [ ] regenDamageReduction/regenDefenseBonus - 滋润时减伤/加防
 - [ ] regenUnpurgeable/lowHpRegenDouble - 滋润不可驱散/低HP翻倍
 - [ ] tide/tideInterval/tideHeal/tideCleanse - 潮汐：3回合全体治疗+解控
-- [ ] tideDamageStack/tideDamageMax/tideHealStack/tideHealMax - 涨潮叠加
+- [x] tideDamageStack/tideDamageMax/tideHealStack/tideHealMax - 涨潮叠加
 - [ ] tsunamiChance/tsunamiDamage/tsunamiAtkDown - 海啸
 - [ ] tideShield/tideShieldDuration/autoTide - 潮汐护盾/自动潮汐
-- [ ] healShield/healShieldDuration - 治疗量30%转护盾
+- [x] healShield/healShieldDuration - 过量治疗转护盾
 - [ ] healToDamage - 治疗10%转伤害
 - [ ] healMpRestore - 治疗时回MP
 - [ ] emergencyCooldown - 紧急回复CD
@@ -164,7 +164,7 @@
 - [ ] teamDarkBonus - 黑暗领域团队暗伤+20%
 - [ ] ignoreDodgeChance - 潜行攻击无视闪避
 - [ ] stealthDamageBonus/stealthCritBonus - 潜行伤害/暴击
-- [ ] reStealthChance/reStealthDuration/reStealthCrit - 影杀重新隐身
+- [x] reStealthChance/reStealthDuration/reStealthCrit - 影杀重新隐身
 - [ ] markNoStealth/autoStealthChance - 暗影标记禁隐身/自动隐身
 - [ ] curseEndDamage/curseSpreadChance/curseUnpurgeable - 诅咒结束伤害/传播/不可驱散
 - [ ] curseKillHeal/guaranteedCrit - 诅咒击杀回血/必暴
@@ -174,7 +174,7 @@
 - [ ] lifeLink/lifeLinkDuration/lifeLinkTransfer/linkDamageReduction - 生命链接分担伤害
 - [ ] blessAtkBonus/blessDefBonus/blessDuration - 祝福之环
 - [ ] lifeSeed/lifeSeedDelay/lifeSeedHeal - 生命之种延迟爆发
-- [ ] revive/reviveHp/reviveCount/reviveBuff - 复活
+- [x] revive/reviveHp/reviveCount/reviveBuff - 复活
 - [ ] purifyAll/autoPurify - 全净化/自动净化
 - [ ] protectionDuration - 神圣庇护持续
 - [ ] teamHpRegen/cooldownReduction - 团队回血/冷却缩减
