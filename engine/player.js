@@ -4,7 +4,7 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.9.6';
+const GAME_VERSION = '0.9.7';
 const SAVE_VERSION = '0.8.7';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
@@ -1322,6 +1322,7 @@ const Player = {
 
     /**
      * v0.9.0: 获取体力效率修正
+     * v0.9.7: 体力不再影响修炼效率和战斗伤害，只影响受伤概率
      * @returns {Object} { trainExp: 修炼经验修正, battleDamage: 战斗伤害修正, injuryChance: 受伤概率 }
      */
     getStaminaEfficiency() {
@@ -1330,11 +1331,12 @@ const Player = {
             case 'energetic':
                 return { trainExp: 1.0, battleDamage: 1.0, injuryChance: 0 };
             case 'tired':
-                return { trainExp: 0.7, battleDamage: 0.9, injuryChance: 0 };
+                // v0.9.7: 效率不再下降，只保留受伤风险
+                return { trainExp: 1.0, battleDamage: 1.0, injuryChance: 0 };
             case 'very_tired':
-                return { trainExp: 0.4, battleDamage: 0.75, injuryChance: 0.1 };
+                return { trainExp: 1.0, battleDamage: 1.0, injuryChance: 0.1 };
             case 'exhausted':
-                return { trainExp: 0.2, battleDamage: 0.6, injuryChance: 0.2 };
+                return { trainExp: 1.0, battleDamage: 1.0, injuryChance: 0.2 };
             default:
                 return { trainExp: 1.0, battleDamage: 1.0, injuryChance: 0 };
         }

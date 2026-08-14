@@ -1222,7 +1222,7 @@ const BattleSystem = {
                 debuffedBonus = this.player.talentEffects.debuffedDamageBonus;
             }
         }
-        // v0.9.0: 体力效率修正（体力低时伤害降低）
+        // v0.9.7: 体力不再影响战斗伤害，staminaEff.battleDamage始终为1.0
         const staminaEff = (typeof Player !== 'undefined' && Player.getStaminaEfficiency) 
             ? Player.getStaminaEfficiency() 
             : { battleDamage: 1.0 };
@@ -1902,7 +1902,7 @@ const BattleSystem = {
                 if (hasDebuff) debuffedSkillBonus = 1 + this.player.talentEffects.debuffedDamageBonus;
             }
 
-            // v0.9.0: 体力效率修正（仅玩家，体力低时伤害降低）
+            // v0.9.7: 体力不再影响技能伤害，staminaSkillBonus始终为1.0
             let staminaSkillBonus = 1.0;
             if (isPlayer && typeof Player !== 'undefined' && Player.getStaminaEfficiency) {
                 staminaSkillBonus = Player.getStaminaEfficiency().battleDamage;

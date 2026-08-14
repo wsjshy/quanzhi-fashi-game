@@ -474,7 +474,7 @@ const Game = {
                                 ${opt.label}
                                 <span style="float: right; font-size: 13px; display: flex; gap: 10px;">
                                     <span style="color: #aaddff;">⏱️ ${timeCost}h</span>
-                                    <span style="color: #888;" title="体力消耗（软限制，不阻止行动，只影响效率）">⚡ ${staminaCost}</span>
+                                    <span style="color: #888;" title="体力消耗（软限制，不阻止行动，不影响效率）">⚡ ${staminaCost}</span>
                                     ${hpChange !== 0 ? `<span style="color: ${hpChange > 0 ? '#66ff66' : '#ff6666'};">❤️ ${hpChange > 0 ? '+' : ''}${hpChange}</span>` : ''}
                                     ${mpChange !== 0 ? `<span style="color: ${mpChange > 0 ? '#6666ff' : '#ff6666'};">💧 ${mpChange > 0 ? '+' : ''}${mpChange}</span>` : ''}
                                     <span style="color: #ffd700;">✨ +${expGain}</span>
@@ -520,7 +520,7 @@ const Game = {
             const multiplier = hours / baseTime;
             
             // 计算实际效果：按时间倍数 × 收益加成
-            // v0.9.0: 加入体力效率修正（体力低时修炼经验降低）
+            // v0.9.7: 体力不再影响修炼效率，staminaEff.trainExp始终为1.0
             const staminaEff = Player.getStaminaEfficiency ? Player.getStaminaEfficiency() : { trainExp: 1.0 };
             const result = {
                 success: true,
@@ -1190,7 +1190,7 @@ const Game = {
         }
     },
 
-    // v0.9.6: 一键上完全天课程
+    // v0.9.6: 一键上课（v0.9.7优化：只上当前时段，不跳过课间）
     attendAllClasses() {
         const location = MapSystem.getCurrentLocation();
         if (!location || !location.classSchedule) {
@@ -1201,49 +1201,47 @@ const Game = {
         const dayOfWeek = TimeSystem.getDayOfWeek();
         const currentPeriod = TimeSystem.getCurrentPeriod();
         
-        // 计算今天剩余的课程
-        let totalExp = 0;
-        let classesAttended = 0;
+        // v0.9.7: 只上当前时段的课，不跳过课间
+        let classData = null;
         let targetHour = Player.hour;
+        let periodName = '';
 
-        // 上午课程（8点开始）
-        if (location.classSchedule.morning) {
-            const morningClass = location.classSchedule.morning[dayOfWeek];
-            if (morningClass && Player.hour <= 12) {
-                totalExp += morningClass.exp || 30;
-                classesAttended++;
+        if (currentPeriod === 'morning' || (Player.hour >= 6 && Player.hour < 12)) {
+            // 上午时段
+            if (location.classSchedule.morning) {
+                classData = location.classSchedule.morning[dayOfWeek];
                 targetHour = 12;
+                periodName = '上午';
             }
-        }
-
-        // 下午课程（14点开始）
-        if (location.classSchedule.afternoon) {
-            const afternoonClass = location.classSchedule.afternoon[dayOfWeek];
-            if (afternoonClass && Player.hour <= 18) {
-                totalExp += afternoonClass.exp || 30;
-                classesAttended++;
+        } else if (currentPeriod === 'afternoon' || (Player.hour >= 12 && Player.hour < 18)) {
+            // 下午时段
+            if (location.classSchedule.afternoon) {
+                classData = location.classSchedule.afternoon[dayOfWeek];
                 targetHour = 18;
+                periodName = '下午';
             }
         }
 
-        if (classesAttended === 0) {
-            UI.showMessage('今天已经没有课程了。');
+        if (!classData) {
+            UI.showMessage('当前时段没有课程安排。');
+            return;
+        }
+
+        if (Player.hour >= targetHour) {
+            UI.showMessage(`${periodName}课程已经结束了。`);
             return;
         }
 
         // 计算需要推进的时间
-        let hoursToAdvance = targetHour - Player.hour;
-        if (hoursToAdvance <= 0) {
-            UI.showMessage('今天的课程已经结束了。');
-            return;
-        }
+        const hoursToAdvance = targetHour - Player.hour;
+        const expGain = classData.exp || 30;
+        const staminaCost = 10;
 
-        // 消耗体力（每节课消耗10体力）
-        const staminaCost = classesAttended * 10;
+        // 消耗体力
         Player.useStamina(staminaCost);
 
         // 获得经验
-        Player.gainExp(totalExp);
+        Player.gainExp(expGain);
 
         // 推进时间
         TimeSystem.advanceTime(hoursToAdvance);
@@ -1251,11 +1249,16 @@ const Game = {
         Player.save();
         UI.renderMapScreen();
 
-        let msg = `📚 一键上完全天课程！\n\n`;
-        msg += `参加了 ${classesAttended} 节课\n`;
-        msg += `获得经验：+${totalExp}\n`;
+        let msg = `📚 一键上完${periodName}课程！\n\n`;
+        msg += `课程：${classData.name || periodName + '课程'}\n`;
+        msg += `获得经验：+${expGain}\n`;
         msg += `消耗体力：${staminaCost}\n`;
-        msg += `时间推进：${hoursToAdvance}小时`;
+        msg += `时间推进：${hoursToAdvance}小时（到${targetHour}:00）\n\n`;
+        if (periodName === '上午') {
+            msg += `💡 课间休息时间（12:00-14:00）可以自由安排活动`;
+        } else {
+            msg += `💡 今天的课程已结束，可以去探索或修炼了`;
+        }
         
         UI.showMessage(msg);
     },

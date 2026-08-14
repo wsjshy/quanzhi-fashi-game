@@ -603,7 +603,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.9.6 · 课程与探索</div>
+                ">v0.9.7 · 体力优化</div>
             </div>
         `;
 
@@ -937,9 +937,9 @@ const UI = {
     getCurrentGoalText() {
         const stats = Player.getTotalStats();
         
-        // 1. 体力较低提示（软限制，不阻止行动）
+        // 1. 体力较低提示（v0.9.7: 体力不影响效率）
         if (Player.stamina < 20) {
-            return '体力较低！休息可以恢复体力，提升修炼和战斗效率（体力为0时战斗后可能受伤）';
+            return '体力较低！休息可以恢复体力（体力不影响效率，体力为0时战斗后可能受伤）';
         }
         
         // 2. HP不足提示
@@ -1131,10 +1131,8 @@ const UI = {
                                 staminaColor = '#ffcc44'; // 黄色：有些疲惫
                                 staminaIcon = '😅';
                             }
-                            const staminaEff = Player.getStaminaEfficiency ? Player.getStaminaEfficiency() : null;
-                            const staminaTitle = staminaEff 
-                                ? `体力状态：${staminaRatio > 0.6 ? '精力充沛' : staminaRatio > 0.3 ? '有些疲惫（修炼70%/战斗90%）' : staminaRatio > 0 ? '非常疲惫（修炼40%/战斗75%）' : '精疲力竭（修炼20%/战斗60%）'}`
-                                : '体力';
+                            // v0.9.7: 体力不影响效率，只在体力为0时战斗可能受伤
+                            const staminaTitle = `体力：${staminaRatio > 0.6 ? '精力充沛' : staminaRatio > 0.3 ? '有些疲惫' : staminaRatio > 0 ? '非常疲惫' : '精疲力竭'}（体力不影响修炼和战斗效率，体力为0时战斗可能受伤）`;
                             return `<span style="color: ${staminaColor};" title="${staminaTitle}">${staminaIcon} ${Player.stamina}/${Player.maxStamina}</span>`;
                         })()}
                         <span style="color: #66ff66;">Lv.${Player.level}</span>
@@ -1244,33 +1242,6 @@ const UI = {
                             `;
                         })()}
                         <h3 style="color: #ffd700; margin-bottom: 20px; font-size: 22px;">📍 可执行的行动</h3>
-                        <!-- v0.9.6: 一键上完全天课程（仅在学校时显示） -->
-                        ${(() => {
-                            if (location?.classSchedule && (location.id === 'tianlan_school' || location.id === 'mingwen_girls_school')) {
-                                const dayOfWeek = TimeSystem.getDayOfWeek();
-                                const hasMorningClass = location.classSchedule.morning && location.classSchedule.morning[dayOfWeek];
-                                const hasAfternoonClass = location.classSchedule.afternoon && location.classSchedule.afternoon[dayOfWeek];
-                                if ((hasMorningClass && Player.hour <= 12) || (hasAfternoonClass && Player.hour <= 18)) {
-                                    return `<button onclick="Game.attendAllClasses()" style="
-                                        margin-bottom: 15px;
-                                        width: 100%;
-                                        padding: 15px 25px;
-                                        background: linear-gradient(135deg, rgba(30, 80, 60, 0.8), rgba(50, 120, 90, 0.8));
-                                        border: 2px solid #44aa88;
-                                        border-radius: 10px;
-                                        color: #aaffcc;
-                                        cursor: pointer;
-                                        font-size: 16px;
-                                        font-weight: bold;
-                                        text-align: left;
-                                    " onmouseover="this.style.borderColor='#66ccaa'; this.style.background='linear-gradient(135deg, rgba(50, 100, 80, 0.8), rgba(70, 140, 110, 0.8))'" onmouseout="this.style.borderColor='#44aa88'; this.style.background='linear-gradient(135deg, rgba(30, 80, 60, 0.8), rgba(50, 120, 90, 0.8))'">
-                                        📚 一键上完全天课程
-                                        <span style="font-size: 13px; color: #88ccaa; float: right;">自动参加今天所有课程，推进到放学</span>
-                                    </button>`;
-                                }
-                            }
-                            return '';
-                        })()}
                         <!-- v0.9.4: 体力低/疲劳建议休息提示 -->
                         ${(() => {
                             const staminaRatio = Player.stamina / (Player.maxStamina || 100);
@@ -1300,12 +1271,10 @@ const UI = {
                                 const getPriority = (action) => {
                                     // 休息类行动排最后
                                     if (action.id === 'rest' || action.id === 'quick_rest' || action.id === 'sleep') return 3;
-                                    // 推荐行动（有课/有事件）排最前
-                                    if (action.isClassAction && currentClass) return 0;
+                                    // v0.9.7: 上课不再强制排最前，玩家可自行选择优先级
+                                    // 有事件的行动排前面
                                     if (action.eventChance && action.eventChance > 0) return 1;
-                                    // 上课行动（自习时）
-                                    if (action.isClassAction) return 2;
-                                    // 普通行动
+                                    // 上课行动和普通行动同优先级
                                     return 2;
                                 };
                                 
@@ -1327,9 +1296,7 @@ const UI = {
                                         actionName = `上课：${currentClass.name}`;
                                         actionDesc = `${teacher?.name || '未知老师'}主讲，获得${currentClass.exp}经验${currentClass.injuryChance ? '，有受伤风险' : ''}`;
                                         expReward = currentClass.exp;
-                                        // v0.9.3: 有课时推荐上课
-                                        isRecommended = true;
-                                        recommendReason = '📚 当前有课';
+                                        // v0.9.7: 上课不再强制推荐，玩家自行选择优先级
                                     } else {
                                         actionName = '自习';
                                         actionDesc = '当前没有课程，自由自习获得少量经验';
@@ -1380,7 +1347,7 @@ const UI = {
                                         ${isSkippingClass ? '<span style="color: #ff6644; font-size: 13px; margin-left: 8px;">⚠️ 逃课</span>' : ''}
                                         <span style="font-size: 12px; color: #888; float: right; display: flex; gap: 10px; align-items: center;">
                                             <span style="color: #aaddff;" title="时间消耗">⏱️ ${action.timeCost}h</span>
-                                            ${action.staminaCost && action.staminaCost > 0 ? `<span style="color: #888;" title="体力消耗（软限制，不阻止行动，只影响效率）">⚡ ${action.staminaCost}</span>` : ''}
+                                            ${action.staminaCost && action.staminaCost > 0 ? `<span style="color: #888;" title="体力消耗（软限制，不阻止行动，不影响效率）">⚡ ${action.staminaCost}</span>` : ''}
                                             ${expReward ? `<span style="color: #ffd700;" title="经验奖励">✨ +${expReward}</span>` : ''}
                                         </span>
                                     </div>
@@ -3871,7 +3838,7 @@ const UI = {
                             <h3 style="color: #88ccff; font-size: 20px; margin-bottom: 12px;">⏰ 时间与体力</h3>
                             <ul style="color: #cccccc; line-height: 2; font-size: 14px; padding-left: 20px;">
                                 <li><strong>时间系统</strong>：每个行动消耗时间，一天分为多个时段，特定时段有课程</li>
-                                <li><strong>体力系统</strong>：体力是<strong>软限制</strong>，不会阻止行动！体力低时只影响效率（修炼经验减少、战斗伤害降低）</li>
+                                <li><strong>体力系统</strong>：体力是<strong>软限制</strong>，不会阻止行动！<strong>体力不影响修炼和战斗效率</strong>，体力为0时战斗后有概率受伤</li>
                                 <li><strong>体力耗尽</strong>：体力为0时战斗后有概率受伤（疲劳/重伤），休息后恢复</li>
                                 <li><strong>休息恢复</strong>：休息可以恢复 HP、MP 和体力，消除疲劳状态</li>
                                 <li><strong>移动零消耗</strong>：地点之间旅行不消耗体力，只消耗0.5小时</li>
@@ -3920,7 +3887,7 @@ const UI = {
                             <ul style="color: #ddddcc; line-height: 2; font-size: 14px; padding-left: 20px;">
                                 <li>多和 NPC 聊天，可以获得情报和任务</li>
                                 <li>注意收集情报，大事件来临前会有各种暗示</li>
-                                <li>体力是软限制，不会阻止行动，但低体力影响效率，体力为0战斗后可能受伤</li>
+                                <li>体力是软限制，不会阻止行动，<strong>不影响效率</strong>，体力为0战斗后可能受伤</li>
                                 <li>战斗时注意元素克制，用对元素事半功倍</li>
                                 <li>提升势力声望可以获得商店折扣和更多奖励</li>
                                 <li>探索不同地点，会遇到不同的 NPC 和事件</li>
