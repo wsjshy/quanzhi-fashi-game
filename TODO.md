@@ -1,6 +1,6 @@
 # TODO - 全职法师游戏
 
-> 当前版本：v0.8.13 | 最后更新：2026-08-14
+> 当前版本：v0.8.14 | 最后更新：2026-08-14
 > 状态说明：[ ]待做 [~]进行中 [x]完成
 
 ---
@@ -16,6 +16,21 @@
 - [x] 原地休息消耗1小时，10%遇敌率
 - [x] 自身天赋效果合并到战斗中
 - [x] 角色面板显示自身天赋
+
+### v0.8.14 A类战斗效果扩展（2026-08-14）
+- [x] 感电麻痹：shockParalyzeChance（感电时额外麻痹概率）
+- [x] 连段增伤：comboDamageIncrease（二连/三连伤害递增）
+- [x] 闪避必暴：dodgeNextHitBonus（闪避后下次必暴）
+- [x] 不可驱散：burnUnpurgeable/freezeUnpurgeable/slowUnpurgeable/curseUnpurgeable
+- [x] 冻结降防：freezeDefenseDown（冻结时敌人防御降低）
+- [x] 冻结掉血：frozenHpDrain（每回合损失%最大HP）
+- [x] 霜爆：frostExplosion（解冻时造成%最大HP伤害）
+- [x] 低HP反制：lowHpFreezeChance（低HP时冻结攻击者）
+- [x] 暴击击退：critKnockback（暴击时概率眩晕敌人）
+- [x] 攻击爆炸：explosionChance/explosionDamage/explosionCritGuaranteed
+- [x] 低HP增伤：lowHpDamageScaling（HP越低伤害越高）
+- [x] 闪电连锁：chainChance/chainTargets/chainDamageRatio/chainNoDecay
+- [x] debuff增伤：debuffedDamageBonus（对有debuff敌人伤害提升）
 
 ### v0.8.12 十批A类天赋效果（2026-08-14）
 - [x] 降低战斗自动回复：HP 1%→0.3%，MP 2%→0.5%
@@ -86,9 +101,9 @@
 - [ ] paralyzeNoDodge - 麻痹时不可闪避
 - [ ] paralyzeDamage/paralyzeChain - 麻痹时额外伤害/连锁
 - [x] shockDebuff/shockDuration/shockThunderBonus - 感电状态，雷伤+30%
-- [ ] shockParalyzeChance - 感电时额外麻痹概率
-- [ ] skyThunderChance/skyThunderDamage - 天雷引：30%概率随机落雷
-- [ ] critParalyze - 暴击必麻痹
+- [x] shockParalyzeChance - 感电时额外麻痹概率
+- [x] skyThunderChance/skyThunderDamage - 天雷引：30%概率随机落雷
+- [x] critParalyze - 暴击必麻痹
 - [x] thunderCounter/thunderCounterDamage - 雷反：被攻击时20%反击
 - [ ] thunderRoarCooldown/thunderRoarParalyze - 雷鸣CD和麻痹全体
 
@@ -97,21 +112,21 @@
 - [x] tripleStrikeChance/thirdHitRatio - 三连斩（Lv5）
 - [x] attackSpeedStack/attackSpeedMax - 风魔：每层速度+5%
 - [x] hitCritStack/hitCritMax - 命中叠加暴击
-- [ ] comboDamageIncrease/comboMpReduction - 连段伤害递增/MP递减
-- [ ] firstStrikeChance/firstStrikeDamage - 先手攻击加成
-- [ ] dodgeNextHitBonus/dodgeCritDamage - 闪避后下次必暴/暴伤
+- [x] comboDamageIncrease/comboMpReduction - 连段伤害递增/MP递减
+- [x] firstStrikeChance/firstStrikeDamage - 先手攻击加成
+- [x] dodgeNextHitBonus/dodgeCritDamage - 闪避后下次必暴/暴伤
 
 **燃烧/冰霜深化**
 - [x] burnDefenseDown - 燃烧时防御-15%
-- [ ] burnUnpurgeable - 燃烧不可驱散
+- [x] burnUnpurgeable - 燃烧不可驱散
 - [x] frostSlow/frostStackMax/frostFreezeOnMax - 冰霜减速叠加，满层冻结
-- [ ] freezeDefenseDown/freezeUnpurgeable - 冻结降防/不可驱散
+- [x] freezeDefenseDown/freezeUnpurgeable - 冻结降防/不可驱散
 - [x] frozenIceDamageBonus/frozenDamageTaken - 冻结时冰伤+50%/受伤+20%
-- [ ] frostExplosion/frostExplosionRange - 霜爆：解冻时范围伤害
-- [ ] frozenHpDrain/freezeSpread - 冻结掉血/扩散
+- [x] frostExplosion/frostExplosionRange - 霜爆：解冻时伤害
+- [x] frozenHpDrain/freezeSpread - 冻结掉血/扩散
 - [x] frozenCritGuaranteed - 对冻结目标必暴
-- [ ] slowBonus/slowUnpurgeable - 减速效果增强/不可驱散
-- [ ] lowHpFreezeChance - 低HP时30%冻结攻击者
+- [x] slowBonus/slowUnpurgeable - 减速效果增强/不可驱散
+- [x] lowHpFreezeChance - 低HP时冻结攻击者
 - [ ] fieldIceResDown - 绝对零度领域冰抗-30%
 
 **土系防御深化**
