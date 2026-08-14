@@ -4,7 +4,7 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.9.7';
+const GAME_VERSION = '0.9.8';
 const SAVE_VERSION = '0.8.7';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
@@ -216,6 +216,7 @@ const Player = {
         this.exploredNPCs = [];  // v0.9.0: 已对话的NPC（用于首次对话奖励）
         this.fatigueLevel = 0;  // v0.9.1: 疲劳等级（0=正常，1=疲劳，2=重伤），低体力战斗后概率获得，休息后清除
         this.explorationComplete = [];  // v0.9.1: 已100%探索完成的区域ID列表
+        this.consecutiveExplores = 0;  // v0.9.8: 连续探索新地点计数，非探索行动重置为0
         this.dailyStats = {  // v0.9.4: 每日统计
             day: 1,
             expGained: 0,
@@ -1323,6 +1324,7 @@ const Player = {
     /**
      * v0.9.0: 获取体力效率修正
      * v0.9.7: 体力不再影响修炼效率和战斗伤害，只影响受伤概率
+     * v0.9.8: 只有体力=0时战斗才可能受伤，体力<30%但>0时不再疲劳
      * @returns {Object} { trainExp: 修炼经验修正, battleDamage: 战斗伤害修正, injuryChance: 受伤概率 }
      */
     getStaminaEfficiency() {
@@ -1331,10 +1333,10 @@ const Player = {
             case 'energetic':
                 return { trainExp: 1.0, battleDamage: 1.0, injuryChance: 0 };
             case 'tired':
-                // v0.9.7: 效率不再下降，只保留受伤风险
                 return { trainExp: 1.0, battleDamage: 1.0, injuryChance: 0 };
             case 'very_tired':
-                return { trainExp: 1.0, battleDamage: 1.0, injuryChance: 0.1 };
+                // v0.9.8: 体力<30%但>0时不再疲劳
+                return { trainExp: 1.0, battleDamage: 1.0, injuryChance: 0 };
             case 'exhausted':
                 return { trainExp: 1.0, battleDamage: 1.0, injuryChance: 0.2 };
             default:
@@ -1593,6 +1595,7 @@ const Player = {
             exploredNPCs: this.exploredNPCs || [],
             fatigueLevel: this.fatigueLevel || 0,
             explorationComplete: this.explorationComplete || [],
+            consecutiveExplores: this.consecutiveExplores || 0,
             dailyStats: this.dailyStats || { day: 1, expGained: 0, goldGained: 0, battlesWon: 0, locationsExplored: 0, npcsTalked: 0 },
             inventory: Inventory.getSaveData(),
             worldState: typeof WorldState !== 'undefined' ? WorldState.getSaveData() : null,
@@ -1701,6 +1704,7 @@ const Player = {
             // v0.9.1: 加载疲劳等级和探索完成记录
             this.fatigueLevel = data.fatigueLevel || 0;
             this.explorationComplete = data.explorationComplete || [];
+            this.consecutiveExplores = data.consecutiveExplores || 0;
             this.dailyStats = data.dailyStats || { day: 1, expGained: 0, goldGained: 0, battlesWon: 0, locationsExplored: 0, npcsTalked: 0 };
             
             // 加载背包

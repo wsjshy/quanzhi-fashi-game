@@ -659,6 +659,19 @@ const Game = {
                     Player.gold += hiddenGold;
                     firstExploreReward.hiddenFind = { exp: hiddenExp, gold: hiddenGold };
                 }
+                // v0.9.8: 连续探索奖励
+                Player.consecutiveExplores = (Player.consecutiveExplores || 0) + 1;
+                const ce = Player.consecutiveExplores;
+                if (ce === 3 || ce === 5 || ce === 10) {
+                    const bonusMap = { 3: { exp: 50, gold: 30 }, 5: { exp: 100, gold: 50 }, 10: { exp: 200, gold: 100 } };
+                    const bonus = bonusMap[ce];
+                    Player.gainExp(bonus.exp);
+                    Player.gold += bonus.gold;
+                    firstExploreReward.consecutiveBonus = { count: ce, exp: bonus.exp, gold: bonus.gold };
+                }
+            } else {
+                // v0.9.8: 非首次探索，重置连续探索计数
+                Player.consecutiveExplores = 0;
             }
 
             // v0.9.1: 100%探索完成奖励
@@ -712,6 +725,10 @@ const Game = {
                 // v0.9.6: 隐藏发现奖励显示
                 if (firstExploreReward.hiddenFind) {
                     travelMsg += `\n\n✨ 意外发现！\n你在探索中发现了隐藏的宝物！\n经验 +${firstExploreReward.hiddenFind.exp}\n金币 +${firstExploreReward.hiddenFind.gold}`;
+                }
+                // v0.9.8: 连续探索奖励显示
+                if (firstExploreReward.consecutiveBonus) {
+                    travelMsg += `\n\n🔥 连续探索${firstExploreReward.consecutiveBonus.count}个新地点！\n探索达人奖励！\n经验 +${firstExploreReward.consecutiveBonus.exp}\n金币 +${firstExploreReward.consecutiveBonus.gold}`;
                 }
             }
             // v0.9.1: 100%探索完成奖励显示
@@ -1628,14 +1645,12 @@ const Game = {
                 let fatigueResult = null;
                 if (!isBossBattle) {
                     const staminaRatio = Player.stamina / (Player.maxStamina || 100);
+                    // v0.9.8: 只有体力=0时战斗才可能受伤，体力<30%但>0时不再疲劳
                     let injuryChance = 0;
                     let newFatigue = 0;
                     if (staminaRatio <= 0) {
                         injuryChance = 0.2;  // 精疲力竭：20%概率重伤
                         newFatigue = 2;
-                    } else if (staminaRatio <= 0.3) {
-                        injuryChance = 0.1;  // 非常疲惫：10%概率疲劳
-                        newFatigue = 1;
                     }
                     if (injuryChance > 0 && Math.random() < injuryChance) {
                         // 不降级：如果已有更高等级疲劳，保持

@@ -603,7 +603,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.9.7 · 体力优化</div>
+                ">v0.9.8 · 探索深化</div>
             </div>
         `;
 
@@ -1061,7 +1061,18 @@ const UI = {
                     border-bottom: 2px solid #444477;
                 ">
                     <div style="display: flex; gap: 30px; align-items: center;">
-                        <div style="color: #ffd700; font-size: 20px; font-weight: bold;">${location?.name || '未知地点'}</div>
+                        <div style="color: #ffd700; font-size: 20px; font-weight: bold;">
+                            ${location?.name || '未知地点'}
+                            ${(() => {
+                                // v0.9.8: 地点探索状态标记
+                                const isExplored = Player.exploredLocations?.includes(location?.id);
+                                if (isExplored) {
+                                    return `<span style="font-size: 12px; color: #66ff66; margin-left: 8px; background: rgba(30, 80, 30, 0.5); padding: 2px 8px; border-radius: 6px; border: 1px solid #44aa44;">✓ 已探索</span>`;
+                                } else {
+                                    return `<span style="font-size: 12px; color: #ffaa44; margin-left: 8px; background: rgba(80, 50, 20, 0.5); padding: 2px 8px; border-radius: 6px; border: 1px solid #aa7744;">❓ 未探索</span>`;
+                                }
+                            })()}
+                        </div>
                         ${(() => {
                             // v0.9.1: 探索度显示
                             if (typeof MapSystem.getExplorationProgress === 'function') {
