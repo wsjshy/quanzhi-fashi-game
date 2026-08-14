@@ -810,6 +810,11 @@ const BattleSystem = {
                     type: 'freeze', name: '绝对零度', duration: te.fieldFreezeDuration || 1
                 });
                 this.addLog(`❄️ 绝对零度领域！${this.enemy.name} 被冻结！`, 'element');
+                // 领域冰抗降低（fieldIceResDown）
+                if (te.fieldIceResDown) {
+                    this.enemy.iceResistance = (this.enemy.iceResistance || 0) - te.fieldIceResDown;
+                    this.addLog(`❄️ 极寒领域！${this.enemy.name} 冰系抗性降低！`, 'debuff');
+                }
             }
             // 兽王威压：降低敌人攻防
             if (te.kingIntimidate && te.kingIntimidate > 0) {
@@ -2158,6 +2163,20 @@ const BattleSystem = {
                 if (cleansable.length > 0) {
                     healTarget.statusEffects = healTarget.statusEffects.filter(e => !cleansable.includes(e));
                     this.addLog(`✨ 圣光净化！清除所有 ${cleansable.length} 个负面状态！`, 'heal');
+                    // 净化回血（purifyHeal）：每个被净化的状态回血
+                    if (this.player.talentEffects.purifyHeal) {
+                        const healPer = this.player.talentEffects.purifyHeal;
+                        const totalHeal = Math.floor(this.player.maxHp * healPer * cleansable.length);
+                        healTarget.hp = Math.min(healTarget.maxHp, healTarget.hp + totalHeal);
+                        this.addLog(`✨ 净化恢复 ${totalHeal} 点生命！`, 'heal');
+                    }
+                    // 净化攻击提升（purifyAtkDown → 净化后自身攻击提升）
+                    if (this.player.talentEffects.purifyAtkBuff) {
+                        this.addStatusEffect(this.player, {
+                            type: 'attack_up', name: '净化之力', duration: 2,
+                            atkMod: this.player.talentEffects.purifyAtkBuff
+                        });
+                    }
                 }
             }
             // 天赋：祝福（blessAtkBonus/blessDefBonus）：治疗时获得攻防加成
@@ -3541,22 +3560,65 @@ const BattleSystem = {
                 this.player.tideHealBonus = healBonus;
                 if (this.player.tideStack >= maxStacks) {
                     this.addLog(`🌊 潮汐满潮！伤害+${Math.floor(dmgBonus*100)}%，治疗+${Math.floor(healBonus*100)}%！`, 'buff');
+                    // 潮汐护盾（tideShield）：满潮时获得护盾
+                    if (te.tideShield) {
+                        const shieldAmount = Math.floor(this.player.maxHp * te.tideShield);
+                        const existingShield = this.player.statusEffects.find(e => e.type === 'shield');
+                        if (existingShield) {
+                            existingShield.value = Math.max(existingShield.value, shieldAmount);
+                        } else {
+                            this.addStatusEffect(this.player, { type: 'shield', name: '潮汐护盾', value: shieldAmount, duration: te.tideShieldDuration || 3 });
+                        }
+                        this.addLog(`🌊 潮汐护盾！获得 ${shieldAmount} 点护盾！`, 'defense');
+                    }
+                    // 潮汐净化（tideCleansing）：满潮时净化1个负面
+                    if (te.tideCleansing) {
+                        const cleansable = this.player.statusEffects.filter(e =>
+                            ['burn', 'freeze', 'paralyze', 'stun', 'slow', 'poison', 'bleed', 'curse', 'blind', 'fear'].includes(e.type) && !e.unpurgeable
+                        );
+                        if (cleansable.length > 0) {
+                            this.player.statusEffects = this.player.statusEffects.filter(e => e !== cleansable[0]);
+                            this.addLog(`🌊 潮汐净化了 ${cleansable[0].name}！`, 'buff');
+                        }
+                    }
                 }
             }
-            // 紧急回复：低HP时自动回血
-            if (te.emergencyHeal && !this.player._emergencyUsed) {
+            // 紧急回复：低HP时自动回血（支持emergencyCooldown多次触发）
+            if (te.emergencyHeal) {
                 const threshold = te.emergencyThreshold || 0.2;
-                if (this.player.hp / this.player.maxHp < threshold) {
+                const cooldown = te.emergencyCooldown || 0;
+                const canTrigger = cooldown > 0
+                    ? (!this.player._emergencyCd || this.player._emergencyCd <= 0)
+                    : !this.player._emergencyUsed;
+                if (canTrigger && this.player.hp / this.player.maxHp < threshold) {
                     const healAmount = Math.floor(this.player.maxHp * (te.emergencyHealAmount || 0.3));
                     this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
-                    this.player._emergencyUsed = true;
+                    if (cooldown > 0) {
+                        this.player._emergencyCd = cooldown;
+                    } else {
+                        this.player._emergencyUsed = true;
+                    }
                     this.addLog(`💖 紧急回复！恢复 ${healAmount} 点生命！`, 'heal');
                 }
+                // CD倒计时
+                if (this.player._emergencyCd > 0) this.player._emergencyCd--;
             }
             // 低HP回血加成
             if (te.lowHpRegen && this.player.hp / this.player.maxHp < 0.3) {
                 const lowHeal = Math.floor(this.player.maxHp * te.lowHpRegen);
                 this.player.hp = Math.min(this.player.maxHp, this.player.hp + lowHeal);
+            }
+            // 致命护盾（lethalShield）：低HP时自动获得护盾
+            if (te.lethalShield && !this.player._lethalShieldUsed && this.player.hp / this.player.maxHp < (te.lethalShieldThreshold || 0.25)) {
+                const shieldAmount = Math.floor(this.player.maxHp * (te.lethalShieldAmount || 0.2));
+                const existingShield = this.player.statusEffects.find(e => e.type === 'shield');
+                if (existingShield) {
+                    existingShield.value = Math.max(existingShield.value, shieldAmount);
+                } else {
+                    this.addStatusEffect(this.player, { type: 'shield', name: '致命护盾', value: shieldAmount, duration: 3 });
+                }
+                this.player._lethalShieldUsed = true;
+                this.addLog(`🛡️ 致命护盾！获得 ${shieldAmount} 点护盾！`, 'defense');
             }
             // 冰霜新星：每隔N回合造成冰伤+减速
             if (te.frostNova && this.enemy.hp > 0) {
@@ -5156,6 +5218,12 @@ const BattleSystem = {
             // REG恢复（每回合恢复HP）
             if (effect.regen) {
                 let healAmount = Math.floor(effect.regen);
+                // 低HP时回复翻倍（lowHpRegenDouble）
+                if (isPlayer && this.player.talentEffects && this.player.talentEffects.lowHpRegenDouble) {
+                    if (target.hp / target.maxHp < 0.3) {
+                        healAmount *= 2;
+                    }
+                }
                 // 应用治疗降低效果
                 const healMultiplier = this.getHealingMultiplier(target);
                 healAmount = Math.floor(healAmount * healMultiplier);
@@ -5173,6 +5241,13 @@ const BattleSystem = {
                     this.applyDamage(this.enemy, { amount: explodeDmg, isCrit: false, isMiss: false, element: 'ice' }, this.player);
                     this.addLog(`❄️ 霜爆！${this.enemy.name} 解冻时受到 ${explodeDmg} 点伤害！`, 'element');
                     this.showDamageNumber('enemy', explodeDmg, 'magic');
+                }
+                // 诅咒结束伤害（curseEndDamage）
+                if (effect.type === 'curse' && !isPlayer && this.player.talentEffects && this.player.talentEffects.curseEndDamage) {
+                    const curseDmg = Math.floor(this.enemy.maxHp * this.player.talentEffects.curseEndDamage);
+                    this.applyDamage(this.enemy, { amount: curseDmg, element: 'dark', isCrit: false, isMiss: false }, this.player);
+                    this.addLog(`🌑 诅咒爆发！${this.enemy.name} 受到 ${curseDmg} 点暗伤！`, 'element');
+                    this.showDamageNumber('enemy', curseDmg, 'magic');
                 }
                 if (effect.type !== 'shield') {
                     this.addLog(`${targetName} 的 ${effect.name} 效果消失了`, 'system');
@@ -5485,7 +5560,7 @@ const BattleSystem = {
                     }
                     this.addLog(`💀 击杀减少技能冷却 ${reduce} 回合！`, 'buff');
                 }
-                // 天赋：击杀后重新隐身（潜行Lv7影杀）
+                // 击杀后重新隐身（reStealthChance）
                 if (te.reStealthChance && Math.random() < te.reStealthChance) {
                     const existingStealth = this.player.statusEffects.find(e => e.type === 'stealth');
                     if (!existingStealth) {
@@ -5493,6 +5568,21 @@ const BattleSystem = {
                         this.player.stealthActive = true;
                         this.addLog(`🌑 影杀！重新进入潜行状态！`, 'buff');
                     }
+                }
+                // 诅咒击杀回血（curseKillHeal）：击杀被诅咒的敌人额外回血
+                if (te.curseKillHeal) {
+                    const wasCursed = this.enemy.statusEffects.some(e => e.type === 'curse');
+                    if (wasCursed) {
+                        const healAmount = Math.floor(this.player.maxHp * te.curseKillHeal);
+                        this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
+                        this.addLog(`🌑 诅咒汲取！恢复 ${healAmount} 点生命！`, 'heal');
+                    }
+                }
+                // 暗影击杀回血（shadowFormHeal）：潜行状态下击杀回血
+                if (te.shadowFormHeal && this.player.stealthActive) {
+                    const healAmount = Math.floor(this.player.maxHp * te.shadowFormHeal);
+                    this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
+                    this.addLog(`🌑 暗影汲取！恢复 ${healAmount} 点生命！`, 'heal');
                 }
             }
             

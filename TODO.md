@@ -44,6 +44,19 @@
 - [x] 麻痹不可闪避：paralyzeNoDodge（已有）
 - [x] 岩盾：shieldChance/shieldRatio（已有）
 
+### v0.8.16 第十四批A类效果（2026-08-14）
+- [x] 诅咒结束伤害：curseEndDamage（诅咒结束时爆发暗伤）
+- [x] 诅咒击杀回血：curseKillHeal（击杀被诅咒敌人回血）
+- [x] 暗影击杀回血：shadowFormHeal（潜行击杀回血）
+- [x] 低HP回复翻倍：lowHpRegenDouble（HP<30%时滋润翻倍）
+- [x] 极寒领域：fieldIceResDown（绝对零度领域冰抗降低）
+- [x] 净化回血：purifyHeal（每个被净化状态回血）
+- [x] 净化攻击：purifyAtkBuff（净化后攻击提升）
+- [x] 紧急回复CD：emergencyCooldown（支持多次触发）
+- [x] 潮汐护盾：tideShield/tideShieldDuration（满潮时获得护盾）
+- [x] 潮汐净化：tideCleansing（满潮时净化负面）
+- [x] 致命护盾：lethalShield（低HP时自动获得护盾）
+
 ### v0.8.12 十批A类天赋效果（2026-08-14）
 - [x] 降低战斗自动回复：HP 1%→0.3%，MP 2%→0.5%
 - [x] 提高玩家初始属性：HP100→120, ATK10→15, DEF5→8
@@ -139,7 +152,7 @@
 - [x] frozenCritGuaranteed - 对冻结目标必暴
 - [x] slowBonus/slowUnpurgeable - 减速效果增强/不可驱散
 - [x] lowHpFreezeChance - 低HP时冻结攻击者
-- [ ] fieldIceResDown - 绝对零度领域冰抗-30%
+- [x] fieldIceResDown - 绝对零度领域冰抗-30%
 
 **土系防御深化**
 - [x] shieldChance/shieldRatio - 岩盾概率/比例
@@ -172,11 +185,11 @@
 - [ ] tide/tideInterval/tideHeal/tideCleanse - 潮汐（全体）
 - [x] tideDamageStack/tideDamageMax/tideHealStack/tideHealMax - 涨潮叠加
 - [x] tsunamiChance/tsunamiDamage/tsunamiAtkDown - 海啸
-- [ ] tideShield/tideShieldDuration/autoTide - 潮汐护盾/自动潮汐
+- [x] tideShield/tideShieldDuration/autoTide - 潮汐护盾/自动潮汐
 - [x] healShield - 治疗转护盾
 - [x] healToDamage - 治疗转伤害
 - [x] healMpRestore - 治疗时回MP
-- [ ] emergencyCooldown - 紧急回复CD
+- [x] emergencyCooldown - 紧急回复CD
 
 **光系深化**
 - [x] lightShield - 光之护封盾
@@ -196,15 +209,15 @@
 **暗系深化**
 - [x] stealthOnStart - 暗影形态
 - [x] lowHpDodgeBonus - 低HP闪避
-- [ ] shadowFormHeal - 暗影击杀回血
+- [x] shadowFormHeal - 暗影击杀回血
 - [x] enemyHitDown - 黑暗领域：敌命中-15%
 - [ ] teamDarkBonus - 团队暗伤（单机无队友）
 - [x] ignoreDodgeChance - 无视闪避
 - [x] stealthCritBonus - 潜行暴击
 - [x] reStealthChance - 击杀后重新隐身
 - [x] markNoStealth/autoStealthChance - 暗影标记禁隐身/自动隐身
-- [ ] curseEndDamage/curseSpreadChance/curseUnpurgeable - 诅咒结束伤害/传播/不可驱散
-- [ ] curseKillHeal - 诅咒击杀回血
+- [x] curseEndDamage/curseSpreadChance/curseUnpurgeable - 诅咒结束伤害/传播/不可驱散
+- [x] curseKillHeal - 诅咒击杀回血
 - [x] guaranteedCrit - 必暴
 - [x] curseCritDown/curseDodgeDown - 诅咒降暴击/闪避
 
