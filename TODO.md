@@ -57,6 +57,14 @@
 - [x] 潮汐净化：tideCleansing（满潮时净化负面）
 - [x] 致命护盾：lethalShield（低HP时自动获得护盾）
 
+### v0.8.17 第十五批A类效果（2026-08-14）
+- [x] 火地面：fireGround/fireGroundDamage/fireGroundDuration（火系技能留下燃烧地面）
+- [x] 火雨：fireRain/fireRainDamage/fireRainInterval（每隔数回合天降火雨）
+- [x] 诅咒传播：curseSpreadChance（诅咒结束时概率额外暗伤）
+- [x] 神圣庇护：protectionDuration（复活后短暂无敌）
+- [x] addStatusEffect日志修复：buff显示"获得了"而非"陷入了"
+- [x] 火滋·烈阳bug验证：回合正常推进，无需修复
+
 ### v0.8.12 十批A类天赋效果（2026-08-14）
 - [x] 降低战斗自动回复：HP 1%→0.3%，MP 2%→0.5%
 - [x] 提高玩家初始属性：HP100→120, ATK10→15, DEF5→8
@@ -228,10 +236,10 @@
 - [x] revive/reviveHp - 复活
 - [x] purifyAll - 全净化
 - [x] autoPurify - 自动净化
-- [ ] protectionDuration - 神圣庇护
+- [x] protectionDuration - 神圣庇护
 - [x] cooldownReduction - 冷却缩减
 - [x] autoHeal - 自动治疗
-- [ ] reviveUnlocked - 解锁复活
+- [x] reviveUnlocked - 解锁复活（数据层面，复活功能已实现）
 
 **召唤系深化（需要召唤系统完善，优先级中）**
 - [ ] summonDamageBonus/summonHpBonus - 召唤兽伤害/HP
@@ -256,8 +264,8 @@
 - [ ] explosionChance/explosionDamage/explosionRangeBonus - 爆炸
 - [ ] chainExplosionChance/chainExplosionDamage - 连环爆炸
 - [ ] explosionCritGuaranteed - 爆炸必暴
-- [ ] fireGround/fireGroundDuration/fireGroundDamage - 火海地面
-- [ ] fireRain/fireRainDuration/fireRainDamage - 火雨
+- [x] fireGround/fireGroundDuration/fireGroundDamage - 火海地面
+- [x] fireRain/fireRainDuration/fireRainDamage - 火雨
 - [ ] aoeHeal/aoeHealRatio - 范围治疗
 - [ ] iceRangeBonus/earthRangeBonus - 范围+1
 

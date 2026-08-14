@@ -1898,6 +1898,34 @@ const BattleSystem = {
             if (skill.selfStatusEffects && totalMissCount < hitCount) {
                 this.applyStatusEffects(casterData, skill.selfStatusEffects, isPlayer);
             }
+
+            // 火地面（fireGround）：火系技能命中后概率留下燃烧地面
+            if (isPlayer && skill.element === 'fire' && totalDamage > 0 && this.player.talentEffects && this.player.talentEffects.fireGround) {
+                const te = this.player.talentEffects;
+                const groundChance = te.fireGround === true ? 1.0 : te.fireGround;
+                if (Math.random() < groundChance) {
+                    const groundDmg = Math.floor(this.player.magicPower * (te.fireGroundDamage || 0.10));
+                    this.addStatusEffect(this.enemy, {
+                        type: 'burn', name: '火地面', element: 'fire',
+                        duration: te.fireGroundDuration || 3,
+                        dotDamage: groundDmg,
+                        chance: 1.0
+                    });
+                    this.addLog(`🔥 地面燃起火焰！持续灼烧 ${this.enemy.name}！`, 'element');
+                }
+            }
+            // 火雨（fireRain）：每隔数回合天降火雨
+            if (isPlayer && skill.element === 'fire' && this.player.talentEffects && this.player.talentEffects.fireRain) {
+                const te = this.player.talentEffects;
+                this._fireRainTimer = (this._fireRainTimer || 0) + 1;
+                if (this._fireRainTimer >= (te.fireRainInterval || 2)) {
+                    this._fireRainTimer = 0;
+                    const rainDmg = Math.floor(this.player.magicPower * (te.fireRainDamage || 0.2));
+                    this.applyDamage(this.enemy, { amount: rainDmg, element: 'fire', isCrit: false, isMiss: false }, this.player);
+                    this.addLog(`🔥 火雨天降！对 ${this.enemy.name} 造成 ${rainDmg} 点伤害！`, 'element');
+                    this.showDamageNumber('enemy', rainDmg, 'magic');
+                }
+            }
             
             // 连续暴击记录（仅玩家，用于幸运儿成就）
             if (isPlayer && typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
@@ -4266,6 +4294,13 @@ const BattleSystem = {
                     ['shield', 'attack_up', 'defense_up', 'speed_up', 'regen'].includes(e.type)
                 );
                 this.addLog(`✨ 复活之光！恢复 ${reviveHp} 点生命，净化所有负面状态！`, 'heal');
+                // 神圣庇护（protectionDuration）：复活后短暂无敌
+                if (te.protectionDuration) {
+                    this.addStatusEffect(target, {
+                        type: 'invulnerable', name: '神圣庇护', duration: te.protectionDuration
+                    });
+                    this.addLog(`✨ 神圣庇护！${te.protectionDuration}回合内不受伤害！`, 'buff');
+                }
             }
         }
 
@@ -4852,6 +4887,8 @@ const BattleSystem = {
                     target.statusEffects.push(newEffect);
                     
                     // 特殊效果提示
+                    const buffTypes = ['shield', 'attack_up', 'defense_up', 'speed_up', 'crit_up', 'regen', 'evasion_up', 'invulnerable', 'stealth', 'charge'];
+                    const isBuff = buffTypes.includes(effect.type);
                     if (effect.type === 'stun' || effect.type === 'frozen') {
                         this.addLog(`${targetName} 被${effect.name}了！`, 'debuff');
                     } else if (effect.type === 'shield') {
@@ -4860,6 +4897,8 @@ const BattleSystem = {
                         this.addLog(`${targetName} 被水浸湿了`, 'debuff');
                     } else if (effect.type === 'evasion_up') {
                         this.addLog(`${targetName} 闪避率提升！`, 'buff');
+                    } else if (isBuff) {
+                        this.addLog(`${targetName} 获得了 ${effect.name} 效果！`, 'buff');
                     } else {
                         this.addLog(`${targetName} 陷入了 ${effect.name} 状态！`, 'debuff');
                     }
@@ -5248,6 +5287,13 @@ const BattleSystem = {
                     this.applyDamage(this.enemy, { amount: curseDmg, element: 'dark', isCrit: false, isMiss: false }, this.player);
                     this.addLog(`🌑 诅咒爆发！${this.enemy.name} 受到 ${curseDmg} 点暗伤！`, 'element');
                     this.showDamageNumber('enemy', curseDmg, 'magic');
+                    // 诅咒传播（curseSpreadChance）：单机简化为额外暗伤
+                    const te = this.player.talentEffects;
+                    if (te.curseSpreadChance && Math.random() < te.curseSpreadChance) {
+                        const spreadDmg = Math.floor(curseDmg * 0.5);
+                        this.applyDamage(this.enemy, { amount: spreadDmg, element: 'dark', isCrit: false, isMiss: false }, this.player);
+                        this.addLog(`🌑 诅咒蔓延！额外造成 ${spreadDmg} 点暗伤！`, 'element');
+                    }
                 }
                 if (effect.type !== 'shield') {
                     this.addLog(`${targetName} 的 ${effect.name} 效果消失了`, 'system');
