@@ -514,7 +514,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.8.19 · 开放世界版</div>
+                ">v0.8.20 · 开放世界版</div>
             </div>
         `;
 

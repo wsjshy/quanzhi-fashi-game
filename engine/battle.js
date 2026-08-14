@@ -2236,6 +2236,34 @@ const BattleSystem = {
                     this.addLog(`✨ 治疗净化了 ${cleansable.length} 个负面状态！`, 'heal');
                 }
             }
+            // 群体治疗（aoeHeal）：无队友时治疗召唤兽+恢复MP
+            if (isPlayer && this.player.talentEffects && this.player.talentEffects.aoeHeal) {
+                const aoeRatio = this.player.talentEffects.aoeHealRatio || 0.5;
+                const aoeHealAmount = Math.floor(actualHeal * aoeRatio);
+                // 治疗召唤兽
+                if (this.summon && this.summon.hp > 0 && this.summon.hp < this.summon.maxHp) {
+                    const summonHeal = Math.min(aoeHealAmount, this.summon.maxHp - this.summon.hp);
+                    this.summon.hp += summonHeal;
+                    this.addLog(`💚 ${this.summon.name} 也受到了 ${summonHeal} 点治疗！`, 'heal');
+                }
+                // 恢复MP
+                const mpRecover = Math.floor(this.player.maxMp * aoeRatio * 0.5);
+                if (mpRecover > 0 && this.player.mp < this.player.maxMp) {
+                    const actualMp = Math.min(mpRecover, this.player.maxMp - this.player.mp);
+                    this.player.mp += actualMp;
+                    this.addLog(`💙 群体治疗恢复了 ${actualMp} 点MP！`, 'heal');
+                }
+                // 全体净化（purifyAll）
+                if (this.player.talentEffects.purifyAll) {
+                    const cleansable = this.player.statusEffects.filter(e =>
+                        ['burn', 'freeze', 'paralyze', 'stun', 'slow', 'poison', 'bleed', 'curse', 'blind', 'fear', 'weakness'].includes(e.type) && !e.unpurgeable
+                    );
+                    if (cleansable.length > 0) {
+                        this.player.statusEffects = this.player.statusEffects.filter(e => !cleansable.includes(e));
+                        this.addLog(`✨ 全体净化！清除了 ${cleansable.length} 个负面状态！`, 'heal');
+                    }
+                }
+            }
             // 天赋：全净化（purifyAll）：治疗时净化所有负面
             if (isPlayer && this.player.talentEffects && this.player.talentEffects.purifyAll && healTarget === this.player) {
                 const cleansable = healTarget.statusEffects.filter(e =>
@@ -4243,6 +4271,24 @@ const BattleSystem = {
             const hasRegen = target.statusEffects.some(e => e.type === 'regen');
             if (hasRegen) {
                 amount = Math.floor(amount * (1 - target.talentEffects.regenDamageReduction));
+            }
+        }
+        // 生命链接（lifeLink）：玩家受伤害时部分转移给召唤兽
+        if (target === this.player && target.talentEffects && target.talentEffects.lifeLink && this.summon && this.summon.hp > 0) {
+            const te = target.talentEffects;
+            const transferRatio = te.lifeLinkTransfer || 0.3;
+            const damageReduction = te.linkDamageReduction || 0.2;
+            // 先减伤
+            amount = Math.floor(amount * (1 - damageReduction));
+            // 转移部分伤害给召唤兽
+            const transferDmg = Math.floor(amount * transferRatio);
+            if (transferDmg > 0) {
+                amount -= transferDmg;
+                this.summon.hp = Math.max(0, this.summon.hp - transferDmg);
+                this.addLog(`🔗 生命链接：${this.summon.name} 分担了 ${transferDmg} 点伤害！`, 'buff');
+                if (this.summon.hp <= 0) {
+                    this.addLog(`💔 ${this.summon.name} 因生命链接倒下了！`, 'damage');
+                }
             }
         }
 
