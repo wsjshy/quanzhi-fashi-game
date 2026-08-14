@@ -514,7 +514,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.8.4 · 开放世界版</div>
+                ">v0.8.18 · 开放世界版</div>
             </div>
         `;
 
@@ -568,7 +568,7 @@ const UI = {
 
     // ========== 角色创建界面 ==========
     renderCharacterCreate() {
-        const elements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark'];
+        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark'];
         const elementNames = {
             fire: '🔥 火系', ice: '❄️ 冰系', thunder: '⚡ 雷系', earth: '🪨 土系',
             wind: '🌪️ 风系', water: '💧 水系', light: '✨ 光系', dark: '🌑 暗影系'
@@ -577,30 +577,87 @@ const UI = {
             fire: '#ff6633', ice: '#66ccff', thunder: '#ffcc00', earth: '#cc9966',
             wind: '#99ff99', water: '#6699ff', light: '#ffffcc', dark: '#9966ff'
         };
+        // 元素权重：常见系概率高，稀有系概率低
+        const elementWeights = {
+            fire: 15, ice: 12, thunder: 10, earth: 15,
+            wind: 15, water: 15, light: 8, dark: 5
+        };
 
-        let elementsHtml = '';
-        elements.forEach(elem => {
+        // 随机选3个不重复的元素（加权随机）
+        function rollThreeElements() {
+            const available = [...allElements];
+            const result = [];
+            while (result.length < 3 && available.length > 0) {
+                const totalWeight = available.reduce((sum, e) => sum + elementWeights[e], 0);
+                let rand = Math.random() * totalWeight;
+                for (let i = 0; i < available.length; i++) {
+                    rand -= elementWeights[available[i]];
+                    if (rand <= 0) {
+                        result.push(available[i]);
+                        available.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        let candidateElements = rollThreeElements();
+        let rerollCount = 0;
+        const maxRerolls = 3;
+
+        function renderElements() {
+            let elementsHtml = '';
+            candidateElements.forEach(elem => {
+                elementsHtml += `
+                    <div class="element-card" onclick="selectElement('${elem}')" 
+                         id="elem-${elem}"
+                         style="
+                            padding: 25px 20px;
+                            background: rgba(30, 30, 60, 0.8);
+                            border: 2px solid #444477;
+                            border-radius: 12px;
+                            cursor: pointer;
+                            transition: all 0.3s;
+                            text-align: center;
+                            font-size: 20px;
+                            font-weight: bold;
+                            color: ${elementColors[elem]};
+                            min-width: 140px;
+                         "
+                         onmouseover="this.style.borderColor='${elementColors[elem]}'; this.style.boxShadow='0 0 20px ${elementColors[elem]}40'; this.style.transform='translateY(-3px)'"
+                         onmouseout="if(!this.classList.contains('selected')){this.style.borderColor='#444477'; this.style.boxShadow='none'; this.style.transform='translateY(0)'}">
+                        ${elementNames[elem]}
+                    </div>
+                `;
+            });
+            // 添加重新感知按钮作为第四个卡片
+            const remaining = maxRerolls - rerollCount;
+            const rerollStyle = remaining <= 0 
+                ? 'opacity:0.3;pointer-events:none;' 
+                : '';
             elementsHtml += `
-                <div class="element-card" onclick="selectElement('${elem}')" 
-                     id="elem-${elem}"
+                <div class="element-card" id="reroll-btn" onclick="rerollCreateElements()"
                      style="
-                        padding: 20px;
-                        background: rgba(30, 30, 60, 0.8);
-                        border: 2px solid #444477;
-                        border-radius: 10px;
+                        padding: 25px 20px;
+                        background: rgba(80, 60, 120, 0.6);
+                        border: 2px dashed #8866bb;
+                        border-radius: 12px;
                         cursor: pointer;
                         transition: all 0.3s;
                         text-align: center;
-                        font-size: 18px;
-                        color: ${elementColors[elem]};
-                        min-width: 100px;
+                        font-size: 16px;
+                        color: #bb99dd;
+                        min-width: 140px;
+                        ${rerollStyle}
                      "
-                     onmouseover="this.style.borderColor='${elementColors[elem]}'; this.style.boxShadow='0 0 20px ${elementColors[elem]}40'"
-                     onmouseout="if(!this.classList.contains('selected')){this.style.borderColor='#444477'; this.style.boxShadow='none'}">
-                    ${elementNames[elem]}
+                     onmouseover="this.style.background='rgba(100,80,150,0.8)'; this.style.borderColor='#aa88dd'"
+                     onmouseout="this.style.background='rgba(80,60,120,0.6)'; this.style.borderColor='#8866bb'">
+                    🔄 重新感知<br><span style="font-size:12px;opacity:0.8">（剩余${remaining}次）</span>
                 </div>
             `;
-        });
+            return elementsHtml;
+        }
 
         this.elements.gameContainer.innerHTML = `
             <div style="
@@ -634,7 +691,7 @@ const UI = {
                     letter-spacing: 4px;
                 ">创建角色</h2>
                 
-                <p style="color: #8888aa; margin-bottom: 40px; font-size: 16px;">觉醒你的第一个元素，开始魔法之旅</p>
+                <p style="color: #8888aa; margin-bottom: 40px; font-size: 16px;">将手放在觉醒石上，感受与你共鸣的元素...</p>
                 
                 <div style="margin-bottom: 30px;">
                     <label style="color: #aaa; font-size: 16px; margin-right: 15px;">角色名：</label>
@@ -650,17 +707,20 @@ const UI = {
                            ">
                 </div>
                 
-                <p style="color: #aaa; margin-bottom: 20px;">选择觉醒元素：</p>
+                <p style="color: #ffd700; margin-bottom: 8px; font-size: 18px;">✨ 觉醒石感知到3种元素与你共鸣：</p>
+                <p style="color: #888; margin-bottom: 20px; font-size: 13px;">选择其一作为你的初始元素系</p>
                 
-                <div class="mobile-element-grid" style="
-                    display: grid;
-                    grid-template-columns: repeat(4, 1fr);
-                    gap: 15px;
-                    margin-bottom: 40px;
+                <div id="element-candidates" class="mobile-element-grid" style="
+                    display: flex;
+                    justify-content: center;
+                    gap: 20px;
+                    margin-bottom: 20px;
+                    flex-wrap: wrap;
+                    align-items: center;
                 ">
-                    ${elementsHtml}
+                    ${renderElements()}
                 </div>
-                
+
                 <div onclick="confirmCreate()" style="
                     padding: 15px 50px;
                     font-size: 20px;
@@ -704,6 +764,75 @@ const UI = {
             const btn = document.getElementById('confirm-btn');
             btn.style.opacity = '1';
         };
+
+        // 用UI对象方法存储reroll状态
+        this._createRerollCount = rerollCount;
+        this._createMaxRerolls = maxRerolls;
+        this._createCandidateElements = candidateElements;
+
+        this.rerollCreateElements = () => {
+            if (this._createRerollCount >= this._createMaxRerolls) return;
+            this._createRerollCount++;
+            this._createCandidateElements = rollThreeElements();
+            window.selectedElement = null;
+            window.confirmEnabled = false;
+            const container = document.getElementById('element-candidates');
+            if (container) {
+                // 重新渲染所有元素卡片+reroll按钮
+                let html = '';
+                this._createCandidateElements.forEach(elem => {
+                    html += `
+                        <div class="element-card" onclick="selectElement('${elem}')" 
+                             id="elem-${elem}"
+                             style="
+                                padding: 25px 20px;
+                                background: rgba(30, 30, 60, 0.8);
+                                border: 2px solid #444477;
+                                border-radius: 12px;
+                                cursor: pointer;
+                                transition: all 0.3s;
+                                text-align: center;
+                                font-size: 20px;
+                                font-weight: bold;
+                                color: ${elementColors[elem]};
+                                min-width: 140px;
+                             "
+                             onmouseover="this.style.borderColor='${elementColors[elem]}'; this.style.boxShadow='0 0 20px ${elementColors[elem]}40'; this.style.transform='translateY(-3px)'"
+                             onmouseout="if(!this.classList.contains('selected')){this.style.borderColor='#444477'; this.style.boxShadow='none'; this.style.transform='translateY(0)'}">
+                            ${elementNames[elem]}
+                        </div>
+                    `;
+                });
+                const remaining = this._createMaxRerolls - this._createRerollCount;
+                const rerollStyle = remaining <= 0 ? 'opacity:0.3;pointer-events:none;' : '';
+                html += `
+                    <div class="element-card" id="reroll-btn" onclick="rerollCreateElements()"
+                         style="
+                            padding: 25px 20px;
+                            background: rgba(80, 60, 120, 0.6);
+                            border: 2px dashed #8866bb;
+                            border-radius: 12px;
+                            cursor: pointer;
+                            transition: all 0.3s;
+                            text-align: center;
+                            font-size: 16px;
+                            color: #bb99dd;
+                            min-width: 140px;
+                            ${rerollStyle}
+                         "
+                         onmouseover="this.style.background='rgba(100,80,150,0.8)'; this.style.borderColor='#aa88dd'"
+                         onmouseout="this.style.background='rgba(80,60,120,0.6)'; this.style.borderColor='#8866bb'">
+                        🔄 重新感知<br><span style="font-size:12px;opacity:0.8">（剩余${remaining}次）</span>
+                    </div>
+                `;
+                container.innerHTML = html;
+            }
+            const confirmBtn = document.getElementById('confirm-btn');
+            if (confirmBtn) confirmBtn.style.opacity = '0.5';
+        };
+
+        // 全局函数供内联onclick使用
+        window.rerollCreateElements = () => this.rerollCreateElements();
 
         window.confirmCreate = () => {
             if (!window.confirmEnabled || !window.selectedElement) return;
