@@ -308,7 +308,30 @@ const TimeSystem = {
      * 推进一天
      */
     advanceDay() {
+        // v0.9.4: 每日总结 - 保存前一天的统计
+        if (Player.dailyStats && Player.dailyStats.day !== Player.day) {
+            Player.dailyStats.day = Player.day;
+        }
+        const yesterdayStats = Player.dailyStats ? { ...Player.dailyStats } : null;
+        
         Player.day++;
+        
+        // v0.9.4: 重置每日统计
+        if (Player.dailyStats) {
+            Player.dailyStats = {
+                day: Player.day,
+                expGained: 0,
+                goldGained: 0,
+                battlesWon: 0,
+                locationsExplored: 0,
+                npcsTalked: 0
+            };
+        }
+        
+        // v0.9.4: 触发每日总结（延迟到UI渲染后）
+        if (yesterdayStats && (yesterdayStats.expGained > 0 || yesterdayStats.battlesWon > 0 || yesterdayStats.locationsExplored > 0)) {
+            Player._pendingDailySummary = yesterdayStats;
+        }
         
         // 自然恢复
         const stats = Player.getTotalStats();

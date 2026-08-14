@@ -160,6 +160,89 @@ const UI = {
         }
     },
 
+    // v0.9.4: 显示每日总结
+    showDailySummary(stats) {
+        if (!stats) return;
+        
+        const dialog = document.createElement('div');
+        dialog.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 10, 30, 0.98);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 30px;
+            min-width: 350px;
+            max-width: 450px;
+            z-index: 1000;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+        `;
+        
+        dialog.innerHTML = `
+            <div style="font-size: 22px; color: #ffd700; margin-bottom: 15px; font-weight: bold; text-align: center;">
+                📅 第 ${stats.day} 天总结
+            </div>
+            <div style="font-size: 14px; color: #aaa; margin-bottom: 20px; text-align: center;">
+                今天你做了这些事：
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                ${stats.expGained > 0 ? `
+                    <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(60, 60, 30, 0.4); border-radius: 8px;">
+                        <span style="color: #ffeeaa;">✨ 获得经验</span>
+                        <span style="color: #ffd700; font-weight: bold;">+${stats.expGained}</span>
+                    </div>
+                ` : ''}
+                ${stats.goldGained > 0 ? `
+                    <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(60, 50, 20, 0.4); border-radius: 8px;">
+                        <span style="color: #ffddaa;">💰 获得金币</span>
+                        <span style="color: #ffaa44; font-weight: bold;">+${stats.goldGained}</span>
+                    </div>
+                ` : ''}
+                ${stats.battlesWon > 0 ? `
+                    <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(60, 20, 20, 0.4); border-radius: 8px;">
+                        <span style="color: #ffaaaa;">⚔️ 战斗胜利</span>
+                        <span style="color: #ff6666; font-weight: bold;">${stats.battlesWon} 场</span>
+                    </div>
+                ` : ''}
+                ${stats.locationsExplored > 0 ? `
+                    <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(20, 60, 40, 0.4); border-radius: 8px;">
+                        <span style="color: #aaffcc;">🗺️ 探索新地点</span>
+                        <span style="color: #66ff99; font-weight: bold;">${stats.locationsExplored} 个</span>
+                    </div>
+                ` : ''}
+                ${stats.npcsTalked > 0 ? `
+                    <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(20, 40, 60, 0.4); border-radius: 8px;">
+                        <span style="color: #aaccff;">💬 结识新NPC</span>
+                        <span style="color: #66aaff; font-weight: bold;">${stats.npcsTalked} 人</span>
+                    </div>
+                ` : ''}
+                ${stats.expGained === 0 && stats.battlesWon === 0 && stats.locationsExplored === 0 && stats.npcsTalked === 0 ? `
+                    <div style="text-align: center; padding: 20px; color: #888;">
+                        今天比较平静，没有特别的收获。
+                    </div>
+                ` : ''}
+            </div>
+            <div style="text-align: center; margin-top: 25px;">
+                <button onclick="this.parentElement.parentElement.remove()" style="
+                    padding: 12px 40px;
+                    background: linear-gradient(135deg, #665522, #887733);
+                    border: 2px solid #ffd700;
+                    border-radius: 10px;
+                    color: #ffeeaa;
+                    cursor: pointer;
+                    font-size: 16px;
+                    font-weight: bold;
+                " onmouseover="this.style.background='linear-gradient(135deg, #887733, #aa9944)'" onmouseout="this.style.background='linear-gradient(135deg, #665522, #887733)'">
+                    开始新的一天
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(dialog);
+    },
+
     // 处理队列中的下一条消息
     _processNextMessage() {
         const ui = this;
@@ -520,7 +603,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.9.3 · 智能推荐</div>
+                ">v0.9.4 · 智能排序</div>
             </div>
         `;
 
@@ -929,6 +1012,18 @@ const UI = {
     },
     
     renderMapScreen() {
+        // v0.9.4: 检查是否有待显示的每日总结
+        if (Player._pendingDailySummary) {
+            const stats = Player._pendingDailySummary;
+            Player._pendingDailySummary = null;
+            // 延迟显示，避免和其他弹窗冲突
+            setTimeout(() => {
+                if (typeof UI.showDailySummary === 'function') {
+                    UI.showDailySummary(stats);
+                }
+            }, 300);
+        }
+        
         const location = MapSystem.getCurrentLocation();
         const stats = Player.getTotalStats();
         
@@ -1129,8 +1224,47 @@ const UI = {
                             `;
                         })()}
                         <h3 style="color: #ffd700; margin-bottom: 20px; font-size: 22px;">📍 可执行的行动</h3>
+                        <!-- v0.9.4: 体力低/疲劳建议休息提示 -->
+                        ${(() => {
+                            const staminaRatio = Player.stamina / (Player.maxStamina || 100);
+                            const fatigue = Player.fatigueLevel || 0;
+                            if (fatigue >= 2) {
+                                return `<div onclick="Game.quickRestFull()" style="margin-bottom: 15px; padding: 15px; background: rgba(120, 20, 20, 0.6); border: 2px solid #ff4444; border-radius: 10px; cursor: pointer; animation: pulse 1.5s infinite;" title="点击快速休息">
+                                    <div style="color: #ff6666; font-size: 16px; font-weight: bold;">⚠️ 重伤状态！攻击-30%，防御-15%</div>
+                                    <div style="color: #ffaaaa; font-size: 13px; margin-top: 5px;">建议立即休息恢复状态（点击此处快速休息）</div>
+                                </div>`;
+                            } else if (fatigue === 1) {
+                                return `<div onclick="Game.quickRest()" style="margin-bottom: 15px; padding: 12px; background: rgba(100, 60, 20, 0.5); border: 1px solid #ffaa44; border-radius: 8px; cursor: pointer;" title="点击原地休息">
+                                    <div style="color: #ffcc66; font-size: 14px;">😓 疲劳状态！攻击-15%，建议休息恢复</div>
+                                </div>`;
+                            } else if (staminaRatio < 0.3) {
+                                return `<div onclick="Game.quickRest()" style="margin-bottom: 15px; padding: 12px; background: rgba(80, 50, 20, 0.4); border: 1px solid #ff8844; border-radius: 8px; cursor: pointer;" title="点击原地休息">
+                                    <div style="color: #ffaa66; font-size: 14px;">⚡ 体力较低，修炼和战斗效率下降，建议休息</div>
+                                </div>`;
+                            }
+                            return '';
+                        })()}
                         <div style="display: flex; flex-direction: column; gap: 12px;">
-                            ${(location?.actions || []).map(action => {
+                            ${(() => {
+                                // v0.9.4: 行动按钮智能排序
+                                const actions = location?.actions || [];
+                                const currentClass = TimeSystem.getCurrentClass(location);
+                                
+                                const getPriority = (action) => {
+                                    // 休息类行动排最后
+                                    if (action.id === 'rest' || action.id === 'quick_rest' || action.id === 'sleep') return 3;
+                                    // 推荐行动（有课/有事件）排最前
+                                    if (action.isClassAction && currentClass) return 0;
+                                    if (action.eventChance && action.eventChance > 0) return 1;
+                                    // 上课行动（自习时）
+                                    if (action.isClassAction) return 2;
+                                    // 普通行动
+                                    return 2;
+                                };
+                                
+                                const sortedActions = [...actions].sort((a, b) => getPriority(a) - getPriority(b));
+                                
+                                return sortedActions.map(action => {
                                 // 课程行动动态显示
                                 let actionName = action.name;
                                 let actionDesc = action.description;
@@ -1205,7 +1339,8 @@ const UI = {
                                     </div>
                                     <div style="font-size: 13px; color: #999;">${actionDesc}${isSkippingClass ? '<span style="color: #ff6644;">（逃课会扣班级声望）</span>' : ''}</div>
                                 </button>
-                            `}).join('')}
+                            `}).join('');
+                                })()}
                         </div>
                         
                         <!-- 再次挑战 -->

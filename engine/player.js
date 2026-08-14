@@ -4,7 +4,7 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.9.3';
+const GAME_VERSION = '0.9.4';
 const SAVE_VERSION = '0.8.7';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
@@ -216,6 +216,14 @@ const Player = {
         this.exploredNPCs = [];  // v0.9.0: 已对话的NPC（用于首次对话奖励）
         this.fatigueLevel = 0;  // v0.9.1: 疲劳等级（0=正常，1=疲劳，2=重伤），低体力战斗后概率获得，休息后清除
         this.explorationComplete = [];  // v0.9.1: 已100%探索完成的区域ID列表
+        this.dailyStats = {  // v0.9.4: 每日统计
+            day: 1,
+            expGained: 0,
+            goldGained: 0,
+            battlesWon: 0,
+            locationsExplored: 0,
+            npcsTalked: 0
+        };
 
         // 如果选了元素，给对应的初始技能
         if (element) {
@@ -513,6 +521,10 @@ const Player = {
      * @param {string[]} usedElements - 本场战斗使用过的元素系（可选，这些系获全额经验，其他系获30%）
      */
     gainExp(amount, usedElements) {
+        // v0.9.4: 更新每日统计
+        if (this.dailyStats) {
+            this.dailyStats.expGained = (this.dailyStats.expGained || 0) + amount;
+        }
         const allLevelUps = [];
         const allNewSkills = [];
         let canAwaken = false;
@@ -1346,6 +1358,10 @@ const Player = {
      * 获得金币
      */
     gainGold(amount) {
+        // v0.9.4: 更新每日统计
+        if (this.dailyStats) {
+            this.dailyStats.goldGained = (this.dailyStats.goldGained || 0) + amount;
+        }
         this.gold += amount;
         
         // 财富成就检查
@@ -1575,6 +1591,7 @@ const Player = {
             exploredNPCs: this.exploredNPCs || [],
             fatigueLevel: this.fatigueLevel || 0,
             explorationComplete: this.explorationComplete || [],
+            dailyStats: this.dailyStats || { day: 1, expGained: 0, goldGained: 0, battlesWon: 0, locationsExplored: 0, npcsTalked: 0 },
             inventory: Inventory.getSaveData(),
             worldState: typeof WorldState !== 'undefined' ? WorldState.getSaveData() : null,
             npcStates: typeof NPCStateSystem !== 'undefined' ? NPCStateSystem.getSaveData() : null,
@@ -1682,6 +1699,7 @@ const Player = {
             // v0.9.1: 加载疲劳等级和探索完成记录
             this.fatigueLevel = data.fatigueLevel || 0;
             this.explorationComplete = data.explorationComplete || [];
+            this.dailyStats = data.dailyStats || { day: 1, expGained: 0, goldGained: 0, battlesWon: 0, locationsExplored: 0, npcsTalked: 0 };
             
             // 加载背包
             if (data.inventory) {

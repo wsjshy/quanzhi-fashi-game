@@ -648,6 +648,8 @@ const Game = {
                 Player.gainExp(expReward);
                 Player.gold += goldReward;
                 firstExploreReward = { exp: expReward, gold: goldReward };
+                // v0.9.4: 每日统计
+                if (Player.dailyStats) Player.dailyStats.locationsExplored = (Player.dailyStats.locationsExplored || 0) + 1;
             }
 
             // v0.9.1: 100%探索完成奖励
@@ -1450,6 +1452,8 @@ const Game = {
                 // 日常追踪：击杀和战斗胜利
                 DailySystem.trackActivity('kill', 1);
                 DailySystem.trackActivity('battle_win', 1);
+                // v0.9.4: 每日统计
+                if (Player.dailyStats) Player.dailyStats.battlesWon = (Player.dailyStats.battlesWon || 0) + 1;
                 if (BattleSystem.rewards && BattleSystem.rewards.gold) {
                     DailySystem.trackActivity('earn_gold', BattleSystem.rewards.gold);
                 }
@@ -2083,6 +2087,8 @@ const Game = {
         if (!Player.exploredNPCs.includes(npcId)) {
             Player.exploredNPCs.push(npcId);
             Player.gainExp(20);
+            // v0.9.4: 每日统计
+            if (Player.dailyStats) Player.dailyStats.npcsTalked = (Player.dailyStats.npcsTalked || 0) + 1;
             Player.save();
             // 延迟显示奖励，避免和对话界面冲突
             setTimeout(() => {
