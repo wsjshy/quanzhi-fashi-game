@@ -1287,7 +1287,7 @@ const UI = {
                             <span style="font-size: 12px; color: #aaa;">第 ${state.turn || 1} 回合</span>
                         </div>
                         ${state.log.map(log => {
-                            const logIcons = { damage: '⚔️', magic: '✨', heal: '💚', crit: '💥', system: '📢', buff: '⬆️', debuff: '⬇️', counter: '🔥', weakness: '❄️', flee: '🏃', item: '🎒', defend: '🛡️', interrupt: '⚡', summon: '🐺', soul: '💎' };
+                            const logIcons = { damage: '⚔️', magic: '✨', heal: '💚', crit: '💥', system: '📢', buff: '⬆️', debuff: '⬇️', counter: '🔥', weakness: '❄️', flee: '🏃', item: '🎒', defend: '🛡️', interrupt: '⚡', summon: '🐺', soul: '💎', evolution: '🔮' };
                             const icon = logIcons[log.type] || '';
                             return `<p style="margin-bottom: 5px; color: ${this.getLogColor(log.type)}; padding: 2px 4px; border-radius: 3px;">${icon ? icon + ' ' : ''}${log.text}</p>`;
                         }).join('')}
@@ -1993,8 +1993,9 @@ const UI = {
             system: '#aaaacc',
             buff: '#88ccff',
             debuff: '#cc88ff',
-            counter: '#ff6644',  // 克制伤害
-            weakness: '#ff44ff'  // 弱点伤害
+            counter: '#ff6644',
+            weakness: '#ff44ff',
+            evolution: '#ff66ff'
         };
         return colors[type] || '#ccc';
     },
@@ -3830,12 +3831,24 @@ const UI = {
                                     const expToNext = TalentSystem.getExpToNextLevel(talentData.level);
                                     const expPercent = talentData.level >= maxLevel ? 100 : (talentData.exp / expToNext * 100);
                                     const effects = TalentSystem.getTalentEffects(talentData.talentId, talentData.level);
-                                    const effectDesc = Object.entries(effects).map(([k, v]) => {
+                                    const currentStage = TalentSystem.getCurrentStage(talentData.talentId, talentData.level);
+                                    const nextStage = TalentSystem.getNextStage(talentData.talentId, talentData.level);
+                                    const effectDesc = TalentSystem.summarizeEffects ? TalentSystem.summarizeEffects(effects) : Object.entries(effects).map(([k, v]) => {
                                         const names = {damageBonus:'伤害加成', healBonus:'治疗加成', defenseBonus:'防御加成', speedBonus:'速度加成', hpBonus:'生命加成', critRate:'暴击率', critDamage:'暴击伤害', mpCostReduction:'耗蓝减少', dodgeBonus:'闪避率', hpRegen:'HP回复', mpRegen:'MP回复', burnChance:'灼烧概率', freezeChance:'冰冻概率', paralyzeChance:'麻痹概率'};
                                         const pct = (v * 100).toFixed(0);
                                         return `${names[k]||k}+${pct}%`;
                                     }).join(', ');
-                                    const talentTooltip = `${talent.description || ''} [Lv.${talentData.level}] ${effectDesc}`;
+                                    const stageColors = { '觉醒': '#88ccff', '特性': '#44ff88', '进化': '#ffaa44', '延伸': '#cc88ff', '终极': '#ff66ff' };
+                                    let stageInfo = '';
+                                    if (currentStage) {
+                                        const sc = stageColors[currentStage.stage] || '#aaa';
+                                        stageInfo += `<div style="color:${sc};font-size:11px;margin-top:2px;">【${currentStage.stage}】${currentStage.name}</div>`;
+                                    }
+                                    if (nextStage) {
+                                        const nc = stageColors[nextStage.stage] || '#888';
+                                        stageInfo += `<div style="color:${nc};font-size:10px;margin-top:1px;opacity:0.7;">→ Lv${nextStage.level}【${nextStage.stage}】${nextStage.name}</div>`;
+                                    }
+                                    const talentTooltip = `${talent.description || ''}\n[Lv.${talentData.level}] ${effectDesc}${currentStage ? '\n当前：【'+currentStage.stage+'】'+currentStage.name+' - '+currentStage.description : ''}${nextStage ? '\n下一进化：Lv'+nextStage.level+'【'+nextStage.stage+'】'+nextStage.name+' - '+nextStage.description : ''}`;
                                     return `
                                         <div style="
                                             padding: 8px 12px;
@@ -3844,16 +3857,17 @@ const UI = {
                                             border-radius: 8px;
                                             margin-bottom: 6px;
                                             font-size: 13px;
-                                        " title="${talentTooltip}">
+                                        " title="${talentTooltip.replace(/"/g, '&quot;')}">
                                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                                                 <span>
                                                     <span style="color: ${SkillSystem.getElementColor(elem)}; font-weight: bold;">${SkillSystem.getElementName(elem)}</span>
                                                     <span style="color: ${rarityConfig.color}; margin-left: 8px;">${talent.name}</span>
                                                 </span>
-                                                <span style="color: #888; font-size: 12px;">Lv.${talentData.level}${talentData.level >= maxLevel ? ' (满级)' : ''}</span>
+                                                <span style="color: #888; font-size: 12px;">Lv.${talentData.level}${talentData.level >= maxLevel ? ' (满)' : ''}</span>
                                             </div>
+                                            ${stageInfo}
                                             ${talentData.level < maxLevel ? `
-                                            <div style="height: 4px; background: #333; border-radius: 2px; overflow: hidden;">
+                                            <div style="height: 4px; background: #333; border-radius: 2px; overflow: hidden; margin-top: 4px;">
                                                 <div style="height: 100%; width: ${expPercent.toFixed(1)}%; background: ${rarityConfig.color};"></div>
                                             </div>
                                             <div style="color: #666; font-size: 11px; text-align: right; margin-top: 2px;">${talentData.exp} / ${expToNext}</div>

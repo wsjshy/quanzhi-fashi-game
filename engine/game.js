@@ -2210,12 +2210,25 @@ const Game = {
             const talent = TalentSystem.getTalent(talentId);
             if (!talent) return '';
             const rarityConfig = TalentSystem.getRarityConfig(talent.rarity);
-            const effects = TalentSystem.getTalentEffects(talentId, talent.type === 'innate' ? (talent.maxLevel || 1) : 1);
-            const typeName = talent.type === 'innate' ? '【先天·不可成长】' : '【成长·可升级】';
-            const effectText = Object.entries(effects).map(([k, v]) => {
-                const names = {damageBonus:'伤害', healBonus:'治疗', defenseBonus:'防御', speedBonus:'速度', hpBonus:'生命', mpBonus:'魔法', critRate:'暴击率', critDamage:'暴击伤害', mpCostReduction:'耗蓝减少', dodgeBonus:'闪避', hpRegen:'HP回复', mpRegen:'MP回复', burnChance:'灼烧', freezeChance:'冰冻', paralyzeChance:'麻痹'};
-                return `${names[k]||k}+${(v*100).toFixed(0)}%`;
-            }).join(' ');
+            const typeName = talent.type === 'innate' ? '【先天·出生即终极】' : '【成长·可进化】';
+
+            // 构建进化路线预览
+            let evolutionPreview = '';
+            if (talent.evolutions && talent.evolutions.length > 0) {
+                const stageColors = { '觉醒': '#88ccff', '特性': '#44ff88', '进化': '#ffaa44', '延伸': '#cc88ff', '终极': '#ff66ff' };
+                evolutionPreview = '<div style="margin-top:8px;font-size:11px;color:#888;">';
+                if (talent.type === 'innate') {
+                    const evo = talent.evolutions[0];
+                    evolutionPreview += `<div style="color:${stageColors['终极']||'#ff66ff'};margin-bottom:2px;">★ ${evo.name}：${evo.description}</div>`;
+                } else {
+                    evolutionPreview += '<div style="color:#666;margin-bottom:3px;">进化路线：</div>';
+                    for (const evo of talent.evolutions) {
+                        const color = stageColors[evo.stage] || '#aaa';
+                        evolutionPreview += `<div style="color:${color};margin-bottom:2px;">&nbsp;Lv${evo.level}【${evo.stage}】${evo.name}：<span style="color:#999;font-size:10px;">${evo.description}</span></div>`;
+                    }
+                }
+                evolutionPreview += '</div>';
+            }
 
             return `
                 <div onclick="Game.confirmTalent('${element}', '${talentId}')" style="
@@ -2231,7 +2244,7 @@ const Game = {
                         ${talent.name} <span style="font-size: 12px; color: #999;">${typeName}</span>
                     </div>
                     <div style="font-size: 13px; color: #bbb; margin-bottom: 5px;">${talent.description}</div>
-                    <div style="font-size: 13px; color: ${elementColor};">${effectText}</div>
+                    ${evolutionPreview}
                 </div>
             `;
         }).join('');

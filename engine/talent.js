@@ -1,25 +1,41 @@
 /**
- * 天赋系统
+ * 天赋系统 - 进化式升级
+ *
  * 天赋分两类：
- * - innate（先天型）：1级即满级，效果强但不可成长
- * - growth（成长型）：1级弱，可升级到10级，最终强度与先天型持平
- * 觉醒时随机出3个候选天赋，玩家选择1个
+ * - innate（先天型）：1级即满级，效果强但不可成长，相当于"终极形态"
+ * - growth（成长型）：1级弱，可升级到10级，每级有数值成长，关键等级触发"进化"
+ *
+ * 成长型天赋的10级分为5个进化阶段：
+ * - Lv1  觉醒：获得核心能力
+ * - Lv3  特性：解锁新被动/新特性
+ * - Lv5  进化：形态质变，能力本质改变
+ * - Lv7  延伸：相关联的新能力觉醒
+ * - Lv10 终极：达到传说级，与先天型比肩
+ *
+ * 每个进化阶段有独立名称和描述，升级时给玩家"获得新能力"的爽感。
  */
 
 const TALENT_TYPE_INNATE = 'innate';
 const TALENT_TYPE_GROWTH = 'growth';
 
+// 进化阶段定义
+const EVOLUTION_STAGES = [
+    { level: 1,  key: 'awaken',    name: '觉醒', icon: '✦', color: '#aaaaaa' },
+    { level: 3,  key: 'trait',     name: '特性', icon: '✧', color: '#55aaff' },
+    { level: 5,  key: 'evolve',    name: '进化', icon: '◆', color: '#aa55ff' },
+    { level: 7,  key: 'extend',    name: '延伸', icon: '✺', color: '#ff9933' },
+    { level: 10, key: 'ultimate',  name: '终极', icon: '★', color: '#ffdd33' }
+];
+
 const TalentSystem = {
+
     /**
      * 获取觉醒时的天赋候选（3个）
-     * @param {string} element - 元素系ID
-     * @returns {Array} 候选天赋ID列表
      */
     getTalentChoices(element) {
         const elementTalents = this.getElementTalents(element);
         if (elementTalents.length === 0) return [];
 
-        // 按稀有度权重随机抽取3个不重复的
         const choices = [];
         const pool = [...elementTalents];
 
@@ -51,8 +67,6 @@ const TalentSystem = {
 
     /**
      * 玩家选择天赋
-     * @param {string} talentId - 选择的天赋ID
-     * @returns {object} 天赋数据 { talentId, level, exp }
      */
     selectTalent(talentId) {
         const talent = this.getTalent(talentId);
@@ -66,29 +80,17 @@ const TalentSystem = {
         };
     },
 
-    /**
-     * 初始化玩家天赋（兼容旧存档，随机一个）
-     * @param {string} element - 元素系ID
-     * @returns {object} 天赋数据
-     */
     initTalentForElement(element) {
         const choices = this.getTalentChoices(element);
         if (choices.length === 0) return null;
-        // 旧存档兼容：随机选第一个
         return this.selectTalent(choices[0]);
     },
 
-    /**
-     * 随机获取一个该系的天赋（按稀有度权重）
-     */
     getRandomTalent(element) {
         const choices = this.getTalentChoices(element);
         return choices[0] || null;
     },
 
-    /**
-     * 获取某元素系的所有天赋
-     */
     getElementTalents(element) {
         const result = [];
         for (const id in DataTalents) {
@@ -100,15 +102,68 @@ const TalentSystem = {
         return result;
     },
 
-    /**
-     * 获取天赋数据
-     */
     getTalent(talentId) {
         return DataTalents[talentId] || null;
     },
 
     /**
-     * 获取天赋的当前效果（考虑等级加成和类型）
+     * 获取天赋的进化阶段列表
+     * @returns {Array} 进化阶段数组，每个包含 level/stage/name/description/effects
+     */
+    getEvolutionStages(talentId) {
+        const talent = this.getTalent(talentId);
+        if (!talent || !talent.evolutions) return [];
+        return talent.evolutions;
+    },
+
+    /**
+     * 获取当前已达到的进化阶段
+     */
+    getCurrentStage(talentId, level) {
+        const stages = this.getEvolutionStages(talentId);
+        let current = stages[0] || null;
+        for (const stage of stages) {
+            if (level >= stage.level) {
+                current = stage;
+            }
+        }
+        return current;
+    },
+
+    /**
+     * 获取下一个未达到的进化阶段
+     */
+    getNextStage(talentId, level) {
+        const stages = this.getEvolutionStages(talentId);
+        for (const stage of stages) {
+            if (level < stage.level) {
+                return stage;
+            }
+        }
+        return null;
+    },
+
+    /**
+     * 检查本次升级是否触发了进化
+     */
+    checkEvolution(talentId, oldLevel, newLevel) {
+        const stages = this.getEvolutionStages(talentId);
+        const evolved = [];
+        for (const stage of stages) {
+            if (oldLevel < stage.level && newLevel >= stage.level) {
+                evolved.push(stage);
+            }
+        }
+        return evolved;
+    },
+
+    /**
+     * 获取天赋在指定等级的全部效果（合并所有已解锁进化阶段的效果 + 等级间插值）
+     *
+     * 效果合并规则：
+     * 1. 收集所有 level <= 当前等级 的进化阶段的 effects
+     * 2. 数值类效果相加
+     * 3. 布尔/特殊效果取最新阶段的值（覆盖）
      */
     getTalentEffects(talentId, level = 1) {
         const talent = this.getTalent(talentId);
@@ -120,12 +175,39 @@ const TalentSystem = {
         const actualLevel = Math.min(level, maxLevel);
 
         if (isInnate) {
-            // 先天型：直接使用基础效果（1级即满级）
-            for (const key in talent.effects) {
-                effects[key] = talent.effects[key];
+            // 先天型：如果有evolutions，直接从终极阶段取效果（不合并旧effects避免重复）
+            if (talent.evolutions && talent.evolutions.length > 0) {
+                const ultimate = talent.evolutions[talent.evolutions.length - 1];
+                if (ultimate.effects) {
+                    for (const key in ultimate.effects) {
+                        effects[key] = ultimate.effects[key];
+                    }
+                }
+            } else if (talent.effects) {
+                // 兼容旧格式
+                for (const key in talent.effects) {
+                    effects[key] = talent.effects[key];
+                }
+            }
+            return effects;
+        }
+
+        // 成长型：合并所有已达到等级的进化阶段效果
+        if (talent.evolutions && talent.evolutions.length > 0) {
+            for (const stage of talent.evolutions) {
+                if (actualLevel >= stage.level && stage.effects) {
+                    for (const key in stage.effects) {
+                        if (typeof stage.effects[key] === 'number') {
+                            effects[key] = (effects[key] || 0) + stage.effects[key];
+                        } else {
+                            // 非数值效果（如布尔、字符串、对象）取最新阶段
+                            effects[key] = stage.effects[key];
+                        }
+                    }
+                }
             }
         } else {
-            // 成长型：基础效果 + 每级加成
+            // 兼容旧格式：effects + levelBonus
             for (const key in talent.effects) {
                 if (typeof talent.effects[key] === 'number') {
                     const base = talent.effects[key];
@@ -142,8 +224,6 @@ const TalentSystem = {
 
     /**
      * 获取所有系天赋的聚合效果
-     * @param {object} playerTalents - 玩家天赋数据
-     * @returns {object} 聚合效果
      */
     getAllTalentEffects(playerTalents) {
         const total = {};
@@ -156,15 +236,15 @@ const TalentSystem = {
             for (const key in effects) {
                 if (typeof effects[key] === 'number') {
                     total[key] = (total[key] || 0) + effects[key];
+                } else {
+                    // 非数值效果用特殊key标记来源
+                    total[key] = effects[key];
                 }
             }
         }
         return total;
     },
 
-    /**
-     * 获取稀有度配置
-     */
     getRarityConfig(rarity) {
         return TALENT_RARITY_CONFIG[rarity] || TALENT_RARITY_CONFIG.common;
     },
@@ -179,6 +259,18 @@ const TalentSystem = {
         return config.color || '#ffffff';
     },
 
+    getStageConfig(level) {
+        for (const stage of EVOLUTION_STAGES) {
+            if (level === stage.level) return stage;
+        }
+        // 返回当前已达到的最高阶段
+        let result = EVOLUTION_STAGES[0];
+        for (const stage of EVOLUTION_STAGES) {
+            if (level >= stage.level) result = stage;
+        }
+        return result;
+    },
+
     /**
      * 计算天赋升级所需经验
      */
@@ -187,7 +279,8 @@ const TalentSystem = {
     },
 
     /**
-     * 增加天赋经验（先天型不可升级）
+     * 增加天赋经验
+     * @returns {object} { leveledUp, newLevel, newExp, evolutions: [触发的进化阶段] }
      */
     addTalentExp(talentData, amount) {
         if (!talentData) return { leveledUp: false };
@@ -195,12 +288,12 @@ const TalentSystem = {
         const talent = this.getTalent(talentData.talentId);
         if (!talent) return { leveledUp: false };
 
-        // 先天型不可升级
         if (talent.type === TALENT_TYPE_INNATE) {
-            return { leveledUp: false, newLevel: talentData.level, newExp: 0 };
+            return { leveledUp: false, newLevel: talentData.level, newExp: 0, evolutions: [] };
         }
 
         const maxLevel = talent.maxLevel || 10;
+        const oldLevel = talentData.level;
         let level = talentData.level;
         let exp = talentData.exp + amount;
         let leveledUp = false;
@@ -220,16 +313,17 @@ const TalentSystem = {
             exp = 0;
         }
 
+        // 检查是否触发进化
+        const evolutions = this.checkEvolution(talentData.talentId, oldLevel, level);
+
         return {
             leveledUp: leveledUp,
             newLevel: level,
-            newExp: exp
+            newExp: exp,
+            evolutions: evolutions
         };
     },
 
-    /**
-     * 获取玩家某元素系的天赋效果
-     */
     getPlayerElementTalentEffects(playerTalents, element) {
         const talentData = playerTalents[element];
         if (!talentData) return {};
@@ -237,40 +331,88 @@ const TalentSystem = {
     },
 
     /**
-     * 获取天赋描述（带等级和类型）
+     * 获取天赋描述（带进化路线）
      */
     getTalentDescription(talentId, level = 1) {
         const talent = this.getTalent(talentId);
         if (!talent) return '';
 
-        const effects = this.getTalentEffects(talentId, level);
-        const typeName = talent.type === TALENT_TYPE_INNATE ? '【先天】' : '【成长】';
+        const typeName = talent.type === TALENT_TYPE_INNATE ? '【先天·传说】' : '【成长】';
         let desc = `${typeName} ${talent.name}\n${talent.description}\n`;
 
-        const effectNames = {
-            damageBonus: '伤害加成', healBonus: '治疗加成', defenseBonus: '防御加成',
-            speedBonus: '速度加成', hpBonus: '生命加成', mpBonus: '魔法加成',
-            critRate: '暴击率', critDamage: '暴击伤害', mpCostReduction: '耗蓝减少',
-            dodgeBonus: '闪避率', hpRegen: '每回合HP回复', mpRegen: '每回合MP回复',
-            burnChance: '灼烧概率', freezeChance: '冰冻概率', paralyzeChance: '麻痹概率',
-            explosionChance: '爆炸概率', lifesteal: '吸血', shieldBonus: '护盾加成'
-        };
-
-        for (const key in effects) {
-            if (effectNames[key] && typeof effects[key] === 'number') {
-                const val = effects[key];
-                const pct = (val * 100).toFixed(0);
-                desc += `\n• ${effectNames[key]}: +${pct}%`;
+        if (talent.evolutions && talent.evolutions.length > 0) {
+            desc += '\n进化路线：';
+            for (const stage of talent.evolutions) {
+                const reached = level >= stage.level;
+                const stageConfig = EVOLUTION_STAGES.find(s => s.level === stage.level);
+                const icon = stageConfig ? stageConfig.icon : '○';
+                const marker = reached ? '✓' : '○';
+                desc += `\n  ${marker} Lv.${stage.level} ${icon}【${stage.stage}】${stage.name}`;
+                desc += `\n    ${stage.description}`;
+                if (reached && stage.effects) {
+                    const effectSummary = this.summarizeEffects(stage.effects);
+                    if (effectSummary) desc += `\n    → ${effectSummary}`;
+                }
+            }
+        } else if (talent.effects) {
+            // 旧格式兼容
+            const effects = this.getTalentEffects(talentId, level);
+            for (const key in effects) {
+                if (typeof effects[key] === 'number') {
+                    const pct = (effects[key] * 100).toFixed(0);
+                    desc += `\n• ${key}: +${pct}%`;
+                }
             }
         }
 
         if (talent.type === TALENT_TYPE_INNATE) {
-            desc += '\n\n（先天天赋，不可升级）';
+            desc += '\n\n（先天天赋，出生即巅峰，不可升级）';
         } else {
             const maxLevel = talent.maxLevel || 10;
-            desc += `\n\n（成长天赋，当前Lv.${level}/${maxLevel}）`;
+            const currentStage = this.getCurrentStage(talentId, level);
+            const nextStage = this.getNextStage(talentId, level);
+            desc += `\n\n（当前Lv.${level}/${maxLevel}`;
+            if (currentStage) desc += `，${currentStage.stage}·${currentStage.name}`;
+            if (nextStage) desc += `，下个进化：Lv.${nextStage.level} ${nextStage.stage}`;
+            desc += '）';
         }
 
         return desc;
+    },
+
+    /**
+     * 生成效果摘要文本
+     */
+    summarizeEffects(effects) {
+        const parts = [];
+        const names = {
+            damageBonus: '伤害', defenseBonus: '防御', speedBonus: '速度',
+            hpBonus: 'HP', mpBonus: 'MP', critRate: '暴击率', critDamage: '暴伤',
+            mpCostReduction: '省蓝', dodgeBonus: '闪避', hpRegen: '回血',
+            mpRegen: '回蓝', burnChance: '点燃', freezeChance: '冰冻',
+            paralyzeChance: '麻痹', explosionChance: '爆炸', lifesteal: '吸血',
+            damageReflect: '反伤', firePenetration: '火穿', icePenetration: '冰穿',
+            thunderPenetration: '雷穿', allStatsBonus: '全属性',
+            healBonus: '治疗', shieldBonus: '护盾', skillLevelBonus: '技能等级',
+            burnDamage: '灼烧伤害', explosionDamage: '爆炸伤害',
+            freezeDuration: '冰冻回合', chainCount: '连锁次数',
+            healAmount: '治疗量', mpRestore: 'MP恢复'
+        };
+
+        for (const key in effects) {
+            if (typeof effects[key] === 'number') {
+                const name = names[key] || key;
+                if (effects[key] < 1 && effects[key] > 0) {
+                    parts.push(`${name}+${(effects[key] * 100).toFixed(0)}%`);
+                } else {
+                    parts.push(`${name}+${effects[key]}`);
+                }
+            } else if (typeof effects[key] === 'boolean') {
+                if (effects[key]) parts.push(key);
+            } else if (typeof effects[key] === 'string') {
+                parts.push(effects[key]);
+            }
+        }
+        return parts.join('，');
     }
 };

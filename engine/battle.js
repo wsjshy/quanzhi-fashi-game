@@ -1729,6 +1729,11 @@ const BattleSystem = {
             const talentResult = Player.addElementTalentExp(skill.element, talentExp);
             if (talentResult.leveledUp) {
                 this.addLog(`🌟 天赋「${talentResult.talentName}」升级到 Lv.${talentResult.newLevel}！`, 'buff');
+                if (talentResult.evolutions && talentResult.evolutions.length > 0) {
+                    for (const evo of talentResult.evolutions) {
+                        this.addLog(`✨ 进化！【${evo.stage}】${evo.name}：${evo.description}`, 'evolution');
+                    }
+                }
             }
         }
 
@@ -4356,6 +4361,11 @@ const BattleSystem = {
             const talentResult = Player.addElementTalentExp(mainElement, talentExp);
             if (talentResult.leveledUp) {
                 this.addLog(`🌟 天赋「${talentResult.talentName}」升级到 Lv.${talentResult.newLevel}！`, 'buff');
+                if (talentResult.evolutions && talentResult.evolutions.length > 0) {
+                    for (const evo of talentResult.evolutions) {
+                        this.addLog(`✨ 进化！【${evo.stage}】${evo.name}：${evo.description}`, 'evolution');
+                    }
+                }
             }
         }
 
