@@ -4,7 +4,7 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.8.25';
+const GAME_VERSION = '0.8.26';
 const SAVE_VERSION = '0.8.7';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
@@ -156,7 +156,9 @@ const Player = {
     battleBuffs: [],
     winStreak: 0,  // 连胜次数
     lastBattleDay: 0,  // 最后一次战斗的日期（用于和平主义者成就）
-    summonData: null,  // 召唤兽持久化数据 {id, name, level, exp, loyalty, skills, bonusStats}
+    summonData: null,  // 当前激活的召唤兽（指向summonBeasts中的一个，方便战斗代码直接使用）
+    summonBeasts: [],   // 所有已契约的召唤兽数组
+    activeSummonIndex: 0,  // 当前激活的召唤兽索引
 
     /**
      * 初始化新玩家
@@ -207,6 +209,8 @@ const Player = {
         this.tempShopDiscount = 1.0;  // 临时商店折扣率（1.0=不打折）
         this.tempShopDiscountExpireDay = 0;  // 折扣到期天数
         this.summonData = null;  // 召唤兽数据（契约后初始化）
+        this.summonBeasts = [];  // 多召唤兽数组
+        this.activeSummonIndex = 0;
 
         // 如果选了元素，给对应的初始技能
         if (element) {
@@ -1520,6 +1524,8 @@ const Player = {
             battleBuffs: this.battleBuffs,
             tempShopDiscount: this.tempShopDiscount,
             tempShopDiscountExpireDay: this.tempShopDiscountExpireDay,
+            summonBeasts: this.summonBeasts || [],
+            activeSummonIndex: this.activeSummonIndex || 0,
             inventory: Inventory.getSaveData(),
             worldState: typeof WorldState !== 'undefined' ? WorldState.getSaveData() : null,
             npcStates: typeof NPCStateSystem !== 'undefined' ? NPCStateSystem.getSaveData() : null,
@@ -1610,6 +1616,16 @@ const Player = {
             this.battleBuffs = data.battleBuffs ?? [];
             this.tempShopDiscount = data.tempShopDiscount ?? 1.0;
             this.tempShopDiscountExpireDay = data.tempShopDiscountExpireDay ?? 0;
+
+            // 加载召唤兽数据
+            this.summonBeasts = data.summonBeasts || [];
+            this.activeSummonIndex = data.activeSummonIndex || 0;
+            // 兼容旧存档：如果有summonData但没有summonBeasts
+            if (data.summonData && (!this.summonBeasts || this.summonBeasts.length === 0)) {
+                this.summonBeasts = [data.summonData];
+                this.activeSummonIndex = 0;
+            }
+            this.migrateSummonData();
             
             // 加载背包
             if (data.inventory) {
@@ -1956,5 +1972,95 @@ const Player = {
             canEvolve: !!canEvo,
             isMaxStage: !nextEvo
         };
+    },
+
+    /**
+     * 获取当前境界可契约的召唤兽数量上限
+     * 小说设定：初阶1只，中阶2只，高阶3只，超阶4只
+     */
+    getMaxSummonCount() {
+        const realmLimits = { initial: 1, primary: 1, middle: 2, high: 3, super: 4 };
+        return realmLimits[this.realm] || 1;
+    },
+
+    /**
+     * 从旧存档迁移：如果summonData存在但summonBeasts为空，将其放入数组
+     */
+    migrateSummonData() {
+        if (this.summonData && (!this.summonBeasts || this.summonBeasts.length === 0)) {
+            this.summonBeasts = [this.summonData];
+            this.activeSummonIndex = 0;
+        }
+        if (!this.summonBeasts) this.summonBeasts = [];
+        // 确保summonData指向当前激活的召唤兽
+        if (this.summonBeasts.length > 0) {
+            this.summonData = this.summonBeasts[this.activeSummonIndex] || this.summonBeasts[0];
+        }
+    },
+
+    /**
+     * 契约新的召唤兽
+     * @param {object} beastData - 来自DataSummonBeasts的召唤兽数据
+     * @returns {object} {success, message}
+     */
+    contractSummonBeast(beastData) {
+        this.migrateSummonData();
+        const maxCount = this.getMaxSummonCount();
+        if (this.summonBeasts.length >= maxCount) {
+            const realmNames = { initial: '初阶', primary: '初阶', middle: '中阶', high: '高阶', super: '超阶' };
+            return { success: false, message: `${realmNames[this.realm]}最多契约${maxCount}只召唤兽` };
+        }
+        // 检查是否已契约同一只
+        const existing = this.summonBeasts.find(b => b.baseId === beastData.id || b.id === beastData.id);
+        if (existing) {
+            return { success: false, message: `你已经契约了${beastData.name}` };
+        }
+        const newBeast = {
+            id: beastData.id,
+            baseId: beastData.id,
+            name: beastData.name,
+            icon: beastData.icon,
+            rarity: beastData.rarity || '普通',
+            evolutionStage: 0,
+            level: 1,
+            exp: 0,
+            expToNext: 50,
+            loyalty: 50,
+            baseMaxHp: beastData.baseStats.maxHp,
+            baseAttack: beastData.baseStats.attack,
+            baseDefense: beastData.baseStats.defense,
+            baseSpeed: beastData.baseStats.speed,
+            kills: 0
+        };
+        this.summonBeasts.push(newBeast);
+        // 如果是第一只，自动激活
+        if (this.summonBeasts.length === 1) {
+            this.activeSummonIndex = 0;
+            this.summonData = newBeast;
+        }
+        return { success: true, message: `✨ 你与 ${beastData.icon} ${beastData.name} 缔结了契约！`, beast: newBeast };
+    },
+
+    /**
+     * 切换激活的召唤兽
+     * @param {number} index - 召唤兽在数组中的索引
+     * @returns {object} {success, message}
+     */
+    switchActiveSummon(index) {
+        this.migrateSummonData();
+        if (index < 0 || index >= this.summonBeasts.length) {
+            return { success: false, message: '无效的召唤兽' };
+        }
+        this.activeSummonIndex = index;
+        this.summonData = this.summonBeasts[index];
+        return { success: true, message: `切换为 ${this.summonData.icon} ${this.summonData.name}`, beast: this.summonData };
+    },
+
+    /**
+     * 获取所有已契约的召唤兽列表
+     */
+    getAllSummonBeasts() {
+        this.migrateSummonData();
+        return this.summonBeasts;
     }
 };

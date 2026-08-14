@@ -2157,6 +2157,55 @@ const Game = {
     },
 
     // ========== 元素觉醒 ==========
+    switchSummon(index) {
+        const result = Player.switchActiveSummon(index);
+        if (result.success) {
+            UI.showMessage(result.message);
+            UI.renderCharacterScreen();
+            UI.saveGame();
+        } else {
+            UI.showMessage(result.message);
+        }
+    },
+
+    seekNewSummon() {
+        Player.migrateSummonData();
+        const maxCount = Player.getMaxSummonCount();
+        if (Player.summonBeasts.length >= maxCount) {
+            UI.showMessage('你的召唤兽数量已达上限！');
+            return;
+        }
+        // 随机一只新的召唤兽（排除已有的）
+        const existingIds = Player.summonBeasts.map(b => b.baseId || b.id);
+        const availableBeasts = Object.values(DataSummonBeasts).filter(b => !existingIds.includes(b.id));
+        if (availableBeasts.length === 0) {
+            UI.showMessage('没有可契约的新召唤兽了！');
+            return;
+        }
+        // 按稀有度加权随机
+        const weights = { '普通': 30, '稀有': 15, '史诗': 5 };
+        let totalWeight = 0;
+        const weighted = availableBeasts.map(b => {
+            const w = weights[b.rarity] || 10;
+            totalWeight += w;
+            return { beast: b, weight: w };
+        });
+        let rand = Math.random() * totalWeight;
+        let chosen = weighted[0].beast;
+        for (const item of weighted) {
+            rand -= item.weight;
+            if (rand <= 0) { chosen = item.beast; break; }
+        }
+        const result = Player.contractSummonBeast(chosen);
+        if (result.success) {
+            UI.showMessage(`${result.message}\n\n${chosen.description || ''}`, '🔮 新的契约！');
+            UI.renderCharacterScreen();
+            UI.saveGame();
+        } else {
+            UI.showMessage(result.message);
+        }
+    },
+
     showAwakenPanel() {
         if (!Player.canAwakenNewElement()) {
             UI.showMessage('你还未达到觉醒条件！');

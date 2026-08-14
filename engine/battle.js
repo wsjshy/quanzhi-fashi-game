@@ -2398,24 +2398,10 @@ const BattleSystem = {
                 // 首次召唤：随机契约一只召唤兽
                 if (!Player.summonData) {
                     const beastData = typeof getRandomStarterBeast === 'function' ? getRandomStarterBeast() : DataSummonBeasts.shadow_wolf;
-                    Player.summonData = {
-                        id: beastData.id,
-                        baseId: beastData.id,
-                        name: beastData.name,
-                        icon: beastData.icon,
-                        rarity: beastData.rarity || '普通',
-                        evolutionStage: 0,
-                        level: 1,
-                        exp: 0,
-                        expToNext: 50,
-                        loyalty: 50,
-                        baseMaxHp: beastData.baseStats.maxHp,
-                        baseAttack: beastData.baseStats.attack,
-                        baseDefense: beastData.baseStats.defense,
-                        baseSpeed: beastData.baseStats.speed,
-                        kills: 0
-                    };
-                    this.addLog(`✨ 你与 ${beastData.icon} ${beastData.name} 缔结了契约！`, 'evolution');
+                    const result = Player.contractSummonBeast(beastData);
+                    if (result.success) {
+                        this.addLog(result.message, 'evolution');
+                    }
                 }
                 // 获取当前形态数据（考虑进化）
                 const sd = Player.summonData;
@@ -2711,6 +2697,8 @@ const BattleSystem = {
                 }
                 
                 this.castSkillImmediate(skill, 'player', true);
+                // 引导技能可能直接击杀敌人
+                if (this.checkBattleEnd()) return;
                 // 引导完成后继续执行后续逻辑（召唤兽攻击、敌人回合）
             }
         }
@@ -3685,11 +3673,31 @@ const BattleSystem = {
     },
 
     /**
+     * 在回合处理中检测到战斗结束时的收尾处理
+     * （DoT致死、玩家被敌人击杀、光环伤害致死等异步结束场景）
+     */
+    _onBattleEndDuringTurn() {
+        // 立即更新UI显示最终状态
+        if (typeof UI !== 'undefined') {
+            UI.updateBattleScreen();
+        }
+        // 延迟触发战斗结束，让玩家看到最后一击/致死原因
+        setTimeout(() => {
+            if (typeof Game !== 'undefined' && Game.endBattle) {
+                Game.endBattle();
+            }
+        }, 600);
+    },
+
+    /**
      * 结束敌人回合
      */
     endEnemyTurn() {
         // 检查战斗是否结束
-        if (this.checkBattleEnd()) return;
+        if (this.checkBattleEnd()) {
+            this._onBattleEndDuringTurn();
+            return;
+        }
 
         // 处理状态效果（每回合结束）
         this.tickStatusEffects(this.player, true);
@@ -3751,7 +3759,10 @@ const BattleSystem = {
         }
 
         // 检查战斗是否结束（DOT可能致死）
-        if (this.checkBattleEnd()) return;
+        if (this.checkBattleEnd()) {
+            this._onBattleEndDuringTurn();
+            return;
+        }
 
         this.turn++;
         this.player.isDefending = false;
@@ -3978,6 +3989,12 @@ const BattleSystem = {
                     this.showDamageNumber('enemy', novaDmg, 'normal');
                 }
             }
+        }
+
+        // 光环/回合开始伤害可能击杀敌人
+        if (this.checkBattleEnd()) {
+            this._onBattleEndDuringTurn();
+            return;
         }
 
         // 玩家被眩晕/冻结/麻痹，自动跳过回合

@@ -37,6 +37,11 @@ const UI = {
 
     // 开场剧情
     showOpeningStory(element) {
+        // debug模式下跳过开场剧情
+        if (typeof window !== 'undefined' && window.location && window.location.search.includes('debug=1')) {
+            UI.showMessage(`【新手引导】已自动接取任务「初识魔法」，去修炼场感受魔法的力量吧！\n\n💡 提示：按 ~ 键可打开调试面板（需在URL加?debug=1）。`);
+            return;
+        }
         const elementName = (typeof SkillSystem !== 'undefined') ? SkillSystem.getElementName(element) : element;
         const elementColor = (typeof SkillSystem !== 'undefined') ? SkillSystem.getElementColor(element) : '#888';
 
@@ -514,7 +519,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.8.25 · 七兽进化版</div>
+                ">v0.8.26 · 多兽契约版</div>
             </div>
         `;
 
@@ -4103,91 +4108,105 @@ const UI = {
                                 }).join('')}
                             </div>
                             ` : ''}
-                            ${Player.summonData ? `
-                            <div style="margin-bottom: 15px; text-align: left;">
-                                <div style="color: #aa88ff; font-size: 13px; margin-bottom: 8px;">🐺 召唤兽</div>
-                                <div style="
-                                    padding: 12px 15px;
-                                    background: rgba(100, 80, 150, 0.2);
-                                    border: 2px solid #8866cc;
-                                    border-radius: 10px;
-                                ">
-                                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                                        <span style="font-size: 28px; margin-right: 10px;">${Player.summonData.icon}</span>
-                                        <div>
-                                            <div style="color: #cc99ff; font-weight: bold; font-size: 16px;">${Player.summonData.name}</div>
-                                            <div style="color: #999; font-size: 12px;">Lv.${Player.summonData.level} · 忠诚 ${Player.summonData.loyalty}/100 · ${Player.summonData.rarity || '普通'}</div>
-                                        </div>
-                                    </div>
-                                    ${(() => {
-                                        const currentData = typeof getBeastCurrentData === 'function' ? getBeastCurrentData(Player.summonData) : null;
-                                        const beast = currentData || DataSummonBeasts[Player.summonData.id];
-                                        return beast && beast.description ? `<div style="color: #888; font-size: 11px; margin-bottom: 6px; font-style: italic;">${beast.description}</div>` : '';
-                                    })()}
-                                    <div style="display: flex; gap: 15px; font-size: 12px; color: #aaa; margin-bottom: 6px;">
-                                        ${(() => {
-                                            const currentData = typeof getBeastCurrentData === 'function' ? getBeastCurrentData(Player.summonData) : null;
+                            ${(() => {
+                                Player.migrateSummonData();
+                                const beasts = Player.summonBeasts || [];
+                                const maxCount = Player.getMaxSummonCount();
+                                const realmNames = { initial: '初阶', primary: '初阶', middle: '中阶', high: '高阶', super: '超阶' };
+                                if (beasts.length === 0) return '';
+                                let html = '<div style="margin-bottom: 15px; text-align: left;">';
+                                html += `<div style="color: #aa88ff; font-size: 13px; margin-bottom: 8px;">🐺 召唤兽 (${beasts.length}/${maxCount} · ${realmNames[Player.realm]})</div>`;
+                                beasts.forEach((sd, idx) => {
+                                    const isActive = idx === Player.activeSummonIndex;
+                                    const borderColor = isActive ? '#aa66ff' : '#555';
+                                    const bgColor = isActive ? 'rgba(100, 80, 150, 0.2)' : 'rgba(50, 50, 70, 0.2)';
+                                    html += `<div style="padding: 12px 15px; background: ${bgColor}; border: 2px solid ${borderColor}; border-radius: 10px; margin-bottom: ${isActive ? '10px' : '6px'};">`;
+                                    html += `<div style="display: flex; align-items: center; margin-bottom: 8px;">`;
+                                    html += `<span style="font-size: 28px; margin-right: 10px;">${sd.icon}</span>`;
+                                    html += `<div style="flex: 1;">`;
+                                    html += `<div style="color: #cc99ff; font-weight: bold; font-size: 16px;">${sd.name}${isActive ? ' <span style="color:#ffaa00;font-size:11px;">出战中</span>' : ''}</div>`;
+                                    html += `<div style="color: #999; font-size: 12px;">Lv.${sd.level} · 忠诚 ${sd.loyalty}/100 · ${sd.rarity || '普通'}</div>`;
+                                    html += `</div>`;
+                                    if (!isActive) {
+                                        html += `<div onclick="Game.switchSummon(${idx})" style="padding: 4px 10px; background: #554488; border-radius: 5px; cursor: pointer; color: #fff; font-size: 11px;">出战</div>`;
+                                    }
+                                    html += `</div>`;
+                                    // 只显示当前出战召唤兽的详细信息
+                                    if (isActive) {
+                                        html += (() => {
+                                            const currentData = typeof getBeastCurrentData === 'function' ? getBeastCurrentData(sd) : null;
+                                            const beast = currentData || DataSummonBeasts[sd.id];
+                                            return beast && beast.description ? `<div style="color: #888; font-size: 11px; margin-bottom: 6px; font-style: italic;">${beast.description}</div>` : '';
+                                        })();
+                                        html += `<div style="display: flex; gap: 15px; font-size: 12px; color: #aaa; margin-bottom: 6px;">`;
+                                        html += (() => {
+                                            const currentData = typeof getBeastCurrentData === 'function' ? getBeastCurrentData(sd) : null;
                                             const stats = currentData ? currentData.effectiveStats : {
-                                                maxHp: Player.summonData.baseMaxHp,
-                                                attack: Player.summonData.baseAttack,
-                                                defense: Player.summonData.baseDefense,
-                                                speed: Player.summonData.baseSpeed
+                                                maxHp: sd.baseMaxHp, attack: sd.baseAttack, defense: sd.baseDefense, speed: sd.baseSpeed
                                             };
-                                            const lb = 1 + (Player.summonData.level - 1) * 0.15;
+                                            const lb = 1 + (sd.level - 1) * 0.15;
                                             return `<span>❤️ ${Math.floor(stats.maxHp * lb)}</span>
                                                 <span>⚔️ ${Math.floor(stats.attack * lb)}</span>
                                                 <span>🛡️ ${Math.floor(stats.defense * lb)}</span>
                                                 <span>💨 ${Math.floor(stats.speed * lb)}</span>`;
-                                        })()}
-                                    </div>
-                                    ${Player.summonData.level < 30 ? `
-                                    <div style="height: 4px; background: #333; border-radius: 2px; overflow: hidden;">
-                                        <div style="height: 100%; width: ${(Player.summonData.exp / Player.summonData.expToNext * 100).toFixed(1)}%; background: linear-gradient(90deg, #aa66ff, #cc99ff);"></div>
-                                    </div>
-                                    <div style="color: #666; font-size: 10px; text-align: right; margin-top: 2px;">${Player.summonData.exp} / ${Player.summonData.expToNext}</div>
-                                    ` : '<div style="color: #ffd700; font-size: 11px;">已满级</div>'}
-                                    <div style="color: #888; font-size: 10px; margin-top: 6px;">
-                                        ${(() => {
-                                            const currentData = typeof getBeastCurrentData === 'function' ? getBeastCurrentData(Player.summonData) : null;
-                                            const beast = currentData || DataSummonBeasts[Player.summonData.id];
+                                        })();
+                                        html += `</div>`;
+                                        html += sd.level < 30 ? `
+                                        <div style="height: 4px; background: #333; border-radius: 2px; overflow: hidden;">
+                                            <div style="height: 100%; width: ${(sd.exp / sd.expToNext * 100).toFixed(1)}%; background: linear-gradient(90deg, #aa66ff, #cc99ff);"></div>
+                                        </div>
+                                        <div style="color: #666; font-size: 10px; text-align: right; margin-top: 2px;">${sd.exp} / ${sd.expToNext}</div>
+                                        ` : '<div style="color: #ffd700; font-size: 11px;">已满级</div>';
+                                        html += `<div style="color: #888; font-size: 10px; margin-top: 6px;">`;
+                                        html += (() => {
+                                            const currentData = typeof getBeastCurrentData === 'function' ? getBeastCurrentData(sd) : null;
+                                            const beast = currentData || DataSummonBeasts[sd.id];
                                             if (!beast) return '技能：撕咬';
                                             const allSkills = beast.skills || [];
-                                            const unlocked = allSkills.filter(s => Player.summonData.level >= s.minLevel);
-                                            const locked = allSkills.filter(s => Player.summonData.level < s.minLevel);
-                                            let html = '已学：' + unlocked.map(s => s.name).join('/');
+                                            const unlocked = allSkills.filter(s => sd.level >= s.minLevel);
+                                            const locked = allSkills.filter(s => sd.level < s.minLevel);
+                                            let skillText = '已学：' + unlocked.map(s => s.name).join('/');
                                             if (locked.length > 0) {
-                                                html += ' · 未学：' + locked.map(s => `${s.name}(Lv${s.minLevel})`).join('/');
+                                                skillText += ' · 未学：' + locked.map(s => `${s.name}(Lv${s.minLevel})`).join('/');
                                             }
-                                            return html;
-                                        })()}
-                                    </div>
-                                    ${(() => {
-                                        const evoInfo = typeof Player.getSummonEvolutionInfo === 'function' ? Player.getSummonEvolutionInfo() : null;
-                                        if (!evoInfo) return '';
-                                        if (evoInfo.isMaxStage) {
-                                            return '<div style="color: #ffd700; font-size: 11px; margin-top: 8px; text-align: center;">★ 已达最终形态</div>';
-                                        }
-                                        const next = evoInfo.nextEvolution;
-                                        if (evoInfo.canEvolve) {
-                                            return `<div onclick="Game.evolveSummon()" style="margin-top: 8px; padding: 8px; background: linear-gradient(135deg, #9966ff, #cc66ff); border-radius: 6px; text-align: center; cursor: pointer; color: #fff; font-weight: bold; font-size: 13px; animation: pulse 1.5s infinite;">✨ 进化为 ${next.icon} ${next.name}！</div>`;
-                                        }
-                                        // 显示进化条件
-                                        const sd = Player.summonData;
-                                        const conditions = [];
-                                        if (sd.level < next.minBeastLevel) conditions.push(`Lv${next.minBeastLevel}(当前${sd.level})`);
-                                        if (sd.loyalty < next.minLoyalty) conditions.push(`忠诚${next.minLoyalty}(当前${sd.loyalty})`);
-                                        const realmNames = { initial: '初阶', primary: '初阶', middle: '中阶', high: '高阶' };
-                                        const realmOrder = { initial: 1, primary: 1, middle: 2, high: 3 };
-                                        if ((realmOrder[Player.realm] || 1) < (realmOrder[next.minPlayerRealm] || 1)) {
-                                            conditions.push(`${realmNames[next.minPlayerRealm]}法师`);
-                                        }
-                                        return `<div style="margin-top: 8px; padding: 6px; background: rgba(150,100,200,0.1); border-radius: 4px; font-size: 10px; color: #9988aa;">
-                                            下一形态：${next.icon} ${next.name} · 需要：${conditions.join('、')}
-                                        </div>`;
-                                    })()}
-                                </div>
-                            </div>
-                            ` : ''}
+                                            return skillText;
+                                        })();
+                                        html += `</div>`;
+                                        // 进化按钮
+                                        html += (() => {
+                                            const evoInfo = typeof Player.getSummonEvolutionInfo === 'function' ? Player.getSummonEvolutionInfo() : null;
+                                            if (!evoInfo) return '';
+                                            if (evoInfo.isMaxStage) {
+                                                return '<div style="color: #ffd700; font-size: 11px; margin-top: 8px; text-align: center;">★ 已达最终形态</div>';
+                                            }
+                                            const next = evoInfo.nextEvolution;
+                                            if (evoInfo.canEvolve) {
+                                                return `<div onclick="Game.evolveSummon()" style="margin-top: 8px; padding: 8px; background: linear-gradient(135deg, #9966ff, #cc66ff); border-radius: 6px; text-align: center; cursor: pointer; color: #fff; font-weight: bold; font-size: 13px; animation: pulse 1.5s infinite;">✨ 进化为 ${next.icon} ${next.name}！</div>`;
+                                            }
+                                            const conditions = [];
+                                            if (sd.level < next.minBeastLevel) conditions.push(`Lv${next.minBeastLevel}(当前${sd.level})`);
+                                            if (sd.loyalty < next.minLoyalty) conditions.push(`忠诚${next.minLoyalty}(当前${sd.loyalty})`);
+                                            const realmNames2 = { initial: '初阶', primary: '初阶', middle: '中阶', high: '高阶' };
+                                            const realmOrder = { initial: 1, primary: 1, middle: 2, high: 3 };
+                                            if ((realmOrder[Player.realm] || 1) < (realmOrder[next.minPlayerRealm] || 1)) {
+                                                conditions.push(`${realmNames2[next.minPlayerRealm]}法师`);
+                                            }
+                                            return `<div style="margin-top: 8px; padding: 6px; background: rgba(150,100,200,0.1); border-radius: 4px; font-size: 10px; color: #9988aa;">
+                                                下一形态：${next.icon} ${next.name} · 需要：${conditions.join('、')}
+                                            </div>`;
+                                        })();
+                                    }
+                                    html += `</div>`;
+                                });
+                                // 契约新召唤兽按钮
+                                if (beasts.length < maxCount) {
+                                    html += `<div onclick="Game.seekNewSummon()" style="padding: 10px; background: rgba(80, 60, 120, 0.3); border: 2px dashed #8866cc; border-radius: 8px; text-align: center; cursor: pointer; color: #aa88ff; font-size: 13px;">
+                                        🔮 寻找新的契约兽（${realmNames[Player.realm]}可契约${maxCount}只）
+                                    </div>`;
+                                }
+                                html += '</div>';
+                                return html;
+                            })()}
                             ${Player.canAwakenNewElement() ? `
                             <div onclick="Game.showAwakenPanel()" style="
                                 display: inline-block;
