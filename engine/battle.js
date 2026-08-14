@@ -1141,10 +1141,18 @@ const BattleSystem = {
 
         this.player.isDefending = false;
 
+        // 首攻加成：战斗中第一次攻击伤害+50%
+        let firstStrikeBonus = 0;
+        if (this.player.talentEffects && this.player.talentEffects.firstStrikeBonus && !this._playerHasAttacked) {
+            firstStrikeBonus = this.player.talentEffects.firstStrikeBonus;
+            this._playerHasAttacked = true;
+            this.addLog(`⚡ 先手攻击！伤害+${Math.floor(firstStrikeBonus * 100)}%！`, 'buff');
+        }
+
         // 计算伤害（含攻击者状态修正）
         const attackerMods = this.getStatusModifiers(this.player);
         const damage = this.calculateDamage(
-            this.player.attack + attackerMods.attackMod,
+            this.player.attack * (1 + firstStrikeBonus) + attackerMods.attackMod,
             this.enemy.defense * (this.enemy.isDefending ? 2 : 1), // 防御时防御翻倍
             1.0,
             this.player.critRate,
@@ -1374,17 +1382,11 @@ const BattleSystem = {
                 }
             }
 
-            // 天赋：风魔 - 每次命中叠加攻速和暴击
+            // 天赋：风魔 - 每次命中叠加攻速和暴击（本回合内有效，回合结束重置）
             if (te.attackSpeedStack) {
-                this.player.comboCount = (this.player.comboCount || 0) + 1;
-                const maxStack = te.attackSpeedMax || 6;
-                const stack = Math.min(this.player.comboCount, maxStack);
-                const speedBonus = stack * (te.attackSpeedStack || 0.05);
-                const critBonus = stack * (te.hitCritStack || 0.03);
-                this.player.speed = Math.floor(this.player.speed * (1 + speedBonus * 0.1));
-                if (critBonus > 0) this.player.critRate += critBonus * 0.1;
-                if (stack >= maxStack) {
-                    this.addLog(`🌪️ 风魔满层！速度和暴击达到巅峰！`, 'buff');
+                this.player.comboCount = Math.min((this.player.comboCount || 0) + 1, te.attackSpeedMax || 6);
+                if (this.player.comboCount >= (te.attackSpeedMax || 6)) {
+                    this.addLog(`🌪️ 风魔满层！下次攻击暴击和速度达到巅峰！`, 'buff');
                 }
             }
         }
@@ -1424,6 +1426,22 @@ const BattleSystem = {
                         type: 'paralyze', name: '雷鸣麻痹', duration: 1
                     });
                     this.addLog(`⚡ 雷鸣！${this.enemy.name} 被麻痹！`, 'element');
+                }
+            }
+            // 天赋：暴击必麻痹（天雷Lv7雷霆之怒）
+            if (this.player.talentEffects && this.player.talentEffects.critParalyze) {
+                this.addStatusEffect(this.enemy, {
+                    type: 'paralyze', name: '雷霆麻痹', duration: 1
+                });
+                this.addLog(`⚡ 雷霆之怒！暴击必定麻痹！`, 'element');
+            }
+            // 天赋：天雷引 - 攻击时30%概率随机落雷
+            if (this.player.talentEffects && this.player.talentEffects.skyThunderChance && !damage.isMiss) {
+                if (Math.random() < this.player.talentEffects.skyThunderChance) {
+                    const thunderDmg = Math.floor(this.player.attack * (this.player.talentEffects.skyThunderDamage || 0.8));
+                    this.applyDamage(this.enemy, { amount: thunderDmg, element: 'thunder', isCrit: false, isMiss: false }, this.player);
+                    this.addLog(`⚡ 天雷引！一道雷电劈下，造成 ${thunderDmg} 点伤害！`, 'element');
+                    this.showDamageNumber('enemy', thunderDmg, 'normal');
                 }
             }
             // 天赋：暴击得护盾
@@ -2001,6 +2019,15 @@ const BattleSystem = {
                 }
             }
 
+            // 天赋：治疗时回MP
+            if (isPlayer && this.player.talentEffects && this.player.talentEffects.healMpRestore && healTarget === this.player) {
+                const mpRestore = Math.floor(this.player.maxMp * this.player.talentEffects.healMpRestore);
+                if (mpRestore > 0 && this.player.mp < this.player.maxMp) {
+                    this.player.mp = Math.min(this.player.maxMp, this.player.mp + mpRestore);
+                    this.addLog(`💙 治疗恢复 ${mpRestore} 点MP！`, 'heal');
+                }
+            }
+
             // 治疗技能的附加状态效果（如净化、复苏）
             if (skill.statusEffects) {
                 const isHealTargetPlayer = healTarget === this.player;
@@ -2319,6 +2346,8 @@ const BattleSystem = {
 
         this.isPlayerTurn = false;
         this.enemy.isDefending = false; // 重置敌人防御状态
+        // 重置本回合连击计数
+        this.player.comboCount = 0;
         
         // 减少魔具技能冷却时间
         this.tickMagicToolCooldowns();
@@ -3414,6 +3443,14 @@ const BattleSystem = {
                 const bonusDmg = this.player.defense * te.defenseToDamage;
                 damage += bonusDmg;
             }
+            // 光系审判：对暗系敌人概率造成真实伤害
+            if (te.judgmentChance && target && target.element === 'dark') {
+                if (Math.random() < te.judgmentChance) {
+                    const trueDmg = Math.floor(target.maxHp * (te.judgmentTrueDamage || 0.15));
+                    damage += trueDmg;
+                    this.addLog(`✨ 圣光审判！对暗系造成 ${trueDmg} 点真实伤害！`, 'element');
+                }
+            }
         }
 
         // 天赋：暴击伤害加成
@@ -3614,8 +3651,14 @@ const BattleSystem = {
             }
         }
 
+        // 天赋：风魔连击临时暴击加成
+        let windDemonCritBonus = 0;
+        if (attacker && attacker.comboCount && attacker.talentEffects && attacker.talentEffects.attackSpeedStack) {
+            windDemonCritBonus = attacker.comboCount * (attacker.talentEffects.hitCritStack || 0.03);
+        }
+
         // 暴击判定
-        if (frozenCritGuaranteed || Math.random() < critRate + chargeCritBonus) {
+        if (frozenCritGuaranteed || Math.random() < critRate + chargeCritBonus + windDemonCritBonus) {
             result.isCrit = true;
             let critMult = 1.5 + Math.random() * 0.5; // 1.5-2.0倍暴击
             // 天赋：暴击伤害加成
@@ -3766,6 +3809,16 @@ const BattleSystem = {
                     this.showDamageNumber('enemy', 999, 'crit');
                 }
             }
+            // 暗系斩杀：低HP时概率死亡之触
+            if (te.executeLowHp) {
+                const threshold = te.executeThreshold || 0.15;
+                const chance = te.executeChance || 0.15;
+                if (target.hp / target.maxHp < threshold && Math.random() < chance) {
+                    target.hp = 0;
+                    this.addLog(`💀 死亡之触！${this.enemy.name} 被暗影吞噬！`, 'crit');
+                    this.showDamageNumber('enemy', 999, 'crit');
+                }
+            }
         }
 
         // 天赋免死：HP归零时保留HP（神圣庇护/大地守护/暗影化身）
@@ -3847,6 +3900,18 @@ const BattleSystem = {
                     target._hardRockUsed = true;
                     this.addLog(`🪨 坚岩发动！伤害减少${Math.round(reduction*100)}%！`, 'defense');
                 }
+            }
+            // 岩盾：受击时概率获得护盾
+            if (te.shieldChance && amount > 0 && Math.random() < te.shieldChance) {
+                const shieldRatio = te.shieldRatio || 0.15;
+                const shieldAmount = Math.floor(target.maxHp * shieldRatio);
+                const existingShield = target.statusEffects.find(e => e.type === 'shield');
+                if (existingShield) {
+                    existingShield.value = Math.max(existingShield.value, shieldAmount);
+                } else {
+                    this.addStatusEffect(target, { type: 'shield', name: '岩盾', value: shieldAmount, duration: 3 });
+                }
+                this.addLog(`🪨 岩盾发动！获得 ${shieldAmount} 点护盾！`, 'defense');
             }
         }
 
