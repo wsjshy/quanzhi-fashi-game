@@ -26,8 +26,9 @@ const UI = {
     // 检查是否可以显示消息（弹窗状态下暂停）
     _canShowMessage() {
         // 如果游戏处于事件/大事件/对话/战斗等弹窗状态，暂停显示消息
+        // 注意：shop/inventory/character不阻止消息，让购买/装备反馈即时显示
         if (typeof Game !== 'undefined' && Game.state) {
-            const modalStates = ['event', 'scheduled_event', 'dialogue', 'battle', 'shop', 'inventory', 'character'];
+            const modalStates = ['event', 'scheduled_event', 'dialogue', 'battle'];
             if (modalStates.includes(Game.state)) {
                 return false;
             }
@@ -177,7 +178,7 @@ const UI = {
                 }
                 // 恢复行动按钮点击
                 document.body.classList.remove('message-showing');
-            }, 500);
+            }, 200);
             return;
         }
         
@@ -194,7 +195,7 @@ const UI = {
                 }
                 // 恢复行动按钮点击
                 document.body.classList.remove('message-showing');
-            }, 500);
+            }, 200);
             return;
         }
         this._isMessageShowing = true;
@@ -346,14 +347,14 @@ const UI = {
                 if (ui._globalClickInterceptor === clickInterceptor) {
                     ui._globalClickInterceptor = null;
                 }
-            }, 500);
+            }, 200);
             
             // 设置行动冷却，防止点击穿透/延迟触发
             if (typeof Game !== 'undefined' && Game._actionCooldown !== undefined) {
                 Game._actionCooldown = true;
                 setTimeout(() => {
                     Game._actionCooldown = false;
-                }, 500);
+                }, 200);
             }
             
             // 先创建阻止点击穿透的遮罩层（在最顶层）
@@ -375,7 +376,7 @@ const UI = {
             overlay.remove();
             msgBox.remove();
             
-            setTimeout(() => blocker.remove(), 800);
+            setTimeout(() => blocker.remove(), 200);
             
             // 处理下一条消息
             ui._processNextMessage();
@@ -519,7 +520,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.8.27 · 天赋战斗版</div>
+                ">v0.8.28 · 体验优化版</div>
             </div>
         `;
 
@@ -973,7 +974,7 @@ const UI = {
                             }
                             return '';
                         })()}
-                        <div style="color: #aaa; font-size: 14px;">📅 ${TimeSystem.getDateString()} ${TimeSystem.getDayOfWeekName()} ${TimeSystem.getCurrentPeriodInfo().icon} ${TimeSystem.getCurrentPeriodInfo().name} ${Player.hour}:00</div>
+                        <div style="color: #aaa; font-size: 14px;">📅 ${TimeSystem.getDateString()} ${TimeSystem.getDayOfWeekName()} ${TimeSystem.getCurrentPeriodInfo().icon} ${TimeSystem.getCurrentPeriodInfo().name} ${TimeSystem.formatHour()}</div>
                         ${(() => {
                             const currentClass = TimeSystem.getCurrentClass(location);
                             if (currentClass) {
@@ -1157,9 +1158,30 @@ const UI = {
                         " onmouseover="this.style.borderColor='#66bb66'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#448844'; this.style.transform='translateX(0)'">
                             <div style="font-size: 18px; margin-bottom: 5px;">
                                 💚 原地休息
-                                <span style="font-size: 12px; color: #88cc88; float: right;">不消耗时间</span>
+                                <span style="font-size: 12px; color: #ffcc88; float: right;">消耗1小时</span>
                             </div>
                             <div style="font-size: 13px; color: #99bb99;">稍作休息，恢复30%HP、20%MP和30点体力（战斗外随时可用）</div>
+                        </button>
+
+                        <!-- 事件追踪 -->
+                        <button onclick="EncounterSystem.showEventTracker()" style="
+                            margin-top: 10px;
+                            width: 100%;
+                            padding: 12px 20px;
+                            background: linear-gradient(135deg, rgba(80, 60, 20, 0.8), rgba(120, 90, 30, 0.8));
+                            border: 2px solid #aa8833;
+                            border-radius: 8px;
+                            color: #ffdd99;
+                            cursor: pointer;
+                            text-align: left;
+                            transition: all 0.3s;
+                            font-size: 15px;
+                        " onmouseover="this.style.borderColor='#ddbb55'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#aa8833'; this.style.transform='translateX(0)'">
+                            <div style="font-size: 16px;">
+                                📜 事件追踪
+                                <span style="font-size: 12px; color: #ffaa44; float: right;" id="event-count-badge"></span>
+                            </div>
+                            <div style="font-size: 12px; color: #bb9966;">查看可触发的特殊事件</div>
                         </button>
 
                         <!-- 等待时间 -->
@@ -1205,7 +1227,7 @@ const UI = {
                                         font-size: 16px;
                                     " ${unlocked ? 'onmouseover="this.style.borderColor=\'#9977cc\'" onmouseout="this.style.borderColor=\'#7755aa\'"' : ''}>
                                         ${unlocked ? '🚪' : '🔒'} ${loc?.name || locId}
-                                        <span style="font-size: 13px; color: #888; float: right;">旅行 2小时</span>
+                                        <span style="font-size: 13px; color: #888; float: right;">旅行 0.5小时</span>
                                     </button>
                                 `;
                             }).join('')}
@@ -1369,6 +1391,19 @@ const UI = {
                 </div>
             </div>
         `;
+        
+        // 更新事件追踪徽章
+        setTimeout(() => {
+            if (typeof EncounterSystem !== 'undefined') {
+                const available = EncounterSystem.getAvailableSpecialEvents();
+                const badge = document.getElementById('event-count-badge');
+                if (badge) {
+                    badge.textContent = available.length > 0 ? `(${available.length})` : '';
+                }
+                // 检查并通知新事件
+                EncounterSystem.checkAndNotifyEvents();
+            }
+        }, 200);
         
         // 回到地图界面，触发消息队列处理
         setTimeout(() => {
@@ -2783,7 +2818,7 @@ const UI = {
                         ${items.map(item => {
                             const itemData = item.itemData;
                             if (!itemData) return '';
-                            const ownedCount = Inventory.getItemCount(item.itemId);
+                            const ownedCount = Inventory.getTotalOwned(item.itemId);
                             return `
                                 <div onclick="Game.buyItem('${item.itemId}')" style="
                                     padding: 15px;
@@ -3969,6 +4004,7 @@ const UI = {
                                                 <span style="font-size: 22px; margin-right: 8px;">${display.icon}</span>
                                                 <div>
                                                     <span style="color: ${display.rarityColor}; font-weight: bold; font-size: 16px;">${display.name}</span>
+                                                    <span style="color: #ffd700; font-size: 12px; margin-left: 8px;">Lv.${Player.innateTalentLevel || 1}</span>
                                                     <span style="color: ${display.rarityColor}; font-size: 11px; margin-left: 8px;">【${display.rarityName}】</span>
                                                 </div>
                                             </div>
@@ -4385,7 +4421,17 @@ const UI = {
     },
 
     updateCharacterScreen() {
+        // 保存滚动位置，防止属性分配后页面跳顶
+        const scrollContainer = document.querySelector('.character-panel-scroll') || document.getElementById('game-container');
+        const scrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
         this.renderCharacterScreen();
+        // 恢复滚动位置
+        setTimeout(() => {
+            const newScrollContainer = document.querySelector('.character-panel-scroll') || document.getElementById('game-container');
+            if (newScrollContainer) {
+                newScrollContainer.scrollTop = scrollTop;
+            }
+        }, 0);
     },
 
     // NPC 对话

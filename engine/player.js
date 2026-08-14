@@ -4,7 +4,7 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.8.27';
+const GAME_VERSION = '0.8.28';
 const SAVE_VERSION = '0.8.7';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
@@ -192,6 +192,7 @@ const Player = {
         this.talents = {};  // 系别天赋
         this.innateTalent = null;  // 自身天赋（天生天赋）
         this.innateEffects = {};  // 自身天赋效果
+        this.innateTalentLevel = 1;  // 自身天赋等级（每5级角色等级进化一次）
         this.gold = 50;
         this.equipment = { weapon: null, armor: null, accessory: null };
         this.enhanceLevels = { weapon: 0, armor: 0, accessory: 0 };
@@ -604,6 +605,12 @@ const Player = {
             this.defense += growth.def;
             this.speed += growth.spd;
             this.spirit += growth.spr;
+
+            // 天生天赋进化：每5级进化一次
+            if (this.innateTalent && newPlayerLv % 5 === 0) {
+                this.innateTalentLevel = (this.innateTalentLevel || 1) + 1;
+                this._innateTalentEvolved = true;
+            }
         }
 
         // 升级回满
@@ -810,12 +817,13 @@ const Player = {
             }
         }
 
-        // 合并自身天赋效果（InnateTalent）
+        // 合并自身天赋效果（InnateTalent），按天赋等级缩放数值效果
         if (this.innateEffects) {
+            const talentMultiplier = 1 + 0.2 * ((this.innateTalentLevel || 1) - 1);
             for (const key in this.innateEffects) {
                 const val = this.innateEffects[key];
                 if (typeof val === 'number') {
-                    totalEffects[key] = (totalEffects[key] || 0) + val;
+                    totalEffects[key] = (totalEffects[key] || 0) + val * talentMultiplier;
                 } else {
                     totalEffects[key] = val;
                 }

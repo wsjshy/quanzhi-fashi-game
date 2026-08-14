@@ -284,6 +284,18 @@ const TimeSystem = {
     getAllPeriods() {
         return this.TIME_PERIODS;
     },
+
+    /**
+     * 格式化小时显示（修复12.5:00问题）
+     * 整点显示 X:00，半点显示 X:30
+     */
+    formatHour(hour) {
+        const h = hour != null ? hour : Player.hour;
+        const intHour = Math.floor(h);
+        const minutes = Math.round((h - intHour) * 60);
+        const minStr = minutes < 10 ? '0' + minutes : '' + minutes;
+        return `${intHour}:${minStr}`;
+    },
     
     /**
      * 判断是否是夜晚

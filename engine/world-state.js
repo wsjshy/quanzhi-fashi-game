@@ -684,6 +684,19 @@ const WorldState = {
             return false;
         }
 
+        // hasFlag 条件（单个标记字符串或标记数组）
+        if (conditions.hasFlag) {
+            const flagsToCheck = Array.isArray(conditions.hasFlag) ? conditions.hasFlag : [conditions.hasFlag];
+            for (const flag of flagsToCheck) {
+                // 同时检查 WorldState.globalFlags 和 Player.flags
+                const hasIt = (this.globalFlags && this.globalFlags[flag]) ||
+                              (typeof Player !== 'undefined' && Player.flags && Player.flags[flag]);
+                if (!hasIt) {
+                    return false;
+                }
+            }
+        }
+
         // 没有标记
         if (conditions.notFlags) {
             for (const flag of conditions.notFlags) {

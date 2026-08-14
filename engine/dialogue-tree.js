@@ -85,6 +85,9 @@ const DialogueTree = {
         this.currentNode = 'default';
         this.dialogueHistory = [];
 
+        // 检测是否首次见面（在设置flag之前）
+        this._isFirstMeet = !NPCStateSystem.getNPCFlag(npcId, 'has_met_player');
+
         // 标记见过玩家
         NPCStateSystem.setNPCFlag(npcId, 'has_met_player', true);
 
@@ -105,7 +108,16 @@ const DialogueTree = {
         if (!node) return null;
 
         // 随机选一条文本
-        const texts = node.texts || ['...'];
+        let texts = node.texts || ['...'];
+
+        // 首次见面时，过滤掉"又见面了"/"好久不见"等不适合首次见面的文本
+        if (this._isFirstMeet && this.currentNode === 'default') {
+            const filtered = texts.filter(t => !t.includes('又见面') && !t.includes('好久不见') && !t.includes('是你啊'));
+            if (filtered.length > 0) {
+                texts = filtered;
+            }
+        }
+
         const text = texts[Math.floor(Math.random() * texts.length)];
 
         // 过滤可用的选项
@@ -250,9 +262,19 @@ const DialogueTree = {
         if (choice.next || choice.nextNode) {
             this.currentNode = choice.next || choice.nextNode;
             return this.getCurrentNodeData();
+        } else if (choice.action === 'back') {
+            // 返回上一节点
+            if (this.dialogueHistory.length > 1) {
+                const prev = this.dialogueHistory[this.dialogueHistory.length - 2];
+                this.currentNode = prev.nodeId;
+                return this.getCurrentNodeData();
+            }
+            this.currentNode = 'default';
+            return this.getCurrentNodeData();
         } else {
-            // 结束对话
-            return this.endDialogue();
+            // 没有指定下一个节点且不是关闭动作，返回默认节点
+            this.currentNode = 'default';
+            return this.getCurrentNodeData();
         }
     },
 

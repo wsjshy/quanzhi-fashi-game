@@ -414,6 +414,11 @@ const BigEventSystem = {
         Player.flags['big_event_' + this.currentEvent + '_completed'] = true;
         Player.flags['big_event_' + this.currentEvent + '_ending'] = endingId;
         
+        // 博城灾难完成时设置通用标记，供对话/事件条件使用
+        if (this.currentEvent === 'big_event_bocheng_disaster') {
+            Player.flags['bocheng_disaster_happened'] = true;
+        }
+        
         // 保存
         this.saveState();
         Player.save();

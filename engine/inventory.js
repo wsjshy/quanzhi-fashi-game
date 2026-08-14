@@ -104,6 +104,23 @@ const Inventory = {
     },
 
     /**
+     * 获取物品总拥有数（背包+已装备）
+     * 用于商店显示"已拥有"数量
+     */
+    getTotalOwned(itemId) {
+        let count = this.getItemCount(itemId);
+        // 检查装备栏
+        if (typeof Player !== 'undefined' && Player.equipment) {
+            for (const slot of ['weapon', 'armor', 'accessory']) {
+                if (Player.equipment[slot] === itemId) {
+                    count += 1;
+                }
+            }
+        }
+        return count;
+    },
+
+    /**
      * 检查是否有足够的物品
      */
     hasItem(itemId, count = 1) {

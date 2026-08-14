@@ -122,14 +122,14 @@ const DataLocations = {
       {
         id: "train",
         name: "修炼魔法",
-        description: "实战修炼魔法（2小时），获得经验，有概率突破或失败受伤",
+        description: "实战修炼（高经验，消耗HP/MP，有概率突破或受伤）",
         icon: "✨",
         timeCost: 2,
         staminaCost: 25,
         effects: {
-          exp: 25,
-          hp: -5,
-          mp: -15
+          exp: 30,
+          hp: -10,
+          mp: -20
         },
         eventChance: 0.2,
         events: [
@@ -140,13 +140,14 @@ const DataLocations = {
       {
         id: "meditate",
         name: "冥修",
-        description: "静心冥修（2小时），恢复MP，小概率突破",
+        description: "静心冥修（恢复MP/少量HP，低经验，有概率突破）",
         icon: "🧘",
         timeCost: 2,
         staminaCost: 10,
         effects: {
-          exp: 10,
-          mp: 30
+          exp: 8,
+          mp: 40,
+          hp: 10
         },
         eventChance: 0.15,
         events: [
@@ -155,8 +156,8 @@ const DataLocations = {
       },
       {
         id: "rest",
-        name: "休息",
-        description: "在宿舍休息一会儿（1小时），恢复 HP、MP 和体力",
+        name: "宿舍休息",
+        description: "在宿舍舒适休息（1小时），大量恢复 HP、MP 和体力（比原地休息效果好）",
         icon: "😴",
         timeCost: 1,
         staminaCost: 0,
@@ -182,7 +183,7 @@ const DataLocations = {
       {
         id: "library",
         name: "图书馆",
-        description: "去图书馆看书（2小时），学习魔法知识，有概率领悟新技能或获得情报",
+        description: "去图书馆看书（1小时），学习魔法知识，有概率领悟新技能或获得情报",
         icon: "📖",
         timeCost: 1,
         staminaCost: 5,
@@ -374,7 +375,7 @@ const DataLocations = {
         icon: "🏛️",
         timeCost: 0,
         staminaCost: 0,
-        effects: { exp: 10 },
+        effects: {},
         eventChance: 0.3,
         events: ["event_hunter_recruit", "event_hunter_bounty"],
         npcs: ["xu_dahuang", "guo_caitang", "xiao_ke", "li_wenjie", "fei_shi"],

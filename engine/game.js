@@ -319,7 +319,14 @@ const Game = {
             if (result.effects.stamina) message += result.effects.stamina > 0 ? `恢复 ${result.effects.stamina} 体力\n` : `消耗 ${-result.effects.stamina} 体力\n`;
             if (result.effects.levelUps) {
                 message += `🎉 升级了！当前等级 ${Player.level}\n`;
-                message += `获得 ${result.effects.levelUps * 3} 点可分配属性点\n`;
+                message += `获得属性点（当前可分配：${Player.attributePoints} 点）\n`;
+                // 天生天赋进化提示
+                if (Player._innateTalentEvolved) {
+                    const talentData = typeof DataInnateTalents !== 'undefined' ? DataInnateTalents[Player.innateTalent] : null;
+                    const talentName = talentData?.name || '天生天赋';
+                    message += `✨ ${talentName} 进化到 Lv.${Player.innateTalentLevel}！效果增强！\n`;
+                    Player._innateTalentEvolved = false;
+                }
             }
             if (result.effects.addItem) {
                 const item = Inventory.getItem(result.effects.addItem.itemId);
@@ -573,7 +580,14 @@ const Game = {
                 const levelResult = Player.checkLevelUp();
                 if (levelResult.levelUps.length > 0) {
                     message += `🎉 升级了！当前等级 ${Player.level}\n`;
-                    message += `获得 ${levelResult.levelUps.length * 3} 点可分配属性点\n`;
+                    message += `获得属性点（当前可分配：${Player.attributePoints} 点）\n`;
+                    // 天生天赋进化提示
+                    if (Player._innateTalentEvolved) {
+                        const talentData = typeof DataInnateTalents !== 'undefined' ? DataInnateTalents[Player.innateTalent] : null;
+                        const talentName = talentData?.name || '天生天赋';
+                        message += `✨ ${talentName} 进化到 Lv.${Player.innateTalentLevel}！效果增强！\n`;
+                        Player._innateTalentEvolved = false;
+                    }
                 }
             }
 
@@ -700,7 +714,13 @@ const Game = {
             UI.showMessage(`⏰ 等待结束...\n🎉 解锁新地点：${names}！`);
         } else {
             const periodInfo = TimeSystem.getCurrentPeriodInfo();
-            UI.showMessage(`⏰ 等待结束，现在是${periodInfo.name}`);
+            // 15%概率触发随机事件（消磨时间时可能遇到有趣的事）
+            if (Math.random() < 0.15 && typeof EncounterSystem !== 'undefined') {
+                UI.showMessage(`⏰ 等待结束，现在是${periodInfo.name}\n\n等待期间似乎发生了什么...`);
+                setTimeout(() => EncounterSystem.triggerRandomEncounter(), 800);
+            } else {
+                UI.showMessage(`⏰ 等待结束，现在是${periodInfo.name}`);
+            }
         }
         
         // 刷新界面
@@ -767,9 +787,9 @@ const Game = {
             return;
         }
 
-        UI.showMessage(msg);
         Player.save();
         UI.renderMapScreen();
+        UI.showMessage(msg);
     },
 
     // 显示等待选择界面
@@ -797,7 +817,7 @@ const Game = {
                 ⏰ 等待时间
             </div>
             <div style="font-size: 14px; color: #aaa; margin-bottom: 20px;">
-                选择要等待到的时段（消耗少量体力）
+                选择要等待到的时段（消耗少量体力，有小概率触发随机事件）
             </div>
             <div style="display: flex; flex-direction: column; gap: 10px;" id="wait-period-buttons">
                 ${periods.map(period => {
@@ -1273,7 +1293,14 @@ const Game = {
                 }
                 if (rewards.levelUps.length > 0) {
                     message += `\n🎉 升级了！当前等级 ${Player.level}\n`;
-                    message += `获得 ${rewards.levelUps.length * 3} 属性点`;
+                    message += `获得属性点（当前可分配：${Player.attributePoints} 点）`;
+                    // 天生天赋进化提示
+                    if (Player._innateTalentEvolved) {
+                        const talentData = typeof DataInnateTalents !== 'undefined' ? DataInnateTalents[Player.innateTalent] : null;
+                        const talentName = talentData?.name || '天生天赋';
+                        message += `\n✨ ${talentName} 进化到 Lv.${Player.innateTalentLevel}！效果增强！`;
+                        Player._innateTalentEvolved = false;
+                    }
                 }
                 
                 UI.showMessage(message.trim());

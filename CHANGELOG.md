@@ -4,6 +4,53 @@
 
 ---
 
+## [v0.8.28] - 2026-08-14
+
+### 用户反馈20条问题修复 + 体验优化
+
+根据用户反馈的20条游戏体验问题，进行全面修复和优化。
+
+#### P0 紧急Bug修复（5条）
+- **Bug#14 时间显示"12.5:00"**：新增`TimeSystem.formatHour()`方法，整点显示X:00，半点显示X:30
+- **Bug#13 升级获得NaN属性点**：根因是`levelUps数组 * 3 = NaN`，全部改为显示`Player.attributePoints`实际值
+- **Bug#16 猎者联盟大厅无代价获取经验**：删除effects.exp，改为空对象（用户要求不耗时，只删经验）
+- **Bug#8 原地休息UI显示"不消耗时间"**：实际消耗1小时，UI改为显示"消耗1小时"
+- **Bug#12 图书馆时间不一致**：描述从"2小时"改为"1小时"，与timeCost:1一致
+
+#### P1 UI体验优化（5条）
+- **Issue#3 装备已拥有显示不含穿戴中**：新增`Inventory.getTotalOwned()`统计背包+装备栏
+- **Issue#4 消息弹出延迟**：`_canShowMessage()`中modalStates移除shop/inventory/character，购买/装备反馈即时显示
+- **Issue#17 点击多次不生效**：消息关闭后冷却从500/800ms缩短为200ms
+- **Issue#5 属性分配后页面跳顶**：`updateCharacterScreen()`保存并恢复scrollTop
+- **Issue#18 原地休息体力不即时刷新**：调整quickRest渲染顺序为save→render→showMessage
+
+#### P1 对话系统修复（4条）
+- **Issue#6 张小侯"我要离开博城"提前出现**：根因是`WorldState.checkConditions()`不处理`hasFlag`条件，已修复；博城灾难完成时设置`bocheng_disaster_happened` flag
+- **Issue#7 张小侯"随便聊聊"回复不匹配**：第一条文本改为与"跑得快"主题一致
+- **Issue#15 周会长首次对话"好久不见"**：对话树新增`_isFirstMeet`检测，首次见面过滤掉"又见面了"/"好久不见"文本
+- **Issue#19 对话点击后直接退出**：无next字段时返回default节点而非结束对话；新增back返回上一节点
+
+#### P2 行动系统优化（4条）
+- **Issue#9 修炼魔法vs冥修区分不明显**：修炼魔法改为高经验(30)高消耗(HP-10/MP-20)，冥修改为恢复型(MP+40/HP+10)低经验(8)
+- **Issue#10 宿舍休息vs原地休息**：宿舍休息改名为"宿舍休息"，描述明确比原地休息效果好
+- **Issue#11 等待时间无意义**：等待结束后15%概率触发随机事件，描述更新
+- **Issue#2 场景切换时间显示错误**：地图旅行显示从"2小时"改为"0.5小时"，与实际travelTime一致
+
+#### P2 系统设计（2条）
+- **Issue#1 天生天赋升级机制**：新增`innateTalentLevel`字段，每5级角色等级天赋进化一次，数值效果按1+0.2*(level-1)缩放，升级时显示进化消息，角色面板显示天赋等级
+- **Issue#20 特殊事件触发机制**：新增`EncounterSystem`遭遇系统，包含随机遭遇、事件追踪面板、穆白挑战/新生试炼等特殊事件入口；地图新增"📜 事件追踪"按钮
+
+#### 技术改动
+- 新增`engine/encounter.js`遭遇系统文件
+- `TimeSystem`新增`formatHour()`方法
+- `Inventory`新增`getTotalOwned()`方法
+- `WorldState.checkConditions()`新增`hasFlag`条件处理
+- `DialogueTree`新增首次见面检测和返回上一节点功能
+- `Player`新增`innateTalentLevel`字段和天赋进化逻辑
+- 13个文件修改，1个新文件
+
+---
+
 ## [v0.8.27] - 2026-08-14
 
 ### 召唤系天赋战斗效果落地 + 剩余A类效果

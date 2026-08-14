@@ -6455,7 +6455,14 @@ const BattleSystem = {
             });
         }
         if (expResult.levelUps.length > 0) {
-            this.addLog(`🎉 升级了！当前等级 ${Player.level}，获得3点属性点`, 'system');
+            this.addLog(`🎉 升级了！当前等级 ${Player.level}，获得属性点（可分配：${Player.attributePoints}）`, 'system');
+            // 天生天赋进化提示
+            if (Player._innateTalentEvolved) {
+                const talentData = typeof DataInnateTalents !== 'undefined' ? DataInnateTalents[Player.innateTalent] : null;
+                const talentName = talentData?.name || '天生天赋';
+                this.addLog(`✨ ${talentName} 进化到 Lv.${Player.innateTalentLevel}！效果增强！`, 'system');
+                Player._innateTalentEvolved = false;
+            }
         }
         if (expResult.canAwaken) {
             this.addLog(`✨ 你已达到觉醒条件！可以在角色面板觉醒新的元素系`, 'system');

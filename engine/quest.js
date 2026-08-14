@@ -193,7 +193,7 @@ const QuestSystem = {
             const expResult = Player.gainExp(rewards.exp);
             rewardMessages.push(`获得 ${rewards.exp} 经验`);
             if (expResult.levelUps.length > 0) {
-                rewardMessages.push(`🎉 升级了！当前等级 ${Player.level}，获得3点属性点`);
+                rewardMessages.push(`🎉 升级了！当前等级 ${Player.level}，获得属性点（可分配：${Player.attributePoints}）`);
             }
             if (expResult.newSkills.length > 0) {
                 expResult.newSkills.forEach(skillId => {
