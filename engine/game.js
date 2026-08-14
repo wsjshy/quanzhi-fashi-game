@@ -996,6 +996,22 @@ const Game = {
             <div style="font-size: 14px; color: #aaa; margin-bottom: 20px;">
                 选择要等待到的时段（消耗少量体力，有小概率触发随机事件）
             </div>
+            <!-- v0.9.3: 快速跳跃 -->
+            <div style="margin-bottom: 15px; padding: 12px; background: rgba(60, 40, 80, 0.4); border: 1px solid #664488; border-radius: 8px;">
+                <div style="font-size: 13px; color: #cc99ff; margin-bottom: 8px;">⏩ 快速跳跃</div>
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="Game.quickJumpToMorning()" style="
+                        flex: 1; padding: 10px; background: rgba(80, 50, 120, 0.6); border: 1px solid #8855aa; border-radius: 6px; color: #e0ccff; cursor: pointer; font-size: 13px;
+                    " onmouseover="this.style.borderColor='#aa77cc'" onmouseout="this.style.borderColor='#8855aa'">
+                        🌅 明天清晨
+                    </button>
+                    <button onclick="Game.quickJumpToNextClass()" style="
+                        flex: 1; padding: 10px; background: rgba(50, 80, 120, 0.6); border: 1px solid #4477aa; border-radius: 6px; color: #ccddff; cursor: pointer; font-size: 13px;
+                    " onmouseover="this.style.borderColor='#6699cc'" onmouseout="this.style.borderColor='#4477aa'">
+                        📚 下次上课
+                    </button>
+                </div>
+            </div>
             <div style="display: flex; flex-direction: column; gap: 10px;" id="wait-period-buttons">
                 ${periods.map(period => {
                     const isCurrent = period.id === currentPeriod;
@@ -1075,6 +1091,87 @@ const Game = {
                 });
             }
         });
+    },
+
+    // v0.9.3: 快速跳到明天清晨6点
+    quickJumpToMorning() {
+        // 关闭等待菜单
+        const waitDialog = document.querySelector('[style*="z-index: 1000"]');
+        if (waitDialog) waitDialog.remove();
+
+        // 计算到明天清晨6点的小时数
+        let hoursToWait;
+        if (Player.hour < 6) {
+            hoursToWait = 6 - Player.hour;
+        } else {
+            hoursToWait = 24 - Player.hour + 6;
+        }
+
+        // 消耗少量体力
+        const staminaCost = Math.max(1, Math.floor(hoursToWait * 0.3));
+        Player.useStamina(staminaCost);
+
+        // 推进时间
+        const events = TimeSystem.advanceTime(hoursToWait);
+
+        Player.save();
+        UI.renderMapScreen();
+
+        let msg = `⏩ 时间快进了 ${hoursToWait} 小时，现在是 ${TimeSystem.formatHour()}。\n消耗了 ${staminaCost} 点体力。`;
+        if (events && events.length > 0) {
+            msg += `\n\n期间发生了 ${events.length} 件事。`;
+        }
+        UI.showMessage(msg);
+
+        // 处理时间事件
+        if (events && events.length > 0) {
+            setTimeout(() => {
+                events.forEach(event => {
+                    if (event.type === 'scheduled_event' && event.event) {
+                        this.showEvent(event.event);
+                    }
+                });
+            }, 500);
+        }
+    },
+
+    // v0.9.3: 快速跳到下次上课时间（上午8点）
+    quickJumpToNextClass() {
+        // 关闭等待菜单
+        const waitDialog = document.querySelector('[style*="z-index: 1000"]');
+        if (waitDialog) waitDialog.remove();
+
+        // 计算到上午8点的小时数
+        let hoursToWait;
+        if (Player.hour < 8) {
+            hoursToWait = 8 - Player.hour;
+        } else {
+            hoursToWait = 24 - Player.hour + 8;
+        }
+
+        // 消耗少量体力
+        const staminaCost = Math.max(1, Math.floor(hoursToWait * 0.3));
+        Player.useStamina(staminaCost);
+
+        // 推进时间
+        const events = TimeSystem.advanceTime(hoursToWait);
+
+        Player.save();
+        UI.renderMapScreen();
+
+        let msg = `⏩ 时间快进了 ${hoursToWait} 小时，现在是 ${TimeSystem.formatHour()}（上课时间）。\n消耗了 ${staminaCost} 点体力。`;
+        UI.showMessage(msg);
+
+        // 处理时间事件
+        if (events && events.length > 0) {
+            setTimeout(() => {
+                events.forEach(event => {
+                    if (event.type === 'scheduled_event' && event.event) {
+                        this.showEvent(event.event);
+                    }
+                });
+            }, 500);
+        }
     },
     
     // 计算到目标时段需要多少小时

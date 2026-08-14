@@ -520,7 +520,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.9.2 · UI减负</div>
+                ">v0.9.3 · 智能推荐</div>
             </div>
         `;
 
@@ -1106,6 +1106,28 @@ const UI = {
                     
                     <!-- 左侧：地点行动 -->
                     <div class="mobile-action-panel" style="flex: 2; padding: 30px; overflow-y: auto;">
+                        <!-- v0.9.3: 地点妖魔信息 -->
+                        ${(() => {
+                            if (typeof MapSystem.getLocationEnemies !== 'function') return '';
+                            const enemies = MapSystem.getLocationEnemies(location?.id);
+                            if (!enemies || enemies.length === 0) return '';
+                            const displayEnemies = enemies.slice(0, 8);
+                            return `
+                                <div style="margin-bottom: 20px; padding: 15px; background: rgba(60, 20, 20, 0.4); border: 1px solid #884444; border-radius: 10px;">
+                                    <div style="color: #ff8866; font-size: 15px; margin-bottom: 10px; font-weight: bold;">
+                                        ⚔️ 可能遇到的妖魔（${enemies.length}种）
+                                    </div>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                        ${displayEnemies.map(e => `
+                                            <span style="font-size: 12px; color: #ffccaa; background: rgba(80, 30, 30, 0.6); padding: 4px 10px; border-radius: 6px; border: 1px solid #663333;" title="${e.name} Lv.${e.level}">
+                                                ${e.icon} ${e.name} <span style="color: #ffaa44;">Lv.${e.level}</span>
+                                            </span>
+                                        `).join('')}
+                                        ${enemies.length > 8 ? `<span style="font-size: 12px; color: #888;">...还有${enemies.length - 8}种</span>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        })()}
                         <h3 style="color: #ffd700; margin-bottom: 20px; font-size: 22px;">📍 可执行的行动</h3>
                         <div style="display: flex; flex-direction: column; gap: 12px;">
                             ${(location?.actions || []).map(action => {
@@ -1114,6 +1136,8 @@ const UI = {
                                 let actionDesc = action.description;
                                 let expReward = action.effects?.exp || 0;
                                 let isSkippingClass = false;
+                                let isRecommended = false;
+                                let recommendReason = '';
                                 
                                 if (action.isClassAction) {
                                     const currentClass = TimeSystem.getCurrentClass(location);
@@ -1122,6 +1146,9 @@ const UI = {
                                         actionName = `上课：${currentClass.name}`;
                                         actionDesc = `${teacher?.name || '未知老师'}主讲，获得${currentClass.exp}经验${currentClass.injuryChance ? '，有受伤风险' : ''}`;
                                         expReward = currentClass.exp;
+                                        // v0.9.3: 有课时推荐上课
+                                        isRecommended = true;
+                                        recommendReason = '📚 当前有课';
                                     } else {
                                         actionName = '自习';
                                         actionDesc = '当前没有课程，自由自习获得少量经验';
@@ -1134,20 +1161,41 @@ const UI = {
                                         isSkippingClass = true;
                                     }
                                 }
+
+                                // v0.9.3: 事件行动推荐
+                                if (action.eventChance && action.eventChance > 0) {
+                                    const availableEvents = (action.events || []).filter(e => {
+                                        if (typeof WorldState !== 'undefined' && WorldState.checkConditions) {
+                                            return WorldState.checkConditions({eventId: e});
+                                        }
+                                        return true;
+                                    });
+                                    if (availableEvents.length > 0 && !isRecommended) {
+                                        isRecommended = true;
+                                        recommendReason = '📜 有事件可触发';
+                                    }
+                                }
+
+                                // 边框颜色：推荐>逃课>普通
+                                let borderColor = isRecommended ? '#ffcc44' : (isSkippingClass ? '#cc6644' : '#444477');
+                                let glowEffect = isRecommended ? 'box-shadow: 0 0 12px rgba(255, 204, 68, 0.4);' : '';
+                                
                                 return `
                                 <button class="action-button" onclick="Game.performAction('${action.id}')" style="
                                     padding: 18px 25px;
                                     background: linear-gradient(135deg, rgba(40, 40, 80, 0.8), rgba(60, 60, 120, 0.8));
-                                    border: 2px solid ${isSkippingClass ? '#cc6644' : '#444477'};
+                                    border: 2px solid ${borderColor};
                                     border-radius: 10px;
                                     color: #e0e0ff;
                                     cursor: pointer;
                                     text-align: left;
                                     transition: all 0.3s;
                                     font-size: 16px;
-                                " onmouseover="this.style.borderColor='${isSkippingClass ? '#ff8866' : '#7777bb'}'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='${isSkippingClass ? '#cc6644' : '#444477'}'; this.style.transform='translateX(0)'">
+                                    ${glowEffect}
+                                " onmouseover="this.style.borderColor='${isRecommended ? '#ffee88' : (isSkippingClass ? '#ff8866' : '#7777bb')}'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='${borderColor}'; this.style.transform='translateX(0)'">
                                     <div style="font-size: 18px; margin-bottom: 5px;">
                                         ${action.icon || '🔹'} ${actionName}
+                                        ${isRecommended ? `<span style="font-size: 12px; color: #ffcc44; float: right; background: rgba(100, 80, 20, 0.5); padding: 2px 8px; border-radius: 8px;">${recommendReason}</span>` : ''}
                                         ${isSkippingClass ? '<span style="color: #ff6644; font-size: 13px; margin-left: 8px;">⚠️ 逃课</span>' : ''}
                                         <span style="font-size: 12px; color: #888; float: right; display: flex; gap: 10px; align-items: center;">
                                             <span style="color: #aaddff;" title="时间消耗">⏱️ ${action.timeCost}h</span>

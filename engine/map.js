@@ -109,6 +109,35 @@ const MapSystem = {
     },
 
     /**
+     * v0.9.3: 获取地点可能遇到的妖魔列表
+     * 返回妖魔的详细信息（名称、等级、图标）
+     */
+    getLocationEnemies(locId) {
+        const loc = DataManager.getLocation(locId);
+        if (!loc || !loc.enemies || loc.enemies.length === 0) {
+            return [];
+        }
+
+        const enemies = [];
+        for (const enemyId of loc.enemies) {
+            const enemy = DataManager.getEnemy(enemyId);
+            if (enemy) {
+                enemies.push({
+                    id: enemyId,
+                    name: enemy.name,
+                    level: enemy.level || 1,
+                    icon: enemy.icon || '👹',
+                    tier: enemy.tier || 'normal'
+                });
+            }
+        }
+
+        // 按等级排序
+        enemies.sort((a, b) => a.level - b.level);
+        return enemies;
+    },
+
+    /**
      * 获取当前地点
      */
     getCurrentLocation() {
