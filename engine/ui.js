@@ -603,7 +603,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.13.0 · 隐藏地点</div>
+                ">v0.14.0 · 强化优化</div>
             </div>
         `;
 
@@ -3372,15 +3372,33 @@ const UI = {
                                             ">卸下</div>
                                             <div onclick="Game.enhanceEquipment('${slot}')" style="
                                                 padding: 5px 12px;
-                                                background: ${enhanceLevel >= 10 ? '#444' : '#445533'};
-                                                border: 1px solid ${enhanceLevel >= 10 ? '#666' : '#667755'};
+                                                background: ${enhanceLevel >= 10 ? '#444' : (Player.enhanceFailStreak?.[slot] >= 3 ? 'linear-gradient(135deg, #9966ff, #cc66ff)' : '#445533')};
+                                                border: 1px solid ${enhanceLevel >= 10 ? '#666' : (Player.enhanceFailStreak?.[slot] >= 3 ? '#aa66ff' : '#667755')};
                                                 border-radius: 5px;
-                                                color: ${enhanceLevel >= 10 ? '#888' : '#ddffaa'};
+                                                color: ${enhanceLevel >= 10 ? '#888' : (Player.enhanceFailStreak?.[slot] >= 3 ? '#fff' : '#ddffaa')};
                                                 cursor: ${enhanceLevel >= 10 ? 'not-allowed' : 'pointer'};
                                                 font-size: 12px;
                                                 display: inline-block;
-                                            ">${enhanceLevel >= 10 ? '已满级' : `强化(${enhanceCost}金/${enhanceRate}%)`}</div>
+                                                ${Player.enhanceFailStreak?.[slot] >= 3 ? 'animation: pulse 1.5s infinite;' : ''}
+                                            ">${enhanceLevel >= 10 ? '已满级' : (Player.enhanceFailStreak?.[slot] >= 3 ? `✨ 保底强化(${enhanceCost}金/100%)` : `强化(${enhanceCost}金/${enhanceRate}%)`)}</div>
                                         </div>
+                                        ${enhanceLevel < 10 && Player.enhanceFailStreak?.[slot] > 0 ? `
+                                            <div style="font-size: 11px; color: ${Player.enhanceFailStreak[slot] >= 3 ? '#cc66ff' : '#ff9966'}; margin-top: 6px;">
+                                                🔄 已连续失败 ${Player.enhanceFailStreak[slot]} 次${Player.enhanceFailStreak[slot] >= 3 ? '，下次必定成功！' : `，再失败 ${3 - Player.enhanceFailStreak[slot]} 次触发保底`}
+                                            </div>
+                                        ` : ''}
+                                        ${enhanceLevel < 10 ? `
+                                            <div style="font-size: 11px; color: #88ccaa; margin-top: 4px;">
+                                                ⬆️ 强化到+${enhanceLevel + 1}后：
+                                                ${Object.entries(item.equipStats || {}).map(([k, v]) => {
+                                                    const statNames = { attack: '攻击', defense: '防御', speed: '速度', maxHp: '生命', maxMp: '魔法', critRate: '暴击', hitRate: '命中' };
+                                                    const currentVal = Math.floor(v * (1 + enhanceLevel * 0.1));
+                                                    const nextVal = Math.floor(v * (1 + (enhanceLevel + 1) * 0.1));
+                                                    const diff = nextVal - currentVal;
+                                                    return `${statNames[k] || k}+${diff}`;
+                                                }).join('、')}
+                                            </div>
+                                        ` : ''}
                                     ` : `
                                         <div style="font-size: 14px; color: #667788;">空</div>
                                     `}

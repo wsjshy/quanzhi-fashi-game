@@ -4,7 +4,7 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.13.0';
+const GAME_VERSION = '0.14.0';
 const SAVE_VERSION = '0.8.7';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
@@ -196,6 +196,8 @@ const Player = {
         this.gold = 50;
         this.equipment = { weapon: null, armor: null, accessory: null };
         this.enhanceLevels = { weapon: 0, armor: 0, accessory: 0 };
+        this.enhanceFailStreak = { weapon: 0, armor: 0, accessory: 0 };  // v0.14.0: 连续失败计数，用于保底机制
+        this.enhanceHistory = [];  // v0.14.0: 强化记录，最近10次
         this.activeQuests = [];
         this.completedQuests = [];
         this.currentLocation = 'tianlan_school';
@@ -324,7 +326,8 @@ const Player = {
 
     /**
      * 强化装备
-     * 返回 { success: boolean, message: string, newLevel: number }
+     * v0.14.0: 增加保底机制（连续失败3次后下次必定成功）和强化记录
+     * 返回 { success: boolean, message: string, newLevel: number, isGuaranteed: boolean }
      */
     enhanceEquipment(slot) {
         const itemId = this.equipment[slot];
@@ -343,30 +346,68 @@ const Player = {
         }
 
         this.gold -= cost;
+        
+        // v0.14.0: 保底机制 - 连续失败3次后下次必定成功
+        const failStreak = this.enhanceFailStreak[slot] || 0;
+        const isGuaranteed = failStreak >= 3;
         const successRate = this.getEnhanceSuccessRate(slot);
-        const success = Math.random() < successRate;
+        const success = isGuaranteed || Math.random() < successRate;
 
         if (success) {
             this.enhanceLevels[slot] = currentLevel + 1;
+            // v0.14.0: 成功后重置连续失败计数
+            this.enhanceFailStreak[slot] = 0;
+            // v0.14.0: 记录强化结果
+            this.enhanceHistory.unshift({
+                slot: slot,
+                success: true,
+                fromLevel: currentLevel,
+                toLevel: currentLevel + 1,
+                cost: cost,
+                isGuaranteed: isGuaranteed,
+                time: Date.now()
+            });
+            if (this.enhanceHistory.length > 10) this.enhanceHistory.pop();
+            
+            const msg = isGuaranteed 
+                ? `🎉 保底触发！${this.getSlotName(slot)}强化到+${currentLevel + 1}！` 
+                : `强化成功！${this.getSlotName(slot)}强化到+${currentLevel + 1}`;
             return {
                 success: true,
-                message: `强化成功！${this.getSlotName(slot)}强化到+${currentLevel + 1}`,
-                newLevel: currentLevel + 1
+                message: msg,
+                newLevel: currentLevel + 1,
+                isGuaranteed: isGuaranteed
             };
         } else {
+            // v0.14.0: 失败后增加连续失败计数
+            this.enhanceFailStreak[slot] = failStreak + 1;
             // 失败降级（0级不降级）
+            let newLevel = currentLevel;
             if (currentLevel > 0) {
                 this.enhanceLevels[slot] = currentLevel - 1;
-                return {
-                    success: false,
-                    message: `强化失败！${this.getSlotName(slot)}降级到+${currentLevel - 1}`,
-                    newLevel: currentLevel - 1
-                };
+                newLevel = currentLevel - 1;
             }
+            // v0.14.0: 记录强化结果
+            this.enhanceHistory.unshift({
+                slot: slot,
+                success: false,
+                fromLevel: currentLevel,
+                toLevel: newLevel,
+                cost: cost,
+                isGuaranteed: false,
+                time: Date.now()
+            });
+            if (this.enhanceHistory.length > 10) this.enhanceHistory.pop();
+            
+            const nextGuaranteed = (failStreak + 1) >= 3;
+            const msg = currentLevel > 0 
+                ? `强化失败！${this.getSlotName(slot)}降级到+${newLevel}${nextGuaranteed ? '（下次必定成功！）' : ''}`
+                : `强化失败！装备等级未变化${nextGuaranteed ? '（下次必定成功！）' : ''}`;
             return {
                 success: false,
-                message: '强化失败！装备等级未变化',
-                newLevel: 0
+                message: msg,
+                newLevel: newLevel,
+                isGuaranteed: false
             };
         }
     },
@@ -1577,6 +1618,8 @@ const Player = {
             gold: this.gold,
             equipment: this.equipment,
             enhanceLevels: this.enhanceLevels,
+            enhanceFailStreak: this.enhanceFailStreak || { weapon: 0, armor: 0, accessory: 0 },
+            enhanceHistory: this.enhanceHistory || [],
             activeQuests: this.activeQuests,
             completedQuests: this.completedQuests,
             currentLocation: this.currentLocation,
@@ -1676,6 +1719,8 @@ const Player = {
             this.gold = data.gold ?? 50;
             this.equipment = data.equipment ?? { weapon: null, armor: null, accessory: null };
             this.enhanceLevels = data.enhanceLevels ?? { weapon: 0, armor: 0, accessory: 0 };
+            this.enhanceFailStreak = data.enhanceFailStreak ?? { weapon: 0, armor: 0, accessory: 0 };
+            this.enhanceHistory = data.enhanceHistory || [];
             this.activeQuests = data.activeQuests ?? [];
             this.completedQuests = data.completedQuests ?? [];
             this.currentLocation = data.currentLocation ?? 'tianlan_school';
