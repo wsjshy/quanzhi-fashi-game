@@ -1306,7 +1306,8 @@ const BattleSystem = {
                 this.addStatusEffect(this.enemy, {
                     type: 'curse', name: '诅咒', duration: te.curseDuration || 3,
                     atkMod: -(te.curseAtkDown || 0.15), defMod: -(te.curseDefDown || 0.15),
-                    critDown: te.curseCritDown || 0, dodgeDown: te.curseDodgeDown || 0
+                    critDown: te.curseCritDown || 0, dodgeDown: te.curseDodgeDown || 0,
+                    unpurgeable: te.curseUnpurgeable || false
                 });
                 this.addLog(`💀 ${this.enemy.name} 被诅咒！`, 'element');
             }
@@ -1519,6 +1520,42 @@ const BattleSystem = {
                     this.applyDamage(this.enemy, { amount: thunderDmg, element: 'thunder', isCrit: false, isMiss: false }, this.player);
                     this.addLog(`⚡ 天雷引！一道雷电劈下，造成 ${thunderDmg} 点伤害！`, 'element');
                     this.showDamageNumber('enemy', thunderDmg, 'normal');
+                }
+            }
+            // 天赋：暴击击退（critKnockback：暴击时概率眩晕敌人）
+            if (this.player.talentEffects && this.player.talentEffects.critKnockback && !damage.isMiss) {
+                if (Math.random() < this.player.talentEffects.critKnockback) {
+                    const alreadyStunned = this.enemy.statusEffects.some(e => e.type === 'stun');
+                    if (!alreadyStunned) {
+                        this.addStatusEffect(this.enemy, { type: 'stun', name: '击退', duration: 1 });
+                        this.addLog(`💥 暴击击退！${this.enemy.name} 被震退！`, 'element');
+                    }
+                }
+            }
+            // 天赋：攻击爆炸（explosionChance：攻击时概率爆炸造成额外伤害）
+            if (this.player.talentEffects && this.player.talentEffects.explosionChance && !damage.isMiss) {
+                if (Math.random() < this.player.talentEffects.explosionChance) {
+                    const explDmg = Math.floor(damage.amount * (this.player.talentEffects.explosionDamage || 0.5));
+                    this.applyDamage(this.enemy, { amount: explDmg, element: 'fire', isCrit: this.player.talentEffects.explosionCritGuaranteed, isMiss: false }, this.player);
+                    this.addLog(`💥 爆炸！额外造成 ${explDmg} 点伤害！`, 'element');
+                    this.showDamageNumber('enemy', explDmg, 'magic');
+                }
+            }
+            // 天赋：闪电连锁（chainChance：攻击时概率连锁额外雷电伤害）
+            if (this.player.talentEffects && this.player.talentEffects.chainChance && !damage.isMiss) {
+                if (Math.random() < this.player.talentEffects.chainChance) {
+                    const chainCount = this.player.talentEffects.chainTargets || 1;
+                    const chainRatio = this.player.talentEffects.chainDamageRatio || 0.5;
+                    let chainDmg = Math.floor(damage.amount * chainRatio);
+                    for (let i = 0; i < chainCount; i++) {
+                        // 连锁伤害递减（除非chainNoDecay）
+                        if (!this.player.talentEffects.chainNoDecay && i > 0) {
+                            chainDmg = Math.floor(chainDmg * 0.7);
+                        }
+                        this.applyDamage(this.enemy, { amount: chainDmg, element: 'thunder', isCrit: false, isMiss: false }, this.player);
+                        this.addLog(`⚡ 连锁闪电！造成 ${chainDmg} 点伤害！`, 'element');
+                        this.showDamageNumber('enemy', chainDmg, 'magic');
+                    }
                 }
             }
             // 天赋：暴击得护盾
@@ -3662,6 +3699,19 @@ const BattleSystem = {
                 if (hpPercent < threshold) {
                     damage *= (1 + enrage);
                 }
+            }
+            // 低HP伤害递增（lowHpDamageScaling：HP越低伤害越高，每损失1%HP+X%伤害）
+            if (te.lowHpDamageScaling) {
+                const hpPercent = attacker.hp / attacker.maxHp;
+                const missing = 1 - hpPercent;
+                damage *= (1 + missing * te.lowHpDamageScaling);
+            }
+            // 对有debuff的敌人伤害提升（debuffedDamageBonus）
+            if (te.debuffedDamageBonus && target && target.statusEffects) {
+                const hasDebuff = target.statusEffects.some(e =>
+                    ['burn', 'freeze', 'frozen', 'stun', 'paralyze', 'slow', 'curse', 'poison', 'bleed', 'blind', 'fear', 'shock', 'electrified', 'wet', 'mud'].includes(e.type)
+                );
+                if (hasDebuff) damage *= (1 + te.debuffedDamageBonus);
             }
             // 潮汐涨潮伤害加成
             if (attacker.tideDamageBonus) {
