@@ -1417,6 +1417,27 @@ const BattleSystem = {
                     this.addLog(`🌪️ 风魔满层！下次攻击暴击和速度达到巅峰！`, 'buff');
                 }
             }
+            // 天赋：飓风（hurricaneChance）：30%卷起敌人1回合，受伤+20%
+            if (te.hurricaneChance && Math.random() < te.hurricaneChance) {
+                this.addStatusEffect(this.enemy, {
+                    type: 'stun', name: '飓风卷起', duration: te.hurricaneDuration || 1,
+                    damageTaken: te.hurricaneVulnerable || 0.2
+                });
+                this.addLog(`🌪️ 飓风！${this.enemy.name} 被卷起！`, 'element');
+            }
+            // 天赋：滋润（regenChance）：50%概率获得5回合5%HP回复
+            if (te.regenChance && Math.random() < te.regenChance) {
+                const existingRegen = this.player.statusEffects.find(e => e.type === 'regen');
+                if (existingRegen) {
+                    existingRegen.duration = te.regenDuration || 5;
+                } else {
+                    this.addStatusEffect(this.player, {
+                        type: 'regen', name: '滋润', duration: te.regenDuration || 5,
+                        regenAmount: te.regenAmount || 0.05
+                    });
+                }
+                this.addLog(`💧 滋润！5回合内每回合恢复HP！`, 'heal');
+            }
         }
         
         // 普通攻击恢复少量MP（2%最大MP）
@@ -2050,6 +2071,31 @@ const BattleSystem = {
                 if (cleansable.length > 0 && Math.random() < this.player.talentEffects.purifyOnHealChance) {
                     healTarget.statusEffects = healTarget.statusEffects.filter(e => !cleansable.includes(e));
                     this.addLog(`✨ 治疗净化了 ${cleansable.length} 个负面状态！`, 'heal');
+                }
+            }
+            // 天赋：全净化（purifyAll）：治疗时净化所有负面
+            if (isPlayer && this.player.talentEffects && this.player.talentEffects.purifyAll && healTarget === this.player) {
+                const cleansable = healTarget.statusEffects.filter(e =>
+                    ['burn', 'freeze', 'paralyze', 'stun', 'slow', 'poison', 'bleed', 'curse', 'blind', 'fear'].includes(e.type)
+                );
+                if (cleansable.length > 0) {
+                    healTarget.statusEffects = healTarget.statusEffects.filter(e => !cleansable.includes(e));
+                    this.addLog(`✨ 圣光净化！清除所有 ${cleansable.length} 个负面状态！`, 'heal');
+                }
+            }
+            // 天赋：祝福（blessAtkBonus/blessDefBonus）：治疗时获得攻防加成
+            if (isPlayer && this.player.talentEffects && healTarget === this.player) {
+                if (this.player.talentEffects.blessAtkBonus) {
+                    this.addStatusEffect(this.player, {
+                        type: 'attack_up', name: '祝福攻击', duration: this.player.talentEffects.blessDuration || 2,
+                        atkMod: this.player.talentEffects.blessAtkBonus
+                    });
+                }
+                if (this.player.talentEffects.blessDefBonus) {
+                    this.addStatusEffect(this.player, {
+                        type: 'defense_up', name: '祝福防御', duration: this.player.talentEffects.blessDuration || 2,
+                        defMod: this.player.talentEffects.blessDefBonus
+                    });
                 }
             }
 
@@ -3322,6 +3368,14 @@ const BattleSystem = {
                 const mpRegen = Math.floor(this.player.maxMp * te.mpRegen);
                 this.player.mp = Math.min(this.player.maxMp, this.player.mp + mpRegen);
             }
+            // CD减少（cooldownReduction）：每回合额外减少技能CD
+            if (te.cooldownReduction && this.player.skillCooldowns) {
+                for (const sid in this.player.skillCooldowns) {
+                    if (this.player.skillCooldowns[sid] > 0) {
+                        this.player.skillCooldowns[sid] = Math.max(0, this.player.skillCooldowns[sid] - 1);
+                    }
+                }
+            }
             // 大地祝福：防御叠加（defenseStack/defenseStackMax）
             if (te.defenseStack) {
                 if (!this.player._defenseStacks) this.player._defenseStacks = 0;
@@ -3348,6 +3402,23 @@ const BattleSystem = {
                 if (te.earthquakeSlow) {
                     this.addStatusEffect(this.enemy, { type: 'slow', name: '地震减速', duration: 2, speedMod: -te.earthquakeSlow });
                 }
+            }
+            // 海啸（tsunamiChance）：30%概率60%攻击水伤+攻击-20%
+            if (te.tsunamiChance && Math.random() < te.tsunamiChance) {
+                const tsDmg = Math.floor(this.player.attack * (te.tsunamiDamage || 0.6));
+                this.applyDamage(this.enemy, { amount: tsDmg, element: 'water', isCrit: false, isMiss: false }, this.player);
+                this.addLog(`🌊 海啸！对 ${this.enemy.name} 造成 ${tsDmg} 点水系伤害！`, 'element');
+                if (te.tsunamiAtkDown) {
+                    this.addStatusEffect(this.enemy, { type: 'attack_down', name: '海啸削弱', duration: 2, atkMod: -te.tsunamiAtkDown });
+                }
+            }
+            // 滋润持续回复（regen状态）
+            const regen = this.player.statusEffects.find(e => e.type === 'regen');
+            if (regen) {
+                const regenAmount = Math.floor(this.player.maxHp * (regen.regenAmount || 0.05));
+                this.player.hp = Math.min(this.player.maxHp, this.player.hp + regenAmount);
+                this.addLog(`💧 滋润恢复 ${regenAmount} 点HP！`, 'heal');
+                this.showDamageNumber('player', regenAmount, 'heal');
             }
 
             // 潮汐涨潮：每回合伤害和治疗递增（tideDamageStack/tideDamageMax/tideHealStack/tideHealMax）
@@ -3626,6 +3697,9 @@ const BattleSystem = {
                 const isParalyzed = target.statusEffects.some(e => e.type === 'paralyze');
                 if (isParalyzed) damage *= (1 + attacker.talentEffects.paralyzeDamage);
             }
+            // 飓风卷起受伤加成
+            const hurricane = target.statusEffects.find(e => e.type === 'stun' && e.damageTaken);
+            if (hurricane) damage *= (1 + hurricane.damageTaken);
             
             // 火 + 水 = 蒸发
             if (element === 'fire' && hasWet) {
