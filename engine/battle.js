@@ -792,6 +792,12 @@ const BattleSystem = {
                 this.player.stealthActive = true;
                 this.addLog(`🌑 进入潜行状态！首次攻击伤害大幅提升！`, 'buff');
             }
+            // 常驻护盾（permanentShield）：不破之盾
+            if (te.permanentShield) {
+                const shieldAmount = Math.floor(this.player.maxHp * (te.shieldRatio || 0.15));
+                this.addStatusEffect(this.player, { type: 'shield', name: '不破之盾', value: shieldAmount, duration: 999 });
+                this.addLog(`🛡️ 不破之盾生效！常驻 ${shieldAmount} 点护盾！`, 'buff');
+            }
             // 绝对零度领域：开场冻结
             if (te.absoluteZeroField && this.enemy.hp > 0) {
                 this.addStatusEffect(this.enemy, {
@@ -1204,6 +1210,14 @@ const BattleSystem = {
                     type: 'stun', name: '眩晕', duration: 1
                 }], true);
                 this.addLog(`💫 ${this.enemy.name} 被眩晕了！`, 'element');
+                // 延长眩晕（stunExtendChance）
+                if (te.stunExtendChance && Math.random() < te.stunExtendChance) {
+                    const stun = this.enemy.statusEffects.find(e => e.type === 'stun');
+                    if (stun) {
+                        stun.duration += 1;
+                        this.addLog(`💫 眩晕延长！`, 'element');
+                    }
+                }
             }
             // 减速
             if (te.slowChance && Math.random() < te.slowChance) {
@@ -1424,13 +1438,16 @@ const BattleSystem = {
                     }
                 }
             }
-            // 天赋：雷鸣 - 暴击时概率麻痹敌人
+            // 天赋：雷鸣 - 暴击时概率麻痹敌人（有CD）
             if (this.player.talentEffects && this.player.talentEffects.thunderRoar) {
-                if (Math.random() < this.player.talentEffects.thunderRoar) {
-                    this.addStatusEffect(this.enemy, {
-                        type: 'paralyze', name: '雷鸣麻痹', duration: 1
-                    });
-                    this.addLog(`⚡ 雷鸣！${this.enemy.name} 被麻痹！`, 'element');
+                if (!this._thunderRoarCd || this._thunderRoarCd <= 0) {
+                    if (Math.random() < this.player.talentEffects.thunderRoar) {
+                        this.addStatusEffect(this.enemy, {
+                            type: 'paralyze', name: '雷鸣麻痹', duration: this.player.talentEffects.thunderRoarParalyze || 1
+                        });
+                        this.addLog(`⚡ 雷鸣！${this.enemy.name} 被麻痹！`, 'element');
+                        this._thunderRoarCd = this.player.talentEffects.thunderRoarCooldown || 3;
+                    }
                 }
             }
             // 天赋：暴击必麻痹（天雷Lv7雷霆之怒）
@@ -3274,6 +3291,44 @@ const BattleSystem = {
                     this.addLog(`✨ 治疗光环恢复 ${auraHeal} 点生命！`, 'heal');
                 }
             }
+            // 雷鸣CD减少
+            if (this._thunderRoarCd > 0) this._thunderRoarCd--;
+
+            // 大地祝福：每回合HP回复（hpRegen）
+            if (te.hpRegen) {
+                const regen = Math.floor(this.player.maxHp * te.hpRegen);
+                this.player.hp = Math.min(this.player.maxHp, this.player.hp + regen);
+                this.addLog(`💚 大地祝福恢复 ${regen} 点HP！`, 'heal');
+                this.showDamageNumber('player', regen, 'heal');
+            }
+            // 大地祝福：防御叠加（defenseStack/defenseStackMax）
+            if (te.defenseStack) {
+                if (!this.player._defenseStacks) this.player._defenseStacks = 0;
+                this.player._defenseStacks = Math.min(te.defenseStackMax / te.defenseStack, this.player._defenseStacks + 1);
+                const defBonus = this.player._defenseStacks * te.defenseStack;
+                this.player._defenseStackBonus = defBonus;
+                if (this.player._defenseStacks >= te.defenseStackMax / te.defenseStack) {
+                    this.addLog(`🪨 大地祝福叠满！防御+${Math.floor(defBonus*100)}%！`, 'buff');
+                }
+            }
+            // 护盾回复（shieldRegen）
+            if (te.shieldRegen) {
+                const shield = this.player.statusEffects.find(e => e.type === 'shield');
+                if (shield) {
+                    const regen = Math.floor(this.player.maxHp * te.shieldRegen);
+                    shield.value = Math.min(Math.floor(this.player.maxHp * 0.5), shield.value + regen);
+                }
+            }
+            // 地震（earthquakeChance）：30%概率对敌人造成伤害+减速
+            if (te.earthquakeChance && Math.random() < te.earthquakeChance) {
+                const eqDmg = Math.floor(this.player.attack * (te.earthquakeDamage || 0.2));
+                this.applyDamage(this.enemy, { amount: eqDmg, element: 'earth', isCrit: false, isMiss: false }, this.player);
+                this.addLog(`🌍 地震！对 ${this.enemy.name} 造成 ${eqDmg} 点土系伤害！`, 'element');
+                if (te.earthquakeSlow) {
+                    this.addStatusEffect(this.enemy, { type: 'slow', name: '地震减速', duration: 2, speedMod: -te.earthquakeSlow });
+                }
+            }
+
             // 潮汐涨潮：每回合伤害和治疗递增（tideDamageStack/tideDamageMax/tideHealStack/tideHealMax）
             if (te.tideDamageStack) {
                 const maxStacks = Math.floor((te.tideDamageMax || 0.3) / te.tideDamageStack);
@@ -3372,7 +3427,13 @@ const BattleSystem = {
         if (target) {
             const mods = this.getStatusModifiers(target);
             evasion = mods.evasionMod;
-            
+
+            // 麻痹状态不可闪避（paralyzeNoDodge）
+            const isParalyzed = target.statusEffects && target.statusEffects.some(e => e.type === 'paralyze');
+            if (isParalyzed && attacker && attacker.talentEffects && attacker.talentEffects.paralyzeNoDodge) {
+                evasion = 0;
+            }
+
             // 下次必定闪避
             if (mods.nextDodgeGuaranteed) {
                 result.isMiss = true;
@@ -3401,6 +3462,13 @@ const BattleSystem = {
         if (target) {
             const targetMods = this.getStatusModifiers(target);
             defense = Math.max(0, defense + targetMods.defenseMod);
+            // 大地祝福防御叠加
+            if (target._defenseStackBonus) defense *= (1 + target._defenseStackBonus);
+            // 护盾时防御加成（shieldDefenseBonus）
+            if (target === this.player && target.talentEffects && target.talentEffects.shieldDefenseBonus) {
+                const hasShield = target.statusEffects.some(e => e.type === 'shield');
+                if (hasShield) defense *= (1 + target.talentEffects.shieldDefenseBonus);
+            }
         }
 
         // 基础伤害（防御系数0.5，让防御有意义但不导致完全免伤）
@@ -3502,6 +3570,12 @@ const BattleSystem = {
             // 感电状态：雷伤+30%（或天赋指定值）
             if (element === 'thunder' && hasShock) {
                 damage *= (1 + (hasShock.thunderDamageBonus || 0.3));
+            }
+
+            // 麻痹伤害加成（paralyzeDamage：麻痹时受伤+8%）
+            if (attacker && attacker.talentEffects && attacker.talentEffects.paralyzeDamage) {
+                const isParalyzed = target.statusEffects.some(e => e.type === 'paralyze');
+                if (isParalyzed) damage *= (1 + attacker.talentEffects.paralyzeDamage);
             }
             
             // 火 + 水 = 蒸发
@@ -3651,8 +3725,8 @@ const BattleSystem = {
         let chargeCritDamageBonus = 0;
         if (attacker && attacker.chargeStack && attacker.talentEffects && attacker.talentEffects.chargeMax) {
             if (attacker.chargeStack >= attacker.talentEffects.chargeMax) {
-                chargeCritBonus = attacker.talentEffects.fullChargeCrit || 0.3;
-                chargeCritDamageBonus = attacker.talentEffects.fullChargeDamage || 0.5;
+                chargeCritBonus = attacker.talentEffects.fullChargeCrit === true ? 0.3 : (attacker.talentEffects.fullChargeCrit || 0.3);
+                chargeCritDamageBonus = attacker.talentEffects.fullChargeDamage === true ? 1.0 : (attacker.talentEffects.fullChargeDamage || 0.5);
             }
         }
 
@@ -3663,7 +3737,8 @@ const BattleSystem = {
         }
 
         // 暴击判定
-        if (frozenCritGuaranteed || Math.random() < critRate + chargeCritBonus + windDemonCritBonus) {
+        const targetHasCritImmunity = target && target.talentEffects && target.talentEffects.critImmunity;
+        if (!targetHasCritImmunity && (frozenCritGuaranteed || Math.random() < critRate + chargeCritBonus + windDemonCritBonus)) {
             result.isCrit = true;
             let critMult = 1.5 + Math.random() * 0.5; // 1.5-2.0倍暴击
             // 天赋：暴击伤害加成
@@ -3793,9 +3868,21 @@ const BattleSystem = {
                 if (absorbed > 0) {
                     const targetName = target === this.player ? '你' : this.enemy.name;
                     this.addLog(`${targetName} 的护盾吸收了 ${absorbed} 点伤害`, 'buff');
+                    // 护盾反射（shieldReflect）
+                    if (target === this.player && te.shieldReflect && attacker && attacker.hp > 0) {
+                        const reflectDmg = Math.floor(absorbed * te.shieldReflect);
+                        attacker.hp = Math.max(0, attacker.hp - reflectDmg);
+                        this.addLog(`🔮 护盾反射 ${reflectDmg} 点伤害！`, 'counter');
+                    }
                 }
                 if (shield.value <= 0) {
                     target.statusEffects = target.statusEffects.filter(e => e.type !== 'shield');
+                    // 护盾破碎反伤（shieldBreakDamage）
+                    if (target === this.player && te.shieldBreakDamage && attacker && attacker.hp > 0) {
+                        const breakDmg = Math.floor(this.player.maxHp * te.shieldBreakDamage * 0.1);
+                        attacker.hp = Math.max(0, attacker.hp - breakDmg);
+                        this.addLog(`💥 护盾破碎！反弹 ${breakDmg} 点伤害！`, 'counter');
+                    }
                 }
             }
         }
