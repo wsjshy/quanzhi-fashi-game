@@ -603,7 +603,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.12.0 · 召唤兽优化</div>
+                ">v0.13.0 · 隐藏地点</div>
             </div>
         `;
 
@@ -1557,9 +1557,17 @@ const UI = {
                                         transition: all 0.3s;
                                         font-size: 16px;
                                     " ${unlocked ? 'onmouseover="this.style.borderColor=\'#9977cc\'" onmouseout="this.style.borderColor=\'#7755aa\'"' : ''}>
-                                        ${unlocked ? '🚪' : '🔒'} ${loc?.name || locId}
-                                        ${dangerInfo}
-                                        <span style="font-size: 13px; color: #888; float: right;">旅行 0.5小时</span>
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span>${unlocked ? '🚪' : '🔒'} ${loc?.name || locId}</span>
+                                            ${unlocked ? dangerInfo : ''}
+                                            ${unlocked ? '<span style="font-size: 13px; color: #888;">旅行 0.5小时</span>' : ''}
+                                        </div>
+                                        ${!unlocked && loc?.unlockCondition ? `
+                                            <div style="font-size: 12px; color: #ff9966; margin-top: 6px; padding-top: 6px; border-top: 1px solid #444;">
+                                                🔑 解锁条件：${loc.unlockCondition.hint || '条件未知'}
+                                                ${loc.unlockCondition.minLevel ? `<span style="color: ${Player.level >= loc.unlockCondition.minLevel ? '#66ff66' : '#ff6666'};"> (等级 ${Player.level}/${loc.unlockCondition.minLevel}${Player.level >= loc.unlockCondition.minLevel ? ' ✓' : ''})</span>` : ''}
+                                            </div>
+                                        ` : ''}
                                     </button>
                                 `;
                             }).join('')}

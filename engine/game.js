@@ -310,6 +310,9 @@ const Game = {
         // 保存游戏
         Player.save();
         
+        // v0.13.0: 自动解锁检查 - 检查是否满足未解锁地点的条件
+        this.checkAutoUnlockLocations();
+        
         // 先刷新界面，确保数据更新
         UI.renderMapScreen();
         
@@ -671,6 +674,15 @@ const Game = {
                     Player.gold += hiddenGold;
                     firstExploreReward.hiddenFind = { exp: hiddenExp, gold: hiddenGold };
                 }
+                // v0.13.0: 隐藏地点首次进入奖励 - 原本unlocked:false的地点
+                const locData = DataManager.getLocation(locationId);
+                if (locData && locData.unlocked === false) {
+                    const hiddenLocExp = 100;
+                    const hiddenLocGold = 80;
+                    Player.gainExp(hiddenLocExp);
+                    Player.gold += hiddenLocGold;
+                    firstExploreReward.hiddenLocation = { exp: hiddenLocExp, gold: hiddenLocGold, name: locData.name };
+                }
                 // v0.9.8: 连续探索奖励
                 Player.consecutiveExplores = (Player.consecutiveExplores || 0) + 1;
                 const ce = Player.consecutiveExplores;
@@ -741,6 +753,10 @@ const Game = {
                 // v0.9.8: 连续探索奖励显示
                 if (firstExploreReward.consecutiveBonus) {
                     travelMsg += `\n\n🔥 连续探索${firstExploreReward.consecutiveBonus.count}个新地点！\n探索达人奖励！\n经验 +${firstExploreReward.consecutiveBonus.exp}\n金币 +${firstExploreReward.consecutiveBonus.gold}`;
+                }
+                // v0.13.0: 隐藏地点首次进入奖励显示
+                if (firstExploreReward.hiddenLocation) {
+                    travelMsg += `\n\n🏞️ 发现隐藏地点：${firstExploreReward.hiddenLocation.name}！\n你发现了一个隐秘的地点！\n经验 +${firstExploreReward.hiddenLocation.exp}\n金币 +${firstExploreReward.hiddenLocation.gold}`;
                 }
             }
             // v0.9.1: 100%探索完成奖励显示
@@ -1012,6 +1028,47 @@ const Game = {
         Player.save();
         UI.renderMapScreen();
         UI.showMessage(msg);
+    },
+
+    // v0.13.0: 自动解锁检查 - 检查是否满足未解锁地点的条件
+    checkAutoUnlockLocations() {
+        const allLocations = DataManager.getAllLocations();
+        const newlyUnlocked = [];
+        
+        allLocations.forEach(loc => {
+            if (Player.unlockedLocations.includes(loc.id)) return;
+            if (!loc.unlockCondition) return;
+            
+            let canUnlock = true;
+            
+            // 等级要求
+            if (loc.unlockCondition.minLevel && Player.level < loc.unlockCondition.minLevel) {
+                canUnlock = false;
+            }
+            
+            // NPC好感度要求
+            if (loc.unlockCondition.minOpinion) {
+                const npcId = loc.unlockCondition.minOpinion.npcId;
+                const requiredValue = loc.unlockCondition.minOpinion.value;
+                const opinion = Player.getOpinion ? Player.getOpinion(npcId) : 0;
+                if (opinion < requiredValue) {
+                    canUnlock = false;
+                }
+            }
+            
+            if (canUnlock) {
+                Player.unlockedLocations.push(loc.id);
+                newlyUnlocked.push(loc);
+            }
+        });
+        
+        if (newlyUnlocked.length > 0) {
+            Player.save();
+            const names = newlyUnlocked.map(l => `🔓 ${l.name}`).join('\n');
+            setTimeout(() => {
+                UI.showMessage(`🎉 解锁新地点！\n\n${names}\n\n可以在地图中前往探索了！`);
+            }, 500);
+        }
     },
 
     // 显示等待选择界面
