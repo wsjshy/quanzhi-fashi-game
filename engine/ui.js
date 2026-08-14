@@ -603,7 +603,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.9.8 · 探索深化</div>
+                ">v0.9.9 · 行动探索</div>
             </div>
         `;
 
@@ -1072,6 +1072,20 @@ const UI = {
                                     return `<span style="font-size: 12px; color: #ffaa44; margin-left: 8px; background: rgba(80, 50, 20, 0.5); padding: 2px 8px; border-radius: 6px; border: 1px solid #aa7744;">❓ 未探索</span>`;
                                 }
                             })()}
+                            ${(() => {
+                                // v0.9.9: 行动探索进度
+                                const skipActions = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full'];
+                                const totalActions = (location?.actions || []).filter(a => !skipActions.includes(a.id)).length;
+                                const exploredActions = Player.exploredActions?.[location?.id]?.length || 0;
+                                if (totalActions > 0) {
+                                    const percent = Math.floor((exploredActions / totalActions) * 100);
+                                    const isComplete = exploredActions >= totalActions;
+                                    const color = isComplete ? '#66ff66' : percent >= 50 ? '#ffcc44' : '#ff9944';
+                                    const icon = isComplete ? '✅' : '📋';
+                                    return `<span style="font-size: 12px; color: ${color}; margin-left: 8px; background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 6px; border: 1px solid ${color};" title="已探索 ${exploredActions}/${totalActions} 个行动">${icon} 行动 ${exploredActions}/${totalActions}</span>`;
+                                }
+                                return '';
+                            })()}
                         </div>
                         ${(() => {
                             // v0.9.1: 探索度显示
@@ -1299,6 +1313,10 @@ const UI = {
                                 let isSkippingClass = false;
                                 let isRecommended = false;
                                 let recommendReason = '';
+                                // v0.9.9: 行动探索状态
+                                const skipActions = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full'];
+                                const isExplorableAction = !skipActions.includes(action.id);
+                                const isActionExplored = isExplorableAction && Player.exploredActions?.[location?.id]?.includes(action.id);
                                 
                                 if (action.isClassAction) {
                                     const currentClass = TimeSystem.getCurrentClass(location);
@@ -1335,9 +1353,9 @@ const UI = {
                                     }
                                 }
 
-                                // 边框颜色：推荐>逃课>普通
-                                let borderColor = isRecommended ? '#ffcc44' : (isSkippingClass ? '#cc6644' : '#444477');
-                                let glowEffect = isRecommended ? 'box-shadow: 0 0 12px rgba(255, 204, 68, 0.4);' : '';
+                                // 边框颜色：推荐>未探索>逃课>普通
+                                let borderColor = isRecommended ? '#ffcc44' : (isExplorableAction && !isActionExplored ? '#ff9944' : (isSkippingClass ? '#cc6644' : '#444477'));
+                                let glowEffect = isRecommended ? 'box-shadow: 0 0 12px rgba(255, 204, 68, 0.4);' : (isExplorableAction && !isActionExplored ? 'box-shadow: 0 0 8px rgba(255, 153, 68, 0.3);' : '');
                                 
                                 return `
                                 <button class="action-button" onclick="Game.performAction('${action.id}')" style="
@@ -1354,6 +1372,7 @@ const UI = {
                                 " onmouseover="this.style.borderColor='${isRecommended ? '#ffee88' : (isSkippingClass ? '#ff8866' : '#7777bb')}'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='${borderColor}'; this.style.transform='translateX(0)'">
                                     <div style="font-size: 18px; margin-bottom: 5px;">
                                         ${action.icon || '🔹'} ${actionName}
+                                        ${isExplorableAction ? (isActionExplored ? '<span style="font-size: 11px; color: #66ff66; margin-left: 6px; background: rgba(30, 80, 30, 0.5); padding: 2px 6px; border-radius: 6px; border: 1px solid #44aa44;">✓ 已探索</span>' : '<span style="font-size: 11px; color: #ffaa44; margin-left: 6px; background: rgba(80, 50, 20, 0.5); padding: 2px 6px; border-radius: 6px; border: 1px solid #aa7744;">❓ 未探索</span>') : ''}
                                         ${isRecommended ? `<span style="font-size: 12px; color: #ffcc44; float: right; background: rgba(100, 80, 20, 0.5); padding: 2px 8px; border-radius: 8px;">${recommendReason}</span>` : ''}
                                         ${isSkippingClass ? '<span style="color: #ff6644; font-size: 13px; margin-left: 8px;">⚠️ 逃课</span>' : ''}
                                         <span style="font-size: 12px; color: #888; float: right; display: flex; gap: 10px; align-items: center;">

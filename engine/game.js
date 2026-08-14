@@ -264,6 +264,18 @@ const Game = {
             return;
         }
 
+        // v0.9.9: 记录行动探索（排除休息/等待类重复行动）
+        const skipActions = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full'];
+        if (!skipActions.includes(actionId)) {
+            if (!Player.exploredActions) Player.exploredActions = {};
+            if (!Player.exploredActions[Player.currentLocation]) {
+                Player.exploredActions[Player.currentLocation] = [];
+            }
+            if (!Player.exploredActions[Player.currentLocation].includes(actionId)) {
+                Player.exploredActions[Player.currentLocation].push(actionId);
+            }
+        }
+
         // 如果是上课行动，根据课程表动态调整奖励
         if (action && action.isClassAction && currentClass) {
             result.effects = result.effects || {};

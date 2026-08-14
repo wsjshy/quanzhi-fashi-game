@@ -4,7 +4,7 @@
  */
 
 // 游戏版本号 - 用于存档兼容性
-const GAME_VERSION = '0.9.8';
+const GAME_VERSION = '0.9.9';
 const SAVE_VERSION = '0.8.7';
 
 // 技能解锁表：按元素和等级定义可解锁的技能
@@ -217,6 +217,7 @@ const Player = {
         this.fatigueLevel = 0;  // v0.9.1: 疲劳等级（0=正常，1=疲劳，2=重伤），低体力战斗后概率获得，休息后清除
         this.explorationComplete = [];  // v0.9.1: 已100%探索完成的区域ID列表
         this.consecutiveExplores = 0;  // v0.9.8: 连续探索新地点计数，非探索行动重置为0
+        this.exploredActions = {};  // v0.9.9: 行动级别探索记录，key为locationId，value为已探索行动ID数组
         this.dailyStats = {  // v0.9.4: 每日统计
             day: 1,
             expGained: 0,
@@ -1596,6 +1597,7 @@ const Player = {
             fatigueLevel: this.fatigueLevel || 0,
             explorationComplete: this.explorationComplete || [],
             consecutiveExplores: this.consecutiveExplores || 0,
+            exploredActions: this.exploredActions || {},
             dailyStats: this.dailyStats || { day: 1, expGained: 0, goldGained: 0, battlesWon: 0, locationsExplored: 0, npcsTalked: 0 },
             inventory: Inventory.getSaveData(),
             worldState: typeof WorldState !== 'undefined' ? WorldState.getSaveData() : null,
@@ -1705,6 +1707,7 @@ const Player = {
             this.fatigueLevel = data.fatigueLevel || 0;
             this.explorationComplete = data.explorationComplete || [];
             this.consecutiveExplores = data.consecutiveExplores || 0;
+            this.exploredActions = data.exploredActions || {};
             this.dailyStats = data.dailyStats || { day: 1, expGained: 0, goldGained: 0, battlesWon: 0, locationsExplored: 0, npcsTalked: 0 };
             
             // 加载背包
