@@ -1188,6 +1188,27 @@ const BattleSystem = {
                 }], true);
                 this.addLog(`🐌 ${this.enemy.name} 被减速了！`, 'element');
             }
+            // 时间冻结：概率时停
+            if (te.timeStopChance && Math.random() < te.timeStopChance) {
+                this.addStatusEffect(this.enemy, {
+                    type: 'stun', name: '时间冻结', duration: te.timeStopDuration || 1
+                });
+                this.addLog(`⏱️ 时间冻结！${this.enemy.name} 停止行动！`, 'element');
+            }
+            // 恐惧：概率让敌人无法行动
+            if (te.fearChance && Math.random() < te.fearChance) {
+                this.addStatusEffect(this.enemy, {
+                    type: 'fear', name: '恐惧', duration: 1
+                });
+                this.addLog(`😱 ${this.enemy.name} 陷入恐惧！`, 'element');
+            }
+            // 致盲：概率降低敌人命中
+            if (te.blindChance && Math.random() < te.blindChance) {
+                this.addStatusEffect(this.enemy, {
+                    type: 'blind', name: '致盲', hitMod: -0.5, duration: te.blindDuration || 2
+                });
+                this.addLog(`👁️ ${this.enemy.name} 被致盲！`, 'element');
+            }
         }
 
         // 天赋吸血：普攻造成伤害回复HP
@@ -3081,6 +3102,19 @@ const BattleSystem = {
                 const lowHeal = Math.floor(this.player.maxHp * te.lowHpRegen);
                 this.player.hp = Math.min(this.player.maxHp, this.player.hp + lowHeal);
             }
+            // 冰霜新星：每隔N回合造成冰伤+减速
+            if (te.frostNova && this.enemy.hp > 0) {
+                this._frostNovaTimer = (this._frostNovaTimer || 0) + 1;
+                const interval = te.frostNovaInterval || 3;
+                if (this._frostNovaTimer >= interval) {
+                    this._frostNovaTimer = 0;
+                    const novaDmg = Math.floor(this.player.attack * (te.frostNovaDamage || 0.3));
+                    this.applyDamage(this.enemy, { amount: novaDmg, element: 'ice', isMiss: false, isCrit: false }, this.player);
+                    this.addStatusEffect(this.enemy, { type: 'slow', name: '冰霜新星', duration: 2, speedMod: te.frostNovaSlow || 0.3 });
+                    this.addLog(`❄️ 冰霜新星！造成 ${novaDmg} 点冰伤并减速！`, 'element');
+                    this.showDamageNumber('enemy', novaDmg, 'normal');
+                }
+            }
         }
 
         // 玩家被眩晕/冻结/麻痹，自动跳过回合
@@ -3499,6 +3533,20 @@ const BattleSystem = {
         }
 
         target.hp = Math.max(0, target.hp - amount);
+
+        // 天赋：雷系斩杀 - 敌人HP低于阈值时概率直接击杀
+        if (target === this.enemy && target.hp > 0 && attacker === this.player && this.player.talentEffects) {
+            const te = this.player.talentEffects;
+            if (te.thunderExecute) {
+                const threshold = te.executeThreshold || 0.2;
+                const chance = te.executeChance || 0.2;
+                if (target.hp / target.maxHp < threshold && Math.random() < chance) {
+                    target.hp = 0;
+                    this.addLog(`⚡ 雷劫！${this.enemy.name} 被天雷斩杀！`, 'crit');
+                    this.showDamageNumber('enemy', 999, 'crit');
+                }
+            }
+        }
 
         // 天赋免死：HP归零时保留HP（神圣庇护/大地守护/暗影化身）
         if (target.hp <= 0 && target === this.player && target.talentEffects) {
@@ -4349,6 +4397,7 @@ const BattleSystem = {
             e.type === 'frozen' || 
             e.type === 'paralyze' ||
             e.type === 'bind' ||
+            e.type === 'fear' ||
             e.skipTurn === true
         );
     },
@@ -4387,6 +4436,7 @@ const BattleSystem = {
             }
             if (effect.speedMod) mods.speedMod += effect.speedMod;
             if (effect.hitRateMod) mods.hitRateMod += effect.hitRateMod;
+            if (effect.hitMod) mods.hitRateMod += effect.hitMod;
             if (effect.evasionMod) mods.evasionMod += effect.evasionMod;
             // 湿润状态受雷系伤害×2
             if (effect.type === 'wet' || effect.type === 'electrified') {

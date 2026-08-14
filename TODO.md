@@ -43,8 +43,15 @@
 - [x] 击杀减CD（killCooldownReduce）
 - [x] MP消耗减少（mpCostReduction，技能释放时实际消耗减少）
 
+### v0.8.10 第三批已完成 - 控制/斩杀效果
+- [x] 冰霜新星（frostNova，每3回合自动冰伤+减速）
+- [x] 时间冻结（timeStopChance，概率时停1回合）
+- [x] 恐惧（fearChance，概率让敌人跳过回合）
+- [x] 致盲（blindChance，概率降低敌人命中50%）
+- [x] 雷系斩杀（thunderExecute，低HP概率直接击杀）
+- [x] 致盲命中降低（hitMod在状态修正中生效）
+
 ### v0.8.10 待做 - 复杂效果（后续版本）
-- [ ] 冰霜新星/时间冻结（frostNova/timeStopChance）
 - [ ] 闪电连锁（chainLightning多目标跳跃）
 - [ ] 召唤兽相关天赋（beastTide/summonBuff等）
 - [ ] 团队buff（teamAtkBonus/teamDefBonus等）
