@@ -689,8 +689,24 @@ const BattleSystem = {
             skills: Player.skills,
             buffs: [],
             statusEffects: [],
-            isDefending: false
+            isDefending: false,
+            talentEffects: (typeof Player !== 'undefined' && Player.getAllTalentEffects) ? Player.getAllTalentEffects() : {}
         };
+
+        // 应用天赋基础属性加成
+        const te = this.player.talentEffects;
+        if (te) {
+            if (te.critRate) this.player.critRate += te.critRate;
+            if (te.dodgeBonus) this.player.dodgeBonus = te.dodgeBonus;
+            if (te.speedBonus) this.player.speed = Math.floor(this.player.speed * (1 + te.speedBonus));
+            if (te.defenseBonus) this.player.defense = Math.floor(this.player.defense * (1 + te.defenseBonus));
+            if (te.hpBonus) {
+                this.player.maxHp = Math.floor(this.player.maxHp * (1 + te.hpBonus));
+                this.player.hp = Math.min(this.player.hp, this.player.maxHp);
+            }
+            if (te.damageReduction) this.player.damageReduction = te.damageReduction;
+            if (te.mpCostReduction) this.player.mpCostReduction = te.mpCostReduction;
+        }
 
         this.addLog(`遭遇了 ${this.enemy.name}！`, 'system');
         
@@ -742,6 +758,48 @@ const BattleSystem = {
         // 绑定键盘快捷键
         this._keyHandler = (e) => this.handleKeyPress(e);
         document.addEventListener('keydown', this._keyHandler);
+
+        // 天赋：战斗开始时效果
+        if (this.player.talentEffects) {
+            const te = this.player.talentEffects;
+            // 冰甲/晶化盾：战斗开始获得护盾
+            if (te.iceShield && te.iceShield > 0) {
+                const shieldAmount = Math.floor(this.player.maxHp * te.iceShield);
+                this.addStatusEffect(this.player, { type: 'shield', name: '冰甲', value: shieldAmount, duration: 99 });
+                this.addLog(`❄️ 冰甲护体！获得 ${shieldAmount} 点护盾！`, 'buff');
+            }
+            if (te.crystalShield && te.crystalShield > 0) {
+                const shieldAmount = Math.floor(this.player.maxHp * te.crystalShield);
+                this.addStatusEffect(this.player, { type: 'shield', name: '晶化盾', value: shieldAmount, duration: 99 });
+                this.addLog(`💎 晶化盾！获得 ${shieldAmount} 点护盾！`, 'buff');
+            }
+            // 暗影形态：战斗开始隐身
+            if (te.shadowForm) {
+                this.addStatusEffect(this.player, { type: 'stealth', name: '暗影潜行', duration: te.shadowFormDuration || 1 });
+                this.addLog(`🌑 暗影形态！进入隐身，首次攻击伤害翻倍！`, 'buff');
+            }
+            // 绝对零度领域：开场冻结
+            if (te.absoluteZeroField && this.enemy.hp > 0) {
+                this.addStatusEffect(this.enemy, {
+                    type: 'freeze', name: '绝对零度', duration: te.fieldFreezeDuration || 1
+                });
+                this.addLog(`❄️ 绝对零度领域！${this.enemy.name} 被冻结！`, 'element');
+            }
+            // 兽王威压：降低敌人攻防
+            if (te.kingIntimidate && te.kingIntimidate > 0) {
+                const reduce = te.intimidateAtkDown || te.kingIntimidate;
+                this.enemy.attack = Math.floor(this.enemy.attack * (1 - reduce));
+                this.enemy.defense = Math.floor(this.enemy.defense * (1 - (te.intimidateDefDown || reduce)));
+                this.addLog(`👑 兽王威压！${this.enemy.name} 攻防降低！`, 'buff');
+            }
+            // 开场雷罚
+            if (te.openingThunder && this.enemy.hp > 0) {
+                const thunderDmg = Math.floor(this.player.attack * (te.openingThunderDamage || 1.5));
+                this.applyDamage(this.enemy, { amount: thunderDmg, element: 'thunder', isMiss: false, isCrit: false }, this.player);
+                this.addLog(`⚡ 九天应元！开场雷罚造成 ${thunderDmg} 点伤害！`, 'element');
+                this.showDamageNumber('enemy', thunderDmg, 'crit');
+            }
+        }
 
         return {
             player: this.player,
@@ -1090,6 +1148,80 @@ const BattleSystem = {
 
         // 应用伤害
         this.applyDamage(this.enemy, damage, this.player);
+
+        // 天赋异常状态触发（普攻命中时）
+        if (!damage.isMiss && damage.amount > 0 && this.player.talentEffects) {
+            const te = this.player.talentEffects;
+            // 燃烧
+            if (te.burnChance && Math.random() < te.burnChance) {
+                const burnDmg = te.burnDamage || 0.05;
+                this.applyStatusEffects(this.enemy, [{
+                    type: 'burn', name: '燃烧', damage: burnDmg, duration: 3
+                }], true);
+                this.addLog(`🔥 ${this.enemy.name} 被点燃了！`, 'element');
+            }
+            // 冰冻
+            if (te.freezeChance && Math.random() < te.freezeChance) {
+                this.applyStatusEffects(this.enemy, [{
+                    type: 'freeze', name: '冰冻', duration: te.freezeDuration || 1
+                }], true);
+                this.addLog(`❄️ ${this.enemy.name} 被冻结了！`, 'element');
+            }
+            // 麻痹
+            if (te.paralyzeChance && Math.random() < te.paralyzeChance) {
+                this.applyStatusEffects(this.enemy, [{
+                    type: 'paralyze', name: '麻痹', duration: te.paralyzeDuration || 1
+                }], true);
+                this.addLog(`⚡ ${this.enemy.name} 被麻痹了！`, 'element');
+            }
+            // 眩晕
+            if (te.stunChance && Math.random() < te.stunChance) {
+                this.applyStatusEffects(this.enemy, [{
+                    type: 'stun', name: '眩晕', duration: 1
+                }], true);
+                this.addLog(`💫 ${this.enemy.name} 被眩晕了！`, 'element');
+            }
+            // 减速
+            if (te.slowChance && Math.random() < te.slowChance) {
+                this.applyStatusEffects(this.enemy, [{
+                    type: 'slow', name: '减速', speedMod: -0.3, duration: 2
+                }], true);
+                this.addLog(`🐌 ${this.enemy.name} 被减速了！`, 'element');
+            }
+        }
+
+        // 天赋吸血：普攻造成伤害回复HP
+        let totalAttackDamage = damage.amount;
+        if (!damage.isMiss && damage.amount > 0 && this.player.talentEffects) {
+            const te = this.player.talentEffects;
+            if (te.lifesteal && te.lifesteal > 0) {
+                const healAmount = Math.floor(damage.amount * te.lifesteal);
+                if (healAmount > 0 && this.player.hp < this.player.maxHp) {
+                    this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
+                    this.addLog(`🩸 吸血恢复 ${healAmount} 点生命！`, 'heal');
+                }
+            }
+        }
+
+        // 天赋连击：概率追加攻击
+        if (!damage.isMiss && damage.amount > 0 && this.player.talentEffects) {
+            const te = this.player.talentEffects;
+            if (te.comboChance && te.comboChance > 0 && Math.random() < te.comboChance) {
+                const comboDmgMult = te.comboDamageMult || 0.5;
+                const comboDamage = this.calculateDamage(
+                    this.player.attack * comboDmgMult,
+                    this.enemy.defense,
+                    1.0, 0, this.player.hitRate,
+                    'physical', null, this.enemy, this.player
+                );
+                if (!comboDamage.isMiss) {
+                    this.applyDamage(this.enemy, comboDamage, this.player);
+                    totalAttackDamage += comboDamage.amount;
+                    this.addLog(`⚡ 连击！追加 ${comboDamage.amount} 点伤害！`, 'counter');
+                    this.showDamageNumber('enemy', comboDamage.amount, 'normal');
+                }
+            }
+        }
         
         // 普通攻击恢复少量MP（2%最大MP）
         if (this.player.maxMp > 0) {
@@ -1118,6 +1250,28 @@ const BattleSystem = {
                         WorldState.unlockAchievement('lucky_dog', achData);
                     }
                 }
+            }
+            // 天赋：雷鸣 - 暴击时概率麻痹敌人
+            if (this.player.talentEffects && this.player.talentEffects.thunderRoar) {
+                if (Math.random() < this.player.talentEffects.thunderRoar) {
+                    this.addStatusEffect(this.enemy, {
+                        type: 'paralyze', name: '雷鸣麻痹', duration: 1
+                    });
+                    this.addLog(`⚡ 雷鸣！${this.enemy.name} 被麻痹！`, 'element');
+                }
+            }
+            // 天赋：暴击得护盾
+            if (this.player.talentEffects && this.player.talentEffects.shieldOnCrit) {
+                const shieldAmount = Math.floor(this.player.maxHp * this.player.talentEffects.shieldOnCrit);
+                const existingShield = this.player.statusEffects.find(e => e.type === 'shield');
+                if (existingShield) {
+                    existingShield.value = Math.max(existingShield.value, shieldAmount);
+                } else {
+                    this.addStatusEffect(this.player, {
+                        type: 'shield', name: '圣光护盾', value: shieldAmount, duration: 3
+                    });
+                }
+                this.addLog(`🛡️ 暴击获得 ${shieldAmount} 点护盾！`, 'buff');
             }
         } else {
             this.consecutiveCrits = 0;
@@ -1268,7 +1422,12 @@ const BattleSystem = {
         const targetData = isPlayer ? this.enemy : this.player;
 
         // 消耗MP
-        casterData.mp -= skill.mpCost;
+        // 消耗MP（天赋可减少消耗）
+        let actualMpCost = skill.mpCost;
+        if (isPlayer && this.player.mpCostReduction) {
+            actualMpCost = Math.max(0, Math.floor(skill.mpCost * (1 - this.player.mpCostReduction)));
+        }
+        casterData.mp -= actualMpCost;
 
         // 记录玩家使用过的元素系（用于经验分配）
         if (isPlayer && skill.element && skill.element !== 'neutral') {
@@ -1309,10 +1468,15 @@ const BattleSystem = {
             
             // 天赋加成（仅玩家）
             let talentBonus = 1.0;
+            let talentSkillLevelBonus = 0;
             if (isPlayer && typeof Player !== 'undefined' && typeof TalentSystem !== 'undefined') {
                 const talentEffects = Player.getElementTalentEffects(skill.element);
                 if (talentEffects.damageBonus) {
                     talentBonus = 1 + talentEffects.damageBonus;
+                }
+                // 天赋技能等级加成（如烈焰领主：技能等级+1，伤害+15%）
+                if (talentEffects.skillLevelBonus) {
+                    talentSkillLevelBonus = talentEffects.skillLevelBonus * 0.15;
                 }
             }
 
@@ -1365,7 +1529,7 @@ const BattleSystem = {
 
             for (let hit = 0; hit < hitCount; hit++) {
                 const damage = this.calculateDamage(
-                    baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus * elementLevelBonus,
+                    baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus * elementLevelBonus * (1 + talentSkillLevelBonus),
                     effectiveDefense,
                     1.0,
                     skillCritRate,
@@ -1397,13 +1561,26 @@ const BattleSystem = {
             // 技能吸血效果（基于总伤害）
             if (skill.lifesteal && skill.lifesteal > 0 && totalDamage > 0) {
                 let healAmount = Math.floor(totalDamage * skill.lifesteal);
-                // 应用治疗降低效果
                 const healMultiplier = this.getHealingMultiplier(casterData);
                 healAmount = Math.floor(healAmount * healMultiplier);
                 if (healAmount > 0 && casterData.hp < casterData.maxHp) {
                     casterData.hp = Math.min(casterData.maxHp, casterData.hp + healAmount);
                     const casterName = isPlayer ? '你' : this.enemy.name;
                     this.addLog(`${casterName} 吸取了 ${healAmount} 点生命！`, 'heal');
+                }
+            }
+
+            // 天赋吸血：技能也能触发
+            if (isPlayer && totalDamage > 0 && this.player.talentEffects && this.player.talentEffects.lifesteal) {
+                const lsRate = this.player.talentEffects.lifesteal;
+                if (lsRate > 0 && (!skill.lifesteal || skill.lifesteal < lsRate)) {
+                    let healAmount = Math.floor(totalDamage * lsRate);
+                    const healMultiplier = this.getHealingMultiplier(casterData);
+                    healAmount = Math.floor(healAmount * healMultiplier);
+                    if (healAmount > 0 && casterData.hp < casterData.maxHp) {
+                        casterData.hp = Math.min(casterData.maxHp, casterData.hp + healAmount);
+                        this.addLog(`🩸 吸血恢复 ${healAmount} 点生命！`, 'heal');
+                    }
                 }
             }
 
@@ -2808,6 +2985,36 @@ const BattleSystem = {
             }
         }
 
+        // 天赋光环效果：每回合开始时对敌人造成伤害（火焰光环等）
+        if (this.player.talentEffects && this.enemy.hp > 0) {
+            const te = this.player.talentEffects;
+            // 火焰光环：每回合对敌人造成最大HP百分比伤害
+            if (te.fireAura && te.fireAura > 0) {
+                const auraDmg = Math.floor(this.enemy.maxHp * te.fireAura);
+                if (auraDmg > 0) {
+                    this.applyDamage(this.enemy, { amount: auraDmg, element: 'fire', isMiss: false, isCrit: false }, this.player);
+                    this.addLog(`🔥 火焰光环灼烧 ${this.enemy.name}，造成 ${auraDmg} 点伤害！`, 'element');
+                    this.showDamageNumber('enemy', auraDmg, 'normal');
+                }
+            }
+            // 冰霜光环：每回合减速敌人
+            if (te.frostAura && te.frostAura > 0 && this.enemy.speed > 1) {
+                const slowAmount = Math.floor(this.enemy.speed * te.frostAura);
+                if (slowAmount > 0) {
+                    this.enemy.speed = Math.max(1, this.enemy.speed - slowAmount);
+                    this.addLog(`❄️ 冰霜光环减速 ${this.enemy.name}！`, 'element');
+                }
+            }
+            // 治疗光环：每回合治疗最低HP队友（这里就是玩家自己）
+            if (te.healAura && te.healAura > 0 && this.player.hp < this.player.maxHp) {
+                const auraHeal = Math.floor(this.player.maxHp * te.healAura);
+                if (auraHeal > 0) {
+                    this.player.hp = Math.min(this.player.maxHp, this.player.hp + auraHeal);
+                    this.addLog(`✨ 治疗光环恢复 ${auraHeal} 点生命！`, 'heal');
+                }
+            }
+        }
+
         // 玩家被眩晕/冻结/麻痹，自动跳过回合
         if (this.isStunned(this.player)) {
             const stunEffect = this.player.statusEffects.find(e => 
@@ -2879,6 +3086,10 @@ const BattleSystem = {
             if (target.traitBonuses && target.traitBonuses.dodgeBonus) {
                 evasion += target.traitBonuses.dodgeBonus;
             }
+            // 玩家天赋闪避
+            if (target === this.player && target.dodgeBonus) {
+                evasion += target.dodgeBonus;
+            }
         }
         if (Math.random() > (hitRate - evasion)) {
             result.isMiss = true;
@@ -2893,6 +3104,39 @@ const BattleSystem = {
 
         // 基础伤害（防御系数0.3，避免高防御完全免伤）
         let damage = Math.max(1, (attack - defense * 0.3) * multiplier);
+
+        // 天赋：元素穿透 - 忽略部分防御
+        if (attacker && attacker.talentEffects) {
+            const te = attacker.talentEffects;
+            let pen = 0;
+            if (element) {
+                const penKey = element + 'Penetration';
+                if (te[penKey]) pen = te[penKey];
+            }
+            if (te.elementPenetration) pen = Math.max(pen, te.elementPenetration);
+            if (pen > 0) {
+                const ignoredDef = defense * pen;
+                damage += ignoredDef * 0.3;
+            }
+        }
+
+        // 天赋：低HP伤害加成（炎怒/暗之力）
+        if (attacker && attacker.talentEffects) {
+            const te = attacker.talentEffects;
+            const enrage = te.enrageDamage || te.lowHpDamageBonus;
+            if (enrage) {
+                const threshold = te.enrageThreshold || 0.3;
+                const hpPercent = attacker.hp / attacker.maxHp;
+                if (hpPercent < threshold) {
+                    damage *= (1 + enrage);
+                }
+            }
+        }
+
+        // 天赋：暴击伤害加成
+        if (attacker && attacker.talentEffects && attacker.talentEffects.critDamageBonus) {
+            // 在暴击判定后使用
+        }
 
         // 元素克制计算
         if (element && targetElement) {
@@ -3058,7 +3302,13 @@ const BattleSystem = {
         // 暴击判定
         if (Math.random() < critRate) {
             result.isCrit = true;
-            damage *= 1.5 + Math.random() * 0.5; // 1.5-2.0倍暴击
+            let critMult = 1.5 + Math.random() * 0.5; // 1.5-2.0倍暴击
+            // 天赋：暴击伤害加成
+            if (attacker && attacker.talentEffects) {
+                const cd = attacker.talentEffects.critDamageBonus || attacker.talentEffects.critDamage;
+                if (cd) critMult += cd;
+            }
+            damage *= critMult;
         }
 
         result.amount = Math.floor(damage);
@@ -3108,7 +3358,12 @@ const BattleSystem = {
      */
     applyDamage(target, damage, attacker) {
         let amount = damage.amount;
-        
+
+        // 玩家天赋伤害减免
+        if (target === this.player && target.damageReduction) {
+            amount = Math.floor(amount * (1 - target.damageReduction));
+        }
+
         // 玩家灵种元素抗性（小说第134章：灵火改变体质，对火焰有抗性）
         if (target === this.player && damage.element && typeof Player !== 'undefined') {
             const resistanceKey = damage.element + 'Resistance';
@@ -3154,6 +3409,20 @@ const BattleSystem = {
 
         target.hp = Math.max(0, target.hp - amount);
 
+        // 天赋免死：HP归零时保留HP（神圣庇护/大地守护/暗影化身）
+        if (target.hp <= 0 && target === this.player && target.talentEffects) {
+            const te = target.talentEffects;
+            if ((te.divineProtection || te.autoRevive) && !target._deathSaveUsed) {
+                target._deathSaveUsed = true;
+                const saveHp = Math.floor(target.maxHp * (te.autoReviveHp || 0.3));
+                target.hp = saveHp;
+                this.addLog(`💫 免死！恢复 ${saveHp} 点生命！`, 'heal');
+                target.statusEffects = target.statusEffects.filter(e =>
+                    e.type === 'shield' || e.type === 'attack_up' || e.type === 'defense_up'
+                );
+            }
+        }
+
         // 冰甲反伤：近战攻击有几率冰冻攻击者
         if (amount > 0 && attacker) {
             const iceArmor = target.statusEffects?.find(e => e.type === 'ice_thorns');
@@ -3162,6 +3431,36 @@ const BattleSystem = {
                 this.applyStatusEffects(attacker, [freezeEffect], target === this.enemy);
                 const attackerName = attacker === this.player ? '你' : this.enemy.name;
                 this.addLog(`❄️ ${attackerName} 被冰甲冻住了！`, 'debuff');
+            }
+        }
+
+        // 天赋反伤：受到攻击时反弹伤害（烈焰护体/岩刺等）
+        if (amount > 0 && attacker && target === this.player && this.player.talentEffects) {
+            const te = this.player.talentEffects;
+            if (te.damageReflect && te.damageReflect > 0) {
+                const reflectDmg = Math.floor(amount * te.damageReflect);
+                if (reflectDmg > 0) {
+                    attacker.hp = Math.max(0, attacker.hp - reflectDmg);
+                    this.addLog(`🔥 烈焰护体反弹 ${reflectDmg} 点伤害！`, 'counter');
+                }
+            }
+            if (te.rockSpikes && te.rockSpikes > 0 && !damage.element) {
+                const thornDmg = Math.floor(this.player.defense * (te.rockSpikesDamage || te.rockSpikes));
+                if (thornDmg > 0) {
+                    attacker.hp = Math.max(0, attacker.hp - thornDmg);
+                    this.addLog(`🪨 岩刺反弹 ${thornDmg} 点伤害！`, 'counter');
+                }
+            }
+            // 坚岩：概率大幅减伤
+            if (te.hardRockChance && !target._hardRockUsed) {
+                if (Math.random() < te.hardRockChance) {
+                    const reduction = te.hardRockReduction || 0.5;
+                    const reduced = Math.floor(amount * reduction);
+                    target.hp += reduced;
+                    amount -= reduced;
+                    target._hardRockUsed = true;
+                    this.addLog(`🪨 坚岩发动！伤害减少${Math.round(reduction*100)}%！`, 'defense');
+                }
             }
         }
 
@@ -4105,6 +4404,21 @@ const BattleSystem = {
         if (this.enemy.hp <= 0 || (this.battleOptions.winHpPercent > 0 && this.enemy.hp <= this.enemy.maxHp * this.battleOptions.winHpPercent)) {
             this.result = 'win';
             this.active = false;
+
+            // 天赋击杀效果：击杀回血/回MP
+            if (this.player.talentEffects) {
+                const te = this.player.talentEffects;
+                if (te.killHeal && te.killHeal > 0) {
+                    const healAmount = Math.floor(this.player.maxHp * te.killHeal);
+                    this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
+                    this.addLog(`💀 击杀回春！恢复 ${healAmount} 点生命！`, 'heal');
+                }
+                if (te.killMpRestore && te.killMpRestore > 0) {
+                    const mpAmount = Math.floor(this.player.maxMp * te.killMpRestore);
+                    this.player.mp = Math.min(this.player.maxMp, this.player.mp + mpAmount);
+                    this.addLog(`💀 击杀回蓝！恢复 ${mpAmount} 点MP！`, 'heal');
+                }
+            }
             
             if (this.battleOptions.isFriendly) {
                 this.addLog(`${this.enemy.name} 认输了！你赢得了决斗！`, 'system');

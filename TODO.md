@@ -1,7 +1,49 @@
 # TODO - 全职法师游戏
 
-> 当前版本：v0.8.9 | 最后更新：2026-08-14
+> 当前版本：v0.8.10 | 最后更新：2026-08-14
 > 状态说明：[ ]待做 [~]进行中 [x]完成
+
+---
+
+## P0 - 天赋进化效果落地（v0.8.10进行中）
+
+### v0.8.10 已完成 - 核心战斗效果落地
+- [x] 基础属性加成：暴击率/闪避/速度/防御/HP/伤害减免/MP消耗减少
+- [x] 元素穿透（firePenetration/icePenetration等各系穿透）
+- [x] 低HP增伤（enrageDamage/炎怒/暗之力）
+- [x] 暴击伤害加成（critDamage）
+- [x] 技能等级加成（skillLevelBonus，每级+15%伤害）
+- [x] 吸血（lifesteal，普攻和技能都触发）
+- [x] 连击（comboChance，概率追加攻击）
+- [x] 反伤（damageReflect/烈焰护体）
+- [x] 岩刺反伤（rockSpikes，近战基于防御反伤）
+- [x] 坚岩减伤（hardRockChance/hardRockReduction）
+- [x] 开场护盾（iceShield冰甲/crystalShield晶化盾）
+- [x] 免死（divineProtection/autoRevive，HP归零时恢复）
+- [x] 火焰光环（fireAura，每回合%HP伤害）
+- [x] 冰霜光环（frostAura，每回合减速）
+- [x] 治疗光环（healAura，每回合回血）
+- [x] 普攻异常状态：燃烧/冰冻/麻痹/眩晕/减速概率触发
+- [x] 暴击雷鸣（thunderRoar，暴击概率麻痹）
+- [x] 暴击得护盾（shieldOnCrit）
+- [x] 暗影形态（shadowForm，战斗开始隐身）
+- [x] 绝对零度领域（absoluteZeroField，开场冻结）
+- [x] 兽王威压（kingIntimidate，降敌人攻防）
+- [x] 开场雷罚（openingThunder）
+- [x] 击杀回血（killHeal）/击杀回蓝（killMpRestore）
+
+### v0.8.10 待做 - 复杂效果（后续版本）
+- [ ] 燃烧爆炸/蔓延（burnExplode/burnSpread）
+- [ ] 冰霜新星/时间冻结（frostNova/timeStopChance）
+- [ ] 闪电连锁（chainLightning多目标跳跃）
+- [ ] 风刃追加（windBladeChance）
+- [ ] 召唤兽相关天赋（beastTide/summonBuff等）
+- [ ] 治疗增强（healBonus在治疗技能中应用）
+- [ ] 团队buff（teamAtkBonus/teamDefBonus等）
+- [ ] 自动复活（autoRevive完整逻辑）
+- [ ] 潮汐/海啸自动循环
+- [ ] 陨石/火雨等多回合效果
+- [ ] 黑暗领域/光明领域等领域效果
 
 ---
 
@@ -13,27 +55,9 @@
 - [x] 重写talents.js数据：50个天赋全部改为进化路线格式（10先天+40成长）
 - [x] 先天型天赋1级即终极形态（伤害+40%、免疫本系、必触发异常等）
 - [x] 每个进化阶段有独立名称和描述（如"烈焰形态""冰霜领主""雷霆之怒"）
-- [x] 新效果键预留：30+种新能力（光环/反伤/连击/吸血/标记/兽潮等）
+- [x] 30+种新效果键设计
 - [x] UI更新：选择面板预览进化路线、角色面板显示当前/下一阶段、战斗日志进化提示
 - [x] 37项自动化测试全部通过
-
-### v0.8.9 待做 - 战斗系统应用新效果
-- [ ] 火焰光环（fireAura）：每回合对敌人造成百分比伤害
-- [ ] 反伤（damageReflect）：受到攻击反弹伤害
-- [ ] 灼烧爆炸/蔓延（burnExplode/burnSpread）：灼烧层数爆炸/传播
-- [ ] 冰甲护盾（iceShield）：吸收伤害的护盾
-- [ ] 冰霜减速叠加（frostSlow）：减速可叠加
-- [ ] 雷殛反击（thunderCounter）：受击概率反击
-- [ ] 雷鸣（thunderRoar）：暴击时群体麻痹
-- [ ] 坚岩减伤（hardRock）：概率大幅减伤
-- [ ] 连击（comboChance）：概率追加攻击
-- [ ] 吸血（lifesteal）：造成伤害回复HP
-- [ ] 群体治疗（aoeHeal）：治疗技能影响全队
-- [ ] 暗影标记（darkMark）：被标记目标受到额外伤害
-- [ ] 诅咒传播（curseSpread）：诅咒击杀后传播
-- [ ] 生命链接（lifeLink）：分担队友伤害
-- [ ] 兽潮（beastTide）：概率额外召唤
-- [ ] 其他30+种新效果在战斗逻辑中实际生效
 
 ---
 
