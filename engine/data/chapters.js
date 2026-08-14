@@ -14,7 +14,7 @@ const DataChapters = {
     volume: "vol1_bocheng",
     volumeName: "博城篇",
     novelChapters: [1, 5],
-    description: "魔法高考，雷火双系觉醒，小泥鳅坠",
+    description: "魔法高考，觉醒魔法，小泥鳅坠",
 
     startConditions: { gameStart: true },
     completeConditions: {

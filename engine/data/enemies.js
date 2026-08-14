@@ -702,10 +702,10 @@ const DataEnemies = {
       "wind"
     ],
     level: 10,
-    maxHp: 450,
+    maxHp: 360,
     maxMp: 0,
-    attack: 38,
-    defense: 18,
+    attack: 32,
+    defense: 16,
     speed: 22,
     skills: [
       "basic_attack",
@@ -754,10 +754,10 @@ const DataEnemies = {
       "earth"
     ],
     level: 14,
-    maxHp: 750,
+    maxHp: 600,
     maxMp: 80,
-    attack: 48,
-    defense: 30,
+    attack: 40,
+    defense: 25,
     speed: 12,
     skills: [
       "basic_attack",
@@ -1714,10 +1714,10 @@ const DataEnemies = {
     description: "郑冰晓的召唤兽。岩石构成的人形召唤兽，力量与防御极强，不怕火雷，能操控土石。速度极慢但一拳威力巨大。",
     elements: ["earth"],
     level: 10,
-    maxHp: 500,
+    maxHp: 400,
     maxMp: 60,
-    attack: 35,
-    defense: 35,
+    attack: 32,
+    defense: 28,
     speed: 6,
     spirit: 5,
     skills: [
@@ -2301,7 +2301,7 @@ const DataEnemies = {
     canonSource: "第213章 三步塔",
     traits: ["black_church", "masked", "summons_demons", "nemesis"],
     battleQuotes: {
-      start: "莫凡，我会把你变成我的奴隶！",
+      start: "我会把你变成我的奴隶！",
       defeat: "不可能...黑教廷不会放过你的..."
     }
   },
@@ -2376,10 +2376,10 @@ const DataEnemies = {
     description: "许昭霆被黑教廷咒法变成的强化黑畜妖。保留部分意识，比普通黑畜妖强大数倍，被灵魂锁链控制。脸上有未腐烂的人皮，眼中充满痛苦与怨恨。速度力量远超普通黑畜妖，黑色爪芒可远程切割。",
     elements: ["thunder", "shadow"],
     level: 15,
-    maxHp: 800,
+    maxHp: 650,
     maxMp: 200,
-    attack: 45,
-    defense: 20,
+    attack: 38,
+    defense: 18,
     speed: 35,
     spirit: 25,
     skills: [

@@ -528,6 +528,7 @@ const BattleSystem = {
         this.rating = null;  // 战斗评价
         this.bossPhase2 = false;  // Boss战第二阶段标记
         this.huntFled = false;  // 狩猎战妖魔逃跑标记
+        this.lastSkillId = null;  // v0.15.0: 上次使用的技能ID，用于重复上次技能
         this.huntFailed = false;  // 狩猎战妖魔逃跑失败标记
         this.usedElements = new Set();  // 本场战斗使用过的元素系
         
@@ -1747,6 +1748,9 @@ const BattleSystem = {
         }
 
         this.player.isDefending = false;
+
+        // v0.15.0: 记录上次使用的技能（用于重复上次技能）
+        this.lastSkillId = skillId;
 
         // 计算引导时间（精神力越高越快，精神力100时引导时间减半）
         const baseCastTime = this.getCastTime(skill.tier);
@@ -6579,7 +6583,14 @@ const BattleSystem = {
         // 同步玩家状态
         Player.hp = this.player.hp;
         Player.mp = this.player.mp;
-        
+
+        // v0.15.0: 战斗胜利时记录技能记忆（对该妖魔最后使用的技能）
+        if (this.result === 'victory' && this.lastSkillId && this.enemy && this.enemy.id) {
+            if (typeof Player !== 'undefined' && Player.skillMemory !== undefined) {
+                Player.skillMemory[this.enemy.id] = this.lastSkillId;
+            }
+        }
+
         // 发布战斗结束事件
         if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
             BattleEventBus.emit(BattleEvents.BATTLE_END, {

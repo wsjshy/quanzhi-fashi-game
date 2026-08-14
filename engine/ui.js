@@ -2162,6 +2162,23 @@ const UI = {
                             opacity: ${state.isPlayerTurn ? 1 : 0.5};
                         ">👊 普攻</button>
                         
+                        ${(BattleSystem.lastSkillId && SkillSystem.getSkill(BattleSystem.lastSkillId)) ? (() => {
+                            const lastSkill = SkillSystem.getSkill(BattleSystem.lastSkillId);
+                            const canRepeat = state.isPlayerTurn && Player.mp >= lastSkill.mpCost;
+                            return `<button onclick="Game.battleRepeatSkill()" ${!canRepeat ? 'disabled' : ''}
+                                title="重复上次技能：${lastSkill.name}（消耗${lastSkill.mpCost}MP）"
+                                style="
+                                    padding: 10px 20px;
+                                    background: linear-gradient(135deg, #335555, #446666);
+                                    border: 2px solid #557777;
+                                    border-radius: 8px;
+                                    color: #ccffee;
+                                    cursor: ${canRepeat ? 'pointer' : 'not-allowed'};
+                                    font-size: 15px;
+                                    opacity: ${canRepeat ? 1 : 0.5};
+                                ">🔄 ${lastSkill.name}(${lastSkill.mpCost})</button>`;
+                        })() : ''}
+                        
                         <button onclick="Game.battleDefend()" ${!state.isPlayerTurn ? 'disabled' : ''} 
                                 title="防御：减少50%受到的伤害，并恢复10%最大MP"
                                 style="
@@ -2217,6 +2234,9 @@ const UI = {
                             const skill = SkillSystem.getSkill(skillId);
                             if (!skill) return '';
                             const canUse = state.isPlayerTurn && state.player.mp >= skill.mpCost;
+                            // v0.15.0: 技能记忆推荐 - 对当前妖魔上次使用的技能
+                            const enemyId = state.enemy && state.enemy.id;
+                            const isRecommended = enemyId && Player.skillMemory && Player.skillMemory[enemyId] === skillId;
                             // 检查元素克制
                             let isCounter = false;
                             let isWeak = false;
@@ -2227,7 +2247,7 @@ const UI = {
                                     if (counter.effect === 'weak') isWeak = true;
                                 }
                             }
-                            const borderColor = isCounter ? '#44ff66' : isWeak ? '#ff4466' : SkillSystem.getElementColor(skill.element);
+                            const borderColor = isRecommended ? '#ffdd44' : isCounter ? '#44ff66' : isWeak ? '#ff4466' : SkillSystem.getElementColor(skill.element);
                             return `
                                 <button onclick="Game.battleUseSkill('${skillId}')" ${!canUse ? 'disabled' : ''}
                                         title="${this.getSkillTooltipText(skill)}${isCounter ? ' [元素克制！伤害+50%]' : isWeak ? ' [元素抵抗，伤害-30%]' : ''}"
@@ -2249,7 +2269,7 @@ const UI = {
                                             return elemIcons[skill.element] || '';
                                         })()}
                                         ${skill.name}
-                                        ${isCounter ? '<span style="color: #44ff66; font-size: 10px; font-weight: bold;"> 克制!</span>' : isWeak ? '<span style="color: #ff4466; font-size: 10px; font-weight: bold;"> 抵抗</span>' : ''}
+                                        ${isRecommended ? '<span style="color: #ffdd44; font-size: 10px; font-weight: bold;"> ⭐推荐</span>' : isCounter ? '<span style="color: #44ff66; font-size: 10px; font-weight: bold;"> 克制!</span>' : isWeak ? '<span style="color: #ff4466; font-size: 10px; font-weight: bold;"> 抵抗</span>' : ''}
                                         ${state.player.skillLevels && state.player.skillLevels[skillId] ? `<span style="font-size: 11px; color: #ffcc66;"> Lv.${state.player.skillLevels[skillId].level || 1}</span>` : ''}
                                     </div>
                                     <div style="font-size: 12px; color: ${state.player.mp >= skill.mpCost ? '#aaccff' : '#ff6666'};">

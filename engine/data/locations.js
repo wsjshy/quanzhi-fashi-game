@@ -124,12 +124,12 @@ const DataLocations = {
         name: "修炼魔法",
         description: "实战修炼（高经验，消耗HP/MP，有概率突破或受伤）",
         icon: "✨",
-        timeCost: 2,
-        staminaCost: 25,
+        timeCost: 1,
+        staminaCost: 15,
         effects: {
-          exp: 24,
-          hp: -10,
-          mp: -20
+          exp: 20,
+          hp: -5,
+          mp: -10
         },
         eventChance: 0.2,
         events: [
@@ -142,12 +142,12 @@ const DataLocations = {
         name: "冥修",
         description: "静心冥修（恢复MP/少量HP，低经验，有概率突破）",
         icon: "🧘",
-        timeCost: 2,
-        staminaCost: 10,
+        timeCost: 1,
+        staminaCost: 5,
         effects: {
-          exp: 6,
-          mp: 40,
-          hp: 10
+          exp: 5,
+          mp: 25,
+          hp: 5
         },
         eventChance: 0.15,
         events: [
@@ -250,11 +250,11 @@ const DataLocations = {
         name: "第一层修炼",
         description: "三步塔第一层，星子活跃度是外界的2倍。安全稳定，适合日常修炼。",
         icon: "🗼",
-        timeCost: 2,
-        staminaCost: 20,
+        timeCost: 1,
+        staminaCost: 15,
         effects: {
-          exp: 50,
-          mp: -20
+          exp: 40,
+          mp: -15
         },
         eventChance: 0.15,
         events: ["event_breakthrough"]
@@ -264,12 +264,12 @@ const DataLocations = {
         name: "第二层修炼",
         description: "三步塔第二层，星子活跃度是外界的3倍。修炼更快，但精神消耗较大。需要Lv5以上。",
         icon: "🗼🗼",
-        timeCost: 2,
-        staminaCost: 35,
+        timeCost: 1,
+        staminaCost: 25,
         effects: {
-          exp: 80,
-          mp: -30,
-          hp: -10
+          exp: 65,
+          mp: -20,
+          hp: -5
         },
         eventChance: 0.2,
         events: ["event_breakthrough", "event_training_fail"],
@@ -280,12 +280,12 @@ const DataLocations = {
         name: "第三层修炼",
         description: "三步塔第三层，星子活跃度是外界的5倍！修炼极速，但有受伤风险。需要Lv8以上。",
         icon: "🗼🗼🗼",
-        timeCost: 2,
-        staminaCost: 50,
+        timeCost: 1,
+        staminaCost: 35,
         effects: {
-          exp: 130,
-          mp: -40,
-          hp: -20
+          exp: 100,
+          mp: -25,
+          hp: -10
         },
         eventChance: 0.3,
         events: ["event_breakthrough", "event_training_fail", "event_tower_insight"],
@@ -403,12 +403,12 @@ const DataLocations = {
         name: "探索",
         description: "在山中探索，中等概率遇敌，可能发现草药、宝箱或中陷阱",
         icon: "🔍",
-        timeCost: 3,
-        staminaCost: 25,
+        timeCost: 2,
+        staminaCost: 15,
         effects: {
-          exp: 10,
-          hp: -5,
-          mp: -10
+          exp: 8,
+          hp: -3,
+          mp: -5
         },
         eventChance: 0.3,
         events: [
@@ -427,11 +427,11 @@ const DataLocations = {
         name: "猎魔",
         description: "主动寻找妖魔战斗，高概率遇敌，战斗胜利获得经验和金币",
         icon: "⚔️",
-        timeCost: 4,
-        staminaCost: 40,
+        timeCost: 2,
+        staminaCost: 25,
         effects: {
-          hp: -15,
-          mp: -20
+          hp: -8,
+          mp: -10
         }
       },
       {
@@ -439,8 +439,8 @@ const DataLocations = {
         name: "采集草药",
         description: "采集魔法草药，低概率遇敌，主要获得草药材料",
         icon: "🌿",
-        timeCost: 2,
-        staminaCost: 20,
+        timeCost: 1,
+        staminaCost: 12,
         effects: {
           addItem: {
             itemId: "magic_herb",
@@ -496,12 +496,12 @@ const DataLocations = {
         name: "深入探索",
         description: "在深山探索，高概率遇强敌，可能发现稀有宝物或珍贵草药",
         icon: "🏔️",
-        timeCost: 4,
-        staminaCost: 35,
+        timeCost: 2,
+        staminaCost: 25,
         effects: {
           exp: 20,
-          hp: -15,
-          mp: -15
+          hp: -10,
+          mp: -10
         },
         eventChance: 0.4,
         events: [
@@ -516,11 +516,11 @@ const DataLocations = {
         name: "深度猎魔",
         description: "在深山猎杀强大的妖魔，极高概率遇敌，战斗胜利获得丰厚奖励",
         icon: "⚔️",
-        timeCost: 5,
-        staminaCost: 50,
+        timeCost: 3,
+        staminaCost: 35,
         effects: {
-          hp: -25,
-          mp: -30
+          hp: -15,
+          mp: -20
         }
       },
       {
@@ -528,8 +528,8 @@ const DataLocations = {
         name: "采集珍稀草药",
         description: "在深山采集珍稀草药，中等概率遇敌，主要获得稀有材料",
         icon: "🌿",
-        timeCost: 3,
-        staminaCost: 30,
+        timeCost: 2,
+        staminaCost: 20,
         eventChance: 0.5,
         events: [
           "event_find_rare_herb",
@@ -610,7 +610,7 @@ const DataLocations = {
         name: "在莫凡家休息",
         description: "在莫凡家休息一下，恢复体力和精神",
         icon: "😴",
-        timeCost: 3,
+        timeCost: 1,
         staminaCost: -40,
         effects: {
           hp: 30,
@@ -703,9 +703,9 @@ const DataLocations = {
         name: "地圣泉修炼",
         description: "进入博城地圣泉修炼，修为突飞猛进",
         icon: "💧",
-        timeCost: 4,
-        staminaCost: 30,
-        effects: { exp: 80 },
+        timeCost: 2,
+        staminaCost: 20,
+        effects: { exp: 60 },
         condition: {
           hasItem: "earth_spring_pass"
         },
@@ -757,14 +757,14 @@ const DataLocations = {
         name: "帮忙巡逻",
         description: "帮守卫巡逻，获得一些报酬和声望",
         icon: "🛡️",
-        timeCost: 3,
-        staminaCost: 25,
+        timeCost: 2,
+        staminaCost: 15,
         condition: {
           minLevel: 6
         },
         effects: {
-          exp: 20,
-          gold: 30
+          exp: 15,
+          gold: 25
         },
         eventChance: 0.2,
         events: [
@@ -1143,9 +1143,9 @@ const DataLocations = {
         name: "地圣泉冥修",
         description: "在地圣泉中央冥修，吸收天地灵气，修为突飞猛进",
         icon: "🧘",
-        timeCost: 4,
-        staminaCost: 20,
-        effects: { exp: 150, mp: 80 },
+        timeCost: 2,
+        staminaCost: 15,
+        effects: { exp: 100, mp: 60 },
         eventChance: 0.5,
         events: ["event_earth_spring_cultivation", "event_earth_spring_anomaly"]
       },

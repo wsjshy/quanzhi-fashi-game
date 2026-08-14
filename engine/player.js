@@ -198,6 +198,7 @@ const Player = {
         this.enhanceLevels = { weapon: 0, armor: 0, accessory: 0 };
         this.enhanceFailStreak = { weapon: 0, armor: 0, accessory: 0 };  // v0.14.0: 连续失败计数，用于保底机制
         this.enhanceHistory = [];  // v0.14.0: 强化记录，最近10次
+        this.skillMemory = {};  // v0.15.0: 技能记忆，{ enemyId: skillId } 对每种妖魔最后使用的技能
         this.activeQuests = [];
         this.completedQuests = [];
         this.currentLocation = 'tianlan_school';
@@ -1620,6 +1621,7 @@ const Player = {
             enhanceLevels: this.enhanceLevels,
             enhanceFailStreak: this.enhanceFailStreak || { weapon: 0, armor: 0, accessory: 0 },
             enhanceHistory: this.enhanceHistory || [],
+            skillMemory: this.skillMemory || {},
             activeQuests: this.activeQuests,
             completedQuests: this.completedQuests,
             currentLocation: this.currentLocation,
@@ -1721,6 +1723,7 @@ const Player = {
             this.enhanceLevels = data.enhanceLevels ?? { weapon: 0, armor: 0, accessory: 0 };
             this.enhanceFailStreak = data.enhanceFailStreak ?? { weapon: 0, armor: 0, accessory: 0 };
             this.enhanceHistory = data.enhanceHistory || [];
+            this.skillMemory = data.skillMemory || {};
             this.activeQuests = data.activeQuests ?? [];
             this.completedQuests = data.completedQuests ?? [];
             this.currentLocation = data.currentLocation ?? 'tianlan_school';

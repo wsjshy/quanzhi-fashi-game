@@ -95,8 +95,8 @@ const DataQuests = {
   quest_hunt_demon: {
     id: "quest_hunt_demon",
     name: "猎杀妖魔",
-    description: "莫凡说雪峰山有一只幽狼兽在作乱，去把它解决掉！",
-    giver: "mo_fan",
+    description: "唐月老师说雪峰山有一只幽狼兽在作乱，去把它解决掉！",
+    giver: "tang_yue",
     type: "hunt",
     objectives: [
       {
@@ -242,7 +242,7 @@ const DataQuests = {
     id: "quest_hunt_shadow",
     name: "暗影威胁",
     description: "猎魔者公会发布了任务，雪峰山的暗影怪越来越多了。去击败 2 只暗影怪。",
-    giver: "mo_fan",
+    giver: "hunter_receptionist",
     type: "hunt",
     objectives: [
       {
@@ -278,7 +278,7 @@ const DataQuests = {
     id: "quest_hunt_stone",
     name: "石怪威胁",
     description: "雪峰山的石怪越来越多了，挡住了采药人的路。去击败 2 只石怪。",
-    giver: "mo_fan",
+    giver: "hunter_receptionist",
     type: "hunt",
     objectives: [
       {
@@ -1442,7 +1442,7 @@ const DataQuests = {
     nextQuest: "quest_one_eye_wolf",
     isMainQuest: false,
     autoStart: false,
-    dialogueStart: "莫凡，我奶奶家在老榕树街区，最近夜里总有奇怪的震动，可是工地早就停工了。我有点担心，你能陪我去看看吗？",
+    dialogueStart: "我奶奶家在老榕树街区，最近夜里总有奇怪的震动，可是工地早就停工了。我有点担心，你能陪我去看看吗？",
     dialogueInProgress: "寻妖粉显示这里确实有妖魔活动的痕迹，脚印很大，不像是巨眼猩鼠。继续深入调查，小心点。",
     dialogueComplete: "果然有妖魔！是一只独眼魔狼，而且好像在进阶，非常危险。赶紧通知猎妖队！"
   },
@@ -1539,7 +1539,7 @@ const DataQuests = {
     nextQuest: "quest_earth_spring",
     isMainQuest: true,
     autoStart: false,
-    dialogueStart: "莫凡，宇昂的成年礼决斗就要开始了。穆卓云这是想拿你当垫脚石，给宇昂立威。胜者将获得地圣泉修炼机会，这对你来说也是个机遇。尽力就好，输了也没人会怪你。",
+    dialogueStart: "宇昂的成年礼决斗就要开始了。穆卓云这是想拿你当垫脚石，给宇昂立威。胜者将获得地圣泉修炼机会，这对你来说也是个机遇。尽力就好，输了也没人会怪你。",
     dialogueInProgress: "宇昂的冰系很强，还有地波履魔具。小心他的冰蔓·覆盖，那是3级冰系技能，范围极大！",
     dialogueComplete: "赢了！你竟然赢了宇昂！整个博城都会记住今天的！地圣泉的修炼机会是你的了，好好把握，争取冲击中阶！"
   },
@@ -1743,7 +1743,7 @@ const DataQuests = {
     id: "quest_hunter_guild_recruit",
     name: "猎妖队招募",
     description: "博城猎魔者公会正在招募新的猎妖师。去猎魔者公会了解一下，加入猎妖队，成为一名真正的猎妖师！",
-    giver: "mo_fan",
+    giver: "xu_dahuang",
     type: "story",
     objectives: [
       {
@@ -1937,10 +1937,10 @@ const DataQuests = {
     id: "quest_mingzhu_exam_notice",
     name: "主校区考核",
     description: "导师通知：主校区考核即将开始，目标是在主校区捕获一只暗影妖兽。通过者可入主校区。",
-    giver: "mo_fan",
+    giver: "tang_yue",
     type: "story",
     objectives: [
-      { type: "talk", npcId: "mo_fan", count: 1, description: "与莫凡讨论考核" }
+      { type: "talk", npcId: "tang_yue", count: 1, description: "与唐月讨论考核" }
     ],
     rewards: { exp: 200, gold: 100 },
     prerequisites: [],
@@ -1974,7 +1974,7 @@ const DataQuests = {
     id: "quest_catch_shadow_beast",
     name: "捕获暗影妖兽",
     description: "进入主校区，找到并击败暗影妖兽。注意：其他学生也在争夺。",
-    giver: "mo_fan",
+    giver: "tang_yue",
     type: "hunt",
     objectives: [
       { type: "kill", enemyId: "shadow_beast", count: 1, description: "击败暗影妖兽" }
@@ -1996,7 +1996,7 @@ const DataQuests = {
     id: "quest_black_church_encounter",
     name: "黑教廷现身",
     description: "考核中出现了黑教廷的灰衣人！击败他们，保护同学。",
-    giver: "mo_fan",
+    giver: "tang_yue",
     type: "hunt",
     objectives: [
       { type: "kill", enemyId: "black_church_gray", count: 3, description: "击败3名黑教廷灰衣人" }
@@ -2018,10 +2018,10 @@ const DataQuests = {
     id: "quest_xu_zhaoting_farewell",
     name: "最后的告别",
     description: "许昭霆被黑教廷变成了诅咒畜妖。在他残存的意识消失前，完成他最后的心愿。",
-    giver: "mo_fan",
+    giver: "zhang_xiaohou",
     type: "story",
     objectives: [
-      { type: "talk", npcId: "mo_fan", count: 1, description: "听莫凡讲述经过" }
+      { type: "talk", npcId: "zhang_xiaohou", count: 1, description: "听张小侯讲述经过" }
     ],
     rewards: {
       exp: 1000,
@@ -2039,8 +2039,8 @@ const DataQuests = {
   quest_da_hun_zhan: {
     id: "quest_da_hun_zhan",
     name: "大混战",
-    description: "莫凡用暗影妖兽引蛇出洞，近千学生在驯兽铁笼前混战。在混乱中击败黑教廷的党羽。",
-    giver: "mo_fan",
+    description: "你用暗影妖兽引蛇出洞，近千学生在驯兽铁笼前混战。在混乱中击败黑教廷的党羽。",
+    giver: "tang_yue",
     type: "hunt",
     objectives: [
       { type: "kill", enemyId: "shen_mingxiao", count: 1, description: "击败沈明笑" },
@@ -2063,7 +2063,7 @@ const DataQuests = {
     id: "quest_yu_ang_final",
     name: "对决宇昂",
     description: "宇昂伪装在学生中，最终现身。与他决一死战，为许昭霆报仇！",
-    giver: "mo_fan",
+    giver: "tang_yue",
     type: "hunt",
     objectives: [
       { type: "kill", enemyId: "yu_ang_black_church", count: 1, description: "击败宇昂（黑教廷教士）" }

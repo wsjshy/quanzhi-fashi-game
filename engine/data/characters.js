@@ -4972,8 +4972,8 @@ const DataCharacters = {
     location: "mo_fan_home",
     availableTimes: ["morning", "noon", "afternoon", "evening", "night"],
     dialogue: [
-      { trigger: "default", text: "莫凡哥哥，你来了。今天修炼还顺利吗？" },
-      { trigger: "low_stamina", text: "莫凡哥哥看起来很累了，要好好休息呀。" }
+      { trigger: "default", text: "你来了。今天修炼还顺利吗？" },
+      { trigger: "low_stamina", text: "你看起来很累了，要好好休息呀。" }
     ],
     givesQuests: [],
     personality: {
@@ -5013,7 +5013,7 @@ const DataCharacters = {
       nodes: {
         default: {
           id: "default",
-          texts: ["莫凡哥哥，你来了。", "今天修炼还顺利吗？要注意身体哦。"],
+          texts: ["你来了。", "今天修炼还顺利吗？要注意身体哦。"],
           choices: [
             { text: "心夏，最近有人欺负你吗？", next: "about_bullies" },
             { text: "姑姑身体还好吗？", next: "about_aunt" },
@@ -5022,7 +5022,7 @@ const DataCharacters = {
         },
         about_bullies: {
           id: "about_bullies",
-          texts: ["没...没有的，莫凡哥哥不要担心。", "你已经帮我赶走那些坏人了，他们不敢再来了。"],
+          texts: ["没...没有的，你不要担心。", "你已经帮我赶走那些坏人了，他们不敢再来了。"],
           effects: { opinion: 3, trust: 5 },
           choices: [{ text: "有事一定要告诉我。", next: "default", action: "back" }]
         },
@@ -6961,7 +6961,7 @@ const DataCharacters = {
           texts: [
             "那场战斗……我输得心服口服。你的霹雳夜叉，我挡不住。",
             "但下次就不一定了。我也在进步。",
-            "莫凡，你是个值得认真对待的对手。"
+            "你是个值得认真对待的对手。"
           ],
           choices: [
             { id: "rematch", text: "随时奉陪", effects: { opinion: 5, trust: 3 }, nextNode: "default" }
@@ -7017,7 +7017,7 @@ const DataCharacters = {
           id: "default",
           texts: [
             "大魔头！你又在偷懒！",
-            "嘿，莫凡，今天有没有什么好玩的事？",
+            "嘿，今天有没有什么好玩的事？",
             "回来啦？牧姐姐不在，你可别偷看我！"
           ],
           mood: "playful",
@@ -7501,7 +7501,7 @@ const DataCharacters = {
     availableTimes: ["morning", "afternoon", "evening"],
     dialogue: [
       { trigger: "default", text: "黑教廷...我绝不会放过他们。" },
-      { trigger: "greeting", text: "莫凡，你也是博城出来的吧。" }
+      { trigger: "greeting", text: "你也是博城出来的吧。" }
     ],
     givesQuests: [],
     personality: {
@@ -7529,7 +7529,7 @@ const DataCharacters = {
         default: {
           id: "default",
           texts: [
-            "莫凡！你也来明珠了？太好了，博城出来的就我们几个了。",
+            "你也来明珠了？太好了，博城出来的就我们几个了。",
             "黑教廷……我绝不会放过他们。我全家都死在博城灾难里。",
             "我现在是雷风双系，虽然比不了你那个变态双系，但杀黑教廷绰绰有余。"
           ],
@@ -7572,7 +7572,7 @@ const DataCharacters = {
           texts: [
             "我一直在暗中查。黑教廷在明珠有眼线，而且不止一个。",
             "我发现有个灰衣人经常在学校附近出没，像是在联络什么人。",
-            "莫凡，你也要小心。博城那场灾难的参与者，有些可能就混在明珠。"
+            "你也要小心。博城那场灾难的参与者，有些可能就混在明珠。"
           ],
           effects: { giveInfo: "black_church_in_mingzhu" },
           choices: [

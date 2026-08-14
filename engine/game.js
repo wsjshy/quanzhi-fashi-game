@@ -248,12 +248,13 @@ const Game = {
             }
         }
         
+        // v0.16.0: 移除逃课惩罚，课程变为可选成长手段
+        // 有课时状态栏会提示，但不强制，逃课不扣声望
         if (currentClass && action && !action.isClassAction && actionId !== 'sleep' && actionId !== 'rest') {
-            // 有课但选择其他行动，逃课惩罚
             if (!Player.flags['skipped_class_' + Player.day + '_' + TimeSystem.getCurrentPeriod()]) {
                 Player.flags['skipped_class_' + Player.day + '_' + TimeSystem.getCurrentPeriod()] = true;
-                WorldState.changeReputation('school', -5);
-                UI.showMessage(`⚠️ 你逃课了！班级声望 -5\n（当前有${currentClass.name}，老师${DataManager.getCharacter(currentClass.teacher)?.name || '未知'}）`);
+                // 仅提示，不惩罚
+                UI.showMessage(`💡 现在有${currentClass.name}（老师${DataManager.getCharacter(currentClass.teacher)?.name || '未知'}），不过你可以自由安排时间。`);
             }
         }
 
@@ -1530,6 +1531,27 @@ const Game = {
         BattleSystem.playerCastSkill(skillId);
         UI.updateBattleScreen();
         
+        if (!BattleSystem.active) {
+            this.endBattle();
+        }
+    },
+
+    // v0.15.0: 重复上次技能
+    battleRepeatSkill() {
+        if (!BattleSystem.isPlayerTurn) return;
+        const lastSkillId = BattleSystem.lastSkillId;
+        if (!lastSkillId) return;
+
+        const skill = SkillSystem.getSkill(lastSkillId);
+        if (!skill) return;
+        if (Player.mp < skill.mpCost) {
+            UI.showMessage('魔法值不足，无法重复上次技能！');
+            return;
+        }
+
+        BattleSystem.playerCastSkill(lastSkillId);
+        UI.updateBattleScreen();
+
         if (!BattleSystem.active) {
             this.endBattle();
         }
