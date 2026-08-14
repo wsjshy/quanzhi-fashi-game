@@ -603,7 +603,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.10.0 · 装备优化</div>
+                ">v0.11.0 · 战斗策略</div>
             </div>
         `;
 
@@ -1966,6 +1966,39 @@ const UI = {
                                     return `<span style="font-size: 11px; padding: 2px 8px; background: ${color}22; border: 1px solid ${color}; border-radius: 10px; color: ${color};">${name}系</span>`;
                                 }).join('')}
                             </div>
+                            <!-- v0.11.0: 元素克制提示 -->
+                            <div style="margin-bottom: 8px; display: flex; flex-direction: column; gap: 3px; align-items: center;">
+                                ${(() => {
+                                    const elemNames = { fire: '火', ice: '冰', thunder: '雷', earth: '土', wind: '风', water: '水', light: '光', dark: '暗' };
+                                    const elemColors = { fire: '#ff6644', ice: '#66aaff', thunder: '#ffdd44', earth: '#aa8844', wind: '#88ffcc', water: '#66bbff', light: '#ffffcc', dark: '#aa66ff' };
+                                    // 克制关系：key克制value
+                                    const counterMap = { fire: 'ice', ice: 'wind', wind: 'earth', earth: 'thunder', thunder: 'water', water: 'fire' };
+                                    // 计算被克制的元素（weakTo）和克制的元素（strongAgainst）
+                                    const weakTo = [];
+                                    const strongAgainst = [];
+                                    state.enemy.elements.forEach(elem => {
+                                        // 找到克制当前元素的元素
+                                        Object.entries(counterMap).forEach(([attacker, defender]) => {
+                                            if (defender === elem) weakTo.push(attacker);
+                                        });
+                                        // 当前元素克制的元素
+                                        if (counterMap[elem]) strongAgainst.push(counterMap[elem]);
+                                        // 光暗互相克制
+                                        if (elem === 'light') { weakTo.push('dark'); strongAgainst.push('dark'); }
+                                        if (elem === 'dark') { weakTo.push('light'); strongAgainst.push('light'); }
+                                    });
+                                    const uniqueWeak = [...new Set(weakTo)];
+                                    const uniqueStrong = [...new Set(strongAgainst)];
+                                    let html = '';
+                                    if (uniqueWeak.length > 0) {
+                                        html += `<div style="font-size: 10px; color: #66ff66;">被克制: ${uniqueWeak.map(e => `<span style="color: ${elemColors[e]};">${elemNames[e]}</span>`).join('/')} (150%伤害)</div>`;
+                                    }
+                                    if (uniqueStrong.length > 0) {
+                                        html += `<div style="font-size: 10px; color: #ff8866;">克制: ${uniqueStrong.map(e => `<span style="color: ${elemColors[e]};">${elemNames[e]}</span>`).join('/')} (70%伤害)</div>`;
+                                    }
+                                    return html;
+                                })()}
+                            </div>
                         ` : ''}
                         <!-- 敌人种族天赋 -->
                         ${state.enemy.traits && state.enemy.traits.length > 0 ? `
@@ -2186,13 +2219,13 @@ const UI = {
                                     if (counter.effect === 'weak') isWeak = true;
                                 }
                             }
-                            const borderColor = isCounter ? '#ff6600' : isWeak ? '#666666' : SkillSystem.getElementColor(skill.element);
+                            const borderColor = isCounter ? '#44ff66' : isWeak ? '#ff4466' : SkillSystem.getElementColor(skill.element);
                             return `
                                 <button onclick="Game.battleUseSkill('${skillId}')" ${!canUse ? 'disabled' : ''}
-                                        title="${this.getSkillTooltipText(skill)}${isCounter ? ' [克制！伤害+50%]' : isWeak ? ' [被克制，伤害-30%]' : ''}"
+                                        title="${this.getSkillTooltipText(skill)}${isCounter ? ' [元素克制！伤害+50%]' : isWeak ? ' [元素抵抗，伤害-30%]' : ''}"
                                         style="
                                     padding: 12px;
-                                    background: linear-gradient(135deg, ${isCounter ? '#ff6600' : SkillSystem.getElementColor(skill.element)}22, ${isCounter ? '#ff9933' : SkillSystem.getElementColor(skill.element)}44);
+                                    background: linear-gradient(135deg, ${isCounter ? '#226633' : isWeak ? '#662233' : SkillSystem.getElementColor(skill.element)}22, ${isCounter ? '#33aa55' : isWeak ? '#aa3355' : SkillSystem.getElementColor(skill.element)}44);
                                     border: 2px solid ${borderColor};
                                     border-radius: 8px;
                                     color: #fff;
@@ -2200,15 +2233,15 @@ const UI = {
                                     text-align: center;
                                     opacity: ${canUse ? 1 : 0.4};
                                     transition: all 0.2s;
-                                    ${isCounter ? 'box-shadow: 0 0 10px #ff660080;' : ''}
-                                " ${canUse ? 'onmouseover="this.style.boxShadow=\'0 0 15px ' + (isCounter ? '#ff6600' : SkillSystem.getElementColor(skill.element)) + '80\'" onmouseout="this.style.boxShadow=\'' + (isCounter ? '0 0 10px #ff660080' : 'none') + '\'"' : ''}>
+                                    ${isCounter ? 'box-shadow: 0 0 12px #44ff6680; animation: pulse 1.5s infinite;' : isWeak ? 'box-shadow: 0 0 8px #ff446660;' : ''}
+                                " ${canUse ? 'onmouseover="this.style.boxShadow=\'0 0 15px ' + (isCounter ? '#44ff66' : isWeak ? '#ff4466' : SkillSystem.getElementColor(skill.element)) + '80\'" onmouseout="this.style.boxShadow=\'' + (isCounter ? '0 0 12px #44ff6680' : isWeak ? '0 0 8px #ff446660' : 'none') + '\'"' : ''}>
                                     <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">
                                         ${(() => {
                                             const elemIcons = { fire: '🔥', ice: '❄️', thunder: '⚡', earth: '🪨', wind: '🌪️', water: '💧', light: '✨', dark: '🌑', heal: '💚', summon: '🐺', neutral: '⚔️' };
                                             return elemIcons[skill.element] || '';
                                         })()}
                                         ${skill.name}
-                                        ${isCounter ? '<span style="color: #ff6600; font-size: 10px;">克制!</span>' : isWeak ? '<span style="color: #888; font-size: 10px;">不利</span>' : ''}
+                                        ${isCounter ? '<span style="color: #44ff66; font-size: 10px; font-weight: bold;"> 克制!</span>' : isWeak ? '<span style="color: #ff4466; font-size: 10px; font-weight: bold;"> 抵抗</span>' : ''}
                                         ${state.player.skillLevels && state.player.skillLevels[skillId] ? `<span style="font-size: 11px; color: #ffcc66;"> Lv.${state.player.skillLevels[skillId].level || 1}</span>` : ''}
                                     </div>
                                     <div style="font-size: 12px; color: ${state.player.mp >= skill.mpCost ? '#aaccff' : '#ff6666'};">
