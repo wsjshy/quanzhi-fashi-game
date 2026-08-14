@@ -603,7 +603,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.9.9 · 行动探索</div>
+                ">v0.10.0 · 装备优化</div>
             </div>
         `;
 
@@ -3285,18 +3285,31 @@ const UI = {
                             const enhanceLevel = Player.enhanceLevels[slot] || 0;
                             const enhanceCost = Player.getEnhanceCost(slot);
                             const enhanceRate = Math.floor(Player.getEnhanceSuccessRate(slot) * 100);
+                            // v0.10.0: 稀有度颜色
+                            const rarityColors = { '普通': '#aaaaaa', '优秀': '#66ff66', '稀有': '#6699ff', '史诗': '#cc66ff', '传说': '#ffaa44' };
+                            const rarityColor = item ? (rarityColors[item.rarity] || '#aaaaaa') : '#556677';
+                            // v0.10.0: 装备评分计算
+                            const calcScore = (equip) => {
+                                if (!equip?.equipStats) return 0;
+                                const s = equip.equipStats;
+                                return Math.floor((s.attack || 0) * 2 + (s.defense || 0) * 1.5 + (s.speed || 0) * 2 + (s.maxHp || 0) * 0.1 + (s.maxMp || 0) * 0.1 + (s.critRate || 0) * 50 + (s.hitRate || 0) * 30);
+                            };
+                            const itemScore = item ? calcScore(item) : 0;
                             return `
                                 <div style="
                                     padding: 15px;
                                     background: rgba(40, 50, 60, 0.8);
-                                    border: 2px solid #556677;
+                                    border: 2px solid ${rarityColor};
                                     border-radius: 10px;
                                     margin-bottom: 15px;
+                                    ${item ? `box-shadow: 0 0 8px ${rarityColor}33;` : ''}
                                 ">
                                     <div style="font-size: 13px; color: #8899aa; margin-bottom: 5px;">${slotNames[slot]} ${enhanceLevel > 0 ? `<span style="color: #ff8844;">+${enhanceLevel}</span>` : ''}</div>
                                     ${item ? `
-                                        <div style="font-size: 16px; color: #fff; margin-bottom: 5px;">
+                                        <div style="font-size: 16px; color: ${rarityColor}; margin-bottom: 5px; font-weight: bold;">
                                             ${item.icon || '🔹'} ${item.name}
+                                            <span style="font-size: 11px; color: #ffd700; background: rgba(100, 80, 20, 0.5); padding: 2px 6px; border-radius: 6px; margin-left: 6px;">⭐ ${itemScore}</span>
+                                            <span style="font-size: 11px; color: ${rarityColor}; margin-left: 6px;">[${item.rarity || '普通'}]</span>
                                         </div>
                                         <div style="font-size: 12px; color: #aabbcc;">
                                             ${Object.entries(item.equipStats || {}).map(([k, v]) => {
@@ -3381,21 +3394,78 @@ const UI = {
                                 const isEquip = itemData.type === 'weapon' || itemData.type === 'armor' || itemData.type === 'accessory' || itemData.type === 'equipment';
                                 const canUse = itemData.usableOutOfBattle && !isEquip;
                                 
+                                // v0.10.0: 装备稀有度颜色和评分
+                                const rarityColors = { '普通': '#aaaaaa', '优秀': '#66ff66', '稀有': '#6699ff', '史诗': '#cc66ff', '传说': '#ffaa44' };
+                                const equipRarityColor = isEquip ? (rarityColors[itemData.rarity] || '#aaaaaa') : '#556677';
+                                const calcEquipScore = (equip) => {
+                                    if (!equip?.equipStats) return 0;
+                                    const s = equip.equipStats;
+                                    return Math.floor((s.attack || 0) * 2 + (s.defense || 0) * 1.5 + (s.speed || 0) * 2 + (s.maxHp || 0) * 0.1 + (s.maxMp || 0) * 0.1 + (s.critRate || 0) * 50 + (s.hitRate || 0) * 30);
+                                };
+                                const equipScore = isEquip ? calcEquipScore(itemData) : 0;
+                                
+                                // v0.10.0: 装备对比
+                                let equipCompare = '';
+                                if (isEquip && itemData.equipSlot) {
+                                    const currentEquip = equipment[itemData.equipSlot];
+                                    if (currentEquip) {
+                                        const currentScore = calcEquipScore(currentEquip);
+                                        const scoreDiff = equipScore - currentScore;
+                                        const statNames = { attack: '攻击', defense: '防御', speed: '速度', maxHp: '生命', maxMp: '魔法', critRate: '暴击', hitRate: '命中' };
+                                        const statDiffs = [];
+                                        Object.keys(statNames).forEach(stat => {
+                                            const newVal = itemData.equipStats?.[stat] || 0;
+                                            const oldVal = currentEquip.equipStats?.[stat] || 0;
+                                            const diff = newVal - oldVal;
+                                            if (diff !== 0) {
+                                                const displayVal = stat === 'critRate' || stat === 'hitRate' ? `${diff > 0 ? '+' : ''}${(diff * 100).toFixed(0)}%` : `${diff > 0 ? '+' : ''}${diff}`;
+                                                statDiffs.push(`<span style="color: ${diff > 0 ? '#66ff66' : '#ff6666'};">${statNames[stat]} ${displayVal}</span>`);
+                                            }
+                                        });
+                                        equipCompare = `
+                                            <div style="font-size: 11px; margin-top: 6px; padding: 6px; background: rgba(0,0,0,0.3); border-radius: 5px;">
+                                                <div style="color: ${scoreDiff >= 0 ? '#66ff66' : '#ff6666'}; margin-bottom: 3px;">评分对比: ${scoreDiff >= 0 ? '+' : ''}${scoreDiff}</div>
+                                                <div>${statDiffs.join(' | ') || '属性相同'}</div>
+                                            </div>
+                                        `;
+                                    } else {
+                                        equipCompare = `<div style="font-size: 11px; color: #66ff66; margin-top: 6px;">当前槽位为空，装备后提升评分 +${equipScore}</div>`;
+                                    }
+                                }
+                                
+                                // v0.10.0: 装备属性显示
+                                let equipStatsDisplay = '';
+                                if (isEquip && itemData.equipStats) {
+                                    const statNames = { attack: '攻击', defense: '防御', speed: '速度', maxHp: '生命', maxMp: '魔法', critRate: '暴击', hitRate: '命中' };
+                                    equipStatsDisplay = `
+                                        <div style="font-size: 11px; color: #88ccaa; margin-top: 4px;">
+                                            ${Object.entries(itemData.equipStats).map(([k, v]) => {
+                                                const displayVal = k === 'critRate' || k === 'hitRate' ? `${(v * 100).toFixed(0)}%` : `+${v}`;
+                                                return `${statNames[k] || k} ${displayVal}`;
+                                            }).join(' | ')}
+                                        </div>
+                                    `;
+                                }
+                                
                                 return `
                                     <div style="
                                         padding: 12px;
                                         background: rgba(40, 50, 60, 0.8);
-                                        border: 2px solid #556677;
+                                        border: 2px solid ${isEquip ? equipRarityColor : '#556677'};
                                         border-radius: 8px;
+                                        ${isEquip ? `box-shadow: 0 0 6px ${equipRarityColor}33;` : ''}
                                     ">
-                                        <div style="font-size: 15px; font-weight: bold; color: #fff; margin-bottom: 4px;">
+                                        <div style="font-size: 15px; font-weight: bold; color: ${isEquip ? equipRarityColor : '#fff'}; margin-bottom: 4px;">
                                             ${itemData.icon || '📦'} ${itemData.name}
+                                            ${isEquip ? `<span style="font-size: 10px; color: #ffd700; background: rgba(100, 80, 20, 0.5); padding: 1px 5px; border-radius: 5px; margin-left: 4px;">⭐${equipScore}</span>` : ''}
                                             <span style="float: right; color: #ffd700;">x${item.count}</span>
                                         </div>
-                                        <div style="font-size: 12px; color: #999; margin-bottom: 10px; min-height: 30px;">
+                                        <div style="font-size: 12px; color: #999; margin-bottom: 6px; min-height: 20px;">
                                             ${itemData.description}${(itemData.dynamicLore || []).filter(d => WorldState.getFlag(d.flag)).map(d => `<span style="color: #88aacc;">${d.text}</span>`).join('')}
                                         </div>
-                                        <div style="display: flex; gap: 8px;">
+                                        ${equipStatsDisplay}
+                                        ${equipCompare}
+                                        <div style="display: flex; gap: 8px; margin-top: 8px;">
                                             ${canUse ? `
                                                 <div onclick="Game.useItem('${item.itemId}')" style="
                                                     flex: 1;
