@@ -1551,6 +1551,15 @@ const BattleSystem = {
                     this.applyDamage(this.enemy, { amount: explDmg, element: 'fire', isCrit: this.player.talentEffects.explosionCritGuaranteed, isMiss: false }, this.player);
                     this.addLog(`💥 爆炸！额外造成 ${explDmg} 点伤害！`, 'element');
                     this.showDamageNumber('enemy', explDmg, 'magic');
+                    // 连锁爆炸（chainExplosionChance：爆炸后概率触发二次爆炸）
+                    if (this.player.talentEffects.chainExplosionChance) {
+                        if (Math.random() < this.player.talentEffects.chainExplosionChance) {
+                            const chainExplDmg = Math.floor(explDmg * (this.player.talentEffects.chainExplosionDamage || 0.5));
+                            this.applyDamage(this.enemy, { amount: chainExplDmg, element: 'fire', isCrit: false, isMiss: false }, this.player);
+                            this.addLog(`💥 连锁爆炸！再造成 ${chainExplDmg} 点伤害！`, 'element');
+                            this.showDamageNumber('enemy', chainExplDmg, 'magic');
+                        }
+                    }
                 }
             }
             // 天赋：闪电连锁（chainChance：攻击时概率连锁额外雷电伤害）
@@ -1707,7 +1716,15 @@ const BattleSystem = {
             totalTime: castTime
         };
 
-        this.player.mp -= skill.mpCost;
+        // 计算实际MP消耗（含天赋减免）
+        let channelMpCost = skill.mpCost;
+        if (this.player.mpCostReduction) {
+            channelMpCost = Math.max(0, Math.floor(skill.mpCost * (1 - this.player.mpCostReduction)));
+        }
+        if (this.player.talentEffects && this.player.talentEffects.comboMpReduction && (this.player.comboCount || 0) > 0) {
+            channelMpCost = Math.max(0, Math.floor(channelMpCost * (1 - this.player.talentEffects.comboMpReduction)));
+        }
+        this.player.mp -= channelMpCost;
         this.addLog(`你开始引导 ${skill.name}...（${castTime} 回合后释放）`, 'magic');
         
         // 发布技能引导事件
@@ -1736,6 +1753,13 @@ const BattleSystem = {
         let actualMpCost = skill.mpCost;
         if (isPlayer && this.player.mpCostReduction) {
             actualMpCost = Math.max(0, Math.floor(skill.mpCost * (1 - this.player.mpCostReduction)));
+        }
+        // 连段MP减少（comboMpReduction：连击时第二段及以后MP消耗降低）
+        if (isPlayer && this.player.talentEffects && this.player.talentEffects.comboMpReduction) {
+            const comboReduction = this.player.talentEffects.comboMpReduction;
+            if ((this.player.comboCount || 0) > 0) {
+                actualMpCost = Math.max(0, Math.floor(actualMpCost * (1 - comboReduction)));
+            }
         }
         casterData.mp -= actualMpCost;
 
@@ -1927,6 +1951,35 @@ const BattleSystem = {
                 }
             }
             
+            // 陨石（meteor）：土系技能召唤陨石，延迟数回合后落下
+            if (isPlayer && skill.element === 'earth' && this.player.talentEffects && this.player.talentEffects.meteor) {
+                const te = this.player.talentEffects;
+                this._meteorCountdown = te.meteorInterval || 4;
+                this._meteorDamage = te.meteorDamage || 1.2;
+                this._meteorStunChance = te.meteorStunChance || 0.5;
+                this.addLog(`🪨 陨石正在凝聚，${this._meteorCountdown}回合后落下！`, 'element');
+            }
+
+            // 龙卷风（tornado）：风系技能命中后概率召唤龙卷风
+            if (isPlayer && skill.element === 'wind' && totalDamage > 0 && this.player.talentEffects && this.player.talentEffects.tornadoChance) {
+                const te = this.player.talentEffects;
+                if (Math.random() < te.tornadoChance) {
+                    const tornadoDmg = Math.floor(this.player.magicPower * (te.tornadoDamage || 0.4));
+                    this.applyDamage(this.enemy, { amount: tornadoDmg, element: 'wind', isCrit: false, isMiss: false }, this.player);
+                    this.addLog(`🌪️ 龙卷风席卷！对 ${this.enemy.name} 造成 ${tornadoDmg} 点风系伤害！`, 'element');
+                    this.showDamageNumber('enemy', tornadoDmg, 'magic');
+                    // 击退效果：降低敌人攻击力
+                    if (te.tornadoKnockback) {
+                        this.addStatusEffect(this.enemy, {
+                            type: 'attack_down', name: '击退',
+                            duration: 2, value: 0.15,
+                            icon: '🌪️', desc: '被龙卷风击退，攻击力降低'
+                        }, 0, false);
+                        this.addLog(`💨 ${this.enemy.name} 被龙卷风击退，攻击力降低！`, 'debuff');
+                    }
+                }
+            }
+
             // 连续暴击记录（仅玩家，用于幸运儿成就）
             if (isPlayer && typeof WorldState !== 'undefined' && typeof DataAchievements !== 'undefined') {
                 if (damage.isCrit) {
@@ -3399,7 +3452,29 @@ const BattleSystem = {
         // 处理状态效果（每回合结束）
         this.tickStatusEffects(this.player, true);
         this.tickStatusEffects(this.enemy, false);
-        
+
+        // 陨石倒计时（每回合-1，到0时落下）
+        if (this._meteorCountdown > 0) {
+            this._meteorCountdown--;
+            if (this._meteorCountdown <= 0) {
+                const meteorDmg = Math.floor(this.player.magicPower * (this._meteorDamage || 1.2));
+                this.applyDamage(this.enemy, { amount: meteorDmg, element: 'earth', isCrit: false, isMiss: false }, this.player);
+                this.addLog(`☄️ 陨石坠落！对 ${this.enemy.name} 造成 ${meteorDmg} 点土系伤害！`, 'element');
+                this.showDamageNumber('enemy', meteorDmg, 'crit');
+                // 概率眩晕
+                if (Math.random() < (this._meteorStunChance || 0.5)) {
+                    this.addStatusEffect(this.enemy, {
+                        type: 'stun', name: '陨石冲击', duration: 1,
+                        icon: '☄️', desc: '被陨石冲击眩晕'
+                    }, 0, false);
+                    this.addLog(`💫 ${this.enemy.name} 被陨石冲击眩晕！`, 'debuff');
+                }
+                this._meteorCountdown = 0;
+            } else {
+                this.addLog(`🪨 陨石还有 ${this._meteorCountdown} 回合落下...`, 'element');
+            }
+        }
+
         // MP自然恢复（每回合5%）
         if (this.player.maxMp > 0) {
             const mpRegen = Math.floor(this.player.maxMp * 0.05);
