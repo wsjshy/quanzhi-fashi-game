@@ -1946,6 +1946,11 @@ const DataCharacters = {
       canBeMentor: true,
       canBeRival: true
     },
+    datePreferences: {
+      loved: ["xuefeng_sunset", "cafe"],
+      liked: ["library", "tower_train"],
+      disliked: ["city_stroll"]
+    },
     relationships: {
       mo_fan: {
         opinion: -15,

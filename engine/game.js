@@ -2489,6 +2489,28 @@ const Game = {
                             ⚔️ 切磋/挑战
                         </div>
                     ` : ''}
+                    ${(() => {
+                        // v0.18.0: 约会邀请按钮（朋友级+可恋爱NPC）
+                        const score = npcState.opinion * 0.6 + npcState.trust * 0.3 + npcState.familiarity * 0.1;
+                        const canDate = npc.relationshipCap?.canRomance && score >= 45;
+                        if (canDate) {
+                            return `<div onclick="Game.showDateInvite('${npc.id}')" style="
+                                padding: 12px 20px;
+                                background: rgba(80, 40, 80, 0.8);
+                                border: 2px solid #aa66aa;
+                                border-radius: 8px;
+                                color: #ffccff;
+                                cursor: pointer;
+                                text-align: center;
+                                transition: all 0.3s;
+                                font-size: 15px;
+                                margin-top: 8px;
+                            " onmouseover="this.style.borderColor='#ff99ff'; this.style.background='rgba(120, 50, 120, 0.9)'" onmouseout="this.style.borderColor='#aa66aa'; this.style.background='rgba(80, 40, 80, 0.8)'">
+                                💕 邀请约会
+                            </div>`;
+                        }
+                        return '';
+                    })()}
                 </div>
             </div>
             </div>
@@ -2560,6 +2582,136 @@ const Game = {
         this._currentDialogueNPC = null;
         this.state = 'map';
         UI.renderMapScreen();
+        Player.save();
+    },
+
+    // ========== v0.18.0 约会系统 ==========
+
+    // 约会地点配置
+    DateLocations: {
+        library: { id: "library", name: "图书馆", icon: "📚", opinionGain: 3, trustGain: 2, eventChance: 0.3, timeCost: 2, staminaCost: 5, expGain: 10, description: "安静地一起看书" },
+        xuefeng_sunset: { id: "xuefeng_sunset", name: "雪峰山看日落", icon: "🌅", opinionGain: 5, trustGain: 3, eventChance: 0.5, timeCost: 3, staminaCost: 15, expGain: 5, description: "去雪峰山看日落，浪漫但耗体力" },
+        city_stroll: { id: "city_stroll", name: "博城市街逛街", icon: "🚶", opinionGain: 2, trustGain: 2, eventChance: 0.4, timeCost: 2, staminaCost: 10, expGain: 5, description: "在街上闲逛，可能遇到有趣的事" },
+        tower_train: { id: "tower_train", name: "三步塔修炼", icon: "🗼", opinionGain: 4, trustGain: 4, eventChance: 0.3, timeCost: 2, staminaCost: 20, expGain: 30, description: "一起修炼，同时获得经验" },
+        cafe: { id: "cafe", name: "咖啡馆聊天", icon: "☕", opinionGain: 4, trustGain: 3, eventChance: 0.35, timeCost: 2, staminaCost: 5, expGain: 5, description: "在咖啡馆深入聊天，增加信任度" }
+    },
+
+    // 显示约会邀请（地点选择）
+    showDateInvite(npcId) {
+        const npc = DataManager.getCharacter(npcId);
+        if (!npc) return;
+
+        // 检查是否可以约会
+        const npcState = NPCStateSystem.getNPCState(npcId);
+        const score = npcState.opinion * 0.6 + npcState.trust * 0.3 + npcState.familiarity * 0.1;
+        if (score < 45) {
+            UI.showMessage(`与${npc.name}的关系还不够好，需要达到"朋友"才能邀请约会。`);
+            return;
+        }
+
+        // NPC拒绝概率（好感度越低越可能拒绝）
+        const rejectChance = score < 60 ? 0.2 : score < 75 ? 0.1 : 0.05;
+        if (Math.random() < rejectChance) {
+            UI.showMessage(`${npc.name}："抱歉，我今天有点累，改天吧。"`);
+            NPCStateSystem.changeOpinion(npcId, -1, '拒绝约会邀请');
+            return;
+        }
+
+        // 创建地点选择弹窗
+        const overlay = document.createElement('div');
+        overlay.id = 'date-invite-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;';
+
+        const locations = Object.values(this.DateLocations);
+        const npcPref = npc.datePreferences || {};
+
+        overlay.innerHTML = `
+            <div style="background:linear-gradient(135deg,#1a1a3a,#2a2a5a);border:2px solid #6666aa;border-radius:16px;padding:30px;max-width:600px;width:90%;">
+                <div style="font-size:22px;color:#ffccff;font-weight:bold;margin-bottom:8px;text-align:center;">💕 邀请 ${npc.name} 约会</div>
+                <div style="font-size:13px;color:#aaa;margin-bottom:20px;text-align:center;">选择约会地点</div>
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+                    ${locations.map(loc => {
+                        const isLoved = npcPref.loved?.includes(loc.id);
+                        const isDisliked = npcPref.disliked?.includes(loc.id);
+                        const bonus = isLoved ? ' <span style="color:#ff99cc;">❤️喜欢</span>' : isDisliked ? ' <span style="color:#999;">不喜欢</span>' : '';
+                        return `<div onclick="Game.executeDate('${npcId}','${loc.id}')" style="
+                            padding:15px;background:rgba(255,255,255,0.05);border:1px solid #555588;border-radius:10px;cursor:pointer;transition:all 0.2s;
+                        " onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+                            <div style="font-size:18px;margin-bottom:5px;">${loc.icon} ${loc.name}${bonus}</div>
+                            <div style="font-size:11px;color:#aaa;margin-bottom:8px;">${loc.description}</div>
+                            <div style="font-size:11px;color:#99ccff;">💕+${loc.opinionGain} 🤝+${loc.trustGain} ⏰${loc.timeCost}h ⚡${loc.staminaCost}</div>
+                        </div>`;
+                    }).join('')}
+                </div>
+                <div style="text-align:center;margin-top:20px;">
+                    <div onclick="document.getElementById('date-invite-overlay').remove()" style="display:inline-block;padding:8px 24px;background:rgba(100,100,100,0.5);border:1px solid #888;border-radius:8px;color:#ccc;cursor:pointer;font-size:14px;">取消</div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    },
+
+    // 执行约会
+    executeDate(npcId, locationId) {
+        const npc = DataManager.getCharacter(npcId);
+        const loc = this.DateLocations[locationId];
+        if (!npc || !loc) return;
+
+        // 移除弹窗
+        const overlay = document.getElementById('date-invite-overlay');
+        if (overlay) overlay.remove();
+
+        // 关闭对话界面
+        this._closeDialogue();
+
+        // 检查体力
+        if (Player.stamina < loc.staminaCost) {
+            UI.showMessage('体力不足，无法约会！');
+            return;
+        }
+
+        // 计算NPC偏好加成
+        const npcPref = npc.datePreferences || {};
+        let opinionMult = 1;
+        if (npcPref.loved?.includes(locationId)) opinionMult = 1.5;
+        if (npcPref.disliked?.includes(locationId)) opinionMult = 0.5;
+
+        const opinionGain = Math.round(loc.opinionGain * opinionMult);
+        const trustGain = loc.trustGain;
+
+        // 应用效果
+        NPCStateSystem.changeOpinion(npcId, opinionGain, `约会：${loc.name}`);
+        NPCStateSystem.changeTrust(npcId, trustGain, `约会：${loc.name}`);
+        Player.stamina = Math.max(0, Player.stamina - loc.staminaCost);
+        Player.gainExp(loc.expGain || 0);
+        TimeSystem.advanceTime(loc.timeCost);
+
+        // 约会事件
+        let eventText = '';
+        if (Math.random() < loc.eventChance) {
+            const events = [
+                { text: `你和${npc.name}聊得很投机，度过了愉快的时光。`, extraOpinion: 3 },
+                { text: `你发现了一家有趣的小店，${npc.name}很高兴。`, extraOpinion: 2, item: 'magic_herb' },
+                { text: `突然下起了小雨，你们一起躲雨，距离拉近了不少。`, extraTrust: 5 },
+                { text: `${npc.name}分享了一个秘密，你感到被信任。`, extraTrust: 5 },
+            ];
+            if (locationId === 'xuefeng_sunset') {
+                events.push({ text: `日落太美了，${npc.name}的脸颊微微泛红。`, extraOpinion: 5 });
+            }
+            const event = events[Math.floor(Math.random() * events.length)];
+            eventText = event.text;
+            if (event.extraOpinion) NPCStateSystem.changeOpinion(npcId, event.extraOpinion, '约会事件');
+            if (event.extraTrust) NPCStateSystem.changeTrust(npcId, event.extraTrust, '约会事件');
+            if (event.item) {
+                Inventory.addItem(event.item, 1);
+                eventText += ' 获得了魔法草药×1';
+            }
+        }
+
+        // 显示结果
+        const resultMsg = `💕 与${npc.name}在${loc.name}约会\n好感 +${opinionGain}，信任 +${trustGain}，经验 +${loc.expGain || 0}\n${eventText ? '\n' + eventText : ''}`;
+        UI.showMessage(resultMsg);
+
         Player.save();
     },
 

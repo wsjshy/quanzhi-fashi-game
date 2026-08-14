@@ -74,27 +74,77 @@ relationshipStages: {
 
 ---
 
-## 三、约会系统
+## 三、约会系统（v0.18.0 Phase 2）
 
-### 3.1 约会邀请
-- 好感度≥50时，NPC对话中出现"邀请约会"选项
-- 选择约会地点（图书馆、咖啡馆、雪峰山看日落、三步塔修炼等）
-- 不同地点有不同的好感度增益和事件触发概率
+### 3.1 约会邀请触发
+- **触发条件**：与NPC综合评分≥45（朋友级），且relationshipCap.canRomance为true
+- **触发位置**：NPC对话界面，在对话选项区域添加"💕 邀请约会"按钮
+- **拒绝机制**：NPC可能拒绝（概率随好感度降低），拒绝后不消耗时间，少量扣好感
 
-### 3.2 约会地点配置
+### 3.2 约会地点配置（全局通用）
 ```js
-dateLocations: [
-  { id: "library", name: "图书馆", opinionGain: 3, eventChance: 0.3, timeCost: 2 },
-  { id: "xuefeng_sunset", name: "雪峰山看日落", opinionGain: 5, eventChance: 0.5, timeCost: 3 },
-  { id: "city_stroll", name: "逛街", opinionGain: 2, eventChance: 0.4, timeCost: 2 },
-  { id: "tower_train", name: "三步塔修炼", opinionGain: 4, eventChance: 0.3, timeCost: 2 }
-]
+// 在 game.js 或新的 date-system.js 中配置
+const DateLocations = {
+  library: { 
+    id: "library", name: "图书馆", icon: "📚",
+    opinionGain: 3, trustGain: 2, eventChance: 0.3, 
+    timeCost: 2, staminaCost: 5,
+    description: "安静地一起看书，适合喜欢学习的NPC"
+  },
+  xuefeng_sunset: { 
+    id: "xuefeng_sunset", name: "雪峰山看日落", icon: "🌅",
+    opinionGain: 5, trustGain: 3, eventChance: 0.5, 
+    timeCost: 3, staminaCost: 15,
+    description: "去雪峰山看日落，浪漫但耗体力"
+  },
+  city_stroll: { 
+    id: "city_stroll", name: "博城市街逛街", icon: "🚶",
+    opinionGain: 2, trustGain: 2, eventChance: 0.4, 
+    timeCost: 2, staminaCost: 10,
+    description: "在街上闲逛，可能遇到有趣的事"
+  },
+  tower_train: { 
+    id: "tower_train", name: "三步塔修炼", icon: "🗼",
+    opinionGain: 4, trustGain: 4, eventChance: 0.3, 
+    timeCost: 2, staminaCost: 20,
+    description: "一起修炼，适合上进的NPC，同时获得经验"
+  },
+  cafe: {
+    id: "cafe", name: "咖啡馆聊天", icon: "☕",
+    opinionGain: 4, trustGain: 3, eventChance: 0.35,
+    timeCost: 2, staminaCost: 5,
+    description: "在咖啡馆深入聊天，增加信任度"
+  }
+}
 ```
 
-### 3.3 约会事件
-- 每个地点有专属事件池
-- 事件可能增加信任度、触发专属对话、获得物品
-- 高好感度时可能触发牵手、告白等关键事件
+### 3.3 NPC约会偏好（在characters.js中配置）
+```js
+datePreferences: {
+  loved: ["xuefeng_sunset", "cafe"],  // 喜欢的地点，好感增益+50%
+  liked: ["library", "tower_train"],   // 一般喜欢
+  disliked: ["city_stroll"]             // 不喜欢，好感增益-50%
+}
+```
+
+### 3.4 约会执行流程
+1. 玩家点击"邀请约会"→ 地点选择弹窗
+2. 选择地点 → 检查时间/体力 → 执行约会
+3. 消耗时间和体力，增加好感/信任/经验
+4. 按eventChance触发随机约会事件（专属对话、获得物品、特殊增益）
+5. 显示约会结果
+
+### 3.5 约会事件（初期5个通用事件）
+- `date_good_chat`：聊得很投机，额外+3好感
+- `date_awkward_silence`：尴尬的沉默，-1好感（低概率）
+- `date_find_shop`：发现有趣的小店，获得随机物品
+- `date_rain`：突然下雨，一起躲雨，+5信任
+- `date_sunset_view`：日落太美了，+5好感（仅雪峰山地点）
+
+### 3.6 UI设计
+- 对话界面"💕 邀请约会"按钮（朋友级解锁）
+- 地点选择弹窗：网格布局，每个地点显示图标/名称/好感增益/耗时
+- 约会结果弹窗：显示获得的好感/信任/事件描述
 
 ---
 
