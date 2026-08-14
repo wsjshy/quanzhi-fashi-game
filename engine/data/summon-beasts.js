@@ -74,6 +74,34 @@ const DataSummonBeasts = {
       { id: 'gaze', name: '四瞳凝视', minLevel: 5, type: 'debuff', stunChance: 0.4, stunDuration: 1, desc: '40%眩晕1回合' },
       { id: 'venom_spray', name: '剧毒喷射', minLevel: 8, damageMult: 1.2, poisonChance: 0.8, poisonDamage: 12, poisonDuration: 4, desc: '1.2倍+80%剧毒' }
     ]
+  },
+  wind_wing_bird: {
+    id: 'wind_wing_bird',
+    name: '风翼鸟',
+    icon: '🐦',
+    description: '来自召唤位面的飞禽召唤兽，飞行型，速度极快，擅长风系攻击和闪避。',
+    rarity: '普通',
+    baseStats: { maxHp: 65, attack: 22, defense: 7, speed: 28 },
+    skills: [
+      { id: 'wind_peck', name: '风啄', minLevel: 1, damageMult: 1.0, critBonus: 0.15, desc: '风属性啄击，15%暴击' },
+      { id: 'gale', name: '疾风', minLevel: 3, type: 'buff', speedBonus: 0.5, evasionBonus: 0.3, duration: 3, desc: '速度+50%，闪避+30%' },
+      { id: 'wind_blade', name: '风刃', minLevel: 5, damageMult: 1.3, desc: '远程风刃，1.3倍伤害' },
+      { id: 'dive_bomb', name: '俯冲', minLevel: 8, damageMult: 2.0, stunChance: 0.3, stunDuration: 1, desc: '高空俯冲，2倍伤害+30%眩晕' }
+    ]
+  },
+  white_armor_scorpion: {
+    id: 'white_armor_scorpion',
+    name: '白铠战蛰',
+    icon: '🦂',
+    description: '来自召唤位面的虫型召唤兽，身披白色甲壳，坦克型，高防+反击+毒刺。参考小说第149章召唤系学生的契约兽。',
+    rarity: '稀有',
+    baseStats: { maxHp: 110, attack: 18, defense: 28, speed: 10 },
+    skills: [
+      { id: 'pincer_strike', name: '钳击', minLevel: 1, damageMult: 1.0, desc: '巨钳夹击' },
+      { id: 'hard_shell', name: '硬壳', minLevel: 3, type: 'buff', defenseBuff: 0.6, duration: 3, desc: '防御+60%' },
+      { id: 'poison_sting', name: '毒刺', minLevel: 5, damageMult: 1.2, poisonChance: 0.5, poisonDamage: 8, poisonDuration: 3, desc: '1.2倍+50%中毒' },
+      { id: 'counter_stance', name: '反击姿态', minLevel: 8, type: 'buff', defenseBuff: 0.8, damageReflect: 0.5, duration: 2, desc: '防御+80%，反伤50%' }
+    ]
   }
 };
 
@@ -82,11 +110,13 @@ function getRandomStarterBeast() {
   const ids = Object.keys(DataSummonBeasts);
   // 稀有度权重：普通60%，稀有40%
   const weights = {
-    shadow_wolf: 25,
-    rock_golem: 25,
-    silver_rhino: 18,
-    nether_fox: 18,
-    four_eye_python: 14
+    shadow_wolf: 20,
+    rock_golem: 20,
+    wind_wing_bird: 15,
+    silver_rhino: 14,
+    nether_fox: 14,
+    four_eye_python: 10,
+    white_armor_scorpion: 7
   };
   const totalWeight = Object.values(weights).reduce((a, b) => a + b, 0);
   let rand = Math.random() * totalWeight;
@@ -283,6 +313,80 @@ const DataSummonBeastEvolutions = {
         newSkills: [
           { id: 'thousand_eyes', name: '万瞳震慑', minLevel: 20, type: 'debuff', stunChance: 0.8, stunDuration: 2, enemyAttackDown: 0.5, duration: 3, desc: '80%眩晕2回合+攻击-50%' },
           { id: 'venom_storm', name: '毒雾风暴', minLevel: 23, damageMult: 1.5, poisonChance: 1.0, poisonDamage: 30, poisonDuration: 5, desc: '1.5倍+剧毒30/回合' }
+        ]
+      }
+    ]
+  },
+  wind_wing_bird: {
+    base: 'wind_wing_bird',
+    line: [
+      {
+        fromId: 'wind_wing_bird',
+        toId: 'thunder_wing_hawk',
+        name: '雷翼鹰',
+        icon: '⚡',
+        description: '风翼鸟进化形态，羽翼上凝出雷电，速度突破音障，风雷双系攻击。',
+        minBeastLevel: 10,
+        minPlayerRealm: 'middle',
+        minLoyalty: 60,
+        statMultiplier: 1.5,
+        rarity: '稀有',
+        newSkills: [
+          { id: 'thunder_claw', name: '雷电爪', minLevel: 10, damageMult: 1.5, shockChance: 0.4, shockDamage: 8, shockDuration: 3, desc: '1.5倍+40%感电' },
+          { id: 'thunder_dive', name: '雷鸣俯冲', minLevel: 13, damageMult: 2.0, stunChance: 0.2, stunDuration: 1, shockChance: 0.5, desc: '2倍+20%眩晕+50%感电' }
+        ]
+      },
+      {
+        fromId: 'thunder_wing_hawk',
+        toId: 'sky_eagle',
+        name: '天鹰',
+        icon: '🦅',
+        description: '雷翼鹰进化为天鹰，召唤位面飞禽之王，翼展遮天，掌控风暴与雷霆。',
+        minBeastLevel: 20,
+        minPlayerRealm: 'high',
+        minLoyalty: 80,
+        statMultiplier: 2.0,
+        rarity: '史诗',
+        newSkills: [
+          { id: 'sky_thunder', name: '天雷', minLevel: 20, damageMult: 2.5, shockChance: 0.6, shockDamage: 15, shockDuration: 3, paralyzeChance: 0.3, paralyzeDuration: 1, desc: '2.5倍+60%感电+30%麻痹' },
+          { id: 'storm_domain', name: '风暴领域', minLevel: 23, type: 'buff', speedBonus: 1.0, evasionBonus: 0.5, attackBuff: 0.5, duration: 3, desc: '速度+100%，闪避+50%，攻击+50%' }
+        ]
+      }
+    ]
+  },
+  white_armor_scorpion: {
+    base: 'white_armor_scorpion',
+    line: [
+      {
+        fromId: 'white_armor_scorpion',
+        toId: 'red_armor_scorpion',
+        name: '赤铠战蛰',
+        icon: '🔴',
+        description: '白铠战蛰进化形态，甲壳变为赤红色，体内孕育火焰，钳击附带灼烧。',
+        minBeastLevel: 10,
+        minPlayerRealm: 'middle',
+        minLoyalty: 60,
+        statMultiplier: 1.5,
+        rarity: '稀有',
+        newSkills: [
+          { id: 'flame_pincer', name: '烈焰钳', minLevel: 10, damageMult: 1.8, burnChance: 0.4, burnDamage: 8, burnDuration: 3, desc: '1.8倍+40%燃烧' },
+          { id: 'swarm_call', name: '蛰群召唤', minLevel: 13, damageMult: 0.8, doubleHitChance: 0.8, desc: '召唤小蛰群连击，0.8倍×2' }
+        ]
+      },
+      {
+        fromId: 'red_armor_scorpion',
+        toId: 'scorpion_queen',
+        name: '战蛰女王',
+        icon: '👸',
+        description: '赤铠战蛰进化为战蛰女王，召唤位面虫群统治者，号令万千战蛰，剧毒无双。',
+        minBeastLevel: 20,
+        minPlayerRealm: 'high',
+        minLoyalty: 80,
+        statMultiplier: 2.0,
+        rarity: '史诗',
+        newSkills: [
+          { id: 'queen_command', name: '女王号令', minLevel: 20, type: 'buff', attackBuff: 0.6, defenseBuff: 0.6, doubleHitChance: 0.5, duration: 3, desc: '攻击+60%，防御+60%，50%连击' },
+          { id: 'poison_fog', name: '毒雾', minLevel: 23, damageMult: 1.5, poisonChance: 1.0, poisonDamage: 25, poisonDuration: 5, stunChance: 0.3, stunDuration: 1, desc: '1.5倍+剧毒25/回合+30%眩晕' }
         ]
       }
     ]

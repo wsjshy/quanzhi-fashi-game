@@ -514,7 +514,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.8.24 · 召唤兽进化版</div>
+                ">v0.8.25 · 七兽进化版</div>
             </div>
         `;
 
