@@ -32,18 +32,28 @@
 - [x] 开场雷罚（openingThunder）
 - [x] 击杀回血（killHeal）/击杀回蓝（killMpRestore）
 
+### v0.8.10 第二批已完成 - 更多战斗效果
+- [x] 风刃追加（windBladeChance/windBladeCount/windBladeDamage）
+- [x] 治疗增强（healBonus/healCritRate/healCritDouble）
+- [x] 燃烧爆炸（burnExplode/burnStackMax/burnExplodeDamage，3层爆炸）
+- [x] 闪避后效果（dodgeCritBuff/dodgeHeal/dodgeMpRestore）
+- [x] 元素抗性/免疫（fireResistance/fireImmunity等各系）
+- [x] 冰吸收（iceAbsorb，冰伤回血）
+- [x] 紧急回复（emergencyHeal，低HP自动回血）
+- [x] 击杀减CD（killCooldownReduce）
+- [x] MP消耗减少（mpCostReduction，技能释放时实际消耗减少）
+
 ### v0.8.10 待做 - 复杂效果（后续版本）
-- [ ] 燃烧爆炸/蔓延（burnExplode/burnSpread）
 - [ ] 冰霜新星/时间冻结（frostNova/timeStopChance）
 - [ ] 闪电连锁（chainLightning多目标跳跃）
-- [ ] 风刃追加（windBladeChance）
 - [ ] 召唤兽相关天赋（beastTide/summonBuff等）
-- [ ] 治疗增强（healBonus在治疗技能中应用）
 - [ ] 团队buff（teamAtkBonus/teamDefBonus等）
 - [ ] 自动复活（autoRevive完整逻辑）
 - [ ] 潮汐/海啸自动循环
 - [ ] 陨石/火雨等多回合效果
 - [ ] 黑暗领域/光明领域等领域效果
+- [ ] 暗影标记/诅咒传播
+- [ ] 多目标/范围效果架构
 
 ---
 
