@@ -603,7 +603,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.9.4 · 智能排序</div>
+                ">v0.9.5 · 状态栏优化</div>
             </div>
         `;
 
@@ -1091,10 +1091,18 @@ const UI = {
                         })()}
                         <div style="color: #aaa; font-size: 14px;">📅 ${TimeSystem.getDateString()} ${TimeSystem.getDayOfWeekName()} ${TimeSystem.getCurrentPeriodInfo().icon} ${TimeSystem.getCurrentPeriodInfo().name} ${TimeSystem.formatHour()}</div>
                         ${(() => {
+                            // v0.9.5: 一键上课 - 有课时显示可点击按钮
                             const currentClass = TimeSystem.getCurrentClass(location);
                             if (currentClass) {
                                 const teacher = DataManager.getCharacter(currentClass.teacher);
-                                return `<div style="color: #66ccff; font-size: 13px; background: rgba(50, 80, 120, 0.5); padding: 4px 10px; border-radius: 10px;">📚 正在上：${currentClass.name}（${teacher?.name || '未知老师'}）</div>`;
+                                const isAtSchool = location?.id === 'tianlan_school' || location?.id === 'mingwen_girls_school';
+                                if (isAtSchool) {
+                                    // 在学校：点击直接上课
+                                    return `<div onclick="Game.performAction('attend_class')" style="color: #66ffcc; font-size: 13px; background: rgba(30, 80, 60, 0.6); padding: 6px 14px; border-radius: 10px; border: 1px solid #44aa88; cursor: pointer; font-weight: bold;" title="点击直接上课">📚 现在有课：${currentClass.name}（点击上课）</div>`;
+                                } else {
+                                    // 不在学校：提示前往
+                                    return `<div style="color: #ffcc66; font-size: 13px; background: rgba(80, 60, 30, 0.5); padding: 4px 10px; border-radius: 10px; border: 1px solid #aa8844;" title="前往学校上课">📚 有课：${currentClass.name}（前往天兰魔法学院）</div>`;
+                                }
                             }
                             return '';
                         })()}
@@ -1102,13 +1110,9 @@ const UI = {
                             <div style="color: #ff9966; font-size: 13px; background: rgba(100, 50, 50, 0.5); padding: 4px 10px; border-radius: 10px;">
                                 🌙 夜晚：敌人更强，奖励 +30%
                             </div>
-                        ` : `
-                            <div style="color: #66ff99; font-size: 13px; background: rgba(50, 100, 50, 0.5); padding: 4px 10px; border-radius: 10px;">
-                                ☀️ 白天：安全探索时间
-                            </div>
-                        `}
+                        ` : ''}
                     </div>
-                    <div style="display: flex; gap: 20px; align-items: center;">
+                    <div style="display: flex; gap: 15px; align-items: center;">
                         <span style="color: #ffd700;">💰 ${Player.gold}</span>
                         <span style="color: #ff6666;">❤️ ${Player.hp}/${stats.maxHp}</span>
                         <span style="color: #6666ff;">💧 ${Player.mp}/${stats.maxMp}</span>
@@ -1134,6 +1138,22 @@ const UI = {
                             return `<span style="color: ${staminaColor};" title="${staminaTitle}">${staminaIcon} ${Player.stamina}/${Player.maxStamina}</span>`;
                         })()}
                         <span style="color: #66ff66;">Lv.${Player.level}</span>
+                        <!-- v0.9.5: 快速操作按钮 -->
+                        ${(() => {
+                            const staminaRatio = Player.stamina / (Player.maxStamina || 100);
+                            const hpRatio = Player.hp / (stats.maxHp || 1);
+                            const mpRatio = Player.mp / (stats.maxMp || 1);
+                            const buttons = [];
+                            // 体力低时显示快速休息
+                            if (staminaRatio < 0.5) {
+                                buttons.push(`<span onclick="Game.quickRest()" style="color: #ffaa66; font-size: 13px; background: rgba(100, 60, 20, 0.5); padding: 4px 10px; border-radius: 8px; border: 1px solid #aa7744; cursor: pointer;" title="点击原地休息">💤 休息</span>`);
+                            }
+                            // HP/MP低时显示一键恢复
+                            if (hpRatio < 0.8 || mpRatio < 0.8) {
+                                buttons.push(`<span onclick="Game.quickHeal()" style="color: #66ffaa; font-size: 13px; background: rgba(30, 80, 50, 0.5); padding: 4px 10px; border-radius: 8px; border: 1px solid #44aa77; cursor: pointer;" title="点击使用药品恢复">💊 恢复</span>`);
+                            }
+                            return buttons.join('');
+                        })()}
                     </div>
                 </div>
                 
