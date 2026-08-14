@@ -1285,7 +1285,8 @@ const BattleSystem = {
             if (te.curseChance && Math.random() < te.curseChance) {
                 this.addStatusEffect(this.enemy, {
                     type: 'curse', name: '诅咒', duration: te.curseDuration || 3,
-                    atkMod: -(te.curseAtkDown || 0.15), defMod: -(te.curseDefDown || 0.15)
+                    atkMod: -(te.curseAtkDown || 0.15), defMod: -(te.curseDefDown || 0.15),
+                    critDown: te.curseCritDown || 0, dodgeDown: te.curseDodgeDown || 0
                 });
                 this.addLog(`💀 ${this.enemy.name} 被诅咒！`, 'element');
             }
@@ -2105,6 +2106,14 @@ const BattleSystem = {
                 if (mpRestore > 0 && this.player.mp < this.player.maxMp) {
                     this.player.mp = Math.min(this.player.maxMp, this.player.mp + mpRestore);
                     this.addLog(`💙 治疗恢复 ${mpRestore} 点MP！`, 'heal');
+                }
+            }
+            // 天赋：治疗转伤害（healToDamage）：治疗量10%对敌人造成伤害
+            if (isPlayer && this.player.talentEffects && this.player.talentEffects.healToDamage && healTarget === this.player) {
+                const dmg = Math.floor(actualHeal * this.player.talentEffects.healToDamage);
+                if (dmg > 0 && this.enemy.hp > 0) {
+                    this.applyDamage(this.enemy, { amount: dmg, element: 'light', isCrit: false, isMiss: false }, this.player);
+                    this.addLog(`✨ 圣光惩戒！对 ${this.enemy.name} 造成 ${dmg} 点伤害！`, 'element');
                 }
             }
 
@@ -3420,6 +3429,13 @@ const BattleSystem = {
                 this.addLog(`💧 滋润恢复 ${regenAmount} 点HP！`, 'heal');
                 this.showDamageNumber('player', regenAmount, 'heal');
             }
+            // 自动治疗（autoHeal）：HP低于50%时自动治疗
+            if (te.autoHeal && this.player.hp / this.player.maxHp < 0.5) {
+                const healAmount = Math.floor(this.player.maxHp * te.autoHeal);
+                this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
+                this.addLog(`💚 自动治疗！恢复 ${healAmount} 点HP！`, 'heal');
+                this.showDamageNumber('player', healAmount, 'heal');
+            }
 
             // 潮汐涨潮：每回合伤害和治疗递增（tideDamageStack/tideDamageMax/tideHealStack/tideHealMax）
             if (te.tideDamageStack) {
@@ -3862,7 +3878,12 @@ const BattleSystem = {
         // 暴击判定
         const targetHasCritImmunity = target && target.talentEffects && target.talentEffects.critImmunity;
         const attackerGuaranteedCrit = attacker && attacker.talentEffects && attacker.talentEffects.guaranteedCrit;
-        if (!targetHasCritImmunity && (attackerGuaranteedCrit || frozenCritGuaranteed || Math.random() < critRate + chargeCritBonus + windDemonCritBonus)) {
+        // 潜行暴击加成
+        let stealthCritBonus = 0;
+        if (attacker === this.player && attacker.stealthActive && attacker.talentEffects && attacker.talentEffects.stealthCritBonus) {
+            stealthCritBonus = attacker.talentEffects.stealthCritBonus;
+        }
+        if (!targetHasCritImmunity && (attackerGuaranteedCrit || frozenCritGuaranteed || Math.random() < critRate + chargeCritBonus + windDemonCritBonus + stealthCritBonus)) {
             result.isCrit = true;
             let critMult = 1.5 + Math.random() * 0.5; // 1.5-2.0倍暴击
             // 天赋：暴击伤害加成
@@ -4546,6 +4567,11 @@ const BattleSystem = {
         const targetName = isPlayerTarget ? '你' : this.enemy.name;
 
         effects.forEach(effect => {
+            // debuffImmunity：免疫负面状态
+            const debuffTypes = ['burn', 'freeze', 'frozen', 'stun', 'slow', 'poison', 'curse', 'paralyze', 'weakness', 'bleed', 'bind', 'blind', 'fear', 'shock', 'attack_down', 'defense_down'];
+            if (target === this.player && target.talentEffects && target.talentEffects.debuffImmunity) {
+                if (debuffTypes.includes(effect.type)) return; // 跳过负面状态
+            }
             // 净化效果：清除所有负面状态
             if (effect.type === 'cleanse') {
                 if (Math.random() < (effect.chance || 1.0)) {
@@ -4990,6 +5016,8 @@ const BattleSystem = {
             if (effect.type === 'curse') {
                 if (effect.atkMod) mods.attackMod = (mods.attackMod || 0) + effect.atkMod;
                 if (effect.defMod) mods.defenseMod = (mods.defenseMod || 0) + effect.defMod;
+                if (effect.critDown) mods.critRateMod = (mods.critRateMod || 0) - effect.critDown;
+                if (effect.dodgeDown) mods.evasionMod = (mods.evasionMod || 0) - effect.dodgeDown;
             }
             // 暗影标记：暗系伤害增加
             if (effect.type === 'darkMark' && effect.darkDamageBonus) {
