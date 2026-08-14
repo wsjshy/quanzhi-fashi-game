@@ -474,7 +474,7 @@ const Game = {
                                 ${opt.label}
                                 <span style="float: right; font-size: 13px; display: flex; gap: 10px;">
                                     <span style="color: #aaddff;">⏱️ ${timeCost}h</span>
-                                    <span style="color: #ff9966;">⚡ -${staminaCost}</span>
+                                    <span style="color: #888;" title="体力消耗（软限制，不阻止行动，只影响效率）">⚡ ${staminaCost}</span>
                                     ${hpChange !== 0 ? `<span style="color: ${hpChange > 0 ? '#66ff66' : '#ff6666'};">❤️ ${hpChange > 0 ? '+' : ''}${hpChange}</span>` : ''}
                                     ${mpChange !== 0 ? `<span style="color: ${mpChange > 0 ? '#6666ff' : '#ff6666'};">💧 ${mpChange > 0 ? '+' : ''}${mpChange}</span>` : ''}
                                     <span style="color: #ffd700;">✨ +${expGain}</span>

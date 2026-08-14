@@ -854,9 +854,9 @@ const UI = {
     getCurrentGoalText() {
         const stats = Player.getTotalStats();
         
-        // 1. 体力不足提示
+        // 1. 体力较低提示（软限制，不阻止行动）
         if (Player.stamina < 20) {
-            return '体力不足！点击「休息」或「睡觉」恢复体力后再继续冒险';
+            return '体力较低！休息可以恢复体力，提升修炼和战斗效率（体力为0时战斗后可能受伤）';
         }
         
         // 2. HP不足提示
@@ -1199,7 +1199,7 @@ const UI = {
                                         ${isSkippingClass ? '<span style="color: #ff6644; font-size: 13px; margin-left: 8px;">⚠️ 逃课</span>' : ''}
                                         <span style="font-size: 12px; color: #888; float: right; display: flex; gap: 10px; align-items: center;">
                                             <span style="color: #aaddff;" title="时间消耗">⏱️ ${action.timeCost}h</span>
-                                            <span style="color: #ff9966;" title="体力消耗">⚡ -${action.staminaCost !== undefined ? action.staminaCost : 10}</span>
+                                            ${action.staminaCost && action.staminaCost > 0 ? `<span style="color: #888;" title="体力消耗（软限制，不阻止行动，只影响效率）">⚡ ${action.staminaCost}</span>` : ''}
                                             ${expReward ? `<span style="color: #ffd700;" title="经验奖励">✨ +${expReward}</span>` : ''}
                                         </span>
                                     </div>
@@ -3688,10 +3688,12 @@ const UI = {
                         ">
                             <h3 style="color: #88ccff; font-size: 20px; margin-bottom: 12px;">⏰ 时间与体力</h3>
                             <ul style="color: #cccccc; line-height: 2; font-size: 14px; padding-left: 20px;">
-                                <li><strong>体力系统</strong>：每个行动消耗体力，体力不足无法行动</li>
-                                <li><strong>休息恢复</strong>：休息可以恢复 HP、MP 和体力</li>
+                                <li><strong>时间系统</strong>：每个行动消耗时间，一天分为多个时段，特定时段有课程</li>
+                                <li><strong>体力系统</strong>：体力是<strong>软限制</strong>，不会阻止行动！体力低时只影响效率（修炼经验减少、战斗伤害降低）</li>
+                                <li><strong>体力耗尽</strong>：体力为0时战斗后有概率受伤（疲劳/重伤），休息后恢复</li>
+                                <li><strong>休息恢复</strong>：休息可以恢复 HP、MP 和体力，消除疲劳状态</li>
+                                <li><strong>移动零消耗</strong>：地点之间旅行不消耗体力，只消耗0.5小时</li>
                                 <li><strong>大事件</strong>：特定天数会触发大事件，提前准备很重要</li>
-                                <li><strong>事件链</strong>：大事件有多个阶段，通过收集情报可以提前预警</li>
                             </ul>
                         </div>
                         
@@ -3736,7 +3738,7 @@ const UI = {
                             <ul style="color: #ddddcc; line-height: 2; font-size: 14px; padding-left: 20px;">
                                 <li>多和 NPC 聊天，可以获得情报和任务</li>
                                 <li>注意收集情报，大事件来临前会有各种暗示</li>
-                                <li>合理分配体力，不要等到体力耗尽才休息</li>
+                                <li>体力是软限制，不会阻止行动，但低体力影响效率，体力为0战斗后可能受伤</li>
                                 <li>战斗时注意元素克制，用对元素事半功倍</li>
                                 <li>提升势力声望可以获得商店折扣和更多奖励</li>
                                 <li>探索不同地点，会遇到不同的 NPC 和事件</li>
