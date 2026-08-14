@@ -230,10 +230,73 @@ const DataLocations = {
       }
     ],
     connectedLocations: [
-      "city_street"
+      "city_street",
+      "three_step_tower"
     ],
     enemies: [],
     enemyRate: 0
+  },
+  three_step_tower: {
+    id: "three_step_tower",
+    name: "三步塔",
+    description: "天澜魔法高中的修炼圣地。塔内星子异常活跃，修炼速度是外界的数倍。塔身三层，越往上星子越活跃，但消耗也越大。",
+    backgroundColor: "#1a1a3a",
+    unlocked: true,
+    unlockCondition: { minLevel: 2 },
+    actions: [
+      {
+        id: "tower_floor1",
+        name: "第一层修炼",
+        description: "三步塔第一层，星子活跃度是外界的2倍。安全稳定，适合日常修炼。",
+        icon: "🗼",
+        timeCost: 2,
+        staminaCost: 20,
+        effects: {
+          exp: 50,
+          mp: -20
+        },
+        eventChance: 0.15,
+        events: ["event_breakthrough"]
+      },
+      {
+        id: "tower_floor2",
+        name: "第二层修炼",
+        description: "三步塔第二层，星子活跃度是外界的3倍。修炼更快，但精神消耗较大。需要Lv5以上。",
+        icon: "🗼🗼",
+        timeCost: 2,
+        staminaCost: 35,
+        effects: {
+          exp: 80,
+          mp: -30,
+          hp: -10
+        },
+        eventChance: 0.2,
+        events: ["event_breakthrough", "event_training_fail"],
+        condition: { level: 5 }
+      },
+      {
+        id: "tower_floor3",
+        name: "第三层修炼",
+        description: "三步塔第三层，星子活跃度是外界的5倍！修炼极速，但有受伤风险。需要Lv8以上。",
+        icon: "🗼🗼🗼",
+        timeCost: 2,
+        staminaCost: 50,
+        effects: {
+          exp: 130,
+          mp: -40,
+          hp: -20
+        },
+        eventChance: 0.3,
+        events: ["event_breakthrough", "event_training_fail", "event_tower_insight"],
+        condition: { level: 8 }
+      }
+    ],
+    connectedLocations: [
+      "tianlan_school"
+    ],
+    enemies: [],
+    enemyRate: 0,
+    isSafeZone: true
   },
   city_street: {
     id: "city_street",

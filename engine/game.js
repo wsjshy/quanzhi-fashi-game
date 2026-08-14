@@ -235,6 +235,18 @@ const Game = {
         const location = DataManager.getLocation(Player.currentLocation);
         const currentClass = TimeSystem.getCurrentClass(location);
         const action = location?.actions?.find(a => a.id === actionId);
+
+        // 检查行动条件（如等级限制）
+        if (action && action.condition) {
+            if (action.condition.level && Player.level < action.condition.level) {
+                UI.showMessage(`⚠️ 需要等级 ${action.condition.level} 才能执行此行动！（当前等级 ${Player.level}）`);
+                return;
+            }
+            if (action.condition.minLevel && Player.level < action.condition.minLevel) {
+                UI.showMessage(`⚠️ 需要等级 ${action.condition.minLevel} 才能执行此行动！（当前等级 ${Player.level}）`);
+                return;
+            }
+        }
         
         if (currentClass && action && !action.isClassAction && actionId !== 'sleep' && actionId !== 'rest') {
             // 有课但选择其他行动，逃课惩罚

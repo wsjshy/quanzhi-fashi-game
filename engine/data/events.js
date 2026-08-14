@@ -37,6 +37,40 @@ const DataEvents = {
       }
     ]
   },
+  event_tower_insight: {
+    id: "event_tower_insight",
+    name: "三步塔顿悟",
+    description: "三步塔中星子环绕，你忽然感受到了魔法的真谛！",
+    trigger: "training",
+    chance: 0.15,
+    conditions: [
+      {
+        type: "level",
+        value: 5,
+        operator: ">="
+      }
+    ],
+    once: false,
+    choices: [
+      {
+        text: "深入感悟",
+        effects: {
+          exp: 100,
+          mp: -30,
+          hp: -10
+        },
+        resultText: "你沉浸在星子的海洋中，对魔法的理解更深了！获得大量经验！"
+      },
+      {
+        text: "稳住心神",
+        effects: {
+          exp: 40,
+          mp: 20
+        },
+        resultText: "你稳住心神，安全地吸收了这股感悟。"
+      }
+    ]
+  },
   event_training_fail: {
     id: "event_training_fail",
     name: "修炼失败",
