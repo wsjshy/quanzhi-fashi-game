@@ -515,6 +515,83 @@ const Game = {
     },
     
     // 执行修炼（指定时长）
+    // v0.24.0: 修炼顿悟检查（玩家专属机缘）
+    _checkCultivationInsight(action, hours, multiplier) {
+        // 基础概率5%，每级+0.3%，上限15%
+        const baseChance = 0.05;
+        const levelBonus = Math.min(0.10, (Player.level || 1) * 0.003);
+        // 连续在同一地点修炼会降低顿悟概率（避免刷）
+        const sameLocationCount = Player._cultivateSameLocationCount || 0;
+        const locationPenalty = Math.min(0.03, sameLocationCount * 0.01);
+        const chance = Math.max(0.01, baseChance + levelBonus - locationPenalty);
+
+        if (Math.random() > chance) return null;
+
+        // 顿悟发生
+        const insightTypes = [
+            { type: 'exp_boost', weight: 50, desc: '修炼顿悟' },
+            { type: 'skill_point', weight: 20, desc: '技能领悟' },
+            { type: 'buff', weight: 20, desc: '心境提升' },
+            { type: 'info', weight: 10, desc: '灵光一闪' }
+        ];
+        const totalWeight = insightTypes.reduce((s, t) => s + t.weight, 0);
+        let roll = Math.random() * totalWeight;
+        let chosen = insightTypes[0];
+        for (const t of insightTypes) {
+            roll -= t.weight;
+            if (roll <= 0) { chosen = t; break; }
+        }
+
+        const result = { type: chosen.type, desc: chosen.desc };
+
+        switch (chosen.type) {
+            case 'exp_boost':
+                // 3-5倍额外经验
+                const mult = 3 + Math.floor(Math.random() * 3);
+                result.bonusExp = Math.floor((action.effects?.exp || 10) * multiplier * (mult - 1));
+                result.message = `✨ ${chosen.desc}！修炼效率大幅提升，额外经验 +${result.bonusExp}`;
+                break;
+            case 'skill_point':
+                result.bonusExp = Math.floor((action.effects?.exp || 10) * multiplier);
+                result.skillPoint = 1;
+                result.message = `💡 ${chosen.desc}！对魔法有了新的理解，获得 1 技能点，经验 +${result.bonusExp}`;
+                break;
+            case 'buff':
+                result.bonusExp = Math.floor((action.effects?.exp || 10) * multiplier * 0.5);
+                result.buff = { name: '心境通明', duration: 5, expBonus: 0.3 };
+                result.message = `🧘 ${chosen.desc}！心境通明，接下来5次修炼经验+30%，经验 +${result.bonusExp}`;
+                break;
+            case 'info':
+                result.bonusExp = Math.floor((action.effects?.exp || 10) * multiplier * 0.3);
+                result.message = `🔮 ${chosen.desc}！似乎感知到了什么...经验 +${result.bonusExp}`;
+                // 小概率获得世界观信息碎片
+                if (Math.random() < 0.3) {
+                    result.infoFragment = true;
+                }
+                break;
+        }
+
+        // 记录同一地点连续修炼次数
+        if (Player.currentLocation === Player._lastCultivateLocation) {
+            Player._cultivateSameLocationCount = (Player._cultivateSameLocationCount || 0) + 1;
+        } else {
+            Player._cultivateSameLocationCount = 1;
+        }
+        Player._lastCultivateLocation = Player.currentLocation;
+
+        // 记录顿悟日志
+        if (!Player.insightLog) Player.insightLog = [];
+        Player.insightLog.push({
+            type: result.type,
+            location: Player.currentLocation,
+            day: Player.day || 1,
+            time: Player.time || 'morning'
+        });
+        if (Player.insightLog.length > 50) Player.insightLog.shift();
+
+        return result;
+    },
+
     performCultivate(actionId, hours, bonus) {
         try {
             // 关闭弹窗
@@ -538,11 +615,13 @@ const Game = {
             // 计算实际效果：按时间倍数 × 收益加成
             // v0.9.7: 体力不再影响修炼效率，staminaEff.trainExp始终为1.0
             const staminaEff = Player.getStaminaEfficiency ? Player.getStaminaEfficiency() : { trainExp: 1.0 };
+            // v0.24.0: 修炼buff（心境通明等）
+            const buffExpBonus = Player.cultivationBuff?.expBonus || 0;
             const result = {
                 success: true,
                 timeCost: hours,
                 effects: {
-                    exp: Math.floor((action.effects?.exp || 0) * multiplier * bonus * staminaEff.trainExp),
+                    exp: Math.floor((action.effects?.exp || 0) * multiplier * bonus * staminaEff.trainExp * (1 + buffExpBonus)),
                     hp: Math.floor((action.effects?.hp || 0) * multiplier),
                     mp: Math.floor((action.effects?.mp || 0) * multiplier),
                     stamina: Math.floor(-(action.staminaCost || 10) * multiplier * 0.5) // 时间越长单位体力消耗越少
@@ -573,6 +652,18 @@ const Game = {
                 const eventId = action.events[Math.floor(Math.random() * action.events.length)];
                 result.event = eventId;
             }
+
+            // v0.24.0: 修炼顿悟系统（玩家专属机缘）
+            result.insight = this._checkCultivationInsight(action, hours, multiplier);
+            if (result.insight) {
+                result.effects.exp += result.insight.bonusExp;
+                if (result.insight.skillPoint) {
+                    Player.skillPoints = (Player.skillPoints || 0) + result.insight.skillPoint;
+                }
+                if (result.insight.buff) {
+                    Player.cultivationBuff = result.insight.buff;
+                }
+            }
             
             // 应用效果
             if (result.effects.exp) Player.gainExp(result.effects.exp);
@@ -583,11 +674,22 @@ const Game = {
             // 时间流逝
             const timeResult = TimeSystem.advanceTime(result.timeCost);
             result.timeEvents = timeResult.events;
+
+            // v0.24.0: 修炼buff持续时间递减
+            if (Player.cultivationBuff) {
+                Player.cultivationBuff.duration--;
+                if (Player.cultivationBuff.duration <= 0) {
+                    message += `  ${Player.cultivationBuff.name} 效果结束\n`;
+                    delete Player.cultivationBuff;
+                }
+            }
             
             // 检查强制昏睡
             let message = result.message + '\n';
             if (result.effects.exp) message += `经验 +${result.effects.exp}\n`;
             if (result.starDustBonus) message += `  ✨ 星尘魔器加成 +${result.starDustBonus}\n`;
+            if (Player.cultivationBuff) message += `  🧘 ${Player.cultivationBuff.name} 加成 +${Math.round(Player.cultivationBuff.expBonus * 100)}%\n`;
+            if (result.insight) message += `${result.insight.message}\n`;
             if (result.effects.mp > 0) message += `MP +${result.effects.mp}\n`;
             if (result.effects.mp < 0) message += `MP ${result.effects.mp}\n`;
             if (result.effects.hp < 0) message += `HP ${result.effects.hp}\n`;
