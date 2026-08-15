@@ -3859,5 +3859,202 @@ const DataEvents = {
         resultText: "赵满延点点头，\"谦虚！不过我看你行的。\"他没有追问，但同学们对你的印象有所提升。\n\n学校声望+2"
       }
     ]
+  },
+
+  // ========== v0.50.0 穆宁雪事件链 ==========
+  influence_mu_ningxue_encounter: {
+    id: "influence_mu_ningxue_encounter",
+    name: "修炼中的偶遇",
+    description: "你正在专注修炼，星子运转稳定而有序。穆宁雪路过时停下脚步，静静看了一会儿。她没有说话，但清冷的眼神中多了一丝不易察觉的注意。",
+    npcId: "mu_ningxue",
+    activities: ["修炼", "冥修", "自习"],
+    minRelationship: 15,
+    minLevel: 5,
+    notFlag: "mu_ningxue_noticed",
+    choices: [
+      {
+        text: "点头致意，继续专注修炼",
+        effects: { setFlag: "mu_ningxue_noticed", npcOpinion: { mu_ningxue: 5 } },
+        resultText: "你微微点头，随即收回心神继续修炼。穆宁雪嘴角微动，似乎对你的专注很是认可。她没有打扰，安静地离开了。\n\n穆宁雪好感+5，获得穆宁雪的注意"
+      },
+      {
+        text: "主动请教冰系修炼心得",
+        effects: { exp: 10, npcOpinion: { mu_ningxue: 1 } },
+        resultText: "你起身请教。穆宁雪顿了顿，\"冰系...在于控制。\"她只说了几个字便不再多言，但你能感觉到她并非完全拒绝。\n\n经验+10，穆宁雪好感+1"
+      },
+      {
+        text: "不理会，继续按自己的节奏修炼",
+        effects: { setFlag: "mu_ningxue_noticed", npcOpinion: { mu_ningxue: 3 }, exp: 5 },
+        resultText: "你完全沉浸在修炼中，没有注意到穆宁雪的注视。她站了片刻，轻轻哼了一声便离开了。后来你才知道，她最欣赏的就是这种专注。\n\n经验+5，穆宁雪好感+3，获得穆宁雪的注意"
+      }
+    ]
+  },
+
+  influence_mu_ningxue_ice_advice: {
+    id: "influence_mu_ningxue_ice_advice",
+    name: "冰系心得",
+    description: "穆宁雪走到你旁边，难得主动开口。\"你的星子排列比上次稳定了。\"她顿了顿，\"冰系的关键在于控制，不是力量。让星子按照你的意志流动，而不是强行驱动。\"",
+    npcId: "mu_ningxue",
+    activities: ["修炼", "自习", "冥修"],
+    minRelationship: 20,
+    requireFlag: "mu_ningxue_noticed",
+    choices: [
+      {
+        text: "认真聆听，请她多讲一些细节",
+        effects: { exp: 40, npcOpinion: { mu_ningxue: 3 } },
+        resultText: "你聚精会神地听着，不时点头。穆宁雪讲得不多，但每一句都切中要害。你对魔法控制的理解更深了一层。\n\n经验+40，穆宁雪好感+3"
+      },
+      {
+        text: "提出自己对星子控制的见解",
+        effects: { npcOpinion: { mu_ningxue: 5 }, reputation: { school: 2 } },
+        resultText: "你说出了自己的一些想法。穆宁雪微微挑眉，似乎有些意外。\"...有点道理。\"她难得给出正面评价，周围几个同学也投来惊讶的目光。\n\n穆宁雪好感+5，学校声望+2"
+      },
+      {
+        text: "谢谢指点，我自己再琢磨琢磨",
+        effects: { npcOpinion: { mu_ningxue: 2 }, exp: 15 },
+        resultText: "你道谢后继续修炼。穆宁雪点点头，\"有独立思考的习惯也好。\"她转身离开，但你能感觉到她对你的印象又好了一些。\n\n经验+15，穆宁雪好感+2"
+      }
+    ]
+  },
+
+  influence_mu_ningxue_spar: {
+    id: "influence_mu_ningxue_spar",
+    name: "切磋邀请",
+    description: "穆宁雪抱着手臂看着你，清冷的目光中带着一丝审视。\"你的进步速度...比我预想的快。\"她顿了顿，\"要不要切磋一下？我想看看你的实战水平到底如何。\"",
+    npcId: "mu_ningxue",
+    activities: ["修炼", "找人聊天", "自习"],
+    minRelationship: 30,
+    minLevel: 8,
+    requireFlag: "mu_ningxue_noticed",
+    notFlag: "mu_ningxue_spar_done",
+    choices: [
+      {
+        text: "好，请穆学姐指教",
+        effects: { setFlag: "mu_ningxue_spar_done", npcOpinion: { mu_ningxue: 5 }, exp: 50, reputation: { school: 3 } },
+        resultText: "穆宁雪点头，\"跟我来。\"她带你到修炼场。一场切磋下来，冰系的控制力让你吃了不少苦头，但你展现出的韧性和应变让她很是认可。\"不错。\"她难得给出正面评价，\"下次再战。\"\n\n经验+50，穆宁雪好感+5，学校声望+3"
+      },
+      {
+        text: "现在实力还不够，改天吧",
+        effects: { setFlag: "mu_ningxue_spar_done", npcOpinion: { mu_ningxue: 2 } },
+        resultText: "穆宁雪看了你一眼，\"有自知之明也好。不过...我等着那一天。\"她转身离开，留下一个清冷的背影。\n\n穆宁雪好感+2"
+      }
+    ]
+  },
+
+  influence_mu_ningxue_classmate_notice: {
+    id: "influence_mu_ningxue_classmate_notice",
+    name: "同学的关注",
+    description: "赵满延凑过来，压低声音，\"哎，我最近看到穆宁雪跟你说话了？可以啊兄弟！她平时可不理人的，你是怎么做到的？\"周围几个同学也投来好奇的目光。",
+    npcId: "zhao_manyan",
+    activities: ["自习", "上课", "聊天", "找人聊天"],
+    minRelationship: 25,
+    requireFlag: "mu_ningxue_noticed",
+    choices: [
+      {
+        text: "只是讨论修炼心得而已",
+        effects: { reputation: { school: 3 } },
+        resultText: "赵满延啧啧称奇，\"讨论修炼？穆宁雪愿意跟人讨论修炼？你面子够大的啊！\"同学们对你的印象更好了。\n\n学校声望+3"
+      },
+      {
+        text: "她人其实没那么冷，只是不擅长表达",
+        effects: { npcOpinion: { zhao_manyan: 3 }, reputation: { school: 2 } },
+        resultText: "赵满延一脸惊讶，\"真的假的？我还以为她天生冰块呢...行吧，你厉害，能让冰山开口。\"他拍了拍你的肩膀。\n\n赵满延好感+3，学校声望+2"
+      }
+    ]
+  },
+
+  // ========== v0.50.0 张小侯事件链 ==========
+  influence_zhang_xiaohou_confusion: {
+    id: "influence_zhang_xiaohou_confusion",
+    name: "风系困惑",
+    description: "张小侯蹲在一旁，一脸苦恼地抓着头发。\"风系的星子怎么老是连不稳啊...明明已经很努力了，为什么就是不行呢...\"他看起来很沮丧。",
+    npcId: "zhang_xiaohou",
+    activities: ["修炼", "找人聊天", "自习"],
+    minRelationship: 10,
+    notFlag: "zhang_xiaohou_helped",
+    choices: [
+      {
+        text: "风系讲究速度，试试缩短星子之间的间距",
+        effects: { setFlag: "zhang_xiaohou_helped", npcOpinion: { zhang_xiaohou: 8 }, exp: 15 },
+        resultText: "张小侯眼睛一亮，\"缩短间距？我试试！\"他按照你说的调整，果然星子连接稳定了许多。\"太厉害了！你怎么想到的？\"他对你佩服得五体投地。\n\n经验+15，张小侯好感+8，帮助了张小侯"
+      },
+      {
+        text: "别着急，每个人的修炼节奏不同",
+        effects: { setFlag: "zhang_xiaohou_helped", npcOpinion: { zhang_xiaohou: 5 } },
+        resultText: "张小侯愣了一下，然后露出笑容，\"你说得对...我就是太急了。谢谢你！\"他的心情好了很多，看你的眼神也多了几分亲近。\n\n张小侯好感+5，帮助了张小侯"
+      },
+      {
+        text: "你可以去问问老师，他们更专业",
+        effects: { npcOpinion: { zhang_xiaohou: 2 } },
+        resultText: "张小侯有点失落，\"也是...不过老师都很忙的。\"他挠挠头，没有再说什么。\n\n张小侯好感+2"
+      }
+    ]
+  },
+
+  influence_zhang_xiaohou_train_together: {
+    id: "influence_zhang_xiaohou_train_together",
+    name: "一起修炼",
+    description: "张小侯兴冲冲地跑过来，\"嘿！上次你说的方法真有用！我星子连稳多了！\"他一脸兴奋，\"要不要一起修炼？两个人一起比一个人有意思多了！\"",
+    npcId: "zhang_xiaohou",
+    activities: ["修炼", "冥修"],
+    minRelationship: 20,
+    requireFlag: "zhang_xiaohou_helped",
+    choices: [
+      {
+        text: "好，一起修炼，互相监督",
+        effects: { exp: 35, npcOpinion: { zhang_xiaohou: 4 } },
+        resultText: "你们找了个安静的角落一起修炼。张小侯虽然话多，但修炼起来很认真。有他在旁边，时间过得很快，修炼效果也不错。\n\n经验+35，张小侯好感+4"
+      },
+      {
+        text: "今天有点事，下次吧",
+        effects: { npcOpinion: { zhang_xiaohou: 1 } },
+        resultText: "张小侯有点失望，\"好吧...那下次一定啊！\"他挥挥手跑开了。\n\n张小侯好感+1"
+      }
+    ]
+  },
+
+  influence_zhang_xiaohou_intel: {
+    id: "influence_zhang_xiaohou_intel",
+    name: "消息灵通",
+    description: "张小侯神秘兮兮地凑过来，左右看了看才压低声音，\"我跟你说个秘密...我听说学校后面雪峰山深处有个隐秘的修炼洞，里面魔力浓度特别高！一般人我都不告诉他！\"",
+    npcId: "zhang_xiaohou",
+    activities: ["找人聊天", "自习", "聊天"],
+    minRelationship: 25,
+    requireFlag: "zhang_xiaohou_helped",
+    notFlag: "knows_secret_cave",
+    choices: [
+      {
+        text: "谢了，改天我去看看",
+        effects: { setFlag: "knows_secret_cave", reputation: { school: 3 } },
+        resultText: "张小侯得意地笑了，\"嘿嘿，我就知道你会感兴趣！不过那地方有点危险，你小心点。\"他对你的信任又深了一层。\n\n学校声望+3，得知隐秘修炼洞的情报"
+      },
+      {
+        text: "真的假的，你别是道听途说吧",
+        effects: { npcOpinion: { zhang_xiaohou: 2 }, setFlag: "knows_secret_cave" },
+        resultText: "张小侯急了，\"真的！我亲耳听高年级学长说的！不信你去看！\"他一脸认真，不像是在骗人。\n\n张小侯好感+2，得知隐秘修炼洞的情报"
+      }
+    ]
+  },
+
+  influence_zhang_xiaohou_critical_moment: {
+    id: "influence_zhang_xiaohou_critical_moment",
+    name: "关键时刻",
+    description: "你刚经历一场苦战，气息有些紊乱。张小侯不知从哪冒出来，一脸焦急，\"你没事吧！快，我这里有药水！\"他手忙脚乱地从包里掏出一瓶治愈药水递过来。",
+    npcId: "zhang_xiaohou",
+    activities: ["探索", "修炼", "找人聊天"],
+    minRelationship: 35,
+    requireFlag: "zhang_xiaohou_helped",
+    choices: [
+      {
+        text: "谢谢，关键时刻还是你靠谱",
+        effects: { addItem: { itemId: "health_potion", count: 1 }, npcOpinion: { zhang_xiaohou: 5 }, reputation: { school: 2 } },
+        resultText: "张小侯挠挠头，\"嘿嘿，朋友嘛！以后有啥事尽管找我！\"他一脸真诚。你喝下药水，感觉好了很多。\n\n获得治愈药水x1，张小侯好感+5，学校声望+2"
+      },
+      {
+        text: "不用，我还撑得住",
+        effects: { npcOpinion: { zhang_xiaohou: 3 } },
+        resultText: "张小侯一脸担心，\"逞强...不过你确实厉害。\"他把药水收回去，但还是在旁边陪着你，直到你恢复得差不多了才离开。\n\n张小侯好感+3"
+      }
+    ]
   }
 };

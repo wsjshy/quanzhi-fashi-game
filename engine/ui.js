@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.49.0 · 智能目标引导</div>
+                ">v0.50.0 · 影响力事件链扩展</div>
             </div>
         `;
 

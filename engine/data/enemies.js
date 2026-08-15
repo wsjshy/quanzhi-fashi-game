@@ -1338,6 +1338,39 @@ const DataEnemies = {
       { itemId: "ice_crystal", chance: 0.2, min: 1, max: 1 }
     ]
   },
+
+  mu_ningxue_spar: {
+    id: "mu_ningxue_spar",
+    name: "穆宁雪",
+    title: "冰系天才",
+    description: "穆氏家族的千金，冰系天赋极高。切磋时她不会全力出手，但依然实力强劲。",
+    elements: ["ice"],
+    level: 6,
+    maxHp: 180,
+    maxMp: 150,
+    attack: 18,
+    defense: 10,
+    speed: 14,
+    spirit: 18,
+    skills: [
+      "basic_attack",
+      "ice_spike",
+      "ice_shield"
+    ],
+    aiType: "controller",
+    enemyType: "mage",
+    spriteColor: "#66ccff",
+    isEnemy: true,
+    isMage: true,
+    isNoble: true,
+    expReward: 120,
+    goldReward: 100,
+    dropItems: [
+      { itemId: "magic_stone", chance: 0.6, min: 2, max: 3 },
+      { itemId: "mana_potion", chance: 0.4, min: 1, max: 2 },
+      { itemId: "ice_crystal", chance: 0.3, min: 1, max: 1 }
+    ]
+  },
   
   zhao_kunsan_duel: {
     id: "zhao_kunsan_duel",
