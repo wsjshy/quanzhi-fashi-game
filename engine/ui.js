@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.69.1 · 触发优化</div>
+                ">v0.70.0 · 精英妖魔系统</div>
             </div>
         `;
 

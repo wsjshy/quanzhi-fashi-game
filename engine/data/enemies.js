@@ -2502,5 +2502,112 @@ const DataEnemies = {
       start: "我有言在先，死了别怪我！",
       defeat: "食骨妖...回来..."
     }
+  },
+
+  // ========== v0.70.0 精英妖魔（严格遵循原著设定）==========
+
+  three_eye_wolf: {
+    id: "three_eye_wolf",
+    name: "三眼魔狼",
+    title: "战将级精英·骨刺狰狼",
+    description: "三只眼睛几乎拥有270度视角，钢铁般结实的身躯，锋利的棱角骨刺。中阶魔法师若没有及时防备都会被一击毙命。",
+    elements: ["dark"],
+    level: 12,
+    maxHp: 300,
+    maxMp: 0,
+    attack: 35,
+    defense: 15,
+    speed: 18,
+    skills: ["basic_attack", "bone_spike", "wolf_fang"],
+    aiType: "aggressive",
+    enemyType: "demon",
+    demonTier: "commander",
+    elite: true,
+    eliteMechanics: {
+      view_270: true,
+      bone_spike_chance: 0.3,
+      bone_spike_multiplier: 1.5,
+      physical_reduction: 0.2
+    },
+    weakness: ["fire"],
+    spriteColor: "#554433",
+    isEnemy: true,
+    expReward: 80,
+    goldReward: 60,
+    dropItems: [
+      { itemId: "wolf_bone_spike", chance: 0.5, min: 1, max: 2 },
+      { itemId: "demon_core", chance: 0.6, min: 1, max: 1 },
+      { itemId: "elite_core", chance: 0.1, min: 1, max: 1 }
+    ]
+  },
+
+  bewitch_spider: {
+    id: "bewitch_spider",
+    name: "蛊惑魔蛛",
+    title: "大战将精英",
+    description: "八足多眼甲壳，核心能力是蛊惑猎物。不需要凭空制造仇恨，只要把本就存在的情绪不断放大，就能让猎物互相攻击。",
+    elements: ["dark", "poison"],
+    level: 14,
+    maxHp: 350,
+    maxMp: 50,
+    attack: 28,
+    defense: 20,
+    speed: 14,
+    skills: ["basic_attack", "poison_bite", "bewitch"],
+    aiType: "tactical",
+    enemyType: "demon",
+    demonTier: "commander",
+    elite: true,
+    eliteMechanics: {
+      bewitch_chance: 0.4,
+      bewitch_interval: 3,
+      shell_reduction_first: 0.5,
+      evasion_bonus: 0.15
+    },
+    weakness: ["fire", "light"],
+    spriteColor: "#442255",
+    isEnemy: true,
+    expReward: 100,
+    goldReward: 80,
+    dropItems: [
+      { itemId: "spider_silk", chance: 0.5, min: 1, max: 2 },
+      { itemId: "bewitch_gland", chance: 0.15, min: 1, max: 1 },
+      { itemId: "elite_core", chance: 0.12, min: 1, max: 1 }
+    ]
+  },
+
+  false_terror_plant: {
+    id: "false_terror_plant",
+    name: "伪怖魔",
+    title: "战将级巅峰精英",
+    description: "植物型妖魔，植物墙封死出口，扎根封锁拖拽。你以为自己进入了大楼，其实是走进了它的捕食范围。",
+    elements: ["earth", "nature"],
+    level: 16,
+    maxHp: 500,
+    maxMp: 80,
+    attack: 25,
+    defense: 25,
+    speed: 6,
+    skills: ["basic_attack", "vine_drag", "plant_wall", "spore_cloud"],
+    aiType: "defensive",
+    enemyType: "demon",
+    demonTier: "commander",
+    elite: true,
+    eliteMechanics: {
+      plant_wall_chance: 0.3,
+      vine_drag_interval: 4,
+      regen_percent: 0.05,
+      fire_weakness_multiplier: 1.5
+    },
+    weakness: ["fire"],
+    spriteColor: "#225533",
+    isEnemy: true,
+    expReward: 150,
+    goldReward: 120,
+    dropItems: [
+      { itemId: "plant_core", chance: 0.3, min: 1, max: 1 },
+      { itemId: "false_terror_seed", chance: 0.2, min: 1, max: 1 },
+      { itemId: "elite_core", chance: 0.15, min: 1, max: 1 }
+    ]
   }
 };

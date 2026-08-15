@@ -697,6 +697,27 @@ const BattleSystem = {
         this.enemy.traits = [];
         this.enemy.traitBonuses = null;
         this.enemy.firstAttackDone = false; // 首次攻击标记
+
+        // v0.70.0: 初始化精英妖魔机制
+        this.enemy.isElite = !!this.enemy.elite;
+        this.enemy.eliteState = {
+            firstHitTaken: false,
+            turnCount: 0,
+            lastBewitchTurn: 0,
+            lastVineDragTurn: 0
+        };
+        if (this.enemy.isElite) {
+            this.addLog(`⚠️ 遭遇精英妖魔：${this.enemy.name}！`, 'warning');
+            if (this.enemy.eliteMechanics) {
+                const em = this.enemy.eliteMechanics;
+                if (em.physical_reduction) this.addLog(`🛡️ ${this.enemy.name}拥有钢铁身躯，物理伤害减免${Math.floor(em.physical_reduction * 100)}%`, 'system');
+                if (em.evasion_bonus) this.addLog(`💨 ${this.enemy.name}闪避率+${Math.floor(em.evasion_bonus * 100)}%`, 'system');
+                if (em.regen_percent) this.addLog(`🌱 ${this.enemy.name}每回合恢复${Math.floor(em.regen_percent * 100)}%生命`, 'system');
+            }
+            if (this.enemy.weakness && this.enemy.weakness.length > 0) {
+                this.addLog(`💡 弱点：${this.enemy.weakness.join('、')}系`, 'system');
+            }
+        }
         if (this.enemy.enemyType === 'demon' && typeof DemonTraits !== 'undefined') {
             const traits = DemonTraits.getTraits(this.enemy.id);
             if (traits && traits.length > 0) {
@@ -3148,6 +3169,50 @@ const BattleSystem = {
             return;
         }
 
+        // v0.70.0: 精英妖魔回合开始处理
+        if (this.enemy.isElite && this.enemy.eliteMechanics) {
+            this.enemy.eliteState.turnCount++;
+            const em = this.enemy.eliteMechanics;
+            const turn = this.enemy.eliteState.turnCount;
+
+            // 再生（伪怖魔）
+            if (em.regen_percent && this.enemy.hp > 0 && this.enemy.hp < this.enemy.maxHp) {
+                const regenAmount = Math.floor(this.enemy.maxHp * em.regen_percent);
+                this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + regenAmount);
+                this.addLog(`🌱 ${this.enemy.name}恢复了${regenAmount}点生命！`, 'heal');
+            }
+
+            // 蛊惑（蛊惑魔蛛）：每3回合40%概率
+            if (em.bewitch_chance && em.bewitch_interval && turn % em.bewitch_interval === 0) {
+                if (Math.random() < em.bewitch_chance) {
+                    const playerSpirit = this.player.spirit || 30;
+                    const resistChance = Math.min(0.5, playerSpirit * 0.01);
+                    if (Math.random() > resistChance) {
+                        this.addStatusEffect(this.player, {
+                            type: 'confusion',
+                            name: '混乱',
+                            duration: 1,
+                            description: '被蛊惑，技能可能打错目标'
+                        });
+                        this.addLog(`🕷️ ${this.enemy.name}释放蛊惑！你陷入混乱状态！`, 'debuff');
+                    } else {
+                        this.addLog(`🧠 你的精神力抵抗了蛊惑！`, 'buff');
+                    }
+                }
+            }
+
+            // 植物墙（伪怖魔）：每回合30%概率封锁道具
+            if (em.plant_wall_chance && Math.random() < em.plant_wall_chance) {
+                this.addStatusEffect(this.player, {
+                    type: 'item_lock',
+                    name: '植物封锁',
+                    duration: 1,
+                    description: '被植物墙封锁，无法使用道具'
+                });
+                this.addLog(`🌿 ${this.enemy.name}生成植物墙！你无法使用道具！`, 'debuff');
+            }
+        }
+
         // 处理敌人引导中的魔法
         if (this.enemyCasting) {
             this.enemyCasting.progress++;
@@ -4761,6 +4826,27 @@ const BattleSystem = {
                 amount = Math.floor(amount * (1 - target.talentEffects.regenDamageReduction));
             }
         }
+        // v0.70.0: 精英妖魔减伤和弱点处理
+        if (target === this.enemy && target.isElite && target.eliteMechanics) {
+            const em = target.eliteMechanics;
+            // 物理减伤（三眼魔狼钢铁身躯）
+            if (em.physical_reduction && (!damage.element || damage.element === 'physical')) {
+                amount = Math.floor(amount * (1 - em.physical_reduction));
+            }
+            // 第一次伤害减伤（蛊惑魔蛛甲壳）
+            if (em.shell_reduction_first && !target.eliteState.firstHitTaken) {
+                amount = Math.floor(amount * (1 - em.shell_reduction_first));
+                target.eliteState.firstHitTaken = true;
+                this.addLog(`🛡️ ${target.name}的甲壳抵挡了部分伤害！`, 'system');
+            }
+            // 弱点伤害加成
+            if (target.weakness && damage.element && target.weakness.includes(damage.element)) {
+                const weaknessMult = em.fire_weakness_multiplier || 1.5;
+                amount = Math.floor(amount * weaknessMult);
+                this.addLog(`💥 弱点命中！${damage.element}系造成额外伤害！`, 'element');
+            }
+        }
+
         // v0.8.27: 伤害共享（damageShare）：玩家受伤害时部分转移给召唤兽
         if (target === this.player && target.talentEffects && target.talentEffects.damageShare && this.summon && this.summon.hp > 0) {
             const te = target.talentEffects;

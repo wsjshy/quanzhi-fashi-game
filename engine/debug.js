@@ -400,6 +400,16 @@ const DebugPanel = {
                         </div>
                     </div>
                     
+                    <!-- v0.70.0: 精英妖魔测试 -->
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ffaa00; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">⭐ 精英妖魔（v0.70.0）</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                            <button onclick="DebugPanel.startBattle('three_eye_wolf')" style="background: #aa6633; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">三眼魔狼</button>
+                            <button onclick="DebugPanel.startBattle('bewitch_spider')" style="background: #663388; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">蛊惑魔蛛</button>
+                            <button onclick="DebugPanel.startBattle('false_terror_plant')" style="background: #336644; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">伪怖魔</button>
+                        </div>
+                    </div>
+                    
                     <div style="margin-bottom: 15px;">
                         <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">🐺 统领级妖魔（挑战）</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
