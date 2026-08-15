@@ -355,7 +355,13 @@ const Game = {
         if (result.timeEvents && result.timeEvents.some(e => e.type === 'force_sleep')) {
             message = `😴 你熬夜太晚，不知不觉昏睡了过去...\n\n（第二天早上醒来，感觉没睡好，体力只恢复了50%）\n\n` + message;
         }
-        
+
+        // v0.24.0: NPC自主日程——检查当前地点是否有NPC在做自己的事
+        const npcEncounter = this._checkNPCEncounter();
+        if (npcEncounter) {
+            message += npcEncounter.message;
+        }
+
         if (message) {
             UI.showMessage(message.trim());
         }
@@ -592,6 +598,68 @@ const Game = {
         return result;
     },
 
+    // v0.24.0: NPC自主日程系统（玩家专属机缘线Phase3）
+    // 所有重要NPC都有自己的生活，玩家可能在特定地点遇到他们在做自己的事
+    // 莫凡只是其中一个NPC，和穆宁雪、唐月等平等
+    _npcSchedules: {
+        mo_fan: {
+            name: '莫凡',
+            morning: { location: 'tianlan_school', activity: '上课', chance: 0.5 },
+            afternoon: { location: 'tianlan_school', activity: '在修炼场修炼', chance: 0.3 },
+            evening: { location: 'earth_spring', activity: '在地圣泉修炼', chance: 0.2 }
+        },
+        mu_ningxue: {
+            name: '穆宁雪',
+            morning: { location: 'tianlan_school', activity: '上课', chance: 0.5 },
+            afternoon: { location: 'tianlan_school', activity: '独自修炼冰系魔法', chance: 0.3 },
+            evening: { location: 'tianlan_school', activity: '在天台发呆', chance: 0.15 }
+        },
+        tang_yue: {
+            name: '唐月',
+            morning: { location: 'tianlan_school', activity: '备课', chance: 0.6 },
+            afternoon: { location: 'tianlan_school', activity: '批改作业', chance: 0.4 },
+            evening: { location: 'tianlan_school', activity: '在办公室', chance: 0.2 }
+        },
+        zhang_xiaohou: {
+            name: '张小侯',
+            morning: { location: 'tianlan_school', activity: '上课', chance: 0.5 },
+            afternoon: { location: 'tianlan_school', activity: '和同学聊天', chance: 0.4 },
+            evening: { location: 'tianlan_school', activity: '修炼风系魔法', chance: 0.2 }
+        }
+    },
+
+    // v0.24.0: 检查当前地点是否有NPC在做自己的事
+    _checkNPCEncounter() {
+        const timeOfDay = Player.time || 'morning';
+        const encounters = [];
+
+        for (const [npcId, schedule] of Object.entries(this._npcSchedules)) {
+            const timeSlot = schedule[timeOfDay];
+            if (!timeSlot) continue;
+            if (Player.currentLocation !== timeSlot.location) continue;
+            if (Math.random() > timeSlot.chance) continue;
+
+            // 每个NPC每天最多遇到一次
+            const lastKey = `_last_${npcId}_encounter_day`;
+            if (Player[lastKey] === Player.day) continue;
+            Player[lastKey] = Player.day;
+
+            encounters.push({
+                npcId,
+                name: schedule.name,
+                activity: timeSlot.activity
+            });
+        }
+
+        if (encounters.length === 0) return null;
+
+        let message = '\n\n';
+        for (const enc of encounters) {
+            message += `（你看到${enc.name}正在这里${enc.activity}。他/她似乎在专注于自己的事。）\n`;
+        }
+        return { encounters, message };
+    },
+
     performCultivate(actionId, hours, bonus) {
         try {
             // 关闭弹窗
@@ -724,7 +792,13 @@ const Game = {
             if (result.timeEvents && result.timeEvents.some(e => e.type === 'force_sleep')) {
                 message = `😴 你熬夜修炼，不知不觉昏睡了过去...\n\n（第二天早上醒来，感觉没睡好，体力只恢复了50%）\n\n` + message;
             }
-            
+
+            // v0.24.0: NPC自主日程——修炼时也可能遇到NPC
+            const cultivateNPCEncounter = this._checkNPCEncounter();
+            if (cultivateNPCEncounter) {
+                message += cultivateNPCEncounter.message;
+            }
+
             UI.showMessage(message.trim());
             
             // 刷新界面
