@@ -4,6 +4,22 @@
 
 ---
 
+## [v0.81.5] - 2026-08-16
+
+### 修复：手机端横向溢出（行动卡片撑宽页面）
+
+**问题**：行动卡片描述文字太长，在flex/grid布局中默认`min-width:auto`导致文字不截断，把卡片和整个页面撑宽，产生横向滚动，内容只显示左侧一半，底部导航栏被截断。
+
+**修复**：
+- 行动按钮加`min-width:0; overflow:hidden`，允许文字截断
+- Grid容器加`min-width:0`
+- 最外层容器加`overflow-x:hidden`
+- 主内容区加`min-width:0; overflow-x:hidden`
+- 左侧行动面板加`min-width:0; overflow:hidden`
+- 描述文字保持`text-overflow:ellipsis; white-space:nowrap`
+
+---
+
 ## [v0.81.4] - 2026-08-16
 
 ### 修复：手机端布局bug + 电脑端右侧角色状态面板

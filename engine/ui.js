@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.81.4 · 手机修复+角色面板</div>
+                ">v0.81.5 · 横向溢出修复</div>
             </div>
         `;
 
@@ -1143,7 +1143,7 @@ const UI = {
         }
         
         this.elements.gameContainer.innerHTML = `
-            <div style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; background: ${location?.backgroundColor || '#1a1a3a'}; position: relative; padding-bottom: 110px;">
+            <div style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; background: ${location?.backgroundColor || '#1a1a3a'}; position: relative; padding-bottom: 110px; overflow-x: hidden;">
                 
                 <!-- 背景图片 -->
                 ${bgImage ? `
@@ -1360,10 +1360,10 @@ const UI = {
                 </div>
                 
                 <!-- 主内容区 -->
-                <div class="mobile-main-content" style="flex: 1; display: flex; position: relative; z-index: 1;">
+                <div class="mobile-main-content" style="flex: 1; display: flex; position: relative; z-index: 1; min-width: 0; overflow-x: hidden;">
                     
                     <!-- 左侧：地点行动 -->
-                    <div class="mobile-action-panel" style="flex: ${isPortrait ? '1' : '2'}; width: ${isPortrait ? '100%' : 'auto'}; padding: ${isPortrait ? '12px 15px' : '20px 30px'};">
+                    <div class="mobile-action-panel" style="flex: ${isPortrait ? '1' : '2'}; width: ${isPortrait ? '100%' : 'auto'}; min-width: 0; overflow: hidden; padding: ${isPortrait ? '12px 15px' : '20px 30px'};">
                         <!-- v0.80.0: 地点信息卡（整合妖魔信息） -->
                         ${(() => {
                             const enemies = (typeof MapSystem.getLocationEnemies === 'function') ? MapSystem.getLocationEnemies(location?.id) : [];
@@ -1519,6 +1519,8 @@ const UI = {
                                         font-size: 15px;
                                         ${glowEffect}
                                         position: relative;
+                                        min-width: 0;
+                                        overflow: hidden;
                                     " onmouseover="this.style.borderColor='${isRecommended ? '#ffee88' : '#9999cc'}'; this.style.transform='scale(1.02)'" onmouseout="this.style.borderColor='${borderColor}'; this.style.transform='scale(1)'">
                                         <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
                                             <span style="font-size: 18px;">${action.icon || '🔹'}</span>
@@ -1540,7 +1542,7 @@ const UI = {
                                     return `
                                         <div style="margin-top: ${type === Object.keys(groups).find(t => groups[t].length > 0) ? '0' : '10px'};">
                                             <div style="color: ${cfg.color}; font-size: 12px; font-weight: bold; margin-bottom: 5px;">${cfg.label}</div>
-                                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; min-width: 0;">
                                                 ${groups[type].map(a => renderAction(a, type)).join('')}
                                             </div>
                                         </div>
