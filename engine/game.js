@@ -404,6 +404,42 @@ const Game = {
             }
         }
 
+        // v0.30.0: 玩家成长里程碑庆祝
+        if (Player._pendingPlayerMilestones && Player._pendingPlayerMilestones.length > 0) {
+            for (const milestoneLv of Player._pendingPlayerMilestones) {
+                const celebrationTexts = {
+                    5: `🎉 你突破到了Lv.${milestoneLv}！学校里开始有人注意到你的进步。`,
+                    8: `🎉 Lv.${milestoneLv}！你的实力已经超越了大部分同龄人。`,
+                    10: `🎉 你达到了Lv.${milestoneLv}！这是初阶法师的巅峰，距离中阶只有一步之遥。`,
+                    12: `🎉 Lv.${milestoneLv}！老师们开始对你寄予厚望。`,
+                    15: `🎉 你突破到了Lv.${milestoneLv}！中阶法师，你的名字开始在博城流传。`,
+                    18: `🎉 Lv.${milestoneLv}！你的实力已经逼近高阶，无人再敢小觑你。`,
+                    20: `🎉 Lv.${milestoneLv}！整个魔法界都在关注你的成长。`
+                };
+                const text = celebrationTexts[milestoneLv] || `🎉 你突破到了Lv.${milestoneLv}！`;
+                message += `\n\n${text}`;
+
+                // 随机NPC反应
+                const reactionNPCs = ['mo_fan', 'mu_ningxue', 'tang_yue', 'zhang_xiaohou'];
+                const npcId = reactionNPCs[Math.floor(Math.random() * reactionNPCs.length)];
+                const npcData = DataManager.getCharacter(npcId);
+                if (npcData) {
+                    const npcLevel = NPCStateSystem.getNPCLevel(npcId);
+                    const diff = milestoneLv - npcLevel;
+                    let reaction = '';
+                    if (diff >= 3) {
+                        reaction = `${npcData.name}听到这个消息后，眼神变得认真了几分。`;
+                    } else if (diff >= 0) {
+                        reaction = `${npcData.name}点了点头，"不错的进步。"`;
+                    } else {
+                        reaction = `${npcData.name}笑了笑，"继续加油，别落后了。"`;
+                    }
+                    message += `\n（${reaction}）`;
+                }
+            }
+            Player._pendingPlayerMilestones = [];
+        }
+
         // v0.25.0 Phase4: 随机探索事件（非休息行动5%概率）
         let randomEvent = null;
         if (!skipForDiscovery.includes(actionId) && typeof EventSystem !== 'undefined') {

@@ -559,6 +559,13 @@ const Player = {
                 }
             } catch (e) {}
         }
+
+        // v0.30.0: 玩家成长里程碑事件
+        const playerMilestones = [5, 8, 10, 12, 15, 18, 20];
+        if (playerMilestones.includes(newLv)) {
+            if (!this._pendingPlayerMilestones) this._pendingPlayerMilestones = [];
+            this._pendingPlayerMilestones.push(newLv);
+        }
     },
 
     /**
