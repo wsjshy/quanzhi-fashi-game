@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.80.0 · UI全面重构</div>
+                ">v0.81.0 · 响应式+地图详情</div>
             </div>
         `;
 
@@ -1132,6 +1132,8 @@ const UI = {
         
         const location = MapSystem.getCurrentLocation();
         const stats = Player.getTotalStats();
+        // v0.81.0: 响应式布局检测（竖版手机/横版电脑）
+        const isPortrait = window.innerHeight > window.innerWidth;
         
         // 根据地点选择背景图片
         let bgImage = '';
@@ -1361,7 +1363,7 @@ const UI = {
                 <div class="mobile-main-content" style="flex: 1; display: flex; overflow: hidden; position: relative; z-index: 1;">
                     
                     <!-- 左侧：地点行动 -->
-                    <div class="mobile-action-panel" style="flex: 2; padding: 20px 30px; overflow-y: auto; padding-bottom: 80px;">
+                    <div class="mobile-action-panel" style="flex: ${isPortrait ? '1' : '2'}; padding: ${isPortrait ? '12px 15px' : '20px 30px'}; overflow-y: auto; padding-bottom: 80px;">
                         <!-- v0.80.0: 地点信息卡（整合妖魔信息） -->
                         ${(() => {
                             const enemies = (typeof MapSystem.getLocationEnemies === 'function') ? MapSystem.getLocationEnemies(location?.id) : [];
@@ -1447,8 +1449,8 @@ const UI = {
                                     rest: { label: '😴 休息', color: '#ffaa88' },
                                     special: { label: '✨ 特殊', color: '#ffdd66' }
                                 };
-                                // 单个行动按钮渲染（保留原有逻辑）
-                                const renderAction = (action) => {
+                                // v0.81.0: 单个行动按钮渲染（紧凑卡片，描述放tooltip）
+                                const renderAction = (action, type) => {
                                     let actionName = action.name;
                                     let actionDesc = action.description;
                                     let expReward = action.effects?.exp || 0;
@@ -1485,49 +1487,60 @@ const UI = {
                                         });
                                         if (availableEvents.length > 0 && !isRecommended) {
                                             isRecommended = true;
-                                            recommendReason = '📜 有事件可触发';
+                                            recommendReason = '有事件可触发';
                                         }
                                     }
-                                    let borderColor = isRecommended ? '#ffcc44' : (isExplorableAction && !isActionExplored ? '#ff9944' : '#444477');
-                                    let glowEffect = isRecommended ? 'box-shadow: 0 0 12px rgba(255, 204, 68, 0.4);' : (isExplorableAction && !isActionExplored ? 'box-shadow: 0 0 8px rgba(255, 153, 68, 0.3);' : '');
+                                    // 按类型配色
+                                    const typeColors = {
+                                        cultivation: { bg: 'linear-gradient(135deg, rgba(60,40,100,0.85), rgba(80,50,140,0.7))', border: '#7755bb' },
+                                        explore: { bg: 'linear-gradient(135deg, rgba(30,60,90,0.85), rgba(40,80,130,0.7))', border: '#4477aa' },
+                                        social: { bg: 'linear-gradient(135deg, rgba(30,80,50,0.85), rgba(40,110,70,0.7))', border: '#44aa66' },
+                                        rest: { bg: 'linear-gradient(135deg, rgba(90,60,30,0.85), rgba(130,80,40,0.7))', border: '#aa7744' },
+                                        special: { bg: 'linear-gradient(135deg, rgba(90,80,30,0.85), rgba(130,110,40,0.7))', border: '#aa9944' }
+                                    };
+                                    const colors = typeColors[type] || typeColors.special;
+                                    let borderColor = isRecommended ? '#ffcc44' : colors.border;
+                                    let glowEffect = isRecommended ? 'box-shadow: 0 0 10px rgba(255,204,68,0.5);' : '';
+                                    // tooltip内容
+                                    let tooltipText = actionDesc;
+                                    if (action.staminaCost && action.staminaCost > 0) tooltipText += ` | 体力-${action.staminaCost}`;
+                                    if (expReward) tooltipText += ` | 经验+${expReward}`;
+                                    if (isRecommended) tooltipText += ` | ${recommendReason}`;
                                     return `
-                                    <button class="action-button" onclick="Game.performAction('${action.id}')" style="
-                                        padding: 14px 20px;
-                                        background: linear-gradient(135deg, rgba(40, 40, 80, 0.8), rgba(60, 60, 120, 0.8));
+                                    <button class="action-button" onclick="Game.performAction('${action.id}')" title="${tooltipText}" style="
+                                        padding: 12px 10px;
+                                        background: ${colors.bg};
                                         border: 2px solid ${borderColor};
-                                        border-radius: 10px;
+                                        border-radius: 12px;
                                         color: #e0e0ff;
                                         cursor: pointer;
                                         text-align: left;
-                                        transition: all 0.3s;
+                                        transition: all 0.2s;
                                         font-size: 15px;
                                         ${glowEffect}
-                                    " onmouseover="this.style.borderColor='${isRecommended ? '#ffee88' : '#7777bb'}'; this.style.transform='translateX(3px)'" onmouseout="this.style.borderColor='${borderColor}'; this.style.transform='translateX(0)'">
-                                        <div style="font-size: 16px; margin-bottom: 3px;">
-                                            ${action.icon || '🔹'} ${actionName}
-                                            ${isExplorableAction ? (isActionExplored ? '<span style="font-size: 10px; color: #66ff66; margin-left: 6px; background: rgba(30, 80, 30, 0.5); padding: 1px 5px; border-radius: 5px; border: 1px solid #44aa44;">✓</span>' : '<span style="font-size: 10px; color: #ffaa44; margin-left: 6px; background: rgba(80, 50, 20, 0.5); padding: 1px 5px; border-radius: 5px; border: 1px solid #aa7744;">?</span>') : ''}
-                                            ${isRecommended ? `<span style="font-size: 11px; color: #ffcc44; float: right; background: rgba(100, 80, 20, 0.5); padding: 2px 7px; border-radius: 6px;">${recommendReason}</span>` : ''}
-                                            ${isSkippingClass ? '<span style="color: #888; font-size: 11px; margin-left: 6px;">📖</span>' : ''}
-                                            <span style="font-size: 11px; color: #888; float: right; display: flex; gap: 8px; align-items: center;">
-                                                <span style="color: #aaddff;">⏱️${action.timeCost}h</span>
-                                                ${action.staminaCost && action.staminaCost > 0 ? `<span style="color: #888;">⚡${action.staminaCost}</span>` : ''}
-                                                ${expReward ? `<span style="color: #ffd700;">✨+${expReward}</span>` : ''}
-                                            </span>
+                                        position: relative;
+                                    " onmouseover="this.style.borderColor='${isRecommended ? '#ffee88' : '#9999cc'}'; this.style.transform='scale(1.03)'" onmouseout="this.style.borderColor='${borderColor}'; this.style.transform='scale(1)'">
+                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                            <span style="font-size: 18px;">${action.icon || '🔹'}</span>
+                                            <span style="flex: 1; font-weight: bold; font-size: 14px; line-height: 1.3;">${actionName}</span>
+                                            ${isRecommended ? '<span style="font-size: 12px;">📜</span>' : ''}
                                         </div>
-                                        <div style="font-size: 12px; color: #999;">${actionDesc}</div>
+                                        <div style="font-size: 11px; color: #aabbdd; margin-top: 3px; text-align: right;">
+                                            ⏱️${action.timeCost}h${expReward ? ` ✨+${expReward}` : ''}
+                                        </div>
                                     </button>`;
                                 };
                                 // 按类型分组
                                 const groups = { cultivation: [], explore: [], social: [], rest: [], special: [] };
                                 actions.forEach(a => { groups[getActionType(a)].push(a); });
-                                // 渲染分组
+                                // 渲染分组（v0.81.0: 2列网格）
                                 return Object.keys(groups).filter(type => groups[type].length > 0).map(type => {
                                     const cfg = typeConfig[type];
                                     return `
-                                        <div style="margin-top: ${type === Object.keys(groups).find(t => groups[t].length > 0) ? '0' : '8px'};">
-                                            <div style="color: ${cfg.color}; font-size: 13px; font-weight: bold; margin-bottom: 6px; padding-left: 4px;">${cfg.label} (${groups[type].length})</div>
-                                            <div style="display: flex; flex-direction: column; gap: 8px;">
-                                                ${groups[type].map(renderAction).join('')}
+                                        <div style="margin-top: ${type === Object.keys(groups).find(t => groups[t].length > 0) ? '0' : '10px'};">
+                                            <div style="color: ${cfg.color}; font-size: 12px; font-weight: bold; margin-bottom: 5px;">${cfg.label}</div>
+                                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                                ${groups[type].map(a => renderAction(a, type)).join('')}
                                             </div>
                                         </div>
                                     `;
@@ -1698,8 +1711,8 @@ const UI = {
                         </div>
                     </div>
                     
-                    <!-- 右侧：菜单 -->
-                    <div class="mobile-side-menu" style="width: 280px; background: rgba(0, 0, 0, 0.4); border-left: 2px solid #444477; padding: 20px;">
+                    <!-- 右侧：菜单（竖版隐藏，靠底部导航） -->
+                    <div class="mobile-side-menu" style="width: 280px; background: rgba(0, 0, 0, 0.4); border-left: 2px solid #444477; padding: 20px; display: ${isPortrait ? 'none' : 'block'};">
                         <h3 style="color: #ffd700; margin-bottom: 20px; font-size: 18px;">📋 菜单</h3>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
                             <div style="color: #8899cc; font-size: 12px; padding: 0 5px; margin-bottom: -5px;">🎯 核心功能</div>
@@ -1953,6 +1966,26 @@ const UI = {
                 }
             }
 
+            // v0.81.0: 功能标签映射
+            const featureTags = {
+                tianlan_school: '学习中心', city_street: '商业街',
+                xuefeng_mountain: '狩猎场', xuefeng_deep: '危险狩猎区',
+                baicao_valley: '采药历练', earth_spring: '修炼圣地',
+                mu_manor: '家族领地', xuefeng_station: '猎者补给',
+                old_banyan_district: '旧城探索', mingwen_girls_school: '女校剧情',
+                mo_fan_house: '民居', bo_north_gate: '城防关口',
+                three_step_tower: '修炼塔'
+            };
+            const locEnemies = (typeof MapSystem.getLocationEnemies === 'function') ? MapSystem.getLocationEnemies(locId) : [];
+            const locNpcs = (loc.npcs || []).length;
+            let safety = '安全', safetyColor = '#66ff66';
+            if (locEnemies.length > 0) {
+                const maxLv = Math.max(...locEnemies.map(e => e.level || 1));
+                if (maxLv >= Player.level + 5) { safety = '极危险'; safetyColor = '#ff4444'; }
+                else if (maxLv >= Player.level) { safety = '危险'; safetyColor = '#ff8844'; }
+                else { safety = '有妖魔'; safetyColor = '#ffcc44'; }
+            }
+            const enemyIcons = locEnemies.slice(0, 5).map(e => e.icon || '👹').join('');
             locationNodes.push({
                 id: locId,
                 name: loc.name,
@@ -1962,7 +1995,15 @@ const UI = {
                 isCurrent: isCurrent,
                 unlocked: unlocked,
                 isConnected: isConnected,
-                description: loc.description || ''
+                description: loc.description || '',
+                tag: featureTags[locId] || '探索区域',
+                enemies: locEnemies,
+                enemyIcons: enemyIcons,
+                enemyCount: locEnemies.length,
+                npcCount: locNpcs,
+                safety: safety,
+                safetyColor: safetyColor,
+                unlockHint: loc.unlockCondition?.hint || ''
             });
         }
 
@@ -2017,43 +2058,72 @@ const UI = {
                         const cursor = node.unlocked && !node.isCurrent ? 'pointer' : 'default';
                         const glow = node.isCurrent ? 'box-shadow: 0 0 20px rgba(100, 255, 150, 0.6), 0 0 40px rgba(100, 255, 150, 0.3);' : '';
                         const onClick = node.unlocked && !node.isCurrent ? `onclick="Game.travelTo('${node.id}')"` : '';
-                        const title = node.unlocked ? `${node.name}${node.isCurrent ? ' (当前位置)' : ''}` : `${node.name} (未解锁)`;
+
+                        // v0.81.0: tooltip内容
+                        const tooltipHtml = `
+                            <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; color: #fff;">
+                                ${node.icon} ${node.name}
+                                <span style="font-size: 10px; color: #aaccff; background: rgba(50,70,100,0.6); padding: 1px 6px; border-radius: 6px; margin-left: 6px;">${node.tag}</span>
+                            </div>
+                            <div style="font-size: 11px; color: #bbb; line-height: 1.4; margin-bottom: 6px;">${node.description.substring(0, 60)}${node.description.length > 60 ? '...' : ''}</div>
+                            <div style="font-size: 11px; display: flex; gap: 10px; align-items: center;">
+                                <span style="color: ${node.safetyColor};">${node.enemyCount > 0 ? `⚔️ ${node.enemyIcons}${node.enemyCount > 5 ? '+' + (node.enemyCount - 5) : ''}` : '🛡️ 无妖魔'}</span>
+                                ${node.npcCount > 0 ? `<span style="color: #88ccff;">👥 ${node.npcCount}人</span>` : ''}
+                                <span style="color: ${node.safetyColor};">${node.safety}</span>
+                            </div>
+                            ${!node.unlocked && node.unlockHint ? `<div style="font-size: 11px; color: #ff9966; margin-top: 4px;">🔒 ${node.unlockHint}</div>` : ''}
+                            ${node.unlocked && !node.isCurrent ? '<div style="font-size: 10px; color: #88ff88; margin-top: 4px; text-align: right;">点击前往 →</div>' : ''}
+                        `;
 
                         return `
-                            <div ${onClick} title="${title}" style="
-                                position: absolute;
-                                left: ${node.x}%;
-                                top: ${node.y}%;
-                                transform: translate(-50%, -50%);
-                                width: ${size}px;
-                                height: ${size}px;
-                                background: ${bgColor};
-                                border: 3px solid ${borderColor};
-                                border-radius: 50%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                font-size: 24px;
-                                cursor: ${cursor};
-                                z-index: 2;
-                                transition: all 0.2s;
-                                ${glow}
-                                ${node.isCurrent ? 'animation: mapPulse 2s infinite;' : ''}
-                            " onmouseover="this.style.transform='translate(-50%, -50%) scale(1.15)'" onmouseout="this.style.transform='translate(-50%, -50%) scale(1)'">
-                                ${node.icon}
+                            <div class="map-node-wrapper" style="position: absolute; left: ${node.x}%; top: ${node.y}%; transform: translate(-50%, -50%); z-index: 2;">
+                                <div ${onClick} style="
+                                    width: ${size}px;
+                                    height: ${size}px;
+                                    background: ${bgColor};
+                                    border: 3px solid ${borderColor};
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-size: 24px;
+                                    cursor: ${cursor};
+                                    transition: all 0.2s;
+                                    ${glow}
+                                    ${node.isCurrent ? 'animation: mapPulse 2s infinite;' : ''}
+                                " onmouseover="this.style.transform='scale(1.15)'; this.parentElement.querySelector('.map-tooltip').style.opacity='1'; this.parentElement.querySelector('.map-tooltip').style.pointerEvents='auto';" onmouseout="this.style.transform='scale(1)'; this.parentElement.querySelector('.map-tooltip').style.opacity='0'; this.parentElement.querySelector('.map-tooltip').style.pointerEvents='none';">
+                                    ${node.icon}
+                                </div>
+                                <div style="
+                                    position: absolute;
+                                    left: 50%;
+                                    top: calc(100% + 5px);
+                                    transform: translateX(-50%);
+                                    color: ${node.isCurrent ? '#66ff88' : node.unlocked ? '#ccddff' : '#666'};
+                                    font-size: 12px;
+                                    font-weight: ${node.isCurrent ? 'bold' : 'normal'};
+                                    white-space: nowrap;
+                                    text-shadow: 0 0 5px rgba(0,0,0,0.8);
+                                    pointer-events: none;
+                                ">${node.name}</div>
+                                <!-- v0.81.0: 悬停tooltip -->
+                                <div class="map-tooltip" style="
+                                    position: absolute;
+                                    left: 50%;
+                                    bottom: calc(100% + 15px);
+                                    transform: translateX(-50%);
+                                    width: 220px;
+                                    background: rgba(15, 15, 30, 0.95);
+                                    border: 1px solid #5566aa;
+                                    border-radius: 10px;
+                                    padding: 10px 12px;
+                                    opacity: 0;
+                                    pointer-events: none;
+                                    transition: opacity 0.2s;
+                                    z-index: 100;
+                                    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+                                ">${tooltipHtml}</div>
                             </div>
-                            <div style="
-                                position: absolute;
-                                left: ${node.x}%;
-                                top: calc(${node.y}% + ${size/2 + 5}px);
-                                transform: translateX(-50%);
-                                color: ${node.isCurrent ? '#66ff88' : node.unlocked ? '#ccddff' : '#666'};
-                                font-size: 12px;
-                                font-weight: ${node.isCurrent ? 'bold' : 'normal'};
-                                white-space: nowrap;
-                                z-index: 2;
-                                text-shadow: 0 0 5px rgba(0,0,0,0.8);
-                            ">${node.name}</div>
                         `;
                     }).join('')}
                 </div>
