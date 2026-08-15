@@ -369,6 +369,19 @@ const Game = {
             if (hiddenSpot) {
                 message += `\n\n🔮 你发现了一个隐秘的修炼地点：${hiddenSpot.name}！\n${hiddenSpot.desc}\n（修炼经验+${Math.round(hiddenSpot.expBonus * 100)}%，可使用${hiddenSpot.usesRemaining}次）`;
             }
+            // v0.25.0: 探索计数
+            Player._totalExploreCount = (Player._totalExploreCount || 0) + 1;
+            if (typeof QuestSystem !== 'undefined') {
+                QuestSystem.updateProgress('explore', null, 1);
+            }
+        }
+
+        // v0.25.0: 检查玩家个人任务触发
+        if (typeof QuestSystem !== 'undefined') {
+            const triggeredQuests = QuestSystem.checkQuestTriggers();
+            for (const q of triggeredQuests) {
+                message += `\n\n📜 新任务：${q.name}\n${q.description}`;
+            }
         }
 
         if (message) {
@@ -815,6 +828,12 @@ const Game = {
             if (result.effects.hp) Player.hp = Math.max(1, Math.min(Player.maxHp, Player.hp + result.effects.hp));
             if (result.effects.mp) Player.mp = Math.max(0, Math.min(Player.maxMp, Player.mp + result.effects.mp));
             if (result.effects.stamina) Player.stamina = Math.max(0, Math.min(100, Player.stamina + result.effects.stamina));
+
+            // v0.25.0: 修炼计数和任务进度
+            Player._totalCultivateCount = (Player._totalCultivateCount || 0) + 1;
+            if (typeof QuestSystem !== 'undefined') {
+                QuestSystem.updateProgress('cultivate', null, 1);
+            }
             
             // 时间流逝
             const timeResult = TimeSystem.advanceTime(result.timeCost);
@@ -874,6 +893,14 @@ const Game = {
             const cultivateNPCEncounter = this._checkNPCEncounter();
             if (cultivateNPCEncounter) {
                 message += cultivateNPCEncounter.message;
+            }
+
+            // v0.25.0: 修炼时检查任务触发
+            if (typeof QuestSystem !== 'undefined') {
+                const triggeredQuests = QuestSystem.checkQuestTriggers();
+                for (const q of triggeredQuests) {
+                    message += `\n\n📜 新任务：${q.name}\n${q.description}`;
+                }
             }
 
             UI.showMessage(message.trim());

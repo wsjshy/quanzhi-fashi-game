@@ -2106,5 +2106,98 @@ const DataQuests = {
     dialogueStart: "博城的事告一段落了。以你的天赋，不该困在这里。去明珠吧，那里有最好的资源。",
     dialogueInProgress: "去了明珠要更加努力，别给天澜丢脸。",
     dialogueComplete: "一路顺风。明珠……会是你新的开始。"
+  },
+
+  // ========== v0.25.0 玩家个人任务线 ==========
+  // 这些任务基于玩家的选择/系别/关系/行为自动触发，不是莫凡的剧情
+
+  personal_fire_training: {
+    id: "personal_fire_training",
+    name: "火焰的掌控",
+    description: "你觉醒了火系魔法。唐月老师注意到你的天赋，建议你进行专门的火焰控制训练。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { element: "fire", minLevel: 2 },
+    objectives: [
+      { type: "cultivate", count: 5, description: "修炼5次火系魔法" }
+    ],
+    rewards: { exp: 200, gold: 100 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "你的火系天赋不错。但力量需要控制，去修炼场练习如何精准引导火焰吧。",
+    dialogueInProgress: "继续练习，控制比力量更重要。",
+    dialogueComplete: "很好，你已经能初步控制火焰了。这只是开始。"
+  },
+
+  personal_ice_training: {
+    id: "personal_ice_training",
+    name: "寒冰的领悟",
+    description: "你觉醒了冰系魔法。穆宁雪似乎注意到了同为冰系的你，她的修炼方式值得参考。",
+    giver: "mu_ningxue",
+    type: "personal",
+    trigger: { element: "ice", minLevel: 2 },
+    objectives: [
+      { type: "cultivate", count: 5, description: "修炼5次冰系魔法" }
+    ],
+    rewards: { exp: 200, gold: 100 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "……冰系。不要学我，找到你自己的方式。",
+    dialogueInProgress: "冰系的关键是冷静。",
+    dialogueComplete: "你有自己的节奏。不错。"
+  },
+
+  personal_cultivation_dedication: {
+    id: "personal_cultivation_dedication",
+    name: "修炼的执着",
+    description: "你在修炼上投入了大量时间。萧院长注意到了你的勤奋，决定给你一些指导。",
+    giver: "xiao_yuanzhang",
+    type: "personal",
+    trigger: { minCultivateCount: 10 },
+    objectives: [
+      { type: "cultivate", count: 10, description: "再修炼10次" }
+    ],
+    rewards: { exp: 300, gold: 150 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "年轻人，我注意到你很勤奋。修炼一途，贵在坚持。让我指点你一二。",
+    dialogueInProgress: "继续保持，不要懈怠。",
+    dialogueComplete: "你的努力我看在眼里。继续加油。"
+  },
+
+  personal_tangyue_guidance: {
+    id: "personal_tangyue_guidance",
+    name: "唐月的关注",
+    description: "你和唐月老师的关系越来越好。她似乎愿意给你一些私下的指导。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { minRelationship: { tang_yue: 30 } },
+    objectives: [
+      { type: "talk", npcId: "tang_yue", count: 3, description: "与唐月老师对话3次" }
+    ],
+    rewards: { exp: 250, gold: 100 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "你最近的表现不错。有空的话，可以来找我聊聊。",
+    dialogueInProgress: "有什么不懂的，随时问我。",
+    dialogueComplete: "你是个有天赋的学生。我很期待你的成长。"
+  },
+
+  personal_explorer: {
+    id: "personal_explorer",
+    name: "探索者的脚步",
+    description: "你喜欢四处探索。猎法师公会的人注意到了你的活跃度，可能有适合你的委托。",
+    giver: "hunter_receptionist",
+    type: "personal",
+    trigger: { minExploreCount: 5 },
+    objectives: [
+      { type: "explore", count: 5, description: "探索5个不同地点" }
+    ],
+    rewards: { exp: 200, gold: 200 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "听说你经常四处跑？我们这里有个小委托，有没有兴趣？",
+    dialogueInProgress: "继续探索，博城周边还有很多未知。",
+    dialogueComplete: "干得不错。以后有更高级的委托，我会优先考虑你。"
   }
 };

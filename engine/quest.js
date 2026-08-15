@@ -120,13 +120,22 @@ const QuestSystem = {
             quest.objectives.forEach((obj, index) => {
                 // 检查目标类型是否匹配
                 if (obj.type !== type) return;
-                
+
                 // 等级类型特殊处理：直接用当前等级作为进度
                 if (type === 'level') {
                     activeQuest.progress[index] = Math.min(Player.level, obj.count || 1);
                     return;
                 }
-                
+
+                // v0.25.0: cultivate/explore类型不需要目标ID，直接计数
+                if (type === 'cultivate' || type === 'explore') {
+                    activeQuest.progress[index] = Math.min(
+                        activeQuest.progress[index] + amount,
+                        obj.count
+                    );
+                    return;
+                }
+
                 // 检查目标ID是否匹配
                 const targetField = {
                     kill: 'enemyId',
@@ -134,7 +143,7 @@ const QuestSystem = {
                     talk: 'npcId',
                     reach: 'locationId'
                 }[type];
-                
+
                 if (obj[targetField] !== targetId) return;
 
                 // 更新进度
@@ -360,5 +369,69 @@ const QuestSystem = {
         }
 
         return true;
+    },
+
+    /**
+     * v0.25.0: 检查玩家个人任务触发条件
+     * 基于玩家系别/等级/关系/行为自动触发任务
+     */
+    checkQuestTriggers() {
+        const triggered = [];
+        const allQuests = DataManager.getAllQuests ? DataManager.getAllQuests() : {};
+
+        for (const questId in allQuests) {
+            const quest = allQuests[questId];
+            if (!quest.trigger) continue;
+
+            // 已经接取或完成的跳过
+            if (Player.getActiveQuest(questId)) continue;
+            if (Player.isQuestComplete(questId)) continue;
+
+            const t = quest.trigger;
+            let conditionsMet = true;
+
+            // 等级条件
+            if (t.minLevel && (Player.level || 1) < t.minLevel) conditionsMet = false;
+            if (t.maxLevel && (Player.level || 1) > t.maxLevel) conditionsMet = false;
+
+            // 元素系别条件
+            if (t.element && Player.element !== t.element) conditionsMet = false;
+
+            // 修炼次数条件
+            if (t.minCultivateCount) {
+                const cultivateCount = Player._totalCultivateCount || 0;
+                if (cultivateCount < t.minCultivateCount) conditionsMet = false;
+            }
+
+            // 探索次数条件
+            if (t.minExploreCount) {
+                const exploreCount = Player._totalExploreCount || 0;
+                if (exploreCount < t.minExploreCount) conditionsMet = false;
+            }
+
+            // 天数条件
+            if (t.minDay && (Player.day || 1) < t.minDay) conditionsMet = false;
+
+            // NPC关系条件
+            if (t.minRelationship) {
+                for (const npcId in t.minRelationship) {
+                    const rel = NPCStateManager ? NPCStateManager.getNPCRelationship(npcId, 'player') : null;
+                    const opinion = rel?.opinion || 0;
+                    if (opinion < t.minRelationship[npcId]) conditionsMet = false;
+                }
+            }
+
+            // 随机概率条件
+            if (t.chance && Math.random() > t.chance) conditionsMet = false;
+
+            if (conditionsMet) {
+                const result = this.acceptQuest(questId);
+                if (result.success) {
+                    triggered.push(quest);
+                }
+            }
+        }
+
+        return triggered;
     }
 };
