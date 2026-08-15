@@ -31,11 +31,21 @@
 2. 看 TODO.md 找到当前任务
 3. 新机制 → 先写 docs/ 下的设计文档
 4. 开发/改数据
-5. node --check 语法检查
-6. 黑盒测试 → 修bug
-7. 同步 TODO.md / CHANGELOG.md
-8. git commit + push（Gitee+GitHub）
+5. node --check 语法检查 + 冒烟测试（能进游戏/能修炼/能对话）
+6. 确认debug版本功能正常（新功能在debug中可快速触发）
+7. 真黑盒测试（独立测试者，不知道代码，用debug快速进入对应阶段）
+   - 功能测试：按[测试用例](docs/测试用例与发布检查清单.md)逐项验证
+   - 体验测试：按体验测试用例评估节奏/压力/自由度/代入感
+8. 修bug + 修体验问题
+9. 同步 TODO.md / CHANGELOG.md
+10. git commit + push（Gitee+GitHub）
 ```
+
+**测试核心原则**：
+- 真黑盒：测试者不知道代码逻辑，纯玩家视角
+- 体验优先：功能正常 ≠ 好玩，体验问题和bug同等重要
+- debug先行：用debug快速推进，不要从Lv.1手动推到中期
+- 详见 [测试方法论](docs/测试方法论.md)
 
 **Git路径**：`D:\Git\cmd\git.exe`（不在PATH，必须完整路径）
 **启动游戏**：双击 `index.html`，调试模式 `index.html?debug=1`
@@ -72,8 +82,9 @@
 | 加妖魔/技能/物品数据 | [docs/数据格式规范.md](docs/数据格式规范.md) |
 | 加NPC/地点/事件 | [docs/非战斗系统可扩展性设计.md](docs/非战斗系统可扩展性设计.md) |
 | NPC对话和行为设计 | [docs/NPC性格与AI设计.md](docs/NPC性格与AI设计.md) |
-| 测试方法 | [docs/测试用例与发布检查清单.md](docs/测试用例与发布检查清单.md) |
-| 多Agent黑盒测试 | [docs/多Agent并行黑盒测试方法论.md](docs/多Agent并行黑盒测试方法论.md) |
+| 测试方法论（怎么测） | [docs/测试方法论.md](docs/测试方法论.md) |
+| 测试用例（测什么） | [docs/测试用例与发布检查清单.md](docs/测试用例与发布检查清单.md) |
+| 测试工具（用什么测） | [docs/测试存档体系与最小单元化测试指南.md](docs/测试存档体系与最小单元化测试指南.md) |
 | 开发踩坑/经验 | [docs/开发踩坑记录与通用经验.md](docs/开发踩坑记录与通用经验.md) |
 
 ### 规划与参考
