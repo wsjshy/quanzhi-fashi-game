@@ -50,6 +50,7 @@ const UI = {
         overlay.id = 'opening-story-overlay';
         overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:10001;display:flex;align-items:center;justify-content:center;';
         overlay.innerHTML = `
+            <button id="opening-skip-btn" style="position:absolute;top:20px;right:20px;background:transparent;border:1px solid #555;color:#888;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:13px;z-index:10;">跳过 →</button>
             <div style="max-width:600px;width:90%;text-align:center;padding:40px 20px;">
                 <div id="opening-text" style="font-size:16px;color:#ccc;line-height:2;min-height:300px;text-align:left;"></div>
                 <button id="opening-btn" style="margin-top:30px;background:transparent;border:1px solid #4a6fa5;color:#8ab4f0;padding:10px 30px;border-radius:6px;cursor:pointer;font-size:14px;display:none;">开始冒险</button>
@@ -71,7 +72,17 @@ const UI = {
 
         const textDiv = overlay.querySelector('#opening-text');
         const btn = overlay.querySelector('#opening-btn');
+        const skipBtn = overlay.querySelector('#opening-skip-btn');
         let idx = 0;
+        let currentTimer = null;
+
+        // v0.74.1: 跳过开场剧情
+        const skipOpening = () => {
+            if (currentTimer) clearTimeout(currentTimer);
+            overlay.remove();
+            UI.showMessage(`【新手引导】已自动接取任务「初识魔法」，去修炼场感受魔法的力量吧！\n\n💡 提示：按 ~ 键可打开调试面板（需在URL加?debug=1）。`);
+        };
+        skipBtn.onclick = skipOpening;
 
         const showNext = () => {
             if (idx >= storyTexts.length) {
@@ -88,10 +99,10 @@ const UI = {
             textDiv.style.transition = 'opacity 0.8s';
             setTimeout(() => { textDiv.style.opacity = '1'; }, 50);
             idx++;
-            setTimeout(showNext, s.delay);
+            currentTimer = setTimeout(showNext, s.delay);
         };
 
-        setTimeout(showNext, 800);
+        currentTimer = setTimeout(showNext, 800);
     },
 
     // 章节完成总结弹窗
@@ -615,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.74.0 · 装备强化材料系统</div>
+                ">v0.74.1 · 开场剧情跳过</div>
             </div>
         `;
 
