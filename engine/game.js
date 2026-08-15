@@ -559,6 +559,13 @@ const Game = {
                     result.starDustBonus = bonusExp;
                 }
             }
+
+            // v0.19.0: 地圣泉内泉效果 - 修炼经验×3（玩家争夺到的机缘）
+            if (Player.currentLocation === 'earth_spring' && Player.flags?.earth_spring_inner) {
+                const innerBonus = result.effects.exp * 2; // 额外2倍，总共3倍
+                result.effects.exp += innerBonus;
+                result.innerSpringBonus = innerBonus;
+            }
             
             // 触发事件的概率：时间越长概率越高，但不是线性增长
             const eventChance = action.eventChance || 0;
@@ -735,6 +742,17 @@ const Game = {
             if (result.travelEvent) {
                 this.showEvent(result.travelEvent);
                 return;
+            }
+
+            // v0.19.0: 玩家影响力 - 地圣泉机缘竞争（首次进入时触发）
+            if (locationId === 'earth_spring' && firstExploreReward && !Player.changedStoryNodes.includes('earth_spring_opportunity')) {
+                const tangYueState = NPCStateSystem.getNPCState('tang_yue');
+                const tangYueTrust = tangYueState ? tangYueState.trust : 0;
+                const playerLevel = Player.level;
+                if (tangYueTrust >= 30 && playerLevel >= 5) {
+                    this.triggerEarthSpringInfluence();
+                    return;
+                }
             }
 
             UI.renderMapScreen();
@@ -2490,23 +2508,23 @@ const Game = {
                         </div>
                     ` : ''}
                     ${(() => {
-                        // v0.18.0: 约会邀请按钮（朋友级+可恋爱NPC）
+                        // v0.19.0: 社交互动按钮（朋友级+可深交NPC）
                         const score = npcState.opinion * 0.6 + npcState.trust * 0.3 + npcState.familiarity * 0.1;
-                        const canDate = npc.relationshipCap?.canRomance && score >= 45;
-                        if (canDate) {
-                            return `<div onclick="Game.showDateInvite('${npc.id}')" style="
+                        const canSocial = score >= 45;
+                        if (canSocial) {
+                            return `<div onclick="Game.showSocialInvite('${npc.id}')" style="
                                 padding: 12px 20px;
-                                background: rgba(80, 40, 80, 0.8);
-                                border: 2px solid #aa66aa;
+                                background: rgba(40, 60, 80, 0.8);
+                                border: 2px solid #5588aa;
                                 border-radius: 8px;
-                                color: #ffccff;
+                                color: #aaddff;
                                 cursor: pointer;
                                 text-align: center;
                                 transition: all 0.3s;
                                 font-size: 15px;
                                 margin-top: 8px;
-                            " onmouseover="this.style.borderColor='#ff99ff'; this.style.background='rgba(120, 50, 120, 0.9)'" onmouseout="this.style.borderColor='#aa66aa'; this.style.background='rgba(80, 40, 80, 0.8)'">
-                                💕 邀请约会
+                            " onmouseover="this.style.borderColor='#77bbff'; this.style.background='rgba(50, 80, 110, 0.9)'" onmouseout="this.style.borderColor='#5588aa'; this.style.background='rgba(40, 60, 80, 0.8)'">
+                                🤝 邀请一起活动
                             </div>`;
                         }
                         return '';
@@ -2585,56 +2603,60 @@ const Game = {
         Player.save();
     },
 
-    // ========== v0.18.0 约会系统 ==========
+    // ========== v0.19.0 社交互动系统（重构自约会系统，移除恋爱导向） ==========
 
-    // 约会地点配置
-    DateLocations: {
-        library: { id: "library", name: "图书馆", icon: "📚", opinionGain: 3, trustGain: 2, eventChance: 0.3, timeCost: 2, staminaCost: 5, expGain: 10, description: "安静地一起看书" },
-        xuefeng_sunset: { id: "xuefeng_sunset", name: "雪峰山看日落", icon: "🌅", opinionGain: 5, trustGain: 3, eventChance: 0.5, timeCost: 3, staminaCost: 15, expGain: 5, description: "去雪峰山看日落，浪漫但耗体力" },
-        city_stroll: { id: "city_stroll", name: "博城市街逛街", icon: "🚶", opinionGain: 2, trustGain: 2, eventChance: 0.4, timeCost: 2, staminaCost: 10, expGain: 5, description: "在街上闲逛，可能遇到有趣的事" },
+    // 社交互动地点配置
+    SocialLocations: {
+        library: { id: "library", name: "图书馆", icon: "📚", opinionGain: 3, trustGain: 2, eventChance: 0.3, timeCost: 2, staminaCost: 5, expGain: 10, description: "安静地一起看书学习" },
+        xuefeng_hike: { id: "xuefeng_hike", name: "雪峰山修炼", icon: "🏔️", opinionGain: 4, trustGain: 3, eventChance: 0.4, timeCost: 3, staminaCost: 15, expGain: 15, description: "去雪峰山修炼，环境清幽适合冥想" },
+        city_stroll: { id: "city_stroll", name: "博城市街", icon: "🚶", opinionGain: 2, trustGain: 2, eventChance: 0.4, timeCost: 2, staminaCost: 10, expGain: 5, description: "在街上走走，可能遇到有趣的事" },
         tower_train: { id: "tower_train", name: "三步塔修炼", icon: "🗼", opinionGain: 4, trustGain: 4, eventChance: 0.3, timeCost: 2, staminaCost: 20, expGain: 30, description: "一起修炼，同时获得经验" },
-        cafe: { id: "cafe", name: "咖啡馆聊天", icon: "☕", opinionGain: 4, trustGain: 3, eventChance: 0.35, timeCost: 2, staminaCost: 5, expGain: 5, description: "在咖啡馆深入聊天，增加信任度" }
+        training_ground: { id: "training_ground", name: "修炼场切磋", icon: "⚔️", opinionGain: 3, trustGain: 5, eventChance: 0.35, timeCost: 2, staminaCost: 15, expGain: 20, description: "在修炼场互相切磋，提升实战经验" }
     },
 
-    // 显示约会邀请（地点选择）
-    showDateInvite(npcId) {
+    // 显示社交互动邀请（地点选择）
+    showSocialInvite(npcId) {
         const npc = DataManager.getCharacter(npcId);
         if (!npc) return;
 
-        // 检查是否可以约会
+        // 检查是否可以互动
         const npcState = NPCStateSystem.getNPCState(npcId);
         const score = npcState.opinion * 0.6 + npcState.trust * 0.3 + npcState.familiarity * 0.1;
         if (score < 45) {
-            UI.showMessage(`与${npc.name}的关系还不够好，需要达到"朋友"才能邀请约会。`);
+            UI.showMessage(`与${npc.name}的关系还不够好，需要达到"朋友"才能邀请一起活动。`);
             return;
         }
 
         // NPC拒绝概率（好感度越低越可能拒绝）
         const rejectChance = score < 60 ? 0.2 : score < 75 ? 0.1 : 0.05;
         if (Math.random() < rejectChance) {
-            UI.showMessage(`${npc.name}："抱歉，我今天有点累，改天吧。"`);
-            NPCStateSystem.changeOpinion(npcId, -1, '拒绝约会邀请');
+            UI.showMessage(`${npc.name}："抱歉，我今天还有事，改天吧。"`);
+            NPCStateSystem.changeOpinion(npcId, -1, '拒绝活动邀请');
             return;
         }
 
         // 创建地点选择弹窗
         const overlay = document.createElement('div');
-        overlay.id = 'date-invite-overlay';
+        overlay.id = 'social-invite-overlay';
         overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;';
 
-        const locations = Object.values(this.DateLocations);
-        const npcPref = npc.datePreferences || {};
+        // 根据NPC人设筛选可用地点
+        const npcPref = npc.socialPreferences || npc.datePreferences || {};
+        let locations = Object.values(this.SocialLocations);
+        // 穆宁雪等高冷NPC不喜欢逛街
+        if (npcPref.disliked) {
+            locations = locations.filter(l => !npcPref.disliked.includes(l.id));
+        }
 
         overlay.innerHTML = `
             <div style="background:linear-gradient(135deg,#1a1a3a,#2a2a5a);border:2px solid #6666aa;border-radius:16px;padding:30px;max-width:600px;width:90%;">
-                <div style="font-size:22px;color:#ffccff;font-weight:bold;margin-bottom:8px;text-align:center;">💕 邀请 ${npc.name} 约会</div>
-                <div style="font-size:13px;color:#aaa;margin-bottom:20px;text-align:center;">选择约会地点</div>
+                <div style="font-size:22px;color:#ccddff;font-weight:bold;margin-bottom:8px;text-align:center;">🤝 邀请 ${npc.name} 一起活动</div>
+                <div style="font-size:13px;color:#aaa;margin-bottom:20px;text-align:center;">选择活动地点</div>
                 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
                     ${locations.map(loc => {
                         const isLoved = npcPref.loved?.includes(loc.id);
-                        const isDisliked = npcPref.disliked?.includes(loc.id);
-                        const bonus = isLoved ? ' <span style="color:#ff99cc;">❤️喜欢</span>' : isDisliked ? ' <span style="color:#999;">不喜欢</span>' : '';
-                        return `<div onclick="Game.executeDate('${npcId}','${loc.id}')" style="
+                        const bonus = isLoved ? ' <span style="color:#99ccff;">⭐喜欢</span>' : '';
+                        return `<div onclick="Game.executeSocial('${npcId}','${loc.id}')" style="
                             padding:15px;background:rgba(255,255,255,0.05);border:1px solid #555588;border-radius:10px;cursor:pointer;transition:all 0.2s;
                         " onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
                             <div style="font-size:18px;margin-bottom:5px;">${loc.icon} ${loc.name}${bonus}</div>
@@ -2644,21 +2666,21 @@ const Game = {
                     }).join('')}
                 </div>
                 <div style="text-align:center;margin-top:20px;">
-                    <div onclick="document.getElementById('date-invite-overlay').remove()" style="display:inline-block;padding:8px 24px;background:rgba(100,100,100,0.5);border:1px solid #888;border-radius:8px;color:#ccc;cursor:pointer;font-size:14px;">取消</div>
+                    <div onclick="document.getElementById('social-invite-overlay').remove()" style="display:inline-block;padding:8px 24px;background:rgba(100,100,100,0.5);border:1px solid #888;border-radius:8px;color:#ccc;cursor:pointer;font-size:14px;">取消</div>
                 </div>
             </div>
         `;
         document.body.appendChild(overlay);
     },
 
-    // 执行约会
-    executeDate(npcId, locationId) {
+    // 执行社交互动
+    executeSocial(npcId, locationId) {
         const npc = DataManager.getCharacter(npcId);
-        const loc = this.DateLocations[locationId];
+        const loc = this.SocialLocations[locationId];
         if (!npc || !loc) return;
 
         // 移除弹窗
-        const overlay = document.getElementById('date-invite-overlay');
+        const overlay = document.getElementById('social-invite-overlay');
         if (overlay) overlay.remove();
 
         // 关闭对话界面
@@ -2666,53 +2688,134 @@ const Game = {
 
         // 检查体力
         if (Player.stamina < loc.staminaCost) {
-            UI.showMessage('体力不足，无法约会！');
+            UI.showMessage('体力不足，无法进行活动！');
             return;
         }
 
         // 计算NPC偏好加成
-        const npcPref = npc.datePreferences || {};
+        const npcPref = npc.socialPreferences || npc.datePreferences || {};
         let opinionMult = 1;
         if (npcPref.loved?.includes(locationId)) opinionMult = 1.5;
-        if (npcPref.disliked?.includes(locationId)) opinionMult = 0.5;
 
         const opinionGain = Math.round(loc.opinionGain * opinionMult);
         const trustGain = loc.trustGain;
 
         // 应用效果
-        NPCStateSystem.changeOpinion(npcId, opinionGain, `约会：${loc.name}`);
-        NPCStateSystem.changeTrust(npcId, trustGain, `约会：${loc.name}`);
+        NPCStateSystem.changeOpinion(npcId, opinionGain, `活动：${loc.name}`);
+        NPCStateSystem.changeTrust(npcId, trustGain, `活动：${loc.name}`);
         Player.stamina = Math.max(0, Player.stamina - loc.staminaCost);
         Player.gainExp(loc.expGain || 0);
         TimeSystem.advanceTime(loc.timeCost);
 
-        // 约会事件
+        // 社交事件（非恋爱导向）
         let eventText = '';
         if (Math.random() < loc.eventChance) {
             const events = [
-                { text: `你和${npc.name}聊得很投机，度过了愉快的时光。`, extraOpinion: 3 },
-                { text: `你发现了一家有趣的小店，${npc.name}很高兴。`, extraOpinion: 2, item: 'magic_herb' },
-                { text: `突然下起了小雨，你们一起躲雨，距离拉近了不少。`, extraTrust: 5 },
-                { text: `${npc.name}分享了一个秘密，你感到被信任。`, extraTrust: 5 },
+                { text: `你和${npc.name}讨论了修炼心得，都有所收获。`, extraOpinion: 2, extraExp: 10 },
+                { text: `你们发现了一家卖魔法材料的小店，${npc.name}挑了几样好东西。`, extraOpinion: 1 },
+                { text: `突然下起了小雨，你们一起躲雨，聊了很多平时不会说的话。`, extraTrust: 3 },
+                { text: `${npc.name}分享了一个修炼技巧，你受益匪浅。`, extraTrust: 3, extraExp: 15 },
             ];
-            if (locationId === 'xuefeng_sunset') {
-                events.push({ text: `日落太美了，${npc.name}的脸颊微微泛红。`, extraOpinion: 5 });
+            if (locationId === 'xuefeng_hike') {
+                events.push({ text: `雪峰山的灵气很足，${npc.name}的修炼有了新的感悟。`, extraOpinion: 3, extraExp: 20 });
+            }
+            if (locationId === 'training_ground') {
+                events.push({ text: `切磋中你发现了${npc.name}的一个习惯，对战斗很有启发。`, extraTrust: 4, extraExp: 25 });
             }
             const event = events[Math.floor(Math.random() * events.length)];
             eventText = event.text;
-            if (event.extraOpinion) NPCStateSystem.changeOpinion(npcId, event.extraOpinion, '约会事件');
-            if (event.extraTrust) NPCStateSystem.changeTrust(npcId, event.extraTrust, '约会事件');
-            if (event.item) {
-                Inventory.addItem(event.item, 1);
-                eventText += ' 获得了魔法草药×1';
-            }
+            if (event.extraOpinion) NPCStateSystem.changeOpinion(npcId, event.extraOpinion, '活动事件');
+            if (event.extraTrust) NPCStateSystem.changeTrust(npcId, event.extraTrust, '活动事件');
+            if (event.extraExp) Player.gainExp(event.extraExp);
         }
 
         // 显示结果
-        const resultMsg = `💕 与${npc.name}在${loc.name}约会\n好感 +${opinionGain}，信任 +${trustGain}，经验 +${loc.expGain || 0}\n${eventText ? '\n' + eventText : ''}`;
+        const resultMsg = `🤝 与${npc.name}在${loc.name}活动\n好感 +${opinionGain}，信任 +${trustGain}，经验 +${loc.expGain || 0}\n${eventText ? '\n' + eventText : ''}`;
         UI.showMessage(resultMsg);
 
         Player.save();
+    },
+
+    // ========== v0.19.0 玩家影响力系统 ==========
+
+    // 记录改变的剧情节点并获得影响力
+    recordStoryChange(nodeId, influenceGain = 10) {
+        if (!Player.changedStoryNodes.includes(nodeId)) {
+            Player.changedStoryNodes.push(nodeId);
+            Player.influence += influenceGain;
+            UI.showMessage(`🌟 剧情改变！影响力 +${influenceGain}\n已改变剧情节点：${Player.changedStoryNodes.length}个`);
+        }
+    },
+
+    // 地圣泉机缘竞争（第一个可改变剧情节点）
+    triggerEarthSpringInfluence() {
+        const overlay = document.createElement('div');
+        overlay.id = 'influence-event-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:3000;display:flex;align-items:center;justify-content:center;';
+
+        overlay.innerHTML = `
+            <div style="background:linear-gradient(135deg,#1a2a3a,#2a4a5a);border:2px solid #4488aa;border-radius:16px;padding:35px;max-width:650px;width:90%;">
+                <div style="font-size:20px;color:#ffdd66;font-weight:bold;margin-bottom:15px;text-align:center;">🌟 机缘浮现：地圣泉内泉</div>
+                <div style="font-size:14px;color:#ddeeff;line-height:1.8;margin-bottom:20px;">
+                    你持着地圣泉通行证来到入口，却遇到了唐月老师。她神色复杂地看着你：<br><br>
+                    "你来了。其实...地圣泉还有一处内泉，灵气浓度是外泉的三倍。原本这个名额是留给莫凡的，他的小泥鳅坠需要内泉的灵气来进阶。"<br><br>
+                    唐月顿了顿："但你这段时间的表现很出色，我也看在眼里。如果你愿意，我可以把这个名额给你。不过——莫凡可能会因此错过这次进阶的机会，他的成长路线会完全不同。"<br><br>
+                    <span style="color:#ffaa66;">这是一个改变剧情的选择。你的决定将影响莫凡的命运和后续故事走向。</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    <div onclick="Game.chooseEarthSpringPlayer()" style="
+                        padding:15px 20px;background:rgba(60,100,80,0.6);border:2px solid #55aa77;border-radius:10px;color:#aaffcc;cursor:pointer;font-size:15px;
+                    " onmouseover="this.style.background='rgba(80,130,100,0.8)'" onmouseout="this.style.background='rgba(60,100,80,0.6)'">
+                        <strong>争夺内泉名额</strong>（你获得内泉修炼机会，莫凡错失机缘）<br>
+                        <span style="font-size:12px;color:#88ccaa;">效果：地圣泉修炼经验×3，影响力+15，莫凡成长路线改变</span>
+                    </div>
+                    <div onclick="Game.chooseEarthSpringMoFan()" style="
+                        padding:15px 20px;background:rgba(80,60,60,0.6);border:2px solid #aa7755;border-radius:10px;color:#ffccaa;cursor:pointer;font-size:15px;
+                    " onmouseover="this.style.background='rgba(110,80,80,0.8)'" onmouseout="this.style.background='rgba(80,60,60,0.6)'">
+                        <strong>让给莫凡</strong>（莫凡获得内泉，按原著发展）<br>
+                        <span style="font-size:12px;color:#ccaa88;">效果：莫凡好感+10，唐月信任+5，按原著剧情推进</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    },
+
+    // 玩家选择争夺地圣泉内泉
+    chooseEarthSpringPlayer() {
+        const overlay = document.getElementById('influence-event-overlay');
+        if (overlay) overlay.remove();
+
+        // 记录剧情改变
+        this.recordStoryChange('earth_spring_opportunity', 15);
+
+        // 设置标记：地圣泉修炼经验×3
+        Player.flags = Player.flags || {};
+        Player.flags.earth_spring_inner = true;
+
+        // 莫凡好感下降（错失机缘）
+        NPCStateSystem.changeOpinion('mo_fan', -15, '玩家夺走地圣泉内泉名额');
+        NPCStateSystem.changeTrust('mo_fan', -10, '玩家夺走地圣泉内泉名额');
+
+        UI.showMessage(`🌟 你选择了争夺内泉名额！\n\n唐月："好吧，既然你这么有决心，内泉就交给你了。莫凡那边...我会再想办法。"\n\n地圣泉修炼经验×3 已激活！\n莫凡对你的态度发生了变化...`);
+
+        Player.save();
+        UI.renderMapScreen();
+    },
+
+    // 玩家选择让给莫凡
+    chooseEarthSpringMoFan() {
+        const overlay = document.getElementById('influence-event-overlay');
+        if (overlay) overlay.remove();
+
+        // 莫凡好感上升
+        NPCStateSystem.changeOpinion('mo_fan', 10, '玩家让出地圣泉内泉名额');
+        NPCStateSystem.changeTrust('tang_yue', 5, '玩家展现气度');
+
+        UI.showMessage(`你选择了让给莫凡。\n\n唐月欣慰地笑了："你有这份心，很好。莫凡会记得你的。"\n\n莫凡好感+10，唐月信任+5\n剧情按原著方向推进。`);
+
+        Player.save();
+        UI.renderMapScreen();
     },
 
     // 获取元素 emoji

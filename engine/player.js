@@ -199,6 +199,8 @@ const Player = {
         this.enhanceFailStreak = { weapon: 0, armor: 0, accessory: 0 };  // v0.14.0: 连续失败计数，用于保底机制
         this.enhanceHistory = [];  // v0.14.0: 强化记录，最近10次
         this.skillMemory = {};  // v0.15.0: 技能记忆，{ enemyId: skillId } 对每种妖魔最后使用的技能
+        this.influence = 0;  // v0.19.0: 玩家影响力点数，通过改变剧情获得
+        this.changedStoryNodes = [];  // v0.19.0: 已改变的剧情节点ID列表
         this.activeQuests = [];
         this.completedQuests = [];
         this.currentLocation = 'tianlan_school';
@@ -1622,6 +1624,8 @@ const Player = {
             enhanceFailStreak: this.enhanceFailStreak || { weapon: 0, armor: 0, accessory: 0 },
             enhanceHistory: this.enhanceHistory || [],
             skillMemory: this.skillMemory || {},
+            influence: this.influence || 0,
+            changedStoryNodes: this.changedStoryNodes || [],
             activeQuests: this.activeQuests,
             completedQuests: this.completedQuests,
             currentLocation: this.currentLocation,
@@ -1724,6 +1728,8 @@ const Player = {
             this.enhanceFailStreak = data.enhanceFailStreak ?? { weapon: 0, armor: 0, accessory: 0 };
             this.enhanceHistory = data.enhanceHistory || [];
             this.skillMemory = data.skillMemory || {};
+            this.influence = data.influence || 0;
+            this.changedStoryNodes = data.changedStoryNodes || [];
             this.activeQuests = data.activeQuests ?? [];
             this.completedQuests = data.completedQuests ?? [];
             this.currentLocation = data.currentLocation ?? 'tianlan_school';

@@ -1947,8 +1947,13 @@ const DataCharacters = {
       canBeRival: true
     },
     datePreferences: {
-      loved: ["xuefeng_sunset", "cafe"],
-      liked: ["library", "tower_train"],
+      loved: ["tower_train", "xuefeng_hike"],
+      liked: ["library", "training_ground"],
+      disliked: ["city_stroll"]
+    },
+    socialPreferences: {
+      loved: ["tower_train", "xuefeng_hike"],
+      liked: ["library", "training_ground"],
       disliked: ["city_stroll"]
     },
     relationships: {
