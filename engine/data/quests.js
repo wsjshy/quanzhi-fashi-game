@@ -3134,5 +3134,21 @@ const DataQuests = {
       { type: "explore", count: 1, description: "探索1次" }
     ],
     rewards: { exp: 500, gold: 300, skillPoints: 2, setFlag: "bd_disaster_complete" }
+  },
+
+  // ========== v0.69.0 博城灾难后任务 ==========
+
+  bocheng_journey: {
+    id: "bocheng_journey",
+    name: "新的旅程",
+    description: "准备离开博城，开始新的旅程。整理行装，提升实力，与师友告别。",
+    requireFlag: "bocheng_aftermath_event_done",
+    notFlag: "bd_journey_started",
+    objectives: [
+      { type: "talk", npcId: "tang_yue", count: 1, description: "与唐月对话1次" },
+      { type: "cultivate", count: 1, description: "修炼1次" },
+      { type: "explore", count: 1, description: "探索1次" }
+    ],
+    rewards: { exp: 300, gold: 200, skillPoints: 1, setFlag: "bd_journey_started" }
   }
 };

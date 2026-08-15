@@ -4775,5 +4775,24 @@ const DataEvents = {
       { text: "组织同学疏散", effects: { setFlag: ["bd_hero_evacuation", "bocheng_phase3_done"], npcOpinion: { tang_yue: 10 } }, resultText: "你大喊：\"所有人跟我走，不要慌！\"你组织起混乱的同学，有序地向安全区撤退。途中你用魔法挡住了几只低级妖魔的袭击。唐月感激地看着你：\"多亏了你，很多孩子才能活下来。\"声望+15，唐月好感+10，你是疏散中的领导者" },
       { text: "寻找灾难根源", effects: { setFlag: ["bd_hero_investigate", "bocheng_phase3_done"] }, resultText: "你注意到空间裂缝的能量来源——地圣泉方向有一个黑袍人在施法。你决定绕到后方，寻找灾难的根源。你悄悄接近，发现了黑教廷的祭坛。虽然无法阻止，但你记住了关键信息。经验+200，你掌握了黑教廷的关键情报" }
     ]
+  },
+
+  // ========== v0.69.0 博城灾难后：新的开始 ==========
+
+  bocheng_aftermath_event: {
+    id: "bocheng_aftermath_event",
+    name: "灾难后的黎明",
+    description: "清晨的阳光照在博城的废墟上。空气中还弥漫着烟尘和魔法残留的气息。唐月老师站在临时安置点前，看到你走来，她的眼睛有些红肿，但表情坚定：\"你来了。昨晚...很多人活了下来，很多人没有。但你做了你能做的一切。\"她递给你一封信，\"这是学校的推荐信。博城已经不适合继续学习了，你应该去更广阔的地方。\"",
+    npcId: "tang_yue",
+    activities: [],
+    minLevel: 18,
+    requireFlag: "bd_disaster_complete",
+    notFlag: "bocheng_aftermath_event_done",
+    weight: 40,
+    choices: [
+      { text: "询问博城的未来", effects: { setFlag: ["bd_ask_future", "bocheng_aftermath_event_done"] }, resultText: "你问：\"博城...以后怎么办？\"唐月望向废墟：\"会重建的。博城人不会被打垮。但你还年轻，不该被困在这里。去外面看看吧，变得更强，然后回来。\"声望+5，你了解了博城的未来" },
+      { text: "询问黑教廷的情况", effects: { setFlag: ["bd_ask_blackchurch", "bocheng_aftermath_event_done"], npcOpinion: { tang_yue: 5 } }, resultText: "你问：\"黑教廷...会被抓住吗？\"唐月的表情变得严肃：\"他们跑了。但圣裁院已经介入调查。你如果有什么线索...可以告诉我。\"唐月好感+5，黑教廷剧情线开启" },
+      { text: "接受推荐信，准备离开", effects: { setFlag: ["bd_accept_letter", "bocheng_aftermath_event_done"] }, resultText: "你接过推荐信：\"我会的。\"唐月拍了拍你的肩膀：\"去吧。记住，魔法的意义不是力量，而是守护。\"经验+150，你准备离开博城" }
+    ]
   }
 };
