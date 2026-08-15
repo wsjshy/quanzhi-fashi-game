@@ -4664,5 +4664,41 @@ const DataEvents = {
       { text: "坚持自己的战斗风格", effects: { setFlag: ["ty_mnx_independent", "ty_mnx_practice_done"], npcOpinion: { tang_yue: -3, mu_ningxue: 3 } }, resultText: "你觉得配合限制了自己的发挥，坚持按自己的方式战斗。唐月有些失望，穆宁雪却似乎欣赏你的独立。唐月好感-3，穆宁雪好感+3" },
       { text: "提议穆宁雪主导，你辅助", effects: { setFlag: ["ty_mnx_support_role", "ty_mnx_practice_done"], npcOpinion: { tang_yue: 3, mu_ningxue: 8 } }, resultText: "你主动承担辅助角色，让穆宁雪发挥冰系优势。穆宁雪难得地笑了：\"你很懂配合。\"唐月也点头认可。穆宁雪好感+8，唐月好感+3" }
     ]
+  },
+
+  // ========== v0.65.0 NPC间关系联动：赵满延×穆白（富家子弟的较量） ==========
+
+  zmy_mb_rivalry: {
+    id: "zmy_mb_rivalry",
+    name: "富家子弟的较量",
+    description: "你在走廊看到赵满延和穆白面对面站着。赵满延抱着胳膊：\"穆白，别以为你是穆家的就了不起，光系防御可不是吃素的。\"穆白冷笑：\"光系？也就只能躲在后面喊加油了。\"两人剑拔弩张。他们看到你，都停下了话头。",
+    npcId: "zhao_manyan",
+    activities: [],
+    minRelationships: { zhao_manyan: 30, mu_bai: 30 },
+    notFlag: "zmy_mb_rivalry_done",
+    weight: 40,
+    choices: [
+      { text: "支持赵满延", effects: { setFlag: ["zmy_mb_support_zmy", "zmy_mb_rivalry_done"], npcOpinion: { zhao_manyan: 10, mu_bai: -10 } }, resultText: "你对赵满延说：\"光系防御在团队中可是核心，穆白你别小看人。\"赵满延得意地笑了，穆白脸色难看。赵满延好感+10，穆白好感-10" },
+      { text: "支持穆白", effects: { setFlag: ["zmy_mb_support_mb", "zmy_mb_rivalry_done"], npcOpinion: { mu_bai: 10, zhao_manyan: -10 } }, resultText: "你对穆白说：\"冰系的攻击力确实强，赵满延你别光说不练。\"穆白满意地点头，赵满延撇了撇嘴。穆白好感+10，赵满延好感-10" },
+      { text: "中立调解", effects: { setFlag: ["zmy_mb_mediated", "zmy_mb_rivalry_done"], npcOpinion: { zhao_manyan: 3, mu_bai: 3 } }, resultText: "你打圆场：\"都是同学，别伤了和气。光系防御和冰系攻击各有优势。\"两人都有些不情愿，但还是点了头。赵满延好感+3，穆白好感+3" },
+      { text: "提议用实力说话", effects: { setFlag: ["zmy_mb_challenge", "zmy_mb_rivalry_done"], npcOpinion: { zhao_manyan: 5, mu_bai: 5 } }, resultText: "你说：\"光说没用，不如找时间比试一场？\"两人眼睛一亮，都同意了。赵满延好感+5，穆白好感+5" }
+    ]
+  },
+
+  zmy_mb_match: {
+    id: "zmy_mb_match",
+    name: "实力的较量",
+    description: "训练馆里，赵满延和穆白相对而立。赵满延展开光系护盾：\"来吧，让你看看什么叫绝对防御！\"穆白凝聚冰系星子：\"防御再厚，也挡不住冰系的穿透。\"两人看向你：\"你来当裁判？\"",
+    npcId: "zhao_manyan",
+    activities: [],
+    minRelationships: { zhao_manyan: 50, mu_bai: 50 },
+    requireFlag: "zmy_mb_challenge",
+    notFlag: "zmy_mb_match_done",
+    weight: 40,
+    choices: [
+      { text: "当公正的裁判", effects: { setFlag: ["zmy_mb_referee", "zmy_mb_match_done"], npcOpinion: { zhao_manyan: 5, mu_bai: 5 } }, resultText: "你认真观察两人的比试，公正判罚。比赛结束后，两人都对你的公正表示认可。赵满延好感+5，穆白好感+5，经验+80" },
+      { text: "暗中帮赵满延加油", effects: { setFlag: ["zmy_mb_cheer_zmy", "zmy_mb_match_done"], npcOpinion: { zhao_manyan: 8, mu_bai: -5 } }, resultText: "你趁穆白不注意，悄悄给赵满延递了个鼓励的眼神。赵满延士气大振，赢了比试。穆白似乎察觉到了什么，有些不满。赵满延好感+8，穆白好感-5" },
+      { text: "暗中帮穆白加油", effects: { setFlag: ["zmy_mb_cheer_mb", "zmy_mb_match_done"], npcOpinion: { mu_bai: 8, zhao_manyan: -5 } }, resultText: "你趁赵满延不注意，悄悄给穆白递了个鼓励的眼神。穆白冰系攻势更猛，赢了比试。赵满延似乎察觉到了什么，有些不满。穆白好感+8，赵满延好感-5" }
+    ]
   }
 };

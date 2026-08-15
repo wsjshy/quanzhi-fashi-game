@@ -3046,5 +3046,47 @@ const DataQuests = {
     dialogueStart: "去实战中验证你们的配合吧。",
     dialogueInProgress: "冰与火的配合，效果出乎意料地好。",
     dialogueComplete: "配合击败妖魔！唐月赞许地点头。技能点1。"
+  },
+
+  // ========== v0.65.0 NPC间关系联动：赵满延×穆白（富家子弟的较量） ==========
+
+  quest_zmy_mb_challenge: {
+    id: "quest_zmy_mb_challenge",
+    name: "富家子弟的较量",
+    description: "赵满延和穆白约定比试，你需要帮他们准备。这是一场富家子弟之间的实力较量。",
+    giver: "zhao_manyan",
+    type: "personal",
+    trigger: { requireFlag: "zmy_mb_challenge" },
+    objectives: [
+      { type: "talk", npcId: "zhao_manyan", count: 1, description: "与赵满延对话" },
+      { type: "talk", npcId: "mu_bai", count: 1, description: "与穆白对话" },
+      { type: "cultivate", count: 2, description: "修炼2次准备" }
+    ],
+    rewards: { exp: 200, gold: 100, setFlag: "zmy_mb_quest_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "既然要比试，那就先各自准备吧。",
+    dialogueInProgress: "两人都在摩拳擦掌，准备充分。",
+    dialogueComplete: "准备完成！比试即将开始。"
+  },
+
+  quest_zmy_mb_witness: {
+    id: "quest_zmy_mb_witness",
+    name: "实力的见证",
+    description: "比试结束后，两人决定联手实战，你作为见证者参与。光系防御和冰系攻击的配合，效果如何？",
+    giver: "zhao_manyan",
+    type: "personal",
+    trigger: { requireFlag: "zmy_mb_referee" },
+    objectives: [
+      { type: "kill", enemyId: "any", count: 1, description: "联手击败1个妖魔" },
+      { type: "talk", npcId: "zhao_manyan", count: 1, description: "与赵满延对话" },
+      { type: "talk", npcId: "mu_bai", count: 1, description: "与穆白对话" }
+    ],
+    rewards: { exp: 300, skillPoints: 1, setFlag: "zmy_mb_witness_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "去实战中验证我们的配合吧。",
+    dialogueInProgress: "光系防御加冰系攻击，配合默契。",
+    dialogueComplete: "联手击败妖魔！两人都对你的公正表示感谢。技能点1。"
   }
 };
