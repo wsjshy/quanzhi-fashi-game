@@ -384,6 +384,12 @@ const Game = {
             }
         }
 
+        // v0.25.0 Phase4: 随机探索事件（非休息行动5%概率）
+        let randomEvent = null;
+        if (!skipForDiscovery.includes(actionId) && typeof EventSystem !== 'undefined') {
+            randomEvent = EventSystem.triggerRandomEvent('explore', 0.05);
+        }
+
         if (message) {
             UI.showMessage(message.trim());
         }
@@ -395,9 +401,10 @@ const Game = {
             return;
         }
 
-        if (result.event) {
-            // 触发事件
-            this.showEvent(result.event);
+        if (result.event || randomEvent) {
+            // 触发事件（行动事件或随机事件）
+            const eventId = result.event || randomEvent.id;
+            this.showEvent(eventId);
             return;
         }
 

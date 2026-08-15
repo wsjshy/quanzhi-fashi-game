@@ -2895,5 +2895,111 @@ const DataEvents = {
         resultText: "宇昂死了。博城的仇，许昭霆的仇，终于报了一部分。\n\n但你知道这不是结束。撒朗还在，神侍者还在，黑教廷还在。\n\n你的魔法之路，才刚刚开始。\n\n💰 获得5,000,000金币！\n⭐ 明珠篇·主线完成！"
       }
     ]
+  },
+
+  // ========== v0.25.0 随机探索事件 ==========
+  event_stranger_help: {
+    id: "event_stranger_help",
+    name: "路人求助",
+    description: "你在路上遇到一个神色慌张的路人，他似乎需要帮助。",
+    trigger: "explore",
+    chance: 0.3,
+    once: false,
+    choices: [
+      {
+        text: "上前询问",
+        effects: { exp: 30, gold: 20 },
+        resultText: "你上前询问，原来他迷路了。你帮他指了路，他感激地给了你一些金币。\n\n经验+30，金币+20"
+      },
+      {
+        text: "假装没看见",
+        effects: {},
+        resultText: "你选择了无视，继续走自己的路。"
+      }
+    ]
+  },
+
+  event_magic_anomaly: {
+    id: "event_magic_anomaly",
+    name: "魔法波动",
+    description: "你感受到附近有异常的魔法波动，似乎有什么东西在涌动。",
+    trigger: "explore",
+    chance: 0.25,
+    once: false,
+    choices: [
+      {
+        text: "调查波动来源",
+        effects: { exp: 50, mp: -15 },
+        resultText: "你循着波动找到了一处微弱的灵脉节点，吸收了一些魔法能量。\n\n经验+50，MP-15"
+      },
+      {
+        text: "远离这里",
+        effects: {},
+        resultText: "你觉得不对劲，选择了远离。安全第一。"
+      }
+    ]
+  },
+
+  event_lost_item: {
+    id: "event_lost_item",
+    name: "遗失物品",
+    description: "你在路边发现了一个看起来被遗失的小袋子。",
+    trigger: "explore",
+    chance: 0.2,
+    once: false,
+    choices: [
+      {
+        text: "打开看看",
+        effects: { gold: 50 },
+        resultText: "袋子里有一些金币，看来是某个粗心的人掉的。\n\n金币+50"
+      },
+      {
+        text: "交给附近的人",
+        effects: { exp: 20 },
+        resultText: "你把袋子交给了附近的商铺老板，他称赞你是个诚实的人。\n\n经验+20"
+      }
+    ]
+  },
+
+  event_fellow_mage: {
+    id: "event_fellow_mage",
+    name: "同修交流",
+    description: "你遇到一个同样在修炼的法师，他似乎愿意和你交流心得。",
+    trigger: "explore",
+    chance: 0.2,
+    once: false,
+    choices: [
+      {
+        text: "交流修炼心得",
+        effects: { exp: 40 },
+        resultText: "你们交流了各自的修炼方法，你从中获得了一些启发。\n\n经验+40"
+      },
+      {
+        text: "礼貌拒绝",
+        effects: {},
+        resultText: "你礼貌地拒绝了，继续自己的修炼。"
+      }
+    ]
+  },
+
+  event_small_trouble: {
+    id: "event_small_trouble",
+    name: "小麻烦",
+    description: "几个地痞流氓拦住了你的去路，看起来想找事。",
+    trigger: "explore",
+    chance: 0.15,
+    once: false,
+    choices: [
+      {
+        text: "用魔法吓退他们",
+        effects: { exp: 25, mp: -10 },
+        resultText: "你释放了一个小小的魔法，他们吓得落荒而逃。\n\n经验+25，MP-10"
+      },
+      {
+        text: "绕路走",
+        effects: {},
+        resultText: "你不想惹麻烦，绕路离开了。"
+      }
+    ]
   }
 };
