@@ -169,6 +169,7 @@ const DebugPanel = {
                 <div class="debug-tab" data-tab="time" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">时间</div>
                 <div class="debug-tab" data-tab="save" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">存档</div>
                 <div class="debug-tab" data-tab="story" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">剧情</div>
+                <div class="debug-tab" data-tab="npc" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">NPC</div>
                 <div class="debug-tab" data-tab="other" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">其他</div>
             </div>
             
@@ -228,6 +229,19 @@ const DebugPanel = {
                         <button onclick="DebugPanel.fullRestore()" style="width: 100%; background: #228844; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 13px; margin-top: 5px;">满血满蓝满体力</button>
                     </div>
                     
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #8888ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">属性点</div>
+                        <div style="display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap; align-items: center;">
+                            <span style="font-size: 12px; flex: 1;">未分配：<span id="debug-attr-points-display">0</span></span>
+                            <button onclick="DebugPanel.refreshAttrPoints()" style="background: #666; color: #fff; border: none; padding: 3px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">刷新</button>
+                        </div>
+                        <div style="display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap;">
+                            <button onclick="DebugPanel.clearAttrPoints()" style="background: #aa4444; color: #fff; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">清零未分配</button>
+                            <button onclick="DebugPanel.addAttributePoints(10)" style="background: #228844; color: #fff; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">+10点</button>
+                            <button onclick="DebugPanel.addAttributePoints(50)" style="background: #228844; color: #fff; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">+50点</button>
+                        </div>
+                    </div>
+
                     <div style="margin-bottom: 15px;">
                         <div style="font-weight: bold; color: #8888ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">刷新数值</div>
                         <button onclick="DebugPanel.refreshValues()" style="width: 100%; background: #aa8844; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 13px;">🔄 从游戏读取当前数值</button>
@@ -572,6 +586,52 @@ const DebugPanel = {
                     </div>
                 </div>
 
+                <!-- NPC标签页 -->
+                <div id="debug-tab-npc" class="debug-tab-content" style="display: none;">
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #88ff88; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">NPC关系设置</div>
+                        <div style="display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap; align-items: center;">
+                            <select id="debug-npc-select" style="flex: 1; min-width: 120px; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px;">
+                                <option value="">-- 选择NPC --</option>
+                                <option value="mo_fan">莫凡</option>
+                                <option value="mu_ningxue">穆宁雪</option>
+                                <option value="tang_yue">唐月</option>
+                                <option value="zhang_xiaohou">张小侯</option>
+                                <option value="zhao_manyan">赵满延</option>
+                                <option value="xu_zhaoting">许昭霆</option>
+                                <option value="mu_bai">穆白</option>
+                                <option value="zhou_min">周敏</option>
+                                <option value="xiao_chuyuan">萧院长</option>
+                                <option value="xue_musheng">薛木生</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap; align-items: center;">
+                            <span style="font-size: 12px; width: 40px;">好感</span>
+                            <input type="number" id="debug-npc-opinion" placeholder="-100~100" value="50" style="width: 80px; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px;">
+                            <span style="font-size: 12px; width: 40px;">信任</span>
+                            <input type="number" id="debug-npc-trust" placeholder="-100~100" value="50" style="width: 80px; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px;">
+                            <button onclick="DebugPanel.setNpcRelation()" style="background: #448888; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">设置</button>
+                        </div>
+                        <div style="display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap;">
+                            <button onclick="DebugPanel.quickNpcRel(0)" style="background: #666; color: #fff; border: none; padding: 3px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">陌生(0)</button>
+                            <button onclick="DebugPanel.quickNpcRel(20)" style="background: #448844; color: #fff; border: none; padding: 3px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">认识(20)</button>
+                            <button onclick="DebugPanel.quickNpcRel(40)" style="background: #4488aa; color: #fff; border: none; padding: 3px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">友善(40)</button>
+                            <button onclick="DebugPanel.quickNpcRel(60)" style="background: #8844aa; color: #fff; border: none; padding: 3px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">亲密(60)</button>
+                            <button onclick="DebugPanel.quickNpcRel(80)" style="background: #aa4488; color: #fff; border: none; padding: 3px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">挚友(80)</button>
+                        </div>
+                        <button onclick="DebugPanel.showAllNpcRelations()" style="width: 100%; background: #444466; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 12px;">查看当前所有NPC关系</button>
+                        <div id="debug-npc-relations" style="margin-top: 8px; font-size: 11px; color: #aaa; max-height: 250px; overflow-y: auto; background: #1a1a2a; padding: 8px; border-radius: 4px;"></div>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #88ff88; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">手动输入ID</div>
+                        <div style="display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap; align-items: center;">
+                            <input type="text" id="debug-npc-id-manual" placeholder="npc_id" style="width: 100px; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px;">
+                            <input type="number" id="debug-npc-opinion-manual" placeholder="好感" value="50" style="width: 60px; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px;">
+                            <button onclick="DebugPanel.setNpcRelationManual()" style="background: #448888; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">设置</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 其他标签页 -->
                 <div id="debug-tab-other" class="debug-tab-content" style="display: none;">
                     <div style="margin-bottom: 15px;">
@@ -654,8 +714,7 @@ const DebugPanel = {
         try {
             if (typeof Player !== 'undefined') {
                 const levelEl = document.getElementById('debug-level');
-                const expEl = document.getElementById('debug-exp');
-                const goldEl = document.getElementById('debug-gold');
+                const expEl = document.getElementById('debug-exp');                const goldEl = document.getElementById('debug-gold');
                 const hpEl = document.getElementById('debug-hp');
                 const mpEl = document.getElementById('debug-mp');
                 const staminaEl = document.getElementById('debug-stamina');
@@ -674,6 +733,44 @@ const DebugPanel = {
         }
     },
     
+    // v0.54.0: 刷新属性点显示
+    refreshAttrPoints() {
+        try {
+            const el = document.getElementById('debug-attr-points-display');
+            if (el && typeof Player !== 'undefined') {
+                el.textContent = Player.attributePoints || 0;
+            }
+        } catch (e) {
+            console.warn('[Debug] 刷新属性点失败:', e);
+        }
+    },
+
+    // v0.54.0: 清零未分配属性点
+    clearAttrPoints() {
+        try {
+            if (typeof Player !== 'undefined') {
+                Player.attributePoints = 0;
+                this.refreshAttrPoints();
+                console.log('[Debug] 已清零未分配属性点');
+            }
+        } catch (e) {
+            console.error('[Debug] 清零属性点失败:', e);
+        }
+    },
+
+    // v0.54.0: 增加属性点
+    addAttributePoints(amount) {
+        try {
+            if (typeof Player !== 'undefined') {
+                Player.attributePoints = (Player.attributePoints || 0) + amount;
+                this.refreshAttrPoints();
+                console.log('[Debug] 增加' + amount + '属性点，当前：' + Player.attributePoints);
+            }
+        } catch (e) {
+            console.error('[Debug] 增加属性点失败:', e);
+        }
+    },
+
     // ========== 玩家相关功能 ==========
     
     setLevel(targetLevel) {
@@ -1538,14 +1635,96 @@ const DebugPanel = {
             const opinion = parseInt(document.getElementById('debug-opinion').value) || 50;
             const trust = parseInt(document.getElementById('debug-trust').value) || 50;
             if (!npcId) return;
-            if (typeof NpcState !== 'undefined') {
-                const state = NpcState.getNPCState(npcId);
+            if (typeof NPCStateSystem !== 'undefined') {
+                const state = NPCStateSystem.getNPCState(npcId);
                 state.opinion = opinion;
                 state.trust = trust;
                 console.log(`[Debug] ${npcId} 好感=${opinion} 信任=${trust}`);
+                alert(`已设置 ${npcId}: 好感=${opinion} 信任=${trust}`);
             }
         } catch (e) {
             console.error('[Debug] setNpcRel错误:', e);
+        }
+    },
+
+    // v0.54.0: 新NPC关系设置（下拉框方式）
+    setNpcRelation() {
+        try {
+            const npcId = document.getElementById('debug-npc-select').value;
+            const opinion = parseInt(document.getElementById('debug-npc-opinion').value) || 0;
+            const trust = parseInt(document.getElementById('debug-npc-trust').value) || 0;
+            if (!npcId) { alert('请选择NPC'); return; }
+            if (typeof NPCStateSystem !== 'undefined') {
+                const state = NPCStateSystem.getNPCState(npcId);
+                state.opinion = opinion;
+                state.trust = trust;
+                const charData = (typeof DataManager !== 'undefined') ? DataManager.getCharacter(npcId) : null;
+                const name = charData ? charData.name : npcId;
+                console.log(`[Debug] ${name}(${npcId}) 好感=${opinion} 信任=${trust}`);
+                alert(`已设置 ${name}: 好感=${opinion} 信任=${trust}`);
+            }
+        } catch (e) {
+            console.error('[Debug] setNpcRelation错误:', e);
+        }
+    },
+
+    // v0.54.0: 快速预设关系
+    quickNpcRel(value) {
+        try {
+            const npcId = document.getElementById('debug-npc-select').value;
+            if (!npcId) { alert('请先选择NPC'); return; }
+            document.getElementById('debug-npc-opinion').value = value;
+            document.getElementById('debug-npc-trust').value = Math.floor(value * 0.7);
+            this.setNpcRelation();
+        } catch (e) {
+            console.error('[Debug] quickNpcRel错误:', e);
+        }
+    },
+
+    // v0.54.0: 显示所有NPC关系
+    showAllNpcRelations() {
+        try {
+            const el = document.getElementById('debug-npc-relations');
+            if (!el) return;
+            if (typeof NPCStateSystem === 'undefined') {
+                el.innerHTML = 'NPCStateSystem未加载';
+                return;
+            }
+            const states = NPCStateSystem._npcStates || {};
+            const entries = Object.entries(states)
+                .filter(([id, s]) => (s.opinion || 0) !== 0 || (s.trust || 0) !== 0)
+                .sort((a, b) => (b[1].opinion || 0) - (a[1].opinion || 0));
+            if (entries.length === 0) {
+                el.innerHTML = '（暂无非零关系的NPC）';
+                return;
+            }
+            let html = '';
+            for (const [npcId, state] of entries) {
+                const charData = (typeof DataManager !== 'undefined') ? DataManager.getCharacter(npcId) : null;
+                const name = charData ? charData.name : npcId;
+                html += `<div style="margin-bottom: 4px;"><b>${name}</b> (${npcId}): 好感=${state.opinion || 0}, 信任=${state.trust || 0}</div>`;
+            }
+            el.innerHTML = html;
+        } catch (e) {
+            console.error('[Debug] showAllNpcRelations错误:', e);
+        }
+    },
+
+    // v0.54.0: 手动输入ID设置
+    setNpcRelationManual() {
+        try {
+            const npcId = document.getElementById('debug-npc-id-manual').value.trim();
+            const opinion = parseInt(document.getElementById('debug-npc-opinion-manual').value) || 0;
+            if (!npcId) return;
+            if (typeof NPCStateSystem !== 'undefined') {
+                const state = NPCStateSystem.getNPCState(npcId);
+                state.opinion = opinion;
+                state.trust = Math.floor(opinion * 0.7);
+                console.log(`[Debug] ${npcId} 好感=${opinion}`);
+                alert(`已设置 ${npcId}: 好感=${opinion}`);
+            }
+        } catch (e) {
+            console.error('[Debug] setNpcRelationManual错误:', e);
         }
     },
 

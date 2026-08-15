@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.53.1 · 自动战斗修复</div>
+                ">v0.54.0 · Debug增强</div>
             </div>
         `;
 

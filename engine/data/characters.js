@@ -1,4 +1,4 @@
-﻿/**
+/**
  * NPC/角色数据
  * 从 game-data.js 拆分而来
  */
@@ -1590,7 +1590,7 @@ const DataCharacters = {
   zhang_xiaohou: {
     id: "zhang_xiaohou",
     name: "张小侯",
-    title: "莫凡的死党",
+    title: "风系学生",
     description: "跟泥猴子一样的少年，莫凡的邻居和发小，高一8班学生。风系法师，速度很快。性格活泼热心，消息灵通，极其崇拜莫凡，叫他\"莫凡哥\"，关键时刻很护短。",
     elements: [
       "wind"
