@@ -144,7 +144,8 @@ const QuestSystem = {
                     reach: 'locationId'
                 }[type];
 
-                if (obj[targetField] !== targetId) return;
+                // v0.25.0: "any"通配符，匹配任意目标
+                if (obj[targetField] !== 'any' && obj[targetField] !== targetId) return;
 
                 // 更新进度
                 activeQuest.progress[index] = Math.min(
@@ -394,8 +395,8 @@ const QuestSystem = {
             if (t.minLevel && (Player.level || 1) < t.minLevel) conditionsMet = false;
             if (t.maxLevel && (Player.level || 1) > t.maxLevel) conditionsMet = false;
 
-            // 元素系别条件
-            if (t.element && Player.element !== t.element) conditionsMet = false;
+            // 元素系别条件（检查玩家是否拥有该元素）
+            if (t.element && !(Player.elements || []).includes(t.element)) conditionsMet = false;
 
             // 修炼次数条件
             if (t.minCultivateCount) {

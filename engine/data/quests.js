@@ -2199,5 +2199,152 @@ const DataQuests = {
     dialogueStart: "听说你经常四处跑？我们这里有个小委托，有没有兴趣？",
     dialogueInProgress: "继续探索，博城周边还有很多未知。",
     dialogueComplete: "干得不错。以后有更高级的委托，我会优先考虑你。"
+  },
+
+  // v0.25.0 Phase2: 更多元素系别任务
+  personal_thunder_training: {
+    id: "personal_thunder_training",
+    name: "雷电的速度",
+    description: "你觉醒了雷系魔法。雷系以速度和爆发力著称，需要精准的时机把握。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { element: "thunder", minLevel: 2 },
+    objectives: [
+      { type: "cultivate", count: 5, description: "修炼5次雷系魔法" }
+    ],
+    rewards: { exp: 200, gold: 100 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "雷系……很稀有的天赋。记住，雷系的关键是快和准，去修炼场体会吧。",
+    dialogueInProgress: "速度还不够，继续练习。",
+    dialogueComplete: "你的雷系已经初具威力了。"
+  },
+
+  personal_earth_training: {
+    id: "personal_earth_training",
+    name: "大地的坚韧",
+    description: "你觉醒了土系魔法。土系以防御和稳重著称，是团队中可靠的后盾。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { element: "earth", minLevel: 2 },
+    objectives: [
+      { type: "cultivate", count: 5, description: "修炼5次土系魔法" }
+    ],
+    rewards: { exp: 200, gold: 100 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "土系是最踏实的系别。打好基础，你的防御会让所有人安心。",
+    dialogueInProgress: "稳扎稳打，不要急。",
+    dialogueComplete: "你的土系防御已经很扎实了。"
+  },
+
+  personal_wind_training: {
+    id: "personal_wind_training",
+    name: "风的自由",
+    description: "你觉醒了风系魔法。风系以灵活和机动性著称，张小侯也是风系，可以交流。",
+    giver: "zhang_xiaohou",
+    type: "personal",
+    trigger: { element: "wind", minLevel: 2 },
+    objectives: [
+      { type: "cultivate", count: 5, description: "修炼5次风系魔法" }
+    ],
+    rewards: { exp: 200, gold: 100 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "你也是风系？太好了！风系最讲究灵活，我们一起练习吧！",
+    dialogueInProgress: "风系要的是随心所欲，不要被束缚。",
+    dialogueComplete: "你的风系越来越熟练了，以后我们可以一起修炼！"
+  },
+
+  personal_water_training: {
+    id: "personal_water_training",
+    name: "水的柔韧",
+    description: "你觉醒了水系魔法。水系以柔韧和适应性著称，攻守兼备。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { element: "water", minLevel: 2 },
+    objectives: [
+      { type: "cultivate", count: 5, description: "修炼5次水系魔法" }
+    ],
+    rewards: { exp: 200, gold: 100 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "水系是最灵活的系别。像水一样，能适应任何环境。",
+    dialogueInProgress: "保持柔韧，不要硬碰硬。",
+    dialogueComplete: "你已经体会到水的柔韧了。"
+  },
+
+  // v0.25.0 Phase3: 更多关系驱动任务
+  personal_muningxue_recognition: {
+    id: "personal_muningxue_recognition",
+    name: "穆宁雪的认可",
+    description: "你和穆宁雪的关系逐渐拉近。她虽然高冷，但似乎开始认可你了。",
+    giver: "mu_ningxue",
+    type: "personal",
+    trigger: { minRelationship: { mu_ningxue: 40 } },
+    objectives: [
+      { type: "talk", npcId: "mu_ningxue", count: 5, description: "与穆宁雪对话5次" }
+    ],
+    rewards: { exp: 300, gold: 150 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "……你和别人不一样。至少，不讨厌。",
+    dialogueInProgress: "有事？……没事也可以来。",
+    dialogueComplete: "你算是……朋友了。"
+  },
+
+  personal_xiaohou_friendship: {
+    id: "personal_xiaohou_friendship",
+    name: "张小侯的友谊",
+    description: "你和张小侯成了好朋友。他热情开朗，总是愿意和你一起冒险。",
+    giver: "zhang_xiaohou",
+    type: "personal",
+    trigger: { minRelationship: { zhang_xiaohou: 30 } },
+    objectives: [
+      { type: "talk", npcId: "zhang_xiaohou", count: 3, description: "与张小侯对话3次" }
+    ],
+    rewards: { exp: 200, gold: 100 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "兄弟！我就觉得你人不错！以后我们一起修炼一起冒险吧！",
+    dialogueInProgress: "走，一起去修炼场！",
+    dialogueComplete: "我们是永远的好兄弟！"
+  },
+
+  personal_mofan_rivalry: {
+    id: "personal_mofan_rivalry",
+    name: "莫凡的竞争",
+    description: "你和莫凡都是有天赋的学生。你们之间有一种良性的竞争关系，互相促进。",
+    giver: "mo_fan",
+    type: "personal",
+    trigger: { minRelationship: { mo_fan: 20 }, minLevel: 3 },
+    objectives: [
+      { type: "cultivate", count: 8, description: "修炼8次" },
+      { type: "talk", npcId: "mo_fan", count: 3, description: "与莫凡对话3次" }
+    ],
+    rewards: { exp: 350, gold: 200 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "嘿，你也挺努力的嘛。不过我不会输给你的！",
+    dialogueInProgress: "一起加油吧，别被我甩开太远！",
+    dialogueComplete: "不错嘛，你确实有两下子。我们继续竞争！"
+  },
+
+  personal_battle_seasoned: {
+    id: "personal_battle_seasoned",
+    name: "身经百战",
+    description: "你经历了不少战斗。猎法师公会注意到了你的实战经验，有更危险的委托给你。",
+    giver: "hunter_receptionist",
+    type: "personal",
+    trigger: { minLevel: 5, chance: 0.3 },
+    objectives: [
+      { type: "kill", enemyId: "any", count: 10, description: "击败10个妖魔" }
+    ],
+    rewards: { exp: 400, gold: 300 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "你已经有不少实战经验了。这里有个高级点的委托，敢接吗？",
+    dialogueInProgress: "小心点，这些妖魔不好对付。",
+    dialogueComplete: "干得漂亮！你已经是个合格的猎法师了。"
   }
 };
