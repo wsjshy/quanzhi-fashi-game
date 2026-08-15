@@ -3001,5 +3001,212 @@ const DataEvents = {
         resultText: "你不想惹麻烦，绕路离开了。"
       }
     ]
+  },
+
+  // ========== v0.33.0 更多探索随机事件 ==========
+
+  event_wandering_merchant: {
+    id: "event_wandering_merchant",
+    name: "流浪商人",
+    description: "一个背着大包裹的流浪商人向你招手，他的货物看起来很有趣。",
+    trigger: "explore",
+    chance: 0.15,
+    once: false,
+    choices: [
+      {
+        text: "看看他的货物",
+        effects: { gold: -30, exp: 15 },
+        resultText: "你花30金币买了一瓶据说能提升修炼效率的药水。虽然不知道真假，但商人的故事让你长了见识。\n\n金币-30，经验+15"
+      },
+      {
+        text: "婉拒离开",
+        effects: {},
+        resultText: "你礼貌地拒绝了，继续自己的路。"
+      }
+    ]
+  },
+
+  event_injured_demon: {
+    id: "event_injured_demon",
+    name: "受伤的妖魔",
+    description: "你发现一只受伤的低级妖魔倒在路边，它似乎还活着。",
+    trigger: "explore",
+    chance: 0.12,
+    once: false,
+    choices: [
+      {
+        text: "了结它",
+        effects: { exp: 60, hp: -10 },
+        resultText: "你果断出手解决了这只妖魔，避免它日后伤害他人。战斗中受了点小伤。\n\n经验+60，HP-10"
+      },
+      {
+        text: "报告猎法师公会",
+        effects: { exp: 20, gold: 30 },
+        resultText: "你没有贸然出手，而是报告了附近的猎法师公会。他们感谢你提供的信息。\n\n经验+20，金币+30"
+      }
+    ]
+  },
+
+  event_ancient_ruins: {
+    id: "event_ancient_ruins",
+    name: "古老遗迹",
+    description: "你在偏僻处发现了一处被藤蔓覆盖的古老遗迹入口，里面似乎有什么东西。",
+    trigger: "explore",
+    chance: 0.08,
+    once: false,
+    choices: [
+      {
+        text: "进去探索",
+        effects: { exp: 80, gold: 100, mp: -20 },
+        resultText: "遗迹里布满了魔法陷阱，但你小心翼翼地通过了。在最深处你找到了一些古代金币和一块刻满符文的石板。\n\n经验+80，金币+100，MP-20"
+      },
+      {
+        text: "记住位置，以后再来",
+        effects: { exp: 10 },
+        resultText: "你觉得准备不足，决定记住位置以后再来。这份谨慎也是一种成长。\n\n经验+10"
+      }
+    ]
+  },
+
+  event_student_help: {
+    id: "event_student_help",
+    name: "学弟求助",
+    description: "一个低年级的学生拦住了你，他似乎在修炼上遇到了瓶颈。",
+    trigger: "explore",
+    chance: 0.15,
+    once: false,
+    choices: [
+      {
+        text: "耐心指导他",
+        effects: { exp: 35, gold: 0 },
+        resultText: "你花了一些时间指导他，看着他恍然大悟的表情，你自己也对修炼有了新的理解。教学相长。\n\n经验+35"
+      },
+      {
+        text: "让他去找老师",
+        effects: {},
+        resultText: "你建议他去找专业的老师指导，这确实是更负责任的做法。"
+      }
+    ]
+  },
+
+  event_lucky_find: {
+    id: "event_lucky_find",
+    name: "天降奇遇",
+    description: "你走着走着，突然被什么东西绊了一下。低头一看，是一个闪闪发光的小盒子。",
+    trigger: "explore",
+    chance: 0.06,
+    once: false,
+    choices: [
+      {
+        text: "打开盒子",
+        effects: { gold: 200, exp: 30 },
+        resultText: "盒子里装着一枚古代金币和一张写着修炼口诀的羊皮纸。今天运气真好！\n\n金币+200，经验+30"
+      }
+    ]
+  },
+
+  event_magic_storm: {
+    id: "event_magic_storm",
+    name: "魔法风暴",
+    description: "天空突然暗了下来，一场小型魔法风暴正在形成，空气中充满了狂暴的元素能量。",
+    trigger: "explore",
+    chance: 0.1,
+    once: false,
+    choices: [
+      {
+        text: "在风暴中修炼",
+        effects: { exp: 70, hp: -15, mp: -20 },
+        resultText: "你决定利用风暴中的狂暴能量修炼。虽然过程很痛苦，但你的元素亲和力有了明显提升。\n\n经验+70，HP-15，MP-20"
+      },
+      {
+        text: "找地方躲避",
+        effects: { exp: 5 },
+        resultText: "你找到一个安全的地方躲避风暴。等待中你观察了风暴的形成，也算有所收获。\n\n经验+5"
+      }
+    ]
+  },
+
+  event_hidden_cave: {
+    id: "event_hidden_cave",
+    name: "隐秘洞穴",
+    description: "你注意到山崖上有一个被灌木遮挡的洞穴，里面隐约传来水滴声。",
+    trigger: "explore",
+    chance: 0.1,
+    once: false,
+    choices: [
+      {
+        text: "进入洞穴",
+        effects: { exp: 50, gold: 60 },
+        resultText: "洞穴里有一个地下暗河，河边生长着几株珍贵的灵药。你采集了一些，还在洞壁上发现了前人留下的修炼笔记。\n\n经验+50，金币+60"
+      },
+      {
+        text: "在洞口看看就好",
+        effects: { exp: 10 },
+        resultText: "你在洞口观察了一会儿，没有贸然进入。安全第一。\n\n经验+10"
+      }
+    ]
+  },
+
+  event_hunter_request: {
+    id: "event_hunter_request",
+    name: "猎人的请求",
+    description: "一个受伤的猎法师拦住了你，他需要有人帮忙把一份重要的情报送到公会。",
+    trigger: "explore",
+    chance: 0.1,
+    once: false,
+    choices: [
+      {
+        text: "答应帮忙",
+        effects: { exp: 45, gold: 80 },
+        resultText: "你接过情报，快速赶到了猎法师公会。公会的人对你的及时帮助表示感谢，给了你一笔酬金。\n\n经验+45，金币+80"
+      },
+      {
+        text: "抱歉，我还有事",
+        effects: {},
+        resultText: "你婉拒了他的请求，继续自己的行程。"
+      }
+    ]
+  },
+
+  event_old_bookstall: {
+    id: "event_old_bookstall",
+    name: "旧书摊",
+    description: "路边有一个旧书摊，摊主是个戴着眼镜的老者，他的书看起来都有些年头了。",
+    trigger: "explore",
+    chance: 0.12,
+    once: false,
+    choices: [
+      {
+        text: "翻翻旧书",
+        effects: { gold: -20, exp: 40 },
+        resultText: "你花20金币买了一本破旧的魔法理论书。虽然书页泛黄，但里面的内容让你受益匪浅。\n\n金币-20，经验+40"
+      },
+      {
+        text: "和老者聊天",
+        effects: { exp: 20 },
+        resultText: "老者给你讲了很多博城的历史和魔法界的趣闻，让你大开眼界。\n\n经验+20"
+      }
+    ]
+  },
+
+  event_street_performance: {
+    id: "event_street_performance",
+    name: "街头表演",
+    description: "一群年轻的法师在街头表演魔法杂技，周围围了不少观众。",
+    trigger: "explore",
+    chance: 0.13,
+    once: false,
+    choices: [
+      {
+        text: "驻足观看",
+        effects: { exp: 15, gold: -5 },
+        resultText: "你看了一场精彩的表演，他们对魔法的精细控制让你有所启发。你打赏了5金币。\n\n经验+15，金币-5"
+      },
+      {
+        text: "加入表演",
+        effects: { exp: 30, gold: 15 },
+        resultText: "你一时兴起加入了表演，你的魔法赢得了观众的喝彩。表演结束后分到了一些打赏。\n\n经验+30，金币+15"
+      }
+    ]
   }
 };
