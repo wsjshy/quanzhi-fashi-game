@@ -84,10 +84,12 @@ const NPCStateSystem = {
         this._save();
     },
 
-    // v0.22.0: 玩家行为影响NPC-NPC关系（被动关系转移，非主动操纵）
-    // 核心原则：玩家不挑拨不撮合，只是做自己。当玩家与NPC A的综合评分 > A与B的评分时，A自然疏远B
+    // v0.22.0: 玩家关系变化后的回调（保留扩展点，但不做刻意的NPC-NPC关系转移）
+    // 设计理念：玩家有自己的人生，NPC有自己的社交网络。
+    // 玩家和NPC关系好就是好，不需要让NPC疏远其他人，不需要对标任何角色。
+    // 一切自然发生，不显示"XX不再关注YY"这类刻意提示。
     _checkRelationshipInfluence(npcId, playerOpinion) {
-        this._checkPassiveShift(npcId);
+        //  intentionally left minimal - 关系变化本身就是结果，不需要额外操纵
     },
 
     // v0.22.0: 计算NPC A对角色B的综合评分（Connection Score）
@@ -170,36 +172,6 @@ const NPCStateSystem = {
         if (score >= 25) return { state: 'stranger', label: '陌生人' };
         if (score >= 10) return { state: 'unfriendly', label: '不友好' };
         return { state: 'hostile', label: '敌对' };
-    },
-
-    // v0.22.0: 被动关系转移——当玩家与NPC的评分超过该NPC与其他角色时，自然疏远
-    _checkPassiveShift(npcId) {
-        const playerScore = this.computeConnectionScore(npcId, 'player');
-        const npcData = typeof DataManager !== 'undefined' ? DataManager.getCharacter(npcId) : null;
-
-        if (!npcData || !npcData.relationships) return;
-
-        // 检查该NPC的所有关系对象
-        for (const targetId of Object.keys(npcData.relationships)) {
-            if (targetId === 'player') continue;
-
-            const targetScore = this.computeConnectionScore(npcId, targetId);
-            const rel = this.getNPCRelationship(npcId, targetId);
-
-            // 如果玩家评分显著超过目标，NPC对目标的好感自然下降
-            if (playerScore > targetScore + 15 && rel.opinion > -20) {
-                const decrease = Math.min(5, Math.floor((playerScore - targetScore) / 20));
-                this.changeNPCRelationship(npcId, targetId, 'opinion', -decrease, '注意力自然转移');
-
-                // 跨越阈值时提示
-                if (rel.opinion > 0 && rel.opinion - decrease <= 0 && typeof UI !== 'undefined') {
-                    const npcName = npcData.name || npcId;
-                    const targetData = DataManager.getCharacter(targetId);
-                    const targetName = targetData ? targetData.name : targetId;
-                    UI.showMessage(`${npcName}似乎不再像以前那样关注${targetName}了...`);
-                }
-            }
-        }
     },
 
     // ========== NPC 状态获取 ==========
