@@ -2518,7 +2518,7 @@ const DataEnemies = {
     attack: 35,
     defense: 15,
     speed: 18,
-    skills: ["basic_attack", "bone_spike", "wolf_fang"],
+    skills: ["basic_attack", "bone_spike", "wolf_bite", "wolf_howl"],
     aiType: "aggressive",
     enemyType: "demon",
     demonTier: "commander",
@@ -2553,7 +2553,7 @@ const DataEnemies = {
     attack: 28,
     defense: 20,
     speed: 14,
-    skills: ["basic_attack", "poison_bite", "bewitch"],
+    skills: ["basic_attack", "curse_spider_trap", "dark_curse", "shadow_spike"],
     aiType: "tactical",
     enemyType: "demon",
     demonTier: "commander",
@@ -2588,7 +2588,7 @@ const DataEnemies = {
     attack: 25,
     defense: 25,
     speed: 6,
-    skills: ["basic_attack", "vine_drag", "plant_wall", "spore_cloud"],
+    skills: ["basic_attack", "plant_vine_bind", "plant_forest_prison", "thorn_shot"],
     aiType: "defensive",
     enemyType: "demon",
     demonTier: "commander",
@@ -2608,6 +2608,124 @@ const DataEnemies = {
       { itemId: "plant_core", chance: 0.3, min: 1, max: 1 },
       { itemId: "false_terror_seed", chance: 0.2, min: 1, max: 1 },
       { itemId: "elite_core", chance: 0.15, min: 1, max: 1 }
+    ]
+  },
+
+  // ========== v0.70.1 第二批精英妖魔 ==========
+
+  black_church_curse_beast: {
+    id: "black_church_curse_beast",
+    name: "黑教廷诅咒畜妖",
+    title: "战将级精英",
+    description: "黑教廷用人类活尸与妖的煞气混合制造的诅咒畜妖。是怨恨、愤怒、贪婪的化身，更贴近亡灵生物。与被咒法的许昭霆不同，这是完全丧失意识的普通诅咒畜妖。",
+    elements: ["dark", "curse"],
+    level: 13,
+    maxHp: 380,
+    maxMp: 40,
+    attack: 32,
+    defense: 18,
+    speed: 12,
+    skills: ["basic_attack", "dark_curse", "dark_claw", "shadow_spike"],
+    aiType: "aggressive",
+    enemyType: "demon",
+    demonTier: "commander",
+    elite: true,
+    eliteMechanics: {
+      curse_chance: 0.3,
+      curse_attack_reduction: 0.1,
+      curse_defense_reduction: 0.1,
+      curse_duration: 3,
+      undead_immunity: ["poison", "bleed"],
+      light_weakness_multiplier: 1.5,
+      first_status_immune: true,
+      berserk_hp_threshold: 0.3,
+      berserk_attack_bonus: 0.3
+    },
+    weakness: ["light"],
+    immune: ["poison", "bleed"],
+    spriteColor: "#332244",
+    isEnemy: true,
+    expReward: 110,
+    goldReward: 90,
+    dropItems: [
+      { itemId: "curse_crystal", chance: 0.25, min: 1, max: 1 },
+      { itemId: "evil_qi_core", chance: 0.3, min: 1, max: 1 },
+      { itemId: "elite_core", chance: 0.12, min: 1, max: 1 }
+    ]
+  },
+
+  forbidden_moon_golem: {
+    id: "forbidden_moon_golem",
+    name: "禁月石魔",
+    title: "战将级精英",
+    description: "石魔类妖魔，石肤高防御，与月能相关，夜晚更强。坚硬的身躯让普通攻击难以奏效。",
+    elements: ["earth"],
+    level: 14,
+    maxHp: 450,
+    maxMp: 30,
+    attack: 30,
+    defense: 28,
+    speed: 7,
+    skills: ["basic_attack", "rock_throw", "earth_quake", "demon_rock_fist"],
+    aiType: "defensive",
+    enemyType: "demon",
+    demonTier: "commander",
+    elite: true,
+    eliteMechanics: {
+      stone_skin_reduction: 0.3,
+      moon_bonus_night: 0.2,
+      rock_throw_interval: 3,
+      rock_throw_hit_reduction: 0.2,
+      earth_weakness_multiplier: 1.3,
+      thunder_weakness_multiplier: 1.2
+    },
+    weakness: ["earth", "thunder"],
+    spriteColor: "#666655",
+    isEnemy: true,
+    expReward: 110,
+    goldReward: 90,
+    dropItems: [
+      { itemId: "golem_core", chance: 0.3, min: 1, max: 1 },
+      { itemId: "moon_stone", chance: 0.15, min: 1, max: 1 },
+      { itemId: "elite_core", chance: 0.12, min: 1, max: 1 }
+    ]
+  },
+
+  red_ling_yao: {
+    id: "red_ling_yao",
+    name: "赤凌妖",
+    title: "小战将精英",
+    description: "4米高的火系妖魔，凶悍善战，压制同阶。小战将T1级别，烈焰护体让近战者吃苦头。",
+    elements: ["fire"],
+    level: 11,
+    maxHp: 280,
+    maxMp: 60,
+    attack: 38,
+    defense: 12,
+    speed: 22,
+    skills: ["basic_attack", "fire_fist", "fire_burst", "fire_burn_bone"],
+    aiType: "aggressive",
+    enemyType: "demon",
+    demonTier: "commander",
+    elite: true,
+    eliteMechanics: {
+      flame_aura_reflect: 0.2,
+      burning_ground_interval: 2,
+      burning_ground_duration: 3,
+      evasion_bonus: 0.1,
+      first_strike_bonus: 0.2,
+      ice_weakness_multiplier: 1.5,
+      water_weakness_multiplier: 1.3
+    },
+    weakness: ["ice", "water"],
+    spriteColor: "#aa3322",
+    isEnemy: true,
+    expReward: 90,
+    goldReward: 70,
+    dropItems: [
+      { itemId: "red_ling_crystal", chance: 0.3, min: 1, max: 1 },
+      { itemId: "flame_core", chance: 0.2, min: 1, max: 1 },
+      { itemId: "elite_core", chance: 0.1, min: 1, max: 1 }
     ]
   }
 };

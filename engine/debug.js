@@ -407,6 +407,9 @@ const DebugPanel = {
                             <button onclick="DebugPanel.startBattle('three_eye_wolf')" style="background: #aa6633; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">三眼魔狼</button>
                             <button onclick="DebugPanel.startBattle('bewitch_spider')" style="background: #663388; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">蛊惑魔蛛</button>
                             <button onclick="DebugPanel.startBattle('false_terror_plant')" style="background: #336644; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">伪怖魔</button>
+                            <button onclick="DebugPanel.startBattle('black_church_curse_beast')" style="background: #442255; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">黑教廷诅咒畜妖</button>
+                            <button onclick="DebugPanel.startBattle('forbidden_moon_golem')" style="background: #666655; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">禁月石魔</button>
+                            <button onclick="DebugPanel.startBattle('red_ling_yao')" style="background: #aa3322; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">赤凌妖</button>
                         </div>
                     </div>
                     

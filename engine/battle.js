@@ -3211,6 +3211,42 @@ const BattleSystem = {
                 });
                 this.addLog(`🌿 ${this.enemy.name}生成植物墙！你无法使用道具！`, 'debuff');
             }
+
+            // 投石（禁月石魔）：每3回合
+            if (em.rock_throw_interval && turn % em.rock_throw_interval === 0) {
+                const rockDmg = Math.floor(this.enemy.attack * 0.8);
+                this.player.hp = Math.max(0, this.player.hp - rockDmg);
+                this.addLog(`🪨 ${this.enemy.name}投掷巨石！造成${rockDmg}点伤害！`, 'damage');
+                this.showDamageNumber('player', rockDmg, 'normal');
+                this.addStatusEffect(this.player, {
+                    type: 'hit_reduction',
+                    name: '目眩',
+                    duration: 2,
+                    description: '命中率降低20%'
+                });
+                this.addLog(`💫 你被巨石砸得目眩，命中率降低！`, 'debuff');
+            }
+
+            // 燃烧地面（赤凌妖）：每2回合
+            if (em.burning_ground_interval && turn % em.burning_ground_interval === 0) {
+                this.addStatusEffect(this.player, {
+                    type: 'burning_ground',
+                    name: '燃烧地面',
+                    duration: em.burning_ground_duration || 3,
+                    description: '地面燃烧，每回合受到火系伤害',
+                    damagePerTurn: Math.floor(this.enemy.attack * 0.3)
+                });
+                this.addLog(`🔥 ${this.enemy.name}释放烈焰，地面开始燃烧！`, 'element');
+            }
+
+            // 狂暴（诅咒畜妖）：HP<30%时攻击+30%
+            if (em.berserk_hp_threshold && this.enemy.hp / this.enemy.maxHp < em.berserk_hp_threshold) {
+                if (!this.enemy.eliteState.berserkActivated) {
+                    this.enemy.eliteState.berserkActivated = true;
+                    this.enemy.attack = Math.floor(this.enemy.attack * (1 + (em.berserk_attack_bonus || 0.3)));
+                    this.addLog(`💢 ${this.enemy.name}进入狂暴状态！攻击力大幅提升！`, 'warning');
+                }
+            }
         }
 
         // 处理敌人引导中的魔法
@@ -4833,6 +4869,10 @@ const BattleSystem = {
             if (em.physical_reduction && (!damage.element || damage.element === 'physical')) {
                 amount = Math.floor(amount * (1 - em.physical_reduction));
             }
+            // 石肤减伤（禁月石魔）
+            if (em.stone_skin_reduction) {
+                amount = Math.floor(amount * (1 - em.stone_skin_reduction));
+            }
             // 第一次伤害减伤（蛊惑魔蛛甲壳）
             if (em.shell_reduction_first && !target.eliteState.firstHitTaken) {
                 amount = Math.floor(amount * (1 - em.shell_reduction_first));
@@ -4841,9 +4881,18 @@ const BattleSystem = {
             }
             // 弱点伤害加成
             if (target.weakness && damage.element && target.weakness.includes(damage.element)) {
-                const weaknessMult = em.fire_weakness_multiplier || 1.5;
+                const weaknessMult = em.fire_weakness_multiplier || em.light_weakness_multiplier || em.ice_weakness_multiplier || em.earth_weakness_multiplier || em.thunder_weakness_multiplier || em.water_weakness_multiplier || 1.5;
                 amount = Math.floor(amount * weaknessMult);
                 this.addLog(`💥 弱点命中！${damage.element}系造成额外伤害！`, 'element');
+            }
+            // 烈焰护体反弹（赤凌妖）
+            if (em.flame_aura_reflect && attacker === this.player && amount > 0) {
+                const reflectDmg = Math.floor(amount * em.flame_aura_reflect);
+                if (reflectDmg > 0) {
+                    this.player.hp = Math.max(0, this.player.hp - reflectDmg);
+                    this.addLog(`🔥 ${target.name}的烈焰护体反弹了${reflectDmg}点伤害！`, 'element');
+                    this.showDamageNumber('player', reflectDmg, 'normal');
+                }
             }
         }
 
