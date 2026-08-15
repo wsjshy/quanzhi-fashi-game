@@ -4720,5 +4720,41 @@ const DataEvents = {
       { text: "自己继续调查", effects: { setFlag: ["bd_investigate_alone", "bocheng_phase1_done"] }, resultText: "你决定自己深入调查。连续几天，你在学校周围仔细搜寻，发现了更多线索——地圣泉方向的能量波动异常，还有几个陌生人在学校附近出没。你获得了宝贵的情报，但也引起了某些人的注意。玩家掌握独立情报" },
       { text: "可能只是自己多想了", effects: { setFlag: ["bd_ignore", "bocheng_phase1_done"] }, resultText: "你觉得可能是自己太敏感了，毕竟博城一直很安全。你把这些异常抛在脑后，继续正常的学习生活。（但异常并没有消失...）" }
     ]
+  },
+
+  // ========== v0.67.0 博城灾难第二阶段：预警与准备 ==========
+
+  bocheng_prep: {
+    id: "bocheng_prep",
+    name: "备战的气息",
+    description: "学校的气氛变得有些不同。巡逻的老师多了起来，训练馆的防御法阵被重新加固。唐月找到你，表情严肃：\"你之前发现的异常...我们调查后确认，博城的地圣泉能量波动异常，可能有大事发生。学校正在秘密准备，你愿意帮忙吗？\"",
+    npcId: "tang_yue",
+    activities: [],
+    minLevel: 16,
+    requireFlag: ["bd_tell_tangyue", "bd_tell_muningxue", "bd_investigate_alone"],
+    notFlag: "bocheng_phase2_done",
+    weight: 30,
+    choices: [
+      { text: "全力协助学校准备", effects: { setFlag: ["bd_full_prep", "bocheng_phase2_done"], npcOpinion: { tang_yue: 5 } }, resultText: "你点头：\"我能做什么？\"唐月递给你一份清单：\"协助巡逻、加固防御法阵、通知同学。你的贡献学校会记住。\"唐月好感+5，学校声望+10，进入全面备战状态" },
+      { text: "专注提升自己的实力", effects: { setFlag: ["bd_self_prep", "bocheng_phase2_done"] }, resultText: "你说：\"如果真有大事，我需要更强的实力。\"唐月理解地点头：\"也好，实力是根本。去修炼吧，有事我会找你。\"经验+100，玩家专注自我提升" },
+      { text: "暗中调查真相", effects: { setFlag: ["bd_secret_investigate", "bocheng_phase2_done"], npcOpinion: { tang_yue: -3 } }, resultText: "你觉得学校的准备还不够，决定自己暗中调查真相。唐月有些不满：\"别乱来，这不是你一个学生能承担的。\"但你已经下定决心。唐月好感-3，玩家开始秘密调查" }
+    ]
+  },
+
+  bocheng_anomaly_escalation: {
+    id: "bocheng_anomaly_escalation",
+    name: "异常加剧",
+    description: "你在修炼时，突然感到地面微微震动。窗外，几只低级妖魔在白天乱窜，学生们惊慌失措。唐月老师匆匆跑来：\"所有人注意！妖魔活动异常，立刻回到教室！\"她看到你，\"你也看到了吧？之前那些异常...原来是真的。\"她的语气中带着一丝自责。",
+    npcId: "tang_yue",
+    activities: [],
+    minLevel: 16,
+    requireFlag: "bd_ignore",
+    notFlag: "bocheng_phase2_done",
+    weight: 30,
+    choices: [
+      { text: "主动参与疏散同学", effects: { setFlag: ["bd_evacuation", "bocheng_phase2_done"], npcOpinion: { tang_yue: 8 } }, resultText: "你立刻行动：\"大家跟我来，不要慌！\"你有序地疏散同学，唐月感激地看了你一眼。唐月好感+8，学校声望+15，玩家在危机中展现领导力" },
+      { text: "去调查妖魔来源", effects: { setFlag: ["bd_investigate_source", "bocheng_phase2_done"] }, resultText: "你决定冒险去调查妖魔来源。沿着妖魔出现的方向，你发现了空间波动的痕迹——有人在故意引妖魔入城。经验+80，玩家发现关键线索" },
+      { text: "先保证自己安全", effects: { setFlag: ["bd_self_safety", "bocheng_phase2_done"] }, resultText: "你选择先回到安全的地方。这不是懦弱，只是理智——你还没有准备好面对未知的危险。但你心里知道，这件事还没结束..." }
+    ]
   }
 };

@@ -3088,5 +3088,35 @@ const DataQuests = {
     dialogueStart: "去实战中验证我们的配合吧。",
     dialogueInProgress: "光系防御加冰系攻击，配合默契。",
     dialogueComplete: "联手击败妖魔！两人都对你的公正表示感谢。技能点1。"
+  },
+
+  // ========== v0.67.0 博城灾难第二阶段任务 ==========
+
+  bocheng_prep_quest: {
+    id: "bocheng_prep_quest",
+    name: "备战准备",
+    description: "协助学校备战，巡逻、加固防御、提升实力。唐月老师交给你的任务。",
+    requireFlag: "bd_full_prep",
+    notFlag: "bd_prep_complete",
+    objectives: [
+      { type: "cultivate", count: 2, description: "修炼2次" },
+      { type: "explore", count: 1, description: "探索1次" },
+      { type: "talk", npcId: "tang_yue", count: 1, description: "与唐月对话1次" }
+    ],
+    rewards: { exp: 300, gold: 200, skillPoints: 1, setFlag: "bd_prep_complete" }
+  },
+
+  bocheng_crisis_quest: {
+    id: "bocheng_crisis_quest",
+    name: "危机应对",
+    description: "应对突发的妖魔异常，保护同学或调查真相。",
+    requireFlag: ["bd_evacuation", "bd_investigate_source"],
+    notFlag: "bd_crisis_handled",
+    objectives: [
+      { type: "cultivate", count: 1, description: "修炼1次" },
+      { type: "explore", count: 1, description: "探索1次" },
+      { type: "talk", npcId: "tang_yue", count: 1, description: "与唐月对话1次" }
+    ],
+    rewards: { exp: 250, gold: 150, setFlag: "bd_crisis_handled" }
   }
 };

@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.66.0 · 灾难前兆</div>
+                ">v0.67.0 · 预警准备</div>
             </div>
         `;
 
