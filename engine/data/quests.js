@@ -2497,5 +2497,64 @@ const DataQuests = {
     dialogueStart: "真正的强者不仅要实力强，还要见识广、朋友多。",
     dialogueInProgress: "全面发展，不要偏科。",
     dialogueComplete: "你已经是一个真正的全能法师了！"
+  },
+
+  // ========== v0.57.0 玩家个人任务线：火系初阶 ==========
+
+  quest_fire_control: {
+    id: "quest_fire_control",
+    name: "火焰的控制",
+    description: "唐月注意到你在修炼火系时控制力不足，建议你多加练习。火焰的力量很强，但如果控制不好，会伤到身边的人。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { element: "fire", minLevel: 5 },
+    objectives: [
+      { type: "cultivate", count: 5, description: "修炼5次" }
+    ],
+    rewards: { exp: 100, gold: 50 },
+    prerequisites: [],
+    nextQuest: "quest_fire_duel",
+    isMainQuest: false,
+    dialogueStart: "你好，新来的同学。我注意到你觉醒了火系。火焰的力量很强，但控制不当会伤到别人。先去修炼场多练习几次吧。",
+    dialogueInProgress: "怎么样，感受到火焰在你指尖流转了吗？控制星子的节奏很重要。",
+    dialogueComplete: "很好，你的控制力提升了不少。继续努力！"
+  },
+
+  quest_fire_duel: {
+    id: "quest_fire_duel",
+    name: "火系的较量",
+    description: "周敏注意到你的火系进步，主动找你切磋。听说你火系练得不错，要不要比比看？",
+    giver: "zhou_min",
+    type: "personal",
+    trigger: { element: "fire", minLevel: 8 },
+    objectives: [
+      { type: "talk", npcId: "zhou_min", count: 1, description: "与周敏对话" }
+    ],
+    rewards: { exp: 150, gold: 100 },
+    prerequisites: ["quest_fire_control"],
+    nextQuest: "quest_fire_insight",
+    isMainQuest: false,
+    dialogueStart: "喂，你就是那个火系进步很快的新生？我是周敏，火系尖子生。要不要切磋一下，看看谁的火系更强？",
+    dialogueInProgress: "怎么，不敢吗？还是说你还没准备好？",
+    dialogueComplete: "哼，算你有点本事。不过我不会认输的，下次一定超过你！"
+  },
+
+  quest_fire_insight: {
+    id: "quest_fire_insight",
+    name: "火焰的感悟",
+    description: "唐月建议你在图书馆查阅火系典籍，结合修炼感悟火焰的真谛。真正的火系法师，不只是力量强大，更要理解火焰的本质。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { element: "fire", minLevel: 12 },
+    objectives: [
+      { type: "explore", count: 3, description: "在图书馆学习3次" },
+      { type: "cultivate", count: 10, description: "修炼10次" }
+    ],
+    rewards: { exp: 300, gold: 200, skillPoints: 1 },
+    prerequisites: ["quest_fire_duel"],
+    isMainQuest: false,
+    dialogueStart: "你的火系已经有了一定基础。但真正的火系法师，需要理解火焰的本质。去图书馆查查典籍，再结合修炼感悟吧。",
+    dialogueInProgress: "典籍中的知识需要结合实践才能真正理解。继续修炼，感受火焰的律动。",
+    dialogueComplete: "你做到了！你对火焰的理解已经超越了初阶水平。这是给你的奖励——一个技能点，好好利用。"
   }
 };

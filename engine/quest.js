@@ -258,6 +258,12 @@ const QuestSystem = {
             }
         }
 
+        // v0.57.0: 技能点奖励
+        if (rewards.skillPoints) {
+            Player.skillPoints = (Player.skillPoints || 0) + rewards.skillPoints;
+            rewardMessages.push(`✨ 获得 ${rewards.skillPoints} 技能点`);
+        }
+
         // v0.39.0: 任务完成获得影响力
         const influenceGain = rewards.influence || (quest.type === 'main' ? 8 : quest.type === 'personal' ? 4 : 3);
         Player.gainInfluence(influenceGain, '任务完成');

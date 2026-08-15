@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.56.0 · 导师深化</div>
+                ">v0.57.0 · 火系任务线</div>
             </div>
         `;
 
