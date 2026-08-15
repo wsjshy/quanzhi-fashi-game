@@ -260,10 +260,13 @@ const EventSystem = {
         }
 
         if (effects.setFlag) {
-            Player.setFlag(effects.setFlag);
+            const flags = Array.isArray(effects.setFlag) ? effects.setFlag : [effects.setFlag];
+            for (const flag of flags) {
+                Player.setFlag(flag);
+            }
             result.setFlag = effects.setFlag;
             // v0.56.0: 拜师时初始化师徒关系
-            if (effects.setFlag === 'tang_yue_mentor') {
+            if (flags.includes('tang_yue_mentor')) {
                 Player.mentor = { npcId: 'tang_yue', level: 1, interactions: 0 };
             }
         }

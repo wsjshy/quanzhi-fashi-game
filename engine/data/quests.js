@@ -2963,5 +2963,47 @@ const DataQuests = {
     dialogueStart: "你说冰系的极致不是宁静？那你说说看，是什么？",
     dialogueInProgress: "你的观点...虽然我不认同，但确实让我思考了很多。",
     dialogueComplete: "不打不相识。你的理念虽然和我不同，但也有道理。学校声望+15。"
+  },
+
+  // ========== v0.63.0 NPC间关系联动：穆白×张小侯 ==========
+
+  quest_mx_zxh_team: {
+    id: "quest_mx_zxh_team",
+    name: "团队训练",
+    description: "穆白和张小侯决定一起训练。作为调解者，你参与他们的团队训练，见证两人从矛盾到合作。",
+    giver: "mu_bai",
+    type: "personal",
+    trigger: { requireFlag: "mx_zxh_friends" },
+    objectives: [
+      { type: "talk", npcId: "mu_bai", count: 1, description: "与穆白对话" },
+      { type: "talk", npcId: "zhang_xiaohou", count: 1, description: "与张小侯对话" },
+      { type: "cultivate", count: 3, description: "一起修炼3次" }
+    ],
+    rewards: { exp: 300, gold: 150, setFlag: "mx_zxh_team_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "既然要一起训练，那就制定个计划吧。",
+    dialogueInProgress: "你们的配合越来越默契了。",
+    dialogueComplete: "团队训练圆满结束！穆白和张小侯成为了真正的朋友。学校声望+10。"
+  },
+
+  quest_mx_zxh_rivalry: {
+    id: "quest_mx_zxh_rivalry",
+    name: "良性竞争",
+    description: "穆白和张小侯决定通过竞争互相促进。作为见证者，你参与他们的较量，两人在竞争中共同进步。",
+    giver: "mu_bai",
+    type: "personal",
+    trigger: { requireFlag: "mx_zxh_rivals" },
+    objectives: [
+      { type: "kill", enemyId: "any", count: 2, description: "击败2个妖魔证明实力" },
+      { type: "talk", npcId: "mu_bai", count: 1, description: "与穆白对话" },
+      { type: "talk", npcId: "zhang_xiaohou", count: 1, description: "与张小侯对话" }
+    ],
+    rewards: { exp: 400, gold: 200, skillPoints: 1, setFlag: "mx_zxh_rivalry_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "竞争开始！谁先击败妖魔谁赢。",
+    dialogueInProgress: "两人势均力敌，竞争激烈。",
+    dialogueComplete: "良性竞争结束！两人都有所收获。技能点1。"
   }
 };

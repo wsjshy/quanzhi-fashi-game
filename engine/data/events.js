@@ -4592,5 +4592,41 @@ const DataEvents = {
       { text: "我有自己的路，但我支持你", effects: { setFlag: "mu_ningxue_support", npcOpinion: { mu_ningxue: 5 } }, resultText: "穆宁雪点点头，\"谢谢你。每个人都有自己的路，我理解。\"她的语气真诚。穆宁雪好感+5" },
       { text: "冰系的极致可能不是你想的那样", effects: { setFlag: "mu_ningxue_doubt", npcOpinion: { mu_ningxue: -3 } }, resultText: "穆宁雪皱眉，\"你不懂。\"她转身离开，但你能感觉到她在思考你的话。穆宁雪好感-3" }
     ]
+  },
+
+  // ========== v0.63.0 NPC间关系联动：穆白×张小侯 ==========
+
+  mu_bai_zhang_xiaohou_conflict: {
+    id: "mu_bai_zhang_xiaohou_conflict",
+    name: "走廊的冲突",
+    description: "你在走廊看到穆白和张小侯对峙。穆白冷笑：\"乡下来的就是没规矩，训练馆的器材是你随便碰的？\"张小侯脸涨红：\"我明明排队了！是你插队！\"两人看到你，都看向你。",
+    npcId: "mu_bai",
+    activities: ["修炼", "自习", "上课", "冥修", "对话"],
+    minRelationships: { mu_bai: 30, zhang_xiaohou: 30 },
+    notFlag: "mx_zxh_conflict_done",
+    weight: 40,
+    choices: [
+      { text: "帮张小侯说话", effects: { setFlag: ["mx_zxh_support_xiaohou", "mx_zxh_conflict_done"], npcOpinion: { zhang_xiaohou: 10, mu_bai: -15 } }, resultText: "你站到张小侯这边：\"我刚才看到了，是他先排队的。\"穆白脸色难看，冷哼一声离开。张小侯感激地看着你。张小侯好感+10，穆白好感-15" },
+      { text: "帮穆白说话", effects: { setFlag: ["mx_zxh_support_mubai", "mx_zxh_conflict_done"], npcOpinion: { mu_bai: 10, zhang_xiaohou: -15 } }, resultText: "你对穆白说：\"穆白说得对，训练馆器材确实要按规矩来。\"穆白满意地点头，张小侯失望地看着你。穆白好感+10，张小侯好感-15" },
+      { text: "中立调解", effects: { setFlag: ["mx_zxh_mediated", "mx_zxh_conflict_done"], npcOpinion: { mu_bai: 5, zhang_xiaohou: 5 } }, resultText: "你打圆场：\"都是同学，别伤了和气。器材轮流用就好了。\"两人都有些不情愿，但还是点了头。穆白好感+5，张小侯好感+5" },
+      { text: "暗示穆白你能\"教训\"张小侯", effects: { setFlag: ["mx_zxh_manipulated", "mx_zxh_conflict_done"], npcOpinion: { mu_bai: 5, zhang_xiaohou: -20 } }, resultText: "你低声对穆白说：\"这种人，不用跟他客气。\"穆白看了你一眼，没说话。张小侯似乎听到了，失望地离开。穆白好感+5但信任下降，张小侯好感-20" }
+    ]
+  },
+
+  mu_bai_zhang_xiaohou_cooperation: {
+    id: "mu_bai_zhang_xiaohou_cooperation",
+    name: "训练馆的合作",
+    description: "穆白和张小侯在训练馆遇到。穆白难得没有嘲讽：\"上次的事...算了。\"张小侯挠头：\"我也有不对的地方。\"两人看向你，\"既然你在，要不一起训练？\"",
+    npcId: "mu_bai",
+    activities: ["修炼", "自习", "上课", "冥修"],
+    minRelationships: { mu_bai: 50, zhang_xiaohou: 50 },
+    requireFlag: "mx_zxh_mediated",
+    notFlag: "mx_zxh_cooperation_done",
+    weight: 40,
+    choices: [
+      { text: "鼓励他们一起训练", effects: { setFlag: ["mx_zxh_friends", "mx_zxh_cooperation_done"], npcOpinion: { mu_bai: 10, zhang_xiaohou: 10 } }, resultText: "你笑着说：\"一起训练吧，互相切磋进步更快。\"两人对视一眼，点了头。训练中他们配合得意外地好。穆白好感+10，张小侯好感+10，两人成为朋友！" },
+      { text: "自己训练，让他们自己决定", effects: { setFlag: ["mx_zxh_neutral", "mx_zxh_cooperation_done"] }, resultText: "你说：\"你们自己决定吧，我先去训练了。\"两人有些失望，但还是各自训练。关系保持中立。" },
+      { text: "故意挑起竞争", effects: { setFlag: ["mx_zxh_rivals", "mx_zxh_cooperation_done"], npcOpinion: { mu_bai: 5, zhang_xiaohou: 5 } }, resultText: "你说：\"要不比比看，谁的实力更强？\"两人眼睛一亮，竞争心被激发。穆白好感+5，张小侯好感+5，两人成为良性竞争对手！" }
+    ]
   }
 };

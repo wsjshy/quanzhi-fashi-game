@@ -945,6 +945,15 @@ const Game = {
                 const npcState = NPCStateSystem.getNPCState(npcId);
                 if ((npcState.opinion || 0) < event.minRelationship) continue;
             }
+            // v0.63.0: 检查多NPC关系要求（NPC间联动事件）
+            if (event.minRelationships) {
+                let allMet = true;
+                for (const [checkNpcId, minOp] of Object.entries(event.minRelationships)) {
+                    const npcState = NPCStateSystem.getNPCState(checkNpcId);
+                    if ((npcState?.opinion || 0) < minOp) { allMet = false; break; }
+                }
+                if (!allMet) continue;
+            }
             // v0.48.0: 检查flag条件（影响力事件链）
             if (event.requireFlag && !Player.hasFlag(event.requireFlag)) continue;
             if (event.notFlag && Player.hasFlag(event.notFlag)) continue;
