@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.71.0 · 精英遭遇系统</div>
+                ">v0.72.0 · 经济系统平衡</div>
             </div>
         `;
 

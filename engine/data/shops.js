@@ -11,42 +11,42 @@ const DataShops = {
     items: [
       {
         itemId: "health_potion",
-        price: 25,
+        price: 20,
         stock: -1
       },
       {
         itemId: "mana_potion",
-        price: 35,
+        price: 25,
         stock: -1
       },
       {
         itemId: "stamina_potion",
-        price: 30,
+        price: 20,
         stock: -1
       },
       {
         itemId: "magic_herb",
-        price: 20,
+        price: 15,
         stock: 20
       },
       {
         itemId: "basic_staff",
-        price: 120,
+        price: 80,
         stock: 5
       },
       {
         itemId: "basic_robe",
-        price: 100,
+        price: 70,
         stock: 5
       },
       {
         itemId: "magic_ring",
-        price: 180,
+        price: 120,
         stock: 3
       },
       {
         itemId: "cleanse_potion",
-        price: 60,
+        price: 40,
         stock: 10
       },
       {
@@ -73,37 +73,37 @@ const DataShops = {
     items: [
       {
         itemId: "health_potion",
-        price: 25,
+        price: 20,
         stock: -1
       },
       {
         itemId: "mana_potion",
-        price: 35,
+        price: 25,
         stock: -1
       },
       {
         itemId: "stamina_potion",
-        price: 28,
+        price: 18,
         stock: -1
       },
       {
         itemId: "super_health_potion",
-        price: 100,
+        price: 80,
         stock: 10
       },
       {
         itemId: "super_mana_potion",
-        price: 110,
+        price: 90,
         stock: 10
       },
       {
         itemId: "full_potion",
-        price: 200,
+        price: 150,
         stock: 3
       },
       {
         itemId: "basic_staff",
-        price: 110,
+        price: 70,
         stock: 10
       },
       {

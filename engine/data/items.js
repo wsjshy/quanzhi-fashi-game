@@ -2393,5 +2393,46 @@ const DataItems = {
     effects: {
       summonFeed: { exp: 30, loyalty: 10 }
     }
+  },
+
+  // === 精英妖魔材料（v0.72.0） ===
+  wolf_bone_spike: {
+    id: "wolf_bone_spike",
+    name: "魔狼骨刺",
+    description: "三眼魔狼的骨刺，坚硬锋利，蕴含微弱的妖魔力量，可用于强化装备或出售",
+    type: "material",
+    icon: "🦴",
+    price: 50,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "elite"
+  },
+  elite_core: {
+    id: "elite_core",
+    name: "精英核心",
+    description: "精英妖魔体内的核心，比普通妖魔精核蕴含更强大的力量，是强化装备的珍贵材料",
+    type: "material",
+    icon: "💎",
+    price: 200,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "elite"
+  },
+  rat_tail: {
+    id: "rat_tail",
+    name: "猩鼠尾",
+    description: "巨眼猩鼠王的尾巴，带有毒性，可用于炼药或出售",
+    type: "material",
+    icon: "🐀",
+    price: 40,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "elite"
   }
 };
