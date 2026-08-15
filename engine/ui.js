@@ -1543,7 +1543,7 @@ const UI = {
                                     return `
                                         <div style="margin-top: ${type === Object.keys(groups).find(t => groups[t].length > 0) ? '0' : '10px'};">
                                             <div style="color: ${cfg.color}; font-size: 12px; font-weight: bold; margin-bottom: 5px;">${cfg.label}</div>
-                                            <div style="display: grid; grid-template-columns: ${isPortrait ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))'}; gap: 8px; min-width: 0;">
+                                            <div style="display: grid; grid-template-columns: ${isPortrait ? '1fr' : '1fr 1fr'}; gap: 8px; min-width: 0;">
                                                 ${groups[type].map(a => renderAction(a, type)).join('')}
                                             </div>
                                         </div>
