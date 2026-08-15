@@ -127,8 +127,19 @@ const QuestSystem = {
                     return;
                 }
 
-                // v0.25.0: cultivate/explore类型不需要目标ID，直接计数
-                if (type === 'cultivate' || type === 'explore') {
+                // v0.31.0: relationship类型 - 检查NPC好感度是否达到阈值
+                if (type === 'relationship') {
+                    if (typeof NPCStateSystem !== 'undefined') {
+                        const npcState = NPCStateSystem.getNPCState(obj.npcId);
+                        const opinion = npcState.opinion || 0;
+                        // count是好感度阈值，进度是当前好感度/阈值的百分比（但显示为当前值）
+                        activeQuest.progress[index] = Math.min(opinion, obj.count);
+                    }
+                    return;
+                }
+
+                // v0.25.0: cultivate/explore/talk_any类型不需要目标ID，直接计数
+                if (type === 'cultivate' || type === 'explore' || type === 'talk_any') {
                     activeQuest.progress[index] = Math.min(
                         activeQuest.progress[index] + amount,
                         obj.count

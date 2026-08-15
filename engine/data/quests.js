@@ -2346,5 +2346,156 @@ const DataQuests = {
     dialogueStart: "你已经有不少实战经验了。这里有个高级点的委托，敢接吗？",
     dialogueInProgress: "小心点，这些妖魔不好对付。",
     dialogueComplete: "干得漂亮！你已经是个合格的猎法师了。"
+  },
+
+  // ========== v0.31.0 更多个人任务（新目标类型） ==========
+
+  personal_social_butterfly: {
+    id: "personal_social_butterfly",
+    name: "社交达人",
+    description: "你热衷于与各种人交流。学校里的人都开始认识你了。",
+    giver: "system",
+    type: "personal",
+    trigger: { minLevel: 2, chance: 0.5 },
+    objectives: [
+      { type: "talk_any", count: 10, description: "与任意NPC对话10次" }
+    ],
+    rewards: { exp: 250, gold: 150 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "多和人交流总是好的，信息就是力量。",
+    dialogueInProgress: "继续和大家聊聊吧。",
+    dialogueComplete: "你现在在学校里也算是个名人了！"
+  },
+
+  personal_tang_yue_mentorship: {
+    id: "personal_tang_yue_mentorship",
+    name: "唐月的赏识",
+    description: "唐月老师对你越来越欣赏。她似乎愿意给你更多的指导。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { element: "fire", minLevel: 3 },
+    objectives: [
+      { type: "relationship", npcId: "tang_yue", count: 50, description: "与唐月的好感度达到50" }
+    ],
+    rewards: { exp: 400, gold: 200 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "你是个有天赋的学生。我愿意多指导你一些。",
+    dialogueInProgress: "继续努力，我看好你。",
+    dialogueComplete: "你已经出师了。以后有什么问题随时来找我。"
+  },
+
+  personal_mu_ningxue_respect: {
+    id: "personal_mu_ningxue_respect",
+    name: "穆宁雪的认可",
+    description: "穆宁雪是冰系天才，能得到她的认可是一种荣誉。",
+    giver: "mu_ningxue",
+    type: "personal",
+    trigger: { element: "ice", minLevel: 3 },
+    objectives: [
+      { type: "relationship", npcId: "mu_ningxue", count: 40, description: "与穆宁雪的好感度达到40" },
+      { type: "talk", npcId: "mu_ningxue", count: 5, description: "与穆宁雪对话5次" }
+    ],
+    rewards: { exp: 450, gold: 250 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "……你和别人不一样。",
+    dialogueInProgress: "有事？……没事也可以来。",
+    dialogueComplete: "你算是……得到我的认可了。"
+  },
+
+  personal_explorer_master: {
+    id: "personal_explorer_master",
+    name: "探索大师",
+    description: "你对未知充满好奇，足迹遍布博城各地。",
+    giver: "system",
+    type: "personal",
+    trigger: { minExploreCount: 15 },
+    objectives: [
+      { type: "explore", count: 20, description: "进行20次探索行动" }
+    ],
+    rewards: { exp: 350, gold: 200 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "世界很大，多去看看吧。",
+    dialogueInProgress: "还有很多地方等着你去发现。",
+    dialogueComplete: "你已经是个真正的探索者了！"
+  },
+
+  personal_cultivation_mania: {
+    id: "personal_cultivation_mania",
+    name: "修炼狂人",
+    description: "你在修炼上投入了远超常人的时间。你的努力不会白费。",
+    giver: "xiao_yuanzhang",
+    type: "personal",
+    trigger: { minCultivateCount: 20 },
+    objectives: [
+      { type: "cultivate", count: 20, description: "再修炼20次" }
+    ],
+    rewards: { exp: 500, gold: 300 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "勤奋是最可贵的品质。继续吧。",
+    dialogueInProgress: "你的努力大家都看在眼里。",
+    dialogueComplete: "你的实力已经有了质的飞跃！"
+  },
+
+  personal_school_legend: {
+    id: "personal_school_legend",
+    name: "校园传奇",
+    description: "你在天澜魔法高中的名声越来越大，成为了校园里的传奇人物。",
+    giver: "system",
+    type: "personal",
+    trigger: { minLevel: 8 },
+    objectives: [
+      { type: "level", count: 10, description: "达到Lv.10" },
+      { type: "talk_any", count: 15, description: "与任意NPC对话15次" }
+    ],
+    rewards: { exp: 600, gold: 400 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "你的名字开始在学校里流传。",
+    dialogueInProgress: "继续保持，你会成为传奇的。",
+    dialogueComplete: "你已经是天澜魔法高中的传奇了！"
+  },
+
+  personal_zhang_xiaohou_brother: {
+    id: "personal_zhang_xiaohou_brother",
+    name: "张小侯的兄弟",
+    description: "你和张小侯的关系已经超越了普通朋友，成为了真正的兄弟。",
+    giver: "zhang_xiaohou",
+    type: "personal",
+    trigger: { minRelationship: { zhang_xiaohou: 50 } },
+    objectives: [
+      { type: "relationship", npcId: "zhang_xiaohou", count: 70, description: "与张小侯的好感度达到70" },
+      { type: "talk", npcId: "zhang_xiaohou", count: 8, description: "与张小侯对话8次" }
+    ],
+    rewards: { exp: 350, gold: 200 },
+    prerequisites: ["personal_xiaohou_friendship"],
+    isMainQuest: false,
+    dialogueStart: "兄弟！我们的关系越来越铁了！",
+    dialogueInProgress: "走，一起去冒险！",
+    dialogueComplete: "我们是一辈子的好兄弟！"
+  },
+
+  personal_all_rounder: {
+    id: "personal_all_rounder",
+    name: "全能法师",
+    description: "你不仅修炼刻苦，还乐于探索和交流。全面发展才是真正的强者。",
+    giver: "xiao_yuanzhang",
+    type: "personal",
+    trigger: { minLevel: 5, chance: 0.4 },
+    objectives: [
+      { type: "cultivate", count: 10, description: "修炼10次" },
+      { type: "explore", count: 10, description: "探索10次" },
+      { type: "talk_any", count: 8, description: "与任意NPC对话8次" }
+    ],
+    rewards: { exp: 500, gold: 350 },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "真正的强者不仅要实力强，还要见识广、朋友多。",
+    dialogueInProgress: "全面发展，不要偏科。",
+    dialogueComplete: "你已经是一个真正的全能法师了！"
   }
 };

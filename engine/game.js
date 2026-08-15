@@ -402,6 +402,8 @@ const Game = {
             for (const q of triggeredQuests) {
                 message += `\n\n📜 新任务：${q.name}\n${q.description}`;
             }
+            // v0.31.0: 刷新关系类任务进度
+            QuestSystem.updateProgress('relationship');
         }
 
         // v0.30.0: 玩家成长里程碑庆祝
@@ -2691,6 +2693,12 @@ const Game = {
             setTimeout(() => {
                 UI.showMessage(`💬 首次与 ${npc.name} 对话！\n经验 +20`);
             }, 500);
+        }
+
+        // v0.31.0: 任务进度更新
+        if (typeof QuestSystem !== 'undefined') {
+            QuestSystem.updateProgress('talk_any');
+            QuestSystem.updateProgress('relationship');
         }
 
         // v0.19.1: 唐月秘密指导事件（影响力事件3）
