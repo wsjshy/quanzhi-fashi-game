@@ -211,8 +211,17 @@ const QuestSystem = {
         const rewardMessages = [];
 
         if (rewards.exp) {
-            const expResult = Player.gainExp(rewards.exp);
-            rewardMessages.push(`获得 ${rewards.exp} 经验`);
+            // v0.41.0: 影响力任务经验加成（声名远扬+10%，传奇法师+15%）
+            let questExp = rewards.exp;
+            if (Player.getInfluenceTier) {
+                const infTier = Player.getInfluenceTier();
+                const infExpBonus = [0, 0, 0, 0.10, 0.15][infTier.level] || 0;
+                if (infExpBonus > 0) {
+                    questExp = Math.floor(questExp * (1 + infExpBonus));
+                }
+            }
+            const expResult = Player.gainExp(questExp);
+            rewardMessages.push(`获得 ${questExp} 经验${questExp > rewards.exp ? `（影响力加成）` : ''}`);
             if (expResult.levelUps.length > 0) {
                 rewardMessages.push(`🎉 升级了！当前等级 ${Player.level}，获得属性点（可分配：${Player.attributePoints}）`);
             }

@@ -967,6 +967,17 @@ const Game = {
                 result.effects.exp += innerBonus;
                 result.innerSpringBonus = innerBonus;
             }
+
+            // v0.41.0: 影响力修炼加成 - 声望越高，修炼时越容易进入状态
+            if (Player.getInfluenceTier) {
+                const infTier = Player.getInfluenceTier();
+                const infBonusRate = [0, 0.05, 0.10, 0.15, 0.20][infTier.level] || 0;
+                if (infBonusRate > 0) {
+                    const infBonus = Math.floor(result.effects.exp * infBonusRate);
+                    result.effects.exp += infBonus;
+                    result.influenceBonus = infBonus;
+                }
+            }
             
             // 触发事件的概率：时间越长概率越高，但不是线性增长
             const eventChance = action.eventChance || 0;
@@ -1005,7 +1016,13 @@ const Game = {
                     if (!timeSlot) continue;
                     if (Player.currentLocation !== timeSlot.location) continue;
                     if (!timeSlot.activity.includes('修炼') && !timeSlot.activity.includes('备课')) continue;
-                    if (Math.random() < 0.35) {
+                    // v0.41.0: 影响力提升NPC指导概率（小有名气+5%，声名远扬+10%，传奇法师+15%）
+                    let guidanceChance = 0.35;
+                    if (Player.getInfluenceTier) {
+                        const infTier = Player.getInfluenceTier();
+                        guidanceChance += [0, 0, 0.05, 0.10, 0.15][infTier.level] || 0;
+                    }
+                    if (Math.random() < guidanceChance) {
                         const npcData = DataManager.getCharacter(npcId);
                         const guidanceExp = Math.floor(result.effects.exp * 0.2);
                         result.npcGuidance = { npcId, name: npcData?.name || npcId, exp: guidanceExp };
@@ -1066,6 +1083,7 @@ const Game = {
             }
             if (result.effects.exp) message += `经验 +${result.effects.exp}\n`;
             if (result.starDustBonus) message += `  ✨ 星尘魔器加成 +${result.starDustBonus}\n`;
+            if (result.influenceBonus) message += `  🌟 影响力加成 +${result.influenceBonus}\n`;
             if (Player.cultivationBuff) message += `  🧘 ${Player.cultivationBuff.name} 加成 +${Math.round(Player.cultivationBuff.expBonus * 100)}%\n`;
             if (result.insight) message += `${result.insight.message}\n`;
             if (result.effects.mp > 0) message += `MP +${result.effects.mp}\n`;

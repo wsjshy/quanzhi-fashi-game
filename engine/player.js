@@ -307,6 +307,16 @@ const Player = {
             }
         }
 
+        // v0.41.0: 传奇法师影响力加成 - 全属性+5%
+        const infTier = this.getInfluenceTier ? this.getInfluenceTier() : { level: 0 };
+        if (infTier.level >= 4) {
+            stats.attack = Math.floor(stats.attack * 1.05);
+            stats.defense = Math.floor(stats.defense * 1.05);
+            stats.speed = Math.floor(stats.speed * 1.05);
+            stats.maxHp = Math.floor(stats.maxHp * 1.05);
+            stats.maxMp = Math.floor(stats.maxMp * 1.05);
+        }
+
         return stats;
     },
 
