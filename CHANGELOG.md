@@ -4,6 +4,46 @@
 
 ---
 
+## [v0.48.0] - 2026-08-15
+
+### 影响力剧情事件链（第一个真正的"玩家选择改变世界状态"系统）
+
+**设计文档**：[docs/v0.48.0_影响力事件链设计.md](docs/v0.48.0_影响力事件链设计.md)
+
+#### 新增：flag驱动的事件链基础设施
+- `_findNPCInteraction`新增`requireFlag`和`notFlag`条件支持
+- NPC偶遇互动事件从"只检查第一个NPC"改为"检查所有遇到的NPC并随机排序"
+- 事件选择效果支持`setFlag`（已有），后续事件可通过flag条件触发
+
+#### 新增事件链："唐月的栽培"（4个事件）
+
+**事件1：唐月的关注**（influence_tang_yue_attention）
+- 触发：唐月信任≥25，修炼/自习/上课时40%概率
+- 3个选择分支：接受指导/婉拒/请求推荐
+- 接受→setFlag("tang_yue_guidance")，解锁后续事件
+- 婉拒→唐月好感+8，学校声望+3
+- 请求推荐→setFlag("tang_yue_referred")，解锁推荐信线
+
+**事件2：修炼中的指导**（influence_tang_yue_guidance_buff）
+- 触发：flag=tang_yue_guidance，修炼时15%概率
+- 唐月指点修炼要点，经验+60或+25
+
+**事件3：莫凡的观察**（influence_mofan_notice_guidance）
+- 触发：flag=tang_yue_guidance，与莫凡同处时10%概率
+- 莫凡自然提到"唐老师好像挺关注你"，无零和竞争
+
+**事件4：同学的认可**（influence_classmate_recognition）
+- 触发：flag=tang_yue_guidance，赵满延同处时10%概率
+- 同学间自然传播，学校声望+2~5
+
+#### 设计原则
+- 一切自然发生，不刻意提示"你的选择改变了XX"
+- 不对标莫凡，不零和竞争
+- 人设不可破坏（唐月温柔/莫凡直爽/赵满延话多）
+- 玩家有自己的人生
+
+---
+
 ## [v0.47.1] - 2026-08-15
 
 ### 战斗系统Bug修复（3项）

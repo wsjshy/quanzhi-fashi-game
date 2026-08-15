@@ -913,10 +913,15 @@ const Game = {
         }
 
         // v0.34.0: NPC偶遇互动事件 - 40%概率触发
+        // v0.48.0: 检查所有遇到的NPC，而不只是第一个
         let interactionEvent = null;
         if (encounters.length > 0 && Math.random() < 0.4) {
-            const enc = encounters[0];
-            interactionEvent = this._findNPCInteraction(enc.npcId, enc.activity);
+            // 随机打乱顺序，避免总是第一个NPC触发
+            const shuffled = [...encounters].sort(() => Math.random() - 0.5);
+            for (const enc of shuffled) {
+                interactionEvent = this._findNPCInteraction(enc.npcId, enc.activity);
+                if (interactionEvent) break;
+            }
         }
 
         return { encounters, message, interactionEvent };
@@ -940,6 +945,9 @@ const Game = {
                 const npcState = NPCStateSystem.getNPCState(npcId);
                 if ((npcState.opinion || 0) < event.minRelationship) continue;
             }
+            // v0.48.0: 检查flag条件（影响力事件链）
+            if (event.requireFlag && !Player.hasFlag(event.requireFlag)) continue;
+            if (event.notFlag && Player.hasFlag(event.notFlag)) continue;
             candidates.push(event);
         }
 

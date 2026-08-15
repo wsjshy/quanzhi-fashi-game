@@ -3767,5 +3767,97 @@ const DataEvents = {
         resultText: "许昭霆挑了挑眉，\"……有骨气。\"他居然没有生气，反而点了点头。\n\n经验+10，许昭霆好感+2"
       }
     ]
+  },
+
+  // ========== v0.48.0 影响力事件链：唐月的栽培 ==========
+
+  influence_tang_yue_attention: {
+    id: "influence_tang_yue_attention",
+    name: "唐月的关注",
+    description: "课后，唐月叫住了你。她抱着教案，微微歪头，\"你最近的修炼很认真，星子排列的稳定性提升不少。老师这里有一些额外的修炼心得，你有兴趣听听吗？\"",
+    npcId: "tang_yue",
+    activities: ["修炼", "自习", "上课", "冥修", "备课", "批改"],
+    minRelationship: 25,
+    notFlag: "tang_yue_guidance",
+    choices: [
+      {
+        text: "当然有兴趣，谢谢唐月老师",
+        effects: { exp: 30, setFlag: "tang_yue_guidance", npcOpinion: { tang_yue: 5 } },
+        resultText: "唐月露出欣慰的笑容，\"好，那以后修炼上有什么不懂的，随时来问老师。\"她单独给你讲解了几个星子共鸣的技巧，让你受益匪浅。\n\n经验+30，唐月好感+5，获得唐月的长期指导"
+      },
+      {
+        text: "不用麻烦老师了，我自己摸索就行",
+        effects: { npcOpinion: { tang_yue: 8 }, reputation: { school: 3 } },
+        resultText: "唐月愣了一下，随即笑了，\"有独立思考的习惯是好事。不过遇到瓶颈别硬撑，老师随时在。\"她对你的自主态度很欣赏。\n\n唐月好感+8，学校声望+3"
+      },
+      {
+        text: "唐月老师，您能把我推荐给其他老师吗？",
+        effects: { exp: 15, setFlag: "tang_yue_referred", npcOpinion: { tang_yue: 2 } },
+        resultText: "唐月想了想，\"你的基础确实扎实，我可以写封推荐信给萧院长，他那边有一些特殊的修炼资源。不过最终能不能拿到，还要看你自己的表现。\"\n\n经验+15，获得唐月的推荐信"
+      }
+    ]
+  },
+
+  influence_tang_yue_guidance_buff: {
+    id: "influence_tang_yue_guidance_buff",
+    name: "修炼中的指导",
+    description: "你正在修炼时，唐月路过停下脚步。她看了一会儿你的星子运转，忽然开口，\"这里的星子排列可以再紧凑一些，试试把第三颗和第五颗的距离缩短半寸。\"",
+    npcId: "tang_yue",
+    activities: ["修炼", "冥修", "备课", "上课", "批改"],
+    requireFlag: "tang_yue_guidance",
+    choices: [
+      {
+        text: "按照老师说的调整",
+        effects: { exp: 60, mp: 10 },
+        resultText: "你按照唐月的指点调整了星子排列，魔力运转顿时顺畅了许多，修炼效率大幅提升！\n\n经验+60，MP+10"
+      },
+      {
+        text: "先记下，继续按自己的方式修炼",
+        effects: { exp: 25 },
+        resultText: "你把唐月的建议记在心里，继续按自己的节奏修炼。虽然这次没有立刻见效，但你知道以后可以尝试。\n\n经验+25"
+      }
+    ]
+  },
+
+  influence_mofan_notice_guidance: {
+    id: "influence_mofan_notice_guidance",
+    name: "莫凡的观察",
+    description: "莫凡凑过来，一脸好奇，\"哎，我最近总看到唐月老师单独跟你说话，她在给你开小灶？可以啊你！\"他的语气里没有嫉妒，更多的是好奇和佩服。",
+    npcId: "mo_fan",
+    activities: ["修炼", "自习", "上课", "聊天", "找人聊天"],
+    requireFlag: "tang_yue_guidance",
+    choices: [
+      {
+        text: "唐月老师只是偶尔指点一下",
+        effects: { npcOpinion: { mo_fan: 3 } },
+        resultText: "莫凡拍了拍你的肩膀，\"别谦虚了，唐老师的眼光可高了。好好学，以后咱们切磋切磋！\"他对你更加认可了。\n\n莫凡好感+3"
+      },
+      {
+        text: "你也可以去找她问问，她人很好的",
+        effects: { npcOpinion: { mo_fan: 5 }, reputation: { school: 2 } },
+        resultText: "莫凡眼睛一亮，\"真的？那我下次也去试试！\"他兴冲冲地跑走了。你觉得自己做了件好事。\n\n莫凡好感+5，学校声望+2"
+      }
+    ]
+  },
+
+  influence_classmate_recognition: {
+    id: "influence_classmate_recognition",
+    name: "同学的认可",
+    description: "赵满延凑过来，压低声音，\"听说唐月老师在单独指导你？厉害啊兄弟！以后修炼上有啥心得，也给咱分享分享？\"周围几个同学也投来关注的目光。",
+    npcId: "zhao_manyan",
+    activities: ["自习", "上课", "聊天", "找人聊天", "修炼"],
+    requireFlag: "tang_yue_guidance",
+    choices: [
+      {
+        text: "没问题，大家一起进步",
+        effects: { reputation: { school: 5 }, npcOpinion: { zhao_manyan: 4 } },
+        resultText: "赵满延大喜，\"够意思！以后你就是咱们班的修炼顾问了！\"同学们对你的印象更好了。\n\n学校声望+5，赵满延好感+4"
+      },
+      {
+        text: "我也是刚学，还不太熟",
+        effects: { reputation: { school: 2 } },
+        resultText: "赵满延点点头，\"谦虚！不过我看你行的。\"他没有追问，但同学们对你的印象有所提升。\n\n学校声望+2"
+      }
+    ]
   }
 };
