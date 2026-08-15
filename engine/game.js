@@ -2307,6 +2307,25 @@ const Game = {
             }, 500);
         }
 
+        // v0.19.1: 唐月秘密指导事件（影响力事件3）
+        if (npcId === 'tang_yue' && !Player.changedStoryNodes.includes('tang_yue_guidance')) {
+            const tangState = NPCStateSystem.getNPCState('tang_yue');
+            if (tangState.trust >= 50 && Math.random() < 0.3) {
+                this.triggerTangYueGuidance();
+                return;
+            }
+        }
+
+        // v0.19.1: 宇昂决斗替代方案（影响力事件2）
+        if (npcId === 'mu_ningxue' && !Player.changedStoryNodes.includes('yu_ang_duel_alt')) {
+            const hasDuelQuest = Player.activeQuests?.includes('quest_magic_duel');
+            const muState = NPCStateSystem.getNPCState('mu_ningxue');
+            if (hasDuelQuest && muState.trust >= 40) {
+                this.triggerYuAngDuelAlternative();
+                return;
+            }
+        }
+
         this.state = 'dialogue';
         this._currentDialogueNPC = npcId;
         this._showDialogueScreen(npc, dialogueData);
@@ -2813,6 +2832,141 @@ const Game = {
         NPCStateSystem.changeTrust('tang_yue', 5, '玩家展现气度');
 
         UI.showMessage(`你选择了让给莫凡。\n\n唐月欣慰地笑了："你有这份心，很好。莫凡会记得你的。"\n\n莫凡好感+10，唐月信任+5\n剧情按原著方向推进。`);
+
+        Player.save();
+        UI.renderMapScreen();
+    },
+
+    // 影响力事件3：唐月的秘密指导
+    triggerTangYueGuidance() {
+        const overlay = document.createElement('div');
+        overlay.id = 'influence-event-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:3000;display:flex;align-items:center;justify-content:center;';
+
+        overlay.innerHTML = `
+            <div style="background:linear-gradient(135deg,#2a1a3a,#4a2a5a);border:2px solid #aa66cc;border-radius:16px;padding:35px;max-width:650px;width:90%;">
+                <div style="font-size:20px;color:#ffdd66;font-weight:bold;margin-bottom:15px;text-align:center;">🌟 机缘浮现：唐月的秘密指导</div>
+                <div style="font-size:14px;color:#ddeeff;line-height:1.8;margin-bottom:20px;">
+                    唐月看了看四周，确认没人后，低声对你说：<br><br>
+                    "你这段时间的进步我都看在眼里。其实...我一直在偷偷给莫凡开小灶，他的基础比别人扎实很多。"<br><br>
+                    唐月犹豫了一下："如果你愿意，我也可以单独指导你。不过这样一来，我分给莫凡的精力就少了，他可能会因此落后一些。你怎么看？"<br><br>
+                    <span style="color:#ffaa66;">这是一个改变剧情的选择。</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    <div onclick="Game.acceptTangYueGuidance()" style="
+                        padding:15px 20px;background:rgba(60,100,80,0.6);border:2px solid #55aa77;border-radius:10px;color:#aaffcc;cursor:pointer;font-size:15px;
+                    " onmouseover="this.style.background='rgba(80,130,100,0.8)'" onmouseout="this.style.background='rgba(60,100,80,0.6)'">
+                        <strong>接受唐月的指导</strong>（获得技能点+属性，莫凡少一次机缘）<br>
+                        <span style="font-size:12px;color:#88ccaa;">效果：技能点+1，随机属性+5，影响力+10，莫凡好感-5</span>
+                    </div>
+                    <div onclick="Game.declineTangYueGuidance()" style="
+                        padding:15px 20px;background:rgba(80,60,60,0.6);border:2px solid #aa7755;border-radius:10px;color:#ffccaa;cursor:pointer;font-size:15px;
+                    " onmouseover="this.style.background='rgba(110,80,80,0.8)'" onmouseout="this.style.background='rgba(80,60,60,0.6)'">
+                        <strong>婉拒，让唐月继续指导莫凡</strong>（莫凡按原著成长）<br>
+                        <span style="font-size:12px;color:#ccaa88;">效果：唐月信任+10，莫凡好感+5</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    },
+
+    acceptTangYueGuidance() {
+        const overlay = document.getElementById('influence-event-overlay');
+        if (overlay) overlay.remove();
+
+        this.recordStoryChange('tang_yue_guidance', 10);
+
+        // 获得技能点和随机属性
+        Player.skillPoints = (Player.skillPoints || 0) + 1;
+        const stats = ['maxHp', 'maxMp', 'attack', 'defense', 'speed'];
+        const randomStat = stats[Math.floor(Math.random() * stats.length)];
+        const statNames = { maxHp: '生命', maxMp: '魔法', attack: '攻击', defense: '防御', speed: '速度' };
+        Player[randomStat] += 5;
+        if (randomStat === 'maxHp') Player.hp += 5;
+        if (randomStat === 'maxMp') Player.mp += 5;
+
+        NPCStateSystem.changeOpinion('mo_fan', -5, '唐月转而指导玩家');
+
+        UI.showMessage(`🌟 你接受了唐月的秘密指导！\n\n唐月："好，从今天起，我每周抽时间单独指导你。别告诉别人。"\n\n技能点+1，${statNames[randomStat]}+5\n莫凡对你的态度微妙地变化了...`);
+
+        Player.save();
+        UI.renderMapScreen();
+    },
+
+    declineTangYueGuidance() {
+        const overlay = document.getElementById('influence-event-overlay');
+        if (overlay) overlay.remove();
+
+        NPCStateSystem.changeTrust('tang_yue', 10, '玩家婉拒指导，展现气度');
+        NPCStateSystem.changeOpinion('mo_fan', 5, '玩家让出指导机会');
+
+        UI.showMessage(`你婉拒了唐月。\n\n唐月欣慰地笑了："你能为别人着想，很难得。莫凡有你这样的同学，是他的运气。"\n\n唐月信任+10，莫凡好感+5\n剧情按原著方向推进。`);
+
+        Player.save();
+        UI.renderMapScreen();
+    },
+
+    // 影响力事件2：宇昂决斗替代方案
+    triggerYuAngDuelAlternative() {
+        const overlay = document.createElement('div');
+        overlay.id = 'influence-event-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:3000;display:flex;align-items:center;justify-content:center;';
+
+        overlay.innerHTML = `
+            <div style="background:linear-gradient(135deg,#1a2a4a,#2a3a6a);border:2px solid #5588cc;border-radius:16px;padding:35px;max-width:650px;width:90%;">
+                <div style="font-size:20px;color:#ffdd66;font-weight:bold;margin-bottom:15px;text-align:center;">🌟 机缘浮现：决斗的另一种可能</div>
+                <div style="font-size:14px;color:#ddeeff;line-height:1.8;margin-bottom:20px;">
+                    穆宁雪看了看你，难得地主动开口：<br><br>
+                    "我听说了，父亲安排你和宇昂决斗。宇昂那个人...心胸狭窄，决斗中什么事都可能发生。"<br><br>
+                    她顿了顿："如果你愿意，我可以去跟父亲说，把死斗改成三项考核。虽然还是要赢，但至少不用以命相搏。不过...这样宇昂会觉得我在帮你，他可能会记恨你。你怎么选？"<br><br>
+                    <span style="color:#ffaa66;">这是一个改变剧情的选择。宇昂的命运将因此不同。</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    <div onclick="Game.chooseDuelMediation()" style="
+                        padding:15px 20px;background:rgba(60,100,80,0.6);border:2px solid #55aa77;border-radius:10px;color:#aaffcc;cursor:pointer;font-size:15px;
+                    " onmouseover="this.style.background='rgba(80,130,100,0.8)'" onmouseout="this.style.background='rgba(60,100,80,0.6)'">
+                        <strong>请穆宁雪调解，改为考核制</strong>（避免死斗，宇昂存活）<br>
+                        <span style="font-size:12px;color:#88ccaa;">效果：决斗改为3场考核，宇昂好感-20，穆宁雪信任+10，影响力+12</span>
+                    </div>
+                    <div onclick="Game.chooseDuelOriginal()" style="
+                        padding:15px 20px;background:rgba(80,60,60,0.6);border:2px solid #aa7755;border-radius:10px;color:#ffccaa;cursor:pointer;font-size:15px;
+                    " onmouseover="this.style.background='rgba(110,80,80,0.8)'" onmouseout="this.style.background='rgba(80,60,60,0.6)'">
+                        <strong>按原计划死斗</strong>（击败宇昂，按原著发展）<br>
+                        <span style="font-size:12px;color:#ccaa88;">效果：穆宁雪好感+5，按原著剧情推进</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    },
+
+    chooseDuelMediation() {
+        const overlay = document.getElementById('influence-event-overlay');
+        if (overlay) overlay.remove();
+
+        this.recordStoryChange('yu_ang_duel_alt', 12);
+
+        // 修改任务：将击败宇昂改为通过考核
+        Player.flags = Player.flags || {};
+        Player.flags.duel_mediated = true;
+
+        NPCStateSystem.changeTrust('mu_ningxue', 10, '穆宁雪帮玩家调解决斗');
+        NPCStateSystem.changeOpinion('yu_ang', -20, '穆宁雪帮玩家改决斗规则');
+
+        UI.showMessage(`🌟 穆宁雪去跟穆卓云说了情。\n\n穆卓云虽然不满，但碍于女儿的面子，最终同意将死斗改为三项考核：魔法控制力、实战能力、心理素质。\n\n宇昂得知后脸色铁青，但也不敢反对穆卓云的决定。\n\n穆宁雪信任+10，宇昂好感-20\n决斗规则已改变！`);
+
+        Player.save();
+        UI.renderMapScreen();
+    },
+
+    chooseDuelOriginal() {
+        const overlay = document.getElementById('influence-event-overlay');
+        if (overlay) overlay.remove();
+
+        NPCStateSystem.changeOpinion('mu_ningxue', 5, '玩家坚持原计划');
+
+        UI.showMessage(`你谢绝了穆宁雪的好意。\n\n穆宁雪："...随你吧。不过你要小心，宇昂不会手下留情。"\n\n穆宁雪好感+5\n剧情按原著方向推进。`);
 
         Player.save();
         UI.renderMapScreen();
