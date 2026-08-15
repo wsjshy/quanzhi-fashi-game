@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.53.0 · 周敏事件链</div>
+                ">v0.53.1 · 自动战斗修复</div>
             </div>
         `;
 

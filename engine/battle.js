@@ -107,7 +107,15 @@ const BattleSystem = {
     _startAutoBattleWatchdog() {
         this._stopAutoBattleWatchdog();
         this._autoBattleTimer = setInterval(() => {
-            if (!this.autoBattle || !this.active || !this.isPlayerTurn || this.player.hp <= 0 || this.playerCasting) {
+            if (!this.autoBattle || !this.active || this.player.hp <= 0) {
+                return;
+            }
+            // 如果玩家正在引导技能且是玩家回合，自动结束回合推进引导
+            if (this.playerCasting && this.isPlayerTurn) {
+                this.endPlayerTurn();
+                return;
+            }
+            if (!this.isPlayerTurn || this.playerCasting) {
                 return;
             }
             this.autoPlayerTurn();
