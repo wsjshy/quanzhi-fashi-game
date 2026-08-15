@@ -253,12 +253,35 @@ const WorldState = {
         }
 
         // 显示提示
+        // v0.46.1: 批量显示成就，避免连续弹窗
         if (typeof UI !== 'undefined' && UI.showMessage) {
-            let msg = `🏆 成就解锁：${achievement.name}`;
-            if (achievementData.reward?.gold) {
-                msg += ` （奖励：${achievementData.reward.gold}金币）`;
-            }
-            UI.showMessage(msg);
+            if (!this._pendingAchievements) this._pendingAchievements = [];
+            this._pendingAchievements.push(achievement);
+            if (this._achievementTimer) clearTimeout(this._achievementTimer);
+            this._achievementTimer = setTimeout(() => {
+                const pending = this._pendingAchievements;
+                this._pendingAchievements = [];
+                this._achievementTimer = null;
+                if (pending.length === 1) {
+                    const a = pending[0];
+                    let msg = `🏆 成就解锁：${a.name}`;
+                    if (a.reward?.gold) msg += `（奖励：${a.reward.gold}金币）`;
+                    UI.showMessage(msg);
+                } else {
+                    let msg = `🏆 解锁 ${pending.length} 个成就：\n`;
+                    let totalGold = 0;
+                    for (const a of pending) {
+                        msg += `· ${a.name}`;
+                        if (a.reward?.gold) {
+                            msg += `（${a.reward.gold}金币）`;
+                            totalGold += a.reward.gold;
+                        }
+                        msg += '\n';
+                    }
+                    if (totalGold > 0) msg += `\n共获得 ${totalGold} 金币`;
+                    UI.showMessage(msg);
+                }
+            }, 500);
         }
 
         return true;

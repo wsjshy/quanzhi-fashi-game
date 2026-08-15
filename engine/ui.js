@@ -111,14 +111,26 @@ const UI = {
         }
 
         let unlockText = '';
+        // v0.46.1: 英文key映射为中文名称
+        const systemNames = {
+            basic_combat: '基础战斗', cultivation: '修炼系统', status_panel: '状态面板',
+            npc_schedule: 'NPC日程', npc_relationship: 'NPC关系', influence: '影响力系统',
+            daily_message: '日常消息', quest_system: '任务系统', shop: '商店系统'
+        };
+        const featureNames = {
+            dialogue: '对话系统', random_event: '随机事件', battle_item: '战斗道具',
+            element_counter: '元素克制', talent_system: '天赋系统'
+        };
         if (unlocks.locations && unlocks.locations.length) {
             unlockText += `<div style="color:#88ccff;">新地点: ${unlocks.locations.length}个</div>`;
         }
         if (unlocks.systems && unlocks.systems.length) {
-            unlockText += `<div style="color:#cc88ff;">新系统: ${unlocks.systems.join(', ')}</div>`;
+            const sysNames = unlocks.systems.map(s => systemNames[s] || s);
+            unlockText += `<div style="color:#cc88ff;">新系统: ${sysNames.join('、')}</div>`;
         }
         if (unlocks.features && unlocks.features.length) {
-            unlockText += `<div style="color:#ffaa88;">新功能: ${unlocks.features.join(', ')}</div>`;
+            const featNames = unlocks.features.map(f => featureNames[f] || f);
+            unlockText += `<div style="color:#ffaa88;">新功能: ${featNames.join('、')}</div>`;
         }
 
         let discoveredIntel = 0;
@@ -603,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.42.0 · NPC社交与影响力</div>
+                ">v0.46.0 · NPC社交与探索丰富</div>
             </div>
         `;
 

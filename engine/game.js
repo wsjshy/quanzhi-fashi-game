@@ -2850,7 +2850,8 @@ const Game = {
         }
 
         // v0.9.0: 首次对话奖励（鼓励玩家与NPC交流）
-        if (!Player.exploredNPCs.includes(npcId)) {
+        const isFirstDialogue = !Player.exploredNPCs.includes(npcId);
+        if (isFirstDialogue) {
             Player.exploredNPCs.push(npcId);
             Player.gainExp(20);
             // v0.9.4: 每日统计
@@ -2889,11 +2890,11 @@ const Game = {
 
         this.state = 'dialogue';
         this._currentDialogueNPC = npcId;
-        this._showDialogueScreen(npc, dialogueData);
+        this._showDialogueScreen(npc, dialogueData, isFirstDialogue);
     },
 
     // 显示对话界面
-    _showDialogueScreen(npc, dialogueData) {
+    _showDialogueScreen(npc, dialogueData, isFirstDialogue = false) {
         const npcState = NPCStateSystem.getNPCState(npc.id);
         const relationLevel = NPCStateSystem.getRelationshipLevel(npc.id);
         const dialogueTone = NPCStateSystem.getDialogueTone(npc.id);
@@ -2931,8 +2932,10 @@ const Game = {
         }
 
         // v0.44.0: NPC提及其他NPC - 基于NPC-NPC关系，让社交网络可感知
+        // v0.46.1: 首次对话必触发，后续40%概率
         let npcMention = '';
-        if (this._npcSchedules && Math.random() < 0.3) {
+        const mentionChance = isFirstDialogue ? 1.0 : 0.4;
+        if (this._npcSchedules && Math.random() < mentionChance) {
             const otherNPCs = Object.keys(this._npcSchedules).filter(id => id !== npc.id);
             if (otherNPCs.length > 0) {
                 const otherId = otherNPCs[Math.floor(Math.random() * otherNPCs.length)];

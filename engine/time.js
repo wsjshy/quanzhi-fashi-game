@@ -332,10 +332,10 @@ const TimeSystem = {
             for (const [npcId, schedule] of Object.entries(Game._npcSchedules)) {
                 const state = NPCStateSystem.getNPCState(npcId);
                 if (!state) continue;
-                // 关系达到友好(>20)才有概率发消息
-                if (state.opinion < 20) continue;
-                // 概率随好感度提升：20好感10%，50好感25%，80好感40%
-                const msgChance = Math.min(0.4, 0.05 + state.opinion * 0.004);
+                // 关系达到友好(>10)才有概率发消息
+                if (state.opinion < 10) continue;
+                // 概率随好感度提升：10好感8%，30好感17%，50好感25%，80好感40%
+                const msgChance = Math.min(0.4, 0.04 + state.opinion * 0.0045);
                 if (Math.random() > msgChance) continue;
                 // 每天最多收到2条消息
                 if (messages.length >= 2) break;
