@@ -127,6 +127,61 @@ const DataCharacters = {
           mood: "casual",
           choices: [
             {
+              id: "tease_mofan",
+              text: "（嘲笑）双系天赋？听起来也没多厉害嘛",
+              condition: {
+                notMemoryTags: ["player_teased", "player_encouraged", "player_asked_magic"]
+              },
+              effects: {
+                opinion: -3,
+                addMemory: {
+                  type: "player_attitude",
+                  content: "玩家嘲笑了我的双系天赋",
+                  shortDescription: "被嘲笑",
+                  importance: 0.7,
+                  tags: ["player_teased", "player_hostile"]
+                }
+              },
+              nextNode: "teased_response"
+            },
+            {
+              id: "encourage_mofan",
+              text: "（鼓励）双系天赋很厉害，继续加油",
+              condition: {
+                notMemoryTags: ["player_teased", "player_encouraged", "player_asked_magic"]
+              },
+              effects: {
+                opinion: 3,
+                addMemory: {
+                  type: "player_attitude",
+                  content: "玩家鼓励了我，说双系天赋很厉害",
+                  shortDescription: "被鼓励",
+                  importance: 0.6,
+                  tags: ["player_encouraged", "player_friendly"]
+                }
+              },
+              nextNode: "encouraged_response"
+            },
+            {
+              id: "ask_magic_understanding",
+              text: "（请教）你对双系魔法有什么理解？",
+              condition: {
+                notMemoryTags: ["player_teased", "player_encouraged", "player_asked_magic"]
+              },
+              effects: {
+                opinion: 2,
+                exp: 10,
+                addMemory: {
+                  type: "player_attitude",
+                  content: "玩家认真请教了我对双系魔法的理解",
+                  shortDescription: "被请教",
+                  importance: 0.6,
+                  tags: ["player_asked_magic", "player_respectful"]
+                }
+              },
+              nextNode: "magic_understanding_response"
+            },
+            {
               id: "ask_about_school",
               text: "问问学校的情况",
               condition: {
@@ -263,11 +318,107 @@ const DataCharacters = {
               nextNode: "mingzhu_exam_intro"
             },
             {
+              id: "recall_teased",
+              text: "（莫凡似乎还记着你之前嘲笑他的事...）",
+              condition: {
+                memoryTags: ["player_teased"]
+              },
+              effects: {},
+              nextNode: "recall_teased_node"
+            },
+            {
+              id: "recall_encouraged",
+              text: "（莫凡看到你，露出了一个友善的笑容...）",
+              condition: {
+                memoryTags: ["player_encouraged"]
+              },
+              effects: {},
+              nextNode: "recall_encouraged_node"
+            },
+            {
+              id: "recall_asked",
+              text: "（莫凡看到你，像是遇到了可以讨论魔法的同好...）",
+              condition: {
+                memoryTags: ["player_asked_magic"]
+              },
+              effects: {},
+              nextNode: "recall_asked_node"
+            },
+            {
               id: "leave",
               text: "没什么事，先走了",
               effects: {},
               nextNode: null
             }
+          ]
+        },
+        teased_response: {
+          id: "teased_response",
+          texts: [
+            "莫凡眉头一挑：'呵，双系天赋没多厉害？要不你试试同时驾驭两种元素？'他的语气带着几分不爽。",
+            "'你可以不相信，但别小看我。'莫凡冷冷地说，'总有一天你会知道双系意味着什么。'"
+          ],
+          mood: "annoyed",
+          choices: [
+            { id: "back", text: "（有点过分了...）", effects: { opinion: 1 }, nextNode: "default" }
+          ]
+        },
+        encouraged_response: {
+          id: "encouraged_response",
+          texts: [
+            "莫凡愣了一下，随即笑了：'谢了！说实话，很少有人这么说。大部分人都觉得双系是负担。'",
+            "'你这家伙，挺有眼光的嘛！'莫凡拍了拍你的肩膀，'放心，我不会让你失望的。'"
+          ],
+          mood: "happy",
+          choices: [
+            { id: "back", text: "加油", effects: {}, nextNode: "default" }
+          ]
+        },
+        magic_understanding_response: {
+          id: "magic_understanding_response",
+          texts: [
+            "莫凡认真地想了想：'双系的关键不是同时用两种魔法，而是在合适的时机切换。雷系主攻，火系辅控，节奏很重要。'",
+            "'其实我也还在摸索。'莫凡难得地谦虚，'不过你愿意问，说明你是真的在思考魔法。这个态度不错。'"
+          ],
+          mood: "thoughtful",
+          choices: [
+            { id: "back", text: "受教了", effects: { exp: 5 }, nextNode: "default" }
+          ]
+        },
+        recall_teased_node: {
+          id: "recall_teased_node",
+          texts: [
+            "莫凡看到你，嘴角微微下拉：'又是你啊。怎么，又来嘲笑我的双系天赋？'",
+            "'别以为我忘了你说的话。'莫凡抱着胳膊，'总有一天我会让你刮目相看。'"
+          ],
+          mood: "annoyed",
+          choices: [
+            { id: "apologize", text: "（道歉）上次是我不对", effects: { opinion: 3 }, nextNode: "default" },
+            { id: "back", text: "（不说话）", effects: {}, nextNode: "default" }
+          ]
+        },
+        recall_encouraged_node: {
+          id: "recall_encouraged_node",
+          texts: [
+            "莫凡看到你，笑了：'嘿！上次你说的话我记着呢，谢了啊。'",
+            "'是你啊！'莫凡热情地打招呼，'你说双系天赋厉害，我最近修炼更有动力了！'"
+          ],
+          mood: "happy",
+          choices: [
+            { id: "chat", text: "最近修炼怎么样？", effects: { opinion: 1 }, nextNode: "default" },
+            { id: "back", text: "加油", effects: {}, nextNode: "default" }
+          ]
+        },
+        recall_asked_node: {
+          id: "recall_asked_node",
+          texts: [
+            "莫凡看到你，眼睛一亮：'你上次问的双系魔法，我最近有了新的理解！要不要聊聊？'",
+            "'是你啊，上次那个问题问得好。'莫凡认真地说，'我后来想了很久，确实有启发。'"
+          ],
+          mood: "thoughtful",
+          choices: [
+            { id: "discuss", text: "好，聊聊", effects: { opinion: 2, exp: 10 }, nextNode: "default" },
+            { id: "back", text: "下次吧", effects: {}, nextNode: "default" }
           ]
         },
         about_school: {

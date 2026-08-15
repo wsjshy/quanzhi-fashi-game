@@ -196,6 +196,33 @@ const DialogueTree = {
             }
         }
 
+        // v0.20.0: 记忆标签条件
+        if (condition.memoryTags) {
+            for (const tag of condition.memoryTags) {
+                if (!NPCStateSystem.hasMemoryTag(npcId, tag)) {
+                    return false;
+                }
+            }
+        }
+        if (condition.notMemoryTags) {
+            for (const tag of condition.notMemoryTags) {
+                if (NPCStateSystem.hasMemoryTag(npcId, tag)) {
+                    return false;
+                }
+            }
+        }
+        // v0.20.0: 任一记忆标签（OR逻辑）
+        if (condition.anyMemoryTags) {
+            let hasAny = false;
+            for (const tag of condition.anyMemoryTags) {
+                if (NPCStateSystem.hasMemoryTag(npcId, tag)) {
+                    hasAny = true;
+                    break;
+                }
+            }
+            if (!hasAny) return false;
+        }
+
         // 世界状态条件
         if (!WorldState.checkConditions(condition)) {
             return false;
@@ -324,6 +351,11 @@ const DialogueTree = {
         }
         if (effects.removeItem) {
             Inventory.removeItem(effects.removeItem.itemId, effects.removeItem.count || 1);
+        }
+
+        // v0.20.0: 添加NPC记忆
+        if (effects.addMemory) {
+            NPCStateSystem.addMemory(npcId, effects.addMemory);
         }
 
         // 全局标记

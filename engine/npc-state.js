@@ -467,7 +467,15 @@ const NPCStateSystem = {
     },
 
     /**
-     * 记忆衰减（每天调用一次）
+     * v0.20.0: 检查NPC是否有特定记忆标签
+     */
+    hasMemoryTag(npcId, tag) {
+        const state = this.getNPCState(npcId);
+        return state.memories.some(m => m.tags?.includes(tag) && m.intensity > 0.1);
+    },
+
+    /**
+     * 获取记忆衰减（每天调用一次）
      */
     decayMemories(npcId) {
         const state = this.getNPCState(npcId);
