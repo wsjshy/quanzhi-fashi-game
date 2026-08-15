@@ -320,6 +320,11 @@ const TimeSystem = {
         if (typeof NPCStateSystem !== 'undefined' && NPCStateSystem.passiveDailyGrowth) {
             NPCStateSystem.passiveDailyGrowth();
         }
+
+        // v0.35.0: NPC-NPC关系每日自然演变
+        if (typeof NPCStateSystem !== 'undefined' && NPCStateSystem.updateNPCRelationshipsDaily) {
+            NPCStateSystem.updateNPCRelationshipsDaily();
+        }
         
         // v0.9.4: 重置每日统计
         if (Player.dailyStats) {

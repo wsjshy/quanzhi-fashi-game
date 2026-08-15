@@ -320,6 +320,64 @@ const NPCStateSystem = {
         return levelUps;
     },
 
+    /**
+     * v0.35.0: NPC-NPC关系每日自然演变
+     * 基于日程交集：两个NPC在同一地点时关系增进
+     * 和玩家关系好的NPC，与其他NPC的关系增长放缓（时间被玩家占了）
+     * 一切后台自然发生，不提示玩家
+     */
+    updateNPCRelationshipsDaily() {
+        if (typeof Game === 'undefined' || !Game._npcSchedules) return;
+        const schedules = Game._npcSchedules;
+        const npcIds = Object.keys(schedules);
+        const timeSlots = ['morning', 'afternoon', 'evening'];
+
+        for (let i = 0; i < npcIds.length; i++) {
+            for (let j = i + 1; j < npcIds.length; j++) {
+                const npcA = npcIds[i];
+                const npcB = npcIds[j];
+                const scheduleA = schedules[npcA];
+                const scheduleB = schedules[npcB];
+
+                // 计算日程交集次数
+                let overlapCount = 0;
+                for (const slot of timeSlots) {
+                    const locA = scheduleA[slot]?.location;
+                    const locB = scheduleB[slot]?.location;
+                    if (locA && locB && locA === locB) {
+                        overlapCount++;
+                    }
+                }
+
+                if (overlapCount === 0) continue;
+
+                // 基础关系增长：每次交集+1~2好感
+                let growth = overlapCount * (1 + Math.floor(Math.random() * 2));
+
+                // 和玩家关系好的NPC，与其他NPC的关系增长减半
+                const stateA = this.getNPCState(npcA);
+                const stateB = this.getNPCState(npcB);
+                if ((stateA.opinion || 0) > 50) growth = Math.floor(growth * 0.5);
+                if ((stateB.opinion || 0) > 50) growth = Math.floor(growth * 0.5);
+
+                // 和玩家关系极好(>80)的NPC，与其他NPC的关系可能缓慢下降
+                let decline = 0;
+                if ((stateA.opinion || 0) > 80 || (stateB.opinion || 0) > 80) {
+                    const relAB = this.getNPCRelationship(npcA, npcB);
+                    if ((relAB.opinion || 0) > 30 && Math.random() < 0.3) {
+                        decline = 1;
+                    }
+                }
+
+                const netChange = growth - decline;
+                if (netChange !== 0) {
+                    this.changeNPCRelationship(npcA, npcB, 'opinion', netChange);
+                    this.changeNPCRelationship(npcB, npcA, 'opinion', netChange);
+                }
+            }
+        }
+    },
+
     // ========== 好感度系统 ==========
 
     /**
