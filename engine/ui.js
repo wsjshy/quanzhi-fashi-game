@@ -2110,7 +2110,7 @@ const UI = {
                 <!-- 战斗场地 -->
                 <div style="flex: 1; position: relative; overflow: ${isPortrait ? 'auto' : 'hidden'}; z-index: 1; ${arenaFlex}">
                     
-                    <!-- 战斗日志 -->
+                    <!-- 战斗日志（竖版隐藏，用按钮弹出） -->
                     <div id="battle-log" style="
                         ${logPos}
                         width: ${logW};
@@ -2123,7 +2123,7 @@ const UI = {
                         font-size: 13px;
                         line-height: 1.7;
                         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-                        ${isPortrait ? 'z-index:5;' : ''}
+                        ${isPortrait ? 'display:none;' : ''}
                     ">
                         <div style="color: #ffd700; font-weight: bold; margin-bottom: 8px; font-size: 14px; border-bottom: 1px solid #444; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
                             <span>📜 战斗日志</span>
@@ -2419,6 +2419,7 @@ const UI = {
                         </div>
                         ${isPortrait ? `
                         <div style="display:flex; gap:6px;">
+                            <button onclick="UI.showBattleLogModal()" style="padding:4px 8px; background:linear-gradient(135deg,#443366,#554477); border:1px solid #7766aa; border-radius:6px; color:#ddccff; font-size:11px; cursor:pointer;">📜日志</button>
                             <button onclick="BattleSystem.toggleSpeed()" style="padding:4px 8px; background:linear-gradient(135deg,#333366,#444488); border:1px solid #6666aa; border-radius:6px; color:#aaccff; font-size:11px; cursor:pointer;">⏩${state.speed || 1}x</button>
                             <button onclick="BattleSystem.toggleAutoBattle()" style="padding:4px 8px; background:${state.autoBattle ? 'linear-gradient(135deg,#663333,#aa4444)' : 'linear-gradient(135deg,#666633,#888844)'}; border:1px solid ${state.autoBattle ? '#ff6666' : '#aaaa66'}; border-radius:6px; color:${state.autoBattle ? '#ffaaaa' : '#ddddaa'}; font-size:11px; cursor:pointer;">🤖自动</button>
                             <button onclick="BattleSystem.showHelp()" style="padding:4px 8px; background:linear-gradient(135deg,#336633,#448844); border:1px solid #66aa66; border-radius:6px; color:#aaffaa; font-size:11px; cursor:pointer;">❓</button>
@@ -2622,6 +2623,33 @@ const UI = {
                 log.scrollTop = log.scrollHeight;
             }
         }, 10);
+    },
+
+    // 弹出战斗日志面板（竖版用）
+    showBattleLogModal() {
+        const logs = (BattleSystem && BattleSystem.log) || [];
+        const modal = document.createElement('div');
+        modal.id = 'battle-log-modal';
+        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; display:flex; align-items:center; justify-content:center;';
+        modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+        modal.innerHTML = `
+            <div style="width:90%; max-width:500px; height:70%; background:linear-gradient(180deg,#1a1a3a,#2a2a5a); border:2px solid #5555aa; border-radius:12px; display:flex; flex-direction:column; overflow:hidden;">
+                <div style="padding:12px 16px; background:rgba(0,0,0,0.5); border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="color:#ffd700; font-weight:bold; font-size:16px;">📜 战斗日志</span>
+                    <button onclick="document.getElementById('battle-log-modal').remove()" style="background:#553333; border:1px solid #885555; color:#ffaaaa; padding:4px 12px; border-radius:6px; cursor:pointer; font-size:14px;">✕ 关闭</button>
+                </div>
+                <div style="flex:1; overflow-y:auto; padding:12px 16px; font-size:14px; line-height:1.8;">
+                    ${logs.map(log => {
+                        const icons = { damage:'⚔️', magic:'✨', heal:'💚', crit:'💥', system:'📢', buff:'⬆️', debuff:'⬇️', counter:'🔥', weakness:'❄️', flee:'🏃', item:'🎒', defend:'🛡️', interrupt:'⚡', summon:'🐺', soul:'💎', evolution:'🔮' };
+                        const colors = { damage:'#ffaaaa', magic:'#ffcc88', heal:'#88ff88', crit:'#ffdd44', system:'#aaaacc', buff:'#88ffaa', debuff:'#ff8888', counter:'#ff8844', weakness:'#88aaff', flee:'#dddd88', item:'#aaffdd', defend:'#aaccff', interrupt:'#ffff88', summon:'#ffcc99', soul:'#dd88ff', evolution:'#88ffff' };
+                        const icon = icons[log.type] || '';
+                        const color = colors[log.type] || '#ffffff';
+                        return `<p style="margin-bottom:6px; color:${color};">${icon ? icon+' ' : ''}${log.text}</p>`;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
     },
 
     // 更新战斗界面
