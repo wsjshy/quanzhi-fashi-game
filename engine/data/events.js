@@ -3456,5 +3456,87 @@ const DataEvents = {
         resultText: "你简单地回应了一句。周敏笑了笑，回去继续学习了。\n\n经验+10，周敏好感+2"
       }
     ]
+  },
+
+  // ========== v0.40.0 许昭霆/穆白互动事件 ==========
+
+  npc_int_xuzt_challenge: {
+    id: "npc_int_xuzt_challenge",
+    name: "许昭霆的挑战",
+    description: "许昭霆看到你，眼中闪过一丝战意。\"听说你最近进步很快，要不要切磋一下？\"他的雷系魔法在指尖跃动。",
+    npcId: "xu_zhaoting",
+    minRelationship: 5,
+    choices: [
+      {
+        text: "好，来吧！",
+        effects: { exp: 50, npcOpinion: { xu_zhaoting: 5 } },
+        resultText: "你们展开了一场激烈的切磋。许昭霆的雷系魔法攻势凌厉，但你也不落下风。战斗结束后，他认真地说：\"你确实很强，我认可你。\"\n\n经验+50，许昭霆好感+5"
+      },
+      {
+        text: "今天算了吧",
+        effects: { npcOpinion: { xu_zhaoting: -2 } },
+        resultText: "许昭霆有些失望，\"哼，胆小鬼。\"他转身走了，雷电在他身后噼啪作响。\n\n许昭霆好感-2"
+      }
+    ]
+  },
+
+  npc_int_xuzt_pride: {
+    id: "npc_int_xuzt_pride",
+    name: "许昭霆的骄傲",
+    description: "许昭霆独自修炼着，看到你经过，冷冷地说：\"别以为进步快就了不起，雷系的底蕴不是靠天赋就能弥补的。\"",
+    npcId: "xu_zhaoting",
+    minRelationship: 20,
+    choices: [
+      {
+        text: "受教了",
+        effects: { exp: 25, npcOpinion: { xu_zhaoting: 3 } },
+        resultText: "你虚心接受了他的指点。许昭霆愣了一下，似乎没想到你会这么谦虚。\"……算你识相。\"他的语气缓和了一些。\n\n经验+25，许昭霆好感+3"
+      },
+      {
+        text: "天赋也是实力的一部分",
+        effects: { npcOpinion: { xu_zhaoting: -5 } },
+        resultText: "许昭霆的脸色沉了下来，\"哼，走着瞧。\"他不再理你，继续独自修炼。\n\n许昭霆好感-5"
+      }
+    ]
+  },
+
+  npc_int_mubai_family: {
+    id: "npc_int_mubai_family",
+    name: "穆白的家族",
+    description: "穆白看到你，表情复杂。\"你知道吗，穆家的人都在关注你。一个没有背景的人能走到这一步，不容易。\"",
+    npcId: "mu_bai",
+    minRelationship: 10,
+    choices: [
+      {
+        text: "我只是在做自己该做的事",
+        effects: { exp: 30, npcOpinion: { mu_bai: 4 } },
+        resultText: "穆白若有所思地点了点头，\"不卑不亢，不错。也许你真的能走出一条不同的路。\"\n\n经验+30，穆白好感+4"
+      },
+      {
+        text: "穆家又怎样？",
+        effects: { npcOpinion: { mu_bai: -3 } },
+        resultText: "穆白的表情变得冷淡，\"你会知道穆家意味着什么的。\"他转身离去。\n\n穆白好感-3"
+      }
+    ]
+  },
+
+  npc_int_mubai_ice: {
+    id: "npc_int_mubai_ice",
+    name: "穆白的冰系心得",
+    description: "穆白正在修炼冰系魔法，看到你在一旁，犹豫了一下说：\"冰系的关键不在于冷，而在于控制。你想听听吗？\"",
+    npcId: "mu_bai",
+    minRelationship: 30,
+    choices: [
+      {
+        text: "请赐教",
+        effects: { exp: 45, npcOpinion: { mu_bai: 5 } },
+        resultText: "穆白认真地讲解了冰系魔力的控制技巧，他的讲解非常专业。\"穆家的冰系传承，不是随便什么人都能听到的。\"\n\n经验+45，穆白好感+5"
+      },
+      {
+        text: "我对冰系没兴趣",
+        effects: { npcOpinion: { mu_bai: -2 } },
+        resultText: "穆白收回了目光，\"随你。\"他继续自己的修炼，不再说话。\n\n穆白好感-2"
+      }
+    ]
   }
 };
