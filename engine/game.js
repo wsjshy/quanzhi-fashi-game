@@ -552,8 +552,8 @@ const Game = {
     // 执行修炼（指定时长）
     // v0.24.0: 修炼顿悟检查（玩家专属机缘）
     _checkCultivationInsight(action, hours, multiplier) {
-        // 基础概率5%，每级+0.3%，上限15%
-        const baseChance = 0.05;
+        // 基础概率10%，每级+0.3%，上限15%
+        const baseChance = 0.10;
         const levelBonus = Math.min(0.10, (Player.level || 1) * 0.003);
         // 连续在同一地点修炼会降低顿悟概率（避免刷）
         const sameLocationCount = Player._cultivateSameLocationCount || 0;
@@ -638,8 +638,8 @@ const Game = {
 
     // v0.24.0: 探索时检查是否发现隐藏修炼地点
     _checkHiddenSpotDiscovery() {
-        // 基础概率3%
-        if (Math.random() > 0.03) return null;
+        // 基础概率6%
+        if (Math.random() > 0.06) return null;
 
         // 已经发现的地点不再发现
         if (!Player.discoveredHiddenSpots) Player.discoveredHiddenSpots = [];
@@ -754,6 +754,14 @@ const Game = {
         }
 
         if (encounters.length === 0) return null;
+
+        // v0.26.0: 每次行动最多遇到1个NPC，避免消息过长和偶遇过于频繁
+        // 随机选择一个，让每个NPC都有机会出现
+        if (encounters.length > 1) {
+            const chosen = encounters[Math.floor(Math.random() * encounters.length)];
+            encounters.length = 0;
+            encounters.push(chosen);
+        }
 
         let message = '\n\n';
         for (const enc of encounters) {

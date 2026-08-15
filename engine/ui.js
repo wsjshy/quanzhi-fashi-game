@@ -603,7 +603,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.14.0 · 强化优化</div>
+                ">v0.25.0 · 玩家专属机缘</div>
             </div>
         `;
 
@@ -1353,8 +1353,8 @@ const UI = {
                                     }
                                 }
 
-                                // 边框颜色：推荐>未探索>逃课>普通
-                                let borderColor = isRecommended ? '#ffcc44' : (isExplorableAction && !isActionExplored ? '#ff9944' : (isSkippingClass ? '#cc6644' : '#444477'));
+                                // 边框颜色：推荐>未探索>普通（逃课不再用红色警告，时间是叙事刻度）
+                                let borderColor = isRecommended ? '#ffcc44' : (isExplorableAction && !isActionExplored ? '#ff9944' : '#444477');
                                 let glowEffect = isRecommended ? 'box-shadow: 0 0 12px rgba(255, 204, 68, 0.4);' : (isExplorableAction && !isActionExplored ? 'box-shadow: 0 0 8px rgba(255, 153, 68, 0.3);' : '');
                                 
                                 return `
@@ -1369,19 +1369,19 @@ const UI = {
                                     transition: all 0.3s;
                                     font-size: 16px;
                                     ${glowEffect}
-                                " onmouseover="this.style.borderColor='${isRecommended ? '#ffee88' : (isSkippingClass ? '#ff8866' : '#7777bb')}'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='${borderColor}'; this.style.transform='translateX(0)'">
+                                " onmouseover="this.style.borderColor='${isRecommended ? '#ffee88' : '#7777bb'}'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='${borderColor}'; this.style.transform='translateX(0)'">
                                     <div style="font-size: 18px; margin-bottom: 5px;">
                                         ${action.icon || '🔹'} ${actionName}
                                         ${isExplorableAction ? (isActionExplored ? '<span style="font-size: 11px; color: #66ff66; margin-left: 6px; background: rgba(30, 80, 30, 0.5); padding: 2px 6px; border-radius: 6px; border: 1px solid #44aa44;">✓ 已探索</span>' : '<span style="font-size: 11px; color: #ffaa44; margin-left: 6px; background: rgba(80, 50, 20, 0.5); padding: 2px 6px; border-radius: 6px; border: 1px solid #aa7744;">❓ 未探索</span>') : ''}
                                         ${isRecommended ? `<span style="font-size: 12px; color: #ffcc44; float: right; background: rgba(100, 80, 20, 0.5); padding: 2px 8px; border-radius: 8px;">${recommendReason}</span>` : ''}
-                                        ${isSkippingClass ? '<span style="color: #ff6644; font-size: 13px; margin-left: 8px;">⚠️ 逃课</span>' : ''}
+                                        ${isSkippingClass ? '<span style="color: #888; font-size: 12px; margin-left: 8px;">📖 有课中</span>' : ''}
                                         <span style="font-size: 12px; color: #888; float: right; display: flex; gap: 10px; align-items: center;">
                                             <span style="color: #aaddff;" title="时间消耗">⏱️ ${action.timeCost}h</span>
                                             ${action.staminaCost && action.staminaCost > 0 ? `<span style="color: #888;" title="体力消耗（软限制，不阻止行动，不影响效率）">⚡ ${action.staminaCost}</span>` : ''}
                                             ${expReward ? `<span style="color: #ffd700;" title="经验奖励">✨ +${expReward}</span>` : ''}
                                         </span>
                                     </div>
-                                    <div style="font-size: 13px; color: #999;">${actionDesc}${isSkippingClass ? '<span style="color: #ff6644;">（逃课会扣班级声望）</span>' : ''}</div>
+                                    <div style="font-size: 13px; color: #999;">${actionDesc}</div>
                                 </button>
                             `}).join('');
                                 })()}
