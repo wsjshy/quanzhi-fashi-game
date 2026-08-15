@@ -163,6 +163,21 @@ const EventSystem = {
             result.effects = this.applyEffects(choice.effects);
         }
 
+        // v0.56.0: 师徒互动计数与等级提升
+        const mentorEvents = ['tang_yue_mentor_training', 'tang_yue_mentor_care', 'tang_yue_trial'];
+        if (mentorEvents.includes(eventId) && Player.mentor) {
+            Player.mentor.interactions = (Player.mentor.interactions || 0) + 1;
+            // 检查等级提升
+            const opinion = NPCStateSystem.getNPCState('tang_yue')?.opinion || 0;
+            if (Player.mentor.level === 1 && Player.mentor.interactions >= 5 && opinion >= 70) {
+                Player.mentor.level = 2;
+                result.mentorLevelUp = 2;
+            } else if (Player.mentor.level === 2 && Player.mentor.interactions >= 10 && opinion >= 90 && Player.level >= 15) {
+                Player.mentor.level = 3;
+                result.mentorLevelUp = 3;
+            }
+        }
+
         // 后续事件
         if (choice.nextEvent) {
             result.nextEvent = choice.nextEvent;
@@ -247,6 +262,10 @@ const EventSystem = {
         if (effects.setFlag) {
             Player.setFlag(effects.setFlag);
             result.setFlag = effects.setFlag;
+            // v0.56.0: 拜师时初始化师徒关系
+            if (effects.setFlag === 'tang_yue_mentor') {
+                Player.mentor = { npcId: 'tang_yue', level: 1, interactions: 0 };
+            }
         }
 
         if (effects.unlockLocation) {

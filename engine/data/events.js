@@ -4455,5 +4455,38 @@ const DataEvents = {
       { text: "谢谢老师，我会注意的", effects: { addItem: "health_potion", npcOpinion: { tang_yue: 3 } }, resultText: "唐月点点头，知道就好。她看着你喝下药水，脸色好转后才放心离开。获得治愈药水x1，唐月好感+3" },
       { text: "老师放心，我有分寸", effects: { hp: 30, npcOpinion: { tang_yue: 2 } }, resultText: "唐月无奈地笑了笑，你们这些年轻人啊。她没有再多说，但你能感受到她的关心。恢复30HP，唐月好感+2" }
     ]
+  },
+
+  // ========== v0.56.0 导师系统深化 ==========
+
+  tang_yue_monthly_support: {
+    id: "tang_yue_monthly_support",
+    name: "导师的月度支持",
+    description: "月初，唐月找到你，递给你一个包裹。\"这是这个月的修炼材料，作为我的学生，可不能在资源上落后于人。\"她的语气温和但带着不容拒绝的意味。",
+    npcId: "tang_yue",
+    activities: ["修炼", "自习", "上课", "冥修"],
+    requireFlag: "tang_yue_mentor",
+    minRelationship: 50,
+    weight: 40,
+    choices: [
+      { text: "感谢老师，我会好好利用", effects: { addItem: "health_potion", npcOpinion: { tang_yue: 2 } }, resultText: "唐月满意地点点头，\"好好修炼，别让我失望。\"你收到了治愈药水和修炼材料。唐月好感+2" },
+      { text: "老师，这太贵重了", effects: { addItem: "mana_potion", npcOpinion: { tang_yue: 3 } }, resultText: "唐月笑了笑，\"跟我还客气什么？拿着吧。\"她硬是把东西塞给你。你收到了魔法药水。唐月好感+3" }
+    ]
+  },
+
+  tang_yue_skill_teaching: {
+    id: "tang_yue_skill_teaching",
+    name: "唐月的传承",
+    description: "师徒等级提升后，唐月决定传授你她的独门技巧。\"星子的排列，不只是按部就班。\"她的手中星子流转，\"真正的高手，能让星子更紧凑，释放更快。\"她开始认真教导你。",
+    npcId: "tang_yue",
+    activities: ["修炼", "自习", "冥修"],
+    requireFlag: "tang_yue_mentor",
+    minRelationship: 70,
+    notFlag: "tang_yue_skill_taught",
+    weight: 50,
+    choices: [
+      { text: "认真学习老师的技巧", effects: { setFlag: "tang_yue_skill_taught", exp: 100, npcOpinion: { tang_yue: 5 } }, resultText: "你认真学习唐月的星子紧凑排列法，火系技能释放速度提升。经验+100，唐月好感+5，获得被动：火系技能伤害+5%" },
+      { text: "提出自己的理解", effects: { setFlag: "tang_yue_skill_taught", exp: 80, npcOpinion: { tang_yue: 8 }, reputation: { school: 5 } }, resultText: "你说出对星子排列的独特见解，唐月眼睛一亮，\"你...比我想象的更有天赋。\"她认真记下你的想法。经验+80，唐月好感+8，学校声望+5，获得被动：火系技能伤害+5%" }
+    ]
   }
 };

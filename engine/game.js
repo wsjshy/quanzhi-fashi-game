@@ -1019,7 +1019,18 @@ const Game = {
                     result.influenceBonus = infBonus;
                 }
             }
-            
+
+            // v0.56.0: 导师修炼加成 - 拜师后稳定经验加成
+            if (Player.flags?.tang_yue_mentor) {
+                const mentorLevel = Player.mentor?.level || 1;
+                const mentorBonusRate = 0.10 + (mentorLevel - 1) * 0.05;
+                const mentorBonus = Math.floor(result.effects.exp * mentorBonusRate);
+                if (mentorBonus > 0) {
+                    result.effects.exp += mentorBonus;
+                    result.mentorBonus = mentorBonus;
+                }
+            }
+
             // 触发事件的概率：时间越长概率越高，但不是线性增长
             const eventChance = action.eventChance || 0;
             if (eventChance > 0 && Math.random() < eventChance * Math.sqrt(multiplier)) {
@@ -1125,6 +1136,7 @@ const Game = {
             if (result.effects.exp) message += `经验 +${result.effects.exp}\n`;
             if (result.starDustBonus) message += `  ✨ 星尘魔器加成 +${result.starDustBonus}\n`;
             if (result.influenceBonus) message += `  🌟 影响力加成 +${result.influenceBonus}\n`;
+            if (result.mentorBonus) message += `  📚 导师指导 +${result.mentorBonus}\n`;
             if (Player.cultivationBuff) message += `  🧘 ${Player.cultivationBuff.name} 加成 +${Math.round(Player.cultivationBuff.expBonus * 100)}%\n`;
             if (result.insight) message += `${result.insight.message}\n`;
             if (result.effects.mp > 0) message += `MP +${result.effects.mp}\n`;

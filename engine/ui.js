@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.55.0 · 导师线</div>
+                ">v0.56.0 · 导师深化</div>
             </div>
         `;
 
@@ -4576,6 +4576,12 @@ const UI = {
                                     ">${SkillSystem.getElementName(elem)} Lv.${elLv}(${elRealm})</span>`;
                                 }).join('')}
                             </div>
+                            ${Player.mentor ? `
+                                <div style="padding: 10px 15px; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 10px; margin-bottom: 15px; display: inline-block;">
+                                    <span style="color: #ffd700; font-size: 14px;">📚 导师：唐月（Lv.${Player.mentor.level || 1}）</span>
+                                    <span style="color: #aaa; font-size: 12px; margin-left: 10px;">修炼经验+${10 + (Player.mentor.level - 1) * 5}%</span>
+                                </div>
+                            ` : ''}
                             ${(() => {
                                 const tier = Player.getInfluenceTier ? Player.getInfluenceTier() : { level: 0, name: '无名小卒', color: '#999' };
                                 const perks = [];
