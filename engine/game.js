@@ -790,6 +790,34 @@ const Game = {
             morning: { location: 'tianlan_school', activity: '上课', chance: 0.5 },
             afternoon: { location: 'tianlan_school', activity: '和同学聊天', chance: 0.4 },
             evening: { location: 'tianlan_school', activity: '修炼风系魔法', chance: 0.2 }
+        },
+        zhao_manyan: {
+            name: '赵满延',
+            gender: 'male',
+            morning: { location: 'tianlan_school', activity: '上课', chance: 0.4 },
+            afternoon: { location: 'tianlan_school', activity: '和同学炫耀光系魔法', chance: 0.35 },
+            evening: { location: 'tianlan_school', activity: '修炼光系防御魔法', chance: 0.15 }
+        },
+        zhou_min: {
+            name: '周敏',
+            gender: 'female',
+            morning: { location: 'tianlan_school', activity: '上课', chance: 0.6 },
+            afternoon: { location: 'library', activity: '在图书馆自习', chance: 0.4 },
+            evening: { location: 'tianlan_school', activity: '复习功课', chance: 0.2 }
+        },
+        xu_zhaoting: {
+            name: '许昭霆',
+            gender: 'male',
+            morning: { location: 'tianlan_school', activity: '上课', chance: 0.4 },
+            afternoon: { location: 'tianlan_school', activity: '修炼雷系魔法', chance: 0.3 },
+            evening: { location: 'tianlan_school', activity: '独自待着', chance: 0.15 }
+        },
+        mu_bai: {
+            name: '穆白',
+            gender: 'male',
+            morning: { location: 'tianlan_school', activity: '上课', chance: 0.5 },
+            afternoon: { location: 'tianlan_school', activity: '修炼冰系魔法', chance: 0.3 },
+            evening: { location: 'tianlan_school', activity: '整理穆家事务', chance: 0.15 }
         }
     },
 
