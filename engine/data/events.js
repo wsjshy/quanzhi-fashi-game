@@ -4056,5 +4056,194 @@ const DataEvents = {
         resultText: "张小侯一脸担心，\"逞强...不过你确实厉害。\"他把药水收回去，但还是在旁边陪着你，直到你恢复得差不多了才离开。\n\n张小侯好感+3"
       }
     ]
+  },
+
+  // ========== v0.51.0 赵满延事件链 ==========
+  influence_zhao_manyan_defense: {
+    id: "influence_zhao_manyan_defense",
+    name: "光系防御的请教",
+    description: "赵满延正在炫耀他的光系防御，\"看到没？光佑·圣盾！统领级攻击都能挡下！\"他得意地拍着胸脯，周围几个同学一脸羡慕。",
+    npcId: "zhao_manyan",
+    activities: ["修炼", "找人聊天", "自习"],
+    minRelationship: 15,
+    notFlag: "zhao_manyan_approved",
+    choices: [
+      {
+        text: "赵兄厉害，能教教我防御心得吗？",
+        effects: { setFlag: "zhao_manyan_approved", npcOpinion: { zhao_manyan: 5 }, exp: 15 },
+        resultText: "赵满延大喜，\"有眼光！来来来，我跟你说，光系防御的关键在于...\"他滔滔不绝地讲了半天，虽然有些吹嘘的成分，但确实有干货。\n\n经验+15，赵满延好感+5，获得赵满延的认可"
+      },
+      {
+        text: "光系防御确实强，但攻击方面呢？",
+        effects: { setFlag: "zhao_manyan_approved", npcOpinion: { zhao_manyan: 3 } },
+        resultText: "赵满延愣了一下，随即笑了，\"你还挺懂行！攻击嘛...不是我强项，但防御够强就行了呗！\"他对你的见识很是认可。\n\n赵满延好感+3，获得赵满延的认可"
+      },
+      {
+        text: "默默观察，不说话",
+        effects: { setFlag: "zhao_manyan_approved", npcOpinion: { zhao_manyan: 2 } },
+        resultText: "你没有搭话，只是静静看着。赵满延注意到你的眼神，觉得你不像是在拍马屁，而是真的在观察。\"嘿，你这人有点意思。\"他主动凑了过来。\n\n赵满延好感+2，获得赵满延的认可"
+      }
+    ]
+  },
+
+  influence_zhao_manyan_resources: {
+    id: "influence_zhao_manyan_resources",
+    name: "赵氏的修炼资源",
+    description: "赵满延压低声音凑过来，\"跟你说个事...我家里有些修炼用的魔石，品质不错。\"他虽然平时贪财，但对认可的朋友很大方，\"兄弟一场，分你一些？\"",
+    npcId: "zhao_manyan",
+    activities: ["找人聊天", "自习", "聊天"],
+    minRelationship: 25,
+    requireFlag: "zhao_manyan_approved",
+    choices: [
+      {
+        text: "那就不客气了，谢了赵兄",
+        effects: { addItem: { itemId: "magic_stone", count: 2 }, npcOpinion: { zhao_manyan: 3 } },
+        resultText: "赵满延从包里掏出两块魔石塞给你，\"拿着拿着，别跟我客气！以后有好事也想着我就行！\"他一脸豪爽。\n\n获得魔石x2，赵满延好感+3"
+      },
+      {
+        text: "不用，你自己留着修炼吧",
+        effects: { npcOpinion: { zhao_manyan: 6 }, reputation: { school: 3 } },
+        resultText: "赵满延一脸意外，随即拍了拍你的肩膀，\"够意思！行，那我就不客气了。不过以后有事尽管找我，赵氏家族的朋友，就是我赵满延的朋友！\"他对你更加看重了。\n\n赵满延好感+6，学校声望+3"
+      }
+    ]
+  },
+
+  influence_zhao_manyan_explore: {
+    id: "influence_zhao_manyan_explore",
+    name: "一起探索",
+    description: "赵满延兴冲冲地跑过来，\"周末要不要一起去雪峰山探索？我听说那边有好东西！\"他拍着胸脯，\"有我光系护盾在，安全得很！就算遇到统领级妖魔也不怕！\"",
+    npcId: "zhao_manyan",
+    activities: ["修炼", "找人聊天", "自习"],
+    minRelationship: 30,
+    requireFlag: "zhao_manyan_approved",
+    choices: [
+      {
+        text: "好，一起去，有赵兄在确实安心",
+        effects: { exp: 40, npcOpinion: { zhao_manyan: 4 }, reputation: { school: 2 } },
+        resultText: "你们一起去了雪峰山探索。赵满延的光系护盾确实靠谱，遇到危险时总能及时挡下。虽然他嘴上不停吹嘘，但实际行动很可靠。\n\n经验+40，赵满延好感+4，学校声望+2"
+      },
+      {
+        text: "这周有点忙，下次吧",
+        effects: { npcOpinion: { zhao_manyan: 1 } },
+        resultText: "赵满延有点失望，\"行吧，那下次一定啊！\"他挥挥手跑开了。\n\n赵满延好感+1"
+      }
+    ]
+  },
+
+  influence_zhao_manyan_shield: {
+    id: "influence_zhao_manyan_shield",
+    name: "关键时刻的护盾",
+    description: "你刚经历一场苦战，气息不稳，身上带伤。赵满延不知从哪冒出来，一道金色光盾瞬间挡在你面前，\"小心！有我在，别怕！\"他的光系防御确实名不虚传。",
+    npcId: "zhao_manyan",
+    activities: ["探索", "修炼", "找人聊天"],
+    minRelationship: 40,
+    requireFlag: "zhao_manyan_approved",
+    choices: [
+      {
+        text: "谢了赵兄，关键时刻还是你靠谱",
+        effects: { hp: 50, npcOpinion: { zhao_manyan: 5 }, reputation: { school: 3 } },
+        resultText: "赵满延的光系治愈之力温暖地包裹着你，伤势迅速恢复。\"嘿嘿，那是自然！以后有事喊我，随叫随到！\"他一脸得意，但眼神中是真诚的关心。\n\nHP+50，赵满延好感+5，学校声望+3"
+      },
+      {
+        text: "我还撑得住，不过谢了",
+        effects: { npcOpinion: { zhao_manyan: 3 } },
+        resultText: "赵满延收回光盾，\"行，你硬气！不过下次别逞强，受伤了不好。\"他虽然嘴上这么说，但还是在旁边陪着你，直到你状态好转。\n\n赵满延好感+3"
+      }
+    ]
+  },
+
+  // ========== v0.51.0 许照庭事件链 ==========
+  influence_xu_zhaoting_encounter: {
+    id: "influence_xu_zhaoting_encounter",
+    name: "雷系的较量",
+    description: "许照庭路过，扫了一眼你的修炼。\"八班的？\"他语气平淡，带着一丝居高临下，\"星子排列...还算稳。\"他的评价不高不低，但能让他开口，已经说明你引起了他的注意。",
+    npcId: "xu_zhaoting",
+    activities: ["修炼", "找人聊天", "自习"],
+    minRelationship: 10,
+    minLevel: 6,
+    notFlag: "xu_zhaoting_respected",
+    choices: [
+      {
+        text: "许学长雷系造诣深，能否指点一二？",
+        effects: { setFlag: "xu_zhaoting_respected", npcOpinion: { xu_zhaoting: 2 } },
+        resultText: "许照庭哼了一声，\"算你有眼光。雷系...在于快和准。\"他难得多说了几句，虽然语气依然冷淡，但你能感觉到他并非完全拒绝。\n\n许照庭好感+2，获得许照庭的注意"
+      },
+      {
+        text: "默默继续修炼，不卑不亢",
+        effects: { setFlag: "xu_zhaoting_respected", npcOpinion: { xu_zhaoting: 4 }, exp: 10 },
+        resultText: "你没有理会他的评价，继续专注修炼。许照庭多看了你一眼，眼神中多了一丝意外。\"有点意思。\"他低声说了一句，便离开了。\n\n经验+10，许照庭好感+4，获得许照庭的注意"
+      },
+      {
+        text: "雷系虽强，但也不是无敌",
+        effects: { setFlag: "xu_zhaoting_respected", npcOpinion: { xu_zhaoting: 1 }, reputation: { school: 2 } },
+        resultText: "许照庭微微挑眉，\"口气不小。\"他的语气中没有愤怒，反而多了一丝兴趣，\"希望你有对应的实力。年度考核上，让我看看。\n\n许照庭好感+1，学校声望+2，获得许照庭的注意"
+      }
+    ]
+  },
+
+  influence_xu_zhaoting_teacher_compare: {
+    id: "influence_xu_zhaoting_teacher_compare",
+    name: "张老师的比较",
+    description: "张建国老师在课上提到，\"最近有些同学进步很快，比如八班的那位...基础扎实，心态也好。\"他顿了顿，看向许照庭，\"许照庭，你也不要松懈，强中自有强中手。\"许照庭的表情微微变化。",
+    npcId: "xu_zhaoting",
+    activities: ["上课", "自习", "修炼"],
+    requireFlag: "xu_zhaoting_respected",
+    choices: [
+      {
+        text: "课后向许照庭表示只是运气好",
+        effects: { npcOpinion: { xu_zhaoting: 3 } },
+        resultText: "课后你找到许照庭，表示只是运气好。他看了你一眼，\"运气也是实力的一部分。\"他的语气依然冷淡，但少了几分居高临下。\n\n许照庭好感+3"
+      },
+      {
+        text: "课后不主动提及，保持距离",
+        effects: { npcOpinion: { xu_zhaoting: 2 } },
+        resultText: "你没有主动找许照庭。几天后你发现，他偶尔会在修炼时注意你的方向。不卑不亢的态度，反而让他更加在意。\n\n许照庭好感+2"
+      }
+    ]
+  },
+
+  influence_xu_zhaoting_thunder_advice: {
+    id: "influence_xu_zhaoting_thunder_advice",
+    name: "雷系心得",
+    description: "许照庭难得主动开口，\"雷系星子活跃，难以控制。\"他顿了顿，看向你，\"但你的控制力...比我预想的好。这个技巧，你可以试试。\"他演示了一个雷系星子排列的技巧，动作精准而迅速。",
+    npcId: "xu_zhaoting",
+    activities: ["修炼", "找人聊天", "冥修"],
+    minRelationship: 25,
+    requireFlag: "xu_zhaoting_respected",
+    choices: [
+      {
+        text: "认真学习，多谢许学长",
+        effects: { exp: 45, npcOpinion: { xu_zhaoting: 3 } },
+        resultText: "你聚精会神地学习他的技巧。雷系星子确实活跃，但按照他的方法排列后，稳定性大幅提升。许照庭看着你的学习速度，微微点头。\n\n经验+45，许照庭好感+3"
+      },
+      {
+        text: "提出自己对星子控制的见解",
+        effects: { npcOpinion: { xu_zhaoting: 5 }, reputation: { school: 2 } },
+        resultText: "你说出了自己的一些想法。许照庭沉默了片刻，\"...有点道理。\"他难得给出正面评价，\"你比我想的不简单。年度考核，我等着。\n\n许照庭好感+5，学校声望+2"
+      }
+    ]
+  },
+
+  influence_xu_zhaoting_recognition: {
+    id: "influence_xu_zhaoting_recognition",
+    name: "竞争对手的认可",
+    description: "许照庭走到你面前，表情依然冷淡，但语气少了几分居高临下。\"年度考核快到了。\"他看着你，\"我不会手下留情。但...你是个值得认真对待的对手。\"这是他能给出的最高评价。",
+    npcId: "xu_zhaoting",
+    activities: ["修炼", "找人聊天", "自习"],
+    minRelationship: 35,
+    minLevel: 10,
+    requireFlag: "xu_zhaoting_respected",
+    choices: [
+      {
+        text: "彼此彼此，考核见真章",
+        effects: { npcOpinion: { xu_zhaoting: 4 }, reputation: { school: 5 } },
+        resultText: "许照庭嘴角微动，似乎想笑但忍住了，\"好。我等着。\"他转身离开，背影挺直。周围的同学都看到了这一幕，对你的实力更加认可。\n\n许照庭好感+4，学校声望+5"
+      },
+      {
+        text: "许学长过奖了，我还需努力",
+        effects: { npcOpinion: { xu_zhaoting: 2 } },
+        resultText: "许照庭看了你一眼，\"谦虚？不像你的风格。\"他顿了顿，\"不过...保持这种心态也好。\"他转身离开，你能感觉到他对你的认可。\n\n许照庭好感+2"
+      }
+    ]
   }
 };
