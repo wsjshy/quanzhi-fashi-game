@@ -383,7 +383,7 @@ const Game = {
         }
 
         // v0.24.0: 隐藏修炼地点——探索时有概率发现
-        const skipForDiscovery = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full'];
+        const skipForDiscovery = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full', 'talk'];
         if (!skipForDiscovery.includes(actionId)) {
             const hiddenSpot = this._checkHiddenSpotDiscovery();
             if (hiddenSpot) {

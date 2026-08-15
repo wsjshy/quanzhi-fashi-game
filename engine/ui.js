@@ -1097,7 +1097,7 @@ const UI = {
                                     const isComplete = exploredActions >= totalActions;
                                     const color = isComplete ? '#66ff66' : percent >= 50 ? '#ffcc44' : '#ff9944';
                                     const icon = isComplete ? '✅' : '📋';
-                                    return `<span style="font-size: 12px; color: ${color}; margin-left: 8px; background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 6px; border: 1px solid ${color};" title="已探索 ${exploredActions}/${totalActions} 个行动">${icon} 行动 ${exploredActions}/${totalActions}</span>`;
+                                    return `<span style="font-size: 12px; color: ${color}; margin-left: 8px; background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 6px; border: 1px solid ${color};" title="已探索 ${exploredActions}/${totalActions} 个行动">${icon} 行动探索 ${exploredActions}/${totalActions}</span>`;
                                 }
                                 return '';
                             })()}
@@ -3180,16 +3180,17 @@ const UI = {
     showEventResult(text, effects) {
         let effectText = '';
         if (effects) {
-            if (effects.exp) effectText += `\n获得 ${effects.exp} 经验`;
-            if (effects.gold) effectText += effects.gold > 0 ? `\n获得 ${effects.gold} 金币` : `\n失去 ${-effects.gold} 金币`;
-            if (effects.hp) effectText += effects.hp > 0 ? `\n恢复 ${effects.hp} HP` : `\n失去 ${-effects.hp} HP`;
-            if (effects.mp) effectText += effects.mp > 0 ? `\n恢复 ${effects.mp} MP` : `\n失去 ${-effects.mp} MP`;
-            if (effects.addItem) effectText += `\n获得物品`;
+            // v0.42.2修复：如果resultText已包含相关关键词，不重复显示
+            if (effects.exp && !text.includes('经验')) effectText += `\n获得 ${effects.exp} 经验`;
+            if (effects.gold && !text.includes('金币')) effectText += effects.gold > 0 ? `\n获得 ${effects.gold} 金币` : `\n失去 ${-effects.gold} 金币`;
+            if (effects.hp && !text.includes('HP')) effectText += effects.hp > 0 ? `\n恢复 ${effects.hp} HP` : `\n失去 ${-effects.hp} HP`;
+            if (effects.mp && !text.includes('MP')) effectText += effects.mp > 0 ? `\n恢复 ${effects.mp} MP` : `\n失去 ${-effects.mp} MP`;
+            if (effects.addItem && !text.includes('获得')) effectText += `\n获得物品`;
             if (effects.items) {
                 for (const [itemId, count] of Object.entries(effects.items)) {
                     const item = DataManager.getItem(itemId);
                     const itemName = item ? item.name : itemId;
-                    effectText += `\n获得 ${itemName} x${count}`;
+                    if (!text.includes(itemName)) effectText += `\n获得 ${itemName} x${count}`;
                 }
             }
         }
