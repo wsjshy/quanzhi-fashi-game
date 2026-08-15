@@ -1594,7 +1594,7 @@ const UI = {
                     </div>
                     
                     <!-- 右侧：角色状态面板（竖版隐藏，靠底部导航） -->
-                    <div class="mobile-side-menu" style="width: 300px; background: linear-gradient(180deg, rgba(20,20,50,0.85), rgba(10,10,30,0.9)); border-left: 2px solid #444477; padding: 18px; display: ${isPortrait ? 'none !important' : 'block'}; overflow-y: auto; max-height: calc(100vh - 180px);">
+                    <div class="mobile-side-menu" style="width: 340px; background: linear-gradient(180deg, rgba(20,20,50,0.85), rgba(10,10,30,0.9)); border-left: 2px solid #444477; padding: 18px; display: ${isPortrait ? 'none !important' : 'block'}; overflow-y: auto; max-height: calc(100vh - 180px);">
                         ${(() => {
                             const s = stats;
                             const hpPct = Math.min(100, (Player.hp / s.maxHp * 100)).toFixed(0);
@@ -1607,7 +1607,7 @@ const UI = {
                             return `
                             <!-- 角色头部 -->
                             <div style="text-align:center; margin-bottom:15px; padding-bottom:12px; border-bottom:1px solid rgba(100,100,150,0.3);">
-                                <div style="font-size:22px; font-weight:bold; color:#ffd700; margin-bottom:4px;">🧙 魔法师</div>
+                                <div style="font-size:22px; font-weight:bold; color:#ffd700; margin-bottom:4px;">🧙 ${typeof RealmSystem !== 'undefined' ? RealmSystem.getRealm(Player.realm || 'initial').name : '初阶'}魔法师</div>
                                 <div style="font-size:13px; color:#aabbdd;">等级 ${Player.level} · ${Player.elements.length}系法师</div>
                             </div>
                             
