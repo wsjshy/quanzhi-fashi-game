@@ -1012,7 +1012,14 @@ const Game = {
         }
 
         if (candidates.length === 0) return null;
-        return candidates[Math.floor(Math.random() * candidates.length)];
+        // v0.69.1: 按weight加权随机选择，提高关键剧情事件触发概率
+        const totalWeight = candidates.reduce((sum, e) => sum + (e.weight || 1), 0);
+        let rand = Math.random() * totalWeight;
+        for (const event of candidates) {
+            rand -= (event.weight || 1);
+            if (rand <= 0) return event;
+        }
+        return candidates[candidates.length - 1];
     },
 
     performCultivate(actionId, hours, bonus) {

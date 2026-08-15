@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.69.0 · 新的开始</div>
+                ">v0.69.1 · 触发优化</div>
             </div>
         `;
 
