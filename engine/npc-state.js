@@ -220,6 +220,11 @@ const NPCStateSystem = {
             health: 100,
             morale: 100,
             
+            // v0.27.0: NPC自主成长
+            level: npcData?.level || 1,
+            exp: 0,
+            totalCultivateCount: 0,  // 累计修炼次数，用于里程碑
+            
             // 记忆系统
             memories: [],
             
@@ -231,6 +236,63 @@ const NPCStateSystem = {
             // 已知的玩家信息
             knownPlayerInfo: []
         };
+    },
+
+    // ========== v0.27.0: NPC自主成长系统 ==========
+
+    /**
+     * 获取NPC升级所需经验（和玩家同公式：level * 100）
+     */
+    getNPCExpToNextLevel(npcId) {
+        const state = this.getNPCState(npcId);
+        return state.level * 100;
+    },
+
+    /**
+     * NPC获得经验，自动升级
+     * @returns {boolean} 是否升级了
+     */
+    gainNPCExp(npcId, amount) {
+        const state = this.getNPCState(npcId);
+        state.exp += amount;
+        let leveledUp = false;
+
+        while (state.exp >= this.getNPCExpToNextLevel(npcId)) {
+            state.exp -= this.getNPCExpToNextLevel(npcId);
+            state.level++;
+            leveledUp = true;
+        }
+
+        return leveledUp;
+    },
+
+    /**
+     * 获取NPC当前等级
+     */
+    getNPCLevel(npcId) {
+        return this.getNPCState(npcId).level || 1;
+    },
+
+    /**
+     * v0.27.0: NPC每日被动成长 - 所有已初始化的NPC每天获得少量经验
+     * 代表NPC在玩家看不到的地方也在修炼成长
+     */
+    passiveDailyGrowth() {
+        const levelUps = [];
+        for (const [npcId, state] of Object.entries(this._npcStates)) {
+            // 只有有日程的NPC（主要角色）才被动成长
+            const baseExp = 8 + Math.floor(Math.random() * 7); // 8-15经验/天
+            const leveledUp = this.gainNPCExp(npcId, baseExp);
+            if (leveledUp) {
+                const charData = DataManager.getCharacter(npcId);
+                levelUps.push({
+                    npcId,
+                    name: charData?.name || npcId,
+                    level: state.level
+                });
+            }
+        }
+        return levelUps;
     },
 
     // ========== 好感度系统 ==========

@@ -763,10 +763,28 @@ const Game = {
             encounters.push(chosen);
         }
 
+        // v0.27.0: NPC自主成长 - 遇到修炼中的NPC时，NPC获得经验
+        let levelUpMessages = [];
+        for (const enc of encounters) {
+            const isCultivating = enc.activity.includes('修炼') || enc.activity.includes('备课') || enc.activity.includes('批改');
+            if (isCultivating) {
+                const expGain = 15 + Math.floor(Math.random() * 10); // 15-25经验
+                const npcState = NPCStateSystem.getNPCState(enc.npcId);
+                npcState.totalCultivateCount = (npcState.totalCultivateCount || 0) + 1;
+                const leveledUp = NPCStateSystem.gainNPCExp(enc.npcId, expGain);
+                if (leveledUp) {
+                    levelUpMessages.push(`${enc.name}突破了！当前等级 Lv.${NPCStateSystem.getNPCLevel(enc.npcId)}`);
+                }
+            }
+        }
+
         let message = '\n\n';
         for (const enc of encounters) {
             const pronoun = enc.gender === 'female' ? '她' : '他';
             message += `（你看到${enc.name}正在这里${enc.activity}。${pronoun}似乎在专注于自己的事。）\n`;
+        }
+        if (levelUpMessages.length > 0) {
+            message += '\n✨ ' + levelUpMessages.join('；') + '\n';
         }
         return { encounters, message };
     },
@@ -2751,6 +2769,21 @@ const Game = {
                     <div style="font-size: 12px; color: #888; margin-top: 3px;">
                         语气：${dialogueTone}
                     </div>
+                    ${(() => {
+                        // v0.27.0: NPC等级显示（自主成长）
+                        const npcLevel = NPCStateSystem.getNPCLevel(npc.id);
+                        const npcExp = npcState.exp || 0;
+                        const expToNext = NPCStateSystem.getNPCExpToNextLevel(npc.id);
+                        const expPercent = Math.min(100, Math.round((npcExp / expToNext) * 100));
+                        return `
+                            <div style="font-size: 12px; color: #aaddff; margin-top: 3px;">
+                                ⚔️ 等级 Lv.${npcLevel} <span style="color: #666;">(${npcExp}/${expToNext} EXP)</span>
+                            </div>
+                            <div style="height: 2px; background: #333; border-radius: 1px; width: 120px; margin-top: 2px;">
+                                <div style="height: 100%; width: ${expPercent}%; background: #4488ff; border-radius: 1px;"></div>
+                            </div>
+                        `;
+                    })()}
                     ${(() => {
                         // v0.23.0: 综合连接评分（Connection Score）
                         const connScore = NPCStateSystem.computeConnectionScore(npc.id, 'player');

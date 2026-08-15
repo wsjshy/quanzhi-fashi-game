@@ -316,6 +316,11 @@ const TimeSystem = {
         
         Player.day++;
         
+        // v0.27.0: NPC每日被动成长
+        if (typeof NPCStateSystem !== 'undefined' && NPCStateSystem.passiveDailyGrowth) {
+            NPCStateSystem.passiveDailyGrowth();
+        }
+        
         // v0.9.4: 重置每日统计
         if (Player.dailyStats) {
             Player.dailyStats = {
