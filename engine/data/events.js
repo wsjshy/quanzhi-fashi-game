@@ -3660,5 +3660,112 @@ const DataEvents = {
         resultText: "穆白收回了目光，\"随你。\"他继续自己的修炼，不再说话。\n\n穆白好感-2"
       }
     ]
+  },
+
+  // ========== v0.47.0 新增NPC互动事件 ==========
+
+  npc_int_mofan_compete: {
+    id: "npc_int_mofan_compete",
+    name: "莫凡的好胜心",
+    description: "莫凡修炼完走过来，拍了拍你的肩膀，\"最近进步挺快啊。怎么样，找时间比比？谁输了请吃饭。\"",
+    npcId: "mo_fan",
+    activities: ["修炼", "冥修"],
+    minRelationship: 15,
+    choices: [
+      {
+        text: "好啊，谁怕谁",
+        effects: { exp: 35, npcOpinion: { mo_fan: 4 } },
+        resultText: "莫凡咧嘴一笑，\"够爽快！就这么说定了。\"你们约定了周末在修炼场切磋。\n\n经验+35，莫凡好感+4"
+      },
+      {
+        text: "改天吧，最近有点忙",
+        effects: { exp: 10 },
+        resultText: "莫凡耸了耸肩，\"行吧，随时找我。\"他摆摆手走了。\n\n经验+10"
+      }
+    ]
+  },
+
+  npc_int_ningxue_rooftop: {
+    id: "npc_int_ningxue_rooftop",
+    name: "天台的穆宁雪",
+    description: "你在天台发现穆宁雪独自站在那里，风吹动她的长发。她察觉到你的到来，微微侧头，\"……这里风不错。\"",
+    npcId: "mu_ningxue",
+    activities: ["自习", "修炼"],
+    minRelationship: 25,
+    choices: [
+      {
+        text: "在旁边安静站着",
+        effects: { exp: 20, mp: 15, npcOpinion: { mu_ningxue: 3 } },
+        resultText: "你没有说话，只是在她旁边安静地站着。远处的博城尽收眼底，穆宁雪的冰系魔力在空气中微微流动，让你有所感悟。\n\n经验+20，MP+15，穆宁雪好感+3"
+      },
+      {
+        text: "打扰了，我先走了",
+        effects: {},
+        resultText: "你不想打扰她的清静，转身离开了天台。"
+      }
+    ]
+  },
+
+  npc_int_tangyue_extra: {
+    id: "npc_int_tangyue_extra",
+    name: "唐月的小灶",
+    description: "唐月看到你在修炼，走过来压低声音说，\"放学后留一下，老师给你补点东西。别告诉别人哦。\"",
+    npcId: "tang_yue",
+    activities: ["修炼", "自习"],
+    minRelationship: 20,
+    choices: [
+      {
+        text: "谢谢唐月老师",
+        effects: { exp: 50, npcOpinion: { tang_yue: 4 } },
+        resultText: "放学后，唐月单独给你讲解了星子排列的高级技巧。\"你的天赋不错，别浪费了。\"\n\n经验+50，唐月好感+4"
+      },
+      {
+        text: "这样不太好吧",
+        effects: { exp: 15, npcOpinion: { tang_yue: 1 } },
+        resultText: "唐月笑了笑，\"有什么不好的？老师关心学生而已。\"她还是给你讲了几个要点。\n\n经验+15，唐月好感+1"
+      }
+    ]
+  },
+
+  npc_int_zhaomy_brag: {
+    id: "npc_int_zhaomy_brag",
+    name: "赵满延的牛皮",
+    description: "赵满延凑过来神神秘秘地说，\"跟你说，我昨天一个人打跑了三只妖魔！怎么样，厉害吧？\"他的表情有些心虚。",
+    npcId: "zhao_manyan",
+    activities: ["自习", "找人聊天"],
+    minRelationship: 10,
+    choices: [
+      {
+        text: "真的假的？讲讲细节",
+        effects: { exp: 15, npcOpinion: { zhao_manyan: 3 } },
+        resultText: "赵满延绘声绘色地讲了起来，虽然细节漏洞百出，但你听得津津有味。讲到最后他自己都笑了，\"好吧其实只有一只，还是被我吓跑的。\"\n\n经验+15，赵满延好感+3"
+      },
+      {
+        text: "就你？别吹了",
+        effects: { npcOpinion: { zhao_manyan: -1 } },
+        resultText: "赵满延脸一红，\"哼，不信算了！\"他气鼓鼓地走了。\n\n赵满延好感-1"
+      }
+    ]
+  },
+
+  npc_int_xuzt_acknowledge: {
+    id: "npc_int_xuzt_acknowledge",
+    name: "许昭霆的认可",
+    description: "许昭霆拦住你的去路，双臂抱胸，\"你的实力……我承认了。雷系的奥义，你想了解多少？\"他的语气依然傲慢，但眼神中多了几分认真。",
+    npcId: "xu_zhaoting",
+    activities: ["修炼", "自习"],
+    minRelationship: 35,
+    choices: [
+      {
+        text: "请指教",
+        effects: { exp: 55, npcOpinion: { xu_zhaoting: 5 } },
+        resultText: "许昭霆难得地认真讲解了雷系魔力的压缩技巧。\"雷系的精髓在于瞬间爆发，而不是持续输出。记住了。\"\n\n经验+55，许昭霆好感+5"
+      },
+      {
+        text: "不用了，我自己悟",
+        effects: { exp: 10, npcOpinion: { xu_zhaoting: 2 } },
+        resultText: "许昭霆挑了挑眉，\"……有骨气。\"他居然没有生气，反而点了点头。\n\n经验+10，许昭霆好感+2"
+      }
+    ]
   }
 };
