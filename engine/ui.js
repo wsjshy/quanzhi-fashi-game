@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.81.0 · 响应式+地图详情</div>
+                ">v0.81.1 · 手机端修复</div>
             </div>
         `;
 
@@ -1143,7 +1143,7 @@ const UI = {
         }
         
         this.elements.gameContainer.innerHTML = `
-            <div style="width: 100%; height: 100vh; display: flex; flex-direction: column; background: ${location?.backgroundColor || '#1a1a3a'}; position: relative;">
+            <div style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; background: ${location?.backgroundColor || '#1a1a3a'}; position: relative; padding-bottom: 110px;">
                 
                 <!-- 背景图片 -->
                 ${bgImage ? `
@@ -1360,10 +1360,10 @@ const UI = {
                 </div>
                 
                 <!-- 主内容区 -->
-                <div class="mobile-main-content" style="flex: 1; display: flex; overflow: hidden; position: relative; z-index: 1;">
+                <div class="mobile-main-content" style="flex: 1; display: flex; position: relative; z-index: 1;">
                     
                     <!-- 左侧：地点行动 -->
-                    <div class="mobile-action-panel" style="flex: ${isPortrait ? '1' : '2'}; padding: ${isPortrait ? '12px 15px' : '20px 30px'}; overflow-y: auto; padding-bottom: 80px;">
+                    <div class="mobile-action-panel" style="flex: ${isPortrait ? '1' : '2'}; padding: ${isPortrait ? '12px 15px' : '20px 30px'};">
                         <!-- v0.80.0: 地点信息卡（整合妖魔信息） -->
                         ${(() => {
                             const enemies = (typeof MapSystem.getLocationEnemies === 'function') ? MapSystem.getLocationEnemies(location?.id) : [];
@@ -1881,15 +1881,20 @@ const UI = {
                     </div>
                 </div>
                 
-                <!-- v0.80.0: 底部导航栏（大按钮，手机safe-area适配） -->
+                <!-- v0.81.1: 底部导航栏（fixed固定，大按钮，手机safe-area适配） -->
                 <div style="
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
                     display: flex;
-                    background: rgba(10, 10, 25, 0.95);
+                    background: rgba(10, 10, 25, 0.97);
                     border-top: 2px solid #444477;
-                    padding: 8px 10px;
-                    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+                    padding: 10px 10px;
+                    padding-bottom: calc(10px + env(safe-area-inset-bottom, 20px));
                     gap: 6px;
-                    z-index: 100;
+                    z-index: 1000;
+                    backdrop-filter: blur(10px);
                 ">
                     <button onclick="Game.openMap()" style="flex:1;padding:14px 8px;background:linear-gradient(135deg,rgba(40,60,90,0.9),rgba(60,80,120,0.9));border:2px solid #5577aa;border-radius:12px;color:#aaccff;cursor:pointer;font-size:18px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(60,80,120,0.9),rgba(80,100,150,0.9))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(40,60,90,0.9),rgba(60,80,120,0.9))'">
                         <span style="font-size:24px;">🗺️</span><span style="font-size:11px;">地图</span>
