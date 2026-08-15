@@ -226,7 +226,7 @@ const Game = {
         // }
         
         // 修炼类行动：先弹时长选择菜单
-        if (actionId === 'train' || actionId === 'meditate') {
+        if (actionId === 'train') {
             this.showCultivateMenu(actionId);
             return;
         }
@@ -561,7 +561,7 @@ const Game = {
         const action = location?.actions?.find(a => a.id === actionId);
         if (!action) return;
         
-        const isTrain = actionId === 'train';
+        const isTrain = true;
         const baseTime = action.timeCost || 2;
         const baseStamina = action.staminaCost || 10;
         const baseExp = action.effects?.exp || 10;

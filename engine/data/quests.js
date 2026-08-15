@@ -2568,7 +2568,7 @@ const DataQuests = {
     type: "personal",
     trigger: { element: "ice", minLevel: 5 },
     objectives: [
-      { type: "cultivate", count: 5, description: "冥修5次" }
+      { type: "cultivate", count: 5, description: "修炼5次" }
     ],
     rewards: { exp: 100, gold: 50 },
     prerequisites: [],
@@ -2607,7 +2607,7 @@ const DataQuests = {
     trigger: { element: "ice", minLevel: 12 },
     objectives: [
       { type: "explore", count: 3, description: "在图书馆学习3次" },
-      { type: "cultivate", count: 10, description: "冥修10次" }
+      { type: "cultivate", count: 10, description: "修炼10次" }
     ],
     rewards: { exp: 300, gold: 200, skillPoints: 1 },
     prerequisites: ["quest_ice_duel"],
@@ -2877,7 +2877,7 @@ const DataQuests = {
     type: "personal",
     trigger: { requireFlag: "mu_ningxue_own_path" },
     objectives: [
-      { type: "cultivate", count: 5, description: "冥修5次" },
+      { type: "cultivate", count: 5, description: "修炼5次" },
       { type: "talk", npcId: "mu_ningxue", count: 1, description: "与穆宁雪对话" }
     ],
     rewards: { exp: 300, gold: 100, skillPoints: 1, setFlag: "mu_ningxue_family_done" },
@@ -2915,7 +2915,7 @@ const DataQuests = {
     type: "personal",
     trigger: { requireFlag: "mu_ningxue_ice_extreme" },
     objectives: [
-      { type: "cultivate", count: 10, description: "冥修10次" },
+      { type: "cultivate", count: 10, description: "修炼10次" },
       { type: "explore", count: 5, description: "在图书馆学习5次" },
       { type: "talk", npcId: "mu_ningxue", count: 3, description: "与穆宁雪对话3次" }
     ],

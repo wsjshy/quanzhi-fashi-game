@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 地点数据
  * 从 game-data.js 拆分而来
  */
@@ -138,23 +138,6 @@ const DataLocations = {
         events: [
           "event_breakthrough",
           "event_training_fail"
-        ]
-      },
-      {
-        id: "meditate",
-        name: "冥修",
-        description: "静心冥修（恢复MP/少量HP，低经验，有概率突破）",
-        icon: "🧘",
-        timeCost: 1,
-        staminaCost: 5,
-        effects: {
-          exp: 8,
-          mp: 25,
-          hp: 5
-        },
-        eventChance: 0.1,
-        events: [
-          "event_breakthrough"
         ]
       },
       {

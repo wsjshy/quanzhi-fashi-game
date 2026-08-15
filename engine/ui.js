@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.82.1 · 顶部精简+休息完善</div>
+                ">v0.82.2 · 删除冥修精简系统</div>
             </div>
         `;
 
