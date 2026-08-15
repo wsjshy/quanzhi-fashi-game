@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.77.1 · 继承bug修复</div>
+                ">v0.78.0 · UI布局优化</div>
             </div>
         `;
 
@@ -1735,6 +1735,8 @@ const UI = {
                     <div class="mobile-side-menu" style="width: 280px; background: rgba(0, 0, 0, 0.4); border-left: 2px solid #444477; padding: 20px;">
                         <h3 style="color: #ffd700; margin-bottom: 20px; font-size: 18px;">📋 菜单</h3>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div style="color: #8899cc; font-size: 12px; padding: 0 5px; margin-bottom: -5px;">🎯 核心功能</div>
+
                             <button onclick="Game.openCharacterPanel()" style="
                                 padding: 12px;
                                 background: rgba(40, 40, 80, 0.8);
@@ -1768,6 +1770,9 @@ const UI = {
                                 text-align: left;
                             ">📜 任务</button>
                             
+                            <div style="height: 1px; background: linear-gradient(90deg, transparent, #555577, transparent); margin: 8px 0;"></div>
+                            <div style="color: #7788aa; font-size: 12px; padding: 0 5px;">📚 信息与收集</div>
+
                             <button onclick="Game.openIntelPanel()" style="
                                 padding: 12px;
                                 background: rgba(40, 40, 80, 0.8);
@@ -1823,6 +1828,9 @@ const UI = {
                                 text-align: left;
                             ">📖 妖魔图鉴</button>
                             
+                            <div style="height: 1px; background: linear-gradient(90deg, transparent, #555577, transparent); margin: 8px 0;"></div>
+                            <div style="color: #7788aa; font-size: 12px; padding: 0 5px;">📅 日常活动</div>
+
                             <button onclick="Game.openDaily()" style="
                                 padding: 12px;
                                 background: rgba(30, 60, 60, 0.8);
@@ -1834,26 +1842,33 @@ const UI = {
                                 text-align: left;
                             ">📋 日常${DailySystem.getUnclaimedCount() > 0 ? ` <span style="color: #ff6666; font-weight: bold;">(${DailySystem.getUnclaimedCount()})</span>` : ''}</button>
                             
+                            <div style="height: 1px; background: linear-gradient(90deg, transparent, #557755, transparent); margin: 8px 0;"></div>
+                            <div style="color: #88aa88; font-size: 12px; padding: 0 5px;">⚡ 快捷操作</div>
+
                             <button onclick="Game.rest()" style="
-                                padding: 12px;
-                                background: rgba(40, 60, 40, 0.8);
-                                border: 1px solid #447744;
-                                border-radius: 8px;
+                                padding: 14px;
+                                background: linear-gradient(135deg, rgba(40, 80, 40, 0.9), rgba(60, 100, 60, 0.9));
+                                border: 2px solid #66aa66;
+                                border-radius: 10px;
                                 color: #d0ffd0;
                                 cursor: pointer;
                                 font-size: 15px;
+                                font-weight: bold;
                                 text-align: left;
+                                box-shadow: 0 0 10px rgba(100, 200, 100, 0.2);
                             ">😴 休息到明天</button>
                             
                             <button onclick="Game.saveGame()" style="
-                                padding: 12px;
-                                background: rgba(60, 60, 40, 0.8);
-                                border: 1px solid #777744;
-                                border-radius: 8px;
+                                padding: 14px;
+                                background: linear-gradient(135deg, rgba(80, 80, 40, 0.9), rgba(100, 100, 60, 0.9));
+                                border: 2px solid #aaaa66;
+                                border-radius: 10px;
                                 color: #ffffd0;
                                 cursor: pointer;
                                 font-size: 15px;
+                                font-weight: bold;
                                 text-align: left;
+                                box-shadow: 0 0 10px rgba(200, 200, 100, 0.2);
                             ">💾 保存游戏</button>
                         </div>
                         
