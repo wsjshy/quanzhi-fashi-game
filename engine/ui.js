@@ -1385,6 +1385,33 @@ const UI = {
                                 </button>
                             `}).join('');
                                 })()}
+
+                                ${(() => {
+                                    // v0.24.0: 隐藏修炼地点按钮
+                                    const spots = Player.discoveredHiddenSpots || [];
+                                    const availableSpots = spots.filter(s => s.usesRemaining > 0);
+                                    if (availableSpots.length === 0) return '';
+                                    return availableSpots.map(spot => `
+                                        <button class="action-button" onclick="Game.cultivateAtHiddenSpot('${spot.id}')" style="
+                                            padding: 18px 25px;
+                                            background: linear-gradient(135deg, rgba(60, 40, 80, 0.8), rgba(80, 60, 120, 0.8));
+                                            border: 2px solid #9966cc;
+                                            border-radius: 10px;
+                                            color: #e0d0ff;
+                                            cursor: pointer;
+                                            text-align: left;
+                                            transition: all 0.3s;
+                                            font-size: 16px;
+                                            box-shadow: 0 0 8px rgba(153, 102, 204, 0.3);
+                                        " onmouseover="this.style.borderColor='#bb88ee'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#9966cc'; this.style.transform='translateX(0)'">
+                                            <div style="font-size: 18px; margin-bottom: 5px;">
+                                                🔮 ${spot.name}
+                                                <span style="font-size: 12px; color: #cc99ff; float: right;">隐秘修炼 · 剩余${spot.usesRemaining}次</span>
+                                            </div>
+                                            <div style="font-size: 13px; color: #aa88cc;">${spot.desc} · 经验+${Math.round(spot.expBonus * 100)}%</div>
+                                        </button>
+                                    `).join('');
+                                })()}
                         </div>
                         
                         <!-- 再次挑战 -->

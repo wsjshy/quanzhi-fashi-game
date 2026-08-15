@@ -362,6 +362,15 @@ const Game = {
             message += npcEncounter.message;
         }
 
+        // v0.24.0: 隐藏修炼地点——探索时有概率发现
+        const skipForDiscovery = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full'];
+        if (!skipForDiscovery.includes(actionId)) {
+            const hiddenSpot = this._checkHiddenSpotDiscovery();
+            if (hiddenSpot) {
+                message += `\n\n🔮 你发现了一个隐秘的修炼地点：${hiddenSpot.name}！\n${hiddenSpot.desc}\n（修炼经验+${Math.round(hiddenSpot.expBonus * 100)}%，可使用${hiddenSpot.usesRemaining}次）`;
+            }
+        }
+
         if (message) {
             UI.showMessage(message.trim());
         }
@@ -596,6 +605,74 @@ const Game = {
         if (Player.insightLog.length > 50) Player.insightLog.shift();
 
         return result;
+    },
+
+    // v0.24.0: 隐藏修炼地点（玩家专属机缘线Phase2）
+    // 玩家探索时有概率发现专属隐秘修炼点，与莫凡的地圣泉平行
+    _hiddenSpotTemplates: [
+        { id: 'secret_corner', name: '隐秘角落', desc: '一个元素浓度异常的角落', expBonus: 0.5, uses: 5 },
+        { id: 'abandoned_room', name: '废弃修炼室', desc: '一间被遗忘的修炼室，残留着魔法阵', expBonus: 0.8, uses: 3 },
+        { id: 'spirit_node', name: '灵脉节点', desc: '地下灵脉的一个微小节点', expBonus: 1.0, uses: 2 },
+        { id: 'ancient_ruin', name: '古老遗迹', desc: '一处上古法师的修炼遗迹', expBonus: 1.5, uses: 1 }
+    ],
+
+    // v0.24.0: 探索时检查是否发现隐藏修炼地点
+    _checkHiddenSpotDiscovery() {
+        // 基础概率3%
+        if (Math.random() > 0.03) return null;
+
+        // 已经发现的地点不再发现
+        if (!Player.discoveredHiddenSpots) Player.discoveredHiddenSpots = [];
+        const available = this._hiddenSpotTemplates.filter(
+            t => !Player.discoveredHiddenSpots.some(s => s.id === t.id)
+        );
+        if (available.length === 0) return null;
+
+        // 随机选择一个
+        const template = available[Math.floor(Math.random() * available.length)];
+        const spot = {
+            id: template.id,
+            name: template.name,
+            desc: template.desc,
+            expBonus: template.expBonus,
+            usesRemaining: template.uses,
+            discoveredDay: Player.day || 1,
+            location: Player.currentLocation
+        };
+        Player.discoveredHiddenSpots.push(spot);
+
+        return spot;
+    },
+
+    // v0.24.0: 在隐藏地点修炼
+    cultivateAtHiddenSpot(spotId) {
+        if (!Player.discoveredHiddenSpots) return;
+        const spot = Player.discoveredHiddenSpots.find(s => s.id === spotId);
+        if (!spot || spot.usesRemaining <= 0) {
+            UI.showMessage('这个隐秘地点的灵气已经枯竭了。');
+            return;
+        }
+
+        // 消耗一次使用
+        spot.usesRemaining--;
+
+        // 计算经验（基础修炼经验 × (1 + 隐藏地点加成)）
+        const baseExp = 30; // 基础修炼经验
+        const bonusExp = Math.floor(baseExp * spot.expBonus);
+        const totalExp = baseExp + bonusExp;
+
+        Player.gainExp(totalExp);
+        TimeSystem.advanceTime(2);
+
+        let message = `你在${spot.name}修炼了2小时。\n经验 +${totalExp}\n  ✨ 隐秘地点加成 +${bonusExp}\n`;
+        if (spot.usesRemaining > 0) {
+            message += `  剩余使用次数：${spot.usesRemaining}`;
+        } else {
+            message += `  ⚠️ 这个地点的灵气已经枯竭，无法再使用了。`;
+        }
+
+        UI.showMessage(message);
+        UI.renderMapScreen();
     },
 
     // v0.24.0: NPC自主日程系统（玩家专属机缘线Phase3）
