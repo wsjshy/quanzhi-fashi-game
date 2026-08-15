@@ -128,7 +128,7 @@ const EncounterSystem = {
                             Game.startBattle(enemy, () => {
                                 if (BattleSystem.result === 'win') {
                                     Player.flags['mubai_challenge_completed'] = true;
-                                    Player.gainExp(100, Player.elements?.[0]);
+                                    Player.gainExp(100, Player.elements ? [Player.elements[0]] : []);
                                     Player.gold += 50;
                                     WorldState.changeReputation('school', 10);
                                 }
@@ -160,7 +160,7 @@ const EncounterSystem = {
                             Game.startBattle(enemy, () => {
                                 if (BattleSystem.result === 'win') {
                                     Player.flags['freshman_trial_completed'] = true;
-                                    Player.gainExp(50, Player.elements?.[0]);
+                                    Player.gainExp(50, Player.elements ? [Player.elements[0]] : []);
                                     Player.gold += 30;
                                 }
                             }, {
