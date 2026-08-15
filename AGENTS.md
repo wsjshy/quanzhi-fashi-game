@@ -38,7 +38,8 @@
    - 功能测试：按[测试用例](docs/测试用例与发布检查清单.md)逐项验证
    - 体验测试：按体验测试用例评估节奏/压力/自由度/代入感
 8. 修bug + 修体验问题
-9. 同步 TODO.md / CHANGELOG.md
+9. 文档同步：TODO.md / CHANGELOG.md / AGENTS.md版本号 / ui.js标题
+   - ⚠️ **README.md必须同步更新**：README是项目对外介绍，数据统计（任务/事件/妖魔/技能数量）、游戏特色、新功能介绍都要及时更新，不能只更新内部文档
 10. git commit + push（Gitee+GitHub）
 ```
 
