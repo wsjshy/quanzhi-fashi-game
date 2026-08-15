@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.74.1 · 开场剧情跳过</div>
+                ">v0.75.0 · 地图UI完善</div>
             </div>
         `;
 
@@ -1678,6 +1678,17 @@ const UI = {
                             ${location.connectedLocations.map(locId => {
                                 const loc = DataManager.getLocation(locId);
                                 const unlocked = Player.unlockedLocations.includes(locId);
+                                // v0.75.0: 获取所属大地图
+                                let mapInfo = '';
+                                if (typeof DataMaps !== 'undefined') {
+                                    for (const mapId in DataMaps) {
+                                        const map = DataMaps[mapId];
+                                        if (map.allLocations && map.allLocations.includes(locId)) {
+                                            mapInfo = `<span style="font-size: 11px; color: #88ccff; background: rgba(30, 50, 80, 0.6); padding: 2px 8px; border-radius: 4px; margin-left: 8px;">${map.icon} ${map.name}</span>`;
+                                            break;
+                                        }
+                                    }
+                                }
                                 // v0.9.2: 探索提示 - 危险等级
                                 let dangerInfo = '';
                                 if (unlocked && typeof MapSystem.getLocationDangerLevel === 'function') {
@@ -1703,7 +1714,7 @@ const UI = {
                                         font-size: 16px;
                                     " ${unlocked ? 'onmouseover="this.style.borderColor=\'#9977cc\'" onmouseout="this.style.borderColor=\'#7755aa\'"' : ''}>
                                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                                            <span>${unlocked ? '🚪' : '🔒'} ${loc?.name || locId}</span>
+                                            <span>${unlocked ? '🚪' : '🔒'} ${loc?.name || locId}${mapInfo}</span>
                                             ${unlocked ? dangerInfo : ''}
                                             ${unlocked ? '<span style="font-size: 13px; color: #888;">旅行 0.5小时</span>' : ''}
                                         </div>
