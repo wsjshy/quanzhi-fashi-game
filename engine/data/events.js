@@ -4389,8 +4389,7 @@ const DataEvents = {
   influence_zhou_min_recognition: {
     id: "influence_zhou_min_recognition",
     name: "强者的认可",
-    description: "周敏走到你面前，表情少了几分之前的不服气，多了几分认真。\"你的进步速度...比我快。\"她顿了顿，直视着你的眼睛，\"我不会认输的，但...你确实很强。\"这是她能给出的最高评价。",
-    npcId: "zhou_min",
+    description: "周敏走到你面前，表情少了几分之前的不服气，多了几分认真。\"你的进步速度...比我快。\"她顿了顿，直视着你的眼睛，\"我不会认输的，但...你确实很强。\"这是她能给出的最高评价。",    npcId: "zhou_min",
     activities: ["修炼", "找人聊天", "自习"],
     minRelationship: 20,
     minLevel: 8,
@@ -4406,6 +4405,55 @@ const DataEvents = {
         effects: { npcOpinion: { zhou_min: 3 } },
         resultText: "周敏点点头，\"嗯。\"她没有多说，但你能感觉到她对你的态度已经完全转变了。\n\n周敏好感+3"
       }
+    ]
+  },
+
+  // ========== v0.55.0 玩家专属导师线（唐月） ==========
+
+  tang_yue_trial: {
+    id: "tang_yue_trial",
+    name: "唐月的考验",
+    description: "修炼结束时，唐月叫住了你。她的表情比平时认真几分，你这段时间的进步，我都看在眼里。如果你愿意的话，我可以正式收你为徒。不过在此之前，我想看看你的实战能力。她的手中凝聚起淡淡的火系星子，不用怕，点到为止。",
+    npcId: "tang_yue",
+    activities: ["修炼", "自习", "上课", "冥修", "备课", "批改"],
+    minRelationship: 50,
+    minLevel: 8,
+    notFlag: "tang_yue_mentor",
+    weight: 50,
+    choices: [
+      { text: "接受考验，请老师指教", effects: { setFlag: "tang_yue_trial_accepted" }, resultText: "唐月微微点头，眼中闪过一丝赞许。很好。那就让我看看，你这些天的修炼成果吧。她的星子运转起来，一场温和的切磋就此展开。" },
+      { text: "请求老师先指点一二", effects: { exp: 50, setFlag: "tang_yue_guidance_received" }, resultText: "唐月笑了笑，也好。她走到你身边，轻声讲解星子运转的诀窍。你听得入神，收获颇丰。经验+50，唐月好感+3" },
+      { text: "婉拒，我还需要更多修炼", effects: { npcOpinion: { tang_yue: 5 } }, resultText: "唐月没有生气，反而温和地笑了，知道自己的不足，也是一种成长。没关系，等你准备好了，随时可以来找我。唐月好感+5" }
+    ]
+  },
+
+  tang_yue_mentor_training: {
+    id: "tang_yue_mentor_training",
+    name: "师徒修炼",
+    description: "你正在修炼时，唐月悄然出现在你身边。星子的节奏可以再稳一些。她轻声指点，作为我的学生，可不能偷懒哦。她的指导让你的修炼效率大幅提升。",
+    npcId: "tang_yue",
+    activities: ["修炼", "冥修"],
+    requireFlag: "tang_yue_mentor",
+    minRelationship: 50,
+    weight: 30,
+    choices: [
+      { text: "认真听从指导", effects: { exp: 30, npcOpinion: { tang_yue: 2 } }, resultText: "你按照唐月的指点调整星子运转，果然顺畅了许多。修炼结束时，你感觉收获满满。经验+30，唐月好感+2" },
+      { text: "提出自己的见解", effects: { exp: 20, npcOpinion: { tang_yue: 3 }, reputation: { school: 2 } }, resultText: "你说出自己对星子排列的理解，唐月眼睛一亮，这个角度很有意思。她认真思考了一会儿，你说得对，有时候确实不能拘泥于传统。经验+20，唐月好感+3，学校声望+2" }
+    ]
+  },
+
+  tang_yue_mentor_care: {
+    id: "tang_yue_mentor_care",
+    name: "导师的关心",
+    description: "你拖着疲惫的身体回到学校，唐月正好路过。她看到你苍白的脸色，眉头微皱，又修炼过度了？她从包里拿出一瓶药水递给你，身体是革命的本钱，作为我的学生，可不能把自己累垮了。",
+    npcId: "tang_yue",
+    activities: ["修炼", "自习", "上课", "冥修", "休息"],
+    requireFlag: "tang_yue_mentor",
+    minRelationship: 50,
+    weight: 20,
+    choices: [
+      { text: "谢谢老师，我会注意的", effects: { addItem: "health_potion", npcOpinion: { tang_yue: 3 } }, resultText: "唐月点点头，知道就好。她看着你喝下药水，脸色好转后才放心离开。获得治愈药水x1，唐月好感+3" },
+      { text: "老师放心，我有分寸", effects: { hp: 30, npcOpinion: { tang_yue: 2 } }, resultText: "唐月无奈地笑了笑，你们这些年轻人啊。她没有再多说，但你能感受到她的关心。恢复30HP，唐月好感+2" }
     ]
   }
 };
