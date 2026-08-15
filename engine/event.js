@@ -287,6 +287,17 @@ const EventSystem = {
             }
         }
 
+        // v0.34.0: NPC好感度变化
+        if (effects.npcOpinion) {
+            result.npcOpinion = {};
+            for (const [npcId, value] of Object.entries(effects.npcOpinion)) {
+                if (typeof NPCStateSystem !== 'undefined') {
+                    NPCStateSystem.changeOpinion(npcId, value);
+                    result.npcOpinion[npcId] = value;
+                }
+            }
+        }
+
         return result;
     }
 };

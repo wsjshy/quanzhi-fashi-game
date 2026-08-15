@@ -448,6 +448,12 @@ const Game = {
             randomEvent = EventSystem.triggerRandomEvent('explore', 0.05);
         }
 
+        // v0.34.0: NPC偶遇互动事件（如果没有其他事件，且遇到了NPC）
+        let npcInteractionEvent = null;
+        if (npcEncounter && npcEncounter.interactionEvent && !randomEvent && !result.event) {
+            npcInteractionEvent = npcEncounter.interactionEvent;
+        }
+
         if (message) {
             UI.showMessage(message.trim());
         }
@@ -459,9 +465,9 @@ const Game = {
             return;
         }
 
-        if (result.event || randomEvent) {
-            // 触发事件（行动事件或随机事件）
-            const eventId = result.event || randomEvent.id;
+        if (result.event || randomEvent || npcInteractionEvent) {
+            // 触发事件（行动事件/随机事件/NPC互动事件）
+            const eventId = result.event || (randomEvent && randomEvent.id) || (npcInteractionEvent && npcInteractionEvent.id);
             this.showEvent(eventId);
             return;
         }
@@ -845,7 +851,39 @@ const Game = {
             message += '\n✨ ' + levelUpMessages.join('；') + '\n';
         }
 
-        return { encounters, message };
+        // v0.34.0: NPC偶遇互动事件 - 40%概率触发
+        let interactionEvent = null;
+        if (encounters.length > 0 && Math.random() < 0.4) {
+            const enc = encounters[0];
+            interactionEvent = this._findNPCInteraction(enc.npcId, enc.activity);
+        }
+
+        return { encounters, message, interactionEvent };
+    },
+
+    /**
+     * v0.34.0: 查找适合当前NPC和活动的互动事件
+     */
+    _findNPCInteraction(npcId, activity) {
+        const allEvents = DataManager.getAllEvents ? DataManager.getAllEvents() : {};
+        const candidates = [];
+
+        for (const [eventId, event] of Object.entries(allEvents)) {
+            if (event.npcId !== npcId) continue;
+            // 检查活动匹配（如果指定了activities）
+            if (event.activities && event.activities.length > 0) {
+                if (!event.activities.some(a => activity.includes(a))) continue;
+            }
+            // 检查好感度要求
+            if (event.minRelationship) {
+                const npcState = NPCStateSystem.getNPCState(npcId);
+                if ((npcState.opinion || 0) < event.minRelationship) continue;
+            }
+            candidates.push(event);
+        }
+
+        if (candidates.length === 0) return null;
+        return candidates[Math.floor(Math.random() * candidates.length)];
     },
 
     performCultivate(actionId, hours, bonus) {

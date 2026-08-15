@@ -3208,5 +3208,170 @@ const DataEvents = {
         resultText: "你一时兴起加入了表演，你的魔法赢得了观众的喝彩。表演结束后分到了一些打赏。\n\n经验+30，金币+15"
       }
     ]
+  },
+
+  // ========== v0.34.0 NPC偶遇互动事件 ==========
+
+  npc_int_mofan_train: {
+    id: "npc_int_mofan_train",
+    name: "莫凡的邀请",
+    description: "莫凡看到你在修炼，主动过来打招呼。\"嘿，一起练练？互相指点一下？\"",
+    npcId: "mo_fan",
+    activities: ["修炼", "冥修"],
+    minRelationship: 10,
+    choices: [
+      {
+        text: "接受切磋",
+        effects: { exp: 50, npcOpinion: { mo_fan: 3 } },
+        resultText: "你们切磋了一番，莫凡的战斗直觉很敏锐，但你的基础更扎实。互相都有所收获。\n\n经验+50，莫凡好感+3"
+      },
+      {
+        text: "婉拒，继续自己修炼",
+        effects: { exp: 10 },
+        resultText: "你婉拒了莫凡的邀请，继续专注于自己的修炼。莫凡耸了耸肩，也回去修炼了。\n\n经验+10"
+      }
+    ]
+  },
+
+  npc_int_mofan_chat: {
+    id: "npc_int_mofan_chat",
+    name: "莫凡的烦恼",
+    description: "莫凡看起来有些心事，他注意到你后，犹豫了一下还是走了过来。",
+    npcId: "mo_fan",
+    minRelationship: 30,
+    choices: [
+      {
+        text: "主动询问",
+        effects: { exp: 20, npcOpinion: { mo_fan: 5 } },
+        resultText: "莫凡和你聊了聊他的心事，虽然都是些学生的烦恼，但说出来后他心情好多了。\"谢了，兄弟。\"\n\n经验+20，莫凡好感+5"
+      },
+      {
+        text: "假装没注意到",
+        effects: {},
+        resultText: "你选择不打扰他，莫凡也没有主动开口，两人各自做自己的事。"
+      }
+    ]
+  },
+
+  npc_int_ningxue_advice: {
+    id: "npc_int_ningxue_advice",
+    name: "穆宁雪的指点",
+    description: "穆宁雪在一旁修炼时注意到了你的动作，她走过来，难得地开口了。\"你的冰系……姿势不对。\"",
+    npcId: "mu_ningxue",
+    activities: ["修炼", "冥修"],
+    minRelationship: 15,
+    choices: [
+      {
+        text: "虚心请教",
+        effects: { exp: 60, npcOpinion: { mu_ningxue: 4 } },
+        resultText: "穆宁雪简洁地指出了你动作中的问题，虽然话不多，但每一句都切中要害。你的冰系控制有了明显提升。\n\n经验+60，穆宁雪好感+4"
+      },
+      {
+        text: "谢谢，我自己再试试",
+        effects: { exp: 15 },
+        resultText: "你礼貌地感谢了她，但决定自己摸索。穆宁雪点了点头，没有多说什么。\n\n经验+15"
+      }
+    ]
+  },
+
+  npc_int_ningxue_silence: {
+    id: "npc_int_ningxue_silence",
+    name: "安静的共处",
+    description: "穆宁雪就在不远处，你们都没有说话。空气中有一种奇妙的宁静。",
+    npcId: "mu_ningxue",
+    minRelationship: 25,
+    choices: [
+      {
+        text: "安静地待着",
+        effects: { exp: 25, npcOpinion: { mu_ningxue: 3 } },
+        resultText: "你们就这样安静地各自待着，谁也没有说话。但你感觉和她的距离似乎近了一些。\n\n经验+25，穆宁雪好感+3"
+      },
+      {
+        text: "找个借口离开",
+        effects: {},
+        resultText: "你觉得气氛有些尴尬，找了个借口离开了。"
+      }
+    ]
+  },
+
+  npc_int_tangyue_teach: {
+    id: "npc_int_tangyue_teach",
+    name: "唐月的小课堂",
+    description: "唐月看到你在修炼，笑着走过来。\"正好，我刚想到一个修炼的小技巧，要不要听听？\"",
+    npcId: "tang_yue",
+    activities: ["修炼", "备课", "批改"],
+    minRelationship: 10,
+    choices: [
+      {
+        text: "认真听讲",
+        effects: { exp: 70, npcOpinion: { tang_yue: 3 } },
+        resultText: "唐月耐心地给你讲解了修炼技巧，还亲自示范了一遍。她的教学水平确实一流。\n\n经验+70，唐月好感+3"
+      },
+      {
+        text: "老师您忙，我自己练",
+        effects: { exp: 15 },
+        resultText: "你不想耽误唐月的时间，婉拒了她。唐月笑了笑，\"有问题随时来找我。\"\n\n经验+15"
+      }
+    ]
+  },
+
+  npc_int_tangyue_care: {
+    id: "npc_int_tangyue_care",
+    name: "唐月的关心",
+    description: "唐月注意到你最近修炼很刻苦，她走过来，语气中带着关切。\"别太拼了，身体要紧。\"",
+    npcId: "tang_yue",
+    minRelationship: 35,
+    choices: [
+      {
+        text: "谢谢老师关心",
+        effects: { exp: 20, hp: 20, npcOpinion: { tang_yue: 4 } },
+        resultText: "唐月给了你一瓶恢复药剂，\"好好休息，明天继续。\"她的关心让你感到温暖。\n\n经验+20，HP+20，唐月好感+4"
+      },
+      {
+        text: "我没事的，老师",
+        effects: { exp: 10 },
+        resultText: "你表示自己没问题，唐月无奈地笑了笑，\"你们这些年轻人啊……\"\n\n经验+10"
+      }
+    ]
+  },
+
+  npc_int_xiaohou_adventure: {
+    id: "npc_int_xiaohou_adventure",
+    name: "张小侯的冒险提议",
+    description: "张小侯看到你，兴奋地跑过来。\"兄弟！我发现了一个好玩的地方，要不要一起去探险？\"",
+    npcId: "zhang_xiaohou",
+    minRelationship: 15,
+    choices: [
+      {
+        text: "好啊，走！",
+        effects: { exp: 45, gold: 30, npcOpinion: { zhang_xiaohou: 5 } },
+        resultText: "你们一起去了张小侯发现的地方，虽然只是一个小山洞，但里面有一些前人留下的金币。最重要的是，你们玩得很开心。\n\n经验+45，金币+30，张小侯好感+5"
+      },
+      {
+        text: "下次吧，我今天想修炼",
+        effects: { exp: 10, npcOpinion: { zhang_xiaohou: -1 } },
+        resultText: "张小侯有些失望，但还是理解了你。\"好吧，那下次一定啊！\"\n\n经验+10，张小侯好感-1"
+      }
+    ]
+  },
+
+  npc_int_xiaohou_food: {
+    id: "npc_int_xiaohou_food",
+    name: "张小侯的零食",
+    description: "张小侯偷偷塞给你一包零食。\"这是我攒了好久的，分你一半！\"",
+    npcId: "zhang_xiaohou",
+    minRelationship: 30,
+    choices: [
+      {
+        text: "谢谢兄弟！",
+        effects: { exp: 15, stamina: 20, npcOpinion: { zhang_xiaohou: 3 } },
+        resultText: "你们一边吃零食一边聊天，张小侯讲了好多学校里的趣事，让你笑个不停。\n\n经验+15，体力+20，张小侯好感+3"
+      },
+      {
+        text: "你自己留着吧",
+        effects: { npcOpinion: { zhang_xiaohou: -2 } },
+        resultText: "你婉拒了张小侯的好意，他有些失落。\"好吧……那我自己吃了。\"\n\n张小侯好感-2"
+      }
+    ]
   }
 };
