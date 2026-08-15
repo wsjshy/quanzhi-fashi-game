@@ -461,7 +461,46 @@ const TimeSystem = {
         const pool = messagePools[npcId];
         if (!pool || !pool[tier]) return null;
         const messages = pool[tier];
-        return messages[Math.floor(Math.random() * messages.length)];
+        let baseMsg = messages[Math.floor(Math.random() * messages.length)];
+
+        // v0.45.0: 25%概率NPC在消息中提及其他NPC（基于NPC-NPC关系）
+        if (typeof NPCStateSystem !== 'undefined' && typeof Game !== 'undefined' && Game._npcSchedules && Math.random() < 0.25) {
+            const otherNPCs = Object.keys(Game._npcSchedules).filter(id => id !== npcId);
+            if (otherNPCs.length > 0) {
+                const otherId = otherNPCs[Math.floor(Math.random() * otherNPCs.length)];
+                const otherData = typeof DataManager !== 'undefined' ? DataManager.getCharacter(otherId) : null;
+                const otherName = otherData ? otherData.name : Game._npcSchedules[otherId].name;
+                const rel = NPCStateSystem.getNPCRelationship(npcId, otherId);
+                const opinion = rel.opinion || 0;
+                if (opinion > 20) {
+                    return `${npcName}：说起来，${otherName}最近也挺努力的，你们有空可以多交流。`;
+                } else if (opinion < -10) {
+                    return `${npcName}：别提${otherName}了，那个人……算了不说了。`;
+                } else {
+                    return `${npcName}：今天好像看到${otherName}了，也在学校里。`;
+                }
+            }
+        }
+
+        // v0.45.0: 影响力≥10时15%概率NPC引用玩家的影响力
+        if (typeof Player !== 'undefined' && Player.getInfluenceTier) {
+            const infTier = Player.getInfluenceTier();
+            if (infTier.level >= 1 && Math.random() < 0.15) {
+                const influenceRefs = {
+                    mo_fan: `莫凡：你现在也算是${infTier.name}了，别给我丢脸啊。`,
+                    mu_ningxue: `穆宁雪：……${infTier.name}，名副其实。`,
+                    tang_yue: `唐月：老师为你感到骄傲，${infTier.name}可不是谁都能做到的。`,
+                    zhang_xiaohou: `张小侯：大哥都成${infTier.name}了！太厉害了！`,
+                    zhao_manyan: `赵满延：可以啊兄弟，都${infTier.name}了！以后罩着我！`,
+                    zhou_min: `周敏：你都已经是${infTier.name}了……真的好厉害。`,
+                    xu_zhaoting: `许昭霆：${infTier.name}……哼，我不会输给你的。`,
+                    mu_bai: `穆白：${infTier.name}……穆家也开始关注你了。`
+                };
+                if (influenceRefs[npcId]) return influenceRefs[npcId];
+            }
+        }
+
+        return baseMsg;
     },
 
     /**
