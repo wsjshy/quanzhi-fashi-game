@@ -2687,6 +2687,27 @@ const Game = {
         const relationLevel = NPCStateSystem.getRelationshipLevel(npc.id);
         const dialogueTone = NPCStateSystem.getDialogueTone(npc.id);
 
+        // v0.29.0: NPC等级反应 - 根据双方等级差生成开场白
+        const npcLevel = NPCStateSystem.getNPCLevel(npc.id);
+        const playerLevel = Player.level || 1;
+        const levelDiff = playerLevel - npcLevel;
+        let levelReaction = '';
+        if (levelDiff >= 5) {
+            levelReaction = `（${npc.name}的目光在你身上停留了一瞬，似乎在重新评估你的实力。）`;
+        } else if (levelDiff >= 3) {
+            levelReaction = `（${npc.name}微微点头，对你的进步表示认可。）`;
+        } else if (levelDiff >= 1) {
+            levelReaction = `（${npc.name}看了看你，嘴角带着一丝竞争的意味。）`;
+        } else if (levelDiff === 0) {
+            levelReaction = `（你和${npc.name}的实力不相上下，空气中弥漫着微妙的竞争感。）`;
+        } else if (levelDiff >= -2) {
+            levelReaction = `（${npc.name}的语气中带着一丝前辈的从容。）`;
+        } else if (levelDiff >= -5) {
+            levelReaction = `（${npc.name}拍了拍你的肩膀，"继续努力，你还有很大的提升空间。"）`;
+        } else {
+            levelReaction = `（${npc.name}看你的眼神像在看一个需要保护的后辈。）`;
+        }
+
         // 创建对话界面
         const dialog = document.createElement('div');
         dialog.id = 'dialogue-screen';
@@ -2868,6 +2889,7 @@ const Game = {
                     margin-bottom: 20px;
                     min-height: 60px;
                 ">
+                    ${levelReaction ? `<div style="color: #888; font-size: 14px; font-style: italic; margin-bottom: 10px; border-left: 3px solid #555; padding-left: 10px;">${levelReaction}</div>` : ''}
                     ${dialogueData.text}
                 </div>
 
