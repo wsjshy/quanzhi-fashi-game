@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.52.0 · 影响力事件链扩展III</div>
+                ">v0.53.0 · 周敏事件链</div>
             </div>
         `;
 

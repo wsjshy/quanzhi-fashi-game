@@ -4355,5 +4355,57 @@ const DataEvents = {
         resultText: "穆白眼睛一亮，\"宁雪堂姐？她是穆氏嫡系的天才，我们这些旁系子弟...\"他滔滔不绝地讲了起来，似乎觉得你和他是一类人。但不知为何，你总觉得穆宁雪对你的印象变差了一些。\n\n穆白好感+2，穆宁雪好感-1"
       }
     ]
+  },
+
+  // ========== v0.53.0 周敏事件链（次要NPC，2个事件） ==========
+  influence_zhou_min_compare: {
+    id: "influence_zhou_min_compare",
+    name: "火系的较量",
+    description: "周敏路过，看到你在修炼火系魔法，停下脚步。\"你的火系星子排列...还算稳。\"她的语气带着一丝不服输，\"要不要比比看谁的火系控制力更强？\"她的眼神中充满了好胜的光芒。",
+    npcId: "zhou_min",
+    activities: ["修炼", "找人聊天", "自习"],
+    minRelationship: 10,
+    minLevel: 5,
+    notFlag: "zhou_min_noticed",
+    choices: [
+      {
+        text: "好，比比看",
+        effects: { setFlag: "zhou_min_noticed", npcOpinion: { zhou_min: 4 }, exp: 15 },
+        resultText: "你们比试了一番火系控制力。虽然周敏的基础很扎实，但你的星子运转更加稳定。比试结束后，周敏虽然有些不服气，但还是点了点头，\"...你确实有两下子。\"\n\n经验+15，周敏好感+4，引起周敏的注意"
+      },
+      {
+        text: "我还差得远，不敢比",
+        effects: { setFlag: "zhou_min_noticed", npcOpinion: { zhou_min: 2 } },
+        resultText: "周敏皱了皱眉，\"谦虚是好事，但太谦虚就是懦弱了。\"她虽然有些失望，但还是记住了你。\n\n周敏好感+2，引起周敏的注意"
+      },
+      {
+        text: "火系不在于比，在于自己的节奏",
+        effects: { setFlag: "zhou_min_noticed", npcOpinion: { zhou_min: 3 }, reputation: { school: 2 } },
+        resultText: "周敏愣了一下，若有所思。\"...你说得对。\"她的语气少了几分好胜，多了几分认真，\"是我太执着于比较了。\"她看了你一眼，眼神中多了一丝认可。\n\n周敏好感+3，学校声望+2，引起周敏的注意"
+      }
+    ]
+  },
+
+  influence_zhou_min_recognition: {
+    id: "influence_zhou_min_recognition",
+    name: "强者的认可",
+    description: "周敏走到你面前，表情少了几分之前的不服气，多了几分认真。\"你的进步速度...比我快。\"她顿了顿，直视着你的眼睛，\"我不会认输的，但...你确实很强。\"这是她能给出的最高评价。",
+    npcId: "zhou_min",
+    activities: ["修炼", "找人聊天", "自习"],
+    minRelationship: 20,
+    minLevel: 8,
+    requireFlag: "zhou_min_noticed",
+    choices: [
+      {
+        text: "彼此彼此，一起进步",
+        effects: { npcOpinion: { zhou_min: 5 }, reputation: { school: 3 } },
+        resultText: "周敏嘴角微微上扬，\"好！那我就更努力了，下次一定超过你！\"她的眼中燃烧着斗志，但对你的认可溢于言表。周围的同学也看到了这一幕。\n\n周敏好感+5，学校声望+3"
+      },
+      {
+        text: "谢谢，你也很强",
+        effects: { npcOpinion: { zhou_min: 3 } },
+        resultText: "周敏点点头，\"嗯。\"她没有多说，但你能感觉到她对你的态度已经完全转变了。\n\n周敏好感+3"
+      }
+    ]
   }
 };
