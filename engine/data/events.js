@@ -4700,5 +4700,25 @@ const DataEvents = {
       { text: "暗中帮赵满延加油", effects: { setFlag: ["zmy_mb_cheer_zmy", "zmy_mb_match_done"], npcOpinion: { zhao_manyan: 8, mu_bai: -5 } }, resultText: "你趁穆白不注意，悄悄给赵满延递了个鼓励的眼神。赵满延士气大振，赢了比试。穆白似乎察觉到了什么，有些不满。赵满延好感+8，穆白好感-5" },
       { text: "暗中帮穆白加油", effects: { setFlag: ["zmy_mb_cheer_mb", "zmy_mb_match_done"], npcOpinion: { mu_bai: 8, zhao_manyan: -5 } }, resultText: "你趁赵满延不注意，悄悄给穆白递了个鼓励的眼神。穆白冰系攻势更猛，赢了比试。赵满延似乎察觉到了什么，有些不满。穆白好感+8，赵满延好感-5" }
     ]
+  },
+
+  // ========== v0.66.0 博城灾难前兆：异常迹象 ==========
+
+  bocheng_anomaly: {
+    id: "bocheng_anomaly",
+    name: "异常的妖魔活动",
+    description: "你在学校附近探索时，发现了一些不寻常的迹象——草丛里有妖魔的爪印，空气中弥漫着淡淡的血腥味，几只低级妖魔在白天出没（通常妖魔只在夜间活动）。唐月老师似乎也注意到了什么，她的表情比平时严肃。",
+    npcId: "tang_yue",
+    activities: [],
+    minLevel: 15,
+    minRelationship: 10,
+    notFlag: "bocheng_phase1_done",
+    weight: 30,
+    choices: [
+      { text: "立刻告诉唐月老师", effects: { setFlag: ["bd_tell_tangyue", "bocheng_phase1_done"], npcOpinion: { tang_yue: 10 } }, resultText: "你找到唐月，详细描述了发现的异常。唐月的脸色变得凝重：\"你说的这些...很不对劲。我会立刻上报学校，加强巡逻。\"她拍了拍你的肩膀，\"谢谢你，你很敏锐。\"唐月好感+10，学校开始秘密调查" },
+      { text: "告诉穆宁雪", effects: { setFlag: ["bd_tell_muningxue", "bocheng_phase1_done"], npcOpinion: { mu_ningxue: 8 } }, resultText: "你找到穆宁雪，告诉她你的发现。穆宁雪闭上眼睛，冰系星子微微运转：\"空气中...有空间波动的痕迹。\"她睁开眼，\"这件事不简单。我会用冰系感知继续监视。\"穆宁雪好感+8，穆宁雪开始秘密调查" },
+      { text: "自己继续调查", effects: { setFlag: ["bd_investigate_alone", "bocheng_phase1_done"] }, resultText: "你决定自己深入调查。连续几天，你在学校周围仔细搜寻，发现了更多线索——地圣泉方向的能量波动异常，还有几个陌生人在学校附近出没。你获得了宝贵的情报，但也引起了某些人的注意。玩家掌握独立情报" },
+      { text: "可能只是自己多想了", effects: { setFlag: ["bd_ignore", "bocheng_phase1_done"] }, resultText: "你觉得可能是自己太敏感了，毕竟博城一直很安全。你把这些异常抛在脑后，继续正常的学习生活。（但异常并没有消失...）" }
+    ]
   }
 };

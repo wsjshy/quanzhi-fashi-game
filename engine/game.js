@@ -946,6 +946,8 @@ const Game = {
                     const flags = Array.isArray(event.notFlag) ? event.notFlag : [event.notFlag];
                     if (flags.some(f => Player.hasFlag(f))) continue;
                 }
+                // v0.66.0: 检查玩家等级要求
+                if (event.minLevel && Player.level < event.minLevel) continue;
                 // 检查requireFlag（如果有）
                 if (event.requireFlag) {
                     const reqFlags = Array.isArray(event.requireFlag) ? event.requireFlag : [event.requireFlag];
@@ -1004,6 +1006,8 @@ const Game = {
             // v0.48.0: 检查flag条件（影响力事件链）
             if (event.requireFlag && !Player.hasFlag(event.requireFlag)) continue;
             if (event.notFlag && Player.hasFlag(event.notFlag)) continue;
+            // v0.66.0: 检查玩家等级要求（博城灾难等剧情事件）
+            if (event.minLevel && Player.level < event.minLevel) continue;
             candidates.push(event);
         }
 
