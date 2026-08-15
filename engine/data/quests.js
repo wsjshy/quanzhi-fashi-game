@@ -2733,5 +2733,99 @@ const DataQuests = {
     dialogueStart: "你的光系已经有了一定基础。但光的极致不是明亮，是驱散黑暗的勇气。去图书馆查查典籍，再结合修炼感悟吧。",
     dialogueInProgress: "典籍中的知识需要结合实践才能真正理解。继续修炼，感受光明的律动。",
     dialogueComplete: "你做到了！你对光明的理解已经超越了初阶水平。这是给你的奖励——一个技能点，好好利用。"
+  },
+
+  // ========== v0.61.0 关系驱动任务系统：唐月线 ==========
+
+  quest_tang_yue_tutoring: {
+    id: "quest_tang_yue_tutoring",
+    name: "课后辅导",
+    description: "唐月邀请你参加课后辅导。放学后到办公室找她，她会给你单独指导。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { requireFlag: "tang_yue_invite_accepted" },
+    objectives: [
+      { type: "talk", npcId: "tang_yue", count: 3, description: "与唐月老师对话3次" }
+    ],
+    rewards: { exp: 200, gold: 100, skillPoints: 1, setFlag: "tang_yue_invitation_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "你来了。坐吧，今天我们从星子运转的基础开始。",
+    dialogueInProgress: "上次讲的内容理解了吗？有什么不懂的尽管问。",
+    dialogueComplete: "很好，你学得很快。这是给你的奖励——一个技能点，好好利用。"
+  },
+
+  quest_tang_yue_group_tutoring: {
+    id: "quest_tang_yue_group_tutoring",
+    name: "集体辅导",
+    description: "唐月同意你带朋友一起参加辅导。叫上你的同学，一起学习吧。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { requireFlag: "tang_yue_invite_friend" },
+    objectives: [
+      { type: "talk", npcId: "tang_yue", count: 1, description: "与唐月老师对话" },
+      { type: "talk_any", count: 2, description: "与任意同学对话2次" }
+    ],
+    rewards: { exp: 150, gold: 80, setFlag: "tang_yue_invitation_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "你和朋友都来了？很好，人多讨论也更热烈。",
+    dialogueInProgress: "大家有什么问题都可以提出来，一起讨论。",
+    dialogueComplete: "今天的辅导就到这里。你们都很有潜力，继续努力。"
+  },
+
+  quest_tang_yue_exam: {
+    id: "quest_tang_yue_exam",
+    name: "实践考核",
+    description: "唐月推荐你参加魔法实践考核。你需要在实战中证明自己的实力。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { requireFlag: "tang_yue_exam_accepted" },
+    objectives: [
+      { type: "kill", enemyId: "any", count: 3, description: "在实战中击败3个妖魔" }
+    ],
+    rewards: { exp: 500, gold: 300, skillPoints: 1, setFlag: "tang_yue_exam_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "考核开始了。去实战中证明你的实力吧。",
+    dialogueInProgress: "已经击败几个了？继续保持状态。",
+    dialogueComplete: "出色！你通过了实践考核。唐月对你的表现很满意。获得技能点1。"
+  },
+
+  quest_tang_yue_exam_easy: {
+    id: "quest_tang_yue_exam_easy",
+    name: "简化考核",
+    description: "唐月为你安排了简化版的实践考核。虽然难度降低，但也要认真对待。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { requireFlag: "tang_yue_exam_easy" },
+    objectives: [
+      { type: "kill", enemyId: "any", count: 1, description: "在实战中击败1个妖魔" }
+    ],
+    rewards: { exp: 200, gold: 100, setFlag: "tang_yue_exam_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "这是简化版的考核。去试试吧。",
+    dialogueInProgress: "感觉怎么样？难度还合适吗？",
+    dialogueComplete: "通过了。虽然是简化版，但也是你的实力证明。"
+  },
+
+  quest_tang_yue_exam_team: {
+    id: "quest_tang_yue_exam_team",
+    name: "组队考核",
+    description: "唐月同意你组队参加考核。找个同学一起，团队合作也是重要的能力。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { requireFlag: "tang_yue_exam_team" },
+    objectives: [
+      { type: "kill", enemyId: "any", count: 2, description: "组队击败2个妖魔" },
+      { type: "talk_any", count: 1, description: "与队友讨论战术" }
+    ],
+    rewards: { exp: 350, gold: 200, setFlag: "tang_yue_exam_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "组队考核开始。和你的队友好好配合。",
+    dialogueInProgress: "团队合作得怎么样？有问题及时沟通。",
+    dialogueComplete: "不错！你们的配合很默契。团队合作也是重要的能力。"
   }
 };

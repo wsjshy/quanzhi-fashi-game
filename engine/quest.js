@@ -264,6 +264,12 @@ const QuestSystem = {
             rewardMessages.push(`✨ 获得 ${rewards.skillPoints} 技能点`);
         }
 
+        // v0.61.0: 任务完成设置flag（关系驱动任务链）
+        if (rewards.setFlag) {
+            if (!Player.flags) Player.flags = {};
+            Player.flags[rewards.setFlag] = true;
+        }
+
         // v0.39.0: 任务完成获得影响力
         const influenceGain = rewards.influence || (quest.type === 'main' ? 8 : quest.type === 'personal' ? 4 : 3);
         Player.gainInfluence(influenceGain, '任务完成');
@@ -455,6 +461,10 @@ const QuestSystem = {
 
             // 随机概率条件
             if (t.chance && Math.random() > t.chance) conditionsMet = false;
+
+            // v0.61.0: flag条件（关系驱动任务）
+            if (t.requireFlag && !(Player.flags && Player.flags[t.requireFlag])) conditionsMet = false;
+            if (t.notFlag && Player.flags && Player.flags[t.notFlag]) conditionsMet = false;
 
             if (conditionsMet) {
                 const result = this.acceptQuest(questId);

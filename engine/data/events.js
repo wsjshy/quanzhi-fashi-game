@@ -4488,5 +4488,57 @@ const DataEvents = {
       { text: "认真学习老师的技巧", effects: { setFlag: "tang_yue_skill_taught", exp: 100, npcOpinion: { tang_yue: 5 } }, resultText: "你认真学习唐月的星子紧凑排列法，火系技能释放速度提升。经验+100，唐月好感+5，获得被动：火系技能伤害+5%" },
       { text: "提出自己的理解", effects: { setFlag: "tang_yue_skill_taught", exp: 80, npcOpinion: { tang_yue: 8 }, reputation: { school: 5 } }, resultText: "你说出对星子排列的独特见解，唐月眼睛一亮，\"你...比我想象的更有天赋。\"她认真记下你的想法。经验+80，唐月好感+8，学校声望+5，获得被动：火系技能伤害+5%" }
     ]
+  },
+
+  // ========== v0.61.0 关系驱动任务系统：唐月线 ==========
+
+  tang_yue_invitation: {
+    id: "tang_yue_invitation",
+    name: "唐月的邀请",
+    description: "修炼结束时，唐月叫住了你。她的表情比平时温和几分，\"你这段时间的进步，我都看在眼里。放学后有空吗？我想给你一些单独指导。\"",
+    npcId: "tang_yue",
+    activities: ["修炼", "自习", "上课", "冥修"],
+    minRelationship: 30,
+    notFlag: "tang_yue_invitation_done",
+    weight: 40,
+    choices: [
+      { text: "欣然接受，谢谢老师", effects: { setFlag: "tang_yue_invite_accepted", npcOpinion: { tang_yue: 5 } }, resultText: "唐月微微点头，眼中闪过一丝赞许。\"很好。放学后到办公室来找我。\"你感到很荣幸。唐月好感+5" },
+      { text: "婉拒，我还有其他安排", effects: { setFlag: "tang_yue_invitation_done" }, resultText: "唐月没有生气，温和地笑了笑，\"没关系，有自己的安排是好事。等你有空了随时可以来找我。\"" },
+      { text: "询问能否带朋友一起", effects: { setFlag: "tang_yue_invite_friend", npcOpinion: { tang_yue: 3 } }, resultText: "唐月想了想，\"可以啊，多个人一起讨论也不错。叫上你的朋友吧。\"唐月好感+3" }
+    ]
+  },
+
+  tang_yue_practice_exam: {
+    id: "tang_yue_practice_exam",
+    name: "实践考核",
+    description: "唐月找到你，表情认真。\"你的基础已经不错了。下周有一次魔法实践考核，我推荐你参加。这是证明自己的机会，但也有风险。\"",
+    npcId: "tang_yue",
+    activities: ["修炼", "自习", "上课", "冥修"],
+    minRelationship: 50,
+    requireFlag: "tang_yue_invite_accepted",
+    notFlag: "tang_yue_exam_done",
+    weight: 40,
+    choices: [
+      { text: "接受挑战，我准备好了", effects: { setFlag: "tang_yue_exam_accepted", npcOpinion: { tang_yue: 5 } }, resultText: "唐月满意地点头，\"有胆量。那就让我看看你的实力。\"唐月好感+5" },
+      { text: "请求降低难度", effects: { setFlag: "tang_yue_exam_easy", npcOpinion: { tang_yue: -2 } }, resultText: "唐月皱了皱眉，\"好吧，我会安排简单一些的考核。但你要知道，实战不会给你降低难度。\"唐月好感-2" },
+      { text: "请求同学协助组队", effects: { setFlag: "tang_yue_exam_team", npcOpinion: { tang_yue: 3 } }, resultText: "唐月想了想，\"团队合作也是重要的能力。可以，你找个同学一起吧。\"唐月好感+3" }
+    ]
+  },
+
+  tang_yue_formal_mentor: {
+    id: "tang_yue_formal_mentor",
+    name: "正式拜师",
+    description: "唐月看着你，眼神中带着期待。\"你已经证明了自己的实力和心性。我正式问你——愿意成为我的弟子吗？这意味着更多的责任，也意味着更多的资源。\"",
+    npcId: "tang_yue",
+    activities: ["修炼", "自习", "上课", "冥修", "对话"],
+    minRelationship: 80,
+    requireFlag: "tang_yue_exam_done",
+    notFlag: "tang_yue_mentor",
+    weight: 50,
+    choices: [
+      { text: "愿意拜师，请老师收下我", effects: { setFlag: "tang_yue_mentor", npcOpinion: { tang_yue: 10 } }, resultText: "唐月露出欣慰的笑容，\"好！从今天起，你就是我的正式弟子。我会倾囊相授，但你也要更加努力。\"唐月好感+10，正式拜师成功！导师修炼加成提升至15%" },
+      { text: "我需要时间考虑", effects: { setFlag: "tang_yue_mentor_pending" }, resultText: "唐月点点头，\"这是重要的决定，你慢慢考虑。我等你的答复。\"" },
+      { text: "婉拒，我想走自己的路", effects: { setFlag: "tang_yue_mentor_declined", npcOpinion: { tang_yue: -5 } }, resultText: "唐月有些失落，但还是尊重你的选择，\"每个人都有自己的路。祝你好运。\"唐月好感-5" }
+    ]
   }
 };
