@@ -51,6 +51,16 @@ const UI = {
     getPlayerSprite() {
         return this.battleArt.playerSprites.default || '';
     },
+    
+    // 统一竖版判断（支持?forcePortrait=1强制竖版，方便电脑端调试手机布局）
+    isPortrait() {
+        if (this._forcePortrait === undefined) {
+            const params = new URLSearchParams(window.location.search);
+            this._forcePortrait = params.get('forcePortrait') === '1';
+        }
+        if (this._forcePortrait) return true;
+        return window.innerWidth < 768 || window.innerHeight > window.innerWidth;
+    },
 
     // 初始化
     init() {
@@ -1175,7 +1185,7 @@ const UI = {
         const location = MapSystem.getCurrentLocation();
         const stats = Player.getTotalStats();
         // v0.81.6: 响应式布局检测（宽度<900px或竖屏方向视为手机竖版）
-        const isPortrait = window.innerWidth < 900 || window.innerHeight > window.innerWidth;
+        const isPortrait = UI.isPortrait();
         
         // 根据地点选择背景图片
         let bgImage = '';
@@ -2060,7 +2070,7 @@ const UI = {
 
     renderBattleScreen() {
         const state = BattleSystem.getState();
-        const isPortrait = window.innerWidth < 768 || window.innerHeight > window.innerWidth;
+        const isPortrait = UI.isPortrait();
         const skillCols = isPortrait ? 3 : 5;
         const spriteW = isPortrait ? 70 : 100;
         const spriteH = isPortrait ? 100 : 140;
@@ -2068,10 +2078,10 @@ const UI = {
         const logW = isPortrait ? 'calc(100% - 20px)' : '340px';
         const logMaxH = isPortrait ? '100px' : '280px';
         const logPos = isPortrait ? 'position:relative; top:10px; left:10px; margin-bottom:10px;' : 'position: absolute; top: 20px; left: 20px;';
-        const playerPos = isPortrait ? 'position:relative; bottom:auto; left:auto; margin:10px auto;' : 'position: absolute; bottom: 60px; left: 15%;';
-        const enemyPos = isPortrait ? 'position:relative; top:auto; right:auto; margin:10px auto;' : '';
-        const arenaFlex = isPortrait ? 'flex-direction:column; justify-content:flex-start; padding-top:10px;' : '';
-        const sideBtnsPos = isPortrait ? 'position:relative; top:auto; right:auto; display:flex; gap:8px; justify-content:center; margin:5px 0;' : 'position: absolute; right: 20px;';
+        const playerPos = isPortrait ? 'position:relative; bottom:auto; left:auto; margin:5px auto;' : 'position: absolute; bottom: 60px; left: 15%;';
+        const enemyPos = isPortrait ? 'position:relative; top:auto; right:auto; margin:5px auto;' : '';
+        const arenaFlex = isPortrait ? 'flex-direction:column; justify-content:flex-start; padding-top:5px; gap:10px;' : '';
+        const sideBtnsPos = isPortrait ? 'position:relative; top:auto; right:auto; display:flex; gap:8px; justify-content:center; margin:0 auto 5px;' : 'position: absolute; right: 20px;';
         
         this.elements.gameContainer.innerHTML = `
             <div id="battle-screen" style="width: 100%; height: 100vh; display: flex; flex-direction: column; background: linear-gradient(to bottom, #1a1a3a, #2a2a5a); position: relative;">
@@ -2389,7 +2399,7 @@ const UI = {
                     
                     <!-- 回合指示 -->
                     <div style="
-                        ${isPortrait ? 'position:relative; top:auto; right:auto; text-align:center; margin:5px 0; order:0;' : 'position: absolute; top: 20px; right: 20px;'}
+                        ${isPortrait ? 'position:relative; top:auto; right:auto; display:flex; justify-content:space-between; align-items:center; margin:5px 10px; order:0;' : 'position: absolute; top: 20px; right: 20px;'}
                         padding: 10px 20px;
                         background: rgba(0, 0, 0, 0.6);
                         border-radius: 8px;
@@ -2397,6 +2407,7 @@ const UI = {
                         color: ${state.isPlayerTurn ? '#66ff66' : '#ff6666'};
                         ${isPortrait ? '' : 'text-align: right;'}
                     ">
+                        <div>
                         ${state.battleOptions && state.battleOptions.mode !== 'normal' ? `<div style="font-size: 12px; color: #ffcc66; margin-bottom: 4px;">${
                             state.battleOptions.mode === 'duel' ? '⚔️ 决斗模式' :
                             state.battleOptions.mode === 'gauntlet' ? '🔄 车轮战' :
@@ -2405,10 +2416,18 @@ const UI = {
                             state.battleOptions.mode
                         }</div>` : ''}
                         <div>第 ${state.turn} 回合 - ${state.isPlayerTurn ? '你的回合' : '敌人回合'}</div>
+                        </div>
+                        ${isPortrait ? `
+                        <div style="display:flex; gap:6px;">
+                            <button onclick="BattleSystem.toggleSpeed()" style="padding:4px 8px; background:linear-gradient(135deg,#333366,#444488); border:1px solid #6666aa; border-radius:6px; color:#aaccff; font-size:11px; cursor:pointer;">⏩${state.speed || 1}x</button>
+                            <button onclick="BattleSystem.toggleAutoBattle()" style="padding:4px 8px; background:${state.autoBattle ? 'linear-gradient(135deg,#663333,#aa4444)' : 'linear-gradient(135deg,#666633,#888844)'}; border:1px solid ${state.autoBattle ? '#ff6666' : '#aaaa66'}; border-radius:6px; color:${state.autoBattle ? '#ffaaaa' : '#ddddaa'}; font-size:11px; cursor:pointer;">🤖自动</button>
+                            <button onclick="BattleSystem.showHelp()" style="padding:4px 8px; background:linear-gradient(135deg,#336633,#448844); border:1px solid #66aa66; border-radius:6px; color:#aaffaa; font-size:11px; cursor:pointer;">❓</button>
+                        </div>
+                        ` : ''}
                     </div>
                     
-                    <!-- 右侧控制按钮组 -->
-                    <div style="${isPortrait ? 'position:relative; display:flex; gap:8px; justify-content:center; margin:5px 0; order:3;' : 'position:absolute; top:0; right:0;'}">
+                    <!-- 右侧控制按钮组（横版显示，竖版已整合到回合指示） -->
+                    <div style="${isPortrait ? 'display:none;' : 'position:absolute; top:0; right:0;'}">
                     <!-- 战斗速度按钮 -->
                     <button onclick="BattleSystem.toggleSpeed()" style="
                         ${isPortrait ? 'padding:6px 12px; font-size:12px;' : 'position:relative; margin-top:70px; margin-right:20px;'}
@@ -2889,7 +2908,7 @@ const UI = {
         const battleScreen = document.getElementById('battle-screen');
         if (!battleScreen) return;
         
-        const isPortrait = window.innerWidth < 768 || window.innerHeight > window.innerWidth;
+        const isPortrait = UI.isPortrait();
         
         // 闪避/免疫特殊处理
         if (type === 'dodge' || type === 'miss') {
