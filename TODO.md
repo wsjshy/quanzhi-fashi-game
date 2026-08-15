@@ -224,7 +224,44 @@
 
 - [x] **4.1 设计文档**：第八节分支-瓶颈叙事架构
 - [x] **4.2 语法检查**：所有修改文件node --check通过
-- [ ] **4.3 提交部署**：git commit + push（Gitee+GitHub）
+- [x] **4.3 提交部署**：git commit + push（Gitee+GitHub）
+
+---
+
+### v0.21.0 NPC关系网络系统（2026-08-15，开发中）
+
+**设计目标**：玩家的影响力不只是"玩家-NPC"关系，还会改变NPC之间的关系网络。玩家和穆宁雪关系加深→穆宁雪对莫凡态度变化→原著恋爱线可能不发生。
+**设计文档**：[docs/玩家影响力系统设计.md](docs/玩家影响力系统设计.md) 第九、十节
+**理论基础**：社交物理引擎（Social Physics Engine）、Crosston Tavern（AAAI论文）
+
+#### 🔴 核心1：NPC-NPC有向关系图
+
+- [x] **1.1 npc-state.js - _npcRelationships**：存储NPC对其他NPC的有向关系（opinion/trust/type）
+- [x] **1.2 _initRelationships**：从角色数据的relationships字段初始化
+- [x] **1.3 getNPCRelationship(npcA, npcB)**：获取A对B的关系
+- [x] **1.4 changeNPCRelationship(npcA, npcB, field, amount)**：改变A对B的关系
+- [x] **1.5 存档持久化**：getSaveData/loadSaveData包含关系图
+
+#### 🟠 核心2：玩家行为影响NPC-NPC关系
+
+- [x] **2.1 _checkRelationshipInfluence**：玩家与某NPC关系变化时，检查是否影响该NPC对其他NPC的态度
+- [x] **2.2 穆宁雪规则**：玩家与穆宁雪opinion≥50→穆宁雪对莫凡opinion降低（注意力转移）
+- [x] **2.3 莫凡规则**：玩家鼓励莫凡+关系好→莫凡对穆宁雪opinion增加
+- [x] **2.4 对话树changeNPCRelationship效果**：对话选项可直接改变NPC对其他NPC的关系
+
+#### 🟡 核心3：穆宁雪对话示范
+
+- [x] **3.1 "莫凡最近怎么样？"**：询问莫凡近况
+- [x] **3.2 "莫凡其实人挺不错的"**：替莫凡说好话→穆宁雪对莫凡opinion+5
+- [x] **3.3 "莫凡那个人...不太行吧"**：说莫凡坏话→穆宁雪对莫凡opinion-8
+- [x] **3.4 3个回应节点**：about_mofan/mofan_praised/mofan_criticized
+
+#### 🔵 后续扩展
+
+- [ ] **4.1 更多NPC关系影响规则**：唐月-莫凡、张小侯-莫凡等
+- [ ] **4.2 关系驱动的剧情分支**：穆宁雪对莫凡opinion<0→博城灾难中不帮莫凡
+- [ ] **4.3 关系图可视化**：角色面板显示NPC之间的关系
+- [ ] **4.4 小说拆解方法论升级**：每章记录因果链/关系依赖/分支点
 
 ---
 

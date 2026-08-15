@@ -7,10 +7,101 @@ const NPCStateSystem = {
     // NPC 状态缓存
     _npcStates: {},
 
+    // v0.21.0: NPC-NPC 有向关系图 { npcA: { npcB: { opinion, trust, type, label } } }
+    _npcRelationships: {},
+
     // 初始化
     init() {
         this._npcStates = {};
+        this._npcRelationships = {};
+        this._initRelationships();
         console.log('NPC 状态系统初始化完成');
+    },
+
+    // v0.21.0: 从角色数据初始化NPC-NPC关系
+    _initRelationships() {
+        const allChars = DataManager.getAllCharacters ? DataManager.getAllCharacters() : {};
+        for (const [npcId, charData] of Object.entries(allChars)) {
+            if (charData.relationships) {
+                this._npcRelationships[npcId] = {};
+                for (const [targetId, rel] of Object.entries(charData.relationships)) {
+                    this._npcRelationships[npcId][targetId] = {
+                        opinion: rel.opinion || 0,
+                        trust: rel.trust || 0,
+                        type: rel.type || 'neutral',
+                        label: rel.label || ''
+                    };
+                }
+            }
+        }
+    },
+
+    // v0.21.0: 获取NPC A对NPC B的关系（有向）
+    getNPCRelationship(npcA, npcB) {
+        if (!this._npcRelationships[npcA]) {
+            this._npcRelationships[npcA] = {};
+        }
+        if (!this._npcRelationships[npcA][npcB]) {
+            this._npcRelationships[npcA][npcB] = { opinion: 0, trust: 0, type: 'neutral', label: '陌生人' };
+        }
+        return this._npcRelationships[npcA][npcB];
+    },
+
+    // v0.21.0: 改变NPC A对NPC B的关系
+    changeNPCRelationship(npcA, npcB, field, amount, reason = '') {
+        const rel = this.getNPCRelationship(npcA, npcB);
+        rel[field] = Math.max(-100, Math.min(100, (rel[field] || 0) + amount));
+        this._saveRelationships();
+        return rel[field];
+    },
+
+    // v0.21.0: 玩家行为影响NPC-NPC关系（核心机制）
+    // 当玩家与npcA的关系达到阈值时，npcA对npcB的态度发生变化
+    applyPlayerInfluenceOnNPCRelationship(npcA, npcB, playerOpinion, playerTrust) {
+        const rel = this.getNPCRelationship(npcA, npcB);
+        const changes = [];
+
+        // 规则1：玩家和A关系好，A对玩家的敌人态度变差
+        // 规则2：玩家和A关系好，A对玩家的朋友态度变好
+        // 具体规则在事件中定义，这里只提供基础框架
+
+        return changes;
+    },
+
+    // v0.21.0: 保存关系图
+    _saveRelationships() {
+        this._save();
+    },
+
+    // v0.21.0: 玩家行为影响NPC-NPC关系（核心机制）
+    // 当玩家与某NPC关系变化时，检查是否影响该NPC对其他NPC的态度
+    _checkRelationshipInfluence(npcId, playerOpinion) {
+        // 规则1：穆宁雪与玩家关系加深 → 穆宁雪对莫凡态度变化
+        if (npcId === 'mu_ningxue') {
+            const muToMoFan = this.getNPCRelationship('mu_ningxue', 'mo_fan');
+            const oldOpinion = muToMoFan.opinion;
+
+            // 玩家和穆宁雪达到朋友级 → 穆宁雪对莫凡好感降低（注意力转移）
+            if (playerOpinion >= 50 && muToMoFan.opinion > -20) {
+                const decrease = playerOpinion >= 70 ? -3 : -1;
+                this.changeNPCRelationship('mu_ningxue', 'mo_fan', 'opinion', decrease, '玩家与穆宁雪关系加深');
+                // 只在跨越阈值时提示
+                if (oldOpinion > -20 && muToMoFan.opinion <= -20 && typeof UI !== 'undefined') {
+                    UI.showMessage('穆宁雪似乎不再像以前那样关注莫凡了...');
+                }
+            }
+        }
+
+        // 规则2：莫凡与玩家关系好 → 莫凡对穆宁雪的态度可能受玩家影响
+        if (npcId === 'mo_fan') {
+            // 玩家鼓励莫凡追穆宁雪 → 莫凡对穆宁雪好感增加（通过记忆标签触发）
+            if (this.hasMemoryTag('mo_fan', 'player_encouraged') && playerOpinion >= 30) {
+                const moToMu = this.getNPCRelationship('mo_fan', 'mu_ningxue');
+                if (moToMu.opinion < 50) {
+                    this.changeNPCRelationship('mo_fan', 'mu_ningxue', 'opinion', 1, '玩家鼓励莫凡');
+                }
+            }
+        }
     },
 
     // ========== NPC 状态获取 ==========
@@ -109,7 +200,10 @@ const NPCStateSystem = {
         }
         
         this._save();
-        
+
+        // v0.21.0: 玩家行为影响NPC-NPC关系（核心机制）
+        this._checkRelationshipInfluence(npcId, state.opinion);
+
         // v0.18.0: 关系等级变化检测
         const newRelLevel = this.getRelationshipLevel(npcId);
         if (newRelLevel.level !== oldRelLevel.level && typeof UI !== 'undefined' && typeof UI.showMessage === 'function') {
@@ -641,7 +735,8 @@ const NPCStateSystem = {
      */
     getSaveData() {
         return {
-            npcStates: this._npcStates
+            npcStates: this._npcStates,
+            npcRelationships: this._npcRelationships
         };
     },
 
@@ -649,8 +744,13 @@ const NPCStateSystem = {
      * 加载存档数据
      */
     loadSaveData(data) {
-        if (!data || !data.npcStates) return;
-        this._npcStates = data.npcStates;
+        if (!data) return;
+        if (data.npcStates) this._npcStates = data.npcStates;
+        if (data.npcRelationships) {
+            this._npcRelationships = data.npcRelationships;
+        } else {
+            this._initRelationships();
+        }
     },
 
     /**

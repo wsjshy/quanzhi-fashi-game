@@ -2212,6 +2212,35 @@ const DataCharacters = {
               nextNode: "about_power"
             },
             {
+              id: "ask_about_mofan",
+              text: "莫凡最近怎么样？",
+              condition: { minOpinion: 10 },
+              effects: {
+                opinion: 1
+              },
+              nextNode: "about_mofan"
+            },
+            {
+              id: "praise_mofan",
+              text: "莫凡其实人挺不错的",
+              condition: { minOpinion: 20 },
+              effects: {
+                opinion: -1,
+                changeNPCRelationship: { target: "mo_fan", field: "opinion", amount: 5 }
+              },
+              nextNode: "mofan_praised"
+            },
+            {
+              id: "criticize_mofan",
+              text: "莫凡那个人...不太行吧",
+              condition: { minOpinion: 20 },
+              effects: {
+                opinion: 2,
+                changeNPCRelationship: { target: "mo_fan", field: "opinion", amount: -8 }
+              },
+              nextNode: "mofan_criticized"
+            },
+            {
               id: "ask_past",
               text: "我听说你小时候发生过什么……",
               condition: { minOpinion: 35, notNpcFlags: ["shared_past"] },
@@ -2434,6 +2463,50 @@ const DataCharacters = {
           },
           choices: [
             { id: "thanks", text: "穆宁雪……保重", effects: { opinion: 5 }, nextNode: "default" }
+          ]
+        },
+        about_mofan: {
+          id: "about_mofan",
+          texts: [
+            "（穆宁雪的表情微微变化。）",
+            "莫凡？",
+            "……他还是老样子。每天吵吵闹闹的，好像永远不会累。",
+            "（她顿了顿。）",
+            "你问他做什么？"
+          ],
+          mood: "neutral",
+          choices: [
+            { id: "curious", text: "随便问问", effects: {}, nextNode: "default" },
+            { id: "praise", text: "觉得他挺有意思的", condition: { minOpinion: 20 }, effects: { changeNPCRelationship: { target: "mo_fan", field: "opinion", amount: 3 } }, nextNode: "mofan_praised" },
+            { id: "criticize", text: "觉得他不太靠谱", condition: { minOpinion: 20 }, effects: { changeNPCRelationship: { target: "mo_fan", field: "opinion", amount: -5 } }, nextNode: "mofan_criticized" }
+          ]
+        },
+        mofan_praised: {
+          id: "mofan_praised",
+          texts: [
+            "（穆宁雪微微挑眉。）",
+            "有意思？",
+            "……你是第一个这么说的人。",
+            "（她沉默了一会儿。）",
+            "他确实……有时候挺有趣的。"
+          ],
+          mood: "neutral",
+          choices: [
+            { id: "back", text: "嗯", effects: {}, nextNode: "default" }
+          ]
+        },
+        mofan_criticized: {
+          id: "mofan_criticized",
+          texts: [
+            "（穆宁雪看了你一眼，没有反驳。）",
+            "……确实。",
+            "他总是一副什么都不在乎的样子，让人火大。",
+            "（她的语气里带着一丝复杂。）",
+            "但有时候……他也不是完全不靠谱。"
+          ],
+          mood: "cold",
+          choices: [
+            { id: "back", text: "也许吧", effects: {}, nextNode: "default" }
           ]
         }
       }

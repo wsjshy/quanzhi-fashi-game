@@ -358,6 +358,12 @@ const DialogueTree = {
             NPCStateSystem.addMemory(npcId, effects.addMemory);
         }
 
+        // v0.21.0: 改变NPC对其他NPC的关系（玩家影响NPC关系网）
+        if (effects.changeNPCRelationship) {
+            const { target, field, amount } = effects.changeNPCRelationship;
+            NPCStateSystem.changeNPCRelationship(npcId, target, field, amount, '对话影响');
+        }
+
         // 全局标记
         if (effects.flags) {
             for (const [flag, value] of Object.entries(effects.flags)) {
