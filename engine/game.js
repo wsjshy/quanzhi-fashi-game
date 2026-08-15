@@ -2440,6 +2440,20 @@ const Game = {
                     <div style="font-size: 12px; color: #888; margin-top: 3px;">
                         语气：${dialogueTone}
                     </div>
+                    ${(() => {
+                        // v0.23.0: 综合连接评分（Connection Score）
+                        const connScore = NPCStateSystem.computeConnectionScore(npc.id, 'player');
+                        const connState = NPCStateSystem.getRelationshipState(npc.id, 'player');
+                        const connColor = connScore >= 70 ? '#ffcc66' : connScore >= 50 ? '#99ccff' : connScore >= 30 ? '#aaffaa' : '#aaaaaa';
+                        return `
+                            <div style="margin-top: 10px; padding: 6px 12px; background: rgba(255,255,255,0.05); border-radius: 6px; display: inline-block;">
+                                <div style="font-size: 11px; color: ${connColor}; font-weight: bold;">羁绊：${connState.label} (${connScore}/100)</div>
+                                <div style="height: 3px; background: #333; border-radius: 2px; margin-top: 4px; width: 120px;">
+                                    <div style="height: 100%; width: ${connScore}%; background: ${connColor}; border-radius: 2px;"></div>
+                                </div>
+                            </div>
+                        `;
+                    })()}
                     
                     <!-- 关系数值条 -->
                     <div style="margin-top: 15px; width: 200px; text-align: left;">
