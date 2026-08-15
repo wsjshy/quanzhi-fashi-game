@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 地点数据
  * 从 game-data.js 拆分而来
  */
@@ -10,6 +10,9 @@ const DataLocations = {
     description: "博城最好的公立魔法高中，培养了无数优秀的法师。",
     backgroundColor: "#2a3a5a",
     unlocked: true,
+    mapX: 50,
+    mapY: 42,
+    mapIcon: "🏫",
     classSchedule: {
       morning: {
         "0": null,
@@ -240,6 +243,9 @@ const DataLocations = {
   three_step_tower: {
     id: "three_step_tower",
     name: "三步塔",
+    mapX: 55,
+    mapY: 28,
+    mapIcon: "🗼",
     description: "天澜魔法高中的修炼圣地。塔内星子异常活跃，修炼速度是外界的数倍。塔身三层，越往上星子越活跃，但消耗也越大。",
     backgroundColor: "#1a1a3a",
     unlocked: true,
@@ -302,6 +308,9 @@ const DataLocations = {
   city_street: {
     id: "city_street",
     name: "博城市街",
+    mapX: 30,
+    mapY: 48,
+    mapIcon: "🏙️",
     description: "博城的主要街道，人来人往，有各种商店。",
     backgroundColor: "#3a2a4a",
     unlocked: true,
@@ -394,6 +403,9 @@ const DataLocations = {
   xuefeng_mountain: {
     id: "xuefeng_mountain",
     name: "雪峰山",
+    mapX: 80,
+    mapY: 28,
+    mapIcon: "⛰️",
     description: "博城郊外的山脉，有妖魔出没，是猎者们常去的地方。",
     backgroundColor: "#1a3a4a",
     unlocked: true,
@@ -483,6 +495,9 @@ const DataLocations = {
   xuefeng_deep: {
     id: "xuefeng_deep",
     name: "雪峰山深处",
+    mapX: 92,
+    mapY: 18,
+    mapIcon: "🏔️",
     description: "雪峰山的深处，妖魔横行，危险重重，但也蕴藏着珍贵的资源。",
     backgroundColor: "#0a1a2a",
     unlocked: false,
@@ -562,6 +577,9 @@ const DataLocations = {
   mo_fan_house: {
     id: "mo_fan_house",
     name: "莫凡家",
+    mapX: 42,
+    mapY: 62,
+    mapIcon: "🏠",
     description: "围绕半城山而建的住宅区最角落，矮矮一小栋，一层半高，外漆斑驳露出红砖，周围堆着杂物。街坊邻居都是三层半的装修新房，这里显得格外寒酸老旧。但家徒四壁的屋子里，却有着最温暖的亲情。",
     backgroundColor: "#3a2a1a",
     unlocked: false,
@@ -633,6 +651,9 @@ const DataLocations = {
   mu_manor: {
     id: "mu_manor",
     name: "穆家庄园",
+    mapX: 18,
+    mapY: 35,
+    mapIcon: "🏰",
     description: "博城穆氏家族的庄园，富丽堂皇，气势恢宏。",
     backgroundColor: "#2a2a4a",
     unlocked: false,
@@ -701,6 +722,9 @@ const DataLocations = {
       {
         id: "earth_spring",
         name: "地圣泉修炼",
+    mapX: 50,
+    mapY: 85,
+    mapIcon: "💧",
         description: "进入博城地圣泉修炼，修为突飞猛进",
         icon: "💧",
         timeCost: 2,
@@ -728,6 +752,9 @@ const DataLocations = {
   bo_north_gate: {
     id: "bo_north_gate",
     name: "博城北门",
+    mapX: 50,
+    mapY: 12,
+    mapIcon: "🚪",
     description: "博城的北城门，通往外面的世界。城门守卫森严，平时有士兵把守。",
     backgroundColor: "#3a4a3a",
     unlocked: false,
@@ -790,6 +817,9 @@ const DataLocations = {
   xuefeng_station: {
     id: "xuefeng_station",
     name: "雪峰山驿站",
+    mapX: 68,
+    mapY: 35,
+    mapIcon: "🚂",
     description: "猎者联盟猎者与博城物资联系的重要小寨，建在雪峰山与雷雨山屏之间的山谷中。不是简陋村庄，两边百米陡峭山崖形成天然壁障，前后两大巨石之门锁住，是卡在山谷中的堡垒小镇。守护石门由博城有名土系魔法师兼建造师张玉恒所做，中阶以下魔法无法撼动，坚固不逊钢铁。驿站是安全区域边界，驿站外妖魔可能出没，没足够能力别走出安界。",
     backgroundColor: "#2a3a2a",
     unlocked: false,
@@ -891,6 +921,9 @@ const DataLocations = {
   baicao_valley: {
     id: "baicao_valley",
     name: "百草谷",
+    mapX: 12,
+    mapY: 58,
+    mapIcon: "🌿",
     description: "雪峰山深处的山谷，因形似掌状的湖泊而得名，北面山口是历练最终关卡。谷中生长着大量魔法草药，也潜伏着妖藤等植物系妖魔。",
     backgroundColor: "#1a3a1a",
     unlockLevel: 3,
@@ -996,6 +1029,9 @@ const DataLocations = {
   mingwen_girls_school: {
     id: "mingwen_girls_school",
     name: "铭文女子中学",
+    mapX: 68,
+    mapY: 58,
+    mapIcon: "🏫",
     description: "博城著名的贵族女子中学，校园宽敞豪华。暑假期间学生稀少，但近期发生了女生失踪事件，食堂传出奇怪的震动和腐臭气味。城市猎妖队已介入调查。",
     icon: "🏫",
     backgroundColor: "#4a3a5a",
@@ -1058,6 +1094,9 @@ const DataLocations = {
   old_banyan_district: {
     id: "old_banyan_district",
     name: "老榕树街区",
+    mapX: 32,
+    mapY: 72,
+    mapIcon: "🌳",
     description: "博城老城区，因投资方资金短缺成为一片拆迁废墟，烂尾楼和半拆房屋遍布。传闻夜里有奇怪震动，流浪汉频繁失踪。",
     icon: "🏚️",
     backgroundColor: "#3a3a2a",
@@ -1130,6 +1169,9 @@ const DataLocations = {
   earth_spring: {
     id: "earth_spring",
     name: "地圣泉",
+    mapX: 50,
+    mapY: 85,
+    mapIcon: "💧",
     description: "博城最珍贵的修炼圣地，位于银贸大厦地下十五层。地圣泉是天地灵泉，修炼一小时顶外面三天，无数魔法师梦寐以求。",
     backgroundColor: "#1a3a3a",
     unlocked: false,

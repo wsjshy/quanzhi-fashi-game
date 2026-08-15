@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.78.0 · UI布局优化</div>
+                ">v0.79.0 · 可视化地图</div>
             </div>
         `;
 
@@ -1673,7 +1673,10 @@ const UI = {
                         
                         <!-- 移动到其他地点 -->
                         ${location?.connectedLocations && location.connectedLocations.length > 0 ? `
-                        <h3 style="color: #ffd700; margin: 30px 0 20px; font-size: 22px;">🚶 前往其他地点</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin: 30px 0 15px;">
+                            <h3 style="color: #ffd700; font-size: 22px; margin: 0;">🚶 前往其他地点</h3>
+                            <div onclick="Game.openMap()" style="padding: 8px 16px; background: linear-gradient(135deg, #335577, #4477aa); border: 1px solid #5588bb; border-radius: 8px; color: #aaddff; cursor: pointer; font-size: 14px; font-weight: bold;">🗺️ 打开地图</div>
+                        </div>
                         <div style="display: flex; flex-direction: column; gap: 12px;">
                             ${location.connectedLocations.map(locId => {
                                 const loc = DataManager.getLocation(locId);
@@ -1925,6 +1928,175 @@ const UI = {
     },
 
     // ========== 战斗界面 ==========
+    // v0.79.0: 可视化地图界面
+    renderMapView() {
+        const currentLoc = MapSystem.getCurrentLocation();
+        const allLocations = (typeof DataLocations !== 'undefined') ? DataLocations : {};
+
+        // 生成地点节点
+        const locationNodes = [];
+        const connectionLines = [];
+
+        for (const locId in allLocations) {
+            const loc = allLocations[locId];
+            if (!loc.mapX || !loc.mapY) continue;
+
+            const isCurrent = currentLoc && currentLoc.id === locId;
+            const unlocked = Player.unlockedLocations.includes(locId);
+            const isConnected = currentLoc && currentLoc.connectedLocations && currentLoc.connectedLocations.includes(locId);
+
+            // 生成连线（当前地点到连通地点）
+            if (isCurrent && currentLoc.connectedLocations) {
+                for (const connId of currentLoc.connectedLocations) {
+                    const connLoc = allLocations[connId];
+                    if (connLoc && connLoc.mapX && connLoc.mapY) {
+                        connectionLines.push({
+                            from: { x: loc.mapX, y: loc.mapY },
+                            to: { x: connLoc.mapX, y: connLoc.mapY },
+                            unlocked: Player.unlockedLocations.includes(connId)
+                        });
+                    }
+                }
+            }
+
+            locationNodes.push({
+                id: locId,
+                name: loc.name,
+                icon: loc.mapIcon || '📍',
+                x: loc.mapX,
+                y: loc.mapY,
+                isCurrent: isCurrent,
+                unlocked: unlocked,
+                isConnected: isConnected,
+                description: loc.description || ''
+            });
+        }
+
+        this.elements.gameContainer.innerHTML = `
+            <div style="width: 100%; height: 100vh; display: flex; flex-direction: column; background: linear-gradient(135deg, #0a0a1a, #1a1a3a); position: relative; overflow: hidden;">
+                <!-- 顶部栏 -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: rgba(0,0,0,0.6); border-bottom: 2px solid #444477; z-index: 10;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div onclick="Game.closeMap()" style="padding: 8px 16px; background: #333355; border: 1px solid #555577; border-radius: 8px; color: #ccccff; cursor: pointer; font-size: 14px;">← 返回</div>
+                        <h2 style="color: #66aaff; font-size: 22px; margin: 0;">🗺️ 博城地图</h2>
+                    </div>
+                    <div style="color: #aaa; font-size: 13px;">
+                        📍 当前位置：<span style="color: #66ff88;">${currentLoc ? currentLoc.name : '未知'}</span>
+                    </div>
+                </div>
+
+                <!-- 地图区域 -->
+                <div style="flex: 1; position: relative; overflow: hidden;">
+                    <!-- 地图背景装饰 -->
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background:
+                        radial-gradient(circle at 20% 30%, rgba(60, 80, 100, 0.3) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(80, 60, 100, 0.3) 0%, transparent 40%),
+                        radial-gradient(circle at 50% 50%, rgba(40, 50, 80, 0.2) 0%, transparent 60%);
+                    "></div>
+
+                    <!-- 网格线 -->
+                    <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.1;">
+                        <defs>
+                            <pattern id="grid" width="10%" height="10%" patternUnits="userSpaceOnUse">
+                                <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#4466aa" stroke-width="0.5"/>
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#grid)"/>
+                    </svg>
+
+                    <!-- 连线 SVG -->
+                    <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;">
+                        ${connectionLines.map(line => {
+                            const x1 = line.from.x + '%';
+                            const y1 = line.from.y + '%';
+                            const x2 = line.to.x + '%';
+                            const y2 = line.to.y + '%';
+                            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${line.unlocked ? '#6688cc' : '#444'}" stroke-width="2" stroke-dasharray="${line.unlocked ? 'none' : '5,5'}" opacity="0.6"/>`;
+                        }).join('')}
+                    </svg>
+
+                    <!-- 地点节点 -->
+                    ${locationNodes.map(node => {
+                        const size = node.isCurrent ? 60 : 50;
+                        const bgColor = node.isCurrent ? 'rgba(100, 255, 150, 0.9)' : node.unlocked ? 'rgba(80, 100, 160, 0.9)' : 'rgba(60, 60, 60, 0.7)';
+                        const borderColor = node.isCurrent ? '#66ff88' : node.unlocked ? '#8899cc' : '#555';
+                        const cursor = node.unlocked && !node.isCurrent ? 'pointer' : 'default';
+                        const glow = node.isCurrent ? 'box-shadow: 0 0 20px rgba(100, 255, 150, 0.6), 0 0 40px rgba(100, 255, 150, 0.3);' : '';
+                        const onClick = node.unlocked && !node.isCurrent ? `onclick="Game.travelTo('${node.id}')"` : '';
+                        const title = node.unlocked ? `${node.name}${node.isCurrent ? ' (当前位置)' : ''}` : `${node.name} (未解锁)`;
+
+                        return `
+                            <div ${onClick} title="${title}" style="
+                                position: absolute;
+                                left: ${node.x}%;
+                                top: ${node.y}%;
+                                transform: translate(-50%, -50%);
+                                width: ${size}px;
+                                height: ${size}px;
+                                background: ${bgColor};
+                                border: 3px solid ${borderColor};
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 24px;
+                                cursor: ${cursor};
+                                z-index: 2;
+                                transition: all 0.2s;
+                                ${glow}
+                                ${node.isCurrent ? 'animation: mapPulse 2s infinite;' : ''}
+                            " onmouseover="this.style.transform='translate(-50%, -50%) scale(1.15)'" onmouseout="this.style.transform='translate(-50%, -50%) scale(1)'">
+                                ${node.icon}
+                            </div>
+                            <div style="
+                                position: absolute;
+                                left: ${node.x}%;
+                                top: calc(${node.y}% + ${size/2 + 5}px);
+                                transform: translateX(-50%);
+                                color: ${node.isCurrent ? '#66ff88' : node.unlocked ? '#ccddff' : '#666'};
+                                font-size: 12px;
+                                font-weight: ${node.isCurrent ? 'bold' : 'normal'};
+                                white-space: nowrap;
+                                z-index: 2;
+                                text-shadow: 0 0 5px rgba(0,0,0,0.8);
+                            ">${node.name}</div>
+                        `;
+                    }).join('')}
+                </div>
+
+                <!-- 底部图例 -->
+                <div style="padding: 12px 25px; background: rgba(0,0,0,0.6); border-top: 2px solid #444477; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 16px; height: 16px; border-radius: 50%; background: rgba(100, 255, 150, 0.9); border: 2px solid #66ff88;"></div>
+                        <span style="color: #66ff88; font-size: 12px;">当前位置</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 16px; height: 16px; border-radius: 50%; background: rgba(80, 100, 160, 0.9); border: 2px solid #8899cc;"></div>
+                        <span style="color: #ccddff; font-size: 12px;">已解锁（可前往）</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 16px; height: 16px; border-radius: 50%; background: rgba(60, 60, 60, 0.7); border: 2px solid #555;"></div>
+                        <span style="color: #888; font-size: 12px;">未解锁</span>
+                    </div>
+                    <div style="margin-left: auto; color: #888; font-size: 12px;">点击已解锁地点直接前往</div>
+                </div>
+            </div>
+        `;
+
+        // 添加脉冲动画样式
+        if (!document.getElementById('map-pulse-style')) {
+            const style = document.createElement('style');
+            style.id = 'map-pulse-style';
+            style.textContent = `
+                @keyframes mapPulse {
+                    0%, 100% { box-shadow: 0 0 20px rgba(100, 255, 150, 0.6), 0 0 40px rgba(100, 255, 150, 0.3); }
+                    50% { box-shadow: 0 0 30px rgba(100, 255, 150, 0.8), 0 0 60px rgba(100, 255, 150, 0.5); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    },
+
     renderBattleScreen() {
         const state = BattleSystem.getState();
         

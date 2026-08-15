@@ -1430,7 +1430,17 @@ const Game = {
             UI.showMessage('移动失败：' + e.message);
         }
     },
-    
+
+    // v0.79.0: 打开可视化地图
+    openMap() {
+        UI.renderMapView();
+    },
+
+    // v0.79.0: 关闭地图返回主界面
+    closeMap() {
+        UI.renderMapScreen();
+    },
+
     // 等待到指定时段
     waitUntil(targetPeriod) {
         const result = TimeSystem.waitUntil(targetPeriod);
