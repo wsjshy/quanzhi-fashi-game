@@ -1,4 +1,4 @@
-/**
+﻿/**
  * NPC/角色数据
  * 从 game-data.js 拆分而来
  */
@@ -6186,7 +6186,7 @@ const DataCharacters = {
   },
   xu_zhaoting: {
     id: "xu_zhaoting",
-    name: "许照庭",
+    name: "许昭霆",
     title: "七班雷系学神",
     description: "天澜高中七班学生，雷系天赋很高，被张建国老师炫耀为得意门生。修为与穆白齐平，是莫凡的潜在竞争对手。自信傲冷。",
     elements: ["thunder"],

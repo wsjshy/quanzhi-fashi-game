@@ -4152,11 +4152,11 @@ const DataEvents = {
     ]
   },
 
-  // ========== v0.51.0 许照庭事件链 ==========
+  // ========== v0.51.0 许昭霆事件链 ==========
   influence_xu_zhaoting_encounter: {
     id: "influence_xu_zhaoting_encounter",
     name: "雷系的较量",
-    description: "许照庭路过，扫了一眼你的修炼。\"八班的？\"他语气平淡，带着一丝居高临下，\"星子排列...还算稳。\"他的评价不高不低，但能让他开口，已经说明你引起了他的注意。",
+    description: "许昭霆路过，扫了一眼你的修炼。\"八班的？\"他语气平淡，带着一丝居高临下，\"星子排列...还算稳。\"他的评价不高不低，但能让他开口，已经说明你引起了他的注意。",
     npcId: "xu_zhaoting",
     activities: ["修炼", "找人聊天", "自习"],
     minRelationship: 10,
@@ -4166,17 +4166,17 @@ const DataEvents = {
       {
         text: "许学长雷系造诣深，能否指点一二？",
         effects: { setFlag: "xu_zhaoting_respected", npcOpinion: { xu_zhaoting: 2 } },
-        resultText: "许照庭哼了一声，\"算你有眼光。雷系...在于快和准。\"他难得多说了几句，虽然语气依然冷淡，但你能感觉到他并非完全拒绝。\n\n许照庭好感+2，获得许照庭的注意"
+        resultText: "许昭霆哼了一声，\"算你有眼光。雷系...在于快和准。\"他难得多说了几句，虽然语气依然冷淡，但你能感觉到他并非完全拒绝。\n\n许昭霆好感+2，获得许昭霆的注意"
       },
       {
         text: "默默继续修炼，不卑不亢",
         effects: { setFlag: "xu_zhaoting_respected", npcOpinion: { xu_zhaoting: 4 }, exp: 10 },
-        resultText: "你没有理会他的评价，继续专注修炼。许照庭多看了你一眼，眼神中多了一丝意外。\"有点意思。\"他低声说了一句，便离开了。\n\n经验+10，许照庭好感+4，获得许照庭的注意"
+        resultText: "你没有理会他的评价，继续专注修炼。许昭霆多看了你一眼，眼神中多了一丝意外。\"有点意思。\"他低声说了一句，便离开了。\n\n经验+10，许昭霆好感+4，获得许昭霆的注意"
       },
       {
         text: "雷系虽强，但也不是无敌",
         effects: { setFlag: "xu_zhaoting_respected", npcOpinion: { xu_zhaoting: 1 }, reputation: { school: 2 } },
-        resultText: "许照庭微微挑眉，\"口气不小。\"他的语气中没有愤怒，反而多了一丝兴趣，\"希望你有对应的实力。年度考核上，让我看看。\n\n许照庭好感+1，学校声望+2，获得许照庭的注意"
+        resultText: "许昭霆微微挑眉，\"口气不小。\"他的语气中没有愤怒，反而多了一丝兴趣，\"希望你有对应的实力。年度考核上，让我看看。\n\n许昭霆好感+1，学校声望+2，获得许昭霆的注意"
       }
     ]
   },
@@ -4184,20 +4184,20 @@ const DataEvents = {
   influence_xu_zhaoting_teacher_compare: {
     id: "influence_xu_zhaoting_teacher_compare",
     name: "张老师的比较",
-    description: "张建国老师在课上提到，\"最近有些同学进步很快，比如八班的那位...基础扎实，心态也好。\"他顿了顿，看向许照庭，\"许照庭，你也不要松懈，强中自有强中手。\"许照庭的表情微微变化。",
+    description: "张建国老师在课上提到，\"最近有些同学进步很快，比如八班的那位...基础扎实，心态也好。\"他顿了顿，看向许昭霆，\"许昭霆，你也不要松懈，强中自有强中手。\"许昭霆的表情微微变化。",
     npcId: "xu_zhaoting",
     activities: ["上课", "自习", "修炼"],
     requireFlag: "xu_zhaoting_respected",
     choices: [
       {
-        text: "课后向许照庭表示只是运气好",
+        text: "课后向许昭霆表示只是运气好",
         effects: { npcOpinion: { xu_zhaoting: 3 } },
-        resultText: "课后你找到许照庭，表示只是运气好。他看了你一眼，\"运气也是实力的一部分。\"他的语气依然冷淡，但少了几分居高临下。\n\n许照庭好感+3"
+        resultText: "课后你找到许昭霆，表示只是运气好。他看了你一眼，\"运气也是实力的一部分。\"他的语气依然冷淡，但少了几分居高临下。\n\n许昭霆好感+3"
       },
       {
         text: "课后不主动提及，保持距离",
         effects: { npcOpinion: { xu_zhaoting: 2 } },
-        resultText: "你没有主动找许照庭。几天后你发现，他偶尔会在修炼时注意你的方向。不卑不亢的态度，反而让他更加在意。\n\n许照庭好感+2"
+        resultText: "你没有主动找许昭霆。几天后你发现，他偶尔会在修炼时注意你的方向。不卑不亢的态度，反而让他更加在意。\n\n许昭霆好感+2"
       }
     ]
   },
@@ -4205,7 +4205,7 @@ const DataEvents = {
   influence_xu_zhaoting_thunder_advice: {
     id: "influence_xu_zhaoting_thunder_advice",
     name: "雷系心得",
-    description: "许照庭难得主动开口，\"雷系星子活跃，难以控制。\"他顿了顿，看向你，\"但你的控制力...比我预想的好。这个技巧，你可以试试。\"他演示了一个雷系星子排列的技巧，动作精准而迅速。",
+    description: "许昭霆难得主动开口，\"雷系星子活跃，难以控制。\"他顿了顿，看向你，\"但你的控制力...比我预想的好。这个技巧，你可以试试。\"他演示了一个雷系星子排列的技巧，动作精准而迅速。",
     npcId: "xu_zhaoting",
     activities: ["修炼", "找人聊天", "冥修"],
     minRelationship: 25,
@@ -4214,12 +4214,12 @@ const DataEvents = {
       {
         text: "认真学习，多谢许学长",
         effects: { exp: 45, npcOpinion: { xu_zhaoting: 3 } },
-        resultText: "你聚精会神地学习他的技巧。雷系星子确实活跃，但按照他的方法排列后，稳定性大幅提升。许照庭看着你的学习速度，微微点头。\n\n经验+45，许照庭好感+3"
+        resultText: "你聚精会神地学习他的技巧。雷系星子确实活跃，但按照他的方法排列后，稳定性大幅提升。许昭霆看着你的学习速度，微微点头。\n\n经验+45，许昭霆好感+3"
       },
       {
         text: "提出自己对星子控制的见解",
         effects: { npcOpinion: { xu_zhaoting: 5 }, reputation: { school: 2 } },
-        resultText: "你说出了自己的一些想法。许照庭沉默了片刻，\"...有点道理。\"他难得给出正面评价，\"你比我想的不简单。年度考核，我等着。\n\n许照庭好感+5，学校声望+2"
+        resultText: "你说出了自己的一些想法。许昭霆沉默了片刻，\"...有点道理。\"他难得给出正面评价，\"你比我想的不简单。年度考核，我等着。\n\n许昭霆好感+5，学校声望+2"
       }
     ]
   },
@@ -4227,7 +4227,7 @@ const DataEvents = {
   influence_xu_zhaoting_recognition: {
     id: "influence_xu_zhaoting_recognition",
     name: "竞争对手的认可",
-    description: "许照庭走到你面前，表情依然冷淡，但语气少了几分居高临下。\"年度考核快到了。\"他看着你，\"我不会手下留情。但...你是个值得认真对待的对手。\"这是他能给出的最高评价。",
+    description: "许昭霆走到你面前，表情依然冷淡，但语气少了几分居高临下。\"年度考核快到了。\"他看着你，\"我不会手下留情。但...你是个值得认真对待的对手。\"这是他能给出的最高评价。",
     npcId: "xu_zhaoting",
     activities: ["修炼", "找人聊天", "自习"],
     minRelationship: 35,
@@ -4237,12 +4237,122 @@ const DataEvents = {
       {
         text: "彼此彼此，考核见真章",
         effects: { npcOpinion: { xu_zhaoting: 4 }, reputation: { school: 5 } },
-        resultText: "许照庭嘴角微动，似乎想笑但忍住了，\"好。我等着。\"他转身离开，背影挺直。周围的同学都看到了这一幕，对你的实力更加认可。\n\n许照庭好感+4，学校声望+5"
+        resultText: "许昭霆嘴角微动，似乎想笑但忍住了，\"好。我等着。\"他转身离开，背影挺直。周围的同学都看到了这一幕，对你的实力更加认可。\n\n许昭霆好感+4，学校声望+5"
       },
       {
         text: "许学长过奖了，我还需努力",
         effects: { npcOpinion: { xu_zhaoting: 2 } },
-        resultText: "许照庭看了你一眼，\"谦虚？不像你的风格。\"他顿了顿，\"不过...保持这种心态也好。\"他转身离开，你能感觉到他对你的认可。\n\n许照庭好感+2"
+        resultText: "许昭霆看了你一眼，\"谦虚？不像你的风格。\"他顿了顿，\"不过...保持这种心态也好。\"他转身离开，你能感觉到他对你的认可。\n\n许昭霆好感+2"
+      }
+    ]
+  },
+
+  // ========== v0.52.0 穆白事件链 ==========
+  influence_mu_bai_humility: {
+    id: "influence_mu_bai_humility",
+    name: "表面的谦逊",
+    description: "穆白面带标准微笑走过来，\"你好，我是穆白。最近看你修炼很用功，有什么心得可以交流吗？\"他的语气礼貌而得体，但眼神中闪过一丝不易察觉的审视。",
+    npcId: "mu_bai",
+    activities: ["找人聊天", "自习", "修炼"],
+    minRelationship: 10,
+    minLevel: 5,
+    notFlag: "mu_bai_noticed",
+    choices: [
+      {
+        text: "客气回应，请教冰系修炼心得",
+        effects: { setFlag: "mu_bai_noticed", npcOpinion: { mu_bai: 2 }, exp: 10 },
+        resultText: "穆白笑容更盛了，\"冰系嘛...在于控制。\"他滔滔不绝地讲了一通，听起来很有道理，但你总觉得他在刻意展示。\n\n经验+10，穆白好感+2，引起穆白的注意"
+      },
+      {
+        text: "简单回应，保持适当距离",
+        effects: { setFlag: "mu_bai_noticed", npcOpinion: { mu_bai: 3 } },
+        resultText: "你只是简单点了点头，没有多言。穆白的笑容微微一滞，似乎没想到你会这么冷淡。但他很快恢复了标准微笑，\"那...不打扰了。\"他离开时多看了你一眼。\n\n穆白好感+3，引起穆白的注意"
+      },
+      {
+        text: "直接点破：穆学长的笑容很标准，但不太真诚",
+        effects: { setFlag: "mu_bai_noticed", npcOpinion: { mu_bai: -5 }, reputation: { school: 3 } },
+        resultText: "穆白的笑容僵在了脸上，片刻后才恢复，\"你...真会开玩笑。\"他的语气依然礼貌，但眼神中多了一丝阴冷。周围几个同学听到了你的话，暗暗投来佩服的目光。\n\n穆白好感-5，学校声望+3，引起穆白的注意"
+      }
+    ]
+  },
+
+  influence_mu_bai_spar: {
+    id: "influence_mu_bai_spar",
+    name: "冰系的切磋",
+    description: "穆白\"恰好\"路过，\"这么巧？我正想找人切磋一下冰系技巧，要不要试试？\"他的笑容很真诚，但你能感觉到他想通过切磋证明什么。",
+    npcId: "mu_bai",
+    activities: ["修炼", "找人聊天", "自习"],
+    minRelationship: 15,
+    requireFlag: "mu_bai_noticed",
+    choices: [
+      {
+        text: "好，请穆学长指教",
+        effects: { npcOpinion: { mu_bai: 2 }, exp: 20 },
+        resultText: "一场切磋下来，穆白的冰系控制确实精妙。他赢了之后谦虚地说\"承让了\"，但你能看到他眼中的得意。不过你也从中学到了不少。\n\n经验+20，穆白好感+2"
+      },
+      {
+        text: "今天状态不好，下次吧",
+        effects: { npcOpinion: { mu_bai: 1 } },
+        resultText: "穆白笑容不变，\"没关系，随时恭候。\"他优雅地离开了。你不确定他是真的不在意，还是在心里记了一笔。\n\n穆白好感+1"
+      },
+      {
+        text: "切磋可以，但点到为止",
+        effects: { npcOpinion: { mu_bai: 3 }, reputation: { school: 2 } },
+        resultText: "穆白微微挑眉，\"当然。\"切磋中他确实没有下重手，但你能感觉到他留了力。结束后他说\"你很不错\"，语气中少了几分居高临下。\n\n穆白好感+3，学校声望+2"
+      }
+    ]
+  },
+
+  influence_mu_bai_superiority: {
+    id: "influence_mu_bai_superiority",
+    name: "家族的优越感",
+    description: "穆白不经意地提到，\"说起来，穆氏家族最近弄到了一批高品质魔石，修炼效果很不错。\"他看了你一眼，\"可惜家族资源有限，只能优先给嫡系子弟。\"他的语气中带着一丝不易察觉的优越感。",
+    npcId: "mu_bai",
+    activities: ["找人聊天", "自习", "聊天"],
+    minRelationship: 20,
+    requireFlag: "mu_bai_noticed",
+    choices: [
+      {
+        text: "穆氏家族确实底蕴深厚",
+        effects: { npcOpinion: { mu_bai: 2 } },
+        resultText: "穆白很受用，\"那是自然。穆氏传承数百年，不是普通家族能比的。\"他的姿态更加优雅了。\n\n穆白好感+2"
+      },
+      {
+        text: "出身不能决定一切，实力才是关键",
+        effects: { npcOpinion: { mu_bai: -3 }, reputation: { school: 4 } },
+        resultText: "穆白的笑容微微僵住，\"...你说得对。\"他的语气依然礼貌，但眼神冷了几分。周围几个同学听到了你的话，暗暗点头。\n\n穆白好感-3，学校声望+4"
+      },
+      {
+        text: "沉默不语，不接话",
+        effects: { npcOpinion: { mu_bai: 1 } },
+        resultText: "你没有接话。穆白自讨没趣，笑了笑便转移了话题。他觉得你很识趣。\n\n穆白好感+1"
+      }
+    ]
+  },
+
+  influence_mu_bai_family_attention: {
+    id: "influence_mu_bai_family_attention",
+    name: "族亲的关注",
+    description: "穆宁雪路过，看到你和穆白在一起，脚步微顿。穆白立刻换上更标准的笑容，\"宁雪堂姐，好巧。\"穆宁雪淡淡点头，目光在你身上停留了一秒，然后离开了。穆白的笑容有些微妙。",
+    npcId: "mu_bai",
+    activities: ["修炼", "找人聊天", "自习"],
+    minRelationship: 25,
+    requireFlag: "mu_bai_noticed",
+    choices: [
+      {
+        text: "假装没注意到穆宁雪的反应",
+        effects: { npcOpinion: { mu_bai: 1 } },
+        resultText: "你没有表现出任何异样。穆白似乎有些意外，但很快恢复了正常。\n\n穆白好感+1"
+      },
+      {
+        text: "事后找穆宁雪问问穆白的为人",
+        effects: { npcOpinion: { mu_ningxue: 3, mu_bai: -2 } },
+        resultText: "事后你找到穆宁雪。她沉默了片刻，\"穆白...表面功夫做得很好。你自己小心。\"她的语气平淡，但你能感觉到她的提醒是真心的。\n\n穆宁雪好感+3，穆白好感-2"
+      },
+      {
+        text: "向穆白打听穆宁雪的事",
+        effects: { npcOpinion: { mu_bai: 2, mu_ningxue: -1 } },
+        resultText: "穆白眼睛一亮，\"宁雪堂姐？她是穆氏嫡系的天才，我们这些旁系子弟...\"他滔滔不绝地讲了起来，似乎觉得你和他是一类人。但不知为何，你总觉得穆宁雪对你的印象变差了一些。\n\n穆白好感+2，穆宁雪好感-1"
       }
     ]
   }
