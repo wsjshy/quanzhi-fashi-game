@@ -4,6 +4,24 @@
 
 ---
 
+## [v0.77.1] - 2026-08-16
+
+### Bug修复：装备继承目标装备不显示
+
+**问题**：黑盒测试发现继承界面显示"背包中没有同部位的其他装备"，但背包中明明有同部位装备。
+
+**原因**：
+1. `getInheritTargets`中用`for...in`遍历`Inventory.items`，但`Inventory.items`是数组`[{itemId, count}]`，不是对象
+2. 物品数据字段名是`equipSlot`/`type`，不是`slot`/`type==='equipment'`
+
+**修复**：
+- 遍历改为`for (const invItem of Inventory.items)`
+- 字段判断改为`item.equipSlot === slot || item.type === slot`
+
+**验证**：黑盒测试确认继承界面正常显示目标装备，继承功能正常（消耗120金币，强化等级转移，旧装备放回背包）。
+
+---
+
 ## [v0.77.0] - 2026-08-16
 
 ### 新增：装备强化继承系统

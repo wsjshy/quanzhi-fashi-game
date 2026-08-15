@@ -509,7 +509,7 @@ const Player = {
 
         // 检查目标装备是否同部位
         const targetItem = (typeof DataItems !== 'undefined') ? DataItems[targetItemId] : null;
-        if (!targetItem || targetItem.slot !== slot) {
+        if (!targetItem || (targetItem.equipSlot !== slot && targetItem.type !== slot)) {
             return { success: false, message: '只能继承到同部位装备' };
         }
 
@@ -557,16 +557,16 @@ const Player = {
         const targets = [];
         if (typeof Inventory === 'undefined' || typeof DataItems === 'undefined') return targets;
 
-        for (const itemId in Inventory.items) {
-            const count = Inventory.items[itemId];
-            if (count > 0) {
-                const item = DataItems[itemId];
-                if (item && item.slot === slot && item.type === 'equipment') {
+        // Inventory.items 是数组 [{itemId, count}]
+        for (const invItem of Inventory.items) {
+            if (invItem.count > 0) {
+                const item = DataItems[invItem.itemId];
+                if (item && (item.equipSlot === slot || item.type === slot)) {
                     targets.push({
-                        id: itemId,
+                        id: invItem.itemId,
                         name: item.name,
                         icon: item.icon || '⚔️',
-                        count: count,
+                        count: invItem.count,
                         rarity: item.rarity || 'common'
                     });
                 }

@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.77.0 · 装备强化继承</div>
+                ">v0.77.1 · 继承bug修复</div>
             </div>
         `;
 
