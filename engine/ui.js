@@ -1023,6 +1023,21 @@ const UI = {
                 }
             }, 300);
         }
+
+        // v0.42.0: 显示NPC日常消息
+        if (Player._pendingNPCMessages && Player._pendingNPCMessages.length > 0) {
+            const messages = Player._pendingNPCMessages;
+            Player._pendingNPCMessages = null;
+            setTimeout(() => {
+                messages.forEach((msg, idx) => {
+                    setTimeout(() => {
+                        if (typeof UI.showMessage === 'function') {
+                            UI.showMessage(`📬 ${msg.text}`);
+                        }
+                    }, idx * 1500);
+                });
+            }, 500);
+        }
         
         const location = MapSystem.getCurrentLocation();
         const stats = Player.getTotalStats();

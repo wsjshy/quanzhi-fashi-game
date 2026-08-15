@@ -325,6 +325,30 @@ const TimeSystem = {
         if (typeof NPCStateSystem !== 'undefined' && NPCStateSystem.updateNPCRelationshipsDaily) {
             NPCStateSystem.updateNPCRelationshipsDaily();
         }
+
+        // v0.42.0: NPC日常消息 - 关系好的NPC每天有概率主动发消息
+        if (typeof NPCStateSystem !== 'undefined' && typeof Game !== 'undefined' && Game._npcSchedules) {
+            const messages = [];
+            for (const [npcId, schedule] of Object.entries(Game._npcSchedules)) {
+                const state = NPCStateSystem.getNPCState(npcId);
+                if (!state) continue;
+                // 关系达到友好(>20)才有概率发消息
+                if (state.opinion < 20) continue;
+                // 概率随好感度提升：20好感10%，50好感25%，80好感40%
+                const msgChance = Math.min(0.4, 0.05 + state.opinion * 0.004);
+                if (Math.random() > msgChance) continue;
+                // 每天最多收到2条消息
+                if (messages.length >= 2) break;
+
+                const npcData = typeof DataManager !== 'undefined' ? DataManager.getCharacter(npcId) : null;
+                const npcName = npcData ? npcData.name : schedule.name;
+                const msg = this._generateNPCMessage(npcId, npcName, state.opinion, schedule.gender);
+                if (msg) messages.push({ npcId, name: npcName, text: msg });
+            }
+            if (messages.length > 0) {
+                Player._pendingNPCMessages = messages;
+            }
+        }
         
         // v0.9.4: 重置每日统计
         if (Player.dailyStats) {
@@ -377,6 +401,67 @@ const TimeSystem = {
                 console.warn('[Time] 和平主义者成就检查失败:', e);
             }
         }
+    },
+
+    /**
+     * v0.42.0: 生成NPC日常消息
+     * 根据NPC ID、好感度和性格生成不同的消息
+     */
+    _generateNPCMessage(npcId, npcName, opinion, gender) {
+        // 按好感度分档
+        let tier = 'friendly';
+        if (opinion >= 70) tier = 'close';
+        else if (opinion >= 45) tier = 'friend';
+        else if (opinion >= 20) tier = 'friendly';
+
+        // 每个NPC的个性化消息池
+        const messagePools = {
+            mo_fan: {
+                friendly: ['莫凡：今天修炼了吗？别偷懒啊。', '莫凡：我刚才在修炼场看到你了，进步挺快嘛。'],
+                friend: ['莫凡：有空一起切磋吗？我最近悟了个新招式。', '莫凡：说起来，你觉得地圣泉那边怎么样？'],
+                close: ['莫凡：兄弟，今天一起去吃个饭？我请客！', '莫凡：有什么修炼上的问题尽管问我，别客气。']
+            },
+            mu_ningxue: {
+                friendly: ['穆宁雪：……今天天气不错。', '穆宁雪：你的冰系天赋，我注意到了。'],
+                friend: ['穆宁雪：如果你愿意，可以来天台找我聊聊。', '穆宁雪：修炼遇到瓶颈了吗？可以试试换个思路。'],
+                close: ['穆宁雪：……今天的星星很亮，你看到了吗？', '穆宁雪：有你在，感觉修炼也没那么枯燥了。']
+            },
+            tang_yue: {
+                friendly: ['唐月：作业都交了吗？别让我催哦。', '唐月：上课要认真听讲，别走神。'],
+                friend: ['唐月：最近表现不错，继续保持。', '唐月：有什么不懂的随时来办公室找我。'],
+                close: ['唐月：老师相信你一定能成为优秀的法师。', '唐月：累了就休息一下，别太拼了，身体要紧。']
+            },
+            zhang_xiaohou: {
+                friendly: ['张小侯：大哥！今天一起去冒险吗？', '张小侯：我刚才看到一个超酷的魔法！'],
+                friend: ['张小侯：大哥你太厉害了，教教我呗！', '张小侯：明天去不去雪峰山？我听说有新发现！'],
+                close: ['张小侯：大哥，你是我最崇拜的人！', '张小侯：不管发生什么，我都跟着大哥！']
+            },
+            zhao_manyan: {
+                friendly: ['赵满延：嘿！看我最新练成的光系魔法！', '赵满延：你说我是不是咱们班最帅的？'],
+                friend: ['赵满延：走，我请你喝奶茶！', '赵满延：跟你说，光系防御才是最厉害的！'],
+                close: ['赵满延：兄弟，以后有事尽管找我！', '赵满延：我赵满延认定的朋友，绝对靠谱！']
+            },
+            zhou_min: {
+                friendly: ['周敏：今天的笔记你抄了吗？', '周敏：图书馆新到了一批书，要一起去看吗？'],
+                friend: ['周敏：这道题我不太懂，你能教教我吗？', '周敏：一起自习吧，两个人效率更高。'],
+                close: ['周敏：谢谢你一直陪着我学习……', '周敏：和你在一起的时候，感觉时间过得好快。']
+            },
+            xu_zhaoting: {
+                friendly: ['许昭霆：哼，别以为进步快就了不起。', '许昭霆：雷系的底蕴，你不懂。'],
+                friend: ['许昭霆：你的实力，我勉强认可了。', '许昭霆：下次切磋，我不会手下留情。'],
+                close: ['许昭霆：……你是个值得尊敬的对手。', '许昭霆：能和你并肩作战，是我的荣幸。']
+            },
+            mu_bai: {
+                friendly: ['穆白：穆家的事，你最好别插手。', '穆白：冰系魔法，不是谁都能学的。'],
+                friend: ['穆白：你的表现，让我有些意外。', '穆白：穆家……也许并不代表一切。'],
+                close: ['穆白：你让我看到了不同的可能性。', '穆白：如果有需要，我可以帮你。']
+            }
+        };
+
+        const pool = messagePools[npcId];
+        if (!pool || !pool[tier]) return null;
+        const messages = pool[tier];
+        return messages[Math.floor(Math.random() * messages.length)];
     },
 
     /**
