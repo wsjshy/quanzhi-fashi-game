@@ -6478,7 +6478,7 @@ const BattleSystem = {
             if (this.enemy.isBoss) battleInfluence = 5;
             // 敌人等级高于玩家时额外影响力
             if (this.enemy.level > Player.level) battleInfluence += Math.min(3, this.enemy.level - Player.level);
-            Player.influence = (Player.influence || 0) + battleInfluence;
+            Player.gainInfluence(battleInfluence, '战斗胜利');
             rewards.influence = battleInfluence;
         }
 

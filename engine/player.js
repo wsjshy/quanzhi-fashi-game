@@ -467,6 +467,26 @@ const Player = {
     },
 
     /**
+     * v0.43.0: 集中式影响力获取，自动检测等级跨越并触发里程碑事件
+     */
+    gainInfluence(amount, source = '') {
+        const oldTier = this.getInfluenceTier().level;
+        this.influence = (this.influence || 0) + amount;
+        const newTier = this.getInfluenceTier().level;
+
+        // 检测等级跨越
+        if (newTier > oldTier) {
+            if (!this._pendingInfluenceMilestones) this._pendingInfluenceMilestones = [];
+            this._pendingInfluenceMilestones.push({
+                fromLevel: oldTier,
+                toLevel: newTier,
+                source: source
+            });
+        }
+        return { amount, tieredUp: newTier > oldTier, newTier };
+    },
+
+    /**
      * 获取新系修炼加速系数
      * 高境界法师修炼新系更快：中阶×2/高阶×4/超阶×8
      */

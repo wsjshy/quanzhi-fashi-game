@@ -260,7 +260,7 @@ const QuestSystem = {
 
         // v0.39.0: 任务完成获得影响力
         const influenceGain = rewards.influence || (quest.type === 'main' ? 8 : quest.type === 'personal' ? 4 : 3);
-        Player.influence = (Player.influence || 0) + influenceGain;
+        Player.gainInfluence(influenceGain, '任务完成');
         rewardMessages.push(`🌟 影响力 +${influenceGain}`);
 
         // 解锁内容

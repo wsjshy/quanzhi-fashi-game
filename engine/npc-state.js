@@ -438,7 +438,7 @@ const NPCStateSystem = {
                 else if (newTier >= 7) influenceGain = 3;  // 熟人以上
                 else if (newTier >= 6) influenceGain = 2;  // 友好
                 if (influenceGain > 0) {
-                    Player.influence = (Player.influence || 0) + influenceGain;
+                    Player.gainInfluence(influenceGain, 'NPC关系提升');
                 }
             }
         }

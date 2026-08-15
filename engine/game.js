@@ -442,6 +442,39 @@ const Game = {
             Player._pendingPlayerMilestones = [];
         }
 
+        // v0.43.0: 影响力里程碑事件
+        if (Player._pendingInfluenceMilestones && Player._pendingInfluenceMilestones.length > 0) {
+            for (const milestone of Player._pendingInfluenceMilestones) {
+                const tierNames = ['无名小卒', '崭露头角', '小有名气', '声名远扬', '传奇法师'];
+                const milestoneTexts = {
+                    1: `🌟 你的影响力达到了【崭露头角】！学校里开始有人谈论你的名字，偶尔会有同学主动和你打招呼。`,
+                    2: `🌟 你的影响力达到了【小有名气】！你的名字在年级里传开了，老师们也开始关注你。走在走廊里，能感受到更多注视的目光。`,
+                    3: `🌟 你的影响力达到了【声名远扬】！整个博城魔法界都知道了你的名字。穆家、其他势力开始重新评估你，连陌生人都会对你表示敬意。`,
+                    4: `🌟 你的影响力达到了【传奇法师】！你的事迹被广为传颂，年轻法师以你为榜样，老一辈法师也认可了你的地位。你已经不再是一个普通的学生了。`
+                };
+                const text = milestoneTexts[milestone.toLevel] || `🌟 你的影响力提升了！`;
+                message += `\n\n${text}`;
+
+                // 随机NPC对影响力的反应
+                const reactionNPCs = ['mo_fan', 'mu_ningxue', 'tang_yue', 'zhang_xiaohou', 'zhao_manyan', 'zhou_min'];
+                const npcId = reactionNPCs[Math.floor(Math.random() * reactionNPCs.length)];
+                const npcData = DataManager.getCharacter(npcId);
+                if (npcData) {
+                    const reactions = {
+                        mo_fan: `莫凡听到消息后咧嘴一笑，"可以啊你，越来越厉害了。"`,
+                        mu_ningxue: `穆宁雪的目光在你身上多停留了一瞬，"……不错。"`,
+                        tang_yue: `唐月欣慰地笑了，"老师就知道你能做到。"`,
+                        zhang_xiaohou: `张小侯兴奋地说，"大哥太厉害了！我就知道！"`,
+                        zhao_manyan: `赵满延拍了拍你的肩膀，"行啊兄弟，以后罩着我！"`,
+                        zhou_min: `周敏的脸微微红了，"你真的……很厉害。"`
+                    };
+                    const reaction = reactions[npcId] || `${npcData.name}对你的进步表示认可。`;
+                    message += `\n（${reaction}）`;
+                }
+            }
+            Player._pendingInfluenceMilestones = [];
+        }
+
         // v0.25.0 Phase4: 随机探索事件（非休息行动5%概率）
         let randomEvent = null;
         if (!skipForDiscovery.includes(actionId) && typeof EventSystem !== 'undefined') {
@@ -3352,7 +3385,7 @@ const Game = {
     recordStoryChange(nodeId, influenceGain = 10) {
         if (!Player.changedStoryNodes.includes(nodeId)) {
             Player.changedStoryNodes.push(nodeId);
-            Player.influence += influenceGain;
+            Player.gainInfluence(influenceGain, '剧情改变');
             UI.showMessage(`🌟 剧情改变！影响力 +${influenceGain}\n已改变剧情节点：${Player.changedStoryNodes.length}个`);
         }
     },
