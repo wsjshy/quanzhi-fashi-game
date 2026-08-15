@@ -4756,5 +4756,24 @@ const DataEvents = {
       { text: "去调查妖魔来源", effects: { setFlag: ["bd_investigate_source", "bocheng_phase2_done"] }, resultText: "你决定冒险去调查妖魔来源。沿着妖魔出现的方向，你发现了空间波动的痕迹——有人在故意引妖魔入城。经验+80，玩家发现关键线索" },
       { text: "先保证自己安全", effects: { setFlag: ["bd_self_safety", "bocheng_phase2_done"] }, resultText: "你选择先回到安全的地方。这不是懦弱，只是理智——你还没有准备好面对未知的危险。但你心里知道，这件事还没结束..." }
     ]
+  },
+
+  // ========== v0.68.0 博城灾难第三阶段：灾难降临 ==========
+
+  bocheng_disaster: {
+    id: "bocheng_disaster",
+    name: "灾难降临",
+    description: "博城的天空突然变暗。地圣泉方向爆发出强烈的能量波动，空间裂缝撕开，无数妖魔从裂缝中涌出。尖叫声、爆炸声、魔法光芒交织在一起。唐月老师冲到你面前，衣服上沾着灰尘：\"灾难来了！黑教廷引爆了地圣泉，空间裂缝正在扩大！你打算怎么做？\"",
+    npcId: "tang_yue",
+    activities: [],
+    minLevel: 17,
+    requireFlag: "bocheng_phase2_done",
+    notFlag: "bocheng_phase3_done",
+    weight: 40,
+    choices: [
+      { text: "加入前线防御", effects: { setFlag: ["bd_hero_frontline", "bocheng_phase3_done"] }, resultText: "你握紧拳头：\"我去前线！\"唐月点头：\"小心，跟紧老师的队伍。\"你冲向战场，火焰在你手中绽放。你挡住了一只进阶妖魔的攻击，为同学争取了撤退时间。声望+20，你成为前线的英雄" },
+      { text: "组织同学疏散", effects: { setFlag: ["bd_hero_evacuation", "bocheng_phase3_done"], npcOpinion: { tang_yue: 10 } }, resultText: "你大喊：\"所有人跟我走，不要慌！\"你组织起混乱的同学，有序地向安全区撤退。途中你用魔法挡住了几只低级妖魔的袭击。唐月感激地看着你：\"多亏了你，很多孩子才能活下来。\"声望+15，唐月好感+10，你是疏散中的领导者" },
+      { text: "寻找灾难根源", effects: { setFlag: ["bd_hero_investigate", "bocheng_phase3_done"] }, resultText: "你注意到空间裂缝的能量来源——地圣泉方向有一个黑袍人在施法。你决定绕到后方，寻找灾难的根源。你悄悄接近，发现了黑教廷的祭坛。虽然无法阻止，但你记住了关键信息。经验+200，你掌握了黑教廷的关键情报" }
+    ]
   }
 };

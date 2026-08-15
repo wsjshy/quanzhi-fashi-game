@@ -3118,5 +3118,21 @@ const DataQuests = {
       { type: "talk", npcId: "tang_yue", count: 1, description: "与唐月对话1次" }
     ],
     rewards: { exp: 250, gold: 150, setFlag: "bd_crisis_handled" }
+  },
+
+  // ========== v0.68.0 博城灾难第三阶段任务 ==========
+
+  bocheng_aftermath: {
+    id: "bocheng_aftermath",
+    name: "灾难后的黎明",
+    description: "灾难过后，博城满目疮痍。你需要平复心情，继续前行。唐月老师有话对你说。",
+    requireFlag: "bocheng_phase3_done",
+    notFlag: "bd_disaster_complete",
+    objectives: [
+      { type: "talk", npcId: "tang_yue", count: 1, description: "与唐月对话1次" },
+      { type: "cultivate", count: 1, description: "修炼1次" },
+      { type: "explore", count: 1, description: "探索1次" }
+    ],
+    rewards: { exp: 500, gold: 300, skillPoints: 2, setFlag: "bd_disaster_complete" }
   }
 };
