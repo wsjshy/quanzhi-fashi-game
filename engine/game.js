@@ -694,24 +694,28 @@ const Game = {
     _npcSchedules: {
         mo_fan: {
             name: '莫凡',
+            gender: 'male',
             morning: { location: 'tianlan_school', activity: '上课', chance: 0.5 },
             afternoon: { location: 'tianlan_school', activity: '在修炼场修炼', chance: 0.3 },
             evening: { location: 'earth_spring', activity: '在地圣泉修炼', chance: 0.2 }
         },
         mu_ningxue: {
             name: '穆宁雪',
+            gender: 'female',
             morning: { location: 'tianlan_school', activity: '上课', chance: 0.5 },
             afternoon: { location: 'tianlan_school', activity: '独自修炼冰系魔法', chance: 0.3 },
             evening: { location: 'tianlan_school', activity: '在天台发呆', chance: 0.15 }
         },
         tang_yue: {
             name: '唐月',
+            gender: 'female',
             morning: { location: 'tianlan_school', activity: '备课', chance: 0.6 },
             afternoon: { location: 'tianlan_school', activity: '批改作业', chance: 0.4 },
             evening: { location: 'tianlan_school', activity: '在办公室', chance: 0.2 }
         },
         zhang_xiaohou: {
             name: '张小侯',
+            gender: 'male',
             morning: { location: 'tianlan_school', activity: '上课', chance: 0.5 },
             afternoon: { location: 'tianlan_school', activity: '和同学聊天', chance: 0.4 },
             evening: { location: 'tianlan_school', activity: '修炼风系魔法', chance: 0.2 }
@@ -737,6 +741,7 @@ const Game = {
             encounters.push({
                 npcId,
                 name: schedule.name,
+                gender: schedule.gender || 'male',
                 activity: timeSlot.activity
             });
         }
@@ -745,7 +750,8 @@ const Game = {
 
         let message = '\n\n';
         for (const enc of encounters) {
-            message += `（你看到${enc.name}正在这里${enc.activity}。他/她似乎在专注于自己的事。）\n`;
+            const pronoun = enc.gender === 'female' ? '她' : '他';
+            message += `（你看到${enc.name}正在这里${enc.activity}。${pronoun}似乎在专注于自己的事。）\n`;
         }
         return { encounters, message };
     },

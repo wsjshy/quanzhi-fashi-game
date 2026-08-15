@@ -416,7 +416,7 @@ const QuestSystem = {
             // NPC关系条件
             if (t.minRelationship) {
                 for (const npcId in t.minRelationship) {
-                    const rel = NPCStateManager ? NPCStateManager.getNPCRelationship(npcId, 'player') : null;
+                    const rel = NPCStateSystem ? NPCStateSystem.getNPCRelationship(npcId, 'player') : null;
                     const opinion = rel?.opinion || 0;
                     if (opinion < t.minRelationship[npcId]) conditionsMet = false;
                 }
