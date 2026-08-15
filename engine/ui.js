@@ -430,14 +430,14 @@ const UI = {
                 if (ui._globalClickInterceptor === clickInterceptor) {
                     ui._globalClickInterceptor = null;
                 }
-            }, 200);
+            }, 500);
             
             // 设置行动冷却，防止点击穿透/延迟触发
             if (typeof Game !== 'undefined' && Game._actionCooldown !== undefined) {
                 Game._actionCooldown = true;
                 setTimeout(() => {
                     Game._actionCooldown = false;
-                }, 200);
+                }, 500);
             }
             
             // 先创建阻止点击穿透的遮罩层（在最顶层）
@@ -459,7 +459,7 @@ const UI = {
             overlay.remove();
             msgBox.remove();
             
-            setTimeout(() => blocker.remove(), 200);
+            setTimeout(() => blocker.remove(), 500);
             
             // 处理下一条消息
             ui._processNextMessage();
