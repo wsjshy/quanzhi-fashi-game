@@ -1188,46 +1188,6 @@ const UI = {
                         <span style="color: #aaffaa; font-size: 15px; font-weight: bold;">Lv.${Player.level}</span>
                     </div>
                 </div>
-                        <span style="color: #ff6666;">❤️ ${Player.hp}/${stats.maxHp}</span>
-                        <span style="color: #6666ff;">💧 ${Player.mp}/${stats.maxMp}</span>
-                        ${(() => {
-                            // v0.9.0: 体力颜色提示
-                            const staminaRatio = Player.stamina / (Player.maxStamina || 100);
-                            let staminaColor = '#66ffaa'; // 绿色：精力充沛
-                            let staminaIcon = '⚡';
-                            if (staminaRatio <= 0) {
-                                staminaColor = '#ff4444'; // 红色：精疲力竭
-                                staminaIcon = '😫';
-                            } else if (staminaRatio <= 0.3) {
-                                staminaColor = '#ff8844'; // 橙色：非常疲惫
-                                staminaIcon = '😓';
-                            } else if (staminaRatio <= 0.6) {
-                                staminaColor = '#ffcc44'; // 黄色：有些疲惫
-                                staminaIcon = '😅';
-                            }
-                            // v0.9.7: 体力不影响效率，只在体力为0时战斗可能受伤
-                            const staminaTitle = `体力：${staminaRatio > 0.6 ? '精力充沛' : staminaRatio > 0.3 ? '有些疲惫' : staminaRatio > 0 ? '非常疲惫' : '精疲力竭'}（体力不影响修炼和战斗效率，体力为0时战斗可能受伤）`;
-                            return `<span style="color: ${staminaColor};" title="${staminaTitle}">${staminaIcon} ${Player.stamina}/${Player.maxStamina}</span>`;
-                        })()}
-                        <span style="color: #66ff66;">Lv.${Player.level}</span>
-                        <!-- v0.9.5: 快速操作按钮 -->
-                        ${(() => {
-                            const staminaRatio = Player.stamina / (Player.maxStamina || 100);
-                            const hpRatio = Player.hp / (stats.maxHp || 1);
-                            const mpRatio = Player.mp / (stats.maxMp || 1);
-                            const buttons = [];
-                            // 体力低时显示快速休息
-                            if (staminaRatio < 0.5) {
-                                buttons.push(`<span onclick="Game.quickRest()" style="color: #ffaa66; font-size: 13px; background: rgba(100, 60, 20, 0.5); padding: 4px 10px; border-radius: 8px; border: 1px solid #aa7744; cursor: pointer;" title="点击原地休息">💤 休息</span>`);
-                            }
-                            // HP/MP低时显示一键恢复
-                            if (hpRatio < 0.8 || mpRatio < 0.8) {
-                                buttons.push(`<span onclick="Game.quickHeal()" style="color: #66ffaa; font-size: 13px; background: rgba(30, 80, 50, 0.5); padding: 4px 10px; border-radius: 8px; border: 1px solid #44aa77; cursor: pointer;" title="点击使用药品恢复">💊 恢复</span>`);
-                            }
-                            return buttons.join('');
-                        })()}
-                    </div>
-                </div>
                 
                 <!-- 任务追踪面板（可展开） -->
                 <div class="mobile-goal-bar" onclick="UI.toggleQuestTracker()" style="
