@@ -4628,5 +4628,41 @@ const DataEvents = {
       { text: "自己训练，让他们自己决定", effects: { setFlag: ["mx_zxh_neutral", "mx_zxh_cooperation_done"] }, resultText: "你说：\"你们自己决定吧，我先去训练了。\"两人有些失望，但还是各自训练。关系保持中立。" },
       { text: "故意挑起竞争", effects: { setFlag: ["mx_zxh_rivals", "mx_zxh_cooperation_done"], npcOpinion: { mu_bai: 5, zhang_xiaohou: 5 } }, resultText: "你说：\"要不比比看，谁的实力更强？\"两人眼睛一亮，竞争心被激发。穆白好感+5，张小侯好感+5，两人成为良性竞争对手！" }
     ]
+  },
+
+  // ========== v0.64.0 NPC间关系联动：唐月×穆宁雪（师生） ==========
+
+  ty_mnx_discussion: {
+    id: "ty_mnx_discussion",
+    name: "师生的讨论",
+    description: "你在训练馆外看到唐月和穆宁雪站在一起。唐月眉头微皱：\"你的冰系星子运转太快了，这样下去会损伤经脉。\"穆宁雪语气平静：\"老师，我知道自己在做什么。\"两人似乎有些争执。她们看到你，都停下了话头。",
+    npcId: "tang_yue",
+    activities: [],
+    minRelationships: { tang_yue: 30, mu_ningxue: 30 },
+    notFlag: "ty_mnx_discussion_done",
+    weight: 40,
+    choices: [
+      { text: "旁听学习，不插话", effects: { setFlag: ["ty_mnx_observer", "ty_mnx_discussion_done"], npcOpinion: { tang_yue: 3, mu_ningxue: 3 } }, resultText: "你安静地站在一旁听她们讨论。唐月的讲解细致入微，穆宁雪的提问切中要害。你学到了不少。唐月好感+3，穆宁雪好感+3，经验+50" },
+      { text: "认同唐月的观点", effects: { setFlag: ["ty_mnx_support_teacher", "ty_mnx_discussion_done"], npcOpinion: { tang_yue: 8, mu_ningxue: -5 } }, resultText: "你对唐月说：\"老师说得对，基础扎实才能走得更远。\"唐月赞许地点头，穆宁雪看了你一眼，没说话。唐月好感+8，穆宁雪好感-5" },
+      { text: "支持穆宁雪的追求", effects: { setFlag: ["ty_mnx_support_student", "ty_mnx_discussion_done"], npcOpinion: { mu_ningxue: 8, tang_yue: -3 } }, resultText: "你对穆宁雪说：\"追求极致没有错，只是要注意方法。\"穆宁雪眼中闪过一丝认可，唐月叹了口气。穆宁雪好感+8，唐月好感-3" },
+      { text: "提议一起实践验证", effects: { setFlag: ["ty_mnx_practice", "ty_mnx_discussion_done"], npcOpinion: { tang_yue: 5, mu_ningxue: 5 } }, resultText: "你说：\"不如一起实践看看，谁的方法更有效？\"两人对视一眼，都同意了。唐月好感+5，穆宁雪好感+5" }
+    ]
+  },
+
+  ty_mnx_practice: {
+    id: "ty_mnx_practice",
+    name: "实践课的默契",
+    description: "实践课上，唐月安排你和穆宁雪对练。她在一旁观察，不时点头。穆宁雪的冰系攻势凌厉，你勉强招架。唐月突然开口：\"停。你们的配合有问题——不是对抗，是互补。\"她开始指导你们如何配合。",
+    npcId: "tang_yue",
+    activities: [],
+    minRelationships: { tang_yue: 50, mu_ningxue: 50 },
+    requireFlag: "ty_mnx_practice",
+    notFlag: "ty_mnx_practice_done",
+    weight: 40,
+    choices: [
+      { text: "认真学习配合技巧", effects: { setFlag: ["ty_mnx_learned", "ty_mnx_practice_done"], npcOpinion: { tang_yue: 5, mu_ningxue: 5 } }, resultText: "你认真按照唐月的指导调整节奏，和穆宁雪的配合越来越默契。训练结束时，两人都有所收获。唐月好感+5，穆宁雪好感+5，经验+100" },
+      { text: "坚持自己的战斗风格", effects: { setFlag: ["ty_mnx_independent", "ty_mnx_practice_done"], npcOpinion: { tang_yue: -3, mu_ningxue: 3 } }, resultText: "你觉得配合限制了自己的发挥，坚持按自己的方式战斗。唐月有些失望，穆宁雪却似乎欣赏你的独立。唐月好感-3，穆宁雪好感+3" },
+      { text: "提议穆宁雪主导，你辅助", effects: { setFlag: ["ty_mnx_support_role", "ty_mnx_practice_done"], npcOpinion: { tang_yue: 3, mu_ningxue: 8 } }, resultText: "你主动承担辅助角色，让穆宁雪发挥冰系优势。穆宁雪难得地笑了：\"你很懂配合。\"唐月也点头认可。穆宁雪好感+8，唐月好感+3" }
+    ]
   }
 };

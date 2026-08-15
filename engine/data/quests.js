@@ -3005,5 +3005,46 @@ const DataQuests = {
     dialogueStart: "竞争开始！谁先击败妖魔谁赢。",
     dialogueInProgress: "两人势均力敌，竞争激烈。",
     dialogueComplete: "良性竞争结束！两人都有所收获。技能点1。"
+  },
+
+  // ========== v0.64.0 NPC间关系联动：唐月×穆宁雪（师生） ==========
+
+  quest_ty_mnx_practice: {
+    id: "quest_ty_mnx_practice",
+    name: "师生的实践课",
+    description: "唐月安排你和穆宁雪一起上实践课，学习配合技巧。这是一次难得的学习机会。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { requireFlag: "ty_mnx_practice" },
+    objectives: [
+      { type: "talk", npcId: "tang_yue", count: 1, description: "与唐月对话" },
+      { type: "talk", npcId: "mu_ningxue", count: 1, description: "与穆宁雪对话" },
+      { type: "cultivate", count: 2, description: "一起修炼2次" }
+    ],
+    rewards: { exp: 200, gold: 100, setFlag: "ty_mnx_quest_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "既然要一起实践，那就先了解彼此的战斗风格。",
+    dialogueInProgress: "你们的配合越来越默契了。",
+    dialogueComplete: "实践课圆满结束！你和穆宁雪的配合有了明显进步。"
+  },
+
+  quest_ty_mnx_team: {
+    id: "quest_ty_mnx_team",
+    name: "冰与火的配合",
+    description: "你和穆宁雪配合击败妖魔，证明了配合的价值。唐月对你们的表现很满意。",
+    giver: "tang_yue",
+    type: "personal",
+    trigger: { requireFlag: "ty_mnx_learned" },
+    objectives: [
+      { type: "kill", enemyId: "any", count: 2, description: "配合击败2个妖魔" },
+      { type: "talk", npcId: "tang_yue", count: 1, description: "向唐月汇报" }
+    ],
+    rewards: { exp: 300, skillPoints: 1, setFlag: "ty_mnx_team_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "去实战中验证你们的配合吧。",
+    dialogueInProgress: "冰与火的配合，效果出乎意料地好。",
+    dialogueComplete: "配合击败妖魔！唐月赞许地点头。技能点1。"
   }
 };

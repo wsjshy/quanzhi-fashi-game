@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.63.1 · 事件触发修复</div>
+                ">v0.64.0 · 师生联动</div>
             </div>
         `;
 

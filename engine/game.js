@@ -863,7 +863,10 @@ const Game = {
             const timeSlot = schedule[timeOfDay];
             if (!timeSlot) continue;
             if (Player.currentLocation !== timeSlot.location) continue;
-            if (Math.random() > timeSlot.chance) continue;
+            // v0.64.0: 关系事件待触发时提高encounter概率，确保玩家能遇到目标NPC
+            const hasPendingRelationEvent = this._hasPendingRelationEvent(npcId);
+            const encounterChance = hasPendingRelationEvent ? 0.8 : timeSlot.chance;
+            if (Math.random() > encounterChance) continue;
 
             // 每个NPC每天最多遇到一次
             const lastKey = `_last_${npcId}_encounter_day`;
@@ -930,6 +933,50 @@ const Game = {
     /**
      * v0.34.0: 查找适合当前NPC和活动的互动事件
      */
+    // v0.64.0: 检查该NPC是否有待触发的关系事件（用于提高encounter概率）
+    _hasPendingRelationEvent(npcId) {
+        try {
+            const allEvents = DataManager.getAllEvents ? DataManager.getAllEvents() : {};
+            for (const [eventId, event] of Object.entries(allEvents)) {
+                if (event.npcId !== npcId) continue;
+                // 只检查有关系阈值的事件（minRelationship或minRelationships）
+                if (!event.minRelationship && !event.minRelationships) continue;
+                // 检查notFlag（事件未完成）
+                if (event.notFlag) {
+                    const flags = Array.isArray(event.notFlag) ? event.notFlag : [event.notFlag];
+                    if (flags.some(f => Player.hasFlag(f))) continue;
+                }
+                // 检查requireFlag（如果有）
+                if (event.requireFlag) {
+                    const reqFlags = Array.isArray(event.requireFlag) ? event.requireFlag : [event.requireFlag];
+                    if (!reqFlags.some(f => Player.hasFlag(f))) continue;
+                }
+                // 检查minRelationship
+                if (event.minRelationship) {
+                    const npcState = NPCStateSystem.getNPCState(npcId);
+                    if ((npcState.opinion || 0) < event.minRelationship) continue;
+                }
+                // 检查minRelationships（多NPC关系）
+                if (event.minRelationships) {
+                    let allMeet = true;
+                    for (const [rid, rmin] of Object.entries(event.minRelationships)) {
+                        const rState = NPCStateSystem.getNPCState(rid);
+                        if ((rState.opinion || 0) < rmin) {
+                            allMeet = false;
+                            break;
+                        }
+                    }
+                    if (!allMeet) continue;
+                }
+                // 找到满足条件的待触发事件
+                return true;
+            }
+        } catch (e) {
+            console.error('[_hasPendingRelationEvent] 出错:', e);
+        }
+        return false;
+    },
+
     _findNPCInteraction(npcId, activity) {
         const allEvents = DataManager.getAllEvents ? DataManager.getAllEvents() : {};
         const candidates = [];
