@@ -2076,8 +2076,8 @@ const UI = {
         const spriteH = isPortrait ? 100 : 140;
         const panelH = isPortrait ? 'auto' : '220px';
         const logW = isPortrait ? 'calc(100% - 20px)' : '340px';
-        const logMaxH = isPortrait ? '100px' : '280px';
-        const logPos = isPortrait ? 'position:relative; top:10px; left:10px; margin-bottom:10px;' : 'position: absolute; top: 20px; left: 20px;';
+        const logMaxH = isPortrait ? '90px' : '280px';
+        const logPos = isPortrait ? 'position:relative; top:auto; left:auto; margin:5px 10px; flex-shrink:0; height:90px;' : 'position: absolute; top: 20px; left: 20px;';
         const playerPos = isPortrait ? 'position:relative; bottom:auto; left:auto; margin:5px auto; order:2;' : 'position: absolute; bottom: 60px; left: 15%;';
         const enemyPos = isPortrait ? 'position:relative; top:auto; right:auto; margin:5px auto; order:1;' : '';
         const arenaFlex = isPortrait ? 'display:flex; flex-direction:column; justify-content:flex-start; padding-top:5px; gap:10px;' : '';
@@ -2882,7 +2882,7 @@ const UI = {
             dodgeEl.style.cssText = `
                 position: absolute;
                 ${isPlayer ? (isPortrait ? 'left:50%;' : 'left:20%;') : (isPortrait ? 'left:50%;' : 'right:20%;')}
-                ${isPortrait ? (isPlayer ? 'bottom:30%;' : 'top:25%;') : 'bottom:45%;'}
+                ${isPortrait ? (isPlayer ? 'bottom:30%;' : 'top:24%;') : 'bottom:45%;'}
                 font-size: ${isPortrait ? '20px' : '24px'};
                 font-weight: bold;
                 color: #aaaaaa;
@@ -2936,7 +2936,7 @@ const UI = {
         damageEl.style.cssText = `
             position: absolute;
             ${isPlayer ? (isPortrait ? 'left:50%;' : 'left:20%;') : (isPortrait ? 'left:50%;' : 'right:20%;')}
-            ${isPortrait ? (isPlayer ? 'bottom:32%;' : 'top:28%;') : 'bottom:45%;'}
+            ${isPortrait ? (isPlayer ? 'bottom:28%;' : 'top:22%;') : 'bottom:45%;'}
             font-size: ${fontSize};
             font-weight: bold;
             color: ${color};
