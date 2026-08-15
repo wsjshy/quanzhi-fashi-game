@@ -281,7 +281,8 @@ const DialogueTree = {
         }
 
         // 如果是返回/关闭动作，直接结束对话，不再跳转
-        if (choice.action === 'back' || choice.action === 'close_dialogue') {
+        // v0.73.1: 兼容"close"和"close_dialogue"两种写法
+        if (choice.action === 'back' || choice.action === 'close_dialogue' || choice.action === 'close') {
             return this.endDialogue();
         }
 
@@ -434,6 +435,7 @@ const DialogueTree = {
                 break;
 
             case 'close_dialogue':
+            case 'close': // v0.73.1: 兼容简写
                 // 关闭对话
                 this.endDialogue();
                 break;

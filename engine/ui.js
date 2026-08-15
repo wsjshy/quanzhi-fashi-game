@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.73.0 · 游戏节奏优化</div>
+                ">v0.73.1 · 对话退出bug修复</div>
             </div>
         `;
 
