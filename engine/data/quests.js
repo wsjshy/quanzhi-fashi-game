@@ -2556,5 +2556,64 @@ const DataQuests = {
     dialogueStart: "你的火系已经有了一定基础。但真正的火系法师，需要理解火焰的本质。去图书馆查查典籍，再结合修炼感悟吧。",
     dialogueInProgress: "典籍中的知识需要结合实践才能真正理解。继续修炼，感受火焰的律动。",
     dialogueComplete: "你做到了！你对火焰的理解已经超越了初阶水平。这是给你的奖励——一个技能点，好好利用。"
+  },
+
+  // ========== v0.58.0 玩家个人任务线：冰系初阶 ==========
+
+  quest_ice_control: {
+    id: "quest_ice_control",
+    name: "寒冰的掌控",
+    description: "穆宁雪注意到你在修炼冰系时心绪浮躁，建议你多冥修静心。冰系的力量来自冷静，心不静，冰不纯。",
+    giver: "mu_ningxue",
+    type: "personal",
+    trigger: { element: "ice", minLevel: 5 },
+    objectives: [
+      { type: "cultivate", count: 5, description: "冥修5次" }
+    ],
+    rewards: { exp: 100, gold: 50 },
+    prerequisites: [],
+    nextQuest: "quest_ice_duel",
+    isMainQuest: false,
+    dialogueStart: "你好。我注意到你觉醒了冰系。冰系的力量来自冷静，心不静，冰不纯。先去冥修，让自己的心沉静下来。",
+    dialogueInProgress: "怎么样，感受到寒冰在你体内流转了吗？控制呼吸，让星子缓慢运转。",
+    dialogueComplete: "很好，你的心性沉稳了不少。冰系的掌控力提升了。继续努力。"
+  },
+
+  quest_ice_duel: {
+    id: "quest_ice_duel",
+    name: "冰系的切磋",
+    description: "穆宁雪注意到你的冰系进步，主动找你切磋。你的冰系...有点意思。要不要比比看，谁的冰更纯？",
+    giver: "mu_ningxue",
+    type: "personal",
+    trigger: { element: "ice", minLevel: 8 },
+    objectives: [
+      { type: "talk", npcId: "mu_ningxue", count: 1, description: "与穆宁雪对话" }
+    ],
+    rewards: { exp: 150, gold: 100 },
+    prerequisites: ["quest_ice_control"],
+    nextQuest: "quest_ice_insight",
+    isMainQuest: false,
+    dialogueStart: "你的冰系...有点意思。要不要切磋一下，看看谁的冰更纯？",
+    dialogueInProgress: "怎么，不敢吗？还是说你还没准备好？",
+    dialogueComplete: "哼，你的冰确实有几分纯度。不过跟我比，还差得远。下次我不会手下留情。"
+  },
+
+  quest_ice_insight: {
+    id: "quest_ice_insight",
+    name: "寒冰的感悟",
+    description: "穆宁雪建议你在图书馆查阅冰系典籍，结合冥修感悟寒冰的真谛。冰的极致不是寒冷，是绝对的宁静。",
+    giver: "mu_ningxue",
+    type: "personal",
+    trigger: { element: "ice", minLevel: 12 },
+    objectives: [
+      { type: "explore", count: 3, description: "在图书馆学习3次" },
+      { type: "cultivate", count: 10, description: "冥修10次" }
+    ],
+    rewards: { exp: 300, gold: 200, skillPoints: 1 },
+    prerequisites: ["quest_ice_duel"],
+    isMainQuest: false,
+    dialogueStart: "你的冰系已经有了一定基础。但冰的极致不是寒冷，是绝对的宁静。去图书馆查查典籍，再结合冥修感悟吧。",
+    dialogueInProgress: "典籍中的知识需要结合实践才能真正理解。继续冥修，感受寒冰的律动。",
+    dialogueComplete: "你做到了！你对寒冰的理解已经超越了初阶水平。这是给你的奖励——一个技能点，好好利用。"
   }
 };
