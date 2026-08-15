@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.82.3 · 删除等待时间+境界显示</div>
+                ">v0.83.0 · 战斗界面响应式适配</div>
             </div>
         `;
 
@@ -2018,6 +2018,18 @@ const UI = {
 
     renderBattleScreen() {
         const state = BattleSystem.getState();
+        const isPortrait = window.innerWidth < 768 || window.innerHeight > window.innerWidth;
+        const skillCols = isPortrait ? 3 : 5;
+        const spriteW = isPortrait ? 70 : 100;
+        const spriteH = isPortrait ? 100 : 140;
+        const panelH = isPortrait ? 'auto' : '220px';
+        const logW = isPortrait ? 'calc(100% - 20px)' : '340px';
+        const logMaxH = isPortrait ? '100px' : '280px';
+        const logPos = isPortrait ? 'position:relative; top:10px; left:10px; margin-bottom:10px;' : 'position: absolute; top: 20px; left: 20px;';
+        const playerPos = isPortrait ? 'position:relative; bottom:auto; left:auto; margin:10px auto;' : 'position: absolute; bottom: 60px; left: 15%;';
+        const enemyPos = isPortrait ? 'position:relative; top:auto; right:auto; margin:10px auto;' : '';
+        const arenaFlex = isPortrait ? 'flex-direction:column; justify-content:flex-start; padding-top:10px;' : '';
+        const sideBtnsPos = isPortrait ? 'position:relative; top:auto; right:auto; display:flex; gap:8px; justify-content:center; margin:5px 0;' : 'position: absolute; right: 20px;';
         
         this.elements.gameContainer.innerHTML = `
             <div id="battle-screen" style="width: 100%; height: 100vh; display: flex; flex-direction: column; background: linear-gradient(to bottom, #1a1a3a, #2a2a5a); position: relative;">
@@ -2035,15 +2047,13 @@ const UI = {
                 "></div>
                 
                 <!-- 战斗场地 -->
-                <div style="flex: 1; position: relative; overflow: hidden; z-index: 1;">
+                <div style="flex: 1; position: relative; overflow: ${isPortrait ? 'auto' : 'hidden'}; z-index: 1; ${arenaFlex}">
                     
                     <!-- 战斗日志 -->
                     <div id="battle-log" style="
-                        position: absolute;
-                        top: 20px;
-                        left: 20px;
-                        width: 340px;
-                        max-height: 280px;
+                        ${logPos}
+                        width: ${logW};
+                        max-height: ${logMaxH};
                         overflow-y: auto;
                         background: rgba(0, 0, 0, 0.7);
                         border: 1px solid #555;
@@ -2052,6 +2062,7 @@ const UI = {
                         font-size: 13px;
                         line-height: 1.7;
                         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+                        ${isPortrait ? 'z-index:5;' : ''}
                     ">
                         <div style="color: #ffd700; font-weight: bold; margin-bottom: 8px; font-size: 14px; border-bottom: 1px solid #444; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
                             <span>📜 战斗日志</span>
@@ -2066,16 +2077,15 @@ const UI = {
                     
                     <!-- 玩家 -->
                     <div style="
-                        position: absolute;
-                        bottom: 60px;
-                        left: 15%;
+                        ${playerPos}
                         display: flex;
                         flex-direction: column;
                         align-items: center;
+                        order: 2;
                     ">
                         <div style="
-                            width: 100px;
-                            height: 140px;
+                            width: ${spriteW}px;
+                            height: ${spriteH}px;
                             background: linear-gradient(180deg, #6666cc, #4444aa);
                             border-radius: 50px 50px 10px 10px;
                             margin-bottom: 10px;
@@ -2204,16 +2214,14 @@ const UI = {
                     
                     <!-- 敌人 -->
                     <div style="
-                        position: absolute;
-                        bottom: 60px;
-                        right: 15%;
+                        ${isPortrait ? 'position:relative; bottom:auto; right:auto; margin:10px auto; order:1;' : 'position: absolute; bottom: 60px; right: 15%;'}
                         display: flex;
                         flex-direction: column;
                         align-items: center;
                     ">
                         <div style="
-                            width: 110px;
-                            height: 150px;
+                            width: ${isPortrait ? 80 : 110}px;
+                            height: ${isPortrait ? 110 : 150}px;
                             background: linear-gradient(180deg, ${state.enemy.spriteColor || '#663399'}, ${state.enemy.spriteColor || '#442266'}dd);
                             border-radius: 55px 55px 10px 10px;
                             margin-bottom: 10px;
@@ -2330,15 +2338,13 @@ const UI = {
                     
                     <!-- 回合指示 -->
                     <div style="
-                        position: absolute;
-                        top: 20px;
-                        right: 20px;
+                        ${isPortrait ? 'position:relative; top:auto; right:auto; text-align:center; margin:5px 0; order:0;' : 'position: absolute; top: 20px; right: 20px;'}
                         padding: 10px 20px;
                         background: rgba(0, 0, 0, 0.6);
                         border-radius: 8px;
                         font-size: 16px;
                         color: ${state.isPlayerTurn ? '#66ff66' : '#ff6666'};
-                        text-align: right;
+                        ${isPortrait ? '' : 'text-align: right;'}
                     ">
                         ${state.battleOptions && state.battleOptions.mode !== 'normal' ? `<div style="font-size: 12px; color: #ffcc66; margin-bottom: 4px;">${
                             state.battleOptions.mode === 'duel' ? '⚔️ 决斗模式' :
@@ -2350,69 +2356,70 @@ const UI = {
                         <div>第 ${state.turn} 回合 - ${state.isPlayerTurn ? '你的回合' : '敌人回合'}</div>
                     </div>
                     
+                    <!-- 右侧控制按钮组 -->
+                    <div style="${isPortrait ? 'position:relative; display:flex; gap:8px; justify-content:center; margin:5px 0; order:3;' : 'position:absolute; top:0; right:0;'}">
                     <!-- 战斗速度按钮 -->
                     <button onclick="BattleSystem.toggleSpeed()" style="
-                        position: absolute;
-                        top: 70px;
-                        right: 20px;
-                        padding: 8px 16px;
+                        ${isPortrait ? 'padding:6px 12px; font-size:12px;' : 'position:relative; margin-top:70px; margin-right:20px;'}
+                        padding: ${isPortrait ? '6px 12px' : '8px 16px'};
                         background: linear-gradient(135deg, #333366, #444488);
                         border: 2px solid #6666aa;
                         border-radius: 8px;
                         color: #aaccff;
                         cursor: pointer;
-                        font-size: 14px;
+                        font-size: ${isPortrait ? '12px' : '14px'};
                         font-weight: bold;
                         z-index: 10;
+                        display:block;
                     " onmouseover="this.style.boxShadow='0 0 10px rgba(100, 150, 255, 0.5)'" onmouseout="this.style.boxShadow='none'">
-                        ⏩ ${state.speed || 1}x 速度
+                        ⏩ ${state.speed || 1}x
                     </button>
                     
                     <!-- 自动战斗按钮 -->
                     <button onclick="BattleSystem.toggleAutoBattle()" style="
-                        position: absolute;
-                        top: 120px;
-                        right: 20px;
-                        padding: 8px 16px;
+                        ${isPortrait ? 'padding:6px 12px; font-size:12px;' : 'position:relative; margin-top:10px; margin-right:20px;'}
+                        padding: ${isPortrait ? '6px 12px' : '8px 16px'};
                         background: ${state.autoBattle ? 'linear-gradient(135deg, #663333, #aa4444)' : 'linear-gradient(135deg, #666633, #888844)'};
                         border: 2px solid ${state.autoBattle ? '#ff6666' : '#aaaa66'};
                         border-radius: 8px;
                         color: ${state.autoBattle ? '#ffaaaa' : '#ddddaa'};
                         cursor: pointer;
-                        font-size: 14px;
+                        font-size: ${isPortrait ? '12px' : '14px'};
                         font-weight: bold;
                         z-index: 10;
+                        display:block;
                     " onmouseover="this.style.boxShadow='0 0 10px rgba(200, 200, 100, 0.5)'" onmouseout="this.style.boxShadow='none'">
                         ${state.autoBattle ? '🤖 自动中' : '🤖 自动'}
                     </button>
                     
                     <!-- 战斗帮助按钮 -->
                     <button onclick="BattleSystem.showHelp()" style="
-                        position: absolute;
-                        top: 170px;
-                        right: 20px;
-                        padding: 8px 16px;
+                        ${isPortrait ? 'padding:6px 12px; font-size:12px;' : 'position:relative; margin-top:10px; margin-right:20px;'}
+                        padding: ${isPortrait ? '6px 12px' : '8px 16px'};
                         background: linear-gradient(135deg, #336633, #448844);
                         border: 2px solid #66aa66;
                         border-radius: 8px;
                         color: #aaffaa;
                         cursor: pointer;
-                        font-size: 14px;
+                        font-size: ${isPortrait ? '12px' : '14px'};
                         font-weight: bold;
                         z-index: 10;
+                        display:block;
                     " onmouseover="this.style.boxShadow='0 0 10px rgba(100, 255, 150, 0.5)'" onmouseout="this.style.boxShadow='none'">
                         ❓ 帮助
                     </button>
+                    </div>
                 </div>
                 
                 <!-- 技能/操作面板 -->
                 <div style="
-                    height: 220px;
+                    height: ${panelH};
                     background: linear-gradient(to top, rgba(10, 10, 30, 0.98), rgba(20, 20, 50, 0.9));
                     border-top: 3px solid #4a4a8a;
                     padding: 15px 25px;
+                    ${isPortrait ? 'padding-bottom: calc(15px + env(safe-area-inset-bottom, 0px));' : ''}
                 ">
-                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center;">
                         <button onclick="Game.battleAttack()" ${!state.isPlayerTurn ? 'disabled' : ''} style="
                             padding: 10px 20px;
                             background: linear-gradient(135deg, #553333, #774444);
@@ -2491,7 +2498,7 @@ const UI = {
                     </div>
                     
                     <div style="color: #ffd700; font-size: 18px; margin-bottom: 10px; font-weight: bold;">✨ 魔法技能（点击释放）</div>
-                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+                    <div style="display: grid; grid-template-columns: repeat(${skillCols}, 1fr); gap: 10px;">
                         ${state.player.skills.map(skillId => {
                             const skill = SkillSystem.getSkill(skillId);
                             if (!skill) return '';
