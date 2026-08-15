@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.81.5 · 横向溢出修复</div>
+                ">v0.81.6 · 手机布局强制修复</div>
             </div>
         `;
 
@@ -1132,8 +1132,8 @@ const UI = {
         
         const location = MapSystem.getCurrentLocation();
         const stats = Player.getTotalStats();
-        // v0.81.4: 响应式布局检测（竖屏方向或宽度<768px视为手机竖版）
-        const isPortrait = window.matchMedia('(orientation: portrait)').matches || window.innerWidth < 768;
+        // v0.81.6: 响应式布局检测（宽度<900px或竖屏方向视为手机竖版）
+        const isPortrait = window.innerWidth < 900 || window.innerHeight > window.innerWidth;
         
         // 根据地点选择背景图片
         let bgImage = '';
@@ -1363,7 +1363,7 @@ const UI = {
                 <div class="mobile-main-content" style="flex: 1; display: flex; position: relative; z-index: 1; min-width: 0; overflow-x: hidden;">
                     
                     <!-- 左侧：地点行动 -->
-                    <div class="mobile-action-panel" style="flex: ${isPortrait ? '1' : '2'}; width: ${isPortrait ? '100%' : 'auto'}; min-width: 0; overflow: hidden; padding: ${isPortrait ? '12px 15px' : '20px 30px'};">
+                    <div class="mobile-action-panel" style="flex: ${isPortrait ? '1 !important' : '2'}; width: ${isPortrait ? '100% !important' : 'auto'}; min-width: 0; overflow: hidden; padding: ${isPortrait ? '12px 15px' : '20px 30px'};">
                         <!-- v0.80.0: 地点信息卡（整合妖魔信息） -->
                         ${(() => {
                             const enemies = (typeof MapSystem.getLocationEnemies === 'function') ? MapSystem.getLocationEnemies(location?.id) : [];
@@ -1520,9 +1520,10 @@ const UI = {
                                         ${glowEffect}
                                         position: relative;
                                         min-width: 0;
+                                        width: 100%;
                                         overflow: hidden;
                                     " onmouseover="this.style.borderColor='${isRecommended ? '#ffee88' : '#9999cc'}'; this.style.transform='scale(1.02)'" onmouseout="this.style.borderColor='${borderColor}'; this.style.transform='scale(1)'">
-                                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px; min-width: 0;">
                                             <span style="font-size: 18px;">${action.icon || '🔹'}</span>
                                             <span style="flex: 1; font-weight: bold; font-size: 14px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${actionName}</span>
                                             ${isRecommended ? '<span style="font-size: 12px;">📜</span>' : ''}
@@ -1715,7 +1716,7 @@ const UI = {
                     </div>
                     
                     <!-- 右侧：角色状态面板（竖版隐藏，靠底部导航） -->
-                    <div class="mobile-side-menu" style="width: 300px; background: linear-gradient(180deg, rgba(20,20,50,0.85), rgba(10,10,30,0.9)); border-left: 2px solid #444477; padding: 18px; display: ${isPortrait ? 'none' : 'block'}; overflow-y: auto; max-height: calc(100vh - 180px);">
+                    <div class="mobile-side-menu" style="width: 300px; background: linear-gradient(180deg, rgba(20,20,50,0.85), rgba(10,10,30,0.9)); border-left: 2px solid #444477; padding: 18px; display: ${isPortrait ? 'none !important' : 'block'}; overflow-y: auto; max-height: calc(100vh - 180px);">
                         ${(() => {
                             const s = stats;
                             const hpPct = Math.min(100, (Player.hp / s.maxHp * 100)).toFixed(0);
