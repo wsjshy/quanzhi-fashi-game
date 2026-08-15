@@ -2740,6 +2740,25 @@ const BattleSystem = {
     },
 
     /**
+     * 玩家行动：恢复（防御+冥想合并，只恢复MP）
+     */
+    playerRecover() {
+        if (!this.active || !this.isPlayerTurn) return null;
+
+        // 恢复20点MP（低于低级魔法药水的30点，体现道具价值）
+        const mpRecover = 20;
+        const oldMp = this.player.mp;
+        this.player.mp = Math.min(this.player.maxMp, this.player.mp + mpRecover);
+        const actualMp = this.player.mp - oldMp;
+
+        this.addLog(`你集中精神恢复，恢复了 ${actualMp} 点MP`, 'heal');
+        this.showDamageNumber('player', actualMp, 'heal');
+
+        this.endPlayerTurn();
+        return { recover: true, mpRecover: actualMp };
+    },
+
+    /**
      * 玩家行动：使用道具
      */
     playerUseItem(itemId) {

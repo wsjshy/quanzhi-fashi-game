@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 游戏主控制器
  * 管理游戏状态、界面切换、主循环
  */
@@ -2046,6 +2046,18 @@ const Game = {
         if (!BattleSystem.isPlayerTurn) return;
 
         BattleSystem.playerMeditate();
+        UI.updateBattleScreen();
+
+        if (!BattleSystem.active) {
+            this.endBattle();
+        }
+    },
+
+    // 玩家恢复（防御+冥想合并，只回蓝）
+    battleRecover() {
+        if (!BattleSystem.isPlayerTurn) return;
+
+        BattleSystem.playerRecover();
         UI.updateBattleScreen();
 
         if (!BattleSystem.active) {
