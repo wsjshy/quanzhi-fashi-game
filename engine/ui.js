@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.82.0 · 系统合并优化</div>
+                ">v0.82.1 · 顶部精简+休息完善</div>
             </div>
         `;
 
@@ -1159,106 +1159,35 @@ const UI = {
                 "></div>
                 ` : ''}
                 
-                <!-- 顶部状态栏 -->
+                <!-- 顶部状态栏（精简版：只保留核心信息） -->
                 <div class="mobile-top-bar" style="
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    padding: 15px 25px;
+                    padding: 12px 20px;
                     background: rgba(0, 0, 0, 0.5);
                     border-bottom: 2px solid #444477;
+                    flex-wrap: wrap;
+                    gap: 8px;
                 ">
-                    <div style="display: flex; gap: 30px; align-items: center;">
-                        <div style="color: #ffd700; font-size: 20px; font-weight: bold;">
-                            ${location?.name || '未知地点'}
-                            ${(() => {
-                                // v0.73.0: 显示所属大地图
-                                if (typeof DataMaps !== 'undefined') {
-                                    for (const mapId in DataMaps) {
-                                        const map = DataMaps[mapId];
-                                        if (map.allLocations && map.allLocations.includes(location?.id)) {
-                                            return `<span style="font-size: 12px; color: #88ccff; margin-left: 10px; background: rgba(30, 50, 80, 0.6); padding: 2px 10px; border-radius: 6px; border: 1px solid #5588aa;">${map.icon} ${map.name}</span>`;
-                                        }
-                                    }
-                                }
-                                return '';
-                            })()}
-                            ${(() => {
-                                // v0.9.8: 地点探索状态标记
-                                const isExplored = Player.exploredLocations?.includes(location?.id);
-                                if (isExplored) {
-                                    return `<span style="font-size: 12px; color: #66ff66; margin-left: 8px; background: rgba(30, 80, 30, 0.5); padding: 2px 8px; border-radius: 6px; border: 1px solid #44aa44;">✓ 已探索</span>`;
-                                } else {
-                                    return `<span style="font-size: 12px; color: #ffaa44; margin-left: 8px; background: rgba(80, 50, 20, 0.5); padding: 2px 8px; border-radius: 6px; border: 1px solid #aa7744;">❓ 未探索</span>`;
-                                }
-                            })()}
-                            ${(() => {
-                                // v0.9.9: 行动探索进度
-                                const skipActions = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full'];
-                                const totalActions = (location?.actions || []).filter(a => !skipActions.includes(a.id)).length;
-                                const exploredActions = Player.exploredActions?.[location?.id]?.length || 0;
-                                if (totalActions > 0) {
-                                    const percent = Math.floor((exploredActions / totalActions) * 100);
-                                    const isComplete = exploredActions >= totalActions;
-                                    const color = isComplete ? '#66ff66' : percent >= 50 ? '#ffcc44' : '#ff9944';
-                                    const icon = isComplete ? '✅' : '📋';
-                                    return `<span style="font-size: 12px; color: ${color}; margin-left: 8px; background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 6px; border: 1px solid ${color};" title="已探索 ${exploredActions}/${totalActions} 个行动">${icon} 行动探索 ${exploredActions}/${totalActions}</span>`;
-                                }
-                                return '';
-                            })()}
-                        </div>
+                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                        <div style="color: #aaa; font-size: 14px;">📅 ${TimeSystem.getDateString()} ${TimeSystem.getDayOfWeekName()} ${TimeSystem.getCurrentPeriodInfo().icon} ${TimeSystem.formatHour()}</div>
                         ${(() => {
-                            // v0.9.1: 探索度显示
-                            if (typeof MapSystem.getExplorationProgress === 'function') {
-                                const progress = MapSystem.getExplorationProgress();
-                                const color = progress.isComplete ? '#66ff66' : progress.percent >= 50 ? '#ffcc44' : '#ff8844';
-                                const icon = progress.isComplete ? '🏆' : '🗺️';
-                                return `<div style="color: ${color}; font-size: 13px; background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 10px; border: 1px solid ${color};" title="已探索 ${progress.explored}/${progress.total} 个地点">${icon} 探索度 ${progress.percent}%</div>`;
-                            }
-                            return '';
-                        })()}
-                        ${(() => {
-                            // v0.9.2: 疲劳状态显示
                             const fatigue = Player.fatigueLevel || 0;
-                            if (fatigue >= 2) {
-                                return `<div style="color: #ff4444; font-size: 13px; background: rgba(120, 20, 20, 0.6); padding: 4px 12px; border-radius: 10px; border: 1px solid #ff4444; animation: pulse 1s infinite;" title="重伤状态：攻击-30%，防御-15%">⚠️ 重伤</div>`;
-                            } else if (fatigue === 1) {
-                                return `<div style="color: #ffaa44; font-size: 13px; background: rgba(100, 60, 20, 0.5); padding: 4px 12px; border-radius: 10px; border: 1px solid #ffaa44;" title="疲劳状态：攻击-15%">😓 疲劳</div>`;
-                            }
+                            if (fatigue >= 2) return `<div style="color: #ff4444; font-size: 12px; background: rgba(120,20,20,0.6); padding: 3px 10px; border-radius: 8px; border: 1px solid #ff4444;" title="重伤：攻击-30%防御-15%">⚠️ 重伤</div>`;
+                            if (fatigue === 1) return `<div style="color: #ffaa44; font-size: 12px; background: rgba(100,60,20,0.5); padding: 3px 10px; border-radius: 8px; border: 1px solid #ffaa44;" title="疲劳：攻击-15%">😓 疲劳</div>`;
                             return '';
                         })()}
-                        ${(() => {
-                            const chapter = (typeof StoryChapterSystem !== 'undefined') ? StoryChapterSystem.getCurrentChapter() : null;
-                            if (chapter) {
-                                return `<div style="color: #cc99ff; font-size: 13px; background: rgba(80, 40, 120, 0.5); padding: 4px 12px; border-radius: 10px; border: 1px solid #9966cc;">📖 ${chapter.name}</div>`;
-                            }
-                            return '';
-                        })()}
-                        <div style="color: #aaa; font-size: 14px;">📅 ${TimeSystem.getDateString()} ${TimeSystem.getDayOfWeekName()} ${TimeSystem.getCurrentPeriodInfo().icon} ${TimeSystem.getCurrentPeriodInfo().name} ${TimeSystem.formatHour()}</div>
-                        ${(() => {
-                            // v0.9.5: 一键上课 - 有课时显示可点击按钮
-                            const currentClass = TimeSystem.getCurrentClass(location);
-                            if (currentClass) {
-                                const teacher = DataManager.getCharacter(currentClass.teacher);
-                                const isAtSchool = location?.id === 'tianlan_school' || location?.id === 'mingwen_girls_school';
-                                if (isAtSchool) {
-                                    // 在学校：点击直接上课
-                                    return `<div onclick="Game.performAction('attend_class')" style="color: #66ffcc; font-size: 13px; background: rgba(30, 80, 60, 0.6); padding: 6px 14px; border-radius: 10px; border: 1px solid #44aa88; cursor: pointer; font-weight: bold;" title="点击直接上课">📚 现在有课：${currentClass.name}（点击上课）</div>`;
-                                } else {
-                                    // 不在学校：提示前往
-                                    return `<div style="color: #ffcc66; font-size: 13px; background: rgba(80, 60, 30, 0.5); padding: 4px 10px; border-radius: 10px; border: 1px solid #aa8844;" title="前往学校上课">📚 有课：${currentClass.name}（前往天兰魔法学院）</div>`;
-                                }
-                            }
-                            return '';
-                        })()}
-                        ${TimeSystem.isNight() ? `
-                            <div style="color: #ff9966; font-size: 13px; background: rgba(100, 50, 50, 0.5); padding: 4px 10px; border-radius: 10px;">
-                                🌙 夜晚：敌人更强，奖励 +30%
-                            </div>
-                        ` : ''}
+                        ${TimeSystem.isNight() ? `<div style="color: #ff9966; font-size: 12px; background: rgba(100,50,50,0.5); padding: 3px 10px; border-radius: 8px;">🌙 夜晚敌人更强 +30%</div>` : ''}
                     </div>
-                    <div style="display: flex; gap: 15px; align-items: center;">
-                        <span style="color: #ffd700;">💰 ${Player.gold}</span>
+                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                        <span style="color: #ffd700; font-size: 15px;">💰 ${Player.gold}</span>
+                        <span style="color: #ff8888; font-size: 14px;">❤️ ${Player.hp}/${Player.maxHp}</span>
+                        <span style="color: #88aaff; font-size: 14px;">💧 ${Player.mp}/${Player.maxMp}</span>
+                        <span style="color: #88ff88; font-size: 14px;">⚡ ${Player.stamina}/${Player.maxStamina || 100}</span>
+                        <span style="color: #aaffaa; font-size: 15px; font-weight: bold;">Lv.${Player.level}</span>
+                    </div>
+                </div>
                         <span style="color: #ff6666;">❤️ ${Player.hp}/${stats.maxHp}</span>
                         <span style="color: #6666ff;">💧 ${Player.mp}/${stats.maxMp}</span>
                         ${(() => {
@@ -1396,6 +1325,17 @@ const UI = {
                                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
                                         <div>
                                             <span style="color: #ffd700; font-size: 20px; font-weight: bold;">${location?.mapIcon || '📍'} ${location?.name || '未知地点'}</span>
+                                            ${(() => {
+                                                if (typeof DataMaps !== 'undefined') {
+                                                    for (const mapId in DataMaps) {
+                                                        const map = DataMaps[mapId];
+                                                        if (map.allLocations && map.allLocations.includes(location?.id)) {
+                                                            return `<span style="font-size: 12px; color: #88ccff; margin-left: 10px; background: rgba(30, 50, 80, 0.6); padding: 2px 10px; border-radius: 6px; border: 1px solid #5588aa;">${map.icon} ${map.name}</span>`;
+                                                        }
+                                                    }
+                                                }
+                                                return '';
+                                            })()}
                                             <span style="font-size: 12px; color: #aaccff; margin-left: 10px; background: rgba(50, 70, 100, 0.6); padding: 3px 10px; border-radius: 8px; border: 1px solid #5577aa;">${tag}</span>
                                         </div>
                                         <span style="font-size: 12px; color: ${safetyColor}; background: rgba(0,0,0,0.3); padding: 3px 10px; border-radius: 8px; border: 1px solid ${safetyColor};">${safetyLevel}</span>

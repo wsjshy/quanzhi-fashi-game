@@ -1616,12 +1616,16 @@ const Game = {
         UI.showMessage(msg);
     },
 
-    // v0.82.0: 统一休息菜单（合并原地休息/充分休息/睡到明天）
-    showRestMenu() {        const hpMissing = (Player.maxHp - Player.hp) / Player.maxHp;
-        const mpMissing = (Player.maxMp - Player.mp) / Player.maxMp;
-        const staMissing = ((Player.maxStamina || 100) - Player.stamina) / (Player.maxStamina || 100);
+    // v0.82.1: 统一休息菜单（合并原地休息/充分休息/宿舍睡眠/睡到明天）
+    showRestMenu() {
+        const maxSta = Player.maxStamina || 100;
+        const hpMissing = Math.max(0, (Player.maxHp - Player.hp) / Player.maxHp);
+        const mpMissing = Math.max(0, (Player.maxMp - Player.mp) / Player.maxMp);
+        const staMissing = Math.max(0, (maxSta - Player.stamina) / maxSta);
         const fullRestHours = Math.max(1, Math.min(4, Math.ceil(Math.max(hpMissing, mpMissing, staMissing) * 3)));
-        const allFull = Player.hp >= Player.maxHp && Player.mp >= Player.maxMp && Player.stamina >= (Player.maxStamina || 100) && Player.fatigueLevel <= 0;
+        const allFull = Player.hp >= Player.maxHp && Player.mp >= Player.maxMp && Player.stamina >= maxSta && Player.fatigueLevel <= 0;
+        const location = MapSystem.getCurrentLocation();
+        const hasSleepAction = location?.actions?.some(a => a.id === 'sleep');
 
         const overlay = document.createElement('div');
         overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);';
@@ -1632,7 +1636,6 @@ const Game = {
                     <div class="rest-close-btn" style="padding:6px 14px;background:#333355;border:1px solid #555577;border-radius:8px;color:#aaa;cursor:pointer;font-size:14px;">✕ 关闭</div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:10px;">
-                    <!-- 原地休息 -->
                     <div class="rest-option" data-type="quick" style="padding:14px;background:linear-gradient(135deg,rgba(40,80,40,0.8),rgba(60,120,60,0.8));border:2px solid #448844;border-radius:12px;cursor:pointer;transition:all 0.2s;">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
                             <span style="font-size:16px;font-weight:bold;color:#ddffdd;">💚 原地休息</span>
@@ -1640,22 +1643,30 @@ const Game = {
                         </div>
                         <div style="font-size:12px;color:#99bb99;">恢复30%HP、20%MP、30体力，消除疲劳。野外有小概率遇敌。</div>
                     </div>
-                    <!-- 充分休息 -->
                     <div class="rest-option" data-type="full" style="padding:14px;background:linear-gradient(135deg,rgba(60,40,80,0.8),rgba(100,60,140,0.8));border:2px solid #8855aa;border-radius:12px;cursor:pointer;transition:all 0.2s;${allFull ? 'opacity:0.5;cursor:not-allowed;' : ''}">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
                             <span style="font-size:16px;font-weight:bold;color:#eeddff;">💜 充分休息</span>
                             <span style="font-size:12px;color:#cc99ff;">⏱️ ${fullRestHours}小时</span>
                         </div>
-                        <div style="font-size:12px;color:#bb99dd;">根据缺失状态消耗时间，HP/MP/体力全部回满，消除疲劳。${allFull ? '（状态已满，无需休息）' : ''}</div>
+                        <div style="font-size:12px;color:#bb99dd;">根据缺失状态消耗1-4小时，HP/MP/体力全部回满，消除疲劳。${allFull ? '（状态已满）' : ''}</div>
                     </div>
-                    <!-- 睡到明天 -->
-                    <div class="rest-option" data-type="sleep" style="padding:14px;background:linear-gradient(135deg,rgba(40,40,80,0.8),rgba(60,60,120,0.8));border:2px solid #5566aa;border-radius:12px;cursor:pointer;transition:all 0.2s;">
+                    ${hasSleepAction ? `
+                    <div class="rest-option" data-type="sleepAction" style="padding:14px;background:linear-gradient(135deg,rgba(50,50,90,0.8),rgba(70,70,130,0.8));border:2px solid #6677bb;border-radius:12px;cursor:pointer;transition:all 0.2s;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <span style="font-size:16px;font-weight:bold;color:#ccdfff;">🛏️ 宿舍睡眠</span>
+                            <span style="font-size:12px;color:#99bbff;">⏱️ 8小时</span>
+                        </div>
+                        <div style="font-size:12px;color:#8899bb;">在宿舍好好睡一觉到明早，22点前入睡效果最好，大幅恢复状态。</div>
+                    </div>
+                    ` : `
+                    <div class="rest-option" data-type="rest" style="padding:14px;background:linear-gradient(135deg,rgba(40,40,80,0.8),rgba(60,60,120,0.8));border:2px solid #5566aa;border-radius:12px;cursor:pointer;transition:all 0.2s;">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
                             <span style="font-size:16px;font-weight:bold;color:#ccdfff;">🌙 睡到明天</span>
                             <span style="font-size:12px;color:#99bbff;">⏱️ 至次日6:00</span>
                         </div>
                         <div style="font-size:12px;color:#8899bb;">直接休息到第二天清晨，全部恢复。熬夜睡觉恢复效果较差。</div>
                     </div>
+                    `}
                 </div>
             </div>
         `;
@@ -1671,7 +1682,8 @@ const Game = {
                 setTimeout(() => {
                     if (type === 'quick') Game.quickRest();
                     else if (type === 'full') Game.quickRestFull(fullRestHours);
-                    else if (type === 'sleep') Game.rest();
+                    else if (type === 'sleepAction') Game.performAction('sleep');
+                    else if (type === 'rest') Game.rest();
                 }, 100);
             };
         });
