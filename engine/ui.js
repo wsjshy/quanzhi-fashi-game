@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.48.0 · 影响力事件链</div>
+                ">v0.49.0 · 智能目标引导</div>
             </div>
         `;
 
@@ -990,7 +990,15 @@ const UI = {
             }
         }
         
-        // 4. 新手阶段（1-3级）提示
+        // 4. 中期智能推荐（Lv.4+无任务时）
+        if (Player.level >= 4) {
+            const recommendation = this.getMidGameRecommendation();
+            if (recommendation) {
+                return recommendation;
+            }
+        }
+
+        // 5. 新手阶段（1-3级）提示
         if (Player.level <= 3) {
             if (Player.currentLocation === 'tianlan_school') {
                 return '新手建议：先在学校修炼提升等级，然后去雪峰山探索完成任务';
@@ -999,7 +1007,7 @@ const UI = {
             }
         }
         
-        // 5. 通用提示
+        // 6. 通用提示
         const expPercent = (Player.exp / Player.expToNext) * 100;
         if (expPercent < 30) {
             return '继续修炼或刷怪升级，解锁更多技能和内容';
@@ -1008,6 +1016,66 @@ const UI = {
         } else {
             return `快升级了！还差 ${Player.expToNext - Player.exp} 经验，再修炼几次吧`;
         }
+    },
+
+    /**
+     * v0.49.0: 中期智能推荐
+     * 基于玩家状态返回最优先的推荐行动，无推荐时返回null
+     */
+    getMidGameRecommendation() {
+        // 1. 装备缺失推荐
+        if (!Player.equipment || !Player.equipment.weapon) {
+            return '💡 推荐：去小卖部购买武器（你还没有装备武器，战斗会很吃力）';
+        }
+        if (!Player.equipment || !Player.equipment.armor) {
+            return '💡 推荐：去小卖部购买防具（没有防具时受到的伤害更高）';
+        }
+
+        // 2. 药水不足推荐
+        const potionCount = Inventory.getItemCount ? Inventory.getItemCount('health_potion') : 0;
+        if (potionCount < 3) {
+            return `💡 推荐：购买治愈药水（当前只有${potionCount}瓶，探索和战斗需要足够的药水）`;
+        }
+
+        // 3. NPC关系空白推荐
+        const hasNPCRelationship = this._hasAnyNPCRelationship(10);
+        if (!hasNPCRelationship) {
+            return '💡 推荐：找人聊天建立关系（与NPC建立关系可以解锁更多剧情和互动事件）';
+        }
+
+        // 4. 影响力低推荐
+        if ((Player.influence || 0) < 10) {
+            return '💡 推荐：完成任务或帮助NPC提升影响力（影响力达到一定程度可以改变剧情走向）';
+        }
+
+        // 5. 可突破境界推荐
+        if (Player.canBreakthrough) {
+            const bt = Player.canBreakthrough();
+            if (bt && bt.canBreakthrough) {
+                return '💡 推荐：突破境界（你已满足突破条件，突破后实力大幅提升）';
+            }
+        }
+
+        // 6. 探索度低推荐
+        if (Player.explorationComplete && Array.isArray(Player.explorationComplete)) {
+            // 如果探索完成的地点少于2个，推荐探索
+            if (Player.explorationComplete.length < 2) {
+                return '💡 推荐：探索更多地点（探索可以发现新事件、物品和NPC）';
+            }
+        }
+
+        return null;
+    },
+
+    /**
+     * v0.49.0: 检查是否有任何NPC关系达到阈值
+     */
+    _hasAnyNPCRelationship(threshold) {
+        if (typeof NPCStateSystem === 'undefined' || !NPCStateSystem._npcStates) return false;
+        for (const [npcId, state] of Object.entries(NPCStateSystem._npcStates)) {
+            if ((state.opinion || 0) >= threshold) return true;
+        }
+        return false;
     },
     
     /**
