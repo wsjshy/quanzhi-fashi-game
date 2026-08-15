@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.72.0 · 经济系统平衡</div>
+                ">v0.73.0 · 游戏节奏优化</div>
             </div>
         `;
 
@@ -1158,6 +1158,18 @@ const UI = {
                     <div style="display: flex; gap: 30px; align-items: center;">
                         <div style="color: #ffd700; font-size: 20px; font-weight: bold;">
                             ${location?.name || '未知地点'}
+                            ${(() => {
+                                // v0.73.0: 显示所属大地图
+                                if (typeof DataMaps !== 'undefined') {
+                                    for (const mapId in DataMaps) {
+                                        const map = DataMaps[mapId];
+                                        if (map.allLocations && map.allLocations.includes(location?.id)) {
+                                            return `<span style="font-size: 12px; color: #88ccff; margin-left: 10px; background: rgba(30, 50, 80, 0.6); padding: 2px 10px; border-radius: 6px; border: 1px solid #5588aa;">${map.icon} ${map.name}</span>`;
+                                        }
+                                    }
+                                }
+                                return '';
+                            })()}
                             ${(() => {
                                 // v0.9.8: 地点探索状态标记
                                 const isExplored = Player.exploredLocations?.includes(location?.id);

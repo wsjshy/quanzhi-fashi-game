@@ -127,11 +127,11 @@ const DataLocations = {
         timeCost: 1,
         staminaCost: 15,
         effects: {
-          exp: 20,
+          exp: 25,
           hp: -5,
           mp: -10
         },
-        eventChance: 0.2,
+        eventChance: 0.15,
         events: [
           "event_breakthrough",
           "event_training_fail"
@@ -145,11 +145,11 @@ const DataLocations = {
         timeCost: 1,
         staminaCost: 5,
         effects: {
-          exp: 5,
+          exp: 8,
           mp: 25,
           hp: 5
         },
-        eventChance: 0.15,
+        eventChance: 0.1,
         events: [
           "event_breakthrough"
         ]

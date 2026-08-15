@@ -270,7 +270,7 @@ const MapSystem = {
 
         // 旅行随机事件
         let travelEvent = null;
-        if (Math.random() < 0.15) { // 15%概率触发旅行事件
+        if (Math.random() < 0.10) { // v0.73.0: 旅行事件概率从15%降到10%，减少探索打断
             travelEvent = EventSystem.triggerRandomEvent('travel', 0.1);
         }
 
