@@ -915,7 +915,7 @@ const Game = {
         // v0.34.0: NPC偶遇互动事件 - 40%概率触发
         // v0.48.0: 检查所有遇到的NPC，而不只是第一个
         let interactionEvent = null;
-        if (encounters.length > 0 && Math.random() < 0.4) {
+        if (encounters.length > 0 && Math.random() < 0.8) {
             // 随机打乱顺序，避免总是第一个NPC触发
             const shuffled = [...encounters].sort(() => Math.random() - 0.5);
             for (const enc of shuffled) {
@@ -1185,8 +1185,12 @@ const Game = {
 
             // v0.24.0: NPC自主日程——修炼时也可能遇到NPC
             const cultivateNPCEncounter = this._checkNPCEncounter();
+            let cultivateInteractionEvent = null;
             if (cultivateNPCEncounter) {
                 message += cultivateNPCEncounter.message;
+                if (cultivateNPCEncounter.interactionEvent) {
+                    cultivateInteractionEvent = cultivateNPCEncounter.interactionEvent;
+                }
             }
 
             // v0.25.0: 修炼时检查任务触发
@@ -1198,6 +1202,12 @@ const Game = {
             }
 
             UI.showMessage(message.trim());
+
+            // v0.64.0: 修炼时触发NPC互动事件（关系驱动任务/NPC联动）
+            if (cultivateInteractionEvent) {
+                this.showEvent(cultivateInteractionEvent.id);
+                return;
+            }
             
             // 刷新界面
             UI.renderMapScreen();

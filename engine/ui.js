@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.63.0 · NPC联动</div>
+                ">v0.63.1 · 事件触发修复</div>
             </div>
         `;
 
