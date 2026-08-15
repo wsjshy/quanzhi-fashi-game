@@ -279,6 +279,67 @@ const DataCharacters = {
               nextNode: "training_insights"
             },
             {
+              id: "ask_motivation",
+              text: "你为什么这么拼命修炼？",
+              condition: { minOpinion: 10, notMemoryTags: ["player_asked_motivation"] },
+              effects: {
+                opinion: 2,
+                addMemory: { type: "conversation", content: "玩家问我为什么拼命修炼", importance: 0.5, tags: ["player_asked_motivation"] }
+              },
+              nextNode: "about_motivation"
+            },
+            {
+              id: "ask_what_is_strong",
+              text: "你觉得什么样的法师才算强？",
+              condition: { minOpinion: 15, notMemoryTags: ["player_asked_strong"] },
+              effects: {
+                opinion: 3,
+                addMemory: { type: "conversation", content: "玩家问我什么是强", importance: 0.5, tags: ["player_asked_strong"] }
+              },
+              nextNode: "about_strong"
+            },
+            {
+              id: "share_confusion",
+              text: "我最近修炼有点迷茫...",
+              condition: { minOpinion: 20, notMemoryTags: ["player_shared_confusion"] },
+              effects: {
+                opinion: 3,
+                trust: 2,
+                addMemory: { type: "conversation", content: "玩家向我倾诉修炼迷茫", importance: 0.5, tags: ["player_shared_confusion"] }
+              },
+              nextNode: "confusion_response"
+            },
+            {
+              id: "ask_dream",
+              text: "你以后想做什么？",
+              condition: { minOpinion: 30, notMemoryTags: ["player_asked_mofan_dream"] },
+              effects: {
+                opinion: 4,
+                trust: 3,
+                addMemory: { type: "conversation", content: "玩家问我以后想做什么", importance: 0.6, tags: ["player_asked_mofan_dream"] }
+              },
+              nextNode: "about_mofan_dream"
+            },
+            {
+              id: "train_together",
+              text: "一起去修炼吗？",
+              condition: { minOpinion: 25, notNpcFlags: ["trained_together"] },
+              effects: {
+                opinion: 3,
+                exp: 20,
+                npcFlags: { trained_together: true },
+                addMemory: { type: "event", content: "和玩家一起修炼过", importance: 0.4, tags: ["trained_together"] }
+              },
+              nextNode: "train_together_response"
+            },
+            {
+              id: "mofan_deep_recall",
+              text: "（莫凡看到你，像是看到了可以交心的兄弟...）",
+              condition: { anyMemoryTags: ["player_asked_motivation", "player_asked_mofan_dream", "player_shared_confusion"], minOpinion: 30 },
+              effects: {},
+              nextNode: "mofan_deep_recall_node"
+            },
+            {
               id: "about_mu_ningxue_truth",
               text: "聊聊穆宁雪的事",
               condition: {
@@ -419,6 +480,226 @@ const DataCharacters = {
           choices: [
             { id: "discuss", text: "好，聊聊", effects: { opinion: 2, exp: 10 }, nextNode: "default" },
             { id: "back", text: "下次吧", effects: {}, nextNode: "default" }
+          ]
+        },
+        about_motivation: {
+          id: "about_motivation",
+          texts: [
+            "莫凡的表情认真了几分。",
+            "为什么拼命？",
+            "（他握紧了拳头。）",
+            "因为我有要保护的人。",
+            "（他的语气很平静，但眼神很坚定。）",
+            "心夏身体不好，我得变强，才能让她过上好日子。"
+          ],
+          mood: "serious",
+          choices: [
+            { id: "respect", text: "你是个好哥哥", effects: { opinion: 4, trust: 3 }, nextNode: "motivation_respect" },
+            { id: "relate", text: "我也有要保护的人", effects: { opinion: 3, trust: 2 }, nextNode: "default" },
+            { id: "ask_xinxia", text: "心夏是谁？", condition: { minOpinion: 20 }, effects: { opinion: 2 }, nextNode: "about_xinxia" }
+          ]
+        },
+        motivation_respect: {
+          id: "motivation_respect",
+          texts: [
+            "莫凡挠了挠头，有些不好意思。",
+            "嘿嘿，也没那么好啦。",
+            "（他笑了笑，但眼神里的认真没有消失。）",
+            "总之，变强就对了！"
+          ],
+          mood: "casual",
+          choices: [
+            { id: "back", text: "一起加油", effects: { opinion: 2 }, nextNode: "default" }
+          ]
+        },
+        about_xinxia: {
+          id: "about_xinxia",
+          texts: [
+            "莫凡的表情柔和了下来。",
+            "心夏是我妹妹。",
+            "（他的声音放轻了。）",
+            "她腿不好，从小就坐轮椅。但她很坚强，比我坚强多了。",
+            "（他顿了顿。）",
+            "她在博城的福利院，我每周都去看她。"
+          ],
+          mood: "gentle",
+          effects: { npcFlags: { knows_xinxia: true } },
+          choices: [
+            { id: "kind", text: "她一定很幸福，有你这样的哥哥", effects: { opinion: 5, trust: 4 }, nextNode: "default" },
+            { id: "visit", text: "有机会我也想去看看她", condition: { minOpinion: 35 }, effects: { opinion: 5, trust: 5, npcFlags: { wants_to_visit_xinxia: true } }, nextNode: "default" }
+          ]
+        },
+        about_strong: {
+          id: "about_strong",
+          texts: [
+            "莫凡想了想。",
+            "什么是强？",
+            "（他的眼神变得锐利。）",
+            "不是等级高，不是技能多。",
+            "是在该站出来的时候，能站出来。",
+            "（他握紧拳头。）",
+            "是能保护自己想保护的人，这才是真的强。"
+          ],
+          mood: "serious",
+          choices: [
+            { id: "agree", text: "我也是这么想的", effects: { opinion: 4, trust: 3 }, nextNode: "strong_agree" },
+            { id: "question", text: "但有时候实力不够，站出来也没用", effects: { opinion: 1 }, nextNode: "strong_question" }
+          ]
+        },
+        strong_agree: {
+          id: "strong_agree",
+          texts: [
+            "莫凡拍了拍你的肩膀。",
+            "好！我就知道你和我是一类人！",
+            "（他笑得很爽朗。）",
+            "走，一起修炼去！"
+          ],
+          mood: "happy",
+          effects: { exp: 15 },
+          choices: [
+            { id: "go", text: "走！", effects: { opinion: 3 }, nextNode: "default" }
+          ]
+        },
+        strong_question: {
+          id: "strong_question",
+          texts: [
+            "莫凡摇了摇头。",
+            "实力不够就去练啊！",
+            "（他的语气很认真。）",
+            "站出来可能没用，但不站出来一定没用。",
+            "我莫凡，从来不会在该站出来的时候躲着。"
+          ],
+          mood: "determined",
+          choices: [
+            { id: "inspired", text: "受教了", effects: { opinion: 2, exp: 10 }, nextNode: "default" }
+          ]
+        },
+        confusion_response: {
+          id: "confusion_response",
+          texts: [
+            "莫凡看着你，表情有些意外。",
+            "迷茫？",
+            "（他挠了挠头。）",
+            "说实话，我也经常迷茫。",
+            "（他坐下来，语气变得认真。）",
+            "但我发现，迷茫的时候就去修炼。练着练着，答案就出来了。",
+            "想太多没用，动手才是真的。"
+          ],
+          mood: "thoughtful",
+          choices: [
+            { id: "thanks", text: "谢谢你，我试试", effects: { opinion: 3, trust: 2, exp: 15 }, nextNode: "default" },
+            { id: "deeper", text: "你迷茫的时候都在想什么？", condition: { minOpinion: 30 }, effects: { opinion: 2, trust: 3 }, nextNode: "confusion_deeper" }
+          ]
+        },
+        confusion_deeper: {
+          id: "confusion_deeper",
+          texts: [
+            "莫凡沉默了一会儿。",
+            "想什么？",
+            "（他苦笑了一下。）",
+            "想自己是不是太弱了，想能不能保护好心夏，想明天的修炼有没有用。",
+            "（他抬起头，看着天空。）",
+            "但想完了，还是得继续练。因为不练，就真的什么都改变不了。"
+          ],
+          mood: "thoughtful",
+          effects: { trust: 3 },
+          choices: [
+            { id: "understand", text: "我懂了", effects: { opinion: 3, trust: 2 }, nextNode: "default" }
+          ]
+        },
+        about_mofan_dream: {
+          id: "about_mofan_dream",
+          texts: [
+            "莫凡的眼睛亮了起来。",
+            "以后想做什么？",
+            "（他站起来，伸了个懒腰。）",
+            "我要成为世界上最强的法师！",
+            "（他的语气充满自信，但不是狂妄。）",
+            "然后让心夏过上最好的日子，让所有看不起我的人都刮目相看！",
+            "（他看向你。）",
+            "你呢？你以后想做什么？"
+          ],
+          mood: "determined",
+          choices: [
+            { id: "share_dream", text: "我也想变强，保护重要的人", effects: { opinion: 5, trust: 4 }, nextNode: "dream_share" },
+            { id: "not_sure", text: "我还没想好", effects: { opinion: 2 }, nextNode: "dream_not_sure" },
+            { id: "different", text: "我想走和你不一样的路", condition: { minOpinion: 40 }, effects: { opinion: 3, trust: 2 }, nextNode: "dream_different" }
+          ]
+        },
+        dream_share: {
+          id: "dream_share",
+          texts: [
+            "莫凡用力点了点头。",
+            "好！那我们就一起变强！",
+            "（他伸出拳头。）",
+            "到时候，看谁先成为最强！"
+          ],
+          mood: "happy",
+          effects: { npcFlags: { shared_dream: true }, exp: 20 },
+          choices: [
+            { id: "compete", text: "一言为定！", effects: { opinion: 4, trust: 3 }, nextNode: "default" }
+          ]
+        },
+        dream_not_sure: {
+          id: "dream_not_sure",
+          texts: [
+            "莫凡拍了拍你的肩膀。",
+            "没想好也正常。",
+            "（他笑了笑。）",
+            "我也是走着走着才知道自己要什么的。",
+            "先变强吧，变强了，选择自然就多了。"
+          ],
+          mood: "casual",
+          choices: [
+            { id: "back", text: "说得对", effects: { opinion: 2 }, nextNode: "default" }
+          ]
+        },
+        dream_different: {
+          id: "dream_different",
+          texts: [
+            "莫凡愣了一下，然后笑了。",
+            "不一样的路？",
+            "（他的眼神里有欣赏。）",
+            "有意思。我就喜欢有自己想法的人。",
+            "（他伸出手。）",
+            "不管走什么路，变强了就是好样的。"
+          ],
+          mood: "respectful",
+          effects: { npcFlags: { respects_player_path: true } },
+          choices: [
+            { id: "shake", text: "（握手）", effects: { opinion: 4, trust: 4 }, nextNode: "default" }
+          ]
+        },
+        train_together_response: {
+          id: "train_together_response",
+          texts: [
+            "莫凡眼睛一亮。",
+            "一起修炼？好啊！",
+            "（他活动了一下手腕。）",
+            "正好，我最近练了一招新的，给你看看！",
+            "（你们一起修炼了一下午，莫凡的修炼方式很野，但效果出奇地好。）"
+          ],
+          mood: "happy",
+          effects: { exp: 30, opinion: 3 },
+          choices: [
+            { id: "learned", text: "收获很大，谢了", effects: { opinion: 2, trust: 2 }, nextNode: "default" },
+            { id: "again", text: "下次再一起", effects: { opinion: 3 }, nextNode: "default" }
+          ]
+        },
+        mofan_deep_recall_node: {
+          id: "mofan_deep_recall_node",
+          texts: [
+            "莫凡看到你，咧嘴笑了。",
+            "嘿，是你啊！",
+            "（他拍了拍你的肩膀，很自然的那种。）",
+            "最近修炼怎么样？上次说的迷茫，好些了吗？"
+          ],
+          mood: "friendly",
+          choices: [
+            { id: "better", text: "好多了，谢谢你的建议", condition: { memoryTags: ["player_shared_confusion"] }, effects: { opinion: 3, trust: 2 }, nextNode: "default" },
+            { id: "still", text: "还在找方向", condition: { memoryTags: ["player_shared_confusion"] }, effects: { opinion: 2 }, nextNode: "default" },
+            { id: "training", text: "一直在修炼，没停下", effects: { opinion: 2 }, nextNode: "default" },
+            { id: "greet", text: "嗯，挺好的", effects: {}, nextNode: "default" }
           ]
         },
         about_school: {

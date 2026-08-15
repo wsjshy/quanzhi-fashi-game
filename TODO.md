@@ -24,9 +24,12 @@
 
 #### 🟠 莫凡对话扩充
 
-- [ ] **2.1 角色表达选项**：在现有3个基础上增加日常互动、修炼讨论、竞争/合作选项
-- [ ] **2.2 记忆回访完善**：现有3个记忆回访已完成，增加更多
-- [ ] **2.3 莫凡日常状态**：莫凡在做什么、心情如何
+- [x] **2.1 角色表达选项**：新增5个深度选项（修炼动机/什么是强/倾诉迷茫/梦想/一起修炼）
+- [x] **2.2 每个选项有记忆标签**：player_asked_motivation/player_asked_strong/player_shared_confusion/player_asked_mofan_dream/trained_together
+- [x] **2.3 记忆回访**：mofan_deep_recall_node，分享过深层记忆后莫凡会引用
+- [x] **2.4 子节点丰富**：motivation_respect/about_xinxia/strong_agree/strong_question/confusion_deeper/dream_share/dream_not_sure/dream_different等12个节点
+- [x] **2.5 人设检查**：莫凡热血/坚定/护妹/有点 cocky，符合原著人设
+- [x] **2.6 心夏线**：可了解莫凡的妹妹心夏，高好感可表示想去看望
 
 #### 🟡 唐月对话扩充
 
