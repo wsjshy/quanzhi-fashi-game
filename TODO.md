@@ -33,8 +33,12 @@
 
 #### 🟡 唐月对话扩充
 
-- [ ] **3.1 老师视角互动**：请教、关心、秘密探讨
-- [ ] **3.2 记忆标签和回访**
+- [x] **3.1 老师视角互动**：新增5个选项（方向指导/倾诉疲惫/为什么当老师/害怕什么/表达决心）
+- [x] **3.2 每个选项有记忆标签**：player_asked_direction/player_shared_weariness/player_asked_why_teacher/player_asked_fear/player_expressed_determination
+- [x] **3.3 记忆回访**：tangyue_deep_recall_node，分享过深层记忆后唐月会引用
+- [x] **3.4 子节点丰富**：direction_protect/direction_truth/direction_strength/teacher_weary/why_teacher_hint/fear_relate等10个节点
+- [x] **3.5 人设检查**：唐月温柔/关怀/有秘密（审判会暗部），符合原著
+- [x] **3.6 秘密线深化**：方向选择中"想知道真相"触发秘密暗示，"为什么当老师"高信任可触及秘密
 
 #### 🔵 系统支持
 

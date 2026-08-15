@@ -3101,6 +3101,69 @@ const DataCharacters = {
               nextNode: "training_advice"
             },
             {
+              id: "ask_direction",
+              text: "老师，您觉得我适合走什么方向？",
+              condition: { minOpinion: 10, notMemoryTags: ["player_asked_direction"] },
+              effects: {
+                opinion: 2,
+                trust: 1,
+                addMemory: { type: "conversation", content: "玩家问我他适合什么方向", importance: 0.4, tags: ["player_asked_direction"] }
+              },
+              nextNode: "direction_advice"
+            },
+            {
+              id: "share_weariness",
+              text: "老师，修炼有时候觉得很累...",
+              condition: { minOpinion: 15, notMemoryTags: ["player_shared_weariness"] },
+              effects: {
+                opinion: 2,
+                trust: 3,
+                addMemory: { type: "conversation", content: "玩家向我倾诉修炼的疲惫", importance: 0.5, tags: ["player_shared_weariness"] }
+              },
+              nextNode: "weariness_response"
+            },
+            {
+              id: "ask_why_teacher",
+              text: "您为什么选择当老师？",
+              condition: { minOpinion: 20, notMemoryTags: ["player_asked_why_teacher"] },
+              effects: {
+                opinion: 3,
+                trust: 2,
+                addMemory: { type: "conversation", content: "玩家问我为什么当老师", importance: 0.5, tags: ["player_asked_why_teacher"] }
+              },
+              nextNode: "why_teacher"
+            },
+            {
+              id: "ask_fear",
+              text: "老师，您有害怕的东西吗？",
+              condition: { minOpinion: 30, notMemoryTags: ["player_asked_fear"] },
+              effects: {
+                opinion: 3,
+                trust: 4,
+                addMemory: { type: "conversation", content: "玩家问我害怕什么", importance: 0.6, tags: ["player_asked_fear"] }
+              },
+              nextNode: "about_fear"
+            },
+            {
+              id: "express_determination",
+              text: "老师，我想变得更强，保护大家",
+              condition: { minOpinion: 10, notMemoryTags: ["player_expressed_determination"] },
+              effects: {
+                opinion: 3,
+                trust: 2,
+                exp: 10,
+                addMemory: { type: "conversation", content: "玩家说想变强保护大家", importance: 0.5, tags: ["player_expressed_determination"] }
+              },
+              nextNode: "determination_response"
+            },
+            {
+              id: "tangyue_deep_recall",
+              text: "（唐月看到你，露出了温柔的笑容...）",
+              condition: { anyMemoryTags: ["player_shared_weariness", "player_asked_fear", "player_expressed_determination"], minOpinion: 25 },
+              effects: {},
+              nextNode: "tangyue_deep_recall_node"
+            },
+            {
               id: "ask_school",
               text: "问问学校的情况",
               condition: {
@@ -3363,6 +3426,210 @@ const DataCharacters = {
           mood: "tired",
           choices: [
             { id: "back", text: "...好", effects: {}, nextNode: "default" }
+          ]
+        },
+        direction_advice: {
+          id: "direction_advice",
+          texts: [
+            "（唐月认真地看着你。）",
+            "适合走什么方向？",
+            "（她思考了一下。）",
+            "这要看你自己。有人追求力量，有人追求守护，有人追求真相。",
+            "（她的语气很温柔。）",
+            "老师能教你的是方法，但方向要你自己选。",
+            "你心里最想做的是什么？"
+          ],
+          mood: "gentle",
+          choices: [
+            { id: "protect", text: "我想保护身边的人", effects: { opinion: 3, trust: 2, exp: 15 }, nextNode: "direction_protect" },
+            { id: "truth", text: "我想知道这个世界的真相", effects: { opinion: 2, trust: 3 }, nextNode: "direction_truth" },
+            { id: "strength", text: "我想变得更强", effects: { opinion: 2, exp: 10 }, nextNode: "direction_strength" }
+          ]
+        },
+        direction_protect: {
+          id: "direction_protect",
+          texts: [
+            "（唐月露出了欣慰的笑容。）",
+            "保护他人……这是最温柔也最艰难的路。",
+            "（她的眼神里有一丝复杂。）",
+            "但你要记住，想保护别人，先要有保护自己的力量。",
+            "老师相信你可以做到。"
+          ],
+          mood: "gentle",
+          effects: { npcFlags: { knows_player_goal_protect: true } },
+          choices: [
+            { id: "thanks", text: "谢谢老师", effects: { opinion: 2 }, nextNode: "default" }
+          ]
+        },
+        direction_truth: {
+          id: "direction_truth",
+          texts: [
+            "（唐月的表情微微变化。）",
+            "真相……",
+            "（她沉默了一会儿。）",
+            "这个世界有很多你不知道的事。有些真相，知道了反而危险。",
+            "（她看着你，眼神认真。）",
+            "但如果你真的想知道，就变强吧。强到足以承载真相。"
+          ],
+          mood: "serious",
+          effects: { npcFlags: { knows_player_goal_truth: true }, giveInfo: "tang_yue_hint_secret" },
+          choices: [
+            { id: "determined", text: "我会的", effects: { opinion: 3, trust: 3 }, nextNode: "default" }
+          ]
+        },
+        direction_strength: {
+          id: "direction_strength",
+          texts: [
+            "（唐月点了点头。）",
+            "变强是最直接的目标。",
+            "（她笑了笑。）",
+            "但不要忘了，力量是为了什么而存在。",
+            "等你变强了，再来告诉老师你想用力量做什么。"
+          ],
+          mood: "gentle",
+          effects: { npcFlags: { knows_player_goal_strength: true } },
+          choices: [
+            { id: "promise", text: "好", effects: { opinion: 2 }, nextNode: "default" }
+          ]
+        },
+        weariness_response: {
+          id: "weariness_response",
+          texts: [
+            "（唐月的表情变得柔和。）",
+            "累了？",
+            "（她轻轻叹了口气。）",
+            "修炼确实很苦。每个人都会有觉得累的时候。",
+            "（她看着你，眼神温柔。）",
+            "但累了就休息一下，没关系的。",
+            "老师有时候也会觉得累呢。",
+            "（她顿了顿。）",
+            "重要的不是一直不停，而是休息之后还能继续。"
+          ],
+          mood: "gentle",
+          effects: { exp: 15, npcFlags: { comforted_player: true } },
+          choices: [
+            { id: "feel_better", text: "听您这么说，好多了", effects: { opinion: 4, trust: 3 }, nextNode: "default" },
+            { id: "ask_teacher", text: "老师也会累吗？", condition: { minOpinion: 25 }, effects: { opinion: 2, trust: 2 }, nextNode: "teacher_weary" }
+          ]
+        },
+        teacher_weary: {
+          id: "teacher_weary",
+          texts: [
+            "（唐月笑了笑，但笑容里有一丝疲惫。）",
+            "当然会啊。",
+            "（她望向窗外。）",
+            "老师也有很多事情要处理，有时候也会觉得力不从心。",
+            "（她收回目光，看着你。）",
+            "但看到你们这些学生在成长，就觉得一切都值得。"
+          ],
+          mood: "tired",
+          effects: { trust: 3 },
+          choices: [
+            { id: "care", text: "老师也要注意休息", effects: { opinion: 5, trust: 4 }, nextNode: "default" }
+          ]
+        },
+        why_teacher: {
+          id: "why_teacher",
+          texts: [
+            "（唐月愣了一下，然后笑了。）",
+            "为什么当老师？",
+            "（她想了想。）",
+            "因为……想看着年轻人成长吧。",
+            "（她的眼神很温柔。）",
+            "每个学生都有无限的可能。能在你们成长的路上帮一把，是很有意义的事。",
+            "（她顿了顿，语气轻了一些。）",
+            "而且……有些事，只有在这个位置上才能做。"
+          ],
+          mood: "gentle",
+          choices: [
+            { id: "understand", text: "您是个好老师", effects: { opinion: 4, trust: 3 }, nextNode: "default" },
+            { id: "curious", text: "只有在这个位置才能做的事？", condition: { minOpinion: 35, minTrust: 25 }, effects: { opinion: 1, trust: 2 }, nextNode: "why_teacher_hint" }
+          ]
+        },
+        why_teacher_hint: {
+          id: "why_teacher_hint",
+          texts: [
+            "（唐月的表情微微一变。）",
+            "……你很敏锐。",
+            "（她沉默了一会儿。）",
+            "有些事，现在还不能告诉你。",
+            "（她看着你，眼神复杂。）",
+            "等你足够强了，也许我会告诉你。",
+            "现在，专注于修炼吧。"
+          ],
+          mood: "serious",
+          effects: { npcFlags: { hinted_secret: true }, giveInfo: "tang_yue_secret_hint" },
+          choices: [
+            { id: "wait", text: "我会等那一天", effects: { opinion: 3, trust: 4 }, nextNode: "default" }
+          ]
+        },
+        about_fear: {
+          id: "about_fear",
+          texts: [
+            "（唐月的笑容消失了。）",
+            "害怕的东西？",
+            "（她沉默了很久。）",
+            "……有啊。",
+            "（她的声音很轻。）",
+            "害怕自己保护不了重要的人。",
+            "害怕有些真相揭开的时候，自己没有足够的力量去面对。",
+            "（她看向你，眼神里有一丝脆弱。）",
+            "每个人都有害怕的东西，老师也不例外。"
+          ],
+          mood: "sad",
+          effects: { trust: 5, npcFlags: { shared_fear: true } },
+          choices: [
+            { id: "relate", text: "我也有害怕的东西", effects: { opinion: 4, trust: 4 }, nextNode: "fear_relate" },
+            { id: "comfort", text: "老师已经很厉害了", effects: { opinion: 3 }, nextNode: "default" }
+          ]
+        },
+        fear_relate: {
+          id: "fear_relate",
+          texts: [
+            "（唐月看着你，眼神里多了一丝共鸣。）",
+            "是吗……",
+            "（她轻轻笑了笑。）",
+            "那我们都要努力变强啊。",
+            "强到不再害怕。"
+          ],
+          mood: "gentle",
+          effects: { opinion: 3, trust: 3, exp: 20 },
+          choices: [
+            { id: "promise", text: "一起努力", effects: { opinion: 4, trust: 3 }, nextNode: "default" }
+          ]
+        },
+        determination_response: {
+          id: "determination_response",
+          texts: [
+            "（唐月的眼睛亮了一下。）",
+            "保护大家？",
+            "（她露出了欣慰的笑容。）",
+            "有这样的想法，很好。",
+            "（她的语气变得认真。）",
+            "但你要知道，保护别人不是一件容易的事。",
+            "需要力量，需要智慧，也需要勇气。",
+            "（她拍了拍你的肩膀。）",
+            "老师会帮你的。但路，要你自己走。"
+          ],
+          mood: "gentle",
+          effects: { npcFlags: { knows_player_determination: true } },
+          choices: [
+            { id: "grateful", text: "谢谢老师，我不会让您失望的", effects: { opinion: 4, trust: 3, exp: 20 }, nextNode: "default" }
+          ]
+        },
+        tangyue_deep_recall_node: {
+          id: "tangyue_deep_recall_node",
+          texts: [
+            "（唐月看到你，露出了温柔的笑容。）",
+            "是你啊。",
+            "（她的语气里有一种熟悉的亲切感。）",
+            "最近怎么样？修炼还顺利吗？"
+          ],
+          mood: "gentle",
+          choices: [
+            { id: "good", text: "挺好的，谢谢您之前的开导", condition: { memoryTags: ["player_shared_weariness"] }, effects: { opinion: 3, trust: 2 }, nextNode: "default" },
+            { id: "training", text: "一直在努力修炼", effects: { opinion: 2 }, nextNode: "default" },
+            { id: "greet", text: "嗯，挺好的", effects: {}, nextNode: "default" }
           ]
         },
         farewell_node: {
