@@ -485,6 +485,97 @@ const Player = {
     },
 
     /**
+     * v0.77.0: 装备强化继承
+     * 将旧装备的强化等级转移到新装备上（同部位）
+     * @param {string} slot - 装备槽位 (weapon/armor/accessory)
+     * @param {string} targetItemId - 目标装备ID（背包中的同部位装备）
+     */
+    inheritEnhance(slot, targetItemId) {
+        const currentItemId = this.equipment[slot];
+        if (!currentItemId) {
+            return { success: false, message: '该槽位没有装备' };
+        }
+
+        const currentLevel = this.enhanceLevels[slot] || 0;
+        if (currentLevel <= 0) {
+            return { success: false, message: '当前装备没有强化等级，无需继承' };
+        }
+
+        // 检查目标装备是否在背包中
+        const targetCount = (typeof Inventory !== 'undefined') ? Inventory.getItemCount(targetItemId) : 0;
+        if (targetCount < 1) {
+            return { success: false, message: '目标装备不在背包中' };
+        }
+
+        // 检查目标装备是否同部位
+        const targetItem = (typeof DataItems !== 'undefined') ? DataItems[targetItemId] : null;
+        if (!targetItem || targetItem.slot !== slot) {
+            return { success: false, message: '只能继承到同部位装备' };
+        }
+
+        // 继承消耗：基础100金币 + 每级20金币
+        const cost = 100 + currentLevel * 20;
+        if (this.gold < cost) {
+            return { success: false, message: `金币不足，需要${cost}金币` };
+        }
+
+        // 执行继承
+        this.gold -= cost;
+
+        // 卸下当前装备（放回背包）
+        if (typeof Inventory !== 'undefined') {
+            Inventory.addItem(currentItemId, 1);
+        }
+
+        // 装备目标装备
+        this.equipment[slot] = targetItemId;
+        if (typeof Inventory !== 'undefined') {
+            Inventory.removeItem(targetItemId, 1);
+        }
+
+        // 转移强化等级（旧装备强化清零，新装备获得强化等级）
+        this.enhanceLevels[slot] = currentLevel;
+        this.enhanceFailStreak[slot] = 0;
+
+        const currentName = (typeof DataItems !== 'undefined' && DataItems[currentItemId]) ? DataItems[currentItemId].name : currentItemId;
+        const targetName = targetItem.name || targetItemId;
+
+        return {
+            success: true,
+            message: `继承成功！${currentName}(+${currentLevel}) → ${targetName}(+${currentLevel})，消耗${cost}金币`,
+            oldItem: currentItemId,
+            newItem: targetItemId,
+            level: currentLevel,
+            cost: cost
+        };
+    },
+
+    /**
+     * 获取可继承的目标装备列表（背包中同部位的装备）
+     */
+    getInheritTargets(slot) {
+        const targets = [];
+        if (typeof Inventory === 'undefined' || typeof DataItems === 'undefined') return targets;
+
+        for (const itemId in Inventory.items) {
+            const count = Inventory.items[itemId];
+            if (count > 0) {
+                const item = DataItems[itemId];
+                if (item && item.slot === slot && item.type === 'equipment') {
+                    targets.push({
+                        id: itemId,
+                        name: item.name,
+                        icon: item.icon || '⚔️',
+                        count: count,
+                        rarity: item.rarity || 'common'
+                    });
+                }
+            }
+        }
+        return targets;
+    },
+
+    /**
      * 获取槽位名称
      */
     getSlotName(slot) {

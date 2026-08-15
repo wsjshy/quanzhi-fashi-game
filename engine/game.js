@@ -3796,6 +3796,21 @@ const Game = {
         Player.save();
     },
 
+    // v0.77.0: 装备强化继承
+    inheritEnhance(slot, targetItemId) {
+        const result = Player.inheritEnhance(slot, targetItemId);
+        UI.showMessage(result.message);
+        if (result.success) {
+            UI.updateInventoryScreen();
+        }
+        Player.save();
+    },
+
+    // 显示装备继承界面
+    showInheritPanel(slot) {
+        UI.showInheritPanel(slot);
+    },
+
     // 关闭背包
     closeInventory() {
         this.state = 'map';

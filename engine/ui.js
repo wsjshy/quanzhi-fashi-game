@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.75.1 · 装备bug修复</div>
+                ">v0.77.0 · 装备强化继承</div>
             </div>
         `;
 
@@ -3590,6 +3590,21 @@ const UI = {
                                                 🔄 已连续失败 ${Player.enhanceFailStreak[slot]} 次${Player.enhanceFailStreak[slot] >= 3 ? '，下次必定成功！' : `，再失败 ${3 - Player.enhanceFailStreak[slot]} 次触发保底`}
                                             </div>
                                         ` : ''}
+                                        ${enhanceLevel > 0 ? `
+                                            <div onclick="Game.showInheritPanel('${slot}')" style="
+                                                margin-top: 8px;
+                                                padding: 6px 12px;
+                                                background: linear-gradient(135deg, #335577, #4477aa);
+                                                border: 1px solid #5588bb;
+                                                border-radius: 6px;
+                                                color: #aaddff;
+                                                cursor: pointer;
+                                                font-size: 12px;
+                                                text-align: center;
+                                            " title="将强化等级转移到同部位新装备">
+                                                🔄 强化继承（换装备不浪费）
+                                            </div>
+                                        ` : ''}
                                         ${enhanceLevel < 10 ? `
                                             <div style="font-size: 11px; color: #88ccaa; margin-top: 4px;">
                                                 ⬆️ 强化到+${enhanceLevel + 1}后：
@@ -3772,6 +3787,83 @@ const UI = {
     // 显示装备强化界面（直接打开背包，强化按钮已在装备栏中）
     showEnhancePanel() {
         this.renderInventoryScreen();
+    },
+
+    // v0.77.0: 显示装备强化继承界面
+    showInheritPanel(slot) {
+        const currentItemId = Player.equipment[slot];
+        const currentLevel = Player.enhanceLevels[slot] || 0;
+        const currentItem = (typeof DataItems !== 'undefined') ? DataItems[currentItemId] : null;
+        const targets = Player.getInheritTargets(slot);
+        const cost = 100 + currentLevel * 20;
+        const slotNames = { weapon: '武器', armor: '防具', accessory: '饰品' };
+
+        const overlay = document.createElement('div');
+        overlay.id = 'inherit-panel-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;';
+        overlay.innerHTML = `
+            <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:2px solid #4a6fa5;border-radius:16px;padding:30px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 0 40px rgba(74,111,165,0.5);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <h3 style="color:#66aaff;font-size:22px;margin:0;">🔄 装备强化继承</h3>
+                    <div onclick="document.getElementById('inherit-panel-overlay').remove()" style="padding:8px 16px;background:#553333;border:1px solid #775555;border-radius:8px;color:#ffcccc;cursor:pointer;font-size:14px;">关闭</div>
+                </div>
+
+                <div style="background:rgba(60,60,100,0.4);border:1px solid #555588;border-radius:8px;padding:15px;margin-bottom:20px;">
+                    <div style="color:#aaa;font-size:13px;margin-bottom:8px;">当前装备（${slotNames[slot] || slot}）</div>
+                    <div style="color:#ffd700;font-size:16px;font-weight:bold;">
+                        ${currentItem ? currentItem.icon + ' ' + currentItem.name : currentItemId} <span style="color:#66ff88;">+${currentLevel}</span>
+                    </div>
+                    <div style="color:#88ccaa;font-size:12px;margin-top:5px;">
+                        继承消耗：${cost} 金币 | 强化等级100%转移，旧装备放回背包
+                    </div>
+                </div>
+
+                <div style="color:#aaa;font-size:14px;margin-bottom:12px;">选择要继承到的目标装备（同部位）：</div>
+
+                ${targets.length === 0 ? `
+                    <div style="color:#888;text-align:center;padding:30px;background:rgba(40,40,60,0.5);border-radius:8px;">
+                        背包中没有同部位的其他装备<br>
+                        <span style="font-size:12px;color:#666;">需要先获得同部位装备才能继承</span>
+                    </div>
+                ` : `
+                    <div style="display:flex;flex-direction:column;gap:10px;">
+                        ${targets.map(t => {
+                            const rarityColors = { common: '#888', uncommon: '#66cc66', rare: '#6688ff', epic: '#aa66ff', legendary: '#ffaa44' };
+                            const color = rarityColors[t.rarity] || '#888';
+                            return `
+                                <div onclick="Game.inheritEnhance('${slot}', '${t.id}');document.getElementById('inherit-panel-overlay').remove();" style="
+                                    padding: 15px;
+                                    background: rgba(40,40,70,0.8);
+                                    border: 2px solid ${color};
+                                    border-radius: 10px;
+                                    cursor: pointer;
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                    transition: all 0.2s;
+                                " onmouseover="this.style.background='rgba(60,60,100,0.9)'" onmouseout="this.style.background='rgba(40,40,70,0.8)'">
+                                    <div>
+                                        <span style="font-size:18px;">${t.icon}</span>
+                                        <span style="color:#ddd;font-size:15px;font-weight:bold;margin-left:8px;">${t.name}</span>
+                                        <span style="color:${color};font-size:12px;margin-left:8px;">x${t.count}</span>
+                                    </div>
+                                    <div style="color:#66ff88;font-size:14px;font-weight:bold;">
+                                        继承后 +${currentLevel}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `}
+
+                <div style="margin-top:20px;padding:12px;background:rgba(50,50,30,0.4);border:1px solid #776644;border-radius:8px;">
+                    <div style="color:#ffcc88;font-size:12px;">
+                        💡 提示：有了强化继承，前期可以放心强化过渡装备，换装备时一键转移强化等级，不再浪费资源！
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
     },
 
     // 设置背包物品筛选
@@ -4427,6 +4519,23 @@ const UI = {
 
                 <div style="flex: 1; padding: 25px; overflow-y: auto; position: relative; z-index: 1;">
                     <div style="max-width: 800px; margin: 0 auto;">
+
+                        <!-- 说明栏 -->
+                        <div style="
+                            background: rgba(60, 60, 100, 0.4);
+                            border: 1px solid #555588;
+                            border-radius: 8px;
+                            padding: 12px 18px;
+                            margin-bottom: 20px;
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                        ">
+                            <span style="font-size: 18px;">💡</span>
+                            <span style="color: #aabbdd; font-size: 13px;">
+                                日常系统基于<strong style="color: #ffcc44;">游戏内时间</strong>，每天（第N天）0点自动刷新签到和任务。当前为游戏内第 <strong style="color: #ffcc44;">${Player.day}</strong> 天。
+                            </span>
+                        </div>
 
                         <!-- 每日签到 -->
                         <div style="
