@@ -4,6 +4,29 @@
 
 ---
 
+## [v0.47.1] - 2026-08-15
+
+### 战斗系统Bug修复（3项）
+
+**黑盒测试发现**：战斗系统专项测试中发现3个影响实际体验的bug。
+
+#### 修复1：自动战斗药水ID不匹配
+- **问题**：自动战斗AI检查`hp_potion`/`mp_potion`，但实际物品ID是`health_potion`/`mana_potion`，导致自动战斗永远不会使用药水
+- **影响**：低HP时自动战斗不治疗，容易死亡
+- **修复**：battle.js中4处ID修正（hp_potion→health_potion, mp_potion→mana_potion）
+
+#### 修复2：签到奖励物品ID不存在
+- **问题**：每日签到第2/4/6天奖励`hp_potion_small`/`mp_potion_small`/`hp_potion`，这些物品ID不存在
+- **影响**：签到奖励无法获得物品
+- **修复**：daily.js中3处ID修正为`health_potion`/`mana_potion`
+
+#### 修复3：战斗结束result值不匹配
+- **问题**：battle.js中胜利时设置`result='win'`，但endBattle中检查`result==='victory'`，导致战后15%HP/20%MP恢复和技能记忆记录永远不执行
+- **影响**：战斗后恢复量不足（只有game.js的80%恢复，缺少battle.js的15%额外恢复）；技能推荐功能（对同种妖魔记忆上次使用技能）从未生效
+- **修复**：battle.js endBattle中2处`'victory'`→`'win'`
+
+---
+
 ## [v0.47.0] - 2026-08-15
 
 ### 新增5个NPC互动事件

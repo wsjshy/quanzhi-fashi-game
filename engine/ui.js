@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.46.0 · NPC社交与探索丰富</div>
+                ">v0.47.1 · 战斗系统修复</div>
             </div>
         `;
 

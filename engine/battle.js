@@ -123,16 +123,16 @@ const BattleSystem = {
                     if (result !== null) return;
                 }
                 // 用治疗药水
-                if (this.hasItem('hp_potion')) {
-                    this.playerUseItem('hp_potion');
+                if (this.hasItem('health_potion')) {
+                    this.playerUseItem('health_potion');
                     return;
                 }
             }
             
             // 2. MP低于20%，用蓝药
             if (mpPercent < 0.2) {
-                if (this.hasItem('mp_potion')) {
-                    this.playerUseItem('mp_potion');
+                if (this.hasItem('mana_potion')) {
+                    this.playerUseItem('mana_potion');
                     return;
                 }
             }
@@ -6608,7 +6608,7 @@ const BattleSystem = {
         Player.mp = this.player.mp;
 
         // v0.38.0: 战斗胜利后恢复15%HP+20%MP（降低战后资源压力）
-        if (this.result === 'victory') {
+        if (this.result === 'win') {
             const hpRestore = Math.floor(Player.maxHp * 0.15);
             const mpRestore = Math.floor(Player.maxMp * 0.20);
             Player.hp = Math.min(Player.maxHp, Player.hp + hpRestore);
@@ -6617,7 +6617,7 @@ const BattleSystem = {
         }
 
         // v0.15.0: 战斗胜利时记录技能记忆（对该妖魔最后使用的技能）
-        if (this.result === 'victory' && this.lastSkillId && this.enemy && this.enemy.id) {
+        if (this.result === 'win' && this.lastSkillId && this.enemy && this.enemy.id) {
             if (typeof Player !== 'undefined' && Player.skillMemory !== undefined) {
                 Player.skillMemory[this.enemy.id] = this.lastSkillId;
             }

@@ -91,11 +91,11 @@ const DailySystem = {
     // 签到奖励表（7天循环）
     _signInRewards: [
         { day: 1, gold: 60, items: [] },
-        { day: 2, gold: 40, items: [{ itemId: 'hp_potion_small', count: 1 }] },
+        { day: 2, gold: 40, items: [{ itemId: 'health_potion', count: 1 }] },
         { day: 3, gold: 120, items: [] },
-        { day: 4, gold: 40, items: [{ itemId: 'mp_potion_small', count: 1 }] },
+        { day: 4, gold: 40, items: [{ itemId: 'mana_potion', count: 1 }] },
         { day: 5, gold: 180, items: [] },
-        { day: 6, gold: 60, items: [{ itemId: 'hp_potion', count: 1 }] },
+        { day: 6, gold: 60, items: [{ itemId: 'health_potion', count: 1 }] },
         { day: 7, gold: 350, items: [{ itemId: 'magic_crystal', count: 1 }] }
     ],
 
