@@ -427,6 +427,20 @@ const NPCStateSystem = {
             const levelOrder = { mortal_enemy:0, hostile:1, dislike:2, unfriendly:3, cold:4, stranger:5, friendly:6, acquaintance:7, good_acquaintance:8, friend:9, close_friend:10, best_friend:11, soulmate:12, lover:13, mentor:14, disciple:15, rival_special:16 };
             const direction = (levelOrder[newRelLevel.level] || 0) > (levelOrder[oldRelLevel.level] || 0) ? '↑' : '↓';
             UI.showMessage(`${direction} 与${npcName}的关系变化：${oldRelLevel.name} → ${newRelLevel.name}`);
+
+            // v0.39.0: 关系等级提升时获得影响力
+            if (direction === '↑' && typeof Player !== 'undefined') {
+                const levelOrder = { mortal_enemy:0, hostile:1, dislike:2, unfriendly:3, cold:4, stranger:5, friendly:6, acquaintance:7, good_acquaintance:8, friend:9, close_friend:10, best_friend:11, soulmate:12, lover:13, mentor:14, disciple:15, rival_special:16 };
+                const newTier = levelOrder[newRelLevel.level] || 0;
+                let influenceGain = 0;
+                if (newTier >= 11) influenceGain = 8;  // 挚友以上
+                else if (newTier >= 9) influenceGain = 5;  // 好友以上
+                else if (newTier >= 7) influenceGain = 3;  // 熟人以上
+                else if (newTier >= 6) influenceGain = 2;  // 友好
+                if (influenceGain > 0) {
+                    Player.influence = (Player.influence || 0) + influenceGain;
+                }
+            }
         }
         
         // 社交成就检查

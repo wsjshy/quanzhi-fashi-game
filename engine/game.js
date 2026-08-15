@@ -802,7 +802,7 @@ const Game = {
             name: '周敏',
             gender: 'female',
             morning: { location: 'tianlan_school', activity: '上课', chance: 0.6 },
-            afternoon: { location: 'library', activity: '在图书馆自习', chance: 0.4 },
+            afternoon: { location: 'tianlan_school', activity: '在图书馆自习', chance: 0.4 },
             evening: { location: 'tianlan_school', activity: '复习功课', chance: 0.2 }
         },
         xu_zhaoting: {
@@ -2868,6 +2868,17 @@ const Game = {
             levelReaction = `（${npc.name}看你的眼神像在看一个需要保护的后辈。）`;
         }
 
+        // v0.39.0: NPC对玩家影响力的反应
+        let influenceReaction = '';
+        const influenceTier = Player.getInfluenceTier ? Player.getInfluenceTier() : { level: 0, name: '无名小卒' };
+        if (influenceTier.level >= 3) {
+            influenceReaction = `（${npc.name}的态度明显郑重了许多，"你的名字我听说过，${influenceTier.name}。"）`;
+        } else if (influenceTier.level >= 2) {
+            influenceReaction = `（${npc.name}似乎对你有些印象，"你就是最近小有名气的那个新人？"）`;
+        } else if (influenceTier.level >= 1) {
+            influenceReaction = `（${npc.name}多看了你一眼，似乎觉得你有些特别。）`;
+        }
+
         // 创建对话界面
         const dialog = document.createElement('div');
         dialog.id = 'dialogue-screen';
@@ -3050,6 +3061,7 @@ const Game = {
                     min-height: 60px;
                 ">
                     ${levelReaction ? `<div style="color: #888; font-size: 14px; font-style: italic; margin-bottom: 10px; border-left: 3px solid #555; padding-left: 10px;">${levelReaction}</div>` : ''}
+                    ${influenceReaction ? `<div style="color: #ffd93d; font-size: 14px; font-style: italic; margin-bottom: 10px; border-left: 3px solid #ffd93d; padding-left: 10px;">${influenceReaction}</div>` : ''}
                     ${dialogueData.text}
                 </div>
 

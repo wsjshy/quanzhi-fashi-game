@@ -444,6 +444,19 @@ const Player = {
     },
 
     /**
+     * v0.39.0: 获取影响力等级
+     * 5个等级：无名小卒/崭露头角/小有名气/声名远扬/传奇法师
+     */
+    getInfluenceTier() {
+        const inf = this.influence || 0;
+        if (inf >= 100) return { level: 4, name: '传奇法师', color: '#ff6b6b' };
+        if (inf >= 60) return { level: 3, name: '声名远扬', color: '#ffd93d' };
+        if (inf >= 30) return { level: 2, name: '小有名气', color: '#6bcb77' };
+        if (inf >= 10) return { level: 1, name: '崭露头角', color: '#4d96ff' };
+        return { level: 0, name: '无名小卒', color: '#999' };
+    },
+
+    /**
      * 获取新系修炼加速系数
      * 高境界法师修炼新系更快：中阶×2/高阶×4/超阶×8
      */

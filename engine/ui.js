@@ -4480,7 +4480,9 @@ const UI = {
                                     ">${SkillSystem.getElementName(elem)} Lv.${elLv}(${elRealm})</span>`;
                                 }).join('')}
                             </div>
-                            ${Player.influence > 0 || (Player.changedStoryNodes && Player.changedStoryNodes.length > 0) ? `
+                            ${(() => {
+                                const tier = Player.getInfluenceTier ? Player.getInfluenceTier() : { level: 0, name: '无名小卒', color: '#999' };
+                                return `
                                 <div style="
                                     padding: 10px 15px;
                                     background: linear-gradient(135deg, #ffdd6622, #ffaa3322);
@@ -4488,10 +4490,10 @@ const UI = {
                                     border-radius: 10px;
                                     margin-bottom: 15px;
                                 ">
-                                    <span style="color: #ffdd66; font-size: 14px; font-weight: bold;">🌟 影响力：${Player.influence || 0}</span>
-                                    <span style="color: #ffaa66; font-size: 12px; margin-left: 15px;">已改变剧情：${Player.changedStoryNodes?.length || 0}个节点</span>
+                                    <span style="color: ${tier.color}; font-size: 14px; font-weight: bold;">🌟 ${tier.name}：${Player.influence || 0}</span>
+                                    ${(Player.changedStoryNodes && Player.changedStoryNodes.length > 0) ? `<span style="color: #ffaa66; font-size: 12px; margin-left: 15px;">已改变剧情：${Player.changedStoryNodes.length}个节点</span>` : ''}
                                 </div>
-                            ` : ''}
+                            `;})()}
                             ${typeof RealmSystem !== 'undefined' ? `
                                 <div onclick="Game.showBreakthroughPanel()" style="
                                     padding: 10px 15px;

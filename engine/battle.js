@@ -6471,6 +6471,17 @@ const BattleSystem = {
         rewards.levelUps = expResult.levelUps;
         rewards.newSkills = expResult.newSkills;
 
+        // v0.39.0: 战斗胜利获得影响力（精英怪/强敌更多）
+        if (typeof Player !== 'undefined') {
+            let battleInfluence = 1;
+            if (this.enemy.isElite) battleInfluence = 3;
+            if (this.enemy.isBoss) battleInfluence = 5;
+            // 敌人等级高于玩家时额外影响力
+            if (this.enemy.level > Player.level) battleInfluence += Math.min(3, this.enemy.level - Player.level);
+            Player.influence = (Player.influence || 0) + battleInfluence;
+            rewards.influence = battleInfluence;
+        }
+
         // 天赋经验：击杀敌人增加主系天赋经验
         if (typeof Player !== 'undefined' && typeof TalentSystem !== 'undefined' && Player.elements && Player.elements.length > 0) {
             const mainElement = Player.elements[0];
