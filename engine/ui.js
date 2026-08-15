@@ -1349,6 +1349,8 @@ const UI = {
                                     rest: { label: '😴 休息', color: '#ffaa88' },
                                     special: { label: '✨ 特殊', color: '#ffdd66' }
                                 };
+                                // v0.82.1: 已合并到休息面板的行动，不在行动列表中重复显示
+                                const skipActions = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full', 'rest_at_mo_fan'];
                                 // v0.81.0: 单个行动按钮渲染（紧凑卡片，描述放tooltip）
                                 const renderAction = (action, type) => {
                                     let actionName = action.name;
@@ -1357,7 +1359,6 @@ const UI = {
                                     let isSkippingClass = false;
                                     let isRecommended = false;
                                     let recommendReason = '';
-                                    const skipActions = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full', 'rest_at_mo_fan'];
                                     const isExplorableAction = !skipActions.includes(action.id);
                                     const isActionExplored = isExplorableAction && Player.exploredActions?.[location?.id]?.includes(action.id);
                                     if (action.isClassAction) {
