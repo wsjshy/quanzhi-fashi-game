@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.79.1 · 地图地点校准</div>
+                ">v0.80.0 · UI全面重构</div>
             </div>
         `;
 
@@ -1361,30 +1361,52 @@ const UI = {
                 <div class="mobile-main-content" style="flex: 1; display: flex; overflow: hidden; position: relative; z-index: 1;">
                     
                     <!-- 左侧：地点行动 -->
-                    <div class="mobile-action-panel" style="flex: 2; padding: 30px; overflow-y: auto;">
-                        <!-- v0.9.3: 地点妖魔信息 -->
+                    <div class="mobile-action-panel" style="flex: 2; padding: 20px 30px; overflow-y: auto; padding-bottom: 80px;">
+                        <!-- v0.80.0: 地点信息卡（整合妖魔信息） -->
                         ${(() => {
-                            if (typeof MapSystem.getLocationEnemies !== 'function') return '';
-                            const enemies = MapSystem.getLocationEnemies(location?.id);
-                            if (!enemies || enemies.length === 0) return '';
-                            const displayEnemies = enemies.slice(0, 8);
+                            const enemies = (typeof MapSystem.getLocationEnemies === 'function') ? MapSystem.getLocationEnemies(location?.id) : [];
+                            const npcCount = (location?.npcs || []).length;
+                            // 功能标签映射
+                            const featureTags = {
+                                tianlan_school: '学习中心', city_street: '商业街',
+                                xuefeng_mountain: '狩猎场', xuefeng_deep: '危险狩猎区',
+                                baicao_valley: '采药历练', earth_spring: '修炼圣地',
+                                mu_manor: '家族领地', xuefeng_station: '猎者补给',
+                                old_banyan_district: '旧城探索', mingwen_girls_school: '女校剧情',
+                                mo_fan_house: '民居', bo_north_gate: '城防关口',
+                                three_step_tower: '修炼塔'
+                            };
+                            const tag = featureTags[location?.id] || '探索区域';
+                            // 安全度判断
+                            let safetyLevel = '安全', safetyColor = '#66ff66';
+                            if (enemies.length > 0) {
+                                const maxLevel = Math.max(...enemies.map(e => e.level || 1));
+                                if (maxLevel >= Player.level + 5) { safetyLevel = '极危险'; safetyColor = '#ff4444'; }
+                                else if (maxLevel >= Player.level) { safetyLevel = '危险'; safetyColor = '#ff8844'; }
+                                else { safetyLevel = '有妖魔'; safetyColor = '#ffcc44'; }
+                            }
+                            // 妖魔图标（最多6个）
+                            const enemyIcons = enemies.slice(0, 6).map(e =>
+                                `<span title="${e.name} Lv.${e.level}" style="font-size: 18px;">${e.icon || '👹'}</span>`
+                            ).join('');
                             return `
-                                <div style="margin-bottom: 20px; padding: 15px; background: rgba(60, 20, 20, 0.4); border: 1px solid #884444; border-radius: 10px;">
-                                    <div style="color: #ff8866; font-size: 15px; margin-bottom: 10px; font-weight: bold;">
-                                        ⚔️ 可能遇到的妖魔（${enemies.length}种）
+                                <div style="margin-bottom: 18px; padding: 16px 20px; background: linear-gradient(135deg, rgba(40, 40, 70, 0.7), rgba(60, 50, 90, 0.5)); border: 1px solid #555588; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.3);">
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                        <div>
+                                            <span style="color: #ffd700; font-size: 20px; font-weight: bold;">${location?.mapIcon || '📍'} ${location?.name || '未知地点'}</span>
+                                            <span style="font-size: 12px; color: #aaccff; margin-left: 10px; background: rgba(50, 70, 100, 0.6); padding: 3px 10px; border-radius: 8px; border: 1px solid #5577aa;">${tag}</span>
+                                        </div>
+                                        <span style="font-size: 12px; color: ${safetyColor}; background: rgba(0,0,0,0.3); padding: 3px 10px; border-radius: 8px; border: 1px solid ${safetyColor};">${safetyLevel}</span>
                                     </div>
-                                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                                        ${displayEnemies.map(e => `
-                                            <span style="font-size: 12px; color: #ffccaa; background: rgba(80, 30, 30, 0.6); padding: 4px 10px; border-radius: 6px; border: 1px solid #663333;" title="${e.name} Lv.${e.level}">
-                                                ${e.icon} ${e.name} <span style="color: #ffaa44;">Lv.${e.level}</span>
-                                            </span>
-                                        `).join('')}
-                                        ${enemies.length > 8 ? `<span style="font-size: 12px; color: #888;">...还有${enemies.length - 8}种</span>` : ''}
+                                    <div style="color: #bbb; font-size: 13px; line-height: 1.6; margin-bottom: 10px;">${location?.description || ''}</div>
+                                    <div style="display: flex; gap: 20px; align-items: center; font-size: 12px; color: #999;">
+                                        ${enemies.length > 0 ? `<span>⚔️ 妖魔: ${enemyIcons}${enemies.length > 6 ? ` +${enemies.length - 6}` : ''}</span>` : '<span>🛡️ 无妖魔</span>'}
+                                        ${npcCount > 0 ? `<span>👥 NPC: ${npcCount}人</span>` : ''}
                                     </div>
                                 </div>
                             `;
                         })()}
-                        <h3 style="color: #ffd700; margin-bottom: 20px; font-size: 22px;">📍 可执行的行动</h3>
+                        <h3 style="color: #ffd700; margin-bottom: 15px; font-size: 20px;">📍 可执行的行动</h3>
                         <!-- v0.9.4: 体力低/疲劳建议休息提示 -->
                         ${(() => {
                             const staminaRatio = Player.stamina / (Player.maxStamina || 100);
@@ -1405,104 +1427,112 @@ const UI = {
                             }
                             return '';
                         })()}
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
                             ${(() => {
-                                // v0.9.4: 行动按钮智能排序
+                                // v0.80.0: 行动按类型分组
                                 const actions = location?.actions || [];
-                                const currentClass = TimeSystem.getCurrentClass(location);
-                                
-                                const getPriority = (action) => {
-                                    // 休息类行动排最后
-                                    if (action.id === 'rest' || action.id === 'quick_rest' || action.id === 'sleep') return 3;
-                                    // v0.9.7: 上课不再强制排最前，玩家可自行选择优先级
-                                    // 有事件的行动排前面
-                                    if (action.eventChance && action.eventChance > 0) return 1;
-                                    // 上课行动和普通行动同优先级
-                                    return 2;
+                                // 行动类型判断
+                                const getActionType = (action) => {
+                                    const id = action.id || '';
+                                    if (['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full'].includes(id)) return 'rest';
+                                    if (action.isClassAction || id.includes('study') || id.includes('train') || id.includes('meditation') || id.includes('cultivation') || id.includes('practice') || id.includes('attend')) return 'cultivation';
+                                    if (id.includes('chat') || id.includes('talk') || id.includes('interact') || id.includes('visit')) return 'social';
+                                    if (id.includes('explore') || id.includes('hunt') || id.includes('gather') || id.includes('investigate') || id.includes('search')) return 'explore';
+                                    return 'special';
                                 };
-                                
-                                const sortedActions = [...actions].sort((a, b) => getPriority(a) - getPriority(b));
-                                
-                                return sortedActions.map(action => {
-                                // 课程行动动态显示
-                                let actionName = action.name;
-                                let actionDesc = action.description;
-                                let expReward = action.effects?.exp || 0;
-                                let isSkippingClass = false;
-                                let isRecommended = false;
-                                let recommendReason = '';
-                                // v0.9.9: 行动探索状态
-                                const skipActions = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full'];
-                                const isExplorableAction = !skipActions.includes(action.id);
-                                const isActionExplored = isExplorableAction && Player.exploredActions?.[location?.id]?.includes(action.id);
-                                
-                                if (action.isClassAction) {
-                                    const currentClass = TimeSystem.getCurrentClass(location);
-                                    if (currentClass) {
-                                        const teacher = DataManager.getCharacter(currentClass.teacher);
-                                        actionName = `上课：${currentClass.name}`;
-                                        actionDesc = `${teacher?.name || '未知老师'}主讲，获得${currentClass.exp}经验${currentClass.injuryChance ? '，有受伤风险' : ''}`;
-                                        expReward = currentClass.exp;
-                                        // v0.9.7: 上课不再强制推荐，玩家自行选择优先级
-                                    } else {
-                                        actionName = '自习';
-                                        actionDesc = '当前没有课程，自由自习获得少量经验';
-                                        expReward = action.effects?.exp || 5;
-                                    }
-                                } else {
-                                    // 检查是否是逃课
-                                    const currentClass = TimeSystem.getCurrentClass(location);
-                                    if (currentClass && action.id !== 'sleep' && action.id !== 'rest') {
-                                        isSkippingClass = true;
-                                    }
-                                }
-
-                                // v0.9.3: 事件行动推荐
-                                if (action.eventChance && action.eventChance > 0) {
-                                    const availableEvents = (action.events || []).filter(e => {
-                                        if (typeof WorldState !== 'undefined' && WorldState.checkConditions) {
-                                            return WorldState.checkConditions({eventId: e});
+                                const typeConfig = {
+                                    cultivation: { label: '🔮 修炼', color: '#aa88ff' },
+                                    explore: { label: '🔍 探索', color: '#88ccff' },
+                                    social: { label: '💬 社交', color: '#88ffaa' },
+                                    rest: { label: '😴 休息', color: '#ffaa88' },
+                                    special: { label: '✨ 特殊', color: '#ffdd66' }
+                                };
+                                // 单个行动按钮渲染（保留原有逻辑）
+                                const renderAction = (action) => {
+                                    let actionName = action.name;
+                                    let actionDesc = action.description;
+                                    let expReward = action.effects?.exp || 0;
+                                    let isSkippingClass = false;
+                                    let isRecommended = false;
+                                    let recommendReason = '';
+                                    const skipActions = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full'];
+                                    const isExplorableAction = !skipActions.includes(action.id);
+                                    const isActionExplored = isExplorableAction && Player.exploredActions?.[location?.id]?.includes(action.id);
+                                    if (action.isClassAction) {
+                                        const currentClass = TimeSystem.getCurrentClass(location);
+                                        if (currentClass) {
+                                            const teacher = DataManager.getCharacter(currentClass.teacher);
+                                            actionName = `上课：${currentClass.name}`;
+                                            actionDesc = `${teacher?.name || '未知老师'}主讲，获得${currentClass.exp}经验${currentClass.injuryChance ? '，有受伤风险' : ''}`;
+                                            expReward = currentClass.exp;
+                                        } else {
+                                            actionName = '自习';
+                                            actionDesc = '当前没有课程，自由自习获得少量经验';
+                                            expReward = action.effects?.exp || 5;
                                         }
-                                        return true;
-                                    });
-                                    if (availableEvents.length > 0 && !isRecommended) {
-                                        isRecommended = true;
-                                        recommendReason = '📜 有事件可触发';
+                                    } else {
+                                        const currentClass = TimeSystem.getCurrentClass(location);
+                                        if (currentClass && action.id !== 'sleep' && action.id !== 'rest') {
+                                            isSkippingClass = true;
+                                        }
                                     }
-                                }
-
-                                // 边框颜色：推荐>未探索>普通（逃课不再用红色警告，时间是叙事刻度）
-                                let borderColor = isRecommended ? '#ffcc44' : (isExplorableAction && !isActionExplored ? '#ff9944' : '#444477');
-                                let glowEffect = isRecommended ? 'box-shadow: 0 0 12px rgba(255, 204, 68, 0.4);' : (isExplorableAction && !isActionExplored ? 'box-shadow: 0 0 8px rgba(255, 153, 68, 0.3);' : '');
-                                
-                                return `
-                                <button class="action-button" onclick="Game.performAction('${action.id}')" style="
-                                    padding: 18px 25px;
-                                    background: linear-gradient(135deg, rgba(40, 40, 80, 0.8), rgba(60, 60, 120, 0.8));
-                                    border: 2px solid ${borderColor};
-                                    border-radius: 10px;
-                                    color: #e0e0ff;
-                                    cursor: pointer;
-                                    text-align: left;
-                                    transition: all 0.3s;
-                                    font-size: 16px;
-                                    ${glowEffect}
-                                " onmouseover="this.style.borderColor='${isRecommended ? '#ffee88' : '#7777bb'}'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='${borderColor}'; this.style.transform='translateX(0)'">
-                                    <div style="font-size: 18px; margin-bottom: 5px;">
-                                        ${action.icon || '🔹'} ${actionName}
-                                        ${isExplorableAction ? (isActionExplored ? '<span style="font-size: 11px; color: #66ff66; margin-left: 6px; background: rgba(30, 80, 30, 0.5); padding: 2px 6px; border-radius: 6px; border: 1px solid #44aa44;">✓ 已探索</span>' : '<span style="font-size: 11px; color: #ffaa44; margin-left: 6px; background: rgba(80, 50, 20, 0.5); padding: 2px 6px; border-radius: 6px; border: 1px solid #aa7744;">❓ 未探索</span>') : ''}
-                                        ${isRecommended ? `<span style="font-size: 12px; color: #ffcc44; float: right; background: rgba(100, 80, 20, 0.5); padding: 2px 8px; border-radius: 8px;">${recommendReason}</span>` : ''}
-                                        ${isSkippingClass ? '<span style="color: #888; font-size: 12px; margin-left: 8px;">📖 有课中</span>' : ''}
-                                        <span style="font-size: 12px; color: #888; float: right; display: flex; gap: 10px; align-items: center;">
-                                            <span style="color: #aaddff;" title="时间消耗">⏱️ ${action.timeCost}h</span>
-                                            ${action.staminaCost && action.staminaCost > 0 ? `<span style="color: #888;" title="体力消耗（软限制，不阻止行动，不影响效率）">⚡ ${action.staminaCost}</span>` : ''}
-                                            ${expReward ? `<span style="color: #ffd700;" title="经验奖励">✨ +${expReward}</span>` : ''}
-                                        </span>
-                                    </div>
-                                    <div style="font-size: 13px; color: #999;">${actionDesc}</div>
-                                </button>
-                            `}).join('');
-                                })()}
+                                    if (action.eventChance && action.eventChance > 0) {
+                                        const availableEvents = (action.events || []).filter(e => {
+                                            if (typeof WorldState !== 'undefined' && WorldState.checkConditions) {
+                                                return WorldState.checkConditions({eventId: e});
+                                            }
+                                            return true;
+                                        });
+                                        if (availableEvents.length > 0 && !isRecommended) {
+                                            isRecommended = true;
+                                            recommendReason = '📜 有事件可触发';
+                                        }
+                                    }
+                                    let borderColor = isRecommended ? '#ffcc44' : (isExplorableAction && !isActionExplored ? '#ff9944' : '#444477');
+                                    let glowEffect = isRecommended ? 'box-shadow: 0 0 12px rgba(255, 204, 68, 0.4);' : (isExplorableAction && !isActionExplored ? 'box-shadow: 0 0 8px rgba(255, 153, 68, 0.3);' : '');
+                                    return `
+                                    <button class="action-button" onclick="Game.performAction('${action.id}')" style="
+                                        padding: 14px 20px;
+                                        background: linear-gradient(135deg, rgba(40, 40, 80, 0.8), rgba(60, 60, 120, 0.8));
+                                        border: 2px solid ${borderColor};
+                                        border-radius: 10px;
+                                        color: #e0e0ff;
+                                        cursor: pointer;
+                                        text-align: left;
+                                        transition: all 0.3s;
+                                        font-size: 15px;
+                                        ${glowEffect}
+                                    " onmouseover="this.style.borderColor='${isRecommended ? '#ffee88' : '#7777bb'}'; this.style.transform='translateX(3px)'" onmouseout="this.style.borderColor='${borderColor}'; this.style.transform='translateX(0)'">
+                                        <div style="font-size: 16px; margin-bottom: 3px;">
+                                            ${action.icon || '🔹'} ${actionName}
+                                            ${isExplorableAction ? (isActionExplored ? '<span style="font-size: 10px; color: #66ff66; margin-left: 6px; background: rgba(30, 80, 30, 0.5); padding: 1px 5px; border-radius: 5px; border: 1px solid #44aa44;">✓</span>' : '<span style="font-size: 10px; color: #ffaa44; margin-left: 6px; background: rgba(80, 50, 20, 0.5); padding: 1px 5px; border-radius: 5px; border: 1px solid #aa7744;">?</span>') : ''}
+                                            ${isRecommended ? `<span style="font-size: 11px; color: #ffcc44; float: right; background: rgba(100, 80, 20, 0.5); padding: 2px 7px; border-radius: 6px;">${recommendReason}</span>` : ''}
+                                            ${isSkippingClass ? '<span style="color: #888; font-size: 11px; margin-left: 6px;">📖</span>' : ''}
+                                            <span style="font-size: 11px; color: #888; float: right; display: flex; gap: 8px; align-items: center;">
+                                                <span style="color: #aaddff;">⏱️${action.timeCost}h</span>
+                                                ${action.staminaCost && action.staminaCost > 0 ? `<span style="color: #888;">⚡${action.staminaCost}</span>` : ''}
+                                                ${expReward ? `<span style="color: #ffd700;">✨+${expReward}</span>` : ''}
+                                            </span>
+                                        </div>
+                                        <div style="font-size: 12px; color: #999;">${actionDesc}</div>
+                                    </button>`;
+                                };
+                                // 按类型分组
+                                const groups = { cultivation: [], explore: [], social: [], rest: [], special: [] };
+                                actions.forEach(a => { groups[getActionType(a)].push(a); });
+                                // 渲染分组
+                                return Object.keys(groups).filter(type => groups[type].length > 0).map(type => {
+                                    const cfg = typeConfig[type];
+                                    return `
+                                        <div style="margin-top: ${type === Object.keys(groups).find(t => groups[t].length > 0) ? '0' : '8px'};">
+                                            <div style="color: ${cfg.color}; font-size: 13px; font-weight: bold; margin-bottom: 6px; padding-left: 4px;">${cfg.label} (${groups[type].length})</div>
+                                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                ${groups[type].map(renderAction).join('')}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('');
+                            })()}
 
                                 ${(() => {
                                     // v0.24.0: 隐藏修炼地点按钮
@@ -1651,87 +1681,21 @@ const UI = {
                         </button>
 
                         <!-- 等待时间 -->
-                        <h3 style="color: #ffd700; margin: 30px 0 20px; font-size: 22px;">⏰ 时间</h3>
-                        <div style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 15px;">
-                            <div style="color: #ccc; font-size: 14px; margin-bottom: 10px;">
-                                ${TimeSystem.getDetailedTimeDescription()}
+                        <div style="margin-top: 15px; background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 12px 15px;">
+                            <div style="color: #ccc; font-size: 13px; margin-bottom: 8px;">
+                                ⏰ ${TimeSystem.getDetailedTimeDescription()}
                             </div>
                             <button onclick="Game.showWaitMenu()" style="
                                 width: 100%;
-                                padding: 12px 20px;
+                                padding: 10px 15px;
                                 background: linear-gradient(135deg, rgba(60, 60, 100, 0.8), rgba(80, 80, 140, 0.8));
-                                border: 2px solid #555588;
+                                border: 1px solid #555588;
                                 border-radius: 8px;
                                 color: #e0e0ff;
                                 cursor: pointer;
-                                font-size: 15px;
-                                transition: all 0.3s;
-                            " onmouseover="this.style.borderColor='#8888bb'; this.style.background='linear-gradient(135deg, rgba(80, 80, 140, 0.8), rgba(100, 100, 180, 0.8))'" onmouseout="this.style.borderColor='#555588'; this.style.background='linear-gradient(135deg, rgba(60, 60, 100, 0.8), rgba(80, 80, 140, 0.8))'">
-                                ⏰ 等待时间...
-                            </button>
+                                font-size: 14px;
+                            ">等待时间...</button>
                         </div>
-                        
-                        <!-- 移动到其他地点 -->
-                        ${location?.connectedLocations && location.connectedLocations.length > 0 ? `
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin: 30px 0 15px;">
-                            <h3 style="color: #ffd700; font-size: 22px; margin: 0;">🚶 前往其他地点</h3>
-                            <div onclick="Game.openMap()" style="padding: 8px 16px; background: linear-gradient(135deg, #335577, #4477aa); border: 1px solid #5588bb; border-radius: 8px; color: #aaddff; cursor: pointer; font-size: 14px; font-weight: bold;">🗺️ 打开地图</div>
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
-                            ${location.connectedLocations.map(locId => {
-                                const loc = DataManager.getLocation(locId);
-                                const unlocked = Player.unlockedLocations.includes(locId);
-                                // v0.75.0: 获取所属大地图
-                                let mapInfo = '';
-                                if (typeof DataMaps !== 'undefined') {
-                                    for (const mapId in DataMaps) {
-                                        const map = DataMaps[mapId];
-                                        if (map.allLocations && map.allLocations.includes(locId)) {
-                                            mapInfo = `<span style="font-size: 11px; color: #88ccff; background: rgba(30, 50, 80, 0.6); padding: 2px 8px; border-radius: 4px; margin-left: 8px;">${map.icon} ${map.name}</span>`;
-                                            break;
-                                        }
-                                    }
-                                }
-                                // v0.9.2: 探索提示 - 危险等级
-                                let dangerInfo = '';
-                                if (unlocked && typeof MapSystem.getLocationDangerLevel === 'function') {
-                                    const danger = MapSystem.getLocationDangerLevel(locId);
-                                    if (danger.enemyCount > 0) {
-                                        const dangerColors = { safe: '#66ff66', warning: '#ffcc44', danger: '#ff6666' };
-                                        const color = dangerColors[danger.danger] || '#888';
-                                        dangerInfo = `<span style="font-size: 12px; color: ${color}; float: right; margin-right: 10px;">⚠️ Lv.${danger.level}+ (${danger.label})</span>`;
-                                    }
-                                }
-                                return `
-                                    <button onclick="Game.travelTo('${locId}')" 
-                                            ${!unlocked ? 'disabled' : ''}
-                                            style="
-                                        padding: 15px 25px;
-                                        background: ${unlocked ? 'linear-gradient(135deg, rgba(60, 40, 80, 0.8), rgba(100, 60, 140, 0.8))' : 'rgba(50, 50, 50, 0.5)'};
-                                        border: 2px solid ${unlocked ? '#7755aa' : '#444'};
-                                        border-radius: 10px;
-                                        color: ${unlocked ? '#e0d0ff' : '#666'};
-                                        cursor: ${unlocked ? 'pointer' : 'not-allowed'};
-                                        text-align: left;
-                                        transition: all 0.3s;
-                                        font-size: 16px;
-                                    " ${unlocked ? 'onmouseover="this.style.borderColor=\'#9977cc\'" onmouseout="this.style.borderColor=\'#7755aa\'"' : ''}>
-                                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                                            <span>${unlocked ? '🚪' : '🔒'} ${loc?.name || locId}${mapInfo}</span>
-                                            ${unlocked ? dangerInfo : ''}
-                                            ${unlocked ? '<span style="font-size: 13px; color: #888;">旅行 0.5小时</span>' : ''}
-                                        </div>
-                                        ${!unlocked && loc?.unlockCondition ? `
-                                            <div style="font-size: 12px; color: #ff9966; margin-top: 6px; padding-top: 6px; border-top: 1px solid #444;">
-                                                🔑 解锁条件：${loc.unlockCondition.hint || '条件未知'}
-                                                ${loc.unlockCondition.minLevel ? `<span style="color: ${Player.level >= loc.unlockCondition.minLevel ? '#66ff66' : '#ff6666'};"> (等级 ${Player.level}/${loc.unlockCondition.minLevel}${Player.level >= loc.unlockCondition.minLevel ? ' ✓' : ''})</span>` : ''}
-                                            </div>
-                                        ` : ''}
-                                    </button>
-                                `;
-                            }).join('')}
-                        </div>
-                        ` : ''}
                     </div>
                     
                     <!-- 右侧：菜单 -->
@@ -1902,6 +1866,33 @@ const UI = {
                             </div>
                         </div>
                     </div>
+                </div>
+                
+                <!-- v0.80.0: 底部导航栏（大按钮，手机safe-area适配） -->
+                <div style="
+                    display: flex;
+                    background: rgba(10, 10, 25, 0.95);
+                    border-top: 2px solid #444477;
+                    padding: 8px 10px;
+                    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+                    gap: 6px;
+                    z-index: 100;
+                ">
+                    <button onclick="Game.openMap()" style="flex:1;padding:14px 8px;background:linear-gradient(135deg,rgba(40,60,90,0.9),rgba(60,80,120,0.9));border:2px solid #5577aa;border-radius:12px;color:#aaccff;cursor:pointer;font-size:18px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(60,80,120,0.9),rgba(80,100,150,0.9))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(40,60,90,0.9),rgba(60,80,120,0.9))'">
+                        <span style="font-size:24px;">🗺️</span><span style="font-size:11px;">地图</span>
+                    </button>
+                    <button onclick="Game.openInventory()" style="flex:1;padding:14px 8px;background:linear-gradient(135deg,rgba(60,50,30,0.9),rgba(90,70,40,0.9));border:2px solid #aa8844;border-radius:12px;color:#ffddaa;cursor:pointer;font-size:18px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(90,70,40,0.9),rgba(120,90,50,0.9))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(60,50,30,0.9),rgba(90,70,40,0.9))'">
+                        <span style="font-size:24px;">🎒</span><span style="font-size:11px;">背包</span>
+                    </button>
+                    <button onclick="Game.openCharacterPanel()" style="flex:1;padding:14px 8px;background:linear-gradient(135deg,rgba(50,40,80,0.9),rgba(80,60,120,0.9));border:2px solid #8866bb;border-radius:12px;color:#ccaaff;cursor:pointer;font-size:18px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(80,60,120,0.9),rgba(110,80,160,0.9))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(50,40,80,0.9),rgba(80,60,120,0.9))'">
+                        <span style="font-size:24px;">👤</span><span style="font-size:11px;">角色</span>
+                    </button>
+                    <button onclick="Game.openDaily()" style="flex:1;padding:14px 8px;background:linear-gradient(135deg,rgba(30,60,50,0.9),rgba(50,90,70,0.9));border:2px solid #55aa77;border-radius:12px;color:#aaffcc;cursor:pointer;font-size:18px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all 0.2s;position:relative;" onmouseover="this.style.background='linear-gradient(135deg,rgba(50,90,70,0.9),rgba(70,120,90,0.9))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(30,60,50,0.9),rgba(50,90,70,0.9))'">
+                        <span style="font-size:24px;">📅</span><span style="font-size:11px;">日常${DailySystem.getUnclaimedCount() > 0 ? `<span style="position:absolute;top:6px;right:10px;background:#ff4444;color:#fff;font-size:10px;padding:1px 5px;border-radius:8px;">${DailySystem.getUnclaimedCount()}</span>` : ''}</span>
+                    </button>
+                    <button onclick="Game.saveGame()" style="flex:1;padding:14px 8px;background:linear-gradient(135deg,rgba(70,70,40,0.9),rgba(100,100,60,0.9));border:2px solid #aaaa55;border-radius:12px;color:#ffffaa;cursor:pointer;font-size:18px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(100,100,60,0.9),rgba(130,130,80,0.9))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(70,70,40,0.9),rgba(100,100,60,0.9))'">
+                        <span style="font-size:24px;">💾</span><span style="font-size:11px;">保存</span>
+                    </button>
                 </div>
             </div>
         `;
