@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.81.3 · 手机全功能菜单</div>
+                ">v0.81.4 · 手机修复+角色面板</div>
             </div>
         `;
 
@@ -1132,8 +1132,8 @@ const UI = {
         
         const location = MapSystem.getCurrentLocation();
         const stats = Player.getTotalStats();
-        // v0.81.3: 响应式布局检测（宽度<768px视为手机竖版，避免电脑窄窗口误判）
-        const isPortrait = window.innerWidth < 768;
+        // v0.81.4: 响应式布局检测（竖屏方向或宽度<768px视为手机竖版）
+        const isPortrait = window.matchMedia('(orientation: portrait)').matches || window.innerWidth < 768;
         
         // 根据地点选择背景图片
         let bgImage = '';
@@ -1363,7 +1363,7 @@ const UI = {
                 <div class="mobile-main-content" style="flex: 1; display: flex; position: relative; z-index: 1;">
                     
                     <!-- 左侧：地点行动 -->
-                    <div class="mobile-action-panel" style="flex: ${isPortrait ? '1' : '2'}; padding: ${isPortrait ? '12px 15px' : '20px 30px'};">
+                    <div class="mobile-action-panel" style="flex: ${isPortrait ? '1' : '2'}; width: ${isPortrait ? '100%' : 'auto'}; padding: ${isPortrait ? '12px 15px' : '20px 30px'};">
                         <!-- v0.80.0: 地点信息卡（整合妖魔信息） -->
                         ${(() => {
                             const enemies = (typeof MapSystem.getLocationEnemies === 'function') ? MapSystem.getLocationEnemies(location?.id) : [];
@@ -1712,173 +1712,110 @@ const UI = {
                         </div>
                     </div>
                     
-                    <!-- 右侧：菜单（竖版隐藏，靠底部导航） -->
-                    <div class="mobile-side-menu" style="width: 280px; background: rgba(0, 0, 0, 0.4); border-left: 2px solid #444477; padding: 20px; display: ${isPortrait ? 'none' : 'block'};">
-                        <h3 style="color: #ffd700; margin-bottom: 20px; font-size: 18px;">📋 菜单</h3>
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <div style="color: #8899cc; font-size: 12px; padding: 0 5px; margin-bottom: -5px;">🎯 核心功能</div>
-
-                            <button onclick="Game.openCharacterPanel()" style="
-                                padding: 12px;
-                                background: rgba(40, 40, 80, 0.8);
-                                border: 1px solid #444477;
-                                border-radius: 8px;
-                                color: #e0e0ff;
-                                cursor: pointer;
-                                font-size: 15px;
-                                text-align: left;
-                            ">👤 角色属性</button>
-                            
-                            <button onclick="Game.openInventory()" style="
-                                padding: 12px;
-                                background: rgba(40, 40, 80, 0.8);
-                                border: 1px solid #444477;
-                                border-radius: 8px;
-                                color: #e0e0ff;
-                                cursor: pointer;
-                                font-size: 15px;
-                                text-align: left;
-                            ">🎒 背包</button>
-                            
-                            <button onclick="Game.openQuestLog()" style="
-                                padding: 12px;
-                                background: rgba(40, 40, 80, 0.8);
-                                border: 1px solid #444477;
-                                border-radius: 8px;
-                                color: #e0e0ff;
-                                cursor: pointer;
-                                font-size: 15px;
-                                text-align: left;
-                            ">📜 任务</button>
-                            
-                            <div style="height: 1px; background: linear-gradient(90deg, transparent, #555577, transparent); margin: 8px 0;"></div>
-                            <div style="color: #7788aa; font-size: 12px; padding: 0 5px;">📚 信息与收集</div>
-
-                            <button onclick="Game.openIntelPanel()" style="
-                                padding: 12px;
-                                background: rgba(40, 40, 80, 0.8);
-                                border: 1px solid #444477;
-                                border-radius: 8px;
-                                color: #e0e0ff;
-                                cursor: pointer;
-                                font-size: 15px;
-                                text-align: left;
-                            ">🔍 情报</button>
-                            
-                            <button onclick="Game.openReputationPanel()" style="
-                                padding: 12px;
-                                background: rgba(40, 40, 80, 0.8);
-                                border: 1px solid #444477;
-                                border-radius: 8px;
-                                color: #e0e0ff;
-                                cursor: pointer;
-                                font-size: 15px;
-                                text-align: left;
-                            ">⭐ 声望</button>
-                            
-                            <button onclick="UI.showAchievementPanel()" style="
-                                padding: 12px;
-                                background: rgba(60, 50, 30, 0.8);
-                                border: 1px solid #776644;
-                                border-radius: 8px;
-                                color: #fff0d0;
-                                cursor: pointer;
-                                font-size: 15px;
-                                text-align: left;
-                            ">🏆 成就</button>
-                            
-                            <button onclick="Game.openHelpPanel()" style="
-                                padding: 12px;
-                                background: rgba(40, 40, 80, 0.8);
-                                border: 1px solid #444477;
-                                border-radius: 8px;
-                                color: #e0e0ff;
-                                cursor: pointer;
-                                font-size: 15px;
-                                text-align: left;
-                            ">❓ 帮助</button>
-                            
-                            <button onclick="Game.openBestiary()" style="
-                                padding: 12px;
-                                background: rgba(60, 30, 30, 0.8);
-                                border: 1px solid #774444;
-                                border-radius: 8px;
-                                color: #ffd0d0;
-                                cursor: pointer;
-                                font-size: 15px;
-                                text-align: left;
-                            ">📖 妖魔图鉴</button>
-                            
-                            <div style="height: 1px; background: linear-gradient(90deg, transparent, #555577, transparent); margin: 8px 0;"></div>
-                            <div style="color: #7788aa; font-size: 12px; padding: 0 5px;">📅 日常活动</div>
-
-                            <button onclick="Game.openDaily()" style="
-                                padding: 12px;
-                                background: rgba(30, 60, 60, 0.8);
-                                border: 1px solid #447777;
-                                border-radius: 8px;
-                                color: #d0ffff;
-                                cursor: pointer;
-                                font-size: 15px;
-                                text-align: left;
-                            ">📋 日常${DailySystem.getUnclaimedCount() > 0 ? ` <span style="color: #ff6666; font-weight: bold;">(${DailySystem.getUnclaimedCount()})</span>` : ''}</button>
-                            
-                            <div style="height: 1px; background: linear-gradient(90deg, transparent, #557755, transparent); margin: 8px 0;"></div>
-                            <div style="color: #88aa88; font-size: 12px; padding: 0 5px;">⚡ 快捷操作</div>
-
-                            <button onclick="Game.rest()" style="
-                                padding: 14px;
-                                background: linear-gradient(135deg, rgba(40, 80, 40, 0.9), rgba(60, 100, 60, 0.9));
-                                border: 2px solid #66aa66;
-                                border-radius: 10px;
-                                color: #d0ffd0;
-                                cursor: pointer;
-                                font-size: 15px;
-                                font-weight: bold;
-                                text-align: left;
-                                box-shadow: 0 0 10px rgba(100, 200, 100, 0.2);
-                            ">😴 休息到明天</button>
-                            
-                            <button onclick="Game.saveGame()" style="
-                                padding: 14px;
-                                background: linear-gradient(135deg, rgba(80, 80, 40, 0.9), rgba(100, 100, 60, 0.9));
-                                border: 2px solid #aaaa66;
-                                border-radius: 10px;
-                                color: #ffffd0;
-                                cursor: pointer;
-                                font-size: 15px;
-                                font-weight: bold;
-                                text-align: left;
-                                box-shadow: 0 0 10px rgba(200, 200, 100, 0.2);
-                            ">💾 保存游戏</button>
-                        </div>
-                        
-                        <!-- 经验条 -->
-                        <div style="margin-top: 30px;">
-                            <div style="color: #aaa; font-size: 13px; margin-bottom: 5px;">
-                                经验: ${Player.exp} / ${Player.expToNext}
+                    <!-- 右侧：角色状态面板（竖版隐藏，靠底部导航） -->
+                    <div class="mobile-side-menu" style="width: 300px; background: linear-gradient(180deg, rgba(20,20,50,0.85), rgba(10,10,30,0.9)); border-left: 2px solid #444477; padding: 18px; display: ${isPortrait ? 'none' : 'block'}; overflow-y: auto; max-height: calc(100vh - 180px);">
+                        ${(() => {
+                            const s = stats;
+                            const hpPct = Math.min(100, (Player.hp / s.maxHp * 100)).toFixed(0);
+                            const mpPct = Math.min(100, (Player.mp / s.maxMp * 100)).toFixed(0);
+                            const staPct = Math.min(100, (Player.stamina / s.maxStamina * 100)).toFixed(0);
+                            const expPct = Math.min(100, (Player.exp / Player.expToNext * 100)).toFixed(1);
+                            const equip = (typeof ItemSystem !== 'undefined' && ItemSystem.getEquipment) ? ItemSystem.getEquipment() : {weapon:null, armor:null, accessory:null};
+                            const slotNames = {weapon:'⚔️ 武器', armor:'🛡️ 防具', accessory:'💍 饰品'};
+                            const slotColors = {weapon:'#ffaa66', armor:'#66aaff', accessory:'#ff88dd'};
+                            return `
+                            <!-- 角色头部 -->
+                            <div style="text-align:center; margin-bottom:15px; padding-bottom:12px; border-bottom:1px solid rgba(100,100,150,0.3);">
+                                <div style="font-size:22px; font-weight:bold; color:#ffd700; margin-bottom:4px;">🧙 魔法师</div>
+                                <div style="font-size:13px; color:#aabbdd;">等级 ${Player.level} · ${Player.elements.length}系法师</div>
                             </div>
-                            <div style="height: 8px; background: #333; border-radius: 4px; overflow: hidden;">
-                                <div style="height: 100%; width: ${(Player.exp / Player.expToNext * 100).toFixed(1)}%; background: linear-gradient(90deg, #66ff66, #99ff99); transition: width 0.3s;"></div>
+                            
+                            <!-- 经验条 -->
+                            <div style="margin-bottom:14px;">
+                                <div style="display:flex; justify-content:space-between; font-size:11px; color:#8899bb; margin-bottom:3px;">
+                                    <span>经验</span><span>${Player.exp}/${Player.expToNext}</span>
+                                </div>
+                                <div style="height:6px; background:#222244; border-radius:3px; overflow:hidden;">
+                                    <div style="height:100%; width:${expPct}%; background:linear-gradient(90deg,#ffd700,#ffee88); transition:width 0.3s;"></div>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <!-- 元素列表 -->
-                        <div style="margin-top: 20px;">
-                            <div style="color: #aaa; font-size: 13px; margin-bottom: 8px;">已觉醒元素：</div>
-                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                                ${Player.elements.map(elem => `
-                                    <span style="
-                                        padding: 4px 10px;
-                                        background: ${SkillSystem.getElementColor(elem)}22;
-                                        border: 1px solid ${SkillSystem.getElementColor(elem)};
-                                        border-radius: 12px;
-                                        font-size: 12px;
-                                        color: ${SkillSystem.getElementColor(elem)};
-                                    ">${SkillSystem.getElementName(elem)}</span>
-                                `).join('')}
+                            
+                            <!-- 状态条 -->
+                            <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
+                                <div>
+                                    <div style="display:flex; justify-content:space-between; font-size:11px; color:#ff8888; margin-bottom:2px;">
+                                        <span>❤️ 生命</span><span>${Player.hp}/${s.maxHp}</span>
+                                    </div>
+                                    <div style="height:8px; background:#331111; border-radius:4px; overflow:hidden;">
+                                        <div style="height:100%; width:${hpPct}%; background:linear-gradient(90deg,#ff4444,#ff8888); transition:width 0.3s;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display:flex; justify-content:space-between; font-size:11px; color:#88aaff; margin-bottom:2px;">
+                                        <span>💧 法力</span><span>${Player.mp}/${s.maxMp}</span>
+                                    </div>
+                                    <div style="height:8px; background:#112244; border-radius:4px; overflow:hidden;">
+                                        <div style="height:100%; width:${mpPct}%; background:linear-gradient(90deg,#4488ff,#88bbff); transition:width 0.3s;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display:flex; justify-content:space-between; font-size:11px; color:#88ff88; margin-bottom:2px;">
+                                        <span>⚡ 体力</span><span>${Player.stamina}/${s.maxStamina}</span>
+                                    </div>
+                                    <div style="height:8px; background:#113311; border-radius:4px; overflow:hidden;">
+                                        <div style="height:100%; width:${staPct}%; background:linear-gradient(90deg,#44cc44,#88ff88); transition:width 0.3s;"></div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                            
+                            <!-- 属性数值 -->
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:16px; padding:10px; background:rgba(0,0,0,0.3); border-radius:8px; border:1px solid rgba(80,80,120,0.3);">
+                                <div style="font-size:12px; color:#ccc;"><span style="color:#ff9966;">⚔️</span> 攻击 <b style="color:#fff; float:right;">${s.attack}</b></div>
+                                <div style="font-size:12px; color:#ccc;"><span style="color:#6699ff;">🛡️</span> 防御 <b style="color:#fff; float:right;">${s.defense}</b></div>
+                                <div style="font-size:12px; color:#ccc;"><span style="color:#aaffaa;">💨</span> 速度 <b style="color:#fff; float:right;">${s.speed}</b></div>
+                                <div style="font-size:12px; color:#ccc;"><span style="color:#ffff66;">🎯</span> 命中 <b style="color:#fff; float:right;">${s.hitRate}%</b></div>
+                                <div style="font-size:12px; color:#ccc;"><span style="color:#ff66ff;">💥</span> 暴击 <b style="color:#fff; float:right;">${s.critRate}%</b></div>
+                                <div style="font-size:12px; color:#ccc;"><span style="color:#66ffff;">🔮</span> 魔攻 <b style="color:#fff; float:right;">${s.magicAttack || s.attack}</b></div>
+                            </div>
+                            
+                            <!-- 已装备 -->
+                            <div style="margin-bottom:16px;">
+                                <div style="font-size:12px; color:#8899bb; margin-bottom:8px; font-weight:bold;">📦 已装备</div>
+                                <div style="display:flex; flex-direction:column; gap:6px;">
+                                    ${['weapon','armor','accessory'].map(slot => {
+                                        const item = equip[slot];
+                                        if (item) {
+                                            return `<div style="padding:8px 10px; background:rgba(40,40,70,0.6); border:1px solid ${slotColors[slot]}55; border-radius:8px; display:flex; align-items:center; gap:8px;">
+                                                <span style="font-size:16px;">${slotNames[slot].split(' ')[0]}</span>
+                                                <div style="flex:1; min-width:0;">
+                                                    <div style="font-size:12px; color:${slotColors[slot]}; font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.name}</div>
+                                                    <div style="font-size:10px; color:#888;">${item.rarity || '普通'}${item.attack ? ` · 攻+${item.attack}` : ''}${item.defense ? ` · 防+${item.defense}` : ''}</div>
+                                                </div>
+                                            </div>`;
+                                        }
+                                        return `<div style="padding:8px 10px; background:rgba(30,30,50,0.4); border:1px dashed #555; border-radius:8px; display:flex; align-items:center; gap:8px; opacity:0.5;">
+                                            <span style="font-size:16px;">${slotNames[slot].split(' ')[0]}</span>
+                                            <span style="font-size:12px; color:#666;">${slotNames[slot].split(' ')[1]}（未装备）</span>
+                                        </div>`;
+                                    }).join('')}
+                                </div>
+                            </div>
+                            
+                            <!-- 已觉醒元素 -->
+                            <div style="margin-bottom:16px;">
+                                <div style="font-size:12px; color:#8899bb; margin-bottom:8px; font-weight:bold;">✨ 已觉醒元素</div>
+                                <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                                    ${Player.elements.map(elem => `<span style="padding:3px 10px; background:${SkillSystem.getElementColor(elem)}22; border:1px solid ${SkillSystem.getElementColor(elem)}; border-radius:10px; font-size:11px; color:${SkillSystem.getElementColor(elem)};">${SkillSystem.getElementName(elem)}</span>`).join('')}
+                                </div>
+                            </div>
+                            
+                            <!-- 快捷操作 -->
+                            <div style="display:flex; gap:8px; padding-top:12px; border-top:1px solid rgba(100,100,150,0.3);">
+                                <button onclick="Game.rest()" style="flex:1; padding:10px; background:linear-gradient(135deg,rgba(40,80,40,0.9),rgba(60,100,60,0.9)); border:1px solid #66aa66; border-radius:8px; color:#d0ffd0; cursor:pointer; font-size:12px; font-weight:bold;">😴 休息</button>
+                                <button onclick="Game.saveGame()" style="flex:1; padding:10px; background:linear-gradient(135deg,rgba(80,80,40,0.9),rgba(100,100,60,0.9)); border:1px solid #aaaa66; border-radius:8px; color:#ffffd0; cursor:pointer; font-size:12px; font-weight:bold;">💾 保存</button>
+                            </div>
+                            `;
+                        })()}
                     </div>
                 </div>
                 
