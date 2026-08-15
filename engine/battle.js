@@ -1703,10 +1703,20 @@ const BattleSystem = {
         
         this.addLog(`你发动了普通攻击，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}`, damage.isCrit ? 'crit' : 'damage');
         
+        // 玩家攻击冲刺动画
+        if (typeof UI !== 'undefined' && UI.playAttackAnimation) UI.playAttackAnimation(true);
+        
         // 显示浮动伤害数字
         if (!damage.isMiss) {
             const dmgType = damage.isCrit ? 'crit' : 'normal';
             this.showDamageNumber('enemy', damage.amount, dmgType);
+            // 敌人受击动画
+            setTimeout(() => {
+                if (typeof UI !== 'undefined' && UI.playHitAnimation) UI.playHitAnimation(false, damage.isCrit);
+            }, 150);
+        } else {
+            // 未命中/闪避飘字
+            this.showDamageNumber('enemy', 0, 'dodge');
         }
 
         // 检查是否打断敌人引导（精神力对抗）
@@ -2179,6 +2189,17 @@ const BattleSystem = {
 
                 const target = isPlayer ? 'enemy' : 'player';
                 this.showDamageNumber(target, damage.amount, dmgType);
+                
+                // 施法者攻击动画
+                if (typeof UI !== 'undefined' && UI.playAttackAnimation) UI.playAttackAnimation(isPlayer);
+                // 目标受击动画
+                setTimeout(() => {
+                    if (typeof UI !== 'undefined' && UI.playHitAnimation) UI.playHitAnimation(!isPlayer, damage.isCrit);
+                }, 200);
+            } else if (hitCount > 0 && totalMissCount >= hitCount) {
+                // 全部未命中，显示闪避
+                const target = isPlayer ? 'enemy' : 'player';
+                this.showDamageNumber(target, 0, 'dodge');
             }
             
             // 元素反应：处理状态变化（至少命中一段才触发）
@@ -3419,10 +3440,20 @@ const BattleSystem = {
             this.addLog(`${this.enemy.name} 发动攻击，造成 ${damage.amount} 点伤害${damage.isCrit ? '（暴击！）' : ''}${damage.isMiss ? '（未命中！）' : ''}`, 
                 damage.isCrit ? 'crit' : 'damage');
             
+            // 敌人攻击冲刺动画
+            if (typeof UI !== 'undefined' && UI.playAttackAnimation) UI.playAttackAnimation(false);
+            
             // 显示浮动伤害数字
             if (!damage.isMiss) {
                 const dmgType = damage.isCrit ? 'crit' : 'normal';
                 this.showDamageNumber('player', damage.amount, dmgType);
+                // 玩家受击动画
+                setTimeout(() => {
+                    if (typeof UI !== 'undefined' && UI.playHitAnimation) UI.playHitAnimation(true, damage.isCrit);
+                }, 150);
+            } else {
+                // 玩家闪避飘字
+                this.showDamageNumber('player', 0, 'dodge');
             }
 
             // 检查是否打断玩家引导（精神力对抗）

@@ -9,6 +9,48 @@ const UI = {
     
     // UI 状态
     inventoryFilter: 'all', // 背包物品筛选：all/consumable/equipment/material/quest
+    
+    // ===== 战斗美术资源配置（预留接口，后续填充美术资源时在此配置）=====
+    // 设计原则：所有战斗视觉资源通过此配置统一管理，代码不硬编码图片路径
+    // 新增资源时：在对应分类下添加 key-value，renderBattleScreen 会自动读取
+    battleArt: {
+        // 战斗背景图：key为地点ID或妖魔类型，value为图片路径
+        // 示例：'xuefeng_mountain': 'assets/images/battle-bg/xuefeng.jpg'
+        backgrounds: {},
+        // 玩家立绘：key为玩家外观ID，value为图片路径
+        // 示例：'default': 'assets/images/sprites/player.png'
+        playerSprites: {},
+        // 妖魔立绘：key为妖魔ID，value为图片路径
+        // 示例：'duoyanmolang': 'assets/images/sprites/duoyanmolang.png'
+        enemySprites: {},
+        // 技能特效配置：key为技能ID，value为特效参数
+        // 示例：'fire_burn': { type: 'particle', color: '#ff6644', duration: 500, img: 'assets/effects/fire.png' }
+        skillEffects: {},
+        // 通用特效
+        commonEffects: {
+            // hit: 'assets/effects/hit.png',
+            // crit: 'assets/effects/crit.png',
+        }
+    },
+    
+    // 根据当前战斗场景获取背景图（预留方法，后续实现动态背景切换）
+    getBattleBackground(enemy, location) {
+        const cfg = this.battleArt.backgrounds;
+        // 优先级：地点背景 > 妖魔类型背景 > 默认
+        if (location && cfg[location]) return cfg[location];
+        if (enemy && enemy.type && cfg[enemy.type]) return cfg[enemy.type];
+        return cfg.default || '';
+    },
+    
+    // 根据妖魔ID获取立绘（预留方法）
+    getEnemySprite(enemyId) {
+        return this.battleArt.enemySprites[enemyId] || '';
+    },
+    
+    // 获取玩家立绘（预留方法）
+    getPlayerSprite() {
+        return this.battleArt.playerSprites.default || '';
+    },
 
     // 初始化
     init() {
@@ -626,7 +668,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.83.0 · 战斗界面响应式适配</div>
+                ">v0.84.0 · 战斗UI动效优化+美术资源接口</div>
             </div>
         `;
 
@@ -2034,8 +2076,8 @@ const UI = {
         this.elements.gameContainer.innerHTML = `
             <div id="battle-screen" style="width: 100%; height: 100vh; display: flex; flex-direction: column; background: linear-gradient(to bottom, #1a1a3a, #2a2a5a); position: relative;">
                 
-                <!-- 战斗背景 -->
-                <div style="
+                <!-- 战斗背景层（预留接口：后续根据地点/妖魔类型动态替换背景图） -->
+                <div id="battle-bg-layer" style="
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
@@ -2043,6 +2085,15 @@ const UI = {
                     opacity: 0.12;
                     filter: blur(2px);
                     z-index: 0;
+                    pointer-events: none;
+                "></div>
+                
+                <!-- 战斗特效层（预留接口：技能特效、受击特效等在此层播放） -->
+                <div id="battle-effect-layer" style="
+                    position: absolute;
+                    top: 0; left: 0;
+                    width: 100%; height: 100%;
+                    z-index: 5;
                     pointer-events: none;
                 "></div>
                 
@@ -2091,7 +2142,7 @@ const UI = {
                             margin-bottom: 10px;
                             box-shadow: 0 0 30px rgba(100, 100, 255, 0.4);
                             transition: all 0.3s;
-                        " id="player-sprite"></div>
+                        " id="player-sprite" class="battle-sprite"></div>
                         <div style="font-size: 18px; font-weight: bold; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
                             ${state.player.name}
                             <span style="font-size: 14px; color: #66ccff;">Lv.${state.player.level}</span>
@@ -2226,7 +2277,7 @@ const UI = {
                             border-radius: 55px 55px 10px 10px;
                             margin-bottom: 10px;
                             box-shadow: 0 0 30px ${state.enemy.spriteColor || '#663399'}60;
-                        " id="enemy-sprite"></div>
+                        " id="enemy-sprite" class="battle-sprite"></div>
                         <div style="font-size: 18px; font-weight: bold; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
                             ${state.enemy.name}
                             <span style="font-size: 14px; color: #ffcc66;">Lv.${state.enemy.level}</span>
@@ -2838,73 +2889,144 @@ const UI = {
         const battleScreen = document.getElementById('battle-screen');
         if (!battleScreen) return;
         
+        const isPortrait = window.innerWidth < 768 || window.innerHeight > window.innerWidth;
+        
+        // 闪避/免疫特殊处理
+        if (type === 'dodge' || type === 'miss') {
+            const dodgeEl = document.createElement('div');
+            dodgeEl.textContent = type === 'dodge' ? '闪避！' : '未命中';
+            dodgeEl.style.cssText = `
+                position: absolute;
+                ${isPlayer ? (isPortrait ? 'left:50%;' : 'left:20%;') : (isPortrait ? 'left:50%;' : 'right:20%;')}
+                ${isPortrait ? (isPlayer ? 'bottom:30%;' : 'top:25%;') : 'bottom:45%;'}
+                font-size: ${isPortrait ? '20px' : '24px'};
+                font-weight: bold;
+                color: #aaaaaa;
+                text-shadow: 0 0 8px rgba(255,255,255,0.5), 0 2px 4px rgba(0,0,0,0.8);
+                pointer-events: none;
+                z-index: 100;
+                transform: translateX(-50%);
+                animation: dodgeFloat 1.2s ease-out forwards;
+            `;
+            if (!document.getElementById('dodge-number-style')) {
+                const style = document.createElement('style');
+                style.id = 'dodge-number-style';
+                style.textContent = `
+                    @keyframes dodgeFloat {
+                        0% { opacity: 0; transform: translateX(-50%) scale(0.5); }
+                        30% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+                        100% { opacity: 0; transform: translateX(-50%) translateY(-40px) scale(1); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            battleScreen.appendChild(dodgeEl);
+            setTimeout(() => dodgeEl.remove(), 1200);
+            return;
+        }
+        
         // 创建伤害数字元素
         const damageEl = document.createElement('div');
         
-        // 根据类型设置颜色
         const colors = {
             normal: '#ffffff',
-            crit: '#ffff44',
+            crit: '#ffdd44',
             magic: '#ffcc66',
             counter: '#ff6644',
             weakness: '#ff44ff',
-            heal: '#66ff66'
+            heal: '#66ff66',
+            real: '#ff88ff'
         };
         const color = colors[type] || colors.normal;
         
-        // 根据类型设置图标/文字
         let prefix = '';
-        if (type === 'crit') prefix = '💥 ';
-        if (type === 'counter') prefix = '⚡ ';
-        if (type === 'weakness') prefix = '✨ ';
-        if (type === 'heal') prefix = '💚 ';
+        if (type === 'crit') prefix = '💥';
+        if (type === 'counter') prefix = '⚡';
+        if (type === 'weakness') prefix = '✨';
+        if (type === 'heal') prefix = '💚';
+        if (type === 'real') prefix = '💎';
+        
+        const fontSize = type === 'crit' ? (isPortrait ? '32px' : '36px') : (isPortrait ? '22px' : '28px');
         
         damageEl.textContent = prefix + (type === 'heal' ? '+' : '-') + amount;
         damageEl.style.cssText = `
             position: absolute;
-            ${isPlayer ? 'left: 15%;' : 'right: 15%;'}
-            bottom: 200px;
-            font-size: 28px;
+            ${isPlayer ? (isPortrait ? 'left:50%;' : 'left:20%;') : (isPortrait ? 'left:50%;' : 'right:20%;')}
+            ${isPortrait ? (isPlayer ? 'bottom:32%;' : 'top:28%;') : 'bottom:45%;'}
+            font-size: ${fontSize};
             font-weight: bold;
             color: ${color};
-            text-shadow: 0 0 10px ${color}, 0 2px 4px rgba(0,0,0,0.8);
+            text-shadow: 0 0 12px ${color}, 0 2px 4px rgba(0,0,0,0.9);
             pointer-events: none;
             z-index: 100;
-            animation: damageFloat 1.5s ease-out forwards;
             transform: translateX(-50%);
+            animation: ${type === 'crit' ? 'critFloat' : 'damageFloat'} 1.5s ease-out forwards;
         `;
         
-        // 添加动画样式（如果还没有的话）
         if (!document.getElementById('damage-number-style')) {
             const style = document.createElement('style');
             style.id = 'damage-number-style';
             style.textContent = `
                 @keyframes damageFloat {
-                    0% {
-                        opacity: 0;
-                        transform: translateX(-50%) translateY(0) scale(0.5);
-                    }
-                    20% {
-                        opacity: 1;
-                        transform: translateX(-50%) translateY(-20px) scale(1.2);
-                    }
-                    100% {
-                        opacity: 0;
-                        transform: translateX(-50%) translateY(-80px) scale(1);
-                    }
+                    0% { opacity: 0; transform: translateX(-50%) translateY(0) scale(0.5); }
+                    20% { opacity: 1; transform: translateX(-50%) translateY(-15px) scale(1.1); }
+                    100% { opacity: 0; transform: translateX(-50%) translateY(-70px) scale(1); }
+                }
+                @keyframes critFloat {
+                    0% { opacity: 0; transform: translateX(-50%) translateY(0) scale(0.3) rotate(-10deg); }
+                    15% { opacity: 1; transform: translateX(-50%) translateY(-10px) scale(1.5) rotate(5deg); }
+                    30% { transform: translateX(-50%) translateY(-20px) scale(1.3) rotate(-3deg); }
+                    100% { opacity: 0; transform: translateX(-50%) translateY(-80px) scale(1.1) rotate(0deg); }
+                }
+                @keyframes hitShake {
+                    0%, 100% { transform: translateX(0); }
+                    20% { transform: translateX(-8px); }
+                    40% { transform: translateX(8px); }
+                    60% { transform: translateX(-5px); }
+                    80% { transform: translateX(5px); }
+                }
+                @keyframes hitFlash {
+                    0%, 100% { filter: brightness(1); }
+                    50% { filter: brightness(2) sepia(1) hue-rotate(-50deg) saturate(5); }
+                }
+                @keyframes attackLunge {
+                    0% { transform: translateX(0); }
+                    40% { transform: translateX(30px) scale(1.05); }
+                    100% { transform: translateX(0); }
+                }
+                @keyframes attackLungeLeft {
+                    0% { transform: translateX(0); }
+                    40% { transform: translateX(-30px) scale(1.05); }
+                    100% { transform: translateX(0); }
                 }
             `;
             document.head.appendChild(style);
         }
         
         battleScreen.appendChild(damageEl);
-        
-        // 动画结束后移除
-        setTimeout(() => {
-            if (damageEl.parentNode) {
-                damageEl.remove();
-            }
-        }, 1500);
+        setTimeout(() => damageEl.remove(), 1500);
+    },
+    
+    // 受击动画
+    playHitAnimation(isPlayer, isCrit) {
+        const spriteId = isPlayer ? 'player-sprite' : 'enemy-sprite';
+        const sprite = document.getElementById(spriteId);
+        if (!sprite) return;
+        sprite.style.animation = 'hitShake 0.4s ease-in-out, hitFlash 0.3s ease-in-out';
+        if (isCrit) {
+            sprite.style.animation = 'hitShake 0.5s ease-in-out, hitFlash 0.4s ease-in-out';
+        }
+        setTimeout(() => { sprite.style.animation = ''; }, 500);
+    },
+    
+    // 攻击冲刺动画
+    playAttackAnimation(isPlayer) {
+        const spriteId = isPlayer ? 'player-sprite' : 'enemy-sprite';
+        const sprite = document.getElementById(spriteId);
+        if (!sprite) return;
+        const animName = isPlayer ? 'attackLunge' : 'attackLungeLeft';
+        sprite.style.animation = `${animName} 0.4s ease-in-out`;
+        setTimeout(() => { sprite.style.animation = ''; }, 400);
     },
 
     // ========== 事件界面 ==========
