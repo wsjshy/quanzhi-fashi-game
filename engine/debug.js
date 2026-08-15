@@ -400,16 +400,13 @@ const DebugPanel = {
                         </div>
                     </div>
                     
-                    <!-- v0.70.0: 精英妖魔测试 -->
+                    <!-- v0.70.0: 精英妖魔测试（仅博城灾难及之前） -->
                     <div style="margin-bottom: 15px;">
-                        <div style="font-weight: bold; color: #ffaa00; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">⭐ 精英妖魔（v0.70.0）</div>
+                        <div style="font-weight: bold; color: #ffaa00; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">⭐ 精英妖魔（博城灾难）</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                             <button onclick="DebugPanel.startBattle('three_eye_wolf')" style="background: #aa6633; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">三眼魔狼</button>
-                            <button onclick="DebugPanel.startBattle('bewitch_spider')" style="background: #663388; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">蛊惑魔蛛</button>
-                            <button onclick="DebugPanel.startBattle('false_terror_plant')" style="background: #336644; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">伪怖魔</button>
-                            <button onclick="DebugPanel.startBattle('black_church_curse_beast')" style="background: #442255; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">黑教廷诅咒畜妖</button>
-                            <button onclick="DebugPanel.startBattle('forbidden_moon_golem')" style="background: #666655; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">禁月石魔</button>
-                            <button onclick="DebugPanel.startBattle('red_ling_yao')" style="background: #aa3322; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">赤凌妖</button>
+                            <button onclick="DebugPanel.startBattle('advanced_one_eye_wolf')" style="background: #665544; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">进阶期独眼魔狼</button>
+                            <button onclick="DebugPanel.startBattle('giant_eye_rat_king')" style="background: #774444; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">巨眼猩鼠王</button>
                         </div>
                     </div>
                     

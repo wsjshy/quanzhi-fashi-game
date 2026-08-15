@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 敌人/妖魔数据
  * 从 game-data.js 拆分而来
  */
@@ -2541,191 +2541,73 @@ const DataEnemies = {
     ]
   },
 
-  bewitch_spider: {
-    id: "bewitch_spider",
-    name: "蛊惑魔蛛",
-    title: "大战将精英",
-    description: "八足多眼甲壳，核心能力是蛊惑猎物。不需要凭空制造仇恨，只要把本就存在的情绪不断放大，就能让猎物互相攻击。",
-    elements: ["dark", "poison"],
-    level: 14,
-    maxHp: 350,
-    maxMp: 50,
-    attack: 28,
-    defense: 20,
-    speed: 14,
-    skills: ["basic_attack", "curse_spider_trap", "dark_curse", "shadow_spike"],
-    aiType: "tactical",
-    enemyType: "demon",
-    demonTier: "commander",
-    elite: true,
-    eliteMechanics: {
-      bewitch_chance: 0.4,
-      bewitch_interval: 3,
-      shell_reduction_first: 0.5,
-      evasion_bonus: 0.15
-    },
-    weakness: ["fire", "light"],
-    spriteColor: "#442255",
-    isEnemy: true,
-    expReward: 100,
-    goldReward: 80,
-    dropItems: [
-      { itemId: "spider_silk", chance: 0.5, min: 1, max: 2 },
-      { itemId: "bewitch_gland", chance: 0.15, min: 1, max: 1 },
-      { itemId: "elite_core", chance: 0.12, min: 1, max: 1 }
-    ]
-  },
+  // ========== 博城灾难精英妖魔（仅使用博城灾难及之前出现的妖魔）==========
 
-  false_terror_plant: {
-    id: "false_terror_plant",
-    name: "伪怖魔",
-    title: "战将级巅峰精英",
-    description: "植物型妖魔，植物墙封死出口，扎根封锁拖拽。你以为自己进入了大楼，其实是走进了它的捕食范围。",
-    elements: ["earth", "nature"],
-    level: 16,
-    maxHp: 500,
-    maxMp: 80,
+  advanced_one_eye_wolf: {
+    id: "advanced_one_eye_wolf",
+    name: "进阶期独眼魔狼",
+    title: "奴仆级巅峰精英",
+    description: "独眼魔狼中的进阶期个体，力大敏捷，比普通独眼魔狼强大数倍。博城灾难中常见的精锐妖魔，单独一只就足以威胁初阶魔法师。",
+    elements: ["dark"],
+    level: 8,
+    maxHp: 180,
+    maxMp: 0,
     attack: 25,
-    defense: 25,
-    speed: 6,
-    skills: ["basic_attack", "plant_vine_bind", "plant_forest_prison", "thorn_shot"],
-    aiType: "defensive",
+    defense: 8,
+    speed: 20,
+    skills: ["basic_attack", "wolf_bite", "wolf_howl", "dark_claw"],
+    aiType: "aggressive",
     enemyType: "demon",
-    demonTier: "commander",
+    demonTier: "servant",
     elite: true,
     eliteMechanics: {
-      plant_wall_chance: 0.3,
-      vine_drag_interval: 4,
-      regen_percent: 0.05,
-      fire_weakness_multiplier: 1.5
+      physical_reduction: 0.1,
+      evasion_bonus: 0.1,
+      first_strike_bonus: 0.15
     },
     weakness: ["fire"],
-    spriteColor: "#225533",
+    spriteColor: "#443322",
     isEnemy: true,
-    expReward: 150,
-    goldReward: 120,
+    expReward: 50,
+    goldReward: 40,
     dropItems: [
-      { itemId: "plant_core", chance: 0.3, min: 1, max: 1 },
-      { itemId: "false_terror_seed", chance: 0.2, min: 1, max: 1 },
-      { itemId: "elite_core", chance: 0.15, min: 1, max: 1 }
+      { itemId: "wolf_fang", chance: 0.5, min: 1, max: 2 },
+      { itemId: "demon_core", chance: 0.4, min: 1, max: 1 },
+      { itemId: "elite_core", chance: 0.05, min: 1, max: 1 }
     ]
   },
 
-  // ========== v0.70.1 第二批精英妖魔 ==========
-
-  black_church_curse_beast: {
-    id: "black_church_curse_beast",
-    name: "黑教廷诅咒畜妖",
-    title: "战将级精英",
-    description: "黑教廷用人类活尸与妖的煞气混合制造的诅咒畜妖。是怨恨、愤怒、贪婪的化身，更贴近亡灵生物。与被咒法的许昭霆不同，这是完全丧失意识的普通诅咒畜妖。",
-    elements: ["dark", "curse"],
-    level: 13,
-    maxHp: 380,
-    maxMp: 40,
-    attack: 32,
-    defense: 18,
-    speed: 12,
-    skills: ["basic_attack", "dark_curse", "dark_claw", "shadow_spike"],
-    aiType: "aggressive",
-    enemyType: "demon",
-    demonTier: "commander",
-    elite: true,
-    eliteMechanics: {
-      curse_chance: 0.3,
-      curse_attack_reduction: 0.1,
-      curse_defense_reduction: 0.1,
-      curse_duration: 3,
-      undead_immunity: ["poison", "bleed"],
-      light_weakness_multiplier: 1.5,
-      first_status_immune: true,
-      berserk_hp_threshold: 0.3,
-      berserk_attack_bonus: 0.3
-    },
-    weakness: ["light"],
-    immune: ["poison", "bleed"],
-    spriteColor: "#332244",
-    isEnemy: true,
-    expReward: 110,
-    goldReward: 90,
-    dropItems: [
-      { itemId: "curse_crystal", chance: 0.25, min: 1, max: 1 },
-      { itemId: "evil_qi_core", chance: 0.3, min: 1, max: 1 },
-      { itemId: "elite_core", chance: 0.12, min: 1, max: 1 }
-    ]
-  },
-
-  forbidden_moon_golem: {
-    id: "forbidden_moon_golem",
-    name: "禁月石魔",
-    title: "战将级精英",
-    description: "石魔类妖魔，石肤高防御，与月能相关，夜晚更强。坚硬的身躯让普通攻击难以奏效。",
-    elements: ["earth"],
-    level: 14,
-    maxHp: 450,
+  giant_eye_rat_king: {
+    id: "giant_eye_rat_king",
+    name: "巨眼猩鼠王",
+    title: "奴仆级巅峰精英",
+    description: "巨眼猩鼠群居群落的首领，体型比普通巨眼猩鼠大一圈，腥红光束威力更强。博城灾难地下洞穴中的危险存在。",
+    elements: ["dark", "poison"],
+    level: 7,
+    maxHp: 150,
     maxMp: 30,
-    attack: 30,
-    defense: 28,
-    speed: 7,
-    skills: ["basic_attack", "rock_throw", "earth_quake", "demon_rock_fist"],
-    aiType: "defensive",
-    enemyType: "demon",
-    demonTier: "commander",
-    elite: true,
-    eliteMechanics: {
-      stone_skin_reduction: 0.3,
-      moon_bonus_night: 0.2,
-      rock_throw_interval: 3,
-      rock_throw_hit_reduction: 0.2,
-      earth_weakness_multiplier: 1.3,
-      thunder_weakness_multiplier: 1.2
-    },
-    weakness: ["earth", "thunder"],
-    spriteColor: "#666655",
-    isEnemy: true,
-    expReward: 110,
-    goldReward: 90,
-    dropItems: [
-      { itemId: "golem_core", chance: 0.3, min: 1, max: 1 },
-      { itemId: "moon_stone", chance: 0.15, min: 1, max: 1 },
-      { itemId: "elite_core", chance: 0.12, min: 1, max: 1 }
-    ]
-  },
-
-  red_ling_yao: {
-    id: "red_ling_yao",
-    name: "赤凌妖",
-    title: "小战将精英",
-    description: "4米高的火系妖魔，凶悍善战，压制同阶。小战将T1级别，烈焰护体让近战者吃苦头。",
-    elements: ["fire"],
-    level: 11,
-    maxHp: 280,
-    maxMp: 60,
-    attack: 38,
-    defense: 12,
+    attack: 20,
+    defense: 6,
     speed: 22,
-    skills: ["basic_attack", "fire_fist", "fire_burst", "fire_burn_bone"],
-    aiType: "aggressive",
+    skills: ["basic_attack", "rat_bite", "dark_bolt", "shadow_spike"],
+    aiType: "tactical",
     enemyType: "demon",
-    demonTier: "commander",
+    demonTier: "servant",
     elite: true,
     eliteMechanics: {
-      flame_aura_reflect: 0.2,
-      burning_ground_interval: 2,
-      burning_ground_duration: 3,
-      evasion_bonus: 0.1,
-      first_strike_bonus: 0.2,
-      ice_weakness_multiplier: 1.5,
-      water_weakness_multiplier: 1.3
+      poison_chance: 0.3,
+      evasion_bonus: 0.15,
+      summon_minions_chance: 0.2
     },
-    weakness: ["ice", "water"],
-    spriteColor: "#aa3322",
+    weakness: ["fire", "light"],
+    spriteColor: "#553333",
     isEnemy: true,
-    expReward: 90,
-    goldReward: 70,
+    expReward: 45,
+    goldReward: 35,
     dropItems: [
-      { itemId: "red_ling_crystal", chance: 0.3, min: 1, max: 1 },
-      { itemId: "flame_core", chance: 0.2, min: 1, max: 1 },
-      { itemId: "elite_core", chance: 0.1, min: 1, max: 1 }
+      { itemId: "rat_tail", chance: 0.5, min: 1, max: 2 },
+      { itemId: "demon_core", chance: 0.35, min: 1, max: 1 },
+      { itemId: "elite_core", chance: 0.05, min: 1, max: 1 }
     ]
   }
 };

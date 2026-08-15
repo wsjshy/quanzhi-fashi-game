@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.70.1 · 精英妖魔扩展</div>
+                ">v0.70.2 · 精英妖魔（博城灾难）</div>
             </div>
         `;
 
