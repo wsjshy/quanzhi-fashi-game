@@ -2203,9 +2203,19 @@ const Game = {
 
     // ========== 事件界面 ==========
     showEvent(event) {
+        // 支持传入事件ID字符串或事件对象
+        let eventData = event;
+        if (typeof event === 'string') {
+            eventData = EventSystem.getEvent(event);
+            if (!eventData) {
+                console.warn('[事件] 事件不存在:', event);
+                UI.showMessage('事件数据异常');
+                return;
+            }
+        }
         this.state = 'event';
-        this.currentEvent = event;
-        UI.renderEventScreen(event);
+        this.currentEvent = eventData;
+        UI.renderEventScreen(eventData);
     },
 
     // ========== 大事件界面 ==========
