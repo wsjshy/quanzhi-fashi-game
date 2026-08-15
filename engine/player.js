@@ -338,11 +338,51 @@ const Player = {
     },
 
     /**
+     * v0.74.0: 强化材料加成配置
+     * 材料ID -> 成功率加成（百分比）
+     */
+    enhanceMaterialBonus: {
+        rat_tail: 0.05,           // 猩鼠尾 +5%
+        wolf_bone_spike: 0.08,    // 魔狼骨刺 +8%
+        elite_core: 0.15,         // 精英核心 +15%
+        demon_core: 0.03          // 妖魔精核 +3%
+    },
+
+    /**
+     * v0.74.0: 获取材料的强化加成
+     */
+    getEnhanceMaterialBonus(materialId) {
+        return this.enhanceMaterialBonus[materialId] || 0;
+    },
+
+    /**
+     * v0.74.0: 获取玩家拥有的可用于强化的材料列表
+     */
+    getAvailableEnhanceMaterials() {
+        const materials = [];
+        for (const matId in this.enhanceMaterialBonus) {
+            const count = this.getItemCount(matId);
+            if (count > 0) {
+                const item = (typeof DataItems !== 'undefined') ? DataItems[matId] : null;
+                materials.push({
+                    id: matId,
+                    name: item?.name || matId,
+                    icon: item?.icon || '📦',
+                    count: count,
+                    bonus: this.enhanceMaterialBonus[matId]
+                });
+            }
+        }
+        return materials;
+    },
+
+    /**
      * 强化装备
      * v0.14.0: 增加保底机制（连续失败3次后下次必定成功）和强化记录
+     * v0.74.0: 支持使用材料提高成功率（materialId可选）
      * 返回 { success: boolean, message: string, newLevel: number, isGuaranteed: boolean }
      */
-    enhanceEquipment(slot) {
+    enhanceEquipment(slot, materialId = null) {
         const itemId = this.equipment[slot];
         if (!itemId) {
             return { success: false, message: '该槽位没有装备' };
@@ -358,12 +398,30 @@ const Player = {
             return { success: false, message: `金币不足，需要${cost}金币` };
         }
 
+        // v0.74.0: 检查并消耗材料
+        let materialBonus = 0;
+        let materialName = '';
+        if (materialId) {
+            if (this.getItemCount(materialId) < 1) {
+                return { success: false, message: '材料不足' };
+            }
+            materialBonus = this.getEnhanceMaterialBonus(materialId);
+            if (materialBonus <= 0) {
+                return { success: false, message: '该材料不能用于强化' };
+            }
+            this.removeItem(materialId, 1);
+            const matItem = (typeof DataItems !== 'undefined') ? DataItems[materialId] : null;
+            materialName = matItem?.name || materialId;
+        }
+
         this.gold -= cost;
         
         // v0.14.0: 保底机制 - 连续失败3次后下次必定成功
         const failStreak = this.enhanceFailStreak[slot] || 0;
         const isGuaranteed = failStreak >= 3;
-        const successRate = this.getEnhanceSuccessRate(slot);
+        const baseRate = this.getEnhanceSuccessRate(slot);
+        // v0.74.0: 材料加成，成功率上限95%
+        const successRate = isGuaranteed ? 1 : Math.min(0.95, baseRate + materialBonus);
         const success = isGuaranteed || Math.random() < successRate;
 
         if (success) {

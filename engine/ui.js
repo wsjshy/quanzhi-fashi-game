@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.73.1 · 对话退出bug修复</div>
+                ">v0.74.0 · 装备强化材料系统</div>
             </div>
         `;
 
@@ -3537,6 +3537,32 @@ const UI = {
                                                 ${Player.enhanceFailStreak?.[slot] >= 3 ? 'animation: pulse 1.5s infinite;' : ''}
                                             ">${enhanceLevel >= 10 ? '已满级' : (Player.enhanceFailStreak?.[slot] >= 3 ? `✨ 保底强化(${enhanceCost}金/100%)` : `强化(${enhanceCost}金/${enhanceRate}%)`)}</div>
                                         </div>
+                                        ${enhanceLevel < 10 && Player.enhanceFailStreak?.[slot] < 3 ? (() => {
+                                            // v0.74.0: 显示可用强化材料
+                                            const materials = Player.getAvailableEnhanceMaterials();
+                                            if (materials.length === 0) return '';
+                                            return `
+                                                <div style="margin-top: 8px; padding: 6px 10px; background: rgba(60, 50, 30, 0.5); border-radius: 6px; border: 1px solid #776644;">
+                                                    <div style="font-size: 11px; color: #ffcc88; margin-bottom: 4px;">🧪 使用材料提高成功率：</div>
+                                                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                                        ${materials.map(m => {
+                                                            const finalRate = Math.min(95, enhanceRate + Math.floor(m.bonus * 100));
+                                                            return `<div onclick="Game.enhanceEquipment('${slot}', '${m.id}')" style="
+                                                                padding: 3px 8px;
+                                                                background: #443322;
+                                                                border: 1px solid #665544;
+                                                                border-radius: 4px;
+                                                                color: #ffddaa;
+                                                                cursor: pointer;
+                                                                font-size: 11px;
+                                                            " title="使用${m.name}，成功率${enhanceRate}%→${finalRate}%">
+                                                                ${m.icon} ${m.name} x${m.count} <span style="color:#66ff88;">+${Math.floor(m.bonus * 100)}%</span>
+                                                            </div>`;
+                                                        }).join('')}
+                                                    </div>
+                                                </div>
+                                            `;
+                                        })() : ''}
                                         ${enhanceLevel < 10 && Player.enhanceFailStreak?.[slot] > 0 ? `
                                             <div style="font-size: 11px; color: ${Player.enhanceFailStreak[slot] >= 3 ? '#cc66ff' : '#ff9966'}; margin-top: 6px;">
                                                 🔄 已连续失败 ${Player.enhanceFailStreak[slot]} 次${Player.enhanceFailStreak[slot] >= 3 ? '，下次必定成功！' : `，再失败 ${3 - Player.enhanceFailStreak[slot]} 次触发保底`}

@@ -3789,8 +3789,8 @@ const Game = {
     },
 
     // 强化装备
-    enhanceEquipment(slot) {
-        const result = Player.enhanceEquipment(slot);
+    enhanceEquipment(slot, materialId = null) {
+        const result = Player.enhanceEquipment(slot, materialId);
         UI.showMessage(result.message);
         UI.showEnhancePanel();
         Player.save();
