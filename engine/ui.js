@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.81.2 · 滚动修复+卡片优化</div>
+                ">v0.81.3 · 手机全功能菜单</div>
             </div>
         `;
 
@@ -1132,8 +1132,8 @@ const UI = {
         
         const location = MapSystem.getCurrentLocation();
         const stats = Player.getTotalStats();
-        // v0.81.0: 响应式布局检测（竖版手机/横版电脑）
-        const isPortrait = window.innerHeight > window.innerWidth;
+        // v0.81.3: 响应式布局检测（宽度<768px视为手机竖版，避免电脑窄窗口误判）
+        const isPortrait = window.innerWidth < 768;
         
         // 根据地点选择背景图片
         let bgImage = '';
@@ -1909,8 +1909,8 @@ const UI = {
                     <button onclick="Game.openDaily()" style="flex:1;padding:14px 8px;background:linear-gradient(135deg,rgba(30,60,50,0.9),rgba(50,90,70,0.9));border:2px solid #55aa77;border-radius:12px;color:#aaffcc;cursor:pointer;font-size:18px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all 0.2s;position:relative;" onmouseover="this.style.background='linear-gradient(135deg,rgba(50,90,70,0.9),rgba(70,120,90,0.9))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(30,60,50,0.9),rgba(50,90,70,0.9))'">
                         <span style="font-size:24px;">📅</span><span style="font-size:11px;">日常${DailySystem.getUnclaimedCount() > 0 ? `<span style="position:absolute;top:6px;right:10px;background:#ff4444;color:#fff;font-size:10px;padding:1px 5px;border-radius:8px;">${DailySystem.getUnclaimedCount()}</span>` : ''}</span>
                     </button>
-                    <button onclick="Game.saveGame()" style="flex:1;padding:14px 8px;background:linear-gradient(135deg,rgba(70,70,40,0.9),rgba(100,100,60,0.9));border:2px solid #aaaa55;border-radius:12px;color:#ffffaa;cursor:pointer;font-size:18px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(100,100,60,0.9),rgba(130,130,80,0.9))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(70,70,40,0.9),rgba(100,100,60,0.9))'">
-                        <span style="font-size:24px;">💾</span><span style="font-size:11px;">保存</span>
+                    <button onclick="UI.showFullMenu()" style="flex:1;padding:14px 8px;background:linear-gradient(135deg,rgba(60,40,80,0.9),rgba(90,60,120,0.9));border:2px solid #8866aa;border-radius:12px;color:#ccaaff;cursor:pointer;font-size:18px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(90,60,120,0.9),rgba(120,80,160,0.9))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(60,40,80,0.9),rgba(90,60,120,0.9))'">
+                        <span style="font-size:24px;">☰</span><span style="font-size:11px;">菜单</span>
                     </button>
                 </div>
             </div>
@@ -1935,6 +1935,54 @@ const UI = {
                 this._processNextMessage();
             }
         }, 100);
+    },
+
+    // v0.81.3: 全功能菜单面板（手机端访问所有功能）
+    showFullMenu() {
+        const menuItems = [
+            { icon: '👤', name: '角色属性', color: '#8899cc', action: () => Game.openCharacterPanel() },
+            { icon: '🎒', name: '背包', color: '#aa8844', action: () => Game.openInventory() },
+            { icon: '📜', name: '任务', color: '#8899cc', action: () => Game.openQuestLog() },
+            { icon: '🔍', name: '情报', color: '#8899cc', action: () => Game.openIntelPanel() },
+            { icon: '⭐', name: '声望', color: '#aa9944', action: () => Game.openReputationPanel() },
+            { icon: '🏆', name: '成就', color: '#aa8844', action: () => UI.showAchievementPanel() },
+            { icon: '❓', name: '帮助', color: '#8899cc', action: () => Game.openHelpPanel() },
+            { icon: '📖', name: '妖魔图鉴', color: '#aa6666', action: () => Game.openBestiary() },
+            { icon: '📋', name: '日常', color: '#55aa77', action: () => Game.openDaily() },
+            { icon: '😴', name: '休息到明天', color: '#66aa66', action: () => Game.rest() },
+            { icon: '💾', name: '保存游戏', color: '#aaaa55', action: () => Game.saveGame() },
+        ];
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);';
+        overlay.innerHTML = `
+            <div style="max-width:500px;width:100%;background:linear-gradient(135deg,#1a1a3a,#2a2a5a);border:2px solid #555588;border-radius:16px;padding:20px;max-height:90vh;overflow-y:auto;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                    <h3 style="color:#ffd700;font-size:20px;margin:0;">📋 全部功能</h3>
+                    <div onclick="this.closest('div[style*=fixed]').remove()" style="padding:6px 14px;background:#333355;border:1px solid #555577;border-radius:8px;color:#aaa;cursor:pointer;font-size:14px;">✕ 关闭</div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+                    ${menuItems.map((item, idx) => `
+                        <div data-idx="${idx}" class="full-menu-item" style="padding:14px 8px;background:linear-gradient(135deg,rgba(40,40,80,0.9),rgba(60,60,120,0.9));border:2px solid ${item.color};border-radius:12px;color:#e0e0ff;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)';this.style.borderColor='#fff'" onmouseout="this.style.transform='scale(1)';this.style.borderColor='${item.color}'">
+                            <div style="font-size:28px;margin-bottom:4px;">${item.icon}</div>
+                            <div style="font-size:13px;font-weight:bold;">${item.name}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        // 绑定点击事件
+        overlay.querySelectorAll('.full-menu-item').forEach(el => {
+            el.onclick = () => {
+                const idx = parseInt(el.dataset.idx);
+                overlay.remove();
+                setTimeout(() => menuItems[idx].action(), 100);
+            };
+        });
+        // 点击背景关闭
+        overlay.onclick = (e) => {
+            if (e.target === overlay) overlay.remove();
+        };
     },
 
     // ========== 战斗界面 ==========
