@@ -2212,6 +2212,66 @@ const DataCharacters = {
               nextNode: "about_power"
             },
             {
+              id: "ask_training",
+              text: "你平时都怎么修炼？",
+              condition: { minOpinion: 5, notMemoryTags: ["player_asked_training"] },
+              effects: {
+                opinion: 1,
+                addMemory: { type: "conversation", content: "玩家问我平时怎么修炼", importance: 0.3, tags: ["player_asked_training"] }
+              },
+              nextNode: "about_training"
+            },
+            {
+              id: "ask_meaning",
+              text: "修炼对你来说意味着什么？",
+              condition: { minOpinion: 15, notMemoryTags: ["player_asked_meaning"] },
+              effects: {
+                opinion: 2,
+                trust: 1,
+                addMemory: { type: "conversation", content: "玩家问修炼对我意味着什么", importance: 0.4, tags: ["player_asked_meaning"] }
+              },
+              nextNode: "about_meaning"
+            },
+            {
+              id: "share_struggle",
+              text: "我最近修炼遇到瓶颈了...",
+              condition: { minOpinion: 10, notMemoryTags: ["player_shared_struggle"] },
+              effects: {
+                opinion: 2,
+                trust: 2,
+                addMemory: { type: "conversation", content: "玩家向我倾诉修炼瓶颈", importance: 0.4, tags: ["player_shared_struggle"] }
+              },
+              nextNode: "struggle_response"
+            },
+            {
+              id: "ask_school_life",
+              text: "在天澜魔法高中的生活怎么样？",
+              condition: { notMemoryTags: ["player_asked_school_life"] },
+              effects: {
+                opinion: 1,
+                addMemory: { type: "conversation", content: "玩家问学校生活", importance: 0.2, tags: ["player_asked_school_life"] }
+              },
+              nextNode: "about_school_life"
+            },
+            {
+              id: "ask_dream",
+              text: "如果不考虑家族，你想做什么？",
+              condition: { minOpinion: 30, notMemoryTags: ["player_asked_dream"] },
+              effects: {
+                opinion: 3,
+                trust: 3,
+                addMemory: { type: "conversation", content: "玩家问我不考虑家族想做什么", importance: 0.6, tags: ["player_asked_dream"] }
+              },
+              nextNode: "about_dream"
+            },
+            {
+              id: "recall_deep",
+              text: "（穆宁雪看你的眼神和其他人不一样...）",
+              condition: { anyMemoryTags: ["player_asked_dream", "player_shared_struggle", "player_asked_meaning"], npcFlags: ["seen_as_person"] },
+              effects: {},
+              nextNode: "deep_recall"
+            },
+            {
               id: "ask_past",
               text: "我听说你小时候发生过什么……",
               condition: { minOpinion: 35, notNpcFlags: ["shared_past"] },
@@ -2410,6 +2470,173 @@ const DataCharacters = {
           effects: { opinion: 8, trust: 5, npcFlags: { offered_help: true } },
           choices: [
             { id: "thanks", text: "谢谢，我会的", effects: { opinion: 2 }, nextNode: "default" }
+          ]
+        },
+        about_training: {
+          id: "about_training",
+          texts: [
+            "（穆宁雪微微偏头，似乎没想到你会问这个。）",
+            "……每天。",
+            "清晨星子最活跃的时候修炼两个小时，下午连接星图，晚上复盘。",
+            "（她顿了顿。）",
+            "没有捷径。重复到星子成为本能。"
+          ],
+          mood: "neutral",
+          choices: [
+            { id: "inspired", text: "我明白了，谢谢", effects: { exp: 10 }, nextNode: "default" },
+            { id: "ask_more", text: "不会觉得枯燥吗？", condition: { minOpinion: 15 }, effects: { opinion: 1 }, nextNode: "training_boring" }
+          ]
+        },
+        training_boring: {
+          id: "training_boring",
+          texts: [
+            "（穆宁雪看了你一眼。）",
+            "……枯燥？",
+            "当你能让星子按照自己的意志排列成星图的时候，就不会觉得枯燥了。",
+            "（她的语气很淡，但眼神里有一种执着。）",
+            "每一次连接，都是在和自己对话。"
+          ],
+          mood: "thoughtful",
+          choices: [
+            { id: "understand", text: "我懂了", effects: { opinion: 2, trust: 1 }, nextNode: "default" }
+          ]
+        },
+        about_meaning: {
+          id: "about_meaning",
+          texts: [
+            "（穆宁雪沉默了很久。）",
+            "……意味着什么？",
+            "（她低头看着自己的手，指尖有微弱的冰蓝色光芒闪烁。）",
+            "一开始是家族的期望。后来……",
+            "（她抬起头，冰蓝色的眼眸很平静。）",
+            "是证明自己存在的方式。"
+          ],
+          mood: "thoughtful",
+          choices: [
+            { id: "relate", text: "我也在寻找这个答案", effects: { opinion: 3, trust: 2 }, nextNode: "default" },
+            { id: "respect", text: "……我尊重你的选择", effects: { opinion: 2 }, nextNode: "default" }
+          ]
+        },
+        struggle_response: {
+          id: "struggle_response",
+          texts: [
+            "（穆宁雪看着你，表情没有变化，但眼神专注了一些。）",
+            "瓶颈。",
+            "……每个人都会遇到。",
+            "（她思考了一下。）",
+            "你卡在哪里？星子连接不稳定，还是星图结构不对？",
+            "（她的语气依旧冷淡，但问题很具体。）"
+          ],
+          mood: "neutral",
+          choices: [
+            { id: "star_connection", text: "星子连接总是断开", effects: { opinion: 2, exp: 20 }, nextNode: "struggle_advice" },
+            { id: "star_map", text: "星图结构总是不完整", effects: { opinion: 2, exp: 20 }, nextNode: "struggle_advice" },
+            { id: "thanks_listen", text: "谢谢你听我说", effects: { trust: 3 }, nextNode: "default" }
+          ]
+        },
+        struggle_advice: {
+          id: "struggle_advice",
+          texts: [
+            "（穆宁雪认真地想了想。）",
+            "不要急。",
+            "星子有自己的节奏，你越用力，它们越抗拒。",
+            "（她伸出手，一缕冰蓝色的星尘在指尖缓缓旋转。）",
+            "试着感受它们，而不是控制它们。",
+            "……这是我能给的建议。"
+          ],
+          mood: "neutral",
+          effects: { exp: 30, npcFlags: { gave_training_advice: true } },
+          choices: [
+            { id: "grateful", text: "这个建议很有帮助", effects: { opinion: 3, trust: 2 }, nextNode: "default" }
+          ]
+        },
+        about_school_life: {
+          id: "about_school_life",
+          texts: [
+            "（穆宁雪的表情没有变化。）",
+            "……就那样。",
+            "上课，修炼，回家。",
+            "（她顿了顿。）",
+            "学校里的人……大多只看到穆家的姓氏。"
+          ],
+          mood: "cold",
+          choices: [
+            { id: "see_you", text: "我看到的是你，不是穆家", condition: { minOpinion: 10 }, effects: { opinion: 4, trust: 2 }, nextNode: "school_life_touched" },
+            { id: "neutral", text: "这样啊", effects: {}, nextNode: "default" }
+          ]
+        },
+        school_life_touched: {
+          id: "school_life_touched",
+          texts: [
+            "（穆宁雪微微一怔，冰蓝色的眼眸闪过一丝意外。）",
+            "……",
+            "（她别过头，声音很轻。）",
+            "你是第一个这么说的人。"
+          ],
+          mood: "neutral",
+          effects: { npcFlags: { seen_as_person: true } },
+          choices: [
+            { id: "back", text: "（安静地陪着她）", effects: { opinion: 2 }, nextNode: "default" }
+          ]
+        },
+        about_dream: {
+          id: "about_dream",
+          texts: [
+            "（穆宁雪的表情第一次出现了明显的波动。）",
+            "……不考虑家族？",
+            "（她沉默了很久，久到你以为她不会回答。）",
+            "我想……去看看雪峰山以外的世界。",
+            "（她的声音很轻，像是在说一个不敢让人听见的秘密。）",
+            "不是为了穆家，不是为了修炼。只是……想看看。"
+          ],
+          mood: "sad",
+          effects: { trust: 5, npcFlags: { shared_dream: true } },
+          choices: [
+            { id: "encourage", text: "总有一天你可以的", effects: { opinion: 5, trust: 3 }, nextNode: "dream_response" },
+            { id: "offer", text: "如果有机会，我带你去看", condition: { minOpinion: 40 }, effects: { opinion: 8, trust: 5 }, nextNode: "dream_offer" }
+          ]
+        },
+        dream_response: {
+          id: "dream_response",
+          texts: [
+            "（穆宁雪看着你，眼神复杂。）",
+            "……嗯。",
+            "（她轻轻点头，嘴角似乎有一丝极淡的弧度。）",
+            "谢谢你。"
+          ],
+          mood: "neutral",
+          choices: [
+            { id: "back", text: "（微笑）", effects: {}, nextNode: "default" }
+          ]
+        },
+        dream_offer: {
+          id: "dream_offer",
+          texts: [
+            "（穆宁雪猛地看向你，冰蓝色的眼眸里有震惊，有……一丝期待？）",
+            "你……",
+            "（她很快恢复平静，但耳尖微微泛红。）",
+            "……好。我等着。"
+          ],
+          mood: "neutral",
+          effects: { npcFlags: { promised_travel: true } },
+          choices: [
+            { id: "promise", text: "一言为定", effects: { opinion: 5, trust: 5 }, nextNode: "default" }
+          ]
+        },
+        deep_recall: {
+          id: "deep_recall",
+          texts: [
+            "（穆宁雪看到你，冰蓝色的眼眸微微柔和了一瞬。）",
+            "……是你。",
+            "（她的语气依旧冷淡，但少了几分疏离。）",
+            "修炼怎么样了？上次说的瓶颈，解决了吗？"
+          ],
+          mood: "neutral",
+          choices: [
+            { id: "improved", text: "好多了，谢谢你的建议", condition: { npcFlags: ["gave_training_advice"] }, effects: { opinion: 3, trust: 2 }, nextNode: "default" },
+            { id: "still_struggling", text: "还在努力", condition: { npcFlags: ["gave_training_advice"] }, effects: { opinion: 1 }, nextNode: "default" },
+            { id: "thinking_dream", text: "一直在想你说的话", condition: { npcFlags: ["shared_dream"] }, effects: { opinion: 4, trust: 3 }, nextNode: "default" },
+            { id: "greet", text: "嗯，我挺好的", effects: {}, nextNode: "default" }
           ]
         },
         ningxue_farewell: {
