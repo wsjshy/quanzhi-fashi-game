@@ -122,20 +122,24 @@ const EncounterSystem = {
                 description: '穆氏家族天才穆白向你发起了挑战，是否接受？',
                 icon: '❄️',
                 trigger: () => {
-                    if (typeof Game !== 'undefined') {
-                        Game.startBattle('mubai', {
-                            mode: 'duel',
-                            canUseItems: false,
-                            canFlee: false,
-                            winHpPercent: 0.2,
-                            isFriendly: true,
-                            onWin: () => {
-                                Player.flags['mubai_challenge_completed'] = true;
-                                Player.gainExp(100, Player.elements?.[0]);
-                                Player.gold += 50;
-                                WorldState.changeReputation('school', 10);
-                            }
-                        });
+                    if (typeof Game !== 'undefined' && typeof DataManager !== 'undefined') {
+                        const enemy = DataManager.getEnemy('mu_bai_duel');
+                        if (enemy) {
+                            Game.startBattle(enemy, () => {
+                                if (BattleSystem.result === 'win') {
+                                    Player.flags['mubai_challenge_completed'] = true;
+                                    Player.gainExp(100, Player.elements?.[0]);
+                                    Player.gold += 50;
+                                    WorldState.changeReputation('school', 10);
+                                }
+                            }, {
+                                mode: 'duel',
+                                canUseItems: false,
+                                canFlee: false,
+                                winHpPercent: 0.2,
+                                isFriendly: true
+                            });
+                        }
                     }
                 }
             });
@@ -150,15 +154,20 @@ const EncounterSystem = {
                 description: '学校组织新生试炼，击败训练傀儡即可完成。',
                 icon: '🎯',
                 trigger: () => {
-                    if (typeof Game !== 'undefined') {
-                        Game.startBattle('training_dummy', {
-                            mode: 'trial',
-                            onWin: () => {
-                                Player.flags['freshman_trial_completed'] = true;
-                                Player.gainExp(50, Player.elements?.[0]);
-                                Player.gold += 30;
-                            }
-                        });
+                    if (typeof Game !== 'undefined' && typeof DataManager !== 'undefined') {
+                        const enemy = DataManager.getEnemy('training_dummy');
+                        if (enemy) {
+                            Game.startBattle(enemy, () => {
+                                if (BattleSystem.result === 'win') {
+                                    Player.flags['freshman_trial_completed'] = true;
+                                    Player.gainExp(50, Player.elements?.[0]);
+                                    Player.gold += 30;
+                                }
+                            }, {
+                                mode: 'trial',
+                                isFriendly: true
+                            });
+                        }
                     }
                 }
             });
@@ -264,5 +273,17 @@ const EncounterSystem = {
                 }
             });
         });
+    },
+
+    /**
+     * 根据事件ID触发特殊事件
+     * 供事件与情报面板调用
+     */
+    triggerSpecialEvent(eventId) {
+        const available = this.getAvailableSpecialEvents();
+        const event = available.find(e => e.id === eventId);
+        if (event && typeof event.trigger === 'function') {
+            event.trigger();
+        }
     }
 };

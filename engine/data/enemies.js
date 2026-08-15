@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 敌人/妖魔数据
  * 从 game-data.js 拆分而来
  */
@@ -2609,5 +2609,29 @@ const DataEnemies = {
       { itemId: "demon_core", chance: 0.35, min: 1, max: 1 },
       { itemId: "elite_core", chance: 0.05, min: 1, max: 1 }
     ]
+  },
+
+  training_dummy: {
+    id: "training_dummy",
+    name: "训练傀儡",
+    title: "学校训练用",
+    description: "天澜魔法高中用于新生试炼的训练傀儡，行动迟缓，攻击力低，适合新手练习。",
+    elements: ["neutral"],
+    level: 3,
+    maxHp: 80,
+    maxMp: 0,
+    attack: 5,
+    defense: 3,
+    speed: 5,
+    spirit: 1,
+    skills: ["basic_attack"],
+    aiType: "simple",
+    enemyType: "dummy",
+    weakness: [],
+    spriteColor: "#888888",
+    isEnemy: true,
+    expReward: 20,
+    goldReward: 10,
+    dropItems: []
   }
 };
