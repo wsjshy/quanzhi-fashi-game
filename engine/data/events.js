@@ -3210,6 +3210,128 @@ const DataEvents = {
     ]
   },
 
+  // ========== v0.46.0 新增探索事件 ==========
+
+  event_wandering_mage: {
+    id: "event_wandering_mage",
+    name: "流浪法师",
+    description: "你在街角遇到一个风尘仆仆的流浪法师，他看起来阅历丰富。",
+    trigger: "explore",
+    chance: 0.1,
+    once: false,
+    choices: [
+      {
+        text: "请教魔法心得",
+        effects: { exp: 40, gold: -10 },
+        resultText: "你花了10金币请他喝酒，他分享了许多实战经验。这些在课堂上学不到的知识让你受益匪浅。"
+      },
+      {
+        text: "购买他的药水",
+        effects: { gold: -30, addItem: { itemId: "health_potion", count: 2 } },
+        resultText: "他卖给你两瓶品质不错的生命药水，比小卖部便宜一些。"
+      },
+      {
+        text: "礼貌离开",
+        effects: {},
+        resultText: "你点了点头，继续自己的路。"
+      }
+    ]
+  },
+
+  event_hidden_training_room: {
+    id: "event_hidden_training_room",
+    name: "隐秘修炼室",
+    description: "你在教学楼深处发现了一间很少有人使用的修炼室，里面的魔法浓度似乎更高。",
+    trigger: "explore",
+    chance: 0.08,
+    once: false,
+    choices: [
+      {
+        text: "在这里修炼",
+        effects: { exp: 60, mp: -25, hp: -10 },
+        resultText: "你在高浓度的魔法环境中修炼，效果远超平时。但身体也承受了更大的压力。"
+      },
+      {
+        text: "记下位置以后再来",
+        effects: { exp: 5 },
+        resultText: "你记下了这个位置，打算以后状态好的时候再来。"
+      }
+    ]
+  },
+
+  event_street_conflict: {
+    id: "event_street_conflict",
+    name: "街头冲突",
+    description: "前方两个法师因为小事争吵起来，眼看就要动手。周围围了不少看热闹的人。",
+    trigger: "explore",
+    chance: 0.1,
+    once: false,
+    choices: [
+      {
+        text: "上前劝架",
+        effects: { exp: 20, hp: -15 },
+        resultText: "你上前劝阻，虽然被波及受了点伤，但成功化解了冲突。周围的人对你投来赞许的目光。"
+      },
+      {
+        text: "围观学习",
+        effects: { exp: 15 },
+        resultText: "你在一旁观察他们的魔法运用，学到了一些实战技巧。"
+      },
+      {
+        text: "绕道离开",
+        effects: {},
+        resultText: "你不想惹麻烦，绕道离开了。"
+      }
+    ]
+  },
+
+  event_magic_fair: {
+    id: "event_magic_fair",
+    name: "魔法集市",
+    description: "学校附近临时搭起了一个魔法集市，各种稀奇古怪的商品琳琅满目。",
+    trigger: "explore",
+    chance: 0.08,
+    once: false,
+    choices: [
+      {
+        text: "购买恢复药水（30金币）",
+        effects: { gold: -30, addItem: { itemId: "health_potion", count: 1 } },
+        resultText: "你以优惠价买到了一瓶品质不错的生命药水。"
+      },
+      {
+        text: "打听情报（5金币）",
+        effects: { gold: -5, exp: 20 },
+        resultText: "你花了5金币从一个商人那里打听到了不少有用的情报，包括附近妖魔的动向。"
+      },
+      {
+        text: "随便逛逛",
+        effects: { exp: 5 },
+        resultText: "你在集市里逛了一圈，开阔了眼界。"
+      }
+    ]
+  },
+
+  event_rain_encounter: {
+    id: "event_rain_encounter",
+    name: "雨中邂逅",
+    description: "天空突然下起了大雨，你跑到附近的屋檐下避雨，发现已经有人先到了。",
+    trigger: "explore",
+    chance: 0.09,
+    once: false,
+    choices: [
+      {
+        text: "主动搭话",
+        effects: { exp: 10 },
+        resultText: "你主动和对方聊了起来，雨中的对话格外放松。你们交流了一些修炼心得，临别时对方记住了你的名字。"
+      },
+      {
+        text: "安静等待雨停",
+        effects: { hp: 10, mp: 10 },
+        resultText: "你安静地等待雨停，趁机休息了一下，恢复了一些体力。"
+      }
+    ]
+  },
+
   // ========== v0.34.0 NPC偶遇互动事件 ==========
 
   npc_int_mofan_train: {
