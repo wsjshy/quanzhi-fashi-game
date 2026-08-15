@@ -93,9 +93,34 @@ const BattleSystem = {
         if (typeof UI !== 'undefined' && UI.updateBattleScreen) {
             UI.updateBattleScreen();
         }
-        // 如果开启自动战斗且是玩家回合，立即执行
-        if (this.autoBattle && this.isPlayerTurn && this.player.hp > 0) {
-            setTimeout(() => this.autoPlayerTurn(), this.getDelay(500));
+        // v0.47.1: 看门狗机制，确保自动战斗不卡住
+        if (this.autoBattle) {
+            this._startAutoBattleWatchdog();
+        } else {
+            this._stopAutoBattleWatchdog();
+        }
+    },
+
+    /**
+     * 启动自动战斗看门狗（定期检查并推进自动战斗）
+     */
+    _startAutoBattleWatchdog() {
+        this._stopAutoBattleWatchdog();
+        this._autoBattleTimer = setInterval(() => {
+            if (!this.autoBattle || !this.active || !this.isPlayerTurn || this.player.hp <= 0 || this.playerCasting) {
+                return;
+            }
+            this.autoPlayerTurn();
+        }, 800);
+    },
+
+    /**
+     * 停止自动战斗看门狗
+     */
+    _stopAutoBattleWatchdog() {
+        if (this._autoBattleTimer) {
+            clearInterval(this._autoBattleTimer);
+            this._autoBattleTimer = null;
         }
     },
     
@@ -6596,6 +6621,7 @@ const BattleSystem = {
         this.playerCasting = null;
         this.enemyCasting = null;
         this.autoBattle = false; // 结束战斗时关闭自动战斗
+        this._stopAutoBattleWatchdog(); // v0.47.1: 停止看门狗
 
         // 移除键盘快捷键监听
         if (this._keyHandler) {
