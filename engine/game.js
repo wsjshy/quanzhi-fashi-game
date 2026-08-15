@@ -1556,8 +1556,8 @@ const Game = {
         UI.showMessage(msg);
     },
 
-    // v0.9.1: 快速休息（恢复全部状态到满，消耗1小时）
-    quickRestFull() {
+    // v0.9.1: 快速休息（恢复全部状态到满，消耗指定小时数）
+    quickRestFull(hours = 1) {
         // 检查是否已经全满
         const hpFull = Player.hp >= Player.maxHp;
         const mpFull = Player.mp >= Player.maxMp;
@@ -1584,10 +1584,10 @@ const Game = {
         const actualMp = Player.mp - oldMp;
         const actualStamina = Player.stamina - oldStamina;
 
-        // 推进1小时
-        const events = TimeSystem.advanceTime(1);
+        // 推进指定小时数
+        const events = TimeSystem.advanceTime(hours);
 
-        let msg = '你充分休息了1小时，完全恢复了状态！\n';
+        let msg = `你充分休息了${hours}小时，完全恢复了状态！\n`;
         const parts = [];
         if (actualHp > 0) parts.push(`HP +${actualHp}`);
         if (actualMp > 0) parts.push(`MP +${actualMp}`);
@@ -1614,6 +1614,127 @@ const Game = {
         Player.save();
         UI.renderMapScreen();
         UI.showMessage(msg);
+    },
+
+    // v0.82.0: 统一休息菜单（合并原地休息/充分休息/睡到明天）
+    showRestMenu() {        const hpMissing = (Player.maxHp - Player.hp) / Player.maxHp;
+        const mpMissing = (Player.maxMp - Player.mp) / Player.maxMp;
+        const staMissing = ((Player.maxStamina || 100) - Player.stamina) / (Player.maxStamina || 100);
+        const fullRestHours = Math.max(1, Math.min(4, Math.ceil(Math.max(hpMissing, mpMissing, staMissing) * 3)));
+        const allFull = Player.hp >= Player.maxHp && Player.mp >= Player.maxMp && Player.stamina >= (Player.maxStamina || 100) && Player.fatigueLevel <= 0;
+
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);';
+        overlay.innerHTML = `
+            <div style="max-width:450px;width:100%;background:linear-gradient(135deg,#1a1a3a,#2a2a5a);border:2px solid #5577aa;border-radius:16px;padding:20px;max-height:90vh;overflow-y:auto;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                    <h3 style="color:#88ccff;font-size:20px;margin:0;">😴 休息方式</h3>
+                    <div class="rest-close-btn" style="padding:6px 14px;background:#333355;border:1px solid #555577;border-radius:8px;color:#aaa;cursor:pointer;font-size:14px;">✕ 关闭</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    <!-- 原地休息 -->
+                    <div class="rest-option" data-type="quick" style="padding:14px;background:linear-gradient(135deg,rgba(40,80,40,0.8),rgba(60,120,60,0.8));border:2px solid #448844;border-radius:12px;cursor:pointer;transition:all 0.2s;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <span style="font-size:16px;font-weight:bold;color:#ddffdd;">💚 原地休息</span>
+                            <span style="font-size:12px;color:#aaffaa;">⏱️ 1小时</span>
+                        </div>
+                        <div style="font-size:12px;color:#99bb99;">恢复30%HP、20%MP、30体力，消除疲劳。野外有小概率遇敌。</div>
+                    </div>
+                    <!-- 充分休息 -->
+                    <div class="rest-option" data-type="full" style="padding:14px;background:linear-gradient(135deg,rgba(60,40,80,0.8),rgba(100,60,140,0.8));border:2px solid #8855aa;border-radius:12px;cursor:pointer;transition:all 0.2s;${allFull ? 'opacity:0.5;cursor:not-allowed;' : ''}">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <span style="font-size:16px;font-weight:bold;color:#eeddff;">💜 充分休息</span>
+                            <span style="font-size:12px;color:#cc99ff;">⏱️ ${fullRestHours}小时</span>
+                        </div>
+                        <div style="font-size:12px;color:#bb99dd;">根据缺失状态消耗时间，HP/MP/体力全部回满，消除疲劳。${allFull ? '（状态已满，无需休息）' : ''}</div>
+                    </div>
+                    <!-- 睡到明天 -->
+                    <div class="rest-option" data-type="sleep" style="padding:14px;background:linear-gradient(135deg,rgba(40,40,80,0.8),rgba(60,60,120,0.8));border:2px solid #5566aa;border-radius:12px;cursor:pointer;transition:all 0.2s;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <span style="font-size:16px;font-weight:bold;color:#ccdfff;">🌙 睡到明天</span>
+                            <span style="font-size:12px;color:#99bbff;">⏱️ 至次日6:00</span>
+                        </div>
+                        <div style="font-size:12px;color:#8899bb;">直接休息到第二天清晨，全部恢复。熬夜睡觉恢复效果较差。</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        const close = () => overlay.remove();
+        overlay.querySelector('.rest-close-btn').onclick = close;
+        overlay.onclick = (e) => { if (e.target === overlay) close(); };
+        overlay.querySelectorAll('.rest-option').forEach(el => {
+            el.onclick = () => {
+                const type = el.dataset.type;
+                if (type === 'full' && allFull) return;
+                close();
+                setTimeout(() => {
+                    if (type === 'quick') Game.quickRest();
+                    else if (type === 'full') Game.quickRestFull(fullRestHours);
+                    else if (type === 'sleep') Game.rest();
+                }, 100);
+            };
+        });
+    },
+
+    // v0.82.0: 合并事件追踪与情报
+    showEventsAndIntel() {
+        const available = (typeof EncounterSystem !== 'undefined') ? EncounterSystem.getAvailableSpecialEvents() : [];
+        const knownInfo = WorldState.knownInfo || [];
+        const infoDatabase = GameData.infoDatabase || { infos: {} };
+        const recentInfos = knownInfo.slice(-5).reverse().map(id => infoDatabase.infos[id]).filter(Boolean);
+
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);';
+        overlay.innerHTML = `
+            <div style="max-width:500px;width:100%;background:linear-gradient(135deg,#1a1a3a,#2a2a5a);border:2px solid #aa8833;border-radius:16px;padding:20px;max-height:90vh;overflow-y:auto;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                    <h3 style="color:#ffd700;font-size:20px;margin:0;">📜 事件与情报</h3>
+                    <div class="ei-close-btn" style="padding:6px 14px;background:#333355;border:1px solid #555577;border-radius:8px;color:#aaa;cursor:pointer;font-size:14px;">✕ 关闭</div>
+                </div>
+                <!-- 特殊事件 -->
+                <div style="margin-bottom:15px;">
+                    <div style="color:#ffaa44;font-size:14px;font-weight:bold;margin-bottom:8px;">✨ 可触发事件 (${available.length})</div>
+                    ${available.length === 0 ? '<div style="color:#888;font-size:13px;padding:10px;text-align:center;">暂无可触发事件，继续修炼提升等级吧</div>' : available.map((e, i) => `
+                        <div style="padding:10px;margin-bottom:6px;background:rgba(60,50,20,0.6);border:1px solid #887744;border-radius:8px;">
+                            <div style="font-size:14px;font-weight:bold;color:#ffdd88;margin-bottom:3px;">${e.icon} ${e.name}</div>
+                            <div style="font-size:12px;color:#bb9966;margin-bottom:6px;">${e.description}</div>
+                            <button data-event-idx="${i}" class="ei-trigger-btn" style="padding:5px 12px;background:linear-gradient(135deg,#aa6600,#cc8800);border:1px solid #ffd700;border-radius:6px;color:#fff;cursor:pointer;font-size:12px;font-weight:bold;">立即触发</button>
+                        </div>
+                    `).join('')}
+                </div>
+                <!-- 最近情报 -->
+                <div style="margin-bottom:15px;">
+                    <div style="color:#88ccff;font-size:14px;font-weight:bold;margin-bottom:8px;">🔍 最近情报 (${knownInfo.length}条已收集)</div>
+                    ${recentInfos.length === 0 ? '<div style="color:#888;font-size:13px;padding:10px;text-align:center;">尚未收集到情报</div>' : recentInfos.map(info => `
+                        <div style="padding:8px 10px;margin-bottom:5px;background:rgba(30,40,60,0.6);border-left:3px solid #6699cc;border-radius:4px;">
+                            <div style="font-size:13px;color:#ccddff;">${info.title || info.content || '未知情报'}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div style="text-align:center;">
+                    <button class="ei-full-intel-btn" style="padding:8px 20px;background:linear-gradient(135deg,rgba(40,60,100,0.9),rgba(60,80,140,0.9));border:1px solid #5577aa;border-radius:8px;color:#aaccff;cursor:pointer;font-size:13px;">查看完整情报 →</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        const close = () => overlay.remove();
+        overlay.querySelector('.ei-close-btn').onclick = close;
+        overlay.onclick = (e) => { if (e.target === overlay) close(); };
+        overlay.querySelectorAll('.ei-trigger-btn').forEach(btn => {
+            btn.onclick = () => {
+                const idx = parseInt(btn.dataset.eventIdx);
+                const event = available[idx];
+                if (event && typeof EncounterSystem !== 'undefined') {
+                    close();
+                    setTimeout(() => EncounterSystem.triggerSpecialEvent(event.id), 100);
+                }
+            };
+        });
+        overlay.querySelector('.ei-full-intel-btn').onclick = () => {
+            close();
+            setTimeout(() => Game.openIntelPanel(), 100);
+        };
     },
 
     // v0.9.2: 一键恢复（自动使用背包中的恢复药品）

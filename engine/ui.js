@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.81.7 · 响应式行动网格</div>
+                ">v0.82.0 · 系统合并优化</div>
             </div>
         `;
 
@@ -1601,48 +1601,25 @@ const UI = {
                         </button>
                         ` : ''}
 
-                        <!-- 原地休息（所有地点可用） -->
-                        <button onclick="Game.quickRest()" style="
+                        <!-- 休息（合并原地休息/充分休息/睡到明天） -->
+                        <button onclick="Game.showRestMenu()" style="
                             margin-top: 15px;
                             width: 100%;
                             padding: 15px 25px;
-                            background: linear-gradient(135deg, rgba(40, 80, 40, 0.8), rgba(60, 120, 60, 0.8));
-                            border: 2px solid ${Player.stamina < Player.maxStamina * 0.3 ? '#ff8844' : '#448844'};
+                            background: linear-gradient(135deg, rgba(40, 60, 80, 0.8), rgba(60, 80, 120, 0.8));
+                            border: 2px solid #5577aa;
                             border-radius: 10px;
-                            color: #ddffdd;
+                            color: #ccddff;
                             cursor: pointer;
                             text-align: left;
                             transition: all 0.3s;
                             font-size: 16px;
-                            ${Player.stamina < Player.maxStamina * 0.3 ? 'box-shadow: 0 0 10px rgba(255, 136, 68, 0.5);' : ''}
-                        " onmouseover="this.style.borderColor='${Player.stamina < Player.maxStamina * 0.3 ? '#ffaa66' : '#66bb66'}'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='${Player.stamina < Player.maxStamina * 0.3 ? '#ff8844' : '#448844'}'; this.style.transform='translateX(0)'">
+                        " onmouseover="this.style.borderColor='#7799cc'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#5577aa'; this.style.transform='translateX(0)'">
                             <div style="font-size: 18px; margin-bottom: 5px;">
-                                💚 原地休息
-                                <span style="font-size: 12px; color: #ffcc88; float: right;">消耗1小时</span>
+                                😴 休息
+                                <span style="font-size: 12px; color: #aabbdd; float: right;">选择休息方式 →</span>
                             </div>
-                            <div style="font-size: 13px; color: #99bb99;">稍作休息，恢复30%HP、20%MP和30点体力（战斗外随时可用）</div>
-                        </button>
-
-                        <!-- v0.9.1: 快速休息（恢复全部状态） -->
-                        <button onclick="Game.quickRestFull()" style="
-                            margin-top: 10px;
-                            width: 100%;
-                            padding: 15px 25px;
-                            background: linear-gradient(135deg, rgba(60, 40, 80, 0.8), rgba(100, 60, 140, 0.8));
-                            border: 2px solid ${Player.stamina < Player.maxStamina * 0.3 ? '#ff8844' : '#8855aa'};
-                            border-radius: 10px;
-                            color: #eeddff;
-                            cursor: pointer;
-                            text-align: left;
-                            transition: all 0.3s;
-                            font-size: 16px;
-                            ${Player.stamina < Player.maxStamina * 0.3 ? 'box-shadow: 0 0 10px rgba(255, 136, 68, 0.5);' : ''}
-                        " onmouseover="this.style.borderColor='${Player.stamina < Player.maxStamina * 0.3 ? '#ffaa66' : '#aa77cc'}'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='${Player.stamina < Player.maxStamina * 0.3 ? '#ff8844' : '#8855aa'}'; this.style.transform='translateX(0)'">
-                            <div style="font-size: 18px; margin-bottom: 5px;">
-                                💜 快速休息
-                                <span style="font-size: 12px; color: #ffcc88; float: right;">消耗1小时</span>
-                            </div>
-                            <div style="font-size: 13px; color: #bb99dd;">充分休息，HP/MP/体力全部恢复到满，消除疲劳（状态全满时不消耗时间）</div>
+                            <div style="font-size: 13px; color: #8899bb;">原地休息 / 充分休息 / 睡到明天</div>
                         </button>
 
                         <!-- v0.9.2: 一键恢复（自动使用药品） -->
@@ -1676,8 +1653,8 @@ const UI = {
                             return '';
                         })()}
 
-                        <!-- 事件追踪 -->
-                        <button onclick="EncounterSystem.showEventTracker()" style="
+                        <!-- 事件与情报（合并事件追踪和情报） -->
+                        <button onclick="Game.showEventsAndIntel()" style="
                             margin-top: 10px;
                             width: 100%;
                             padding: 12px 20px;
@@ -1691,10 +1668,10 @@ const UI = {
                             font-size: 15px;
                         " onmouseover="this.style.borderColor='#ddbb55'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#aa8833'; this.style.transform='translateX(0)'">
                             <div style="font-size: 16px;">
-                                📜 事件追踪
+                                📜 事件与情报
                                 <span style="font-size: 12px; color: #ffaa44; float: right;" id="event-count-badge"></span>
                             </div>
-                            <div style="font-size: 12px; color: #bb9966;">查看可触发的特殊事件</div>
+                            <div style="font-size: 12px; color: #bb9966;">查看可触发事件与收集的情报</div>
                         </button>
 
                         <!-- 等待时间 -->
@@ -1814,7 +1791,7 @@ const UI = {
                             
                             <!-- 快捷操作 -->
                             <div style="display:flex; gap:8px; padding-top:12px; border-top:1px solid rgba(100,100,150,0.3);">
-                                <button onclick="Game.rest()" style="flex:1; padding:10px; background:linear-gradient(135deg,rgba(40,80,40,0.9),rgba(60,100,60,0.9)); border:1px solid #66aa66; border-radius:8px; color:#d0ffd0; cursor:pointer; font-size:12px; font-weight:bold;">😴 休息</button>
+                                <button onclick="Game.showRestMenu()" style="flex:1; padding:10px; background:linear-gradient(135deg,rgba(40,80,40,0.9),rgba(60,100,60,0.9)); border:1px solid #66aa66; border-radius:8px; color:#d0ffd0; cursor:pointer; font-size:12px; font-weight:bold;">😴 休息</button>
                                 <button onclick="Game.saveGame()" style="flex:1; padding:10px; background:linear-gradient(135deg,rgba(80,80,40,0.9),rgba(100,100,60,0.9)); border:1px solid #aaaa66; border-radius:8px; color:#ffffd0; cursor:pointer; font-size:12px; font-weight:bold;">💾 保存</button>
                             </div>
                             `;
@@ -1883,13 +1860,13 @@ const UI = {
             { icon: '👤', name: '角色属性', color: '#8899cc', action: () => Game.openCharacterPanel() },
             { icon: '🎒', name: '背包', color: '#aa8844', action: () => Game.openInventory() },
             { icon: '📜', name: '任务', color: '#8899cc', action: () => Game.openQuestLog() },
-            { icon: '🔍', name: '情报', color: '#8899cc', action: () => Game.openIntelPanel() },
+            { icon: '🔍', name: '事件情报', color: '#8899cc', action: () => Game.showEventsAndIntel() },
             { icon: '⭐', name: '声望', color: '#aa9944', action: () => Game.openReputationPanel() },
             { icon: '🏆', name: '成就', color: '#aa8844', action: () => UI.showAchievementPanel() },
             { icon: '❓', name: '帮助', color: '#8899cc', action: () => Game.openHelpPanel() },
             { icon: '📖', name: '妖魔图鉴', color: '#aa6666', action: () => Game.openBestiary() },
             { icon: '📋', name: '日常', color: '#55aa77', action: () => Game.openDaily() },
-            { icon: '😴', name: '休息到明天', color: '#66aa66', action: () => Game.rest() },
+            { icon: '😴', name: '休息', color: '#66aa66', action: () => Game.showRestMenu() },
             { icon: '💾', name: '保存游戏', color: '#aaaa55', action: () => Game.saveGame() },
         ];
         const overlay = document.createElement('div');
@@ -3697,6 +3674,7 @@ const UI = {
     renderInventoryScreen() {
         const items = Inventory.getAllItems();
         const equipment = Inventory.getEquipment();
+        const isMobileInv = window.innerWidth < 600;
         
         this.elements.gameContainer.innerHTML = `
             <div style="width: 100%; height: 100vh; display: flex; flex-direction: column; background: linear-gradient(135deg, #1a2a3a, #2a3a4a); position: relative;">
@@ -3736,11 +3714,11 @@ const UI = {
                     ">关闭</div>
                 </div>
                 
-                <div style="flex: 1; display: flex; overflow: hidden; position: relative; z-index: 1;">
+                <div style="flex: 1; display: flex; flex-direction: ${isMobileInv ? 'column' : 'row'}; overflow: ${isMobileInv ? 'auto' : 'hidden'}; position: relative; z-index: 1;">
                     
                     <!-- 装备栏 -->
-                    <div style="width: 300px; padding: 25px; border-right: 2px solid #445566;">
-                        <h3 style="color: #ffd700; margin-bottom: 20px;">⚔️ 装备</h3>
+                    <div style="width: ${isMobileInv ? '100%' : '300px'}; padding: ${isMobileInv ? '15px' : '25px'}; border-right: ${isMobileInv ? 'none' : '2px solid #445566'}; border-bottom: ${isMobileInv ? '2px solid #445566' : 'none'};">
+                        <h3 style="color: #ffd700; margin-bottom: 15px;">⚔️ 装备</h3>
                         
                         ${['weapon', 'armor', 'accessory'].map(slot => {
                             const slotNames = { weapon: '武器', armor: '防具', accessory: '饰品' };
@@ -3871,7 +3849,7 @@ const UI = {
                     </div>
                     
                     <!-- 物品栏 -->
-                    <div style="flex: 1; padding: 25px; overflow-y: auto;">
+                    <div style="flex: 1; width: ${isMobileInv ? '100%' : 'auto'}; padding: ${isMobileInv ? '15px' : '25px'}; overflow-y: auto;">
                         <h3 style="color: #ffd700; margin-bottom: 15px;">📦 物品 (${items.length} 种)</h3>
                         
                         <!-- 分类标签 -->
