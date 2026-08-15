@@ -603,7 +603,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.25.0 · 玩家专属机缘</div>
+                ">v0.42.0 · NPC社交与影响力</div>
             </div>
         `;
 

@@ -31,6 +31,9 @@ const EventSystem = {
      * @param {number} chance - 基础概率（0-1）
      */
     triggerRandomEvent(trigger, chance = 0.1) {
+        // v0.42.1修复：概率门控 - chance参数之前被忽略，导致几乎100%触发事件
+        if (Math.random() > chance) return null;
+
         // 获取所有该触发类型的事件
         const events = DataManager.getEventsByTrigger(trigger);
         if (!events || events.length === 0) return null;
