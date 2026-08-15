@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.79.0 · 可视化地图</div>
+                ">v0.79.1 · 地图地点校准</div>
             </div>
         `;
 
@@ -1932,14 +1932,17 @@ const UI = {
     renderMapView() {
         const currentLoc = MapSystem.getCurrentLocation();
         const allLocations = (typeof DataLocations !== 'undefined') ? DataLocations : {};
+        // v0.79.1: 只显示当前大地图（博城）的地点，三步塔等后续地图地点不显示
+        const currentMap = (typeof DataMaps !== 'undefined' && DataMaps.bo_city) ? DataMaps.bo_city : null;
+        const mapLocationIds = currentMap ? currentMap.allLocations : Object.keys(allLocations);
 
         // 生成地点节点
         const locationNodes = [];
         const connectionLines = [];
 
-        for (const locId in allLocations) {
+        for (const locId of mapLocationIds) {
             const loc = allLocations[locId];
-            if (!loc.mapX || !loc.mapY) continue;
+            if (!loc || !loc.mapX || !loc.mapY) continue;
 
             const isCurrent = currentLoc && currentLoc.id === locId;
             const unlocked = Player.unlockedLocations.includes(locId);

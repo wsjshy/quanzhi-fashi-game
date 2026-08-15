@@ -20,9 +20,9 @@ const DataMaps = {
         name: "灾难前",
         baseCamp: "tianlan_school",
         unlockedLocations: [
-          "tianlan_school", "city_street", "three_step_tower",
+          "tianlan_school", "city_street",
           "mu_manor", "mo_fan_house", "earth_spring",
-          "hunter_alliance", "tavern", "mingwen_girls_school",
+          "mingwen_girls_school",
           "xuefeng_mountain", "xuefeng_deep", "xuefeng_station", "baicao_valley"
         ],
         disabledActions: []
@@ -47,11 +47,12 @@ const DataMaps = {
       }
     },
     // 所有可能的小场景（含各阶段）
+    // 注意：三步塔在明珠学府，不在博城，后续明珠学府大地图再添加
     allLocations: [
-      "tianlan_school", "city_street", "three_step_tower",
+      "tianlan_school", "city_street",
       "mu_manor", "mo_fan_house", "earth_spring",
-      "hunter_alliance", "tavern", "mingwen_girls_school",
-      "old_banyan_district", "bo_north_gate", "duel_arena",
+      "mingwen_girls_school",
+      "old_banyan_district", "bo_north_gate",
       "xuefeng_mountain", "xuefeng_deep", "xuefeng_station", "baicao_valley"
     ]
   }
