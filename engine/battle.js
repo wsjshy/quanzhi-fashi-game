@@ -2755,9 +2755,9 @@ const BattleSystem = {
     playerFlee() {
         if (!this.active || !this.isPlayerTurn) return null;
 
-        // 逃跑成功率：取决于双方速度差
+        // v0.38.0: 逃跑成功率提升（基础60%，最低25%，最高90%）
         const speedDiff = this.player.speed - this.enemy.speed;
-        const fleeChance = Math.min(0.9, Math.max(0.1, 0.5 + speedDiff * 0.02));
+        const fleeChance = Math.min(0.9, Math.max(0.25, 0.6 + speedDiff * 0.02));
         const success = Math.random() < fleeChance;
 
         if (success) {
@@ -4585,6 +4585,18 @@ const BattleSystem = {
 
         // 随机浮动 ±15%
         damage *= 0.85 + Math.random() * 0.3;
+
+        // v0.38.0: 玩家受伤减免
+        if (target === this.player) {
+            // 新手保护：玩家Lv≤5时，受到的伤害-20%
+            if (typeof Player !== 'undefined' && Player.level <= 5) {
+                damage *= 0.8;
+            }
+            // 残局减伤：敌人HP<30%时，敌人伤害-15%（接近胜利时不那么惩罚）
+            if (attacker === this.enemy && this.enemy.hp / this.enemy.maxHp < 0.3) {
+                damage *= 0.85;
+            }
+        }
 
         // 天赋：对冻结目标必暴击+增伤
         let frozenCritGuaranteed = false;
@@ -6583,6 +6595,15 @@ const BattleSystem = {
         // 同步玩家状态
         Player.hp = this.player.hp;
         Player.mp = this.player.mp;
+
+        // v0.38.0: 战斗胜利后恢复15%HP+20%MP（降低战后资源压力）
+        if (this.result === 'victory') {
+            const hpRestore = Math.floor(Player.maxHp * 0.15);
+            const mpRestore = Math.floor(Player.maxMp * 0.20);
+            Player.hp = Math.min(Player.maxHp, Player.hp + hpRestore);
+            Player.mp = Math.min(Player.maxMp, Player.mp + mpRestore);
+            this.addLog(`💚 战斗胜利，恢复 ${hpRestore} HP、${mpRestore} MP`, 'system');
+        }
 
         // v0.15.0: 战斗胜利时记录技能记忆（对该妖魔最后使用的技能）
         if (this.result === 'victory' && this.lastSkillId && this.enemy && this.enemy.id) {
