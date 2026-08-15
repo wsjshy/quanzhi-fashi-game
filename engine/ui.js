@@ -2419,7 +2419,6 @@ const UI = {
                         </div>
                         ${isPortrait ? `
                         <div style="display:flex; gap:6px;">
-                            <button onclick="UI.showBattleLogModal()" style="padding:4px 8px; background:linear-gradient(135deg,#443366,#554477); border:1px solid #7766aa; border-radius:6px; color:#ddccff; font-size:11px; cursor:pointer;">📜日志</button>
                             <button onclick="BattleSystem.toggleSpeed()" style="padding:4px 8px; background:linear-gradient(135deg,#333366,#444488); border:1px solid #6666aa; border-radius:6px; color:#aaccff; font-size:11px; cursor:pointer;">⏩${state.speed || 1}x</button>
                             <button onclick="BattleSystem.toggleAutoBattle()" style="padding:4px 8px; background:${state.autoBattle ? 'linear-gradient(135deg,#663333,#aa4444)' : 'linear-gradient(135deg,#666633,#888844)'}; border:1px solid ${state.autoBattle ? '#ff6666' : '#aaaa66'}; border-radius:6px; color:${state.autoBattle ? '#ffaaaa' : '#ddddaa'}; font-size:11px; cursor:pointer;">🤖自动</button>
                             <button onclick="BattleSystem.showHelp()" style="padding:4px 8px; background:linear-gradient(135deg,#336633,#448844); border:1px solid #66aa66; border-radius:6px; color:#aaffaa; font-size:11px; cursor:pointer;">❓</button>
@@ -2481,6 +2480,25 @@ const UI = {
                     </button>
                     </div>
                 </div>
+                
+                <!-- 竖版浮动日志按钮 -->
+                ${isPortrait ? `
+                <button onclick="UI.showBattleLogModal()" style="
+                    position: absolute;
+                    top: 50px;
+                    right: 10px;
+                    padding: 8px 14px;
+                    background: linear-gradient(135deg, #554400, #776600);
+                    border: 2px solid #ccaa00;
+                    border-radius: 20px;
+                    color: #ffee88;
+                    font-size: 14px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    z-index: 20;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+                ">📜 日志</button>
+                ` : ''}
                 
                 <!-- 技能/操作面板 -->
                 <div style="
