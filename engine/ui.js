@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.70.2 · 精英妖魔（博城灾难）</div>
+                ">v0.71.0 · 精英遭遇系统</div>
             </div>
         `;
 

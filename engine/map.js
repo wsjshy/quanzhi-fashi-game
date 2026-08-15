@@ -436,7 +436,23 @@ const MapSystem = {
         const eliteChance = isNight ? 0.15 : 0.1; // 晚上精英概率更高
         const isElite = Math.random() < eliteChance;
         if (isElite) {
-            // 精英怪属性提升50%，奖励翻倍
+            // v0.71.0: 优先尝试遭遇有特殊机制的真正精英妖魔（博城灾难）
+            const realElite = this.tryGetRealEliteEnemy(location);
+            if (realElite) {
+                let eliteEnemy = JSON.parse(JSON.stringify(realElite));
+                // 应用昼夜影响
+                if (isNight) {
+                    eliteEnemy.level += 1;
+                    eliteEnemy.maxHp = Math.floor(eliteEnemy.maxHp * 1.2);
+                    eliteEnemy.hp = eliteEnemy.maxHp;
+                    eliteEnemy.attack = Math.floor(eliteEnemy.attack * 1.15);
+                    eliteEnemy.expReward = Math.floor(eliteEnemy.expReward * 1.3);
+                    eliteEnemy.goldReward = Math.floor(eliteEnemy.goldReward * 1.3);
+                    eliteEnemy.isNightBonus = true;
+                }
+                return { enemy: eliteEnemy, isElite: true, isRealElite: true };
+            }
+            // 没有真正精英时，使用普通妖魔强化版
             battleEnemy.name = '精英·' + battleEnemy.name;
             battleEnemy.level += 2;
             battleEnemy.maxHp = Math.floor(battleEnemy.maxHp * 1.5);
@@ -456,6 +472,27 @@ const MapSystem = {
         }
 
         return { enemy: battleEnemy, isElite: false };
+    },
+
+    /**
+     * v0.71.0: 尝试获取有特殊机制的真正精英妖魔（博城灾难）
+     * 根据玩家等级和区域决定可遭遇的精英类型
+     */
+    tryGetRealEliteEnemy(location) {
+        const playerLevel = (typeof Player !== 'undefined' && Player.level) ? Player.level : 1;
+        if (playerLevel < 6) return null; // 新手保护
+
+        const elites = [];
+        // 奴仆级精英（Lv6+所有区域）
+        elites.push('advanced_one_eye_wolf', 'giant_eye_rat_king');
+        // 战将级精英（Lv10+或高等级区域）
+        if (playerLevel >= 10 || (location.enemyLevelBonus || 0) >= 2) {
+            elites.push('three_eye_wolf');
+        }
+
+        const eliteId = elites[Math.floor(Math.random() * elites.length)];
+        const elite = DataManager.getCharacter(eliteId);
+        return elite || null;
     },
 
     /**
