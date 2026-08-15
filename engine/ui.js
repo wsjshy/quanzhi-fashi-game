@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.75.0 · 地图UI完善</div>
+                ">v0.75.1 · 装备bug修复</div>
             </div>
         `;
 

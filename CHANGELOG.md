@@ -4,6 +4,20 @@
 
 ---
 
+## [v0.75.1] - 2026-08-16
+
+### Bug修复：装备物品时Script error
+
+**问题**：黑盒测试发现装备物品时出现"Script error. (第0行)"，装备不成功。
+
+**原因**：v0.74.0装备强化材料系统中，player.js调用了不存在的`this.getItemCount()`和`this.removeItem()`方法，应该使用`Inventory.getItemCount()`和`Inventory.removeItem()`。
+
+**修复**：
+- `getAvailableEnhanceMaterials()`中`this.getItemCount` → `Inventory.getItemCount`
+- `enhanceEquipment()`中`this.getItemCount`/`this.removeItem` → `Inventory.getItemCount`/`Inventory.removeItem`
+
+**验证**：黑盒测试确认装备正常，使用妖魔精核强化成功（+3%成功率，消耗1个材料）。
+
 ## [v0.75.0] - 2026-08-16
 
 ### 地图UI完善

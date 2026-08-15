@@ -361,7 +361,7 @@ const Player = {
     getAvailableEnhanceMaterials() {
         const materials = [];
         for (const matId in this.enhanceMaterialBonus) {
-            const count = this.getItemCount(matId);
+            const count = (typeof Inventory !== 'undefined') ? Inventory.getItemCount(matId) : 0;
             if (count > 0) {
                 const item = (typeof DataItems !== 'undefined') ? DataItems[matId] : null;
                 materials.push({
@@ -402,14 +402,15 @@ const Player = {
         let materialBonus = 0;
         let materialName = '';
         if (materialId) {
-            if (this.getItemCount(materialId) < 1) {
+            const matCount = (typeof Inventory !== 'undefined') ? Inventory.getItemCount(materialId) : 0;
+            if (matCount < 1) {
                 return { success: false, message: '材料不足' };
             }
             materialBonus = this.getEnhanceMaterialBonus(materialId);
             if (materialBonus <= 0) {
                 return { success: false, message: '该材料不能用于强化' };
             }
-            this.removeItem(materialId, 1);
+            if (typeof Inventory !== 'undefined') Inventory.removeItem(materialId, 1);
             const matItem = (typeof DataItems !== 'undefined') ? DataItems[materialId] : null;
             materialName = matItem?.name || materialId;
         }
