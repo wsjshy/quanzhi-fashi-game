@@ -38,6 +38,17 @@ const NPCStateSystem = {
 
     // v0.21.0: 获取NPC A对NPC B的关系（有向）
     getNPCRelationship(npcA, npcB) {
+        // 玩家关系特殊处理：存在_npcStates中
+        if (npcB === 'player') {
+            const state = this.getNPCState(npcA);
+            return {
+                opinion: state.opinion || 0,
+                trust: state.trust || 0,
+                type: 'player_relationship',
+                label: '玩家'
+            };
+        }
+
         if (!this._npcRelationships[npcA]) {
             this._npcRelationships[npcA] = {};
         }
@@ -73,32 +84,119 @@ const NPCStateSystem = {
         this._save();
     },
 
-    // v0.21.0: 玩家行为影响NPC-NPC关系（核心机制）
-    // 当玩家与某NPC关系变化时，检查是否影响该NPC对其他NPC的态度
+    // v0.22.0: 玩家行为影响NPC-NPC关系（被动关系转移，非主动操纵）
+    // 核心原则：玩家不挑拨不撮合，只是做自己。当玩家与NPC A的综合评分 > A与B的评分时，A自然疏远B
     _checkRelationshipInfluence(npcId, playerOpinion) {
-        // 规则1：穆宁雪与玩家关系加深 → 穆宁雪对莫凡态度变化
-        if (npcId === 'mu_ningxue') {
-            const muToMoFan = this.getNPCRelationship('mu_ningxue', 'mo_fan');
-            const oldOpinion = muToMoFan.opinion;
+        this._checkPassiveShift(npcId);
+    },
 
-            // 玩家和穆宁雪达到朋友级 → 穆宁雪对莫凡好感降低（注意力转移）
-            if (playerOpinion >= 50 && muToMoFan.opinion > -20) {
-                const decrease = playerOpinion >= 70 ? -3 : -1;
-                this.changeNPCRelationship('mu_ningxue', 'mo_fan', 'opinion', decrease, '玩家与穆宁雪关系加深');
-                // 只在跨越阈值时提示
-                if (oldOpinion > -20 && muToMoFan.opinion <= -20 && typeof UI !== 'undefined') {
-                    UI.showMessage('穆宁雪似乎不再像以前那样关注莫凡了...');
-                }
-            }
+    // v0.22.0: 计算NPC A对角色B的综合评分（Connection Score）
+    // 评分 = opinion*0.35 + trust*0.25 + preferenceMatch*0.25 + sharedEvents*0.15
+    computeConnectionScore(npcA, characterB) {
+        const rel = this.getNPCRelationship(npcA, characterB);
+        const npcData = typeof DataManager !== 'undefined' ? DataManager.getCharacter(npcA) : null;
+
+        // 获取角色B的数据（玩家特殊处理）
+        let charData = null;
+        if (characterB === 'player') {
+            charData = this._getPlayerAsCharacter();
+        } else {
+            charData = typeof DataManager !== 'undefined' ? DataManager.getCharacter(characterB) : null;
         }
 
-        // 规则2：莫凡与玩家关系好 → 莫凡对穆宁雪的态度可能受玩家影响
-        if (npcId === 'mo_fan') {
-            // 玩家鼓励莫凡追穆宁雪 → 莫凡对穆宁雪好感增加（通过记忆标签触发）
-            if (this.hasMemoryTag('mo_fan', 'player_encouraged') && playerOpinion >= 30) {
-                const moToMu = this.getNPCRelationship('mo_fan', 'mu_ningxue');
-                if (moToMu.opinion < 50) {
-                    this.changeNPCRelationship('mo_fan', 'mu_ningxue', 'opinion', 1, '玩家鼓励莫凡');
+        // 偏好匹配（0-100）
+        let preferenceMatch = 30; // 基础分
+        if (npcData && charData) {
+            // 实力匹配：角色等级达到NPC的最低要求
+            const npcLevel = npcData.level || 1;
+            const charLevel = charData.level || 1;
+            if (charLevel >= npcLevel) preferenceMatch += 20;
+            else if (charLevel >= npcLevel * 0.7) preferenceMatch += 10;
+
+            // 性格匹配：比较性格维度
+            if (npcData.personality && charData.personality) {
+                let matchScore = 0;
+                const traits = ['brave', 'kind', 'honest', 'loyal'];
+                for (const trait of traits) {
+                    if (npcData.personality[trait] !== undefined && charData.personality[trait] !== undefined) {
+                        const diff = Math.abs(npcData.personality[trait] - charData.personality[trait]);
+                        matchScore += (1 - diff) * 5; // 每个维度最多5分
+                    }
+                }
+                preferenceMatch += matchScore;
+            }
+
+            // 系别匹配
+            if (npcData.elements && charData.elements) {
+                const shared = npcData.elements.filter(e => charData.elements.includes(e));
+                preferenceMatch += shared.length * 10;
+            }
+        }
+        preferenceMatch = Math.min(100, preferenceMatch);
+
+        // 共同经历（简化为记忆数量）
+        let sharedEvents = 0;
+        const state = this.getNPCState(npcA);
+        if (state && state.memories) {
+            // 与该角色相关的记忆数量
+            const relevantMemories = state.memories.filter(m =>
+                m.content && m.content.includes(characterB)
+            );
+            sharedEvents = Math.min(100, relevantMemories.length * 20);
+        }
+
+        // 综合评分
+        const score = rel.opinion * 0.35 + rel.trust * 0.25 + preferenceMatch * 0.25 + sharedEvents * 0.15;
+        return Math.round(Math.min(100, Math.max(0, score)));
+    },
+
+    // v0.22.0: 将玩家数据转换为角色格式（用于综合评分计算）
+    _getPlayerAsCharacter() {
+        if (typeof Player === 'undefined') return null;
+        return {
+            level: Player.level || 1,
+            elements: Player.elements || [],
+            personality: Player.personality || { brave: 0.5, kind: 0.5, honest: 0.5, loyal: 0.5 }
+        };
+    },
+
+    // v0.22.0: 获取关系状态（基于综合评分）
+    getRelationshipState(npcA, npcB) {
+        const score = this.computeConnectionScore(npcA, npcB);
+        if (score >= 85) return { state: 'soulmate', label: '灵魂伴侣' };
+        if (score >= 70) return { state: 'close_friend', label: '密友' };
+        if (score >= 55) return { state: 'friend', label: '朋友' };
+        if (score >= 40) return { state: 'acquaintance', label: '认识' };
+        if (score >= 25) return { state: 'stranger', label: '陌生人' };
+        if (score >= 10) return { state: 'unfriendly', label: '不友好' };
+        return { state: 'hostile', label: '敌对' };
+    },
+
+    // v0.22.0: 被动关系转移——当玩家与NPC的评分超过该NPC与其他角色时，自然疏远
+    _checkPassiveShift(npcId) {
+        const playerScore = this.computeConnectionScore(npcId, 'player');
+        const npcData = typeof DataManager !== 'undefined' ? DataManager.getCharacter(npcId) : null;
+
+        if (!npcData || !npcData.relationships) return;
+
+        // 检查该NPC的所有关系对象
+        for (const targetId of Object.keys(npcData.relationships)) {
+            if (targetId === 'player') continue;
+
+            const targetScore = this.computeConnectionScore(npcId, targetId);
+            const rel = this.getNPCRelationship(npcId, targetId);
+
+            // 如果玩家评分显著超过目标，NPC对目标的好感自然下降
+            if (playerScore > targetScore + 15 && rel.opinion > -20) {
+                const decrease = Math.min(5, Math.floor((playerScore - targetScore) / 20));
+                this.changeNPCRelationship(npcId, targetId, 'opinion', -decrease, '注意力自然转移');
+
+                // 跨越阈值时提示
+                if (rel.opinion > 0 && rel.opinion - decrease <= 0 && typeof UI !== 'undefined') {
+                    const npcName = npcData.name || npcId;
+                    const targetData = DataManager.getCharacter(targetId);
+                    const targetName = targetData ? targetData.name : targetId;
+                    UI.showMessage(`${npcName}似乎不再像以前那样关注${targetName}了...`);
                 }
             }
         }
