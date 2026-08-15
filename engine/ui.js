@@ -1357,7 +1357,7 @@ const UI = {
                                     let isSkippingClass = false;
                                     let isRecommended = false;
                                     let recommendReason = '';
-                                    const skipActions = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full'];
+                                    const skipActions = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full', 'rest_at_mo_fan'];
                                     const isExplorableAction = !skipActions.includes(action.id);
                                     const isActionExplored = isExplorableAction && Player.exploredActions?.[location?.id]?.includes(action.id);
                                     if (action.isClassAction) {
@@ -1434,9 +1434,9 @@ const UI = {
                                         </div>
                                     </button>`;
                                 };
-                                // 按类型分组
+                                // 按类型分组（过滤已合并到休息面板的行动）
                                 const groups = { cultivation: [], explore: [], social: [], rest: [], special: [] };
-                                actions.forEach(a => { groups[getActionType(a)].push(a); });
+                                actions.filter(a => !skipActions.includes(a.id)).forEach(a => { groups[getActionType(a)].push(a); });
                                 // 渲染分组（v0.81.0: 2列网格）
                                 return Object.keys(groups).filter(type => groups[type].length > 0).map(type => {
                                     const cfg = typeConfig[type];
