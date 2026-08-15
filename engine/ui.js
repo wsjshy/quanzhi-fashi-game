@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.85.0 · 战斗操作面板重构+竖版玩家置下</div>
+                ">v0.86.0 · 战斗技能系统重构+状态配合</div>
             </div>
         `;
 
@@ -2551,56 +2551,48 @@ const UI = {
                         })() : ''}
                     </div>
                     
-                    <div style="color: #ffd700; font-size: 18px; margin-bottom: 10px; font-weight: bold;">✨ 魔法技能（点击释放）</div>
-                    <div style="display: grid; grid-template-columns: repeat(${skillCols}, 1fr); gap: 10px;">
-                        ${state.player.skills.filter(skillId => skillId !== 'basic_attack').map(skillId => {
-                            const skill = SkillSystem.getSkill(skillId);
-                            if (!skill) return '';
-                            const canUse = state.isPlayerTurn && state.player.mp >= skill.mpCost;
-                            // v0.15.0: 技能记忆推荐 - 对当前妖魔上次使用的技能
-                            const enemyId = state.enemy && state.enemy.id;
-                            const isRecommended = enemyId && Player.skillMemory && Player.skillMemory[enemyId] === skillId;
-                            // 检查元素克制
-                            let isCounter = false;
-                            let isWeak = false;
-                            if (skill.element && state.enemy.elements && BattleSystem.checkElementCounter) {
-                                for (const enemyElem of state.enemy.elements) {
-                                    const counter = BattleSystem.checkElementCounter(skill.element, enemyElem);
-                                    if (counter.effect === 'super') isCounter = true;
-                                    if (counter.effect === 'weak') isWeak = true;
-                                }
-                            }
-                            const borderColor = isRecommended ? '#ffdd44' : isCounter ? '#44ff66' : isWeak ? '#ff4466' : SkillSystem.getElementColor(skill.element);
-                            return `
-                                <button onclick="Game.battleUseSkill('${skillId}')" ${!canUse ? 'disabled' : ''}
-                                        title="${this.getSkillTooltipText(skill)}${isCounter ? ' [元素克制！伤害+50%]' : isWeak ? ' [元素抵抗，伤害-30%]' : ''}"
+                    <div style="color: #ffd700; font-size: 18px; margin-bottom: 10px; font-weight: bold;">✨ 魔法技能（选择系别）</div>
+                    <div style="display: grid; grid-template-columns: repeat(${isPortrait ? 3 : 5}, 1fr); gap: 8px;">
+                        ${(() => {
+                            // 按元素分组
+                            const elementGroups = {};
+                            (state.player.skills || []).forEach(skillId => {
+                                if (skillId === 'basic_attack') return;
+                                const skill = SkillSystem.getSkill(skillId);
+                                if (!skill) return;
+                                if (!elementGroups[skill.element]) elementGroups[skill.element] = [];
+                                elementGroups[skill.element].push(skillId);
+                            });
+                            return Object.keys(elementGroups).map(element => {
+                                const info = this.getElementInfo(element);
+                                const skills = elementGroups[element];
+                                const hasUsable = skills.some(id => {
+                                    const s = SkillSystem.getSkill(id);
+                                    return state.player.mp >= s.mpCost;
+                                });
+                                return `
+                                    <button onclick="UI.showElementSkillsPanel('${element}')"
+                                        title="${info.name}：${info.desc}（${skills.length}个技能）"
                                         style="
-                                    padding: 12px;
-                                    background: linear-gradient(135deg, ${isCounter ? '#226633' : isWeak ? '#662233' : SkillSystem.getElementColor(skill.element)}22, ${isCounter ? '#33aa55' : isWeak ? '#aa3355' : SkillSystem.getElementColor(skill.element)}44);
-                                    border: 2px solid ${borderColor};
-                                    border-radius: 8px;
-                                    color: #fff;
-                                    cursor: ${canUse ? 'pointer' : 'not-allowed'};
-                                    text-align: center;
-                                    opacity: ${canUse ? 1 : 0.4};
-                                    transition: all 0.2s;
-                                    ${isCounter ? 'box-shadow: 0 0 12px #44ff6680; animation: pulse 1.5s infinite;' : isWeak ? 'box-shadow: 0 0 8px #ff446660;' : ''}
-                                " ${canUse ? 'onmouseover="this.style.boxShadow=\'0 0 15px ' + (isCounter ? '#44ff66' : isWeak ? '#ff4466' : SkillSystem.getElementColor(skill.element)) + '80\'" onmouseout="this.style.boxShadow=\'' + (isCounter ? '0 0 12px #44ff6680' : isWeak ? '0 0 8px #ff446660' : 'none') + '\'"' : ''}>
-                                    <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">
-                                        ${(() => {
-                                            const elemIcons = { fire: '🔥', ice: '❄️', thunder: '⚡', earth: '🪨', wind: '🌪️', water: '💧', light: '✨', dark: '🌑', heal: '💚', summon: '🐺', neutral: '⚔️' };
-                                            return elemIcons[skill.element] || '';
-                                        })()}
-                                        ${skill.name}
-                                        ${isRecommended ? '<span style="color: #ffdd44; font-size: 10px; font-weight: bold;"> ⭐推荐</span>' : isCounter ? '<span style="color: #44ff66; font-size: 10px; font-weight: bold;"> 克制!</span>' : isWeak ? '<span style="color: #ff4466; font-size: 10px; font-weight: bold;"> 抵抗</span>' : ''}
-                                        ${state.player.skillLevels && state.player.skillLevels[skillId] ? `<span style="font-size: 11px; color: #ffcc66;"> Lv.${state.player.skillLevels[skillId].level || 1}</span>` : ''}
-                                    </div>
-                                    <div style="font-size: 12px; color: ${state.player.mp >= skill.mpCost ? '#aaccff' : '#ff6666'};">
-                                        MP: ${skill.mpCost}${state.player.mp < skill.mpCost ? ' (不足)' : ''}
-                                    </div>
-                                </button>
-                            `;
-                        }).join('')}
+                                            padding: 10px 6px;
+                                            background: linear-gradient(135deg, ${info.color}22, ${info.color}44);
+                                            border: 2px solid ${info.color};
+                                            border-radius: 10px;
+                                            color: #fff;
+                                            cursor: pointer;
+                                            text-align: center;
+                                            transition: all 0.2s;
+                                        "
+                                        onmouseover="this.style.boxShadow='0 0 12px ${info.color}80'; this.style.transform='scale(1.05)';"
+                                        onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)';">
+                                        <div style="font-size:20px; margin-bottom:2px;">${info.icon}</div>
+                                        <div style="font-size:12px; font-weight:bold; color:${info.color};">${info.name}</div>
+                                        <div style="font-size:10px; color:#aaa; margin-top:2px;">${skills.length}技能</div>
+                                        <div style="font-size:9px; color:${hasUsable ? '#88ff88' : '#ff8888'}; margin-top:2px;">${hasUsable ? '可释放' : 'MP不足'}</div>
+                                    </button>
+                                `;
+                            }).join('');
+                        })()}
                     </div>
                     
                     ${state.magicTools && state.magicTools.available && state.magicTools.available.length > 0 ? `
@@ -2641,6 +2633,99 @@ const UI = {
                 log.scrollTop = log.scrollHeight;
             }
         }, 10);
+    },
+
+    // 系别信息映射
+    getElementInfo(element) {
+        const info = {
+            fire: { icon: '🔥', name: '火系', desc: '高伤害+燃烧持续伤害', color: '#ff6644' },
+            ice: { icon: '❄️', name: '冰系', desc: '冻结控制+护盾防御', color: '#66ccff' },
+            thunder: { icon: '⚡', name: '雷系', desc: '麻痹控制+高爆发', color: '#ffee44' },
+            earth: { icon: '🪨', name: '土系', desc: '高防御+束缚控制', color: '#bb8844' },
+            wind: { icon: '🌪️', name: '风系', desc: '高闪避+速度增益', color: '#88ffaa' },
+            water: { icon: '💧', name: '水系', desc: '治疗+减速控制', color: '#4488ff' },
+            light: { icon: '☀️', name: '光系', desc: '治疗+净化+神圣伤害', color: '#ffffaa' },
+            dark: { icon: '🌙', name: '暗系', desc: '诅咒+吸血+高爆发', color: '#aa66ff' },
+            plant: { icon: '🌿', name: '植物系', desc: '持续恢复+中毒', color: '#66dd66' },
+            heal: { icon: '💚', name: '治愈系', desc: '治疗+恢复', color: '#66ff88' },
+            summon: { icon: '🐺', name: '召唤系', desc: '召唤兽协同作战', color: '#ffaa66' },
+            neutral: { icon: '⚔️', name: '无系', desc: '普通攻击', color: '#aaaaaa' }
+        };
+        return info[element] || { icon: '✨', name: element, desc: '', color: '#ffffff' };
+    },
+
+    // 弹出某系技能面板
+    showElementSkillsPanel(element) {
+        const info = this.getElementInfo(element);
+        const skills = (Player.skills || []).filter(skillId => {
+            if (skillId === 'basic_attack') return false;
+            const skill = SkillSystem.getSkill(skillId);
+            return skill && skill.element === element;
+        });
+
+        if (skills.length === 0) {
+            this.showMessage(`还没有学会${info.name}魔法`);
+            return;
+        }
+
+        // 按等级排序：初阶→中阶→高阶
+        const tierOrder = { '初阶': 1, '中阶': 2, '高阶': 3, '超阶': 4 };
+        skills.sort((a, b) => {
+            const sa = SkillSystem.getSkill(a);
+            const sb = SkillSystem.getSkill(b);
+            return (tierOrder[sa.tier] || 9) - (tierOrder[sb.tier] || 9);
+        });
+
+        const panel = document.createElement('div');
+        panel.id = 'element-skills-panel';
+        panel.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; display:flex; align-items:center; justify-content:center;';
+        panel.onclick = (e) => { if (e.target === panel) panel.remove(); };
+
+        const skillsHtml = skills.map(skillId => {
+            const skill = SkillSystem.getSkill(skillId);
+            const canUse = BattleSystem.active && BattleSystem.isPlayerTurn && Player.mp >= skill.mpCost;
+            const cooldown = (BattleSystem.skillCooldowns && BattleSystem.skillCooldowns[skillId]) || 0;
+            const isCd = cooldown > 0;
+            const borderColor = info.color;
+            return `
+                <button onclick="Game.battleUseSkill('${skillId}'); document.getElementById('element-skills-panel').remove();" ${(!canUse || isCd) ? 'disabled' : ''}
+                    title="${skill.description}"
+                    style="
+                        padding: 14px;
+                        background: linear-gradient(135deg, ${borderColor}22, ${borderColor}44);
+                        border: 2px solid ${borderColor};
+                        border-radius: 10px;
+                        color: #fff;
+                        cursor: ${(canUse && !isCd) ? 'pointer' : 'not-allowed'};
+                        text-align: left;
+                        opacity: ${(canUse && !isCd) ? 1 : 0.4};
+                        transition: all 0.2s;
+                        width: 100%;
+                    ">
+                    <div style="font-size:15px; font-weight:bold; margin-bottom:4px;">${info.icon} ${skill.name}</div>
+                    <div style="font-size:12px; color:#ccc; margin-bottom:4px;">${skill.description.substring(0, 30)}${skill.description.length > 30 ? '...' : ''}</div>
+                    <div style="font-size:12px; display:flex; justify-content:space-between;">
+                        <span style="color:${Player.mp >= skill.mpCost ? '#aaccff' : '#ff6666'};">MP: ${skill.mpCost}</span>
+                        <span style="color:#ffcc66;">${skill.tier || ''}</span>
+                        ${isCd ? `<span style="color:#ff8866;">冷却: ${cooldown}回合</span>` : ''}
+                    </div>
+                </button>
+            `;
+        }).join('');
+
+        panel.innerHTML = `
+            <div style="width:90%; max-width:500px; max-height:80%; background:linear-gradient(180deg,#1a1a3a,#2a2a5a); border:2px solid ${info.color}; border-radius:16px; display:flex; flex-direction:column; overflow:hidden;">
+                <div style="padding:14px 18px; background:rgba(0,0,0,0.5); border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="color:${info.color}; font-weight:bold; font-size:18px;">${info.icon} ${info.name}魔法</span>
+                    <button onclick="document.getElementById('element-skills-panel').remove()" style="background:#553333; border:1px solid #885555; color:#ffaaaa; padding:6px 14px; border-radius:8px; cursor:pointer; font-size:14px;">✕ 关闭</button>
+                </div>
+                <div style="padding:4px 14px; background:rgba(0,0,0,0.3); font-size:12px; color:#aaa;">${info.desc}</div>
+                <div style="flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px;">
+                    ${skillsHtml}
+                </div>
+            </div>
+        `;
+        document.body.appendChild(panel);
     },
 
     // 弹出战斗日志面板（竖版用）

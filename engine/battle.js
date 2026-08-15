@@ -4648,9 +4648,9 @@ const BattleSystem = {
                 damage *= 1.3;
                 result.elementReaction = 'vaporize';
             }
-            // 火 + 冰 = 融化
+            // 火 + 冰 = 融化（原著设定：冻结中受火系伤害×2）
             else if (element === 'fire' && hasFreeze) {
-                damage *= 1.3;
+                damage *= 2.0;
                 result.elementReaction = 'melt';
             }
             // 火 + 雷 = 超载
@@ -4707,6 +4707,11 @@ const BattleSystem = {
             else if (element === 'physical' && hasFreeze) {
                 damage *= 1.3;
                 result.elementReaction = 'shatter';
+            }
+
+            // 燃烧状态：所有伤害+30%（火焰让敌人更脆弱）
+            if (hasBurn) {
+                damage *= 1.3;
             }
         }
         
@@ -4811,6 +4816,11 @@ const BattleSystem = {
         let windDemonCritBonus = 0;
         if (attacker && attacker.comboCount && attacker.talentEffects && attacker.talentEffects.attackSpeedStack) {
             windDemonCritBonus = attacker.comboCount * (attacker.talentEffects.hitCritStack || 0.03);
+        }
+
+        // 麻痹状态：暴击率+20%（敌人麻痹时动作迟缓，更容易被击中要害）
+        if (target && target.statusEffects && target.statusEffects.some(e => e.type === 'paralyze' || e.type === 'electrified')) {
+            critRate += 0.2;
         }
 
         // 暴击判定
