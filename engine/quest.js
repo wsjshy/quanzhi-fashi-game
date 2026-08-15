@@ -463,7 +463,14 @@ const QuestSystem = {
             if (t.chance && Math.random() > t.chance) conditionsMet = false;
 
             // v0.61.0: flag条件（关系驱动任务）
-            if (t.requireFlag && !(Player.flags && Player.flags[t.requireFlag])) conditionsMet = false;
+            if (t.requireFlag) {
+                const flags = Array.isArray(t.requireFlag) ? t.requireFlag : [t.requireFlag];
+                let anyMet = false;
+                for (const flag of flags) {
+                    if (Player.flags && Player.flags[flag]) { anyMet = true; break; }
+                }
+                if (!anyMet) conditionsMet = false;
+            }
             if (t.notFlag && Player.flags && Player.flags[t.notFlag]) conditionsMet = false;
 
             if (conditionsMet) {

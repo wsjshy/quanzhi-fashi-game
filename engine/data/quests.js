@@ -2827,5 +2827,141 @@ const DataQuests = {
     dialogueStart: "组队考核开始。和你的队友好好配合。",
     dialogueInProgress: "团队合作得怎么样？有问题及时沟通。",
     dialogueComplete: "不错！你们的配合很默契。团队合作也是重要的能力。"
+  },
+
+  // ========== v0.62.0 关系驱动任务系统：穆宁雪线 ==========
+
+  quest_mu_ningxue_duel: {
+    id: "quest_mu_ningxue_duel",
+    name: "冰系切磋",
+    description: "穆宁雪邀请你切磋冰系。放学后到训练馆，证明你的实力。",
+    giver: "mu_ningxue",
+    type: "personal",
+    trigger: { requireFlag: ["mu_ningxue_invite_accepted", "mu_ningxue_invite_question"] },
+    objectives: [
+      { type: "talk", npcId: "mu_ningxue", count: 1, description: "与穆宁雪对话" },
+      { type: "kill", enemyId: "any", count: 1, description: "击败1个妖魔证明实力" }
+    ],
+    rewards: { exp: 200, gold: 100, skillPoints: 1, setFlag: "mu_ningxue_invite_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "你来了。先热身，然后我们切磋一下。",
+    dialogueInProgress: "你的冰系确实有潜力。继续保持。",
+    dialogueComplete: "不错。你的实力得到了我的认可。这是给你的奖励——技能点1。"
+  },
+
+  quest_mu_ningxue_family: {
+    id: "quest_mu_ningxue_family",
+    name: "家族的召唤",
+    description: "穆宁雪决定承担家族责任。帮她了解穆家的情况，做好离开的准备。",
+    giver: "mu_ningxue",
+    type: "personal",
+    trigger: { requireFlag: "mu_ningxue_family_duty" },
+    objectives: [
+      { type: "talk", npcId: "mu_bai", count: 1, description: "与穆白对话了解穆家情况" },
+      { type: "talk", npcId: "mu_ningxue", count: 1, description: "与穆宁雪对话" }
+    ],
+    rewards: { exp: 300, gold: 150, setFlag: "mu_ningxue_family_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "穆家的事...你帮我问问穆白吧，他知道得更多。",
+    dialogueInProgress: "穆白怎么说？家族的情况比我想的复杂吗？",
+    dialogueComplete: "谢谢你。我会承担起我的责任。"
+  },
+
+  quest_mu_ningxue_path: {
+    id: "quest_mu_ningxue_path",
+    name: "冰系的执着",
+    description: "穆宁雪决定追求自己的冰系之路。陪她一起修炼，见证她的成长。",
+    giver: "mu_ningxue",
+    type: "personal",
+    trigger: { requireFlag: "mu_ningxue_own_path" },
+    objectives: [
+      { type: "cultivate", count: 5, description: "冥修5次" },
+      { type: "talk", npcId: "mu_ningxue", count: 1, description: "与穆宁雪对话" }
+    ],
+    rewards: { exp: 300, gold: 100, skillPoints: 1, setFlag: "mu_ningxue_family_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "我的路，我自己走。陪我一起修炼吧。",
+    dialogueInProgress: "你的冥修很认真。冰系需要这种专注。",
+    dialogueComplete: "很好。我们都在进步。技能点1，给你。"
+  },
+
+  quest_mu_ningxue_choice: {
+    id: "quest_mu_ningxue_choice",
+    name: "内心的抉择",
+    description: "穆宁雪需要时间思考自己真正想要什么。帮她查阅资料，理清思路。",
+    giver: "mu_ningxue",
+    type: "personal",
+    trigger: { requireFlag: "mu_ningxue_self_choice" },
+    objectives: [
+      { type: "explore", count: 3, description: "在图书馆学习3次" },
+      { type: "talk", npcId: "mu_ningxue", count: 2, description: "与穆宁雪对话2次" }
+    ],
+    rewards: { exp: 400, gold: 200, setFlag: "mu_ningxue_family_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "你说得对，我需要想清楚自己想要什么。帮我查查资料吧。",
+    dialogueInProgress: "这些资料...让我对冰系有了新的理解。",
+    dialogueComplete: "我想清楚了。谢谢你，帮我找到了方向。学校声望+10。"
+  },
+
+  quest_mu_ningxue_extreme: {
+    id: "quest_mu_ningxue_extreme",
+    name: "冰极之路",
+    description: "你和穆宁雪一起追求冰系的极致。这是一条艰难的路，但你们同行。",
+    giver: "mu_ningxue",
+    type: "personal",
+    trigger: { requireFlag: "mu_ningxue_ice_extreme" },
+    objectives: [
+      { type: "cultivate", count: 10, description: "冥修10次" },
+      { type: "explore", count: 5, description: "在图书馆学习5次" },
+      { type: "talk", npcId: "mu_ningxue", count: 3, description: "与穆宁雪对话3次" }
+    ],
+    rewards: { exp: 800, gold: 300, skillPoints: 2, setFlag: "mu_ningxue_extreme_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "冰极之路，我们一起走。先从冥修开始。",
+    dialogueInProgress: "你感受到了吗？寒冰的律动...越来越纯净了。",
+    dialogueComplete: "我们做到了！冰系的极致...我们触碰到了。获得称号：冰极同行者。技能点2。"
+  },
+
+  quest_mu_ningxue_separate: {
+    id: "quest_mu_ningxue_separate",
+    name: "各自的道路",
+    description: "你和穆宁雪各自追求自己的道路，但彼此支持。偶尔交流，共同进步。",
+    giver: "mu_ningxue",
+    type: "personal",
+    trigger: { requireFlag: "mu_ningxue_support" },
+    objectives: [
+      { type: "talk", npcId: "mu_ningxue", count: 1, description: "与穆宁雪对话" },
+      { type: "cultivate", count: 5, description: "修炼5次" }
+    ],
+    rewards: { exp: 400, gold: 150, setFlag: "mu_ningxue_extreme_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "各自的路，但我们可以互相支持。",
+    dialogueInProgress: "你的修炼很有成效。继续保持。",
+    dialogueComplete: "虽然道路不同，但我们都在进步。谢谢你的支持。"
+  },
+
+  quest_mu_ningxue_debate: {
+    id: "quest_mu_ningxue_debate",
+    name: "理念的碰撞",
+    description: "你和穆宁雪对冰系的理解不同。通过辩论和学习，你们都有所收获。",
+    giver: "mu_ningxue",
+    type: "personal",
+    trigger: { requireFlag: "mu_ningxue_doubt" },
+    objectives: [
+      { type: "talk", npcId: "mu_ningxue", count: 3, description: "与穆宁雪辩论3次" },
+      { type: "explore", count: 3, description: "在图书馆学习3次" }
+    ],
+    rewards: { exp: 500, gold: 200, setFlag: "mu_ningxue_extreme_done" },
+    prerequisites: [],
+    isMainQuest: false,
+    dialogueStart: "你说冰系的极致不是宁静？那你说说看，是什么？",
+    dialogueInProgress: "你的观点...虽然我不认同，但确实让我思考了很多。",
+    dialogueComplete: "不打不相识。你的理念虽然和我不同，但也有道理。学校声望+15。"
   }
 };

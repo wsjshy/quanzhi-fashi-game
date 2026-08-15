@@ -4540,5 +4540,57 @@ const DataEvents = {
       { text: "我需要时间考虑", effects: { setFlag: "tang_yue_mentor_pending" }, resultText: "唐月点点头，\"这是重要的决定，你慢慢考虑。我等你的答复。\"" },
       { text: "婉拒，我想走自己的路", effects: { setFlag: "tang_yue_mentor_declined", npcOpinion: { tang_yue: -5 } }, resultText: "唐月有些失落，但还是尊重你的选择，\"每个人都有自己的路。祝你好运。\"唐月好感-5" }
     ]
+  },
+
+  // ========== v0.62.0 关系驱动任务系统：穆宁雪线 ==========
+
+  mu_ningxue_invitation: {
+    id: "mu_ningxue_invitation",
+    name: "冰系的认可",
+    description: "你修炼结束时，穆宁雪恰好路过。她看了你一眼，语气平淡：\"你的冰系...有点意思。基础不错，但星子运转太保守了。\"她顿了顿，\"放学后训练馆有空，要来切磋一下吗？\"",
+    npcId: "mu_ningxue",
+    activities: ["修炼", "自习", "上课", "冥修"],
+    minRelationship: 30,
+    notFlag: "mu_ningxue_invite_done",
+    weight: 40,
+    choices: [
+      { text: "接受邀请，请多指教", effects: { setFlag: "mu_ningxue_invite_accepted", npcOpinion: { mu_ningxue: 5 } }, resultText: "穆宁雪微微点头，\"很好。放学后训练馆见。\"你感到她的认可。穆宁雪好感+5" },
+      { text: "婉拒，我还需要更多修炼", effects: { setFlag: "mu_ningxue_invite_declined" }, resultText: "穆宁雪没有多说什么，点头离开了。你觉得她可能有些失望。" },
+      { text: "反问她为什么帮我", effects: { setFlag: "mu_ningxue_invite_question", npcOpinion: { mu_ningxue: 3 } }, resultText: "穆宁雪愣了一下，然后说：\"没什么，只是觉得你有潜力。\"她的语气难得有了一丝温度。穆宁雪好感+3" }
+    ]
+  },
+
+  mu_ningxue_family_pressure: {
+    id: "mu_ningxue_family_pressure",
+    name: "穆家的压力",
+    description: "你在走廊遇到穆宁雪，她的表情比平时凝重。看到你，她犹豫了一下，开口道：\"穆家...最近有些事。我可能需要离开一段时间。\"她看着你，\"你觉得，一个人应该为家族牺牲自己的追求吗？\"",
+    npcId: "mu_ningxue",
+    activities: ["修炼", "自习", "上课", "冥修", "对话"],
+    minRelationship: 50,
+    requireFlag: "mu_ningxue_invite_done",
+    notFlag: "mu_ningxue_family_done",
+    weight: 40,
+    choices: [
+      { text: "家族责任更重要", effects: { setFlag: "mu_ningxue_family_duty", npcOpinion: { mu_ningxue: 3 } }, resultText: "穆宁雪若有所思，\"...也许你说得对。\"她的表情复杂，有释然也有无奈。穆宁雪好感+3" },
+      { text: "追求自己的路更重要", effects: { setFlag: "mu_ningxue_own_path", npcOpinion: { mu_ningxue: 5 } }, resultText: "穆宁雪眼神变得坚定，\"你说得对。我的路，应该由我自己走。\"她看起来轻松了一些。穆宁雪好感+5" },
+      { text: "这要看你自己想要什么", effects: { setFlag: "mu_ningxue_self_choice", npcOpinion: { mu_ningxue: 8 } }, resultText: "穆宁雪认真看了你一眼，\"...你总是能说到点子上。\"她的语气中带着感激。穆宁雪好感+8" }
+    ]
+  },
+
+  mu_ningxue_ice_extreme: {
+    id: "mu_ningxue_ice_extreme",
+    name: "冰系的极致",
+    description: "穆宁雪找到你，眼神中带着从未有过的认真。\"我想清楚了。冰系的极致，不是寒冷，是绝对的宁静。\"她看着你，\"这条路很难，我一个人走可能会迷失。你愿意...和我一起追求吗？\"",
+    npcId: "mu_ningxue",
+    activities: ["修炼", "自习", "上课", "冥修", "对话"],
+    minRelationship: 80,
+    requireFlag: "mu_ningxue_family_done",
+    notFlag: "mu_ningxue_extreme_done",
+    weight: 50,
+    choices: [
+      { text: "我愿意和你一起", effects: { setFlag: "mu_ningxue_ice_extreme", npcOpinion: { mu_ningxue: 10 } }, resultText: "穆宁雪露出难得的笑容，\"好。那我们一起。\"她的眼神中带着信任。穆宁雪好感+10" },
+      { text: "我有自己的路，但我支持你", effects: { setFlag: "mu_ningxue_support", npcOpinion: { mu_ningxue: 5 } }, resultText: "穆宁雪点点头，\"谢谢你。每个人都有自己的路，我理解。\"她的语气真诚。穆宁雪好感+5" },
+      { text: "冰系的极致可能不是你想的那样", effects: { setFlag: "mu_ningxue_doubt", npcOpinion: { mu_ningxue: -3 } }, resultText: "穆宁雪皱眉，\"你不懂。\"她转身离开，但你能感觉到她在思考你的话。穆宁雪好感-3" }
+    ]
   }
 };

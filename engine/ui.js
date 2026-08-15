@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.61.0 · 关系任务</div>
+                ">v0.62.0 · 穆宁雪线</div>
             </div>
         `;
 
