@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.82.2 · 删除冥修精简系统</div>
+                ">v0.82.3 · 删除等待时间+境界显示</div>
             </div>
         `;
 
@@ -1574,23 +1574,6 @@ const UI = {
                             </div>
                             <div style="font-size: 12px; color: #bb9966;">查看可触发事件与收集的情报</div>
                         </button>
-
-                        <!-- 等待时间 -->
-                        <div style="margin-top: 15px; background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 12px 15px;">
-                            <div style="color: #ccc; font-size: 13px; margin-bottom: 8px;">
-                                ⏰ ${TimeSystem.getDetailedTimeDescription()}
-                            </div>
-                            <button onclick="Game.showWaitMenu()" style="
-                                width: 100%;
-                                padding: 10px 15px;
-                                background: linear-gradient(135deg, rgba(60, 60, 100, 0.8), rgba(80, 80, 140, 0.8));
-                                border: 1px solid #555588;
-                                border-radius: 8px;
-                                color: #e0e0ff;
-                                cursor: pointer;
-                                font-size: 14px;
-                            ">等待时间...</button>
-                        </div>
                     </div>
                     
                     <!-- 右侧：角色状态面板（竖版隐藏，靠底部导航） -->
