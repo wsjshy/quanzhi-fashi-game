@@ -3373,5 +3373,88 @@ const DataEvents = {
         resultText: "你婉拒了张小侯的好意，他有些失落。\"好吧……那我自己吃了。\"\n\n张小侯好感-2"
       }
     ]
+  },
+
+  // ========== v0.37.0 新NPC互动事件 ==========
+
+  npc_int_zhaomy_showoff: {
+    id: "npc_int_zhaomy_showoff",
+    name: "赵满延的炫耀",
+    description: "赵满延看到你，立刻凑了过来。\"嘿！看看我最新练成的光系防御魔法，厉害吧？\"",
+    npcId: "zhao_manyan",
+    minRelationship: 5,
+    choices: [
+      {
+        text: "确实厉害，教教我？",
+        effects: { exp: 30, npcOpinion: { zhao_manyan: 5 } },
+        resultText: "赵满延得意地笑了，耐心地给你讲解了光系防御的要领。虽然他爱炫耀，但教得还真不错。\n\n经验+30，赵满延好感+5"
+      },
+      {
+        text: "还行吧，一般般",
+        effects: { npcOpinion: { zhao_manyan: -3 } },
+        resultText: "赵满延的笑容僵住了。\"什么叫一般般？这可是我苦练了三天的成果！\"他气鼓鼓地走了。\n\n赵满延好感-3"
+      }
+    ]
+  },
+
+  npc_int_zhaomy_help: {
+    id: "npc_int_zhaomy_help",
+    name: "赵满延的求助",
+    description: "赵满延难得地一脸愁容。\"那个……你修炼经验丰富，能不能帮我看看我这个魔法哪里出问题了？\"",
+    npcId: "zhao_manyan",
+    minRelationship: 25,
+    choices: [
+      {
+        text: "当然，我来看看",
+        effects: { exp: 40, npcOpinion: { zhao_manyan: 6 } },
+        resultText: "你仔细观察了赵满延的施法，指出了他魔力运转中的一个小问题。赵满延恍然大悟，\"原来如此！你真厉害！\"\n\n经验+40，赵满延好感+6"
+      },
+      {
+        text: "我也不太懂",
+        effects: { exp: 5 },
+        resultText: "你表示自己也不太懂光系魔法。赵满延有些失望，但还是感谢了你的好意。\n\n经验+5"
+      }
+    ]
+  },
+
+  npc_int_zhoumin_study: {
+    id: "npc_int_zhoumin_study",
+    name: "周敏的学习邀请",
+    description: "周敏在图书馆看到你，犹豫了一下走过来。\"那个……你要不要一起自习？两个人一起效率更高。\"",
+    npcId: "zhou_min",
+    activities: ["自习", "学习", "复习"],
+    minRelationship: 10,
+    choices: [
+      {
+        text: "好啊，一起吧",
+        effects: { exp: 45, npcOpinion: { zhou_min: 4 } },
+        resultText: "你们一起自习了一段时间，周敏的笔记做得非常认真，你从中学到了不少。她也很开心有人陪她学习。\n\n经验+45，周敏好感+4"
+      },
+      {
+        text: "抱歉，我还有事",
+        effects: {},
+        resultText: "你婉拒了周敏的邀请。她有些失落，但还是理解地点了点头。"
+      }
+    ]
+  },
+
+  npc_int_zhoumin_encourage: {
+    id: "npc_int_zhoumin_encourage",
+    name: "周敏的鼓励",
+    description: "周敏注意到你最近修炼很刻苦，她走过来，认真地说：\"你很努力，我相信你一定能成为厉害的法师。\"",
+    npcId: "zhou_min",
+    minRelationship: 30,
+    choices: [
+      {
+        text: "谢谢，你也一样",
+        effects: { exp: 20, npcOpinion: { zhou_min: 5 } },
+        resultText: "周敏的脸微微红了，\"嗯！我们一起加油！\"她的鼓励让你充满了动力。\n\n经验+20，周敏好感+5"
+      },
+      {
+        text: "嗯，借你吉言",
+        effects: { exp: 10, npcOpinion: { zhou_min: 2 } },
+        resultText: "你简单地回应了一句。周敏笑了笑，回去继续学习了。\n\n经验+10，周敏好感+2"
+      }
+    ]
   }
 };
