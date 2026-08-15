@@ -909,6 +909,48 @@ const Game = {
                 result.event = eventId;
             }
 
+            // v0.32.0: 修炼品质系统 - 每次修炼有随机品质波动
+            const qualityRoll = Math.random();
+            let quality = { name: '普通', multiplier: 1.0, message: '', hpLoss: 0 };
+            if (qualityRoll < 0.05) {
+                quality = { name: '走火入魔', multiplier: 0.5, message: '⚠️ 走火入魔！魔力反噬，修炼效率大减，但你的抗性有所提升。', hpLoss: 15 };
+                Player.fireResistance = (Player.fireResistance || 0) + 0.01; // 永久微量抗性提升
+            } else if (qualityRoll < 0.15) {
+                quality = { name: '状态不佳', multiplier: 0.75, message: '😓 状态不佳，精神难以集中。', hpLoss: 5 };
+            } else if (qualityRoll < 0.65) {
+                quality = { name: '普通', multiplier: 1.0, message: '', hpLoss: 0 };
+            } else if (qualityRoll < 0.90) {
+                quality = { name: '状态良好', multiplier: 1.25, message: '😊 状态良好，修炼得心应手。', hpLoss: 0 };
+            } else {
+                quality = { name: '极佳', multiplier: 1.6, message: '🌟 修炼状态极佳！灵感如泉涌！', hpLoss: 0 };
+            }
+            result.quality = quality;
+            result.effects.exp = Math.floor(result.effects.exp * quality.multiplier);
+            if (quality.hpLoss > 0) {
+                result.effects.hp = (result.effects.hp || 0) - quality.hpLoss;
+            }
+
+            // v0.32.0: 修炼时NPC指导 - 如果有NPC在同地修炼，有概率获得指导
+            result.npcGuidance = null;
+            if (typeof NPCStateSystem !== 'undefined' && this._npcSchedules) {
+                const timeOfDay = Player.time || 'morning';
+                for (const [npcId, schedule] of Object.entries(this._npcSchedules)) {
+                    const timeSlot = schedule[timeOfDay];
+                    if (!timeSlot) continue;
+                    if (Player.currentLocation !== timeSlot.location) continue;
+                    if (!timeSlot.activity.includes('修炼') && !timeSlot.activity.includes('备课')) continue;
+                    if (Math.random() < 0.35) {
+                        const npcData = DataManager.getCharacter(npcId);
+                        const guidanceExp = Math.floor(result.effects.exp * 0.2);
+                        result.npcGuidance = { npcId, name: npcData?.name || npcId, exp: guidanceExp };
+                        result.effects.exp += guidanceExp;
+                        // 增加好感度
+                        NPCStateSystem.changeOpinion(npcId, 2);
+                        break;
+                    }
+                }
+            }
+
             // v0.24.0: 修炼顿悟系统（玩家专属机缘）
             result.insight = this._checkCultivationInsight(action, hours, multiplier);
             if (result.insight) {
@@ -948,6 +990,14 @@ const Game = {
             
             // 检查强制昏睡
             let message = result.message + '\n';
+            // v0.32.0: 修炼品质
+            if (result.quality && result.quality.message) {
+                message += result.quality.message + '\n';
+            }
+            // v0.32.0: NPC指导
+            if (result.npcGuidance) {
+                message += `💡 ${result.npcGuidance.name}路过，指点了你几句。经验 +${result.npcGuidance.exp}，好感+2\n`;
+            }
             if (result.effects.exp) message += `经验 +${result.effects.exp}\n`;
             if (result.starDustBonus) message += `  ✨ 星尘魔器加成 +${result.starDustBonus}\n`;
             if (Player.cultivationBuff) message += `  🧘 ${Player.cultivationBuff.name} 加成 +${Math.round(Player.cultivationBuff.expBonus * 100)}%\n`;
