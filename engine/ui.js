@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.81.6 · 手机布局强制修复</div>
+                ">v0.81.7 · 响应式行动网格</div>
             </div>
         `;
 
@@ -1543,7 +1543,7 @@ const UI = {
                                     return `
                                         <div style="margin-top: ${type === Object.keys(groups).find(t => groups[t].length > 0) ? '0' : '10px'};">
                                             <div style="color: ${cfg.color}; font-size: 12px; font-weight: bold; margin-bottom: 5px;">${cfg.label}</div>
-                                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; min-width: 0;">
+                                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; min-width: 0;">
                                                 ${groups[type].map(a => renderAction(a, type)).join('')}
                                             </div>
                                         </div>
