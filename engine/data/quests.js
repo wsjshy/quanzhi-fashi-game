@@ -2615,5 +2615,64 @@ const DataQuests = {
     dialogueStart: "你的冰系已经有了一定基础。但冰的极致不是寒冷，是绝对的宁静。去图书馆查查典籍，再结合冥修感悟吧。",
     dialogueInProgress: "典籍中的知识需要结合实践才能真正理解。继续冥修，感受寒冰的律动。",
     dialogueComplete: "你做到了！你对寒冰的理解已经超越了初阶水平。这是给你的奖励——一个技能点，好好利用。"
+  },
+
+  // ========== v0.59.0 玩家个人任务线：风系初阶 ==========
+
+  quest_wind_speed: {
+    id: "quest_wind_speed",
+    name: "风的速度",
+    description: "张小侯注意到你在修炼风系时节奏太慢，建议你多加练习。风系的核心是速度，星子运转要快，快到别人跟不上。",
+    giver: "zhang_xiaohou",
+    type: "personal",
+    trigger: { element: "wind", minLevel: 5 },
+    objectives: [
+      { type: "cultivate", count: 5, description: "修炼5次" }
+    ],
+    rewards: { exp: 100, gold: 50 },
+    prerequisites: [],
+    nextQuest: "quest_wind_race",
+    isMainQuest: false,
+    dialogueStart: "嘿，你也是风系的？我注意到你修炼时节奏太慢了。风系的核心是速度，星子运转要快，快到别人跟不上。先去修炼场多练几次吧。",
+    dialogueInProgress: "怎么样，感受到风在你指尖流转了吗？控制星子的节奏，越快越好。",
+    dialogueComplete: "不错，你的速度提升了不少。风系就是要快，继续努力！"
+  },
+
+  quest_wind_race: {
+    id: "quest_wind_race",
+    name: "风系的竞速",
+    description: "张小侯注意到你的风系进步，主动找你竞速。你的风系...有点意思。要不要比比看，谁的风更快？",
+    giver: "zhang_xiaohou",
+    type: "personal",
+    trigger: { element: "wind", minLevel: 8 },
+    objectives: [
+      { type: "talk", npcId: "zhang_xiaohou", count: 1, description: "与张小侯对话" }
+    ],
+    rewards: { exp: 150, gold: 100 },
+    prerequisites: ["quest_wind_speed"],
+    nextQuest: "quest_wind_insight",
+    isMainQuest: false,
+    dialogueStart: "你的风系...有点意思。要不要竞速一下，看看谁的风更快？",
+    dialogueInProgress: "怎么，不敢吗？还是说你还没准备好？",
+    dialogueComplete: "哈哈，你的风确实挺快的！不过跟我比，还差一点。下次我不会让着你。"
+  },
+
+  quest_wind_insight: {
+    id: "quest_wind_insight",
+    name: "风的感悟",
+    description: "张小侯建议你在图书馆查阅风系典籍，结合修炼感悟风的真谛。风的极致不是快，是无处不在的感知。",
+    giver: "zhang_xiaohou",
+    type: "personal",
+    trigger: { element: "wind", minLevel: 12 },
+    objectives: [
+      { type: "explore", count: 3, description: "在图书馆学习3次" },
+      { type: "cultivate", count: 10, description: "修炼10次" }
+    ],
+    rewards: { exp: 300, gold: 200, skillPoints: 1 },
+    prerequisites: ["quest_wind_race"],
+    isMainQuest: false,
+    dialogueStart: "你的风系已经有了一定基础。但风的极致不是快，是无处不在的感知。去图书馆查查典籍，再结合修炼感悟吧。",
+    dialogueInProgress: "典籍中的知识需要结合实践才能真正理解。继续修炼，感受风的律动。",
+    dialogueComplete: "你做到了！你对风的理解已经超越了初阶水平。这是给你的奖励——一个技能点，好好利用。"
   }
 };
