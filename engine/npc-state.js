@@ -240,6 +240,9 @@ const NPCStateSystem = {
 
     // ========== v0.27.0: NPC自主成长系统 ==========
 
+    // v0.28.0: NPC成长里程碑等级
+    _milestoneLevels: [5, 8, 10, 12, 15, 18, 20],
+
     /**
      * 获取NPC升级所需经验（和玩家同公式：level * 100）
      */
@@ -250,20 +253,42 @@ const NPCStateSystem = {
 
     /**
      * NPC获得经验，自动升级
-     * @returns {boolean} 是否升级了
+     * @returns {object} { leveledUp: boolean, newLevel: number, isMilestone: boolean }
      */
     gainNPCExp(npcId, amount) {
         const state = this.getNPCState(npcId);
         state.exp += amount;
         let leveledUp = false;
+        let newLevel = state.level;
+        let isMilestone = false;
 
         while (state.exp >= this.getNPCExpToNextLevel(npcId)) {
             state.exp -= this.getNPCExpToNextLevel(npcId);
             state.level++;
+            newLevel = state.level;
             leveledUp = true;
+            if (this._milestoneLevels.includes(state.level)) {
+                isMilestone = true;
+            }
         }
 
-        return leveledUp;
+        // v0.28.0: 里程碑升级时设置待传播传闻
+        if (isMilestone && typeof Player !== 'undefined') {
+            if (!Player._pendingNPCRumors) Player._pendingNPCRumors = [];
+            Player._pendingNPCRumors.push({ npcId, level: newLevel });
+        }
+
+        return { leveledUp, newLevel, isMilestone };
+    },
+
+    /**
+     * v0.28.0: 获取并清除待传播的NPC成长传闻
+     */
+    consumePendingNPCRumors() {
+        if (!Player._pendingNPCRumors || Player._pendingNPCRumors.length === 0) return [];
+        const rumors = [...Player._pendingNPCRumors];
+        Player._pendingNPCRumors = [];
+        return rumors;
     },
 
     /**
@@ -282,13 +307,13 @@ const NPCStateSystem = {
         for (const [npcId, state] of Object.entries(this._npcStates)) {
             // 只有有日程的NPC（主要角色）才被动成长
             const baseExp = 8 + Math.floor(Math.random() * 7); // 8-15经验/天
-            const leveledUp = this.gainNPCExp(npcId, baseExp);
-            if (leveledUp) {
+            const result = this.gainNPCExp(npcId, baseExp);
+            if (result.leveledUp) {
                 const charData = DataManager.getCharacter(npcId);
                 levelUps.push({
                     npcId,
                     name: charData?.name || npcId,
-                    level: state.level
+                    level: result.newLevel
                 });
             }
         }

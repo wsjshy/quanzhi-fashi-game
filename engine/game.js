@@ -362,6 +362,26 @@ const Game = {
             message += npcEncounter.message;
         }
 
+        // v0.28.0: NPC成长里程碑传闻（即使没有偶遇NPC也可能听到）
+        if (typeof NPCStateSystem !== 'undefined' && NPCStateSystem.consumePendingNPCRumors) {
+            const rumors = NPCStateSystem.consumePendingNPCRumors();
+            for (const rumor of rumors) {
+                const charData = DataManager.getCharacter(rumor.npcId);
+                const name = charData?.name || rumor.npcId;
+                const rumorTexts = {
+                    5: `听说${name}最近突破到了Lv.${rumor.level}，修炼速度真快啊。`,
+                    8: `${name}已经Lv.${rumor.level}了？这家伙的进步速度有点吓人。`,
+                    10: `${name}突破Lv.${rumor.level}了！听说他在修炼场待了整整三天。`,
+                    12: `Lv.${rumor.level}的${name}...已经不是普通学生能比的了。`,
+                    15: `${name}达到Lv.${rumor.level}了！这已经是中阶法师的水平了。`,
+                    18: `Lv.${rumor.level}...${name}的实力已经逼近高阶了。`,
+                    20: `${name}突破Lv.${rumor.level}！整个学校都在议论这件事。`
+                };
+                const text = rumorTexts[rumor.level] || `听说${name}突破到了Lv.${rumor.level}。`;
+                message += `\n\n📢 传闻：${text}`;
+            }
+        }
+
         // v0.24.0: 隐藏修炼地点——探索时有概率发现
         const skipForDiscovery = ['rest', 'quick_rest', 'sleep', 'wait', 'quick_wait', 'quick_rest_full'];
         if (!skipForDiscovery.includes(actionId)) {
@@ -771,9 +791,9 @@ const Game = {
                 const expGain = 15 + Math.floor(Math.random() * 10); // 15-25经验
                 const npcState = NPCStateSystem.getNPCState(enc.npcId);
                 npcState.totalCultivateCount = (npcState.totalCultivateCount || 0) + 1;
-                const leveledUp = NPCStateSystem.gainNPCExp(enc.npcId, expGain);
-                if (leveledUp) {
-                    levelUpMessages.push(`${enc.name}突破了！当前等级 Lv.${NPCStateSystem.getNPCLevel(enc.npcId)}`);
+                const result = NPCStateSystem.gainNPCExp(enc.npcId, expGain);
+                if (result.leveledUp) {
+                    levelUpMessages.push(`${enc.name}突破了！当前等级 Lv.${result.newLevel}`);
                 }
             }
         }
@@ -786,6 +806,7 @@ const Game = {
         if (levelUpMessages.length > 0) {
             message += '\n✨ ' + levelUpMessages.join('；') + '\n';
         }
+
         return { encounters, message };
     },
 
