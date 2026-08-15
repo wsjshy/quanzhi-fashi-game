@@ -626,7 +626,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.81.1 · 手机端修复</div>
+                ">v0.81.2 · 滚动修复+卡片优化</div>
             </div>
         `;
 
@@ -1508,7 +1508,7 @@ const UI = {
                                     if (isRecommended) tooltipText += ` | ${recommendReason}`;
                                     return `
                                     <button class="action-button" onclick="Game.performAction('${action.id}')" title="${tooltipText}" style="
-                                        padding: 12px 10px;
+                                        padding: 12px 14px;
                                         background: ${colors.bg};
                                         border: 2px solid ${borderColor};
                                         border-radius: 12px;
@@ -1519,14 +1519,15 @@ const UI = {
                                         font-size: 15px;
                                         ${glowEffect}
                                         position: relative;
-                                    " onmouseover="this.style.borderColor='${isRecommended ? '#ffee88' : '#9999cc'}'; this.style.transform='scale(1.03)'" onmouseout="this.style.borderColor='${borderColor}'; this.style.transform='scale(1)'">
-                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                    " onmouseover="this.style.borderColor='${isRecommended ? '#ffee88' : '#9999cc'}'; this.style.transform='scale(1.02)'" onmouseout="this.style.borderColor='${borderColor}'; this.style.transform='scale(1)'">
+                                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
                                             <span style="font-size: 18px;">${action.icon || '🔹'}</span>
-                                            <span style="flex: 1; font-weight: bold; font-size: 14px; line-height: 1.3;">${actionName}</span>
+                                            <span style="flex: 1; font-weight: bold; font-size: 14px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${actionName}</span>
                                             ${isRecommended ? '<span style="font-size: 12px;">📜</span>' : ''}
+                                            <span style="font-size: 11px; color: #aaddff; white-space: nowrap;">⏱️${action.timeCost}h</span>
                                         </div>
-                                        <div style="font-size: 11px; color: #aabbdd; margin-top: 3px; text-align: right;">
-                                            ⏱️${action.timeCost}h${expReward ? ` ✨+${expReward}` : ''}
+                                        <div style="font-size: 11px; color: #aabbdd; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            ${actionDesc}${expReward ? ` <span style="color:#ffd700;">✨+${expReward}</span>` : ''}
                                         </div>
                                     </button>`;
                                 };
