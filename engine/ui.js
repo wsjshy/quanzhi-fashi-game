@@ -615,7 +615,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.59.0 · 风系任务线</div>
+                ">v0.60.0 · 光系任务线</div>
             </div>
         `;
 

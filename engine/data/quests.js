@@ -2674,5 +2674,64 @@ const DataQuests = {
     dialogueStart: "你的风系已经有了一定基础。但风的极致不是快，是无处不在的感知。去图书馆查查典籍，再结合修炼感悟吧。",
     dialogueInProgress: "典籍中的知识需要结合实践才能真正理解。继续修炼，感受风的律动。",
     dialogueComplete: "你做到了！你对风的理解已经超越了初阶水平。这是给你的奖励——一个技能点，好好利用。"
+  },
+
+  // ========== v0.60.0 玩家个人任务线：光系初阶 ==========
+
+  quest_light_purify: {
+    id: "quest_light_purify",
+    name: "光明的净化",
+    description: "白阳注意到你在修炼光系时心有杂念，建议你多加练习。光系的力量来自纯净，心不净，光不纯。",
+    giver: "bai_yang",
+    type: "personal",
+    trigger: { element: "light", minLevel: 5 },
+    objectives: [
+      { type: "cultivate", count: 5, description: "修炼5次" }
+    ],
+    rewards: { exp: 100, gold: 50 },
+    prerequisites: [],
+    nextQuest: "quest_light_duel",
+    isMainQuest: false,
+    dialogueStart: "你好。我注意到你觉醒了光系。光系的力量来自纯净，心不净，光不纯。先去修炼场，净化你的心灵。",
+    dialogueInProgress: "怎么样，感受到光明在你体内流转了吗？排除杂念，让星子纯净运转。",
+    dialogueComplete: "很好，你的心性纯净了不少。光系的掌控力提升了。继续努力。"
+  },
+
+  quest_light_duel: {
+    id: "quest_light_duel",
+    name: "光系的较量",
+    description: "白阳注意到你的光系进步，主动找你切磋。你的光系...有点意思。要不要比比看，谁的光更纯？",
+    giver: "bai_yang",
+    type: "personal",
+    trigger: { element: "light", minLevel: 8 },
+    objectives: [
+      { type: "talk", npcId: "bai_yang", count: 1, description: "与白阳对话" }
+    ],
+    rewards: { exp: 150, gold: 100 },
+    prerequisites: ["quest_light_purify"],
+    nextQuest: "quest_light_insight",
+    isMainQuest: false,
+    dialogueStart: "你的光系...有点意思。要不要切磋一下，看看谁的光更纯？",
+    dialogueInProgress: "怎么，不敢吗？还是说你还没准备好？",
+    dialogueComplete: "哼，你的光确实有几分纯度。不过跟我比，还差得远。下次我不会手下留情。"
+  },
+
+  quest_light_insight: {
+    id: "quest_light_insight",
+    name: "光明的感悟",
+    description: "白阳建议你在图书馆查阅光系典籍，结合修炼感悟光明的真谛。光的极致不是明亮，是驱散黑暗的勇气。",
+    giver: "bai_yang",
+    type: "personal",
+    trigger: { element: "light", minLevel: 12 },
+    objectives: [
+      { type: "explore", count: 3, description: "在图书馆学习3次" },
+      { type: "cultivate", count: 10, description: "修炼10次" }
+    ],
+    rewards: { exp: 300, gold: 200, skillPoints: 1 },
+    prerequisites: ["quest_light_duel"],
+    isMainQuest: false,
+    dialogueStart: "你的光系已经有了一定基础。但光的极致不是明亮，是驱散黑暗的勇气。去图书馆查查典籍，再结合修炼感悟吧。",
+    dialogueInProgress: "典籍中的知识需要结合实践才能真正理解。继续修炼，感受光明的律动。",
+    dialogueComplete: "你做到了！你对光明的理解已经超越了初阶水平。这是给你的奖励——一个技能点，好好利用。"
   }
 };
