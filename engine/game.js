@@ -2930,6 +2930,28 @@ const Game = {
             influenceReaction = `（${npc.name}多看了你一眼，似乎觉得你有些特别。）`;
         }
 
+        // v0.44.0: NPC提及其他NPC - 基于NPC-NPC关系，让社交网络可感知
+        let npcMention = '';
+        if (this._npcSchedules && Math.random() < 0.3) {
+            const otherNPCs = Object.keys(this._npcSchedules).filter(id => id !== npc.id);
+            if (otherNPCs.length > 0) {
+                const otherId = otherNPCs[Math.floor(Math.random() * otherNPCs.length)];
+                const otherData = DataManager.getCharacter(otherId);
+                const otherName = otherData ? otherData.name : this._npcSchedules[otherId].name;
+                const rel = NPCStateSystem.getNPCRelationship(npc.id, otherId);
+                const opinion = rel.opinion || 0;
+                if (opinion > 30) {
+                    npcMention = `（${npc.name}不经意间提到："${otherName}最近也挺努力的，你们可以多交流交流。"）`;
+                } else if (opinion > 10) {
+                    npcMention = `（${npc.name}随口说道："说起来，${otherName}今天也在学校呢。"）`;
+                } else if (opinion < -20) {
+                    npcMention = `（${npc.name}皱了皱眉，"别提${otherName}了，那个人……算了。"）`;
+                } else if (opinion < -5) {
+                    npcMention = `（${npc.name}的语气有些冷淡，"${otherName}？不太熟。"）`;
+                }
+            }
+        }
+
         // 创建对话界面
         const dialog = document.createElement('div');
         dialog.id = 'dialogue-screen';
@@ -3113,6 +3135,7 @@ const Game = {
                 ">
                     ${levelReaction ? `<div style="color: #888; font-size: 14px; font-style: italic; margin-bottom: 10px; border-left: 3px solid #555; padding-left: 10px;">${levelReaction}</div>` : ''}
                     ${influenceReaction ? `<div style="color: #ffd93d; font-size: 14px; font-style: italic; margin-bottom: 10px; border-left: 3px solid #ffd93d; padding-left: 10px;">${influenceReaction}</div>` : ''}
+                    ${npcMention ? `<div style="color: #88ccff; font-size: 14px; font-style: italic; margin-bottom: 10px; border-left: 3px solid #88ccff; padding-left: 10px;">${npcMention}</div>` : ''}
                     ${dialogueData.text}
                 </div>
 
