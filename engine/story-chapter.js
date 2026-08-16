@@ -118,12 +118,17 @@ const StoryChapterSystem = {
             }
         }
 
-        // 自动接取主线任务
+        // v0.92.19: 不自动接取主线任务，改为提示玩家主动接取（增加自由度，避免节奏过快）
         if (chapter.mainQuestChain && chapter.mainQuestChain.length > 0) {
             for (const questId of chapter.mainQuestChain) {
                 if (!Player.hasQuest(questId) && !Player.isQuestComplete(questId)) {
-                    Player.acceptQuest(questId);
-                    break; // 一次只接第一个，后续由任务链推进
+                    // 不自动接取，只在UI中提示
+                    if (typeof UI !== 'undefined' && UI.showMessage) {
+                        const questData = (typeof GameData !== 'undefined' && GameData.quests) ? GameData.quests[questId] : null;
+                        const questName = questData ? questData.name : questId;
+                        UI.showMessage(`【新章节】${chapter.name}\n\n新主线任务「${questName}」已解锁！点击底部「菜单」→「任务」查看并接取任务。`);
+                    }
+                    break; // 一次只提示第一个
                 }
             }
         }

@@ -116,7 +116,7 @@ const UI = {
     showOpeningStory(element) {
         // debug模式下跳过开场剧情
         if (typeof window !== 'undefined' && window.location && window.location.search.includes('debug=1')) {
-            UI.showMessage(`【新手引导】已自动接取任务「初识魔法」，去修炼场感受魔法的力量吧！\n\n💡 提示：按 ~ 键可打开调试面板（需在URL加?debug=1）。`);
+            UI.showMessage(`【新手引导】新任务「初识魔法」已解锁！点击底部「菜单」→「任务」查看并接取任务，去修炼场感受魔法的力量吧！\n\n💡 提示：按 ~ 键可打开调试面板（需在URL加?debug=1）。`);
             return;
         }
         const elementName = (typeof SkillSystem !== 'undefined') ? SkillSystem.getElementName(element) : element;
@@ -156,7 +156,7 @@ const UI = {
         const skipOpening = () => {
             if (currentTimer) clearTimeout(currentTimer);
             overlay.remove();
-            UI.showMessage(`【新手引导】已自动接取任务「初识魔法」，去修炼场感受魔法的力量吧！\n\n💡 提示：按 ~ 键可打开调试面板（需在URL加?debug=1）。`);
+            UI.showMessage(`【新手引导】新任务「初识魔法」已解锁！点击底部「菜单」→「任务」查看并接取任务，去修炼场感受魔法的力量吧！\n\n💡 提示：按 ~ 键可打开调试面板（需在URL加?debug=1）。`);
         };
         skipBtn.onclick = skipOpening;
 
@@ -165,7 +165,7 @@ const UI = {
                 btn.style.display = 'inline-block';
                 btn.onclick = () => {
                     overlay.remove();
-                    UI.showMessage(`【新手引导】已自动接取任务「初识魔法」，去修炼场感受魔法的力量吧！\n\n💡 提示：按 ~ 键可打开调试面板（需在URL加?debug=1）。`);
+                    UI.showMessage(`【新手引导】新任务「初识魔法」已解锁！点击底部「菜单」→「任务」查看并接取任务，去修炼场感受魔法的力量吧！\n\n💡 提示：按 ~ 键可打开调试面板（需在URL加?debug=1）。`);
                 };
                 return;
             }
