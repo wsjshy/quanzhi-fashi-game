@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.86.4 · 图书馆技能领悟完善</div>
+                ">v0.86.5 · 技能数据规范统一</div>
             </div>
         `;
 

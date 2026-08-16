@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 技能数据
  * 从 game-data.js 拆分而来
  */
@@ -1215,7 +1215,7 @@ const DataSkills = {
     mpCost: 20,
     targetType: "enemy",
     cooldown: 3,
-    tier: "初阶2级",
+    tier: "初阶",
     statusEffects: [
       { name: "雷电麻痹", type: "stun", duration: 1, chance: 0.5 },
       { name: "感电", type: "electrified", duration: 3, chance: 1.0, defenseMalus: 0.2 }
@@ -1231,7 +1231,7 @@ const DataSkills = {
     mpCost: 18,
     targetType: "enemy",
     cooldown: 3,
-    tier: "初阶2级",
+    tier: "初阶",
     statusEffects: [
       { name: "冻结", type: "frozen", duration: 1, chance: 0.4, freezeValue: 35 },
       { name: "减速", type: "slow", duration: 3, chance: 1.0, speedMalus: 0.4 }
@@ -1277,7 +1277,7 @@ const DataSkills = {
     mpCost: 30,
     targetType: "enemy",
     cooldown: 5,
-    tier: "初阶3级",
+    tier: "初阶",
     statusEffects: [
       { name: "冰封", type: "frozen", duration: 2, chance: 0.7, freezeValue: 70 },
       { name: "极寒", type: "slow", duration: 4, chance: 1.0, speedMalus: 0.6 },
@@ -1294,7 +1294,7 @@ const DataSkills = {
     mpCost: 28,
     targetType: "enemy",
     cooldown: 4,
-    tier: "初阶3级",
+    tier: "初阶",
     statusEffects: [
       { name: "烈焰灼烧", type: "burn", duration: 4, chance: 1.0, stacks: 3, dotDamage: 10 },
       { name: "爆裂冲击", type: "stun", duration: 1, chance: 0.3 }
@@ -1310,7 +1310,7 @@ const DataSkills = {
     mpCost: 32,
     targetType: "enemy",
     cooldown: 5,
-    tier: "初阶3级",
+    tier: "初阶",
     statusEffects: [
       { name: "雷霆麻痹", type: "stun", duration: 2, chance: 0.5 },
       { name: "感电", type: "electrified", duration: 3, chance: 1.0, damageBonus: 0.3 },
@@ -1798,7 +1798,7 @@ const DataSkills = {
     critRate: 0.2,
     targetType: "all_enemies", // 范围攻击
     cooldown: 3,
-    tier: "中阶3级",
+    tier: "中阶",
     realmRequired: "middle",
     skillLevelRequired: 3,
     isCanon: true,
