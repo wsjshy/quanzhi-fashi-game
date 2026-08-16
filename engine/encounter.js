@@ -145,9 +145,10 @@ const EncounterSystem = {
             });
         }
 
-        // 新生试炼：等级>=3，未完成
+        // 新生试炼：等级>=3，未完成，且在学校
         if (typeof Player !== 'undefined' && Player.level >= 3 &&
-            !Player.flags['freshman_trial_completed']) {
+            !Player.flags['freshman_trial_completed'] &&
+            typeof MapSystem !== 'undefined' && MapSystem.getCurrentLocation()?.id === 'tianlan_school') {
             events.push({
                 id: 'freshman_trial',
                 name: '新生试炼',

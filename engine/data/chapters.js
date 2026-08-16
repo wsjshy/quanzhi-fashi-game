@@ -10,7 +10,7 @@ const DataChapters = {
 
   chapter_01_awakening: {
     id: "chapter_01_awakening",
-    name: "第一章·觉醒",
+    name: "觉醒期",
     volume: "vol1_bocheng",
     volumeName: "博城篇",
     novelChapters: [1, 5],
@@ -18,7 +18,8 @@ const DataChapters = {
 
     startConditions: { gameStart: true },
     completeConditions: {
-      requiredFlags: ["awakening_ceremony_done"]
+      requiredFlags: ["awakening_ceremony_done"],
+      minLevel: 2
     },
 
     mainQuestChain: ["quest_awakening_ceremony"],
@@ -43,7 +44,7 @@ const DataChapters = {
 
   chapter_02_school_life: {
     id: "chapter_02_school_life",
-    name: "第二章·天澜魔法高中",
+    name: "校园期",
     volume: "vol1_bocheng",
     volumeName: "博城篇",
     novelChapters: [6, 20],
@@ -51,7 +52,9 @@ const DataChapters = {
 
     startConditions: { previousChapterCompleted: "chapter_01_awakening" },
     completeConditions: {
-      allQuestsCompleted: ["quest_intro"]
+      allQuestsCompleted: ["quest_intro"],
+      minLevel: 3,
+      minSideQuests: 1
     },
 
     mainQuestChain: ["quest_intro"],

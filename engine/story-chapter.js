@@ -178,6 +178,18 @@ const StoryChapterSystem = {
             }
         }
 
+        // 检查支线任务完成数
+        if (completed && cond.minSideQuests) {
+            const sideQuests = chapter.sideQuests || [];
+            let completedSide = 0;
+            for (const qid of sideQuests) {
+                if (Player.isQuestComplete(qid)) completedSide++;
+            }
+            if (completedSide < cond.minSideQuests) {
+                completed = false;
+            }
+        }
+
         if (completed) {
             this.completeCurrentChapter();
         }

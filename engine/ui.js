@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.86.13 · 对话框关闭按钮修复</div>
+                ">v0.87.0 · 体验优化：节奏/逻辑/好感度</div>
             </div>
         `;
 
@@ -895,7 +895,7 @@ const UI = {
                     border-radius: 10px;
                     transition: all 0.3s;
                     letter-spacing: 4px;
-                    opacity: 0.5;
+                    opacity: 1;
                     display: inline-block;
                 " id="confirm-btn">
                     确认创建
@@ -999,7 +999,10 @@ const UI = {
         window.rerollCreateElements = () => this.rerollCreateElements();
 
         window.confirmCreate = () => {
-            if (!window.confirmEnabled || !window.selectedElement) return;
+            if (!window.selectedElement) {
+                alert('请先选择一个元素系别！');
+                return;
+            }
             const name = document.getElementById('char-name').value || '冒险者';
             Game.createCharacter(name, window.selectedElement);
         };

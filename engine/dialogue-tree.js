@@ -312,9 +312,16 @@ const DialogueTree = {
     _applyEffects(effects) {
         const npcId = this.currentNPC;
 
-        // 好感度
+        // 好感度（v0.87.0: 收紧变化幅度，普通对话最多±1，重要事件需有reason）
         if (effects.opinion) {
-            NPCStateSystem.changeOpinion(npcId, effects.opinion, effects.opinionReason || '');
+            let delta = effects.opinion;
+            // 普通对话（无reason）变化减半且最多±1
+            if (!effects.opinionReason) {
+                delta = Math.max(-1, Math.min(1, Math.floor(delta / 2)));
+            }
+            if (delta !== 0) {
+                NPCStateSystem.changeOpinion(npcId, delta, effects.opinionReason || '对话交流');
+            }
         }
 
         // 信任度
