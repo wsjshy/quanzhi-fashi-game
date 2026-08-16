@@ -704,23 +704,6 @@ const DataLocations = {
         eventChance: 0.5,
         events: ["event_mu_banquet", "event_meet_important_people"]
       },
-      {
-        id: "earth_spring",
-        name: "地圣泉修炼",
-    mapX: 50,
-    mapY: 85,
-    mapIcon: "💧",
-        description: "进入博城地圣泉修炼，修为突飞猛进",
-        icon: "💧",
-        timeCost: 2,
-        staminaCost: 20,
-        effects: { exp: 60 },
-        condition: {
-          hasItem: "earth_spring_pass"
-        },
-        eventChance: 0.8,
-        events: ["event_earth_spring_cultivation"]
-      }
     ],
     connectedLocations: [
       "bo_city"
