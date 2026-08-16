@@ -263,6 +263,11 @@ const UI = {
     showDailySummary(stats) {
         if (!stats) return;
         
+        // v0.92.17: 强制恢复点击，防止之前的消息弹窗导致点击被拦截
+        if (typeof UI !== 'undefined') {
+            UI._restoreClicks();
+        }
+        
         const dialog = document.createElement('div');
         dialog.style.cssText = `
             position: fixed;
@@ -5737,6 +5742,11 @@ const UI = {
 
     // NPC 对话
     showNPCDialog(npc, message, availableQuests) {
+        // v0.92.17: 强制恢复点击，防止之前的消息弹窗导致点击被拦截
+        if (typeof UI !== 'undefined') {
+            UI._restoreClicks();
+        }
+        
         const dialog = document.createElement('div');
         dialog.style.cssText = `
             position: fixed;

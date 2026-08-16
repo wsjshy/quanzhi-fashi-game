@@ -2,6 +2,36 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v0.92.16 - 弹窗后点击延迟优化
+- 弹窗关闭后点击延迟从500ms/200ms统一缩短到50ms
+- 修复弹窗结束后快速点击不生效的问题
+
+## v0.92.13 - 全地图解锁条件统一修复
+- 修复checkAutoUnlockLocations只检查minLevel/minOpinion的bug
+- 现在支持所有解锁条件格式：level/quest/questCompleted/requiredFlag/hasItem/minOpinion
+- 百草谷从非标准的unlockLevel+unlockQuest转换为标准unlockCondition格式
+- 新建角色不会再自动解锁三步塔、女子学校、老榕树街区、地圣泉等地图
+
+## v0.92.12 - 地图自动解锁条件检查修复
+- checkAutoUnlockLocations支持level/quest/requiredFlag/hasItem等条件
+- _checkUnlockCondition同样支持所有条件格式
+
+## v0.92.11 - 彻底修复点击拦截器叠加问题
+- showMessage添加新拦截器前先移除旧拦截器，防止多个拦截器叠加
+- _restoreClicks同时移除_globalClickInterceptor和_prevClickInterceptor
+
+## v0.92.10 - 全界面恢复点击防锁定
+- 添加_restoreClicks辅助方法，在renderMapScreen中调用
+
+## v0.92.9 - 强制恢复创建角色界面点击
+- 通过克隆元素强制移除事件监听器
+
+## v0.92.8 - 修复创建角色界面pointer-events锁定
+- 在renderCharacterCreate开头恢复pointer-events
+
+## v0.92.7 - 修复创建角色确认按钮
+- 确认按钮改为内联onclick直接调用Game.createCharacter
+
 ## v0.92.6 - 修复地图点击被网格SVG拦截
 
 ### 修复
