@@ -895,8 +895,12 @@ const DataLocations = {
     mapIcon: "🌿",
     description: "雪峰山深处的山谷，因形似掌状的湖泊而得名，北面山口是历练最终关卡。谷中生长着大量魔法草药，也潜伏着妖藤等植物系妖魔。",
     backgroundColor: "#1a3a1a",
-    unlockLevel: 3,
-    unlockQuest: "quest_training_camp",
+    unlocked: false,
+    unlockCondition: {
+      minLevel: 3,
+      requiredQuest: "quest_training_camp",
+      hint: "需要等级3并完成新生历练任务才能进入百草谷"
+    },
     actions: [
       {
         id: "explore",

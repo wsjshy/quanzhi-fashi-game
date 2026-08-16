@@ -218,8 +218,8 @@ const MapSystem = {
             }
         }
         
-        // 任务条件（支持requiredQuest和quest两种写法）
-        const reqQuest = condition.requiredQuest || condition.quest;
+        // 任务条件（支持requiredQuest/quest/questCompleted三种写法）
+        const reqQuest = condition.requiredQuest || condition.quest || condition.questCompleted;
         if (reqQuest) {
             if (!Player.completedQuests || !Player.completedQuests.includes(reqQuest)) {
                 return false;

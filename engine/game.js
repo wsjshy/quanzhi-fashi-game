@@ -1833,8 +1833,8 @@ const Game = {
                 canUnlock = false;
             }
             
-            // 任务要求（支持requiredQuest和quest两种写法）
-            const reqQuest = cond.requiredQuest || cond.quest;
+            // 任务要求（支持requiredQuest/quest/questCompleted三种写法）
+            const reqQuest = cond.requiredQuest || cond.quest || cond.questCompleted;
             if (reqQuest) {
                 if (!Player.completedQuests || !Player.completedQuests.includes(reqQuest)) {
                     canUnlock = false;

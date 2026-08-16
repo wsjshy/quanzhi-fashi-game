@@ -709,7 +709,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.92.12 · 修复地图自动解锁条件检查</div>
+                ">v0.92.13 · 全地图解锁条件统一修复</div>
             </div>
         `;
 
