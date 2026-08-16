@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.92.5 · 修复创建角色selectElement容错</div>
+                ">v0.92.6 · 修复地图点击被网格SVG拦截</div>
             </div>
         `;
 
@@ -1956,7 +1956,7 @@ const UI = {
                     "></div>
 
                     <!-- 网格线 -->
-                    <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.1;">
+                    <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.1; pointer-events: none; z-index: 0;">
                         <defs>
                             <pattern id="grid" width="10%" height="10%" patternUnits="userSpaceOnUse">
                                 <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#4466aa" stroke-width="0.5"/>

@@ -2,6 +2,19 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v0.92.6 - 修复地图点击被网格SVG拦截
+
+### 修复
+- 地图网格线SVG没有pointer-events: none，覆盖整个地图区域拦截点击事件
+- 导致所有地点点击无反应（严重bug）
+- 添加pointer-events: none和z-index: 0
+
+## v0.92.5 - 修复创建角色selectElement容错
+
+### 修复
+- selectElement函数添加try-catch，确保window.selectedElement一定被设置
+- 移除可能出错的confirm-btn操作
+
 ## v0.92.4 - 修复创建角色默认选中bug
 
 ### 修复
