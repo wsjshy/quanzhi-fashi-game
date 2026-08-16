@@ -1006,7 +1006,11 @@ const UI = {
                 return;
             }
             const name = document.getElementById('char-name').value || '冒险者';
-            Game.createCharacter(name, window.selectedElement);
+            try {
+                Game.createCharacter(name, window.selectedElement);
+            } catch (e) {
+                alert('创建角色出错: ' + e.message + '\n' + e.stack);
+            }
         };
     },
 
