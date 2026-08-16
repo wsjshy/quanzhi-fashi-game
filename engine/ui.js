@@ -709,7 +709,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.92.13 · 全地图解锁条件统一修复</div>
+                ">v0.92.14 · 创建角色点击修复-内联恢复</div>
             </div>
         `;
 
@@ -763,17 +763,6 @@ const UI = {
 
     // ========== 角色创建界面 ==========
     renderCharacterCreate() {
-        // v0.92.8: 强制恢复点击，防止之前的消息弹窗导致pointer-events:none
-        document.body.classList.remove('message-showing');
-        const gc = document.getElementById('game-container');
-        if (gc) gc.style.pointerEvents = '';
-        if (this._globalClickInterceptor) {
-            document.removeEventListener('click', this._globalClickInterceptor, true);
-            document.removeEventListener('mousedown', this._globalClickInterceptor, true);
-            document.removeEventListener('mouseup', this._globalClickInterceptor, true);
-            this._globalClickInterceptor = null;
-        }
-        
         const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark'];
         const elementNames = {
             fire: '🔥 火系', ice: '❄️ 冰系', thunder: '⚡ 雷系', earth: '🪨 土系',
@@ -867,6 +856,26 @@ const UI = {
             return elementsHtml;
         }
 
+        // v0.92.14: 强制恢复点击 - 在设置innerHTML之前移除所有点击拦截器
+        (function() {
+            document.body.classList.remove('message-showing');
+            const gc = document.getElementById('game-container');
+            if (gc) gc.style.pointerEvents = '';
+            // 尝试移除UI对象保存的点击拦截器
+            if (typeof UI !== 'undefined' && UI._globalClickInterceptor) {
+                document.removeEventListener('click', UI._globalClickInterceptor, true);
+                document.removeEventListener('mousedown', UI._globalClickInterceptor, true);
+                document.removeEventListener('mouseup', UI._globalClickInterceptor, true);
+                UI._globalClickInterceptor = null;
+            }
+            if (typeof UI !== 'undefined' && UI._prevClickInterceptor) {
+                document.removeEventListener('click', UI._prevClickInterceptor, true);
+                document.removeEventListener('mousedown', UI._prevClickInterceptor, true);
+                document.removeEventListener('mouseup', UI._prevClickInterceptor, true);
+                UI._prevClickInterceptor = null;
+            }
+        })();
+
         this.elements.gameContainer.innerHTML = `
             <div style="
                 width: 100%;
@@ -949,9 +958,6 @@ const UI = {
                 </div>
             </div>
         `;
-
-        // v0.92.11: 强制恢复点击，移除全局点击拦截器
-        this._restoreClicks();
 
         // 全局函数
         window.selectedElement = null;
