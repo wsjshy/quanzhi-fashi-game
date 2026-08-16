@@ -138,8 +138,15 @@ const Game = {
         this._pendingNewGame = true;
         this._pendingElement = element;
         
-        // 先选择自身天赋（3选1）
-        this.showInnateTalentSelection();
+        // v0.92.7: 调试 - 直接进入游戏，跳过天赋选择
+        console.log('createCharacter: 开始显示天赋选择');
+        try {
+            this.showInnateTalentSelection();
+            console.log('createCharacter: 天赋选择显示成功');
+        } catch (e) {
+            console.error('createCharacter: 天赋选择出错', e);
+            alert('天赋选择出错: ' + e.message);
+        }
     },
 
     // ========== 地图界面 ==========

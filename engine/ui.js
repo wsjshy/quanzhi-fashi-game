@@ -887,7 +887,7 @@ const UI = {
                     ${renderElements()}
                 </div>
 
-                <div onclick="confirmCreate()" style="
+                <div onclick="alert('点击了确认按钮! selectedElement=' + window.selectedElement); if(typeof confirmCreate === 'function') confirmCreate(); else alert('confirmCreate不是函数!');" style="
                     padding: 15px 50px;
                     font-size: 20px;
                     background: linear-gradient(135deg, #2a2a6a, #4a4aaa);
@@ -899,6 +899,8 @@ const UI = {
                     letter-spacing: 4px;
                     opacity: 1;
                     display: inline-block;
+                    position: relative;
+                    z-index: 100;
                 " id="confirm-btn">
                     确认创建
                 </div>
