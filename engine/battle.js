@@ -564,6 +564,9 @@ const BattleSystem = {
         this.lastSkillId = null;  // v0.15.0: 上次使用的技能ID，用于重复上次技能
         this.huntFailed = false;  // 狩猎战妖魔逃跑失败标记
         this.usedElements = new Set();  // 本场战斗使用过的元素系
+        this.elementEnergy = 0;  // v0.86.0: 元素能量（初阶魔法积累，满5点后下一个中高阶魔法爆发）
+        this.elementEnergyMax = 5;  // 元素能量上限
+        this.skillCooldowns = {};  // v0.86.0: 技能冷却状态
         
         // 战斗模式选项
         this.battleOptions = {
@@ -1805,6 +1808,12 @@ const BattleSystem = {
             return null;
         }
 
+        // v0.86.0: 检查技能冷却
+        if (this.skillCooldowns && this.skillCooldowns[skillId] > 0) {
+            this.addLog(`${skill.name} 冷却中（还需${this.skillCooldowns[skillId]}回合）！`, 'system');
+            return null;
+        }
+
         // 检查是否需要召唤兽
         if (skill.requiresSummon && !this.summon) {
             this.addLog('当前没有召唤兽，无法使用此技能！', 'system');
@@ -1880,6 +1889,28 @@ const BattleSystem = {
             }
         }
         casterData.mp -= actualMpCost;
+
+        // v0.86.0: 元素能量系统
+        let elementBurst = false;  // 是否触发元素爆发
+        if (isPlayer && skill.type === 'damage') {
+            const tier = skill.tier || '初阶';
+            const isBasic = tier === '初阶';
+            
+            if (this.elementEnergy >= this.elementEnergyMax) {
+                // 能量满时，下一个伤害技能触发爆发
+                elementBurst = true;
+                this.elementEnergy = 0;
+                // 返还一半MP消耗
+                casterData.mp += Math.floor(actualMpCost / 2);
+                this.addLog(`⚡ 元素爆发！${skill.name} 伤害+50%、MP消耗减半、必定暴击！`, 'crit');
+            } else if (isBasic) {
+                // 初阶伤害技能积累1点能量
+                this.elementEnergy = Math.min(this.elementEnergyMax, this.elementEnergy + 1);
+                if (this.elementEnergy === this.elementEnergyMax) {
+                    this.addLog(`✨ 元素能量已满！下一个伤害技能将触发爆发！`, 'element');
+                }
+            }
+        }
 
         // 记录玩家使用过的元素系（用于经验分配）
         if (isPlayer && skill.element && skill.element !== 'neutral') {
@@ -1985,6 +2016,10 @@ const BattleSystem = {
             if (skill.critBonus) {
                 skillCritRate += skill.critBonus;
             }
+            // v0.86.0: 元素爆发必暴击
+            if (elementBurst) {
+                skillCritRate = 1.0;
+            }
 
             // 多段攻击支持
             const hitCount = skill.hitCount || 1;
@@ -2001,7 +2036,7 @@ const BattleSystem = {
 
             for (let hit = 0; hit < hitCount; hit++) {
                 const damage = this.calculateDamage(
-                    baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus * elementLevelBonus * (1 + talentSkillLevelBonus) * summonMasterSkillBonus * debuffedSkillBonus * staminaSkillBonus,
+                    baseDamage * spiritBonus * elementBonus * talentBonus * seedBonus * skillLevelBonus * elementLevelBonus * (1 + talentSkillLevelBonus) * summonMasterSkillBonus * debuffedSkillBonus * staminaSkillBonus * (elementBurst ? 1.5 : 1.0),
                     effectiveDefense,
                     1.0,
                     skillCritRate,
@@ -2678,6 +2713,21 @@ const BattleSystem = {
             }
         }
 
+        // v0.86.0: 设置技能冷却
+        if (isPlayer && skill.type !== 'buff') {
+            let cooldown = skill.cooldown || 0;
+            // 根据等级自动设置冷却（如果技能数据中没有指定）
+            if (cooldown === 0) {
+                const tier = skill.tier || '初阶';
+                if (tier === '中阶') cooldown = 1;
+                else if (tier === '高阶') cooldown = 2;
+                else if (tier === '超阶') cooldown = 3;
+            }
+            if (cooldown > 0) {
+                this.skillCooldowns[skill.id] = cooldown;
+            }
+        }
+
         if (!skipTurnEnd) {
             if (isPlayer) {
                 this.endPlayerTurn();
@@ -2889,6 +2939,13 @@ const BattleSystem = {
         
         // 减少魔具技能冷却时间
         this.tickMagicToolCooldowns();
+        
+        // v0.86.0: 减少技能冷却时间
+        for (const skillId in this.skillCooldowns) {
+            if (this.skillCooldowns[skillId] > 0) {
+                this.skillCooldowns[skillId]--;
+            }
+        }
         
         // 处理玩家引导中的魔法
         if (this.playerCasting) {

@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.86.0 · 战斗技能系统重构+状态配合</div>
+                ">v0.86.1 · 元素能量系统+技能冷却</div>
             </div>
         `;
 
@@ -2198,6 +2198,16 @@ const UI = {
                                     'linear-gradient(90deg, #ff2222, #ff4444)'
                                 }; transition: width 0.5s;"></div>
                             </div>
+                            ${BattleSystem.elementEnergy > 0 ? `
+                            <div style="margin-top: 4px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 10px; color: ${BattleSystem.elementEnergy >= BattleSystem.elementEnergyMax ? '#ffdd44' : '#aa88ff'}; margin-bottom: 2px;">
+                                    <span>⚡ 元素能量</span><span>${BattleSystem.elementEnergy}/${BattleSystem.elementEnergyMax}</span>
+                                </div>
+                                <div style="height: 5px; background: #333; border-radius: 3px; overflow: hidden;">
+                                    <div style="height: 100%; width: ${(BattleSystem.elementEnergy / BattleSystem.elementEnergyMax * 100).toFixed(0)}%; background: ${BattleSystem.elementEnergy >= BattleSystem.elementEnergyMax ? 'linear-gradient(90deg, #ffdd44, #ffee88); box-shadow: 0 0 8px #ffdd44;' : 'linear-gradient(90deg, #8844ff, #aa66ff)'}; transition: width 0.3s;"></div>
+                                </div>
+                            </div>
+                            ` : ''}
                         </div>
                         
                         <!-- 玩家状态效果 -->
