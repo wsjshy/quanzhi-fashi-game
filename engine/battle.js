@@ -6883,6 +6883,9 @@ const BattleSystem = {
         this.autoBattle = false; // 结束战斗时关闭自动战斗
         this._stopAutoBattleWatchdog(); // v0.47.1: 停止看门狗
 
+        // 关闭战斗帮助界面（避免残留）
+        this.closeHelp();
+
         // 移除键盘快捷键监听
         if (this._keyHandler) {
             document.removeEventListener('keydown', this._keyHandler);
