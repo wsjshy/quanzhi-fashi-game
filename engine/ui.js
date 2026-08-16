@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.86.10 · README同步更新</div>
+                ">v0.86.11 · 战斗按钮体验优化</div>
             </div>
         `;
 
@@ -2519,33 +2519,33 @@ const UI = {
                     ${isPortrait ? 'padding-bottom: calc(15px + env(safe-area-inset-bottom, 0px));' : ''}
                 ">
                     <!-- 基础行动（统一技能框样式） -->
-                    <div style="display: grid; grid-template-columns: repeat(${skillCols}, 1fr); gap: 10px; margin-bottom: 15px;">
+                    <div style="display: grid; grid-template-columns: repeat(${skillCols}, 1fr); gap: 12px; margin-bottom: 15px;">
                         <button onclick="Game.battleAttack()" ${!state.isPlayerTurn ? 'disabled' : ''}
                             title="普通攻击：造成物理伤害"
-                            style="padding:12px; background:linear-gradient(135deg,#55333322,#77444444); border:2px solid #aa6666; border-radius:8px; color:#ffcccc; cursor:${state.isPlayerTurn?'pointer':'not-allowed'}; text-align:center; opacity:${state.isPlayerTurn?1:0.4}; transition:all 0.2s;"
-                            ${state.isPlayerTurn?'onmouseover="this.style.boxShadow=\'0 0 12px #aa666680\'" onmouseout="this.style.boxShadow=\'none\'"':''}>
-                            <div style="font-size:14px; font-weight:bold; margin-bottom:4px;">⚔️ 普通攻击</div>
+                            style="padding:14px 10px; background:linear-gradient(135deg,#55333322,#77444444); border:2px solid #aa6666; border-radius:10px; color:#ffcccc; cursor:${state.isPlayerTurn?'pointer':'not-allowed'}; text-align:center; opacity:${state.isPlayerTurn?1:0.4}; transition:all 0.2s;"
+                            ${state.isPlayerTurn?'onmouseover="this.style.boxShadow=\'0 0 12px #aa666680\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'"':''}>
+                            <div style="font-size:15px; font-weight:bold; margin-bottom:4px;">⚔️ 普通攻击</div>
                             <div style="font-size:12px; color:#aaccff;">MP: 0</div>
                         </button>
                         <button onclick="Game.battleRecover()" ${!state.isPlayerTurn ? 'disabled' : ''}
                             title="集中精神恢复20点MP（低于魔法药水的30点）"
-                            style="padding:12px; background:linear-gradient(135deg,#33446622,#44557744); border:2px solid #6688bb; border-radius:8px; color:#cce0ff; cursor:${state.isPlayerTurn?'pointer':'not-allowed'}; text-align:center; opacity:${state.isPlayerTurn?1:0.4}; transition:all 0.2s;"
-                            ${state.isPlayerTurn?'onmouseover="this.style.boxShadow=\'0 0 12px #6688bb80\'" onmouseout="this.style.boxShadow=\'none\'"':''}>
-                            <div style="font-size:14px; font-weight:bold; margin-bottom:4px;">🧘 恢复</div>
+                            style="padding:14px 10px; background:linear-gradient(135deg,#33446622,#44557744); border:2px solid #6688bb; border-radius:10px; color:#cce0ff; cursor:${state.isPlayerTurn?'pointer':'not-allowed'}; text-align:center; opacity:${state.isPlayerTurn?1:0.4}; transition:all 0.2s;"
+                            ${state.isPlayerTurn?'onmouseover="this.style.boxShadow=\'0 0 12px #6688bb80\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'"':''}>
+                            <div style="font-size:15px; font-weight:bold; margin-bottom:4px;">🧘 恢复</div>
                             <div style="font-size:12px; color:#66ff99;">+20 MP</div>
                         </button>
                         <button onclick="Game.battleFlee()" ${!state.isPlayerTurn || !state.options?.canFlee ? 'disabled' : ''}
                             title="尝试逃离战斗"
-                            style="padding:12px; background:linear-gradient(135deg,#55553322,#66664444); border:2px solid #999966; border-radius:8px; color:#ffffcc; cursor:${state.isPlayerTurn&&state.options?.canFlee?'pointer':'not-allowed'}; text-align:center; opacity:${state.isPlayerTurn&&state.options?.canFlee?1:0.4}; transition:all 0.2s;"
-                            ${state.isPlayerTurn&&state.options?.canFlee?'onmouseover="this.style.boxShadow=\'0 0 12px #99996680\'" onmouseout="this.style.boxShadow=\'none\'"':''}>
-                            <div style="font-size:14px; font-weight:bold; margin-bottom:4px;">🏃 逃跑</div>
+                            style="padding:14px 10px; background:linear-gradient(135deg,#55553322,#66664444); border:2px solid #999966; border-radius:10px; color:#ffffcc; cursor:${state.isPlayerTurn&&state.options?.canFlee?'pointer':'not-allowed'}; text-align:center; opacity:${state.isPlayerTurn&&state.options?.canFlee?1:0.4}; transition:all 0.2s;"
+                            ${state.isPlayerTurn&&state.options?.canFlee?'onmouseover="this.style.boxShadow=\'0 0 12px #99996680\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'"':''}>
+                            <div style="font-size:15px; font-weight:bold; margin-bottom:4px;">🏃 逃跑</div>
                             <div style="font-size:12px; color:#aaa;">脱离战斗</div>
                         </button>
                         <button onclick="Game.battleShowItems()" ${!state.isPlayerTurn || !state.options?.canUseItems ? 'disabled' : ''}
                             title="使用道具"
-                            style="padding:12px; background:linear-gradient(135deg,#33554422,#44665544); border:2px solid #559977; border-radius:8px; color:#ccffdd; cursor:${state.isPlayerTurn&&state.options?.canUseItems?'pointer':'not-allowed'}; text-align:center; opacity:${state.isPlayerTurn&&state.options?.canUseItems?1:0.4}; transition:all 0.2s;"
-                            ${state.isPlayerTurn&&state.options?.canUseItems?'onmouseover="this.style.boxShadow=\'0 0 12px #55997780\'" onmouseout="this.style.boxShadow=\'none\'"':''}>
-                            <div style="font-size:14px; font-weight:bold; margin-bottom:4px;">🎒 道具</div>
+                            style="padding:14px 10px; background:linear-gradient(135deg,#33554422,#44665544); border:2px solid #559977; border-radius:10px; color:#ccffdd; cursor:${state.isPlayerTurn&&state.options?.canUseItems?'pointer':'not-allowed'}; text-align:center; opacity:${state.isPlayerTurn&&state.options?.canUseItems?1:0.4}; transition:all 0.2s;"
+                            ${state.isPlayerTurn&&state.options?.canUseItems?'onmouseover="this.style.boxShadow=\'0 0 12px #55997780\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'"':''}>
+                            <div style="font-size:15px; font-weight:bold; margin-bottom:4px;">🎒 道具</div>
                             <div style="font-size:12px; color:#aaa;">使用物品</div>
                         </button>
                         ${(BattleSystem.lastSkillId && SkillSystem.getSkill(BattleSystem.lastSkillId)) ? (() => {
@@ -2553,9 +2553,9 @@ const UI = {
                             const canRepeat = state.isPlayerTurn && Player.mp >= lastSkill.mpCost;
                             return `<button onclick="Game.battleRepeatSkill()" ${!canRepeat ? 'disabled' : ''}
                                 title="重复上次技能：${lastSkill.name}（消耗${lastSkill.mpCost}MP）"
-                                style="padding:12px; background:linear-gradient(135deg,#33555522,#44666644); border:2px solid #559999; border-radius:8px; color:#ccffee; cursor:${canRepeat?'pointer':'not-allowed'}; text-align:center; opacity:${canRepeat?1:0.4}; transition:all 0.2s;"
-                                ${canRepeat?'onmouseover="this.style.boxShadow=\'0 0 12px #55999980\'" onmouseout="this.style.boxShadow=\'none\'"':''}>
-                                <div style="font-size:14px; font-weight:bold; margin-bottom:4px;">🔄 ${lastSkill.name}</div>
+                                style="padding:14px 10px; background:linear-gradient(135deg,#33555522,#44666644); border:2px solid #559999; border-radius:10px; color:#ccffee; cursor:${canRepeat?'pointer':'not-allowed'}; text-align:center; opacity:${canRepeat?1:0.4}; transition:all 0.2s;"
+                                ${canRepeat?'onmouseover="this.style.boxShadow=\'0 0 12px #55999980\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'"':''}>
+                                <div style="font-size:15px; font-weight:bold; margin-bottom:4px;">🔄 ${lastSkill.name}</div>
                                 <div style="font-size:12px; color:${Player.mp>=lastSkill.mpCost?'#aaccff':'#ff6666'};">MP: ${lastSkill.mpCost}</div>
                             </button>`;
                         })() : ''}
