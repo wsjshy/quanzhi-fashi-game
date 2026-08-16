@@ -9,6 +9,7 @@ const UI = {
     
     // UI 状态
     inventoryFilter: 'all', // 背包物品筛选：all/consumable/equipment/material/quest
+    _expandedBattleElement: null, // v0.94.0: 战斗中当前展开的元素系（内联展开式技能UI）
     
     // ===== 战斗美术资源配置（预留接口，后续填充美术资源时在此配置）=====
     // 设计原则：所有战斗视觉资源通过此配置统一管理，代码不硬编码图片路径
@@ -570,7 +571,8 @@ const UI = {
             overlay.remove();
             msgBox.remove();
             
-            setTimeout(() => blocker.remove(), 50);
+            // v0.93.0: 120ms→200ms，更彻底防止点击穿透
+            setTimeout(() => blocker.remove(), 200);
             
             // 处理下一条消息
             ui._processNextMessage();
@@ -714,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.92.14 · 创建角色点击修复-内联恢复</div>
+                ">v0.94.0 · 战斗技能UI优化</div>
             </div>
         `;
 
@@ -812,7 +814,7 @@ const UI = {
             let elementsHtml = '';
             candidateElements.forEach(elem => {
                 elementsHtml += `
-                    <div class="element-card" onclick="alert('点击了'+this.id); selectElement('${elem}')" 
+                    <div class="element-card" onclick="selectElement('${elem}')" 
                          id="elem-${elem}"
                          style="
                             padding: 25px 20px;
@@ -996,6 +998,9 @@ const UI = {
                 
                 window.selectedElement = elem;
                 window.confirmEnabled = true;
+                // 恢复确认按钮状态
+                const confirmBtn = document.getElementById('confirm-btn');
+                if (confirmBtn) confirmBtn.style.opacity = '1';
             } catch (e) {
                 console.error('selectElement error:', e);
                 window.selectedElement = elem;
@@ -1019,7 +1024,7 @@ const UI = {
                 let html = '';
                 this._createCandidateElements.forEach(elem => {
                     html += `
-                        <div class="element-card" onclick="alert('点击了'+this.id); selectElement('${elem}')" 
+                        <div class="element-card" onclick="selectElement('${elem}')" 
                              id="elem-${elem}"
                              style="
                                 padding: 25px 20px;
@@ -1078,11 +1083,10 @@ const UI = {
             }
             const name = document.getElementById('char-name').value || '冒险者';
             try {
-                alert('步骤1: 开始创建角色, element=' + window.selectedElement);
                 Game.createCharacter(name, window.selectedElement);
-                alert('步骤2: createCharacter完成');
             } catch (e) {
-                alert('创建角色出错: ' + e.message + '\n' + e.stack);
+                console.error('创建角色出错:', e);
+                alert('创建角色出错: ' + e.message);
             }
         };
 
@@ -1285,6 +1289,10 @@ const UI = {
         
         // v0.92.9: 强制恢复点击，防止全局点击拦截器导致界面无法点击
         this._restoreClicks();
+
+        // v0.93.0: clean up residual talent selection dialogs/overlays
+        document.getElementById('talent-selection-dialog')?.remove();
+        document.getElementById('talent-selection-overlay')?.remove();
 
         this.elements.gameContainer.innerHTML = `
             <div style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; background: ${location?.backgroundColor || '#1a1a3a'}; position: relative; padding-bottom: 110px; overflow-x: hidden; pointer-events: auto; z-index: 1;">
@@ -1659,6 +1667,8 @@ const UI = {
                             text-align: left;
                             transition: all 0.3s;
                             font-size: 16px;
+                            position: relative;
+                            z-index: 2000;
                         " onmouseover="this.style.borderColor='#7799cc'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#5577aa'; this.style.transform='translateX(0)'">
                             <div style="font-size: 18px; margin-bottom: 5px;">
                                 😴 休息
@@ -1711,6 +1721,8 @@ const UI = {
                             text-align: left;
                             transition: all 0.3s;
                             font-size: 15px;
+                            position: relative;
+                            z-index: 2000;
                         " onmouseover="this.style.borderColor='#ddbb55'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#aa8833'; this.style.transform='translateX(0)'">
                             <div style="font-size: 16px;">
                                 📜 事件与情报
@@ -2079,7 +2091,7 @@ const UI = {
                         `;
 
                         return `
-                            <div class="map-node-wrapper" onclick="alert('点击了节点wrapper: ${node.id}')" style="position: absolute; left: ${node.x}%; top: ${node.y}%; transform: translate(-50%, -50%); z-index: 2; cursor: pointer;">
+                            <div class="map-node-wrapper" style="position: absolute; left: ${node.x}%; top: ${node.y}%; transform: translate(-50%, -50%); z-index: 2; cursor: pointer;">
                                 <div ${onClick} style="
                                     width: ${size}px;
                                     height: ${size}px;
@@ -2657,6 +2669,60 @@ const UI = {
                         })() : ''}
                     </div>
                     
+                    ${this._expandedBattleElement ? (() => {
+                        // v0.94.0: 展开状态 - 显示该系技能列表（内联展开式）
+                        const element = this._expandedBattleElement;
+                        const info = this.getElementInfo(element);
+                        const skills = (state.player.skills || []).filter(skillId => {
+                            if (skillId === 'basic_attack') return false;
+                            const skill = SkillSystem.getSkill(skillId);
+                            return skill && skill.element === element;
+                        });
+                        const tierOrder = { '初阶': 1, '中阶': 2, '高阶': 3, '超阶': 4 };
+                        skills.sort((a, b) => {
+                            const sa = SkillSystem.getSkill(a);
+                            const sb = SkillSystem.getSkill(b);
+                            return (tierOrder[sa.tier] || 9) - (tierOrder[sb.tier] || 9);
+                        });
+                        return `
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <button onclick="UI.closeBattleElementSkills()" style="background:#333; border:1px solid #666; color:#ccc; padding:6px 12px; border-radius:8px; cursor:pointer; font-size:14px;">← 返回</button>
+                                <span style="color:${info.color}; font-size:18px; font-weight:bold;">${info.icon} ${info.name}魔法</span>
+                                <span style="width:60px;"></span>
+                            </div>
+                            <div style="display:grid; grid-template-columns: repeat(${isPortrait ? 1 : 2}, 1fr); gap:8px;">
+                                ${skills.map(skillId => {
+                                    const skill = SkillSystem.getSkill(skillId);
+                                    const canUse = state.isPlayerTurn && state.player.mp >= skill.mpCost;
+                                    const cooldown = (BattleSystem.skillCooldowns && BattleSystem.skillCooldowns[skillId]) || 0;
+                                    const isCd = cooldown > 0;
+                                    return `
+                                        <button onclick="Game.battleUseSkillAndClose('${skillId}')" ${(!canUse || isCd) ? 'disabled' : ''}
+                                            title="${skill.description}"
+                                            style="
+                                                padding:10px;
+                                                background:linear-gradient(135deg, ${info.color}22, ${info.color}44);
+                                                border:2px solid ${info.color};
+                                                border-radius:10px;
+                                                color:#fff;
+                                                cursor:${(canUse && !isCd) ? 'pointer' : 'not-allowed'};
+                                                text-align:left;
+                                                opacity:${(canUse && !isCd) ? 1 : 0.4};
+                                                transition:all 0.2s;
+                                            ">
+                                            <div style="font-size:14px; font-weight:bold; margin-bottom:3px;">${info.icon} ${skill.name}</div>
+                                            <div style="font-size:11px; color:#ccc; margin-bottom:3px;">${skill.description.substring(0, 25)}${skill.description.length > 25 ? '...' : ''}</div>
+                                            <div style="font-size:11px; display:flex; justify-content:space-between;">
+                                                <span style="color:${state.player.mp >= skill.mpCost ? '#aaccff' : '#ff6666'};">MP: ${skill.mpCost}</span>
+                                                <span style="color:#ffcc66;">${skill.tier || ''}</span>
+                                                ${isCd ? `<span style="color:#ff8866;">CD:${cooldown}</span>` : ''}
+                                            </div>
+                                        </button>
+                                    `;
+                                }).join('')}
+                            </div>
+                        `;
+                    })() : `
                     <div style="color: #ffd700; font-size: 18px; margin-bottom: 10px; font-weight: bold;">✨ 魔法技能（选择系别）</div>
                     <div style="display: grid; grid-template-columns: repeat(${isPortrait ? 3 : 5}, 1fr); gap: 8px;">
                         ${(() => {
@@ -2677,7 +2743,8 @@ const UI = {
                                     return state.player.mp >= s.mpCost;
                                 });
                                 return `
-                                    <button onclick="UI.showElementSkillsPanel('${element}')"
+                                    <button onclick="UI.toggleBattleElement('${element}')"
+                                        class="${this._expandedBattleElement === element ? 'battle-element-active' : ''}"
                                         title="${info.name}：${info.desc}（${skills.length}个技能）"
                                         style="
                                             padding: 10px 6px;
@@ -2700,6 +2767,7 @@ const UI = {
                             }).join('');
                         })()}
                     </div>
+                    `}
                     
                     ${state.magicTools && state.magicTools.available && state.magicTools.available.length > 0 ? `
                         <div style="color: #ff8844; font-size: 18px; margin-bottom: 10px; margin-top: 15px; font-weight: bold;">🔮 魔具技能</div>
@@ -2760,7 +2828,23 @@ const UI = {
         return info[element] || { icon: '✨', name: element, desc: '', color: '#ffffff' };
     },
 
-    // 弹出某系技能面板
+    // v0.94.0: 战斗技能内联展开 - 切换元素系展开状态
+    toggleBattleElement(element) {
+        if (this._expandedBattleElement === element) {
+            this._expandedBattleElement = null; // 再次点击收起
+        } else {
+            this._expandedBattleElement = element;
+        }
+        this.updateBattleScreen();
+    },
+
+    // v0.94.0: 关闭战斗技能展开
+    closeBattleElementSkills() {
+        this._expandedBattleElement = null;
+        this.updateBattleScreen();
+    },
+
+    // 弹出某系技能面板（保留兼容，内联展开时不再使用）
     showElementSkillsPanel(element) {
         const info = this.getElementInfo(element);
         const skills = (Player.skills || []).filter(skillId => {
@@ -3849,7 +3933,7 @@ const UI = {
                                             💰 ${item.actualPrice}
                                             ${item.hasDiscount ? `<span style="text-decoration: line-through; color: #888; font-size: 12px; margin-left: 5px;">${item.originalPrice}</span>` : ''}
                                         </span>
-                                        <div onclick="${item.canAfford ? `Game.buyItem('${item.itemId}')` : ''}" 
+                                        <div onclick="${item.canAfford ? `event.stopPropagation(); Game.buyItem('${item.itemId}')` : ''}" 
                                                 style="
                                             padding: 6px 15px;
                                             background: ${item.canAfford ? 'linear-gradient(135deg, #335533, #447744)' : '#444'};

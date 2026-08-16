@@ -1591,26 +1591,27 @@ const Game = {
 
     // v0.82.1: 统一休息菜单（合并原地休息/充分休息/宿舍睡眠/睡到明天）
     showRestMenu() {
-        // v0.92.17: 强制恢复点击，防止之前的消息弹窗导致点击被拦截
-        if (typeof UI !== 'undefined' && UI._restoreClicks) {
-            UI._restoreClicks();
-        }
-        
-        const maxSta = Player.maxStamina || 100;
-        const hpMissing = Math.max(0, (Player.maxHp - Player.hp) / Player.maxHp);
-        const mpMissing = Math.max(0, (Player.maxMp - Player.mp) / Player.maxMp);
-        const staMissing = Math.max(0, (maxSta - Player.stamina) / maxSta);
-        const fullRestHours = Math.max(1, Math.min(4, Math.ceil(Math.max(hpMissing, mpMissing, staMissing) * 3)));
-        const allFull = Player.hp >= Player.maxHp && Player.mp >= Player.maxMp && Player.stamina >= maxSta && Player.fatigueLevel <= 0;
-        const location = MapSystem.getCurrentLocation();
-        const hasSleepAction = location?.actions?.some(a => a.id === 'sleep');
+        try {
+            // v0.92.17: 强制恢复点击，防止之前的消息弹窗导致点击被拦截
+            if (typeof UI !== 'undefined' && UI._restoreClicks) {
+                UI._restoreClicks();
+            }
+            
+            const maxSta = Player.maxStamina || 100;
+            const hpMissing = Math.max(0, (Player.maxHp - Player.hp) / Player.maxHp);
+            const mpMissing = Math.max(0, (Player.maxMp - Player.mp) / Player.maxMp);
+            const staMissing = Math.max(0, (maxSta - Player.stamina) / maxSta);
+            const fullRestHours = Math.max(1, Math.min(4, Math.ceil(Math.max(hpMissing, mpMissing, staMissing) * 3)));
+            const allFull = Player.hp >= Player.maxHp && Player.mp >= Player.maxMp && Player.stamina >= maxSta && Player.fatigueLevel <= 0;
+            const location = MapSystem.getCurrentLocation();
+            const hasSleepAction = location?.actions?.some(a => a.id === 'sleep');
 
         // 移除所有已存在的overlay，避免叠加
         document.querySelectorAll('.rest-overlay, .ei-overlay').forEach(el => el.remove());
 
         const overlay = document.createElement('div');
         overlay.className = 'rest-overlay';
-        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);';
         overlay.innerHTML = `
             <div style="max-width:450px;width:100%;background:linear-gradient(135deg,#1a1a3a,#2a2a5a);border:2px solid #5577aa;border-radius:16px;padding:20px;max-height:90vh;overflow-y:auto;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
@@ -1669,26 +1670,31 @@ const Game = {
                 }, 100);
             };
         });
+        } catch (e) {
+            console.error('showRestMenu error:', e);
+            UI.showMessage('打开休息菜单时出错：' + e.message);
+        }
     },
 
     // v0.82.0: 合并事件追踪与情报
     showEventsAndIntel() {
-        // v0.92.17: 强制恢复点击，防止之前的消息弹窗导致点击被拦截
-        if (typeof UI !== 'undefined' && UI._restoreClicks) {
-            UI._restoreClicks();
-        }
-        
-        const available = (typeof EncounterSystem !== 'undefined') ? EncounterSystem.getAvailableSpecialEvents() : [];
-        const knownInfo = WorldState.knownInfo || [];
-        const infoDatabase = GameData.infoDatabase || { infos: {} };
-        const recentInfos = knownInfo.slice(-5).reverse().map(id => infoDatabase.infos[id]).filter(Boolean);
+        try {
+            // v0.92.17: 强制恢复点击，防止之前的消息弹窗导致点击被拦截
+            if (typeof UI !== 'undefined' && UI._restoreClicks) {
+                UI._restoreClicks();
+            }
+            
+            const available = (typeof EncounterSystem !== 'undefined') ? EncounterSystem.getAvailableSpecialEvents() : [];
+            const knownInfo = WorldState.knownInfo || [];
+            const infoDatabase = GameData.infoDatabase || { infos: {} };
+            const recentInfos = knownInfo.slice(-5).reverse().map(id => infoDatabase.infos[id]).filter(Boolean);
 
         // 移除所有已存在的overlay，避免叠加
         document.querySelectorAll('.rest-overlay, .ei-overlay').forEach(el => el.remove());
 
         const overlay = document.createElement('div');
         overlay.className = 'ei-overlay';
-        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);';
         overlay.innerHTML = `
             <div style="max-width:500px;width:100%;background:linear-gradient(135deg,#1a1a3a,#2a2a5a);border:2px solid #aa8833;border-radius:16px;padding:20px;max-height:90vh;overflow-y:auto;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
@@ -1738,6 +1744,10 @@ const Game = {
             close();
             setTimeout(() => Game.openIntelPanel(), 100);
         };
+        } catch (e) {
+            console.error('showEventsAndIntel error:', e);
+            UI.showMessage('打开事件与情报面板时出错：' + e.message);
+        }
     },
 
     // v0.9.2: 一键恢复（自动使用背包中的恢复药品）
@@ -2045,14 +2055,55 @@ const Game = {
     },
 
     // 玩家使用技能
+    // v0.94.0: 战斗使用技能并关闭技能列表（内联展开式UI专用）
+    battleUseSkillAndClose(skillId) {
+        console.log('[DEBUG] battleUseSkillAndClose called, skillId=', skillId, 'isPlayerTurn=', BattleSystem.isPlayerTurn, 'mp=', Player.mp);
+        this.battleUseSkill(skillId);
+        // 立即关闭技能列表并渲染，不使用updateBattleScreen的500ms延迟
+        UI._expandedBattleElement = null;
+        if (BattleSystem && BattleSystem.active) {
+            UI.renderBattleScreen();
+        }
+    },
+
     battleUseSkill(skillId) {
-        if (!BattleSystem.isPlayerTurn) return;
-        
-        BattleSystem.playerCastSkill(skillId);
-        UI.updateBattleScreen();
-        
-        if (!BattleSystem.active) {
-            this.endBattle();
+        try {
+            console.log('[DEBUG] battleUseSkill start, skillId=', skillId, 'isPlayerTurn=', BattleSystem.isPlayerTurn, 'active=', BattleSystem.active);
+            if (!BattleSystem.isPlayerTurn) {
+                console.log('[DEBUG] battleUseSkill blocked: not player turn');
+                UI.showMessage('现在不是你的回合！');
+                return;
+            }
+            
+            const skill = SkillSystem.getSkill(skillId);
+            if (!skill) {
+                console.log('[DEBUG] battleUseSkill blocked: skill not found');
+                UI.showMessage('技能不存在！');
+                return;
+            }
+            
+            if (Player.mp < skill.mpCost) {
+                console.log('[DEBUG] battleUseSkill blocked: mp insufficient, need=', skill.mpCost, 'have=', Player.mp);
+                UI.showMessage(`魔法值不足！需要 ${skill.mpCost} MP，当前 ${Player.mp} MP`);
+                return;
+            }
+            
+            const result = BattleSystem.playerCastSkill(skillId);
+            console.log('[DEBUG] playerCastSkill result=', result);
+            if (result === null) {
+                console.log('[DEBUG] battleUseSkill blocked: playerCastSkill returned null');
+                UI.showMessage('技能释放失败，请查看战斗日志。');
+                return;
+            }
+            
+            UI.updateBattleScreen();
+            
+            if (!BattleSystem.active) {
+                this.endBattle();
+            }
+        } catch (e) {
+            console.error('[DEBUG] battleUseSkill error:', e);
+            UI.showMessage('技能释放出错：' + e.message);
         }
     },
 
@@ -2145,22 +2196,34 @@ const Game = {
 
     // 玩家逃跑
     battleFlee() {
-        if (!BattleSystem.isPlayerTurn) return;
-        
-        const result = BattleSystem.playerFlee();
-        UI.updateBattleScreen();
-        
-        if (result && result.success) {
-            setTimeout(() => {
-                this.state = 'map';
-                UI.renderMapScreen();
-            }, 1000);
+        try {
+            if (!BattleSystem.isPlayerTurn) {
+                UI.showMessage('现在不是你的回合！');
+                return;
+            }
+            
+            const result = BattleSystem.playerFlee();
+            UI.updateBattleScreen();
+            
+            if (result && result.success) {
+                setTimeout(() => {
+                    this.state = 'map';
+                    UI.renderMapScreen();
+                }, 1000);
+            } else if (result && !result.success) {
+                // 逃跑失败，战斗日志已有记录，这里给玩家明确反馈
+                UI.showMessage('逃跑失败！敌人挡住了你的去路。');
+            }
+        } catch (e) {
+            console.error('battleFlee error:', e);
+            UI.showMessage('逃跑时出错：' + e.message);
         }
     },
 
     // 结束战斗
     endBattle() {
         BattleSystem.endBattle();
+        UI._expandedBattleElement = null; // v0.94.0: 重置战斗技能展开状态
         
         setTimeout(() => {
             // 如果有战斗结束回调，调用回调
@@ -2872,6 +2935,13 @@ const Game = {
 
     // 显示对话界面
     _showDialogueScreen(npc, dialogueData, isFirstDialogue = false) {
+        try {
+        // v0.93.0: restore clicks, close messages, clear overlays first
+        if (typeof UI !== 'undefined' && UI._restoreClicks) {
+            UI._restoreClicks();
+        }
+        document.querySelectorAll('.msg-overlay, .msg-box, #message-blocker, .rest-overlay, .ei-overlay, .npc-dialog-overlay, .daily-overlay').forEach(el => el.remove());
+        
         const npcState = NPCStateSystem.getNPCState(npc.id);
         const relationLevel = NPCStateSystem.getRelationshipLevel(npc.id);
         const dialogueTone = NPCStateSystem.getDialogueTone(npc.id);
@@ -2945,7 +3015,7 @@ const Game = {
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            z-index: 1000;
+            z-index: 99999;
             overflow: hidden;
         `;
 
@@ -3181,9 +3251,12 @@ const Game = {
         `;
 
         document.body.appendChild(dialog);
+        } catch (e) {
+            console.error('_showDialogueScreen error:', e);
+            UI.showMessage('对话界面出错：' + e.message);
+            this._closeDialogue();
+        }
     },
-
-    // 选择对话选项
     selectDialogueChoice(choiceId) {
         if (!this._currentDialogueNPC) return;
 
@@ -4133,21 +4206,25 @@ const Game = {
 
         UI.showMessage(msg);
 
-        // 继续选择系天赋
-        setTimeout(() => {
-            // 如果有额外系，需要为两个系都选天赋
-            if (Player.innateEffects && Player.innateEffects.extraElement) {
-                this._pendingElements = [this._pendingElement, Player.innateEffects.extraElement];
-                this._currentTalentElementIndex = 0;
-                this.showTalentSelection(this._pendingElements[0]);
-            } else {
-                this.showTalentSelection(this._pendingElement);
-            }
-        }, 500);
+        // v0.93.0: 直接进入系天赋选择（showTalentSelection会关闭消息弹窗并清空gameContainer）
+        if (Player.innateEffects && Player.innateEffects.extraElement) {
+            this._pendingElements = [this._pendingElement, Player.innateEffects.extraElement];
+            this._currentTalentElementIndex = 0;
+            this.showTalentSelection(this._pendingElements[0]);
+        } else {
+            this.showTalentSelection(this._pendingElement);
+        }
     },
 
     // 显示天赋选择面板
     showTalentSelection(element) {
+        // v0.93.0: 关闭消息弹窗、清空gameContainer、移除旧弹窗，防止层级遮挡
+        if (typeof UI !== 'undefined' && UI.closeAllMessages) UI.closeAllMessages();
+        document.querySelectorAll('.msg-overlay, .msg-box, #message-blocker').forEach(el => el.remove());
+        document.getElementById('talent-selection-dialog')?.remove();
+        document.getElementById('talent-selection-overlay')?.remove();
+        UI.elements.gameContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#888;font-size:18px;">Loading...</div>';
+
         const choices = TalentSystem.getTalentChoices(element);
         if (choices.length === 0) {
             Player.save();
@@ -4207,7 +4284,7 @@ const Game = {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(10, 10, 30, 0.98); border: 2px solid ${elementColor};
             border-radius: 15px; padding: 30px; min-width: 450px; max-width: 600px;
-            z-index: 1000; box-shadow: 0 0 30px ${elementColor}44;
+            z-index: 50000; box-shadow: 0 0 30px ${elementColor}44;
         `;
         dialog.id = 'talent-selection-dialog';
         dialog.innerHTML = `
@@ -4217,7 +4294,7 @@ const Game = {
         `;
 
         const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:999;';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:49999;';
         overlay.id = 'talent-selection-overlay';
         document.body.appendChild(overlay);
         document.body.appendChild(dialog);
@@ -4233,6 +4310,9 @@ const Game = {
         // 移除对话框
         document.getElementById('talent-selection-dialog')?.remove();
         document.getElementById('talent-selection-overlay')?.remove();
+
+        // v0.93.0: clear gameContainer to prevent innate talent UI from showing through
+        UI.elements.gameContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#888;font-size:18px;">Loading...</div>';
 
         UI.showMessage(`你选择了${elementName}系天赋：${talent.name}`);
 
@@ -4269,6 +4349,12 @@ const Game = {
 
     // ========== 境界突破 ==========
     showBreakthroughPanel() {
+        // v0.93.0: 先清除所有覆盖弹窗，防止双弹窗重叠卡死
+        if (typeof UI !== 'undefined' && UI._restoreClicks) {
+            UI._restoreClicks();
+        }
+        document.querySelectorAll('.rest-overlay, .ei-overlay, .npc-dialog-overlay, .daily-overlay').forEach(el => el.remove());
+        
         if (typeof RealmSystem === 'undefined') {
             UI.showMessage('境界系统未加载！');
             return;

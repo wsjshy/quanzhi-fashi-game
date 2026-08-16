@@ -18,6 +18,7 @@ desktop.ini
 # 测试文件
 test*.html
 test*.js
+!test-utils.js
 
 # 旧版本备份
 content-legacy/
