@@ -2481,14 +2481,22 @@ const Game = {
                 // 显示结果
                 UI.showEventResult(result.text, result.effects);
                 
+                // v0.86.6: 学到新技能时显示明确提示
+                if (result.effects.learnedSkill && result.effects.learnedSkill.name) {
+                    setTimeout(() => {
+                        UI.showMessage(`🎉 学会新技能：${result.effects.learnedSkill.name}！可在角色界面查看。`);
+                    }, 500);
+                }
+                
                 // 保存游戏
                 Player.save();
                 
-                // 延迟后返回地图
+                // 延迟后返回地图（学到技能时延长显示时间）
+                const delay = result.effects.learnedSkill ? 3500 : 2000;
                 setTimeout(() => {
                     this.state = 'map';
                     UI.renderMapScreen();
-                }, 2000);
+                }, delay);
             }
         } catch (e) {
             console.error('[事件] 选择选项出错:', e);

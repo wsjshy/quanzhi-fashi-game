@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.86.5 · 技能数据规范统一</div>
+                ">v0.86.6 · 技能学习提示优化</div>
             </div>
         `;
 
