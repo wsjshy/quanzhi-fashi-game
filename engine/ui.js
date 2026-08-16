@@ -856,25 +856,26 @@ const UI = {
             return elementsHtml;
         }
 
-        // v0.92.14: 强制恢复点击 - 在设置innerHTML之前移除所有点击拦截器
-        (function() {
+        // v0.92.15: 强制恢复点击 - 立即+延迟双重恢复
+        const forceRestoreClicks = () => {
             document.body.classList.remove('message-showing');
             const gc = document.getElementById('game-container');
             if (gc) gc.style.pointerEvents = '';
-            // 尝试移除UI对象保存的点击拦截器
-            if (typeof UI !== 'undefined' && UI._globalClickInterceptor) {
-                document.removeEventListener('click', UI._globalClickInterceptor, true);
-                document.removeEventListener('mousedown', UI._globalClickInterceptor, true);
-                document.removeEventListener('mouseup', UI._globalClickInterceptor, true);
-                UI._globalClickInterceptor = null;
+            // 移除所有已知的点击拦截器
+            if (typeof UI !== 'undefined') {
+                ['_globalClickInterceptor', '_prevClickInterceptor'].forEach(key => {
+                    if (UI[key]) {
+                        document.removeEventListener('click', UI[key], true);
+                        document.removeEventListener('mousedown', UI[key], true);
+                        document.removeEventListener('mouseup', UI[key], true);
+                        UI[key] = null;
+                    }
+                });
             }
-            if (typeof UI !== 'undefined' && UI._prevClickInterceptor) {
-                document.removeEventListener('click', UI._prevClickInterceptor, true);
-                document.removeEventListener('mousedown', UI._prevClickInterceptor, true);
-                document.removeEventListener('mouseup', UI._prevClickInterceptor, true);
-                UI._prevClickInterceptor = null;
-            }
-        })();
+        };
+        forceRestoreClicks();
+        setTimeout(forceRestoreClicks, 100);
+        setTimeout(forceRestoreClicks, 500);
 
         this.elements.gameContainer.innerHTML = `
             <div style="
@@ -887,6 +888,8 @@ const UI = {
                 background: linear-gradient(135deg, #0a0a2a 0%, #1a1a4a 50%, #0a0a3a 100%);
                 padding: 40px;
                 position: relative;
+                pointer-events: auto;
+                z-index: 9999;
             ">
                 <!-- 背景图片 -->
                 <div style="
@@ -958,6 +961,13 @@ const UI = {
                 </div>
             </div>
         `;
+
+        // v0.92.15: 强制设置game-container可点击
+        const _gc = document.getElementById('game-container');
+        if (_gc) {
+            _gc.style.pointerEvents = 'auto';
+            _gc.style.zIndex = '9999';
+        }
 
         // 全局函数
         window.selectedElement = null;
