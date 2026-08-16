@@ -2,6 +2,13 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v0.92.4 - 修复创建角色默认选中bug
+
+### 修复
+- 创建角色页面没有默认选中逻辑，window.selectedElement初始为null，但元素视觉上高亮误导用户
+- 添加setTimeout默认选中第一个元素，调用selectElement正确设置window.selectedElement
+- 保留try-catch错误捕获，便于调试
+
 ## v0.92.3 - 黑盒测试修复：未解锁地点点击提示
 
 ### 修复

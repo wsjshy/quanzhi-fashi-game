@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.92.3 · 黑盒测试修复：未解锁地点点击提示</div>
+                ">v0.92.4 · 修复创建角色默认选中bug</div>
             </div>
         `;
 
@@ -1012,6 +1012,13 @@ const UI = {
                 alert('创建角色出错: ' + e.message + '\n' + e.stack);
             }
         };
+
+        // v0.92.4: 默认选中第一个元素，避免用户误以为已选中但实际未选中
+        setTimeout(() => {
+            if (candidateElements && candidateElements.length > 0) {
+                window.selectElement(candidateElements[0]);
+            }
+        }, 100);
     },
 
     // ========== 地图/主界面 ==========
