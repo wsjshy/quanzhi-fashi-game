@@ -1010,7 +1010,9 @@ const UI = {
             }
             const name = document.getElementById('char-name').value || '冒险者';
             try {
+                alert('步骤1: 开始创建角色, element=' + window.selectedElement);
                 Game.createCharacter(name, window.selectedElement);
+                alert('步骤2: createCharacter完成');
             } catch (e) {
                 alert('创建角色出错: ' + e.message + '\n' + e.stack);
             }
