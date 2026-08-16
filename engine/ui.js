@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.92.4 · 修复创建角色默认选中bug</div>
+                ">v0.92.5 · 修复创建角色selectElement容错</div>
             </div>
         `;
 
@@ -910,25 +910,28 @@ const UI = {
         window.selectedElement = null;
         window.confirmEnabled = false;
         window.selectElement = (elem) => {
-            // 移除其他选中
-            document.querySelectorAll('.element-card').forEach(card => {
-                card.classList.remove('selected');
-                card.style.borderColor = '#444477';
-                card.style.boxShadow = 'none';
-            });
-            
-            // 选中当前
-            const card = document.getElementById('elem-' + elem);
-            card.classList.add('selected');
-            card.style.borderColor = window._elementColors[elem];
-            card.style.boxShadow = `0 0 25px ${window._elementColors[elem]}60`;
-            
-            window.selectedElement = elem;
-            window.confirmEnabled = true;
-            
-            // 启用确认按钮
-            const btn = document.getElementById('confirm-btn');
-            btn.style.opacity = '1';
+            try {
+                // 移除其他选中
+                document.querySelectorAll('.element-card').forEach(card => {
+                    card.classList.remove('selected');
+                    card.style.borderColor = '#444477';
+                    card.style.boxShadow = 'none';
+                });
+                
+                // 选中当前
+                const card = document.getElementById('elem-' + elem);
+                if (card) {
+                    card.classList.add('selected');
+                    card.style.borderColor = window._elementColors[elem];
+                    card.style.boxShadow = `0 0 25px ${window._elementColors[elem]}60`;
+                }
+                
+                window.selectedElement = elem;
+                window.confirmEnabled = true;
+            } catch (e) {
+                console.error('selectElement error:', e);
+                window.selectedElement = elem;
+            }
         };
 
         // 用UI对象方法存储reroll状态
