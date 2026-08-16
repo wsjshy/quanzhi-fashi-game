@@ -925,72 +925,20 @@ const Game = {
             encounters.push(chosen);
         }
 
-        // v0.27.0: NPC自主成长 - 遇到修炼中的NPC时，NPC获得经验
-        let levelUpMessages = [];
+        // v0.90.0: 简化偶遇机制 - 只保留NPC自主成长（后台计算），不再显示文本和触发互动
+        // NPC自主成长 - 遇到修炼中的NPC时，NPC获得经验（不显示给玩家）
         for (const enc of encounters) {
             const isCultivating = enc.activity.includes('修炼') || enc.activity.includes('备课') || enc.activity.includes('批改');
             if (isCultivating) {
-                const expGain = 15 + Math.floor(Math.random() * 10); // 15-25经验
+                const expGain = 15 + Math.floor(Math.random() * 10);
                 const npcState = NPCStateSystem.getNPCState(enc.npcId);
                 npcState.totalCultivateCount = (npcState.totalCultivateCount || 0) + 1;
-                const result = NPCStateSystem.gainNPCExp(enc.npcId, expGain);
-                if (result.leveledUp) {
-                    levelUpMessages.push(`${enc.name}突破了！当前等级 Lv.${result.newLevel}`);
-                }
+                NPCStateSystem.gainNPCExp(enc.npcId, expGain);
             }
         }
 
-        let message = '\n\n';
-        for (const enc of encounters) {
-            const pronoun = enc.gender === 'female' ? '她' : '他';
-            // v0.89.0: 根据NPC身份和activity生成自然的偶遇描述，不再用生硬模板
-            const npcData = DataManager.getCharacter(enc.npcId);
-            const isTeacher = npcData?.title?.includes('老师') || npcData?.title?.includes('教官') || enc.activity.includes('教学') || enc.activity.includes('批改') || enc.activity.includes('备课');
-            const currentLoc = MapSystem.getCurrentLocation()?.name || '';
-            
-            let encounterText = '';
-            if (currentLoc.includes('图书馆')) {
-                if (isTeacher) {
-                    encounterText = `（图书馆里，${enc.name}正在书架间查阅资料，偶尔在笔记本上记录着什么。）`;
-                } else {
-                    encounterText = `（图书馆的角落，${enc.name}正捧着一本书专注地看着。）`;
-                }
-            } else if (currentLoc.includes('修炼场') || currentLoc.includes('修炼')) {
-                encounterText = `（修炼场上，${enc.name}正在专注地练习魔法，星子在${pronoun}周身流转。）`;
-            } else if (currentLoc.includes('教室') || currentLoc.includes('课堂')) {
-                if (isTeacher) {
-                    encounterText = `（教室里，${enc.name}正在讲台上讲解着什么，学生们听得很认真。）`;
-                } else {
-                    encounterText = `（教室里，${enc.name}坐在座位上，似乎在思考着什么。）`;
-                }
-            } else if (enc.activity.includes('上课') && !isTeacher) {
-                encounterText = `（你看到${enc.name}刚下课，正和旁边的同学讨论着什么。）`;
-            } else if (enc.activity.includes('修炼')) {
-                encounterText = `（你看到${enc.name}正在闭目修炼，周身萦绕着淡淡的元素光芒。）`;
-            } else if (enc.activity.includes('备课') || enc.activity.includes('批改') || enc.activity.includes('教学')) {
-                encounterText = `（办公室里，${enc.name}正伏案工作，桌上堆着不少作业和资料。）`;
-            } else {
-                encounterText = `（你看到${enc.name}在这里，似乎在忙自己的事。）`;
-            }
-            message += encounterText + '\n';
-        }
-        if (levelUpMessages.length > 0) {
-            message += '\n✨ ' + levelUpMessages.join('；') + '\n';
-        }
-
-        // v0.34.0: NPC偶遇互动事件
-        // v0.89.0: 概率从80%降到30%，避免每次偶遇都触发互动，更自然
-        let interactionEvent = null;
-        if (encounters.length > 0 && Math.random() < 0.3) {
-            // 随机打乱顺序，避免总是第一个NPC触发
-            const shuffled = [...encounters].sort(() => Math.random() - 0.5);
-            for (const enc of shuffled) {
-                interactionEvent = this._findNPCInteraction(enc.npcId, enc.activity);
-                if (interactionEvent) break;
-            }
-        }
-
-        return { encounters, message, interactionEvent };
+        // 不再返回偶遇信息，玩家看不到任何文本
+        return null;
     },
 
     /**

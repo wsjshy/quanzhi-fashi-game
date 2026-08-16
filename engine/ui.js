@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.89.0 · NPC偶遇优化：地点匹配+自然描述</div>
+                ">v0.90.0 · 简化偶遇机制：仅后台NPC成长</div>
             </div>
         `;
 
