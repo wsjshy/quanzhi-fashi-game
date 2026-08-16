@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.86.12 · 地图点击体验优化</div>
+                ">v0.86.13 · 对话框关闭按钮修复</div>
             </div>
         `;
 

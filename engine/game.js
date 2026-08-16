@@ -1602,7 +1602,7 @@ const Game = {
             <div style="max-width:450px;width:100%;background:linear-gradient(135deg,#1a1a3a,#2a2a5a);border:2px solid #5577aa;border-radius:16px;padding:20px;max-height:90vh;overflow-y:auto;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
                     <h3 style="color:#88ccff;font-size:20px;margin:0;">😴 休息方式</h3>
-                    <div class="rest-close-btn" style="padding:8px 18px;background:#333355;border:1px solid #666688;border-radius:8px;color:#ccc;cursor:pointer;font-size:14px;user-select:none;transition:all 0.2s;" onmouseover="this.style.background='#444466';this.style.color='#fff'" onmouseout="this.style.background='#333355';this.style.color='#ccc'">✕ 关闭</div>
+                    <div class="rest-close-btn" style="position:relative;z-index:10;padding:8px 18px;background:#333355;border:1px solid #666688;border-radius:8px;color:#ccc;cursor:pointer;font-size:14px;user-select:none;transition:all 0.2s;" onmouseover="this.style.background='#444466';this.style.color='#fff'" onmouseout="this.style.background='#333355';this.style.color='#ccc'">✕ 关闭</div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:10px;">
                     <div class="rest-option" data-type="quick" style="padding:14px;background:linear-gradient(135deg,rgba(40,80,40,0.8),rgba(60,120,60,0.8));border:2px solid #448844;border-radius:12px;cursor:pointer;transition:all 0.2s;">
@@ -1671,7 +1671,7 @@ const Game = {
             <div style="max-width:500px;width:100%;background:linear-gradient(135deg,#1a1a3a,#2a2a5a);border:2px solid #aa8833;border-radius:16px;padding:20px;max-height:90vh;overflow-y:auto;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
                     <h3 style="color:#ffd700;font-size:20px;margin:0;">📜 事件与情报</h3>
-                    <div class="ei-close-btn" style="padding:8px 18px;background:#333355;border:1px solid #666688;border-radius:8px;color:#ccc;cursor:pointer;font-size:14px;user-select:none;transition:all 0.2s;" onmouseover="this.style.background='#444466';this.style.color='#fff'" onmouseout="this.style.background='#333355';this.style.color='#ccc'">✕ 关闭</div>
+                    <div class="ei-close-btn" style="position:relative;z-index:10;padding:8px 18px;background:#333355;border:1px solid #666688;border-radius:8px;color:#ccc;cursor:pointer;font-size:14px;user-select:none;transition:all 0.2s;" onmouseover="this.style.background='#444466';this.style.color='#fff'" onmouseout="this.style.background='#333355';this.style.color='#ccc'">✕ 关闭</div>
                 </div>
                 <!-- 特殊事件 -->
                 <div style="margin-bottom:15px;">
