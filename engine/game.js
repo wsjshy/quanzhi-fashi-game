@@ -877,6 +877,26 @@ const Game = {
             const timeSlot = schedule[timeOfDay];
             if (!timeSlot) continue;
             if (Player.currentLocation !== timeSlot.location) continue;
+            
+            // v0.89.0: 子地点匹配 - 根据当前具体地点和NPC activity判断是否应该遇到
+            const currentLocName = MapSystem.getCurrentLocation()?.name || '';
+            const activity = timeSlot.activity || '';
+            let locationMatch = true;
+            if (currentLocName.includes('图书馆')) {
+                // 图书馆：只遇到学习/看书/备课/查阅资料的NPC
+                locationMatch = activity.includes('学习') || activity.includes('看书') || activity.includes('备课') || activity.includes('复习') || activity.includes('自习');
+            } else if (currentLocName.includes('修炼场')) {
+                // 修炼场：只遇到修炼的NPC
+                locationMatch = activity.includes('修炼') || activity.includes('练习');
+            } else if (currentLocName.includes('教室') || currentLocName.includes('课堂')) {
+                // 教室：只遇到上课的NPC
+                locationMatch = activity.includes('上课') || activity.includes('教学');
+            } else if (currentLocName.includes('宿舍')) {
+                // 宿舍：只遇到休息/睡觉的NPC
+                locationMatch = activity.includes('休息') || activity.includes('睡觉') || activity.includes('待着');
+            }
+            if (!locationMatch) continue;
+            
             // v0.64.0: 关系事件待触发时提高encounter概率，确保玩家能遇到目标NPC
             const hasPendingRelationEvent = this._hasPendingRelationEvent(npcId);
             const encounterChance = hasPendingRelationEvent ? 0.8 : timeSlot.chance;
@@ -923,16 +943,45 @@ const Game = {
         let message = '\n\n';
         for (const enc of encounters) {
             const pronoun = enc.gender === 'female' ? '她' : '他';
-            message += `（你看到${enc.name}正在这里${enc.activity}。${pronoun}似乎在专注于自己的事。）\n`;
+            // v0.89.0: 根据NPC身份和activity生成自然的偶遇描述，不再用生硬模板
+            const npcData = DataManager.getCharacter(enc.npcId);
+            const isTeacher = npcData?.title?.includes('老师') || npcData?.title?.includes('教官') || enc.activity.includes('教学') || enc.activity.includes('批改') || enc.activity.includes('备课');
+            const currentLoc = MapSystem.getCurrentLocation()?.name || '';
+            
+            let encounterText = '';
+            if (currentLoc.includes('图书馆')) {
+                if (isTeacher) {
+                    encounterText = `（图书馆里，${enc.name}正在书架间查阅资料，偶尔在笔记本上记录着什么。）`;
+                } else {
+                    encounterText = `（图书馆的角落，${enc.name}正捧着一本书专注地看着。）`;
+                }
+            } else if (currentLoc.includes('修炼场') || currentLoc.includes('修炼')) {
+                encounterText = `（修炼场上，${enc.name}正在专注地练习魔法，星子在${pronoun}周身流转。）`;
+            } else if (currentLoc.includes('教室') || currentLoc.includes('课堂')) {
+                if (isTeacher) {
+                    encounterText = `（教室里，${enc.name}正在讲台上讲解着什么，学生们听得很认真。）`;
+                } else {
+                    encounterText = `（教室里，${enc.name}坐在座位上，似乎在思考着什么。）`;
+                }
+            } else if (enc.activity.includes('上课') && !isTeacher) {
+                encounterText = `（你看到${enc.name}刚下课，正和旁边的同学讨论着什么。）`;
+            } else if (enc.activity.includes('修炼')) {
+                encounterText = `（你看到${enc.name}正在闭目修炼，周身萦绕着淡淡的元素光芒。）`;
+            } else if (enc.activity.includes('备课') || enc.activity.includes('批改') || enc.activity.includes('教学')) {
+                encounterText = `（办公室里，${enc.name}正伏案工作，桌上堆着不少作业和资料。）`;
+            } else {
+                encounterText = `（你看到${enc.name}在这里，似乎在忙自己的事。）`;
+            }
+            message += encounterText + '\n';
         }
         if (levelUpMessages.length > 0) {
             message += '\n✨ ' + levelUpMessages.join('；') + '\n';
         }
 
-        // v0.34.0: NPC偶遇互动事件 - 40%概率触发
-        // v0.48.0: 检查所有遇到的NPC，而不只是第一个
+        // v0.34.0: NPC偶遇互动事件
+        // v0.89.0: 概率从80%降到30%，避免每次偶遇都触发互动，更自然
         let interactionEvent = null;
-        if (encounters.length > 0 && Math.random() < 0.8) {
+        if (encounters.length > 0 && Math.random() < 0.3) {
             // 随机打乱顺序，避免总是第一个NPC触发
             const shuffled = [...encounters].sort(() => Math.random() - 0.5);
             for (const enc of shuffled) {
