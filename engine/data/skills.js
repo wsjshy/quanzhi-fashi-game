@@ -705,6 +705,58 @@ const DataSkills = {
     isCanon: true,
     source: "第161章 庄离风使用藤变·缠绕"
   },
+  plant_thorn: {
+    id: "plant_thorn",
+    name: "藤变·荆棘",
+    description: "植物系初阶二级魔法，藤蔓长满尖刺，对敌人造成伤害并附加中毒效果。攻击被束缚的目标时伤害提升50%。",
+    element: "plant",
+    type: "damage",
+    mpCost: 12,
+    baseDamage: 18,
+    damageMultiplier: 1.1,
+    hitRate: 0.88,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "中毒",
+        type: "poison",
+        element: "plant",
+        dotDamage: 5,
+        duration: 3,
+        chance: 0.7
+      }
+    ]
+  },
+  plant_forest: {
+    id: "plant_forest",
+    name: "藤变·根须",
+    description: "植物系初阶三级魔法，地面涌出大量根须缠绕范围内所有敌人，造成伤害并大幅降低其速度。",
+    element: "plant",
+    type: "damage",
+    mpCost: 18,
+    baseDamage: 25,
+    damageMultiplier: 1.2,
+    hitRate: 0.85,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "根须缠绕",
+        type: "slow",
+        element: "plant",
+        duration: 3,
+        chance: 0.8,
+        statModifiers: {
+          speed: -8
+        }
+      }
+    ]
+  },
 
   plant_forest_prison: {
     id: "plant_forest_prison",
@@ -817,8 +869,8 @@ const DataSkills = {
   },
   fire_burn_bone: {
     id: "fire_burn_bone",
-    name: "火滋·焚骨",
-    description: "初阶火系二级魔法，火焰侵入敌人体内燃烧骨骼，造成高额持续伤害，可穿透皮毛防御。",
+    name: "火滋·炎蚀",
+    description: "初阶火系特殊魔法，火焰侵入敌人体内燃烧骨骼，造成高额持续伤害，可穿透皮毛防御。",
     element: "fire",
     type: "damage",
     mpCost: 18,
@@ -900,7 +952,7 @@ const DataSkills = {
     id: "vine_bind",
     name: "藤蔓缠绕",
     description: "妖藤的藤蔓捆绑技能，束缚敌人使其无法行动，持续造成伤害。",
-    element: "earth",
+    element: "plant",
     type: "damage",
     mpCost: 12,
     baseDamage: 15,
@@ -923,7 +975,7 @@ const DataSkills = {
     id: "thorn_shot",
     name: "荆棘射击",
     description: "妖藤发射尖锐荆棘，远程攻击敌人。",
-    element: "earth",
+    element: "plant",
     type: "damage",
     mpCost: 8,
     baseDamage: 18,
