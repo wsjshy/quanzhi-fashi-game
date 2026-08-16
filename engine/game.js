@@ -611,7 +611,7 @@ const Game = {
             <h3 style="color: #ffd700; margin-bottom: 20px; font-size: 22px;">
                 ${isTrain ? '✨ 修炼魔法' : '🧘 冥修'}
             </h3>
-            <p style="color: #aaa; margin-bottom: 20px; font-size: 14px;">选择修炼时长：时间越长，单位收益越高</p>
+            <p style="color: #aaa; margin-bottom: 20px; font-size: 14px;">选择修炼时长：时间越长，单位收益越高<br><span style="color: #888; font-size: 12px;">✨ 显示的是基础经验，实际可能因修炼品质、NPC指导、顿悟等获得额外加成</span></p>
             <div style="display: flex; flex-direction: column; gap: 12px;">
                 ${availableOptions.map((opt, index) => {
                     const multiplier = opt.hours / baseTime;
