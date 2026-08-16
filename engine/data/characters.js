@@ -6567,6 +6567,9 @@ const DataCharacters = {
           choices: [
             { text: "教官，关于历练任务...", next: "about_training" },
             { text: "您杀过多少妖魔？", next: "about_demon" },
+            { text: "请教战斗经验", next: "about_battle", condition: { minOpinion: 15 } },
+            { text: "教官怎么看纪律？", next: "about_discipline", condition: { minOpinion: 10 } },
+            { text: "唐月老师和您很熟吗？", next: "about_tang_yue", condition: { minOpinion: 30, minTrust: 20 } },
             {
               id: "ask_anomaly",
               text: "教官，最近山里的妖魔是不是不太对劲？",
@@ -6595,6 +6598,79 @@ const DataCharacters = {
           texts: ["多少？记不清了。", "奴仆级的蝼蚁不算数，战将级的倒是有几十只。", "年轻人，想杀妖魔，先活下来再说。"],
           effects: { opinion: 2 },
           choices: [{ text: "受教了。", next: "default" }]
+        },
+        about_battle: {
+          id: "about_battle",
+          texts: [
+            "（斩空看了你一眼，似乎在评估你的实力。）",
+            "战斗经验？记住三点。",
+            "第一，永远不要低估你的对手。妖魔比你想象的聪明。",
+            "第二，学会观察。战斗前先看环境，哪里能退，哪里能藏。",
+            "第三，该跑就跑。活着回来，比什么都重要。",
+            "（他顿了顿，语气缓和了一些。）",
+            "你们这些学生，总觉得逃跑是丢脸。在战场上，活着就是胜利。"
+          ],
+          mood: "serious",
+          effects: { opinion: 3, exp: 20, giveInfo: "zhan_kong_battle_advice" },
+          choices: [
+            { text: "明白了，谢谢教官", effects: { trust: 2 }, next: "default" }
+          ]
+        },
+        about_discipline: {
+          id: "about_discipline",
+          texts: [
+            "纪律？",
+            "（斩空冷哼一声。）",
+            "纪律不是给你们这些学生听的口号。",
+            "在军队里，违反纪律的人，会死。而且会连累队友一起死。",
+            "我见过太多年轻人，觉得自己天赋好，就不把规矩当回事。",
+            "结果呢？坟头草都三尺高了。",
+            "（他的目光变得锐利。）",
+            "你要记住，实力再强，没有纪律，就是个莽夫。莽夫活不长。"
+          ],
+          mood: "serious",
+          effects: { opinion: 2, familiarity: 3 },
+          choices: [
+            { text: "我记住了", effects: {}, next: "default" },
+            { text: "但有时候也需要变通吧？", next: "discipline_debate" }
+          ]
+        },
+        discipline_debate: {
+          id: "discipline_debate",
+          texts: [
+            "变通？",
+            "（斩空盯着你看了几秒，忽然笑了。）",
+            "有意思。你是第一个敢跟我顶嘴的学生。",
+            "你说得对，战场瞬息万变，死守规矩确实不行。",
+            "但——",
+            "（他的表情又严肃起来。）",
+            "变通的前提，是你懂规矩。不懂规矩就谈变通，那叫乱来。",
+            "先把基础打牢，再想怎么变通。明白吗？"
+          ],
+          mood: "serious",
+          effects: { opinion: 5, trust: 3 },
+          choices: [
+            { text: "明白，先守规矩再变通", effects: {}, next: "default" }
+          ]
+        },
+        about_tang_yue: {
+          id: "about_tang_yue",
+          texts: [
+            "（斩空的动作明显顿了一下。）",
+            "唐月？",
+            "（他沉默了一会儿，望向窗外。）",
+            "她是个好老师。也是个……好法师。",
+            "（他的语气变得低沉。）",
+            "她背负的东西，比你们想象的多。",
+            "别问太多。有些事，知道了反而危险。",
+            "（他收回目光，恢复了平时的严厉。）",
+            "你只要知道，她不会害你们。就行了。"
+          ],
+          mood: "serious",
+          effects: { trust: 5, giveInfo: "zhan_kong_tang_yue_secret" },
+          choices: [
+            { text: "我不多问了", effects: {}, next: "default" }
+          ]
         },
         about_anomaly: {
           id: "about_anomaly",
