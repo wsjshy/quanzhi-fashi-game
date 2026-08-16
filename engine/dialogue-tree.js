@@ -91,8 +91,10 @@ const DialogueTree = {
         // 标记见过玩家
         NPCStateSystem.setNPCFlag(npcId, 'has_met_player', true);
 
-        // 增加一点熟悉度
-        NPCStateSystem.changeOpinion(npcId, 1, '见面打招呼');
+        // v0.88.0: 只有首次见面才增加熟悉度，避免随便对话就加好感
+        if (this._isFirstMeet) {
+            NPCStateSystem.changeOpinion(npcId, 1, '首次见面');
+        }
 
         return this.getCurrentNodeData();
     },
@@ -289,7 +291,12 @@ const DialogueTree = {
         // 跳转到下一个节点
         if (choice.next || choice.nextNode) {
             this.currentNode = choice.next || choice.nextNode;
-            return this.getCurrentNodeData();
+            const nodeData = this.getCurrentNodeData();
+            // v0.88.0: 如果选项有response，用response替代随机文本，确保对话匹配
+            if (choice.response && nodeData) {
+                nodeData.text = choice.response;
+            }
+            return nodeData;
         } else if (choice.action === 'back') {
             // 返回上一节点
             if (this.dialogueHistory.length > 1) {
@@ -302,7 +309,12 @@ const DialogueTree = {
         } else {
             // 没有指定下一个节点且不是关闭动作，返回默认节点
             this.currentNode = 'default';
-            return this.getCurrentNodeData();
+            const nodeData = this.getCurrentNodeData();
+            // v0.88.0: 如果选项有response，用response替代随机文本
+            if (choice.response && nodeData) {
+                nodeData.text = choice.response;
+            }
+            return nodeData;
         }
     },
 

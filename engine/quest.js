@@ -282,13 +282,13 @@ const QuestSystem = {
             });
         }
 
-        // 自动接取下一个任务（如果有）
-        let nextQuestAccepted = null;
+        // v0.88.0: 不自动接取下一个任务，改为提示玩家主动接取（增加自由度）
+        let nextQuestAvailable = null;
         if (quest.nextQuest) {
-            const acceptResult = this.acceptQuest(quest.nextQuest);
-            if (acceptResult.success) {
-                nextQuestAccepted = acceptResult.quest;
-                rewardMessages.push(`📜 自动接取新任务：${acceptResult.quest.name}`);
+            const nextQuest = this.getQuest(quest.nextQuest);
+            if (nextQuest && !this.isQuestAccepted(quest.nextQuest) && !this.isQuestComplete(quest.nextQuest)) {
+                nextQuestAvailable = nextQuest;
+                rewardMessages.push(`📜 新任务可接取：${nextQuest.name}（在任务面板中查看）`);
             }
         }
         

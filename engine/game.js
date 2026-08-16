@@ -478,7 +478,7 @@ const Game = {
         // v0.25.0 Phase4: 随机探索事件（非休息行动5%概率）
         let randomEvent = null;
         if (!skipForDiscovery.includes(actionId) && typeof EventSystem !== 'undefined') {
-            randomEvent = EventSystem.triggerRandomEvent('explore', 0.05);
+            randomEvent = EventSystem.triggerRandomEvent('explore', 0.02);
         }
 
         // v0.34.0: NPC偶遇互动事件（如果没有其他事件，且遇到了NPC）
