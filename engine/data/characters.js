@@ -7345,6 +7345,8 @@ const DataCharacters = {
           choices: [
             { text: "你就是宇昂？", next: "about_self" },
             { text: "成年礼决斗", next: "about_duel" },
+            { text: "你怎么看莫凡？", next: "about_mofan", condition: { minOpinion: 5 } },
+            { text: "能教我修炼吗？", next: "about_training", condition: { minOpinion: 10 } },
             {
               id: "ask_origin",
               text: "你是穆家亲生的吗？",
@@ -7380,6 +7382,75 @@ const DataCharacters = {
           texts: ["父亲安排我在成年礼上和一个叫莫凡的人决斗。", "本来觉得没意思，但听说他有点实力。", "希望他别让我失望。"],
           effects: { familiarity: 5 },
           choices: [{ text: "拭目以待", next: "default" }]
+        },
+        about_mofan: {
+          id: "about_mofan",
+          texts: [
+            "莫凡？",
+            "（宇昂停下修炼，嘴角勾起一丝不屑的笑。）",
+            "一个走了狗屎运的家伙罢了。",
+            "听说他觉醒了双系？呵，双系又如何？天赋不代表实力。",
+            "成年礼上，我会让他明白——世家培养的天才，和野路子出身的，差距有多大。",
+            "（他的眼神变得锐利。）",
+            "你和他很熟？劝你离他远点。失败者，只会拖累身边的人。"
+          ],
+          mood: "arrogant",
+          effects: { opinion: -3, giveInfo: "yu_ang_despises_mofan" },
+          choices: [
+            { text: "莫凡没你想的那么弱", next: "mofan_defend" },
+            { text: "也许吧", next: "default" }
+          ]
+        },
+        mofan_defend: {
+          id: "mofan_defend",
+          texts: [
+            "（宇昂冷冷地看了你一眼。）",
+            "哦？你倒是挺维护他。",
+            "那又如何？事实会证明一切。",
+            "（他转身继续修炼，不再理你。）",
+            "等成年礼那天，你就知道谁对谁错了。"
+          ],
+          mood: "cold",
+          effects: { opinion: -5 },
+          choices: [
+            { text: "（离开）", next: "default" }
+          ]
+        },
+        about_training: {
+          id: "about_training",
+          texts: [
+            "教你修炼？",
+            "（宇昂上下打量了你一番，露出轻蔑的表情。）",
+            "就凭你？",
+            "（他叹了口气，似乎在浪费时间。）",
+            "算了，看你这么有诚意，我就说一句。",
+            "修炼这种事，天赋决定上限，努力决定下限。",
+            "像你这种天赋平平的，再努力也追不上天才。",
+            "（他转身继续修炼。）",
+            "不过……比不努力强。至少不会死得太快。"
+          ],
+          mood: "arrogant",
+          effects: { opinion: -2, exp: 10, giveInfo: "yu_ang_arrogant_advice" },
+          choices: [
+            { text: "谢谢指教", next: "default" },
+            { text: "你太傲慢了", next: "training_arrogant" }
+          ]
+        },
+        training_arrogant: {
+          id: "training_arrogant",
+          texts: [
+            "傲慢？",
+            "（宇昂停下修炼，第一次认真看你。）",
+            "有实力的人，那不叫傲慢，叫自信。",
+            "等你有一天能站在我面前，再说这种话吧。",
+            "（他的眼神中闪过一丝异样，但很快恢复了冷漠。）",
+            "……滚吧，别打扰我修炼。"
+          ],
+          mood: "cold",
+          effects: { opinion: 3, trust: 2 },
+          choices: [
+            { text: "（离开）", next: "default" }
+          ]
         },
         about_origin: {
           id: "about_origin",
