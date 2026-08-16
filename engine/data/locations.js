@@ -486,7 +486,8 @@ const DataLocations = {
     unlocked: false,
     unlockCondition: {
       minLevel: 5,
-      hint: "需要等级 5 才能进入"
+      requiredQuest: "quest_xuefeng_explore",
+      hint: "需要等级5并完成雪峰山探索任务才能进入"
     },
     actions: [
       {
@@ -642,7 +643,8 @@ const DataLocations = {
     unlocked: false,
     unlockCondition: {
       minLevel: 3,
-      hint: "需要等级 3 才能进入穆家庄园"
+      minOpinion: { npcId: "mu_bai", value: 10 },
+      hint: "需要等级3并和穆白关系不错才能进入穆家庄园"
     },
     actions: [
       {

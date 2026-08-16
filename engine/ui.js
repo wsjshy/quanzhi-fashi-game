@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.90.1 · 修复三步塔错误解锁提示</div>
+                ">v0.91.0 · 地图解锁条件合理化+事件地点限制</div>
             </div>
         `;
 
