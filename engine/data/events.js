@@ -653,20 +653,29 @@ const DataEvents = {
     name: "领悟技能",
     description: "你在看书时忽然领悟了一个新技能！",
     trigger: "exploring",
-    chance: 0.1,
+    chance: 0.15,
     conditions: [],
     once: false,
     choices: [
       {
-        text: "仔细研究",
+        text: "仔细研究并尝试施展",
         effects: {
           exp: 20,
+          learnRandomSkill: { tier: "初阶" },
+          mp: -10
+        },
+        resultText: "你仔细研究书中的魔法构造，尝试施展后成功领悟了一个新技能！（经验+20，MP-10）"
+      },
+      {
+        text: "做笔记以后再研究",
+        effects: {
+          exp: 10,
           addItem: {
             itemId: "magic_herb",
             count: 1
           }
         },
-        resultText: "你仔细研究了这个技能，虽然还没完全学会，但收获了不少。（获得经验和1株魔法草药）"
+        resultText: "你把要点记录下来，打算以后再仔细研究。（经验+10，获得魔法草药×1）"
       }
     ]
   },

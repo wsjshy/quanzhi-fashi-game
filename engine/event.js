@@ -26,6 +26,52 @@ const EventSystem = {
     },
 
     /**
+     * v0.86.4: 根据玩家已觉醒元素，随机学习一个未学的技能
+     * @param {Object} options - { tier: '初阶'|'中阶', elements: ['fire','ice'] 可选，默认用玩家已觉醒的 }
+     * @returns {Object|null} 学习到的技能信息，null表示没有可学技能
+     */
+    learnRandomSkillForPlayer(options = {}) {
+        // 各系可学习技能池（初阶2级及以上）
+        const skillPool = {
+            fire: ['fire_rain', 'fire_burst', 'fire_burn_bone', 'fire_soul'],
+            ice: ['ice_shield', 'ice_storm', 'ice_frost'],
+            thunder: ['thunder_chain', 'thunder_strike', 'thunder_drive'],
+            earth: ['earth_spike', 'earth_quake', 'earth_shift', 'earth_mud'],
+            wind: ['wind_speed', 'wind_tornado', 'wind_barrier'],
+            water: ['water_chain', 'water_wave', 'water_moist', 'water_shield'],
+            light: ['light_blind', 'light_purify', 'light_shield', 'light_judgment', 'light_blessing'],
+            dark: ['dark_cloak', 'dark_curse', 'dark_weakness'],
+            plant: ['plant_thorn', 'plant_forest'],
+            heal: ['heal_holy', 'heal_cleanse', 'heal_revive'],
+            summon: ['summon_strengthen', 'summon_rage', 'summon_return']
+        };
+
+        const elements = options.elements || (Player.elements || []);
+        const availableSkills = [];
+
+        for (const elem of elements) {
+            if (skillPool[elem]) {
+                for (const skillId of skillPool[elem]) {
+                    if (!Player.skills.includes(skillId)) {
+                        const skill = SkillSystem.getSkill(skillId);
+                        if (skill) {
+                            availableSkills.push({ id: skillId, name: skill.name, element: elem });
+                        }
+                    }
+                }
+            }
+        }
+
+        if (availableSkills.length === 0) {
+            return null;
+        }
+
+        const learned = availableSkills[Math.floor(Math.random() * availableSkills.length)];
+        Player.learnSkill(learned.id);
+        return learned;
+    },
+
+    /**
      * 触发随机事件
      * @param {string} trigger - 触发类型
      * @param {number} chance - 基础概率（0-1）
@@ -252,6 +298,14 @@ const EventSystem = {
         if (effects.addSkill) {
             Player.learnSkill(effects.addSkill);
             result.addSkill = effects.addSkill;
+        }
+
+        // v0.86.4: 动态学习随机技能（根据已觉醒元素）
+        if (effects.learnRandomSkill) {
+            const learned = this.learnRandomSkillForPlayer(effects.learnRandomSkill);
+            if (learned) {
+                result.learnedSkill = learned;
+            }
         }
 
         if (effects.awakenElement) {

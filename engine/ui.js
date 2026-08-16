@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.86.3 · 博城篇技能补充完善</div>
+                ">v0.86.4 · 图书馆技能领悟完善</div>
             </div>
         `;
 
@@ -3666,6 +3666,10 @@ const UI = {
                     const itemName = item ? item.name : itemId;
                     if (!text.includes(itemName)) effectText += `\n获得 ${itemName} x${count}`;
                 }
+            }
+            // v0.86.4: 显示学到的新技能
+            if (effects.learnedSkill && effects.learnedSkill.name) {
+                effectText += `\n🎉 学会新技能：${effects.learnedSkill.name}`;
             }
         }
         
