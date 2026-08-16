@@ -692,7 +692,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.92.8 · 修复创建角色界面pointer-events锁定</div>
+                ">v0.92.9 · 强制恢复创建角色界面点击</div>
             </div>
         `;
 
@@ -932,6 +932,20 @@ const UI = {
                 </div>
             </div>
         `;
+
+        // v0.92.9: 强制恢复点击，防止全局点击拦截器导致界面无法点击
+        document.body.classList.remove('message-showing');
+        const gc2 = document.getElementById('game-container');
+        if (gc2) gc2.style.pointerEvents = '';
+        // 移除所有可能的点击拦截器（通过克隆元素）
+        if (gc2 && gc2.parentNode) {
+            const newGc = gc2.cloneNode(false);
+            while (gc2.firstChild) newGc.appendChild(gc2.firstChild);
+            gc2.parentNode.replaceChild(newGc, gc2);
+            this.elements.gameContainer = newGc;
+        }
+        // 清除全局点击拦截器引用
+        this._globalClickInterceptor = null;
 
         // 全局函数
         window.selectedElement = null;
