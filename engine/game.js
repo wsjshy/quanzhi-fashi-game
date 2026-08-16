@@ -851,6 +851,20 @@ const Game = {
             morning: { location: 'tianlan_school', activity: '上课', chance: 0.5 },
             afternoon: { location: 'tianlan_school', activity: '修炼冰系魔法', chance: 0.3 },
             evening: { location: 'tianlan_school', activity: '整理穆家事务', chance: 0.15 }
+        },
+        ye_xinxia: {
+            name: '叶心夏',
+            gender: 'female',
+            morning: { location: 'mo_fan_house', activity: '在家休养', chance: 0.7 },
+            afternoon: { location: 'mo_fan_house', activity: '看书学习', chance: 0.5 },
+            evening: { location: 'mo_fan_house', activity: '等待莫凡回来', chance: 0.4 }
+        },
+        xue_musheng: {
+            name: '薛木生',
+            gender: 'male',
+            morning: { location: 'tianlan_school', activity: '上课教学', chance: 0.8 },
+            afternoon: { location: 'tianlan_school', activity: '批改作业或办公', chance: 0.6 },
+            evening: { location: 'tianlan_school', activity: '准备教学内容', chance: 0.3 }
         }
     },
 

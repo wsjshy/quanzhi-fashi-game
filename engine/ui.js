@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.86.6 · 技能学习提示优化</div>
+                ">v0.86.7 · NPC日程系统完善</div>
             </div>
         `;
 
