@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.86.11 · 战斗按钮体验优化</div>
+                ">v0.86.12 · 地图点击体验优化</div>
             </div>
         `;
 
@@ -1959,12 +1959,12 @@ const UI = {
 
                     <!-- 地点节点 -->
                     ${locationNodes.map(node => {
-                        const size = node.isCurrent ? 60 : 50;
+                        const size = node.isCurrent ? 64 : node.unlocked ? 56 : 50;
                         const bgColor = node.isCurrent ? 'rgba(100, 255, 150, 0.9)' : node.unlocked ? 'rgba(80, 100, 160, 0.9)' : 'rgba(60, 60, 60, 0.7)';
                         const borderColor = node.isCurrent ? '#66ff88' : node.unlocked ? '#8899cc' : '#555';
                         const cursor = node.unlocked && !node.isCurrent ? 'pointer' : 'default';
-                        const glow = node.isCurrent ? 'box-shadow: 0 0 20px rgba(100, 255, 150, 0.6), 0 0 40px rgba(100, 255, 150, 0.3);' : '';
-                        const onClick = node.unlocked && !node.isCurrent ? `onclick="Game.travelTo('${node.id}')"` : '';
+                        const glow = node.isCurrent ? 'box-shadow: 0 0 20px rgba(100, 255, 150, 0.6), 0 0 40px rgba(100, 255, 150, 0.3);' : node.unlocked && !node.isCurrent ? 'box-shadow: 0 0 12px rgba(100, 150, 255, 0.4);' : '';
+                        const onClick = node.unlocked && !node.isCurrent ? `onclick="Game.travelTo('${node.id}'); this.style.transform='scale(0.9)'; setTimeout(()=>this.style.transform='scale(1)',150);"` : '';
 
                         // v0.81.0: tooltip内容
                         const tooltipHtml = `
