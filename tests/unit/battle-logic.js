@@ -10,10 +10,10 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const { TestResult } = require('./utils');
+const { TestResult } = require('../utils');
 
 function loadBattleSystem() {
-    const battleCode = fs.readFileSync(path.join(__dirname, '..', 'engine', 'battle.js'), 'utf-8');
+    const battleCode = fs.readFileSync(path.join(__dirname, '..', '..', 'engine', 'battle.js'), 'utf-8');
     // 替换const为var，使其在沙箱中可访问
     const code = battleCode.replace(/^const\s+BattleSystem\s*=/m, 'var BattleSystem =');
     

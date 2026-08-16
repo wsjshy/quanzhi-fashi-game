@@ -145,10 +145,12 @@ quanzhi-fashi-game/
 ├── tests/                  # 自动化测试
 │   ├── run.js              # 统一测试运行入口
 │   ├── utils.js            # 测试工具（数据加载/断言/报告）
-│   ├── data-integrity.js   # L1数据完整性测试
-│   ├── battle-logic.js     # L2战斗逻辑单元测试
-│   └── progression.js      # L3成长流程测试
-└── test-story-data.js      # 黑盒测试脚本
+│   ├── unit/               # 单元测试（L1-L3）
+│   │   ├── data-integrity.js   # L1数据完整性
+│   │   ├── battle-logic.js     # L2战斗逻辑
+│   │   └── progression.js      # L3成长流程
+│   ├── stress/             # 压力/平衡测试
+│   └── legacy/             # 旧版测试脚本（v0.8.x）
 ```
 
 ## 魔法元素

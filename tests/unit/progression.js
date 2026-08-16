@@ -10,10 +10,10 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const { TestResult } = require('./utils');
+const { TestResult } = require('../utils');
 
 function loadPlayerSystem() {
-    const playerCode = fs.readFileSync(path.join(__dirname, '..', 'engine', 'player.js'), 'utf-8');
+    const playerCode = fs.readFileSync(path.join(__dirname, '..', '..', 'engine', 'player.js'), 'utf-8');
     // 替换const为var
     const code = playerCode.replace(/^const\s+(\w+)\s*=/gm, 'var $1 =');
     

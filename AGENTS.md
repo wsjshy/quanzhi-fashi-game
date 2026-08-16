@@ -149,8 +149,9 @@
 |------|------|
 | tests/run.js | 统一测试运行入口（`node tests/run.js`） |
 | tests/utils.js | 测试工具（数据加载/断言/报告） |
-| tests/data-integrity.js | L1数据完整性测试 |
-| tests/battle-logic.js | L2战斗逻辑单元测试 |
+| tests/unit/data-integrity.js | L1数据完整性测试 |
+| tests/unit/battle-logic.js | L2战斗逻辑单元测试 |
+| tests/unit/progression.js | L3成长流程测试 |
 | engine/test-utils.js | 浏览器端控制台测试工具（F12中用Test对象） |
 
 ---

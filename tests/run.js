@@ -10,9 +10,9 @@
  *   node tests/run.js l3       # 只运行L3 UI渲染测试
  */
 
-const { runDataIntegrityTests } = require('./data-integrity');
-const { runBattleLogicTests } = require('./battle-logic');
-const { runProgressionTests } = require('./progression');
+const { runDataIntegrityTests } = require('./unit/data-integrity');
+const { runBattleLogicTests } = require('./unit/battle-logic');
+const { runProgressionTests } = require('./unit/progression');
 
 const TESTS = {
     l1: {

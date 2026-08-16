@@ -7,7 +7,7 @@
  * 运行：node tests/data-integrity.js
  */
 
-const { loadAllData, TestResult } = require('./utils');
+const { loadAllData, TestResult } = require('../utils');
 
 function runDataIntegrityTests() {
     console.log('\n📦 L1 数据完整性测试');
