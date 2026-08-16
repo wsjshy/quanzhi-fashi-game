@@ -70,6 +70,12 @@ const UI = {
 
     // v0.92.8: 统一设置gameContainer.innerHTML，强制恢复pointer-events，防止消息弹窗导致点击锁定
     _setGameHTML(html) {
+        this._restoreClicks();
+        this.elements.gameContainer.innerHTML = html;
+    },
+
+    // v0.92.9: 恢复点击，移除全局点击拦截器
+    _restoreClicks() {
         document.body.classList.remove('message-showing');
         const gc = document.getElementById('game-container');
         if (gc) gc.style.pointerEvents = '';
@@ -79,7 +85,6 @@ const UI = {
             document.removeEventListener('mouseup', this._globalClickInterceptor, true);
             this._globalClickInterceptor = null;
         }
-        this.elements.gameContainer.innerHTML = html;
     },
 
     // 消息队列（避免多条消息重叠）
@@ -692,7 +697,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.92.9 · 强制恢复创建角色界面点击</div>
+                ">v0.92.10 · 全界面恢复点击防锁定</div>
             </div>
         `;
 
@@ -1256,6 +1261,9 @@ const UI = {
             bgImage = 'assets/images/backgrounds/bo_city_view.jpg';
         }
         
+        // v0.92.9: 强制恢复点击，防止全局点击拦截器导致界面无法点击
+        this._restoreClicks();
+
         this.elements.gameContainer.innerHTML = `
             <div style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; background: ${location?.backgroundColor || '#1a1a3a'}; position: relative; padding-bottom: 110px; overflow-x: hidden;">
                 
@@ -5926,3 +5934,4 @@ window.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(errorDiv);
     }
 });
+
