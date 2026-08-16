@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.92.6 · 修复地图点击被网格SVG拦截</div>
+                ">v0.92.7 · 修复创建角色确认按钮内联调用</div>
             </div>
         `;
 
@@ -887,7 +887,7 @@ const UI = {
                     ${renderElements()}
                 </div>
 
-                <div onclick="alert('点击了确认按钮! selectedElement=' + window.selectedElement); if(typeof confirmCreate === 'function') confirmCreate(); else alert('confirmCreate不是函数!');" style="
+                <div onclick="try { if(!window.selectedElement){alert('请先选择元素');return;} Game.createCharacter(document.getElementById('char-name').value||'冒险者', window.selectedElement); } catch(e) { alert('错误:'+e.message); }" style="
                     padding: 15px 50px;
                     font-size: 20px;
                     background: linear-gradient(135deg, #2a2a6a, #4a4aaa);
