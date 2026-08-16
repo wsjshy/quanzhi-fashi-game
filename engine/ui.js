@@ -807,7 +807,7 @@ const UI = {
             let elementsHtml = '';
             candidateElements.forEach(elem => {
                 elementsHtml += `
-                    <div class="element-card" onclick="selectElement('${elem}')" 
+                    <div class="element-card" onclick="alert('点击了'+this.id); selectElement('${elem}')" 
                          id="elem-${elem}"
                          style="
                             padding: 25px 20px;
@@ -1004,7 +1004,7 @@ const UI = {
                 let html = '';
                 this._createCandidateElements.forEach(elem => {
                     html += `
-                        <div class="element-card" onclick="selectElement('${elem}')" 
+                        <div class="element-card" onclick="alert('点击了'+this.id); selectElement('${elem}')" 
                              id="elem-${elem}"
                              style="
                                 padding: 25px 20px;
