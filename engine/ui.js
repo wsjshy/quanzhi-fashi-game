@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.86.1 · 元素能量系统+技能冷却</div>
+                ">v0.86.2 · 博城篇技能名称修正</div>
             </div>
         `;
 

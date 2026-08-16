@@ -48,8 +48,8 @@ const DataSkills = {
   },
   fire_rain: {
     id: "fire_rain",
-    name: "火滋·焚天",
-    description: "初阶火系二级魔法，召唤火雨，伤害更高",
+    name: "火滋·焚骨",
+    description: "初阶火系二级魔法，火焰灼烧骨骼，造成持续燃烧伤害",
     element: "fire",
     type: "damage",
     mpCost: 15,
@@ -156,8 +156,8 @@ const DataSkills = {
   },
   thunder_chain: {
     id: "thunder_chain",
-    name: "雷印·千钧",
-    description: "初阶雷系二级魔法，连锁雷电，伤害更高",
+    name: "雷印·狂策",
+    description: "初阶雷系二级魔法，雷电化为长鞭抽打敌人，伤害更高",
     element: "thunder",
     type: "damage",
     mpCost: 18,
@@ -180,7 +180,7 @@ const DataSkills = {
   },
   earth_shield: {
     id: "earth_shield",
-    name: "土系·岩盾",
+    name: "地波·岩盾",
     description: "初阶土系防御魔法，召唤岩石护盾，吸收50点伤害。护盾存在时防御翻倍",
     element: "earth",
     type: "buff",
@@ -212,7 +212,7 @@ const DataSkills = {
   },
   earth_spike: {
     id: "earth_spike",
-    name: "土系·地刺",
+    name: "地波·陷落",
     description: "初阶土系攻击魔法，从地下升起尖刺",
     element: "earth",
     type: "damage",
@@ -297,7 +297,7 @@ const DataSkills = {
   },
   water_heal: {
     id: "water_heal",
-    name: "水系·治愈",
+    name: "水御·化解",
     description: "初阶水系魔法，恢复生命值",
     element: "water",
     type: "heal",
@@ -312,7 +312,7 @@ const DataSkills = {
   },
   water_chain: {
     id: "water_chain",
-    name: "水系·水锁",
+    name: "水御·守护",
     description: "初阶水系控制魔法，用水链束缚敌人并使其湿润。湿润目标受雷系伤害×2（感电）",
     element: "water",
     type: "damage",
@@ -345,7 +345,7 @@ const DataSkills = {
   },
   light_ray: {
     id: "light_ray",
-    name: "光系·圣光",
+    name: "光耀·圣光",
     description: "初阶光系魔法，释放圣光，对暗影系有额外伤害",
     element: "light",
     type: "damage",
@@ -427,7 +427,7 @@ const DataSkills = {
 
   dark_bolt: {
     id: "dark_bolt",
-    name: "暗影·腐蚀",
+    name: "遁影·穿梭",
     description: "初阶暗影系魔法，暗影弹，施加诅咒效果（可叠加2层，每层降低攻击和防御）",
     element: "dark",
     type: "damage",
@@ -486,7 +486,7 @@ const DataSkills = {
 
   light_shield: {
     id: "light_shield",
-    name: "光系·圣盾",
+    name: "光耀·圣盾",
     description: "初阶光系防御魔法，用圣光凝聚护盾，净化所有负面状态并提升防御。光系核心生存技能",
     element: "light",
     type: "buff",
@@ -516,7 +516,7 @@ const DataSkills = {
   },
   dark_cloak: {
     id: "dark_cloak",
-    name: "暗影·潜行",
+    name: "遁影·潜伏",
     description: "初阶暗影系辅助魔法，用暗影包裹自身，提升闪避和暴击",
     element: "dark",
     type: "buff",
@@ -575,7 +575,7 @@ const DataSkills = {
   },
   ice_storm: {
     id: "ice_storm",
-    name: "冰蔓·冰封",
+    name: "冰蔓·覆盖",
     description: "初阶冰系三级魔法，召唤冰风暴，高伤害并有几率冻结",
     element: "ice",
     type: "damage",
@@ -624,7 +624,7 @@ const DataSkills = {
   },
   earth_quake: {
     id: "earth_quake",
-    name: "土系·震裂",
+    name: "地波·迟缓",
     description: "初阶土系三级魔法，引发地震，造成伤害并降低敌人速度",
     element: "earth",
     type: "damage",
@@ -738,7 +738,7 @@ const DataSkills = {
 
   water_wave: {
     id: "water_wave",
-    name: "水系·巨浪",
+    name: "水御·循环",
     description: "初阶水系三级魔法，巨浪冲击造成伤害并恢复自身生命",
     element: "water",
     type: "damage",
@@ -762,7 +762,7 @@ const DataSkills = {
   },
   light_judgment: {
     id: "light_judgment",
-    name: "光系·裁决",
+    name: "光耀·裁决",
     description: "初阶光系三级魔法，圣光裁决，对暗影和妖魔系有巨额伤害",
     element: "light",
     type: "damage",
@@ -787,7 +787,7 @@ const DataSkills = {
   },
   dark_curse: {
     id: "dark_curse",
-    name: "暗影·诅咒",
+    name: "遁影·巨影钉",
     description: "初阶暗影系三级魔法，暗影诅咒，持续削弱敌人",
     element: "dark",
     type: "damage",
@@ -1020,7 +1020,7 @@ const DataSkills = {
   },
   light_blessing: {
     id: "light_blessing",
-    name: "光系·圣光祝福",
+    name: "光耀·祝福",
     description: "圣光加持，同时提升攻击力和防御力，持续3回合",
     element: "light",
     type: "buff",
