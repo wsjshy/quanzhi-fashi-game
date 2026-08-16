@@ -349,7 +349,7 @@ const UI = {
         // 检查是否可以显示
         if (!this._canShowMessage()) {
             this._isMessageShowing = false;
-            // 延迟恢复主容器点击和行动冷却
+            // 延迟恢复主容器点击和行动冷却（v0.92.16: 200ms→50ms）
             setTimeout(() => {
                 const gameContainer = document.getElementById('game-container');
                 if (gameContainer) {
@@ -360,13 +360,13 @@ const UI = {
                 }
                 // 恢复行动按钮点击
                 document.body.classList.remove('message-showing');
-            }, 200);
+            }, 50);
             return;
         }
         
         if (this._messageQueue.length === 0) {
             this._isMessageShowing = false;
-            // 延迟恢复主容器点击和行动冷却
+            // 延迟恢复主容器点击和行动冷却（v0.92.16: 200ms→50ms）
             setTimeout(() => {
                 const gameContainer = document.getElementById('game-container');
                 if (gameContainer) {
@@ -377,7 +377,7 @@ const UI = {
                 }
                 // 恢复行动按钮点击
                 document.body.classList.remove('message-showing');
-            }, 200);
+            }, 50);
             return;
         }
         this._isMessageShowing = true;
@@ -527,7 +527,7 @@ const UI = {
                 gameContainer.style.pointerEvents = '';
             }
             
-            // 延迟移除全局点击拦截器，防止弹窗关闭后的延迟点击事件
+            // 延迟移除全局点击拦截器，防止弹窗关闭后的延迟点击事件（v0.92.16: 500ms→50ms）
             setTimeout(() => {
                 document.removeEventListener('click', clickInterceptor, true);
                 document.removeEventListener('mousedown', clickInterceptor, true);
@@ -536,14 +536,14 @@ const UI = {
                 if (ui._globalClickInterceptor === clickInterceptor) {
                     ui._globalClickInterceptor = null;
                 }
-            }, 500);
+            }, 50);
             
-            // 设置行动冷却，防止点击穿透/延迟触发
+            // 设置行动冷却，防止点击穿透/延迟触发（v0.92.16: 500ms→50ms）
             if (typeof Game !== 'undefined' && Game._actionCooldown !== undefined) {
                 Game._actionCooldown = true;
                 setTimeout(() => {
                     Game._actionCooldown = false;
-                }, 500);
+                }, 50);
             }
             
             // 先创建阻止点击穿透的遮罩层（在最顶层）
@@ -565,7 +565,7 @@ const UI = {
             overlay.remove();
             msgBox.remove();
             
-            setTimeout(() => blocker.remove(), 500);
+            setTimeout(() => blocker.remove(), 50);
             
             // 处理下一条消息
             ui._processNextMessage();
