@@ -79,12 +79,17 @@ const UI = {
         document.body.classList.remove('message-showing');
         const gc = document.getElementById('game-container');
         if (gc) gc.style.pointerEvents = '';
-        if (this._globalClickInterceptor) {
-            document.removeEventListener('click', this._globalClickInterceptor, true);
-            document.removeEventListener('mousedown', this._globalClickInterceptor, true);
-            document.removeEventListener('mouseup', this._globalClickInterceptor, true);
-            this._globalClickInterceptor = null;
+        // 移除所有可能的点击拦截器
+        const interceptors = [this._globalClickInterceptor, this._prevClickInterceptor];
+        for (const interceptor of interceptors) {
+            if (interceptor) {
+                document.removeEventListener('click', interceptor, true);
+                document.removeEventListener('mousedown', interceptor, true);
+                document.removeEventListener('mouseup', interceptor, true);
+            }
         }
+        this._globalClickInterceptor = null;
+        this._prevClickInterceptor = null;
     },
 
     // 消息队列（避免多条消息重叠）
@@ -422,6 +427,13 @@ const UI = {
             }
         };
         this._globalClickInterceptor = clickInterceptor; // 保留全局引用用于兼容
+        // v0.92.11: 先移除之前的点击拦截器，防止多个拦截器叠加
+        if (this._prevClickInterceptor) {
+            document.removeEventListener('click', this._prevClickInterceptor, true);
+            document.removeEventListener('mousedown', this._prevClickInterceptor, true);
+            document.removeEventListener('mouseup', this._prevClickInterceptor, true);
+        }
+        this._prevClickInterceptor = clickInterceptor;
         document.addEventListener('click', clickInterceptor, true);
         document.addEventListener('mousedown', clickInterceptor, true);
         document.addEventListener('mouseup', clickInterceptor, true);
@@ -697,7 +709,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.92.10 · 全界面恢复点击防锁定</div>
+                ">v0.92.11 · 彻底修复点击拦截器叠加问题</div>
             </div>
         `;
 
@@ -938,19 +950,8 @@ const UI = {
             </div>
         `;
 
-        // v0.92.9: 强制恢复点击，防止全局点击拦截器导致界面无法点击
-        document.body.classList.remove('message-showing');
-        const gc2 = document.getElementById('game-container');
-        if (gc2) gc2.style.pointerEvents = '';
-        // 移除所有可能的点击拦截器（通过克隆元素）
-        if (gc2 && gc2.parentNode) {
-            const newGc = gc2.cloneNode(false);
-            while (gc2.firstChild) newGc.appendChild(gc2.firstChild);
-            gc2.parentNode.replaceChild(newGc, gc2);
-            this.elements.gameContainer = newGc;
-        }
-        // 清除全局点击拦截器引用
-        this._globalClickInterceptor = null;
+        // v0.92.11: 强制恢复点击，移除全局点击拦截器
+        this._restoreClicks();
 
         // 全局函数
         window.selectedElement = null;
