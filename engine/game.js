@@ -1591,6 +1591,11 @@ const Game = {
 
     // v0.82.1: 统一休息菜单（合并原地休息/充分休息/宿舍睡眠/睡到明天）
     showRestMenu() {
+        // v0.92.17: 强制恢复点击，防止之前的消息弹窗导致点击被拦截
+        if (typeof UI !== 'undefined' && UI._restoreClicks) {
+            UI._restoreClicks();
+        }
+        
         const maxSta = Player.maxStamina || 100;
         const hpMissing = Math.max(0, (Player.maxHp - Player.hp) / Player.maxHp);
         const mpMissing = Math.max(0, (Player.maxMp - Player.mp) / Player.maxMp);
@@ -1668,6 +1673,11 @@ const Game = {
 
     // v0.82.0: 合并事件追踪与情报
     showEventsAndIntel() {
+        // v0.92.17: 强制恢复点击，防止之前的消息弹窗导致点击被拦截
+        if (typeof UI !== 'undefined' && UI._restoreClicks) {
+            UI._restoreClicks();
+        }
+        
         const available = (typeof EncounterSystem !== 'undefined') ? EncounterSystem.getAvailableSpecialEvents() : [];
         const knownInfo = WorldState.knownInfo || [];
         const infoDatabase = GameData.infoDatabase || { infos: {} };
