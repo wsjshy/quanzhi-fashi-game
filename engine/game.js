@@ -494,7 +494,13 @@ const Game = {
             npcInteractionEvent = npcEncounter.interactionEvent;
         }
 
-        if (message) {
+        // v0.96.0: 基础行动反馈 - 如果没有特殊结果且message为空，显示基础反馈
+        const hasSpecialResult = result.battle || result.event || result.shop || result.npcs != null || randomEvent || npcInteractionEvent;
+        if (!message && !hasSpecialResult && action) {
+            message = `你完成了「${action.name}」。`;
+        }
+
+        if (message && !hasSpecialResult) {
             UI.showMessage(message.trim());
         }
 

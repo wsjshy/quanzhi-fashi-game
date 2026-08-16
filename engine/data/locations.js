@@ -332,8 +332,12 @@ const DataLocations = {
         name: "酒馆",
         description: "猎者聚集的酒馆，有概率接到猎魔任务或发生冲突",
         icon: "🍺",
-        timeCost: 0,
-        staminaCost: 0,
+        timeCost: 1,
+        staminaCost: 5,
+        effects: {
+          exp: 3,
+          gold: 10
+        },
         eventChance: 0.4,
         events: [
           "event_tavern_quest",
