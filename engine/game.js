@@ -1824,17 +1824,41 @@ const Game = {
             if (Player.unlockedLocations.includes(loc.id)) return;
             if (!loc.unlockCondition) return;
             
+            const cond = loc.unlockCondition;
             let canUnlock = true;
             
-            // 等级要求
-            if (loc.unlockCondition.minLevel && Player.level < loc.unlockCondition.minLevel) {
+            // 等级要求（支持minLevel和level两种写法）
+            const reqLevel = cond.minLevel || cond.level;
+            if (reqLevel && Player.level < reqLevel) {
                 canUnlock = false;
             }
             
+            // 任务要求（支持requiredQuest和quest两种写法）
+            const reqQuest = cond.requiredQuest || cond.quest;
+            if (reqQuest) {
+                if (!Player.completedQuests || !Player.completedQuests.includes(reqQuest)) {
+                    canUnlock = false;
+                }
+            }
+            
+            // 全局标记要求
+            if (cond.requiredFlag) {
+                if (typeof WorldState !== 'undefined' && !WorldState.getFlag(cond.requiredFlag)) {
+                    canUnlock = false;
+                }
+            }
+            
+            // 物品要求
+            if (cond.hasItem) {
+                if (typeof Inventory === 'undefined' || !Inventory.hasItem(cond.hasItem)) {
+                    canUnlock = false;
+                }
+            }
+            
             // NPC好感度要求
-            if (loc.unlockCondition.minOpinion) {
-                const npcId = loc.unlockCondition.minOpinion.npcId;
-                const requiredValue = loc.unlockCondition.minOpinion.value;
+            if (cond.minOpinion) {
+                const npcId = cond.minOpinion.npcId;
+                const requiredValue = cond.minOpinion.value;
                 const opinion = Player.getOpinion ? Player.getOpinion(npcId) : 0;
                 if (opinion < requiredValue) {
                     canUnlock = false;

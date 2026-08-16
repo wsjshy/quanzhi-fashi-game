@@ -203,8 +203,9 @@ const MapSystem = {
     _checkUnlockCondition(condition) {
         if (!condition) return true;
         
-        // 等级条件
-        if (condition.minLevel && Player.level < condition.minLevel) {
+        // 等级条件（支持minLevel和level两种写法）
+        const reqLevel = condition.minLevel || condition.level;
+        if (reqLevel && Player.level < reqLevel) {
             return false;
         }
         
@@ -217,9 +218,10 @@ const MapSystem = {
             }
         }
         
-        // 任务条件
-        if (condition.requiredQuest) {
-            if (!Player.completedQuests || !Player.completedQuests.includes(condition.requiredQuest)) {
+        // 任务条件（支持requiredQuest和quest两种写法）
+        const reqQuest = condition.requiredQuest || condition.quest;
+        if (reqQuest) {
+            if (!Player.completedQuests || !Player.completedQuests.includes(reqQuest)) {
                 return false;
             }
         }
@@ -227,6 +229,13 @@ const MapSystem = {
         // 全局标记条件
         if (condition.requiredFlag) {
             if (!WorldState.getFlag(condition.requiredFlag)) {
+                return false;
+            }
+        }
+        
+        // 物品条件
+        if (condition.hasItem) {
+            if (typeof Inventory === 'undefined' || !Inventory.hasItem(condition.hasItem)) {
                 return false;
             }
         }
