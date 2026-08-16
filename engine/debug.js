@@ -1034,6 +1034,11 @@ const DebugPanel = {
     
     teleport(locationId) {
         try {
+            // 如果在战斗中，先结束战斗（避免状态残留）
+            if (typeof BattleSystem !== 'undefined' && BattleSystem.active) {
+                BattleSystem.endBattle();
+                console.log('[Debug] 传送前结束战斗');
+            }
             if (typeof Game !== 'undefined' && Game.travelTo) {
                 Game.travelTo(locationId);
                 console.log(`[Debug] 传送到: ${locationId}`);
