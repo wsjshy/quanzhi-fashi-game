@@ -68,6 +68,20 @@ const UI = {
         this.elements.gameContainer = document.getElementById('game-container');
     },
 
+    // v0.92.8: 统一设置gameContainer.innerHTML，强制恢复pointer-events，防止消息弹窗导致点击锁定
+    _setGameHTML(html) {
+        document.body.classList.remove('message-showing');
+        const gc = document.getElementById('game-container');
+        if (gc) gc.style.pointerEvents = '';
+        if (this._globalClickInterceptor) {
+            document.removeEventListener('click', this._globalClickInterceptor, true);
+            document.removeEventListener('mousedown', this._globalClickInterceptor, true);
+            document.removeEventListener('mouseup', this._globalClickInterceptor, true);
+            this._globalClickInterceptor = null;
+        }
+        this.elements.gameContainer.innerHTML = html;
+    },
+
     // 消息队列（避免多条消息重叠）
     _messageQueue: [],
     _isMessageShowing: false,
@@ -1999,7 +2013,7 @@ const UI = {
                         const cursor = node.isCurrent ? 'default' : 'pointer';
                         const glow = node.isCurrent ? 'box-shadow: 0 0 20px rgba(100, 255, 150, 0.6), 0 0 40px rgba(100, 255, 150, 0.3);' : node.unlocked && !node.isCurrent ? 'box-shadow: 0 0 12px rgba(100, 150, 255, 0.4);' : '';
                         const onClick = node.unlocked && !node.isCurrent 
-                            ? `onclick="Game.travelTo('${node.id}'); this.style.transform='scale(0.9)'; setTimeout(()=>this.style.transform='scale(1)',150);"`
+                            ? `onclick="try { Game.travelTo('${node.id}'); } catch(e) { alert('travelTo错误: '+e.message); } this.style.transform='scale(0.9)'; setTimeout(()=>this.style.transform='scale(1)',150);"`
                             : !node.unlocked 
                                 ? `onclick="UI.showMessage('🔒 ${node.name}尚未解锁：${node.unlockHint || '条件未知'}'); this.style.transform='scale(0.95)'; setTimeout(()=>this.style.transform='scale(1)',150);"`
                                 : '';
