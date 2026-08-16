@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.87.0 · 体验优化：节奏/逻辑/好感度</div>
+                ">v0.87.1 · 对话框overlay叠加修复</div>
             </div>
         `;
 

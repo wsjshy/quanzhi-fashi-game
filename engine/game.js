@@ -1596,7 +1596,11 @@ const Game = {
         const location = MapSystem.getCurrentLocation();
         const hasSleepAction = location?.actions?.some(a => a.id === 'sleep');
 
+        // 移除所有已存在的overlay，避免叠加
+        document.querySelectorAll('.rest-overlay, .ei-overlay').forEach(el => el.remove());
+
         const overlay = document.createElement('div');
+        overlay.className = 'rest-overlay';
         overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);';
         overlay.innerHTML = `
             <div style="max-width:450px;width:100%;background:linear-gradient(135deg,#1a1a3a,#2a2a5a);border:2px solid #5577aa;border-radius:16px;padding:20px;max-height:90vh;overflow-y:auto;">
@@ -1665,7 +1669,11 @@ const Game = {
         const infoDatabase = GameData.infoDatabase || { infos: {} };
         const recentInfos = knownInfo.slice(-5).reverse().map(id => infoDatabase.infos[id]).filter(Boolean);
 
+        // 移除所有已存在的overlay，避免叠加
+        document.querySelectorAll('.rest-overlay, .ei-overlay').forEach(el => el.remove());
+
         const overlay = document.createElement('div');
+        overlay.className = 'ei-overlay';
         overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);';
         overlay.innerHTML = `
             <div style="max-width:500px;width:100%;background:linear-gradient(135deg,#1a1a3a,#2a2a5a);border:2px solid #aa8833;border-radius:16px;padding:20px;max-height:90vh;overflow-y:auto;">
