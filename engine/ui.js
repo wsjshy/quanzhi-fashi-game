@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.86.9 · UI体验优化</div>
+                ">v0.86.10 · README同步更新</div>
             </div>
         `;
 
