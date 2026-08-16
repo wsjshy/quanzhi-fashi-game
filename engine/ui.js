@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.92.1 · 移除穆家庄园错误地圣泉行动</div>
+                ">v0.92.2 · 修复创建角色selectElement作用域bug</div>
             </div>
         `;
 
@@ -741,6 +741,8 @@ const UI = {
             fire: '#ff6633', ice: '#66ccff', thunder: '#ffcc00', earth: '#cc9966',
             wind: '#99ff99', water: '#6699ff', light: '#ffffcc', dark: '#9966ff'
         };
+        // v0.92.2: 挂载到window，供全局selectElement函数访问
+        window._elementColors = elementColors;
         // 元素权重：常见系概率高，稀有系概率低
         const elementWeights = {
             fire: 15, ice: 12, thunder: 10, earth: 15,
@@ -918,8 +920,8 @@ const UI = {
             // 选中当前
             const card = document.getElementById('elem-' + elem);
             card.classList.add('selected');
-            card.style.borderColor = elementColors[elem];
-            card.style.boxShadow = `0 0 25px ${elementColors[elem]}60`;
+            card.style.borderColor = window._elementColors[elem];
+            card.style.boxShadow = `0 0 25px ${window._elementColors[elem]}60`;
             
             window.selectedElement = elem;
             window.confirmEnabled = true;
