@@ -2191,7 +2191,7 @@ const DataEnemies = {
     spirit: 18,
     skills: [
       "basic_attack",
-      "fire_fire",
+      "fire_bolt",
       "fire_burst"
     ],
     aiType: "aggressive",

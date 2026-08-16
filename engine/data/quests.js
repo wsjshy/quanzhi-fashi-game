@@ -283,7 +283,7 @@ const DataQuests = {
     objectives: [
       {
         type: "kill",
-        enemyId: "stone_monster",
+        enemyId: "rock_monster",
         count: 2,
         description: "击败 2 只石怪"
       }
@@ -447,7 +447,7 @@ const DataQuests = {
       },
       {
         type: "kill",
-        enemyId: "stone_monster",
+        enemyId: "rock_monster",
         count: 1,
         description: "击败 1 只石怪"
       },
@@ -663,7 +663,7 @@ const DataQuests = {
       },
       {
         type: "kill",
-        enemyId: "stone_monster",
+        enemyId: "rock_monster",
         count: 1,
         description: "击败 1 只石怪"
       },
@@ -879,7 +879,7 @@ const DataQuests = {
       },
       {
         type: "kill",
-        enemyId: "stone_monster",
+        enemyId: "rock_monster",
         count: 2,
         description: "击败 2 只石怪"
       }
@@ -1345,7 +1345,7 @@ const DataQuests = {
       exp: 150,
       gold: 100,
       items: [
-        { itemId: "healing_potion", count: 3 },
+        { itemId: "health_potion", count: 3 },
         { itemId: "mana_potion", count: 2 }
       ],
       reputation: {
@@ -1375,7 +1375,7 @@ const DataQuests = {
       exp: 200,
       gold: 150,
       items: [
-        { itemId: "healing_potion", count: 5 }
+        { itemId: "health_potion", count: 5 }
       ],
       reputation: {
         city_hunters: 15
@@ -1404,7 +1404,7 @@ const DataQuests = {
       items: [
         { itemId: "rat_claw", count: 2 },
         { itemId: "demon_core", count: 1 },
-        { itemId: "healing_potion", count: 5 }
+        { itemId: "health_potion", count: 5 }
       ],
       reputation: {
         city_hunters: 30,
@@ -1434,7 +1434,7 @@ const DataQuests = {
       gold: 100,
       items: [
         { itemId: "demon_detection_powder", count: 3 },
-        { itemId: "healing_potion", count: 3 }
+        { itemId: "health_potion", count: 3 }
       ],
       reputation: { city_hunters: 10 }
     },
@@ -1462,7 +1462,7 @@ const DataQuests = {
         { itemId: "wolf_fang", count: 2 },
         { itemId: "demon_core", count: 2 },
         { itemId: "soul_fragment", count: 1 },
-        { itemId: "healing_potion", count: 5 },
+        { itemId: "health_potion", count: 5 },
         { itemId: "mana_potion", count: 5 }
       ],
       reputation: {
@@ -1493,7 +1493,7 @@ const DataQuests = {
       exp: 200,
       gold: 150,
       items: [
-        { itemId: "healing_potion", count: 3 },
+        { itemId: "health_potion", count: 3 },
         { itemId: "mana_potion", count: 3 }
       ],
       reputation: {

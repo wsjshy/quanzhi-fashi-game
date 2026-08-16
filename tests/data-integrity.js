@@ -98,7 +98,7 @@ function runDataIntegrityTests() {
         // 目标妖魔
         if (quest.objectives && Array.isArray(quest.objectives)) {
             for (const obj of quest.objectives) {
-                if (obj.enemyId) questEnemyRefs.push(obj.enemyId);
+                if (obj.enemyId && obj.enemyId !== 'any') questEnemyRefs.push(obj.enemyId);
                 if (obj.skillId) questSkillRefs.push(obj.skillId);
             }
         }

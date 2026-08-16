@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.94.0 · 战斗技能UI优化</div>
+                ">v0.95.0 · 数据完整性修复</div>
             </div>
         `;
 

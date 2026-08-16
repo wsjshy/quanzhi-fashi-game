@@ -8,24 +8,22 @@
 
 ## P0 - 当前开发
 
-### v0.95.0 数据完整性修复（待定）
+### v0.95.0 数据完整性修复（2026-08-17，已完成）
 
 **背景**：v0.94.0建立L1数据完整性测试后发现4类数据引用问题
 **发现方式**：`node tests/run.js l1`
 
-**待修复问题**：
-- [ ] 11个妖魔技能引用缺失（demon_bone_spike, ice_chain, wind_track_phantom等）
-- [ ] 3个任务奖励物品引用缺失（healing_potion, hunter_badge, magic_book）
-- [ ] 2个任务目标妖魔引用缺失（stone_monster, any - any可能是通配符）
-- [ ] 14个妖魔掉落物品引用缺失（herb, dark_crystal, wolf_king_fang等）
+**已修复问题**：
+- [x] 任务奖励物品ID不一致：healing_potion → health_potion
+- [x] 任务目标妖魔ID不一致：stone_monster → rock_monster
+- [x] 妖魔技能拼写错误：fire_fire → fire_bolt
+- [x] 测试脚本排除any通配符
+- [x] 新增2个任务奖励物品（hunter_badge, magic_book）
+- [x] 新增14个妖魔掉落材料物品
+- [x] 新增10个妖魔专属技能
+- [x] L1测试全部通过（0失败）
 
-**修复策略**：
-1. 确认缺失的技能/物品是否应该存在（原著设定）
-2. 存在则添加到skills.js/items.js
-3. 不存在则修正enemies.js/quests.js中的引用ID
-4. 修复后跑L1测试验证
-
-### v0.94.0 战斗UI优化+测试工具完善（2026-08-17，进行中）
+### v0.94.0 战斗UI优化+测试工具完善（2026-08-17，已完成）
 
 **背景**：v0.93.0所有bug修复完成后，优化战斗技能UI体验，并建立分层测试体系提升效率
 **设计方案**：战斗技能从全屏居中弹窗改为内联展开式（方案B），点击元素系后底部面板内替换为技能列表

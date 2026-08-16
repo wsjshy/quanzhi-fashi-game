@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 技能数据
  * 从 game-data.js 拆分而来
  */
@@ -3796,5 +3796,191 @@ const DataSkills = {
     statusEffects: [
       { name: "眩晕", type: "stun", duration: 1, chance: 0.3 }
     ]
+  },
+  demon_bone_spike: {
+    id: "demon_bone_spike",
+    name: "骨刺穿刺",
+    description: "从地面召唤尖锐的骨刺穿刺敌人，造成物理伤害并有几率造成流血",
+    element: "physical",
+    type: "damage",
+    mpCost: 5,
+    baseDamage: 20,
+    damageMultiplier: 1.3,
+    hitRate: 0.9,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 3, chance: 0.4, damagePerTurn: 5 }
+    ]
+  },
+  ice_chain: {
+    id: "ice_chain",
+    name: "冰链束缚",
+    description: "召唤冰冷的锁链缠绕敌人，造成冰系伤害并束缚目标",
+    element: "ice",
+    type: "damage",
+    mpCost: 10,
+    baseDamage: 15,
+    damageMultiplier: 1.1,
+    hitRate: 0.85,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "束缚", type: "bind", duration: 1, chance: 0.6 },
+      { name: "湿润", type: "wet", duration: 2, chance: 1 }
+    ]
+  },
+  wind_track_phantom: {
+    id: "wind_track_phantom",
+    name: "风轨幻影",
+    description: "以风系魔法加速，制造幻影迷惑敌人，提升自身闪避并进行快速攻击",
+    element: "wind",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 12,
+    damageMultiplier: 1.2,
+    hitRate: 0.95,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    selfEffects: [
+      { name: "风之迅捷", type: "speed_up", duration: 2, statModifiers: { speed: 10, evasion: 0.2 } }
+    ]
+  },
+  demon_claw_slash: {
+    id: "demon_claw_slash",
+    name: "利爪撕裂",
+    description: "用锋利的爪子撕裂敌人，造成高额物理伤害并有几率造成流血",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 25,
+    damageMultiplier: 1.4,
+    hitRate: 0.9,
+    critRate: 0.2,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 2, chance: 0.5, damagePerTurn: 8 }
+    ]
+  },
+  water_burst: {
+    id: "water_burst",
+    name: "水爆",
+    description: "凝聚水元素在敌人身上爆发，造成水系伤害并使目标湿润",
+    element: "water",
+    type: "damage",
+    mpCost: 10,
+    baseDamage: 18,
+    damageMultiplier: 1.2,
+    hitRate: 0.9,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "湿润", type: "wet", duration: 3, chance: 1 }
+    ]
+  },
+  shadow_step: {
+    id: "shadow_step",
+    name: "暗影步",
+    description: "融入暗影中瞬间移动到敌人身后，提升下次攻击的暴击率",
+    element: "shadow",
+    type: "buff",
+    mpCost: 6,
+    targetType: "self",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    selfEffects: [
+      { name: "暗影潜行", type: "crit_up", duration: 2, statModifiers: { critRate: 0.3 } }
+    ]
+  },
+  shadow_claw: {
+    id: "shadow_claw",
+    name: "暗影爪",
+    description: "用暗影能量强化爪子进行攻击，造成暗影伤害并降低目标防御",
+    element: "shadow",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 16,
+    damageMultiplier: 1.3,
+    hitRate: 0.9,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "防御降低", type: "defense_down", duration: 2, chance: 0.5, statModifiers: { defense: -10 } }
+    ]
+  },
+  cursed_claw_barrage: {
+    id: "cursed_claw_barrage",
+    name: "诅咒爪连击",
+    description: "被诅咒之力强化的连续爪击，造成多次伤害并施加诅咒",
+    element: "curse",
+    type: "damage",
+    mpCost: 12,
+    baseDamage: 10,
+    damageMultiplier: 1.0,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "战将级",
+    isDemonSkill: true,
+    hits: 3,
+    statusEffects: [
+      { name: "诅咒", type: "curse", duration: 3, chance: 0.7, statModifiers: { attack: -10, defense: -10 } }
+    ]
+  },
+  summon_bone_eating_demon: {
+    id: "summon_bone_eating_demon",
+    name: "召唤噬骨妖魔",
+    description: "召唤一只噬骨妖魔协助战斗，召唤物会在接下来的回合中攻击敌人",
+    element: "dark",
+    type: "summon",
+    mpCost: 15,
+    targetType: "self",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    summon: {
+      id: "bone_eating_demon_summon",
+      name: "噬骨妖魔",
+      duration: 3,
+      attack: 20,
+      maxHp: 50
+    }
+  },
+  feather_barrage: {
+    id: "feather_barrage",
+    name: "羽箭齐射",
+    description: "将羽毛硬化如箭，向敌人射出密集的羽箭，造成多次风系伤害",
+    element: "wind",
+    type: "damage",
+    mpCost: 10,
+    baseDamage: 8,
+    damageMultiplier: 1.0,
+    hitRate: 0.9,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    hits: 4
   }
 };

@@ -6940,7 +6940,7 @@ const DataCharacters = {
     relationships: { mo_fan: 10, guo_caitang: 20, xiao_ke: 15, li_wenjie: 15, fei_shi: 20 },
     giftPreferences: {
       loved: ["fire_crystal", "premium_ink"],
-      liked: ["magic_herb", "healing_potion"],
+      liked: ["magic_herb", "health_potion"],
       disliked: [],
       baseOpinionGain: 2,
       lovedMultiplier: 3,
@@ -6992,7 +6992,7 @@ const DataCharacters = {
     relationships: { mo_fan: 5, xu_dahuang: 15, xiao_ke: 10, li_wenjie: 10, fei_shi: 10 },
     giftPreferences: {
       loved: ["ice_crystal", "beauty_products"],
-      liked: ["magic_herb", "healing_potion"],
+      liked: ["magic_herb", "health_potion"],
       disliked: [],
       baseOpinionGain: 1,
       lovedMultiplier: 3,
@@ -7044,7 +7044,7 @@ const DataCharacters = {
     relationships: { mo_fan: 8, xu_dahuang: 10, guo_caitang: 8, li_wenjie: 8, fei_shi: 10 },
     giftPreferences: {
       loved: ["candy", "cute_accessories"],
-      liked: ["magic_herb", "healing_potion"],
+      liked: ["magic_herb", "health_potion"],
       disliked: [],
       baseOpinionGain: 3,
       lovedMultiplier: 2.5,
@@ -7096,7 +7096,7 @@ const DataCharacters = {
     relationships: { mo_fan: 5, xu_dahuang: 10, guo_caitang: 8, xiao_ke: 8, fei_shi: 10 },
     giftPreferences: {
       loved: ["wind_crystal", "fashion_clothes"],
-      liked: ["magic_herb", "healing_potion"],
+      liked: ["magic_herb", "health_potion"],
       disliked: [],
       baseOpinionGain: 2,
       lovedMultiplier: 2.5,
@@ -7148,7 +7148,7 @@ const DataCharacters = {
     relationships: { mo_fan: 10, xu_dahuang: 15, guo_caitang: 10, xiao_ke: 12, li_wenjie: 12 },
     giftPreferences: {
       loved: ["earth_crystal", "good_food"],
-      liked: ["magic_herb", "healing_potion", "stamina_potion"],
+      liked: ["magic_herb", "health_potion", "stamina_potion"],
       disliked: [],
       baseOpinionGain: 3,
       lovedMultiplier: 2.5,
