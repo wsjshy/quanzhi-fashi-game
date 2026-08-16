@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.92.7 · 修复创建角色确认按钮内联调用</div>
+                ">v0.92.8 · 修复创建角色界面pointer-events锁定</div>
             </div>
         `;
 
@@ -732,6 +732,17 @@ const UI = {
 
     // ========== 角色创建界面 ==========
     renderCharacterCreate() {
+        // v0.92.8: 强制恢复点击，防止之前的消息弹窗导致pointer-events:none
+        document.body.classList.remove('message-showing');
+        const gc = document.getElementById('game-container');
+        if (gc) gc.style.pointerEvents = '';
+        if (this._globalClickInterceptor) {
+            document.removeEventListener('click', this._globalClickInterceptor, true);
+            document.removeEventListener('mousedown', this._globalClickInterceptor, true);
+            document.removeEventListener('mouseup', this._globalClickInterceptor, true);
+            this._globalClickInterceptor = null;
+        }
+        
         const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark'];
         const elementNames = {
             fire: '🔥 火系', ice: '❄️ 冰系', thunder: '⚡ 雷系', earth: '🪨 土系',
