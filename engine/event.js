@@ -84,10 +84,54 @@ const EventSystem = {
         const events = DataManager.getEventsByTrigger(trigger);
         if (!events || events.length === 0) return null;
 
+        // v0.92.0: 获取当前地点，用于地点过滤
+        const currentLoc = typeof MapSystem !== 'undefined' ? MapSystem.getCurrentLocation() : null;
+        const currentLocId = currentLoc?.id || '';
+        const currentLocName = currentLoc?.name || '';
+        const isSchool = currentLocId === 'tianlan_school' || currentLocName.includes('学校') || currentLocName.includes('高中');
+        const isStreet = currentLocId === 'city_street' || currentLocName.includes('街') || currentLocName.includes('市');
+        const isMountain = currentLocId === 'xuefeng_mountain' || currentLocId === 'xuefeng_deep' || currentLocName.includes('山') || currentLocName.includes('谷');
+
         // 过滤掉已触发的一次性事件
         const availableEvents = events.filter(e => {
             if (e.once && this._triggeredEvents.includes(e.id)) return false;
-            return this.checkConditions(e.conditions);
+            
+            // v0.92.0: 地点过滤 - 如果事件指定了地点，只能在对应地点触发
+            if (e.locations && e.locations.length > 0) {
+                if (!e.locations.includes(currentLocId)) return false;
+            }
+            
+            // v0.92.0: 地点类型过滤 - school/street/mountain/general
+            // 如果事件没有locationType，根据名称和描述自动分类
+            let locType = e.locationType;
+            if (!locType) {
+                const text = (e.name || '') + (e.description || '');
+                if (/同学|老师|修炼|唐月|穆宁雪|张小侯|赵满延|许昭霆|穆白|周敏|知识|技能|突破|顿悟|失败|搭话|批评|炫耀|议论|找你|问问题/.test(text)) {
+                    locType = 'school';
+                } else if (/钱|商人|商店|小偷|猎人|卖艺|喝醉|酒馆|打折|街头/.test(text)) {
+                    locType = 'street';
+                } else if (/草药|宝箱|陷阱|风景|妖魔|猎魔|稀有|深山/.test(text)) {
+                    locType = 'mountain';
+                } else {
+                    locType = 'general';
+                }
+            }
+            if (locType === 'school' && !isSchool) return false;
+            if (locType === 'street' && !isStreet) return false;
+            if (locType === 'mountain' && !isMountain) return false;
+            
+            // v0.92.0: 默认条件 - 没有conditions的事件根据trigger类型添加默认等级要求
+            if (!e.conditions || e.conditions.length === 0) {
+                const defaultMinLevel = {
+                    'explore': 2, 'exploring': 2, 'travel': 3, 'training': 2,
+                    'battle_victory': 3, 'level_up': 1, 'location': 1
+                }[trigger] || 2;
+                if ((Player.level || 1) < defaultMinLevel) return false;
+            } else {
+                if (!this.checkConditions(e.conditions)) return false;
+            }
+            
+            return true;
         });
 
         if (availableEvents.length === 0) return null;

@@ -745,7 +745,8 @@ const DataLocations = {
     unlocked: false,
     unlockCondition: {
       minLevel: 5,
-      hint: "需要等级 5 才能去北门"
+      requiredQuest: "quest_city_patrol",
+      hint: "需要等级5并完成城市巡逻任务才能去北门"
     },
     actions: [
       {
