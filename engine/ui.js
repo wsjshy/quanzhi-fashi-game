@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.90.0 · 简化偶遇机制：仅后台NPC成长</div>
+                ">v0.90.1 · 修复三步塔错误解锁提示</div>
             </div>
         `;
 

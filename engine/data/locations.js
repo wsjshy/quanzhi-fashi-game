@@ -229,10 +229,10 @@ const DataLocations = {
     mapX: 55,
     mapY: 28,
     mapIcon: "🗼",
-    description: "天澜魔法高中的修炼圣地。塔内星子异常活跃，修炼速度是外界的数倍。塔身三层，越往上星子越活跃，但消耗也越大。",
+    description: "明珠学府的修炼圣地。塔内星子异常活跃，修炼速度是外界的数倍。塔身三层，越往上星子越活跃，但消耗也越大。",
     backgroundColor: "#1a1a3a",
-    unlocked: true,
-    unlockCondition: { minLevel: 2 },
+    unlocked: false,
+    unlockCondition: { requiredFlag: "mingzhu_admission_done" },
     actions: [
       {
         id: "tower_floor1",
