@@ -678,7 +678,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.86.7 · NPC日程系统完善</div>
+                ">v0.86.8 · 篇章扩展标准流程建立</div>
             </div>
         `;
 
