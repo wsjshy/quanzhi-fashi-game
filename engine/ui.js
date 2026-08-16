@@ -1282,7 +1282,7 @@ const UI = {
         this._restoreClicks();
 
         this.elements.gameContainer.innerHTML = `
-            <div style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; background: ${location?.backgroundColor || '#1a1a3a'}; position: relative; padding-bottom: 110px; overflow-x: hidden;">
+            <div style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; background: ${location?.backgroundColor || '#1a1a3a'}; position: relative; padding-bottom: 110px; overflow-x: hidden; pointer-events: auto; z-index: 1;">
                 
                 <!-- 背景图片 -->
                 ${bgImage ? `
@@ -2074,7 +2074,7 @@ const UI = {
                         `;
 
                         return `
-                            <div class="map-node-wrapper" style="position: absolute; left: ${node.x}%; top: ${node.y}%; transform: translate(-50%, -50%); z-index: 2;">
+                            <div class="map-node-wrapper" onclick="alert('点击了节点wrapper: ${node.id}')" style="position: absolute; left: ${node.x}%; top: ${node.y}%; transform: translate(-50%, -50%); z-index: 2; cursor: pointer;">
                                 <div ${onClick} style="
                                     width: ${size}px;
                                     height: ${size}px;
