@@ -2,6 +2,11 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v1.1.9 - 代码质量清理
+
+### 优化
+- **清理战斗技能调试日志**：移除battleUseSkill/battleUseSkillAndClose/battleRepeatSkill中10条[DEBUG]前缀的console.log调试输出，保留错误处理（console.error去掉DEBUG前缀）。这些日志是v0.94.0调试技能释放不稳定问题时添加的，问题已修复，清理后减少控制台噪音
+
 ## v1.1.8 - 测试体系扩展与物品修复
 
 ### 新增

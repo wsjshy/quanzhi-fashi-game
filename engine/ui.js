@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.1.8 · 测试体系扩展与物品修复</div>
+                ">v1.1.9 · 代码质量清理</div>
             </div>
         `;
 

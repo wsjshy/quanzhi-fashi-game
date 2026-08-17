@@ -2053,7 +2053,6 @@ const Game = {
     // 玩家使用技能
     // v0.94.0: 战斗使用技能并关闭技能列表（内联展开式UI专用）
     battleUseSkillAndClose(skillId) {
-        console.log('[DEBUG] battleUseSkillAndClose called, skillId=', skillId, 'isPlayerTurn=', BattleSystem.isPlayerTurn, 'mp=', Player.mp);
         this.battleUseSkill(skillId);
         // 立即关闭技能列表并渲染，不使用updateBattleScreen的500ms延迟
         UI._expandedBattleElement = null;
@@ -2064,30 +2063,24 @@ const Game = {
 
     battleUseSkill(skillId) {
         try {
-            console.log('[DEBUG] battleUseSkill start, skillId=', skillId, 'isPlayerTurn=', BattleSystem.isPlayerTurn, 'active=', BattleSystem.active);
             if (!BattleSystem.isPlayerTurn) {
-                console.log('[DEBUG] battleUseSkill blocked: not player turn');
                 UI.showMessage('现在不是你的回合！');
                 return;
             }
             
             const skill = SkillSystem.getSkill(skillId);
             if (!skill) {
-                console.log('[DEBUG] battleUseSkill blocked: skill not found');
                 UI.showMessage('技能不存在！');
                 return;
             }
             
             if (Player.mp < skill.mpCost) {
-                console.log('[DEBUG] battleUseSkill blocked: mp insufficient, need=', skill.mpCost, 'have=', Player.mp);
                 UI.showMessage(`魔法值不足！需要 ${skill.mpCost} MP，当前 ${Player.mp} MP`);
                 return;
             }
             
             const result = BattleSystem.playerCastSkill(skillId);
-            console.log('[DEBUG] playerCastSkill result=', result);
             if (result === null) {
-                console.log('[DEBUG] battleUseSkill blocked: playerCastSkill returned null');
                 UI.showMessage('技能释放失败，请查看战斗日志。');
                 return;
             }
@@ -2098,7 +2091,7 @@ const Game = {
                 this.endBattle();
             }
         } catch (e) {
-            console.error('[DEBUG] battleUseSkill error:', e);
+            console.error('battleUseSkill error:', e);
             UI.showMessage('技能释放出错：' + e.message);
         }
     },
@@ -2136,7 +2129,7 @@ const Game = {
                 this.endBattle();
             }
         } catch (e) {
-            console.error('[DEBUG] battleRepeatSkill error:', e);
+            console.error('battleRepeatSkill error:', e);
             UI.showMessage('技能释放出错：' + e.message);
         }
     },
