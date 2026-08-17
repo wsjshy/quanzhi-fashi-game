@@ -6909,8 +6909,16 @@ const BattleSystem = {
 
         // v0.38.0: 战斗胜利后恢复15%HP+20%MP（降低战后资源压力）
         if (this.result === 'win') {
-            const hpRestore = Math.floor(Player.maxHp * 0.15);
-            const mpRestore = Math.floor(Player.maxMp * 0.20);
+            let hpRestoreRate = 0.15;
+            let mpRestoreRate = 0.20;
+            // v0.99.1: 连续猎魔疲劳（第4次后恢复减半，模拟疲惫）
+            if (this.source === 'hunt' && (Player.dailyActions?.hunt || 0) >= 4) {
+                hpRestoreRate = 0.075;
+                mpRestoreRate = 0.10;
+                this.addLog('⚠️ 连续猎魔感到疲惫，战后恢复效果减半', 'debuff');
+            }
+            const hpRestore = Math.floor(Player.maxHp * hpRestoreRate);
+            const mpRestore = Math.floor(Player.maxMp * mpRestoreRate);
             Player.hp = Math.min(Player.maxHp, Player.hp + hpRestore);
             Player.mp = Math.min(Player.maxMp, Player.mp + mpRestore);
             this.addLog(`💚 战斗胜利，恢复 ${hpRestore} HP、${mpRestore} MP`, 'system');

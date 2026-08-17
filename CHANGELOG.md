@@ -2,11 +2,13 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
-## v0.99.1 - 猎魔奖励递减+战斗来源标记
+## v0.99.1 - 猎魔奖励递减+战斗疲劳+探索事件递减
 - battle.js: 新增source属性标记战斗来源（normal/hunt/event/quest）
 - battle.js: 猎魔战斗奖励应用getHuntEfficiency()递减（1-3次100%，4-6次70%，7次后50%）
 - battle.js: 战斗日志显示猎魔效率递减提示
+- battle.js: 连续猎魔第4次后战后恢复HP/MP减半（模拟疲劳）
 - map.js: 触发猎魔/探索战斗时标记source
+- map.js: 探索/逛街类行动每日第6次后无随机事件（getExploreEventChance）
 - game.js: 传递battle.source到startBattle options
 
 ## v0.99.0 - 每日行动次数系统（替代体力）

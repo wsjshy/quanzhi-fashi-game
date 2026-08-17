@@ -351,7 +351,14 @@ const MapSystem = {
 
         // 随机事件
         if (action.eventChance && action.events && action.events.length > 0) {
-            if (Math.random() < action.eventChance) {
+            let eventChance = action.eventChance;
+            // v0.99.1: 探索/逛街类行动，每日第6次后无随机事件
+            const actionType = action.actionType || actionId;
+            if ((actionType === 'explore' || actionType === 'stroll' || actionId === 'explore' || actionId === 'stroll') 
+                && typeof Player.getExploreEventChance === 'function') {
+                eventChance = eventChance * Player.getExploreEventChance();
+            }
+            if (Math.random() < eventChance) {
                 const eventId = action.events[Math.floor(Math.random() * action.events.length)];
                 result.event = EventSystem.triggerEvent(eventId);
             }
