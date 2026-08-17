@@ -574,6 +574,8 @@ const BattleSystem = {
         this.elementEnergyMax = 5;  // 元素能量上限
         this.skillCooldowns = {};  // v0.86.0: 技能冷却状态
         this.source = options.source || 'normal';  // v0.99.1: 战斗来源（normal/hunt/event/quest）
+        this.allies = options.allies || [];  // v1.8.0: NPC队友列表
+        this.allyCommands = {};  // v1.8.0: 队友指令（集火/防御/技能/自由）
         
         // 战斗模式选项
         this.battleOptions = {
@@ -3567,9 +3569,76 @@ const BattleSystem = {
         };
         this.addLog(`🌟 兽王天赋！${sd.icon} ${sd.name} 自动出现助战！（持续${duration}回合）`, 'evolution');
     },
+
+    // v1.8.0: NPC队友回合
+    allyTurn() {
+        try {
+            if (!this.allies || this.allies.length === 0) {
+                this.enemyTurn();
+                return;
+            }
+
+            // 找到第一个还能行动的队友
+            const ally = this.allies.find(a => a.hp > 0 && !a.acted);
+            if (!ally) {
+                // 所有队友都行动完了，重置标记，进入敌人回合
+                this.allies.forEach(a => a.acted = false);
+                this.enemyTurn();
+                return;
+            }
+
+            ally.acted = true;
+
+            // 检查队友是否被控制
+            if (this.isStunned(ally)) {
+                this.addLog(`${ally.name} 被控制，无法行动！`, 'system');
+                setTimeout(() => this.allyTurn(), this.getDelay(800));
+                return;
+            }
+
+            // 简单AI：根据系别选择攻击方式
+            const damage = Math.floor(ally.attack * (0.8 + Math.random() * 0.4));
+            const elementName = this.getElementName(ally.element);
+            this.addLog(`${ally.name} 释放了${elementName}魔法，造成 ${damage} 点伤害！`, 'ally');
+            this.enemy.hp = Math.max(0, this.enemy.hp - damage);
+            this.stats.totalDamageDealt += damage;
+
+            // 更新UI
+            this.updateUI();
+
+            // 检查敌人是否死亡
+            if (this.enemy.hp <= 0) {
+                this.endBattle('win');
+                return;
+            }
+
+            // 下一个队友行动
+            setTimeout(() => this.allyTurn(), this.getDelay(800));
+        } catch (e) {
+            console.error('[Battle] allyTurn错误:', e);
+            this.enemyTurn();
+        }
+    },
+
+    // v1.8.0: 获取元素中文名
+    getElementName(element) {
+        const names = {
+            fire: '火系', ice: '冰系', thunder: '雷系', earth: '土系',
+            wind: '风系', water: '水系', light: '光系', dark: '暗影系',
+            heal: '治愈系', plant: '植物系', summon: '召唤系'
+        };
+        return names[element] || element;
+    },
+
     enemyTurn() {
         try {
         if (!this.active || this.result) return;
+
+        // v1.8.0: NPC队友行动（在敌人回合前）
+        if (this.allies && this.allies.length > 0) {
+            this.allyTurn();
+            return; // allyTurn结束后会调用enemyTurn
+        }
 
         // 检查眩晕/冻结/麻痹状态，跳过回合
         if (this.isStunned(this.enemy)) {

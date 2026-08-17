@@ -496,6 +496,7 @@ const DebugPanel = {
                             <button onclick="DebugPanel.triggerBigEvent('big_event_annual_exam')" style="background: #4466aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">📝 年度考核</button>
                             <button onclick="DebugPanel.triggerBigEvent('big_event_earth_spring_duel')" style="background: #aa6644; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 地圣泉决斗</button>
                             <button onclick="WorldState.setFlag('hunter_team_member', true); WorldState.setFlag('hunter_rank', 'apprentice'); alert('已加入猎妖队');" style="background: #66aa44; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🏹 加入猎妖队</button>
+                            <button onclick="DebugPanel.startBattleWithAlly('one_eye_wolf')" style="background: #44aa88; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 带队友战斗测试</button>
                             <button onclick="DebugPanel.startBattle('mage_student', { mode: 'duel', canUseItems: false, canFlee: false, winHpPercent: 0.2, isFriendly: true })" style="background: #66aa44; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 决斗模式</button>
                             <button onclick="DebugPanel.startGauntlet()" style="background: #aa6622; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🔄 车轮战</button>
                             <button onclick="DebugPanel.startBattle('giant_eye_rat', { mode: 'hunt' })" style="background: #4488aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🏹 狩猎战</button>
@@ -1727,6 +1728,33 @@ const DebugPanel = {
         } catch (e) {
             console.error('[Debug] startCustomBattle错误:', e);
             alert('战斗失败: ' + e.message);
+        }
+    },
+
+    // v1.8.0: 带NPC队友开始战斗（测试用）
+    startBattleWithAlly(enemyId) {
+        try {
+            if (typeof BattleSystem !== 'undefined' && BattleSystem.startBattle) {
+                let enemyData = DataEnemies[enemyId] || DataEnemies['one_eye_wolf'];
+                // 复制敌人数据
+                enemyData = JSON.parse(JSON.stringify(enemyData));
+
+                // 创建NPC队友（徐大荒+小可）
+                const allies = [
+                    { id: 'xu_dahuang', name: '徐大荒', element: 'fire', hp: 200, maxHp: 200, mp: 100, maxMp: 100, attack: 40, defense: 20, acted: false },
+                    { id: 'xiao_ke', name: '小可', element: 'water', hp: 150, maxHp: 150, mp: 120, maxMp: 120, attack: 25, defense: 15, acted: false }
+                ];
+
+                BattleSystem.startBattle(enemyData, {
+                    mode: 'normal',
+                    canFlee: true,
+                    allies: allies,
+                    source: 'debug'
+                });
+            }
+        } catch (e) {
+            console.error('[Debug] startBattleWithAlly错误:', e);
+            alert('带队友战斗失败: ' + e.message);
         }
     },
     
