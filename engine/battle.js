@@ -580,6 +580,8 @@ const BattleSystem = {
         this.skillCooldowns = {};  // v0.86.0: 技能冷却状态
         this.source = options.source || 'normal';  // v0.99.1: 战斗来源（normal/hunt/event/quest）
         this.allies = options.allies || [];  // v1.8.0: NPC队友列表
+        // v1.8.1: 给队友设置默认战斗风格
+        this.allies.forEach(a => { if (!a.style) a.style = 'balanced'; });
         this.allyCommands = {};  // v1.8.0: 队友指令（集火/防御/技能/自由）
         this.investigationBonus = options.investigationBonus || 0;  // v1.8.0: 调查加成（0-0.3）
         
@@ -3602,10 +3604,22 @@ const BattleSystem = {
                 return;
             }
 
+            // v1.8.1: 战斗风格影响伤害（进攻+25%/防御-25%但有概率减伤/平衡正常）
+            const style = ally.style || 'balanced';
+            let damageMultiplier = 1.0;
+            let styleText = '';
+            if (style === 'aggressive') {
+                damageMultiplier = 1.25;
+                styleText = '（猛攻）';
+            } else if (style === 'defensive') {
+                damageMultiplier = 0.75;
+                styleText = '（谨慎）';
+            }
+
             // 简单AI：根据系别选择攻击方式
-            const damage = Math.floor(ally.attack * (0.8 + Math.random() * 0.4));
+            const damage = Math.floor(ally.attack * (0.8 + Math.random() * 0.4) * damageMultiplier);
             const elementName = this.getElementName(ally.element);
-            this.addLog(`${ally.name} 释放了${elementName}魔法，造成 ${damage} 点伤害！`, 'ally');
+            this.addLog(`${ally.name}${styleText}释放了${elementName}魔法，造成 ${damage} 点伤害！`, 'ally');
             this.enemy.hp = Math.max(0, this.enemy.hp - damage);
             this.stats.totalDamageDealt += damage;
 
