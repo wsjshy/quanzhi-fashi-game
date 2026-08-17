@@ -1749,6 +1749,7 @@ const DebugPanel = {
                     mode: 'normal',
                     canFlee: true,
                     allies: allies,
+                    investigationBonus: 0.2,
                     source: 'debug'
                 });
             }

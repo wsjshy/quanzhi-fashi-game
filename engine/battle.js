@@ -290,6 +290,11 @@ const BattleSystem = {
                         }
                     }
                 }
+
+                // v1.8.0: 调查加成（调查充分的玩家伤害提升）
+                if (this.investigationBonus > 0) {
+                    finalDamage *= (1 + this.investigationBonus);
+                }
                 
                 // 状态效果加分（DOT、控制等）
                 if (skill.statusEffects && skill.statusEffects.length > 0) {
@@ -576,6 +581,7 @@ const BattleSystem = {
         this.source = options.source || 'normal';  // v0.99.1: 战斗来源（normal/hunt/event/quest）
         this.allies = options.allies || [];  // v1.8.0: NPC队友列表
         this.allyCommands = {};  // v1.8.0: 队友指令（集火/防御/技能/自由）
+        this.investigationBonus = options.investigationBonus || 0;  // v1.8.0: 调查加成（0-0.3）
         
         // 战斗模式选项
         this.battleOptions = {
