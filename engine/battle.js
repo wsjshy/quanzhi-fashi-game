@@ -1358,6 +1358,41 @@ const BattleSystem = {
                     }
                 }
             }
+            // v1.5.4: 湿润层数机制（wetChance/wetStacks/wetStackMax）
+            if (te.wetChance && Math.random() < te.wetChance) {
+                const existingWet = this.enemy.statusEffects.find(e => e.type === 'wet');
+                const maxStacks = te.wetStackMax || 3;
+                const addStacks = te.wetStacks || 1;
+                if (existingWet) {
+                    existingWet.stacks = Math.min((existingWet.stacks || 1) + addStacks, maxStacks);
+                    existingWet.duration = Math.max(existingWet.duration, 2);
+                    this.addLog(`💧 湿润叠加 ${existingWet.stacks}/${maxStacks}！`, 'element');
+                    // 满层湿润回血（wetHealOnMax）
+                    if (existingWet.stacks >= maxStacks && te.wetHealOnMax) {
+                        const healAmount = Math.floor(this.player.maxHp * te.wetHealOnMax);
+                        this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
+                        this.addLog(`💧 湿润满层！恢复 ${healAmount} 点生命！`, 'heal');
+                    }
+                    // 满层湿润束缚（wetBindOnMax）
+                    if (existingWet.stacks >= maxStacks && te.wetBindOnMax) {
+                        if (!this.enemy.statusEffects.some(e => e.type === 'bind')) {
+                            this.addStatusEffect(this.enemy, {
+                                type: 'bind', name: '水之束缚', duration: te.bindDuration || 1,
+                                defenseDown: te.bindDefenseDown || 0,
+                                unpurgeable: te.bindUnpurgeable || false,
+                                hpDrain: te.bindHpDrain || 0
+                            });
+                            this.addLog(`💧 湿润满层！${this.enemy.name} 被水之束缚！`, 'element');
+                        }
+                    }
+                } else {
+                    this.addStatusEffect(this.enemy, {
+                        type: 'wet', name: '湿润', duration: 3, stacks: addStacks,
+                        waterDamageBonus: te.wetDamageBonus || 0.1
+                    });
+                    this.addLog(`💧 ${this.enemy.name} 被湿润了（${addStacks}层）！`, 'element');
+                }
+            }
             // 眩晕
             if (te.stunChance && Math.random() < te.stunChance) {
                 this.applyStatusEffects(this.enemy, [{
@@ -1380,25 +1415,49 @@ const BattleSystem = {
                 if (te.frostStackMax && existingSlow) {
                     // 叠加层数
                     existingSlow.stacks = (existingSlow.stacks || 1) + 1;
-                    existingSlow.speedMod = -0.15 * existingSlow.stacks;
+                    // v1.5.4: 使用frostSlowPerStack替代硬编码
+                    const slowPerStack = te.frostSlowPerStack || 0.15;
+                    existingSlow.speedMod = -(slowPerStack * existingSlow.stacks);
                     existingSlow.duration = 2;
                     this.addLog(`❄️ 冰霜叠加 ${existingSlow.stacks}/${te.frostStackMax}！`, 'element');
                     // 满层冻结（frostFreezeOnMax）
                     if (existingSlow.stacks >= te.frostStackMax && te.frostFreezeOnMax) {
                         this.addStatusEffect(this.enemy, {
-                            type: 'freeze', name: '冰霜冻结', duration: 1
+                            type: 'freeze', name: '冰霜冻结', duration: te.freezeDuration || 1
                         });
                         this.addLog(`❄️ 冰霜满层！${this.enemy.name} 被冻结！`, 'element');
                         // 移除减速状态
                         this.enemy.statusEffects = this.enemy.statusEffects.filter(e => e !== existingSlow);
                     }
                 } else {
+                    // v1.5.4: slowBonus减速效果加成
+                    const baseSlow = 0.3 * (1 + (te.slowBonus || 0));
                     this.applyStatusEffects(this.enemy, [{
                         type: te.frostStackMax ? 'frost' : 'slow', name: te.frostStackMax ? '冰霜' : '减速',
-                        speedMod: -0.3, duration: 2, stacks: 1,
+                        speedMod: -baseSlow, duration: 2, stacks: 1,
                         unpurgeable: te.slowUnpurgeable || false
                     }], true);
                     this.addLog(`🐌 ${this.enemy.name} 被减速了！`, 'element');
+                }
+            }
+            // v1.5.4: 破冰伤害（frostShatter）- 冰系攻击命中冻结目标时造成额外伤害
+            if (te.frostShatter) {
+                const isFrozen = this.enemy.statusEffects.some(e => e.type === 'freeze' || e.type === 'frozen');
+                if (isFrozen && damage.element === 'ice') {
+                    let shatterDmg = Math.floor(this.player.attack * (te.shatterDamage || 0.8));
+                    const shatterCrit = te.shatterCrit ? true : false;
+                    if (shatterCrit) shatterDmg = Math.floor(shatterDmg * 1.5);
+                    // shatterPierceShield：破冰无视护盾
+                    const pierceShield = te.shatterPierceShield || false;
+                    this.applyDamage(this.enemy, { amount: shatterDmg, element: 'ice', isCrit: shatterCrit, isMiss: false, pierceShield: pierceShield }, this.player);
+                    this.addLog(`💥 破冰！造成 ${shatterDmg} 点额外伤害！${shatterCrit ? ' 暴击！' : ''}`, 'element');
+                    this.showDamageNumber('enemy', shatterDmg, shatterCrit ? 'crit' : 'normal');
+                    // 解除冻结
+                    this.enemy.statusEffects = this.enemy.statusEffects.filter(e => e.type !== 'freeze' && e.type !== 'frozen');
+                    // shatterNextCrit：破冰后下次冰系技能必定暴击
+                    if (te.shatterNextCrit) {
+                        this.player.buffs.push({ type: 'next_crit_guaranteed', name: '破冰之势', duration: 2 });
+                    }
                 }
             }
             // 时间冻结：概率时停
@@ -1465,6 +1524,34 @@ const BattleSystem = {
                             thunderDamageBonus: te.shockThunderBonus || 0.3
                         });
                         this.addLog(`⚡ ${this.enemy.name} 进入感电状态，受到雷伤增加！`, 'element');
+                    }
+                }
+                // v1.5.4: 感电层数机制（shockChance/shockStacks/shockStackMax）
+                if (te.shockChance && Math.random() < te.shockChance) {
+                    const existingShock = this.enemy.statusEffects.find(e => e.type === 'shock' || e.type === 'electrified');
+                    const maxStacks = te.shockStackMax || 3;
+                    const addStacks = te.shockStacks || 1;
+                    if (existingShock) {
+                        existingShock.stacks = Math.min((existingShock.stacks || 1) + addStacks, maxStacks);
+                        existingShock.duration = Math.max(existingShock.duration, 2);
+                        // v1.5.4: 感电伤害加成（shockDamageBonus）
+                        if (te.shockDamageBonus) {
+                            existingShock.thunderDamageBonus = (existingShock.thunderDamageBonus || 0) + te.shockDamageBonus;
+                        }
+                        this.addLog(`⚡ 感电叠加 ${existingShock.stacks}/${maxStacks}！`, 'element');
+                        // 满层麻痹（shockParalyzeOnMax）
+                        if (existingShock.stacks >= maxStacks && te.shockParalyzeOnMax) {
+                            if (!this.enemy.statusEffects.some(e => e.type === 'paralyze')) {
+                                this.addStatusEffect(this.enemy, { type: 'paralyze', name: '感电麻痹', duration: te.paralyzeDuration || 2 });
+                                this.addLog(`⚡ 感电满层！${this.enemy.name} 被麻痹！`, 'element');
+                            }
+                        }
+                    } else {
+                        this.addStatusEffect(this.enemy, {
+                            type: 'shock', name: '感电', duration: 3, stacks: addStacks,
+                            thunderDamageBonus: te.shockThunderBonus || te.shockDamageBonus || 0.1
+                        });
+                        this.addLog(`⚡ ${this.enemy.name} 进入感电状态（${addStacks}层）！`, 'element');
                     }
                 }
             }
@@ -4475,6 +4562,20 @@ const BattleSystem = {
                     this.showDamageNumber('enemy', novaDmg, 'normal');
                 }
             }
+            // v1.5.4: 自动冻结（autoFreezeChance）- 每回合开始有概率冻结敌人
+            if (te.autoFreezeChance && this.enemy.hp > 0 && !this.enemy.statusEffects.some(e => e.type === 'freeze' || e.type === 'frozen')) {
+                if (Math.random() < te.autoFreezeChance) {
+                    this.addStatusEffect(this.enemy, { type: 'freeze', name: '寒冰禁锢', duration: te.freezeDuration || 1 });
+                    this.addLog(`❄️ 寒冰禁锢！${this.enemy.name} 被自动冻结！`, 'element');
+                }
+            }
+            // v1.5.4: 低血量冻结（lowHpFreezeChance）- 敌人HP低于30%时概率冻结
+            if (te.lowHpFreezeChance && this.enemy.hp > 0 && this.enemy.hp / this.enemy.maxHp < 0.3) {
+                if (!this.enemy.statusEffects.some(e => e.type === 'freeze' || e.type === 'frozen') && Math.random() < te.lowHpFreezeChance) {
+                    this.addStatusEffect(this.enemy, { type: 'freeze', name: '永冻', duration: 2 });
+                    this.addLog(`❄️ 永冻！${this.enemy.name} 血量过低被冻结！`, 'element');
+                }
+            }
         }
 
         // 光环/回合开始伤害可能击杀敌人
@@ -4725,10 +4826,22 @@ const BattleSystem = {
                 damage *= (1 + (hasShock.thunderDamageBonus || 0.3));
             }
 
+            // v1.5.4: 湿润状态：水系伤害加成（wetDamageBonus）
+            if (element === 'water' && hasWet) {
+                const wetEffect = target.statusEffects.find(e => e.type === 'wet');
+                const wetBonus = wetEffect ? (wetEffect.waterDamageBonus || 0.1) : 0.1;
+                damage *= (1 + wetBonus);
+            }
+
             // 麻痹伤害加成（paralyzeDamage：麻痹时受伤+8%）
             if (attacker && attacker.talentEffects && attacker.talentEffects.paralyzeDamage) {
                 const isParalyzed = target.statusEffects.some(e => e.type === 'paralyze');
                 if (isParalyzed) damage *= (1 + attacker.talentEffects.paralyzeDamage);
+            }
+            // v1.5.4: 麻痹目标伤害加成（paralyzeDamageBonus）- 攻击麻痹目标时伤害提升
+            if (attacker && attacker.talentEffects && attacker.talentEffects.paralyzeDamageBonus) {
+                const isParalyzed = target.statusEffects.some(e => e.type === 'paralyze');
+                if (isParalyzed) damage *= (1 + attacker.talentEffects.paralyzeDamageBonus);
             }
             // 飓风卷起受伤加成
             const hurricane = target.statusEffects.find(e => e.type === 'stun' && e.damageTaken);
@@ -5119,7 +5232,8 @@ const BattleSystem = {
 
         // 护盾吸收
         const shield = target.statusEffects.find(e => e.type === 'shield');
-        if (shield && shield.value > 0) {
+        // v1.5.4: pierceShield无视护盾（破冰等）
+        if (shield && shield.value > 0 && !damage.pierceShield) {
             // 检查是否是水盾
             const isWaterShield = shield.name && (shield.name.includes('水') || shield.name.includes('water'));
             
@@ -5426,6 +5540,15 @@ const BattleSystem = {
                 };
                 attacker.statusEffects.push(freezeEffect);
                 this.addLog(`${attackerName} 被冻结了！`, 'debuff');
+            }
+            // v1.5.4: 雷殛护体反击（thunderCounter）- 受击时概率反击雷伤
+            if (target === this.player && this.player.talentEffects && this.player.talentEffects.thunderCounter) {
+                if (Math.random() < this.player.talentEffects.thunderCounter) {
+                    const counterDmg = Math.floor(this.player.attack * (this.player.talentEffects.thunderCounterDamage || 0.5));
+                    this.applyDamage(attacker, { amount: counterDmg, element: 'thunder', isCrit: false, isMiss: false }, this.player);
+                    this.addLog(`⚡ 雷殛护体！反击造成 ${counterDmg} 点雷伤！`, 'counter');
+                    this.showDamageNumber('enemy', counterDmg, 'normal');
+                }
             }
         }
         
@@ -6196,6 +6319,12 @@ const BattleSystem = {
                 const drainDmg = Math.floor(target.maxHp * effect.hpDrain);
                 this.applyDamage(target, { amount: drainDmg, isCrit: false, isMiss: false, element: 'ice' }, null);
                 this.addLog(`❄️ ${targetName} 被冻伤，损失 ${drainDmg} 点生命！`, 'damage');
+            }
+            // v1.5.4: 麻痹掉血（paralyzeHpDrain：麻痹目标每回合损失%最大HP）
+            if (effect.type === 'paralyze' && !isPlayer && this.player.talentEffects && this.player.talentEffects.paralyzeHpDrain) {
+                const drainDmg = Math.floor(target.maxHp * this.player.talentEffects.paralyzeHpDrain);
+                this.applyDamage(target, { amount: drainDmg, isCrit: false, isMiss: false, element: 'thunder' }, null);
+                this.addLog(`⚡ ${targetName} 被麻痹电击，损失 ${drainDmg} 点生命！`, 'damage');
             }
 
             // REG恢复（每回合恢复HP）

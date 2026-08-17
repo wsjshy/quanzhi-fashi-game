@@ -2,6 +2,35 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v1.5.4 - 冰/雷/水三系天赋战斗效果实装
+
+### 冰系核心效果
+- **frostSlowPerStack**：每层寒霜减速值可配置（替代硬编码0.15）
+- **frostShatter**：破冰伤害，冰系攻击命中冻结目标时造成额外伤害并解除冻结
+- **shatterDamage/shatterCrit/shatterNextCrit/shatterPierceShield**：破冰伤害数值/暴击/下次必暴/无视护盾
+- **autoFreezeChance**：每回合开始自动冻结概率
+- **lowHpFreezeChance**：敌人HP低于30%时概率冻结
+- **slowBonus**：减速效果加成
+- **pierceShield**：applyDamage新增无视护盾字段
+
+### 雷系核心效果
+- **shockChance/shockStacks/shockStackMax**：感电层数机制（100%叠加，最多3层）
+- **shockDamageBonus**：感电伤害加成
+- **shockParalyzeOnMax**：满层感电麻痹
+- **paralyzeDamageBonus**：攻击麻痹目标时伤害提升（与paralyzeDamage区分）
+- **paralyzeHpDrain**：麻痹目标每回合损失%最大HP
+- **thunderCounter/thunderCounterDamage**：雷殛护体，受击时概率反击雷伤
+
+### 水系核心效果
+- **wetChance/wetStacks/wetStackMax**：湿润层数机制（100%叠加，最多3层）
+- **wetDamageBonus**：湿润目标受到水系伤害加成
+- **wetHealOnMax**：满层湿润时回血
+- **wetBindOnMax**：满层湿润时束缚（含bindDuration/bindDefenseDown/bindUnpurgeable/bindHpDrain）
+
+### 天赋效果实现进度
+- 总字段539个，已处理约300+个（56%）
+- 剩余：风系/土系/光系/暗系/治愈系/植物系/召唤系分支效果
+
 ## v1.5.3 - 天赋进化原则修正（弱天赋高成长）
 
 ### 设计原则纠正

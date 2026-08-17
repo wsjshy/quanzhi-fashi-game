@@ -1,12 +1,38 @@
 # TODO - 全职法师游戏
 
-> 当前版本：v1.5.3（天赋进化原则修正） | 下一版本：**v1.5.4 冰系/雷系/水系分支效果实装** | 最后更新：2026-08-18
+> 当前版本：v1.5.4（冰雷水天赋效果实装） | 下一版本：**v1.5.5 风土光暗天赋效果实装** | 最后更新：2026-08-18
 > 状态说明：[ ]待做 [~]进行中 [x]完成 [❌]已废弃
 > 唯一入口：[AGENTS.md](AGENTS.md)
 
 ---
 
 ## P0 - 当前开发
+
+### v1.5.4 冰/雷/水三系天赋战斗效果实装（2026-08-18，已完成）
+
+**冰系核心效果**：
+- [x] frostSlowPerStack 每层寒霜减速可配置
+- [x] frostShatter/shatterDamage/shatterCrit 破冰伤害
+- [x] shatterNextCrit/shatterPierceShield 破冰后必暴/无视护盾
+- [x] autoFreezeChance 每回合自动冻结
+- [x] lowHpFreezeChance 低血量冻结
+- [x] slowBonus 减速效果加成
+- [x] pierceShield applyDamage无视护盾字段
+
+**雷系核心效果**：
+- [x] shockChance/shockStacks/shockStackMax 感电层数机制
+- [x] shockDamageBonus/shockParalyzeOnMax 感电伤害/满层麻痹
+- [x] paralyzeDamageBonus 麻痹目标伤害加成
+- [x] paralyzeHpDrain 麻痹目标每回合掉血
+- [x] thunderCounter 雷殛护体反击
+
+**水系核心效果**：
+- [x] wetChance/wetStacks/wetStackMax 湿润层数机制
+- [x] wetDamageBonus 湿润目标水系伤害加成
+- [x] wetHealOnMax 满层湿润回血
+- [x] wetBindOnMax 满层湿润束缚
+
+**进度**：天赋效果539字段，已处理约300+（56%）
 
 ### v1.5.3 天赋进化原则修正（2026-08-18，已完成）
 

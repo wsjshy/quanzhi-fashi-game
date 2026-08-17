@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.5.3 · 天赋进化原则修正</div>
+                ">v1.5.4 · 冰雷水天赋效果实装</div>
             </div>
         `;
 
