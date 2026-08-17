@@ -3090,6 +3090,21 @@ const DataQuests = {
     dialogueComplete: "联手击败妖魔！两人都对你的公正表示感谢。技能点1。"
   },
 
+  // ========== v0.98.0 对话触发任务：徐大荒委托 ==========
+
+  quest_xu_dahuang_investigation: {
+    id: "quest_xu_dahuang_investigation",
+    name: "城外异动调查",
+    description: "徐大荒队长注意到城外妖魔活动异常，委托你去雪峰山一带调查情况。",
+    giver: "xu_dahuang",
+    type: "investigation",
+    objectives: [
+      { type: "reach", locationId: "snow_peak_mountain", count: 1, description: "前往雪峰山调查" },
+      { type: "kill", count: 2, description: "击败2只妖魔了解情况" }
+    ],
+    rewards: { exp: 200, gold: 150, setFlag: "investigated_outside" }
+  },
+
   // ========== v0.67.0 博城灾难第二阶段任务 ==========
 
   bocheng_prep_quest: {

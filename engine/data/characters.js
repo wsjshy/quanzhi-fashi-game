@@ -7064,6 +7064,7 @@ const DataCharacters = {
           texts: ["希望不会。但做我们这行的，不能抱侥幸心理。", "博城三面环山，一旦妖魔潮涌进来...", "不说这些不吉利的。真到那时候，我们猎妖队会顶在前面。"],
           effects: { opinion: 3, trust: 2 },
           choices: [
+            { text: "我可以帮忙调查吗？", next: "default", action: "start_quest", actionData: { questId: "quest_xu_dahuang_investigation" } },
             { text: "队长真有担当", next: "default", action: "back" }
           ]
         },

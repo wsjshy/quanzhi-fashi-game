@@ -453,6 +453,15 @@ const DialogueTree = {
                 }
                 break;
 
+            case 'start_quest':
+                // 接取任务（v0.98.0: 对话触发任务）
+                if (actionData && actionData.questId) {
+                    setTimeout(() => {
+                        Game.acceptQuest(actionData.questId);
+                    }, 500);
+                }
+                break;
+
             case 'close_dialogue':
             case 'close': // v0.73.1: 兼容简写
                 // 关闭对话
