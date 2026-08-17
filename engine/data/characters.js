@@ -7139,6 +7139,9 @@ const DataCharacters = {
           choices: [
             { text: "请教冰系技巧", next: "about_ice" },
             { text: "你和穆氏家族有关系？", next: "about_mu" },
+            { text: "上次的事...不用谢", next: "about_rescue" },
+            { text: "徐队长人怎么样？", next: "about_xu" },
+            { text: "你为什么总是这么高冷？", next: "about_personality" },
             { text: "告辞", next: "default", action: "back" }
           ]
         },
@@ -7153,6 +7156,56 @@ const DataCharacters = {
           texts: ["……是有些亲戚关系。", "但我是我，穆氏是穆氏。", "别再问这个了。"],
           effects: { familiarity: -2 },
           choices: [{ text: "抱歉", next: "default", action: "back" }]
+        },
+        about_rescue: {
+          id: "about_rescue",
+          texts: ["（郭彩棠的脸微微红了一下，随即恢复冷淡）", "那次...是我大意了。要不是你，我可能已经...", "总之，谢了。但别以为这样我就会对你客气。"],
+          effects: { opinion: 5, trust: 3 },
+          choices: [
+            { text: "应该的，队友嘛", next: "about_rescue_teammate" },
+            { text: "那你打算怎么谢我？", next: "about_rescue_tease" }
+          ]
+        },
+        about_rescue_teammate: {
+          id: "about_rescue_teammate",
+          texts: ["（郭彩棠愣了一下，眼神柔和了几分）", "队友...吗。", "哼，算你会说话。"],
+          effects: { opinion: 3, trust: 2 },
+          choices: [{ text: "（微笑）", next: "default", action: "back" }]
+        },
+        about_rescue_tease: {
+          id: "about_rescue_tease",
+          texts: ["（郭彩棠瞪了你一眼）你！", "……想得美。", "等你什么时候能独当一面了再说吧，菜鸟。"],
+          effects: { opinion: -1, trust: 1 },
+          choices: [{ text: "哈哈，开个玩笑", next: "default", action: "back" }]
+        },
+        about_xu: {
+          id: "about_xu",
+          texts: ["徐大荒？那个莽夫。", "打仗是一把好手，但脑子不太好使。", "不过...他是个好队长。这点我承认。"],
+          effects: { familiarity: 2 },
+          choices: [
+            { text: "你们配合很久了？", next: "about_xu_history" },
+            { text: "原来如此", next: "default", action: "back" }
+          ]
+        },
+        about_xu_history: {
+          id: "about_xu_history",
+          texts: ["五年了。我刚进猎妖队的时候，他还是个队员。", "那家伙拼起命来不要命，好几次都是我给他收尾。", "后来老队长走了，他就接了班。虽然莽，但值得信任。"],
+          effects: { opinion: 2, trust: 2 },
+          choices: [{ text: "真是对好搭档", next: "default", action: "back" }]
+        },
+        about_personality: {
+          id: "about_personality",
+          texts: ["（郭彩棠皱了皱眉）高冷？", "我只是不喜欢废话。", "在猎妖队，话多的人死得快。"],
+          choices: [
+            { text: "但这样会让人觉得难以接近", next: "about_personality_open" },
+            { text: "明白了，我不多问", next: "default", action: "back" }
+          ]
+        },
+        about_personality_open: {
+          id: "about_personality_open",
+          texts: ["（郭彩棠沉默了一会儿）", "……接近我有什么好处？穆氏的人，都只会利用别人。", "我不想被利用，也不想利用别人。保持距离，对大家都好。"],
+          effects: { opinion: 3, trust: 5 },
+          choices: [{ text: "我不是穆氏的人", next: "default", action: "back" }]
         }
       }
     }
