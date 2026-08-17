@@ -5266,6 +5266,12 @@ const DataCharacters = {
           },
           choices: [
             {
+              text: "老师，我可以帮忙调查吗？",
+              next: "default",
+              action: "start_quest",
+              actionData: { questId: "quest_tangyue_mountain_investigation" }
+            },
+            {
               text: "我知道了，谢谢老师提醒",
               next: "default"
             }
@@ -6485,6 +6491,7 @@ const DataCharacters = {
           choices: [
             { text: "久仰穆族长大名。", next: "about_family", condition: { minOpinion: 0 } },
             { text: "我想了解穆氏世家。", next: "about_mu" },
+            { text: "我想获得穆氏的认可", next: "default", action: "start_quest", actionData: { questId: "quest_muzhuoyun_recognition" } },
             { text: "告辞。", next: "default", action: "back" }
           ]
         },
@@ -6547,7 +6554,10 @@ const DataCharacters = {
           id: "about_hunter",
           texts: ["想加入猎者联盟？好志气！", "不过猎魔不是儿戏，城市之外的妖魔可不是学校里的实践课。", "先提升实力，多猎杀几只奴仆级妖魔，再来找我。"],
           effects: { opinion: 3, faction: { hunter_alliance: 5 } },
-          choices: [{ text: "我会努力的！", next: "default", action: "back" }]
+          choices: [
+            { text: "有猎魔考核吗？我想试试", next: "default", action: "start_quest", actionData: { questId: "quest_dengkai_hunter_test" } },
+            { text: "我会努力的！", next: "default", action: "back" }
+          ]
         },
         about_mu: {
           id: "about_mu",

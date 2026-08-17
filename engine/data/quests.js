@@ -3281,6 +3281,33 @@ const DataQuests = {
     rewards: { exp: 200, gold: 150, setFlag: "tracked_black_church" }
   },
 
+  quest_muzhuoyun_recognition: {
+    id: "quest_muzhuoyun_recognition",
+    name: "穆氏的认可",
+    description: "穆卓云看不起平民出身的你，你决定用实力获得穆氏的认可。",
+    giver: "mu_zhuoyun",
+    type: "challenge",
+    objectives: [
+      { type: "cultivate", count: 3, description: "修炼3次提升实力" },
+      { type: "kill", count: 2, description: "击败2只妖魔证明能力" },
+      { type: "talk", npcId: "mu_zhuoyun", count: 1, description: "向穆卓云展示成果" }
+    ],
+    rewards: { exp: 200, gold: 150, setFlag: "mu_family_recognized" }
+  },
+
+  quest_dengkai_hunter_test: {
+    id: "quest_dengkai_hunter_test",
+    name: "猎者联盟考核",
+    description: "邓凯建议你通过猎魔考核证明实力，加入猎者联盟。",
+    giver: "deng_kai",
+    type: "challenge",
+    objectives: [
+      { type: "kill", count: 3, description: "击败3只妖魔完成考核" },
+      { type: "talk", npcId: "deng_kai", count: 1, description: "向邓凯汇报考核结果" }
+    ],
+    rewards: { exp: 200, gold: 150, setFlag: "hunter_alliance_member" }
+  },
+
   // ========== v0.67.0 博城灾难第二阶段任务 ==========
 
   bocheng_prep_quest: {
