@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.7.0 · 地圣泉决斗+博城篇深化</div>
+                ">v1.7.1 · 地圣泉决斗重制+原文校准</div>
             </div>
         `;
 

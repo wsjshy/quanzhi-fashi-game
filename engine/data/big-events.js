@@ -860,7 +860,7 @@ const DataBigEvents = {
   big_event_earth_spring_duel: {
     id: "big_event_earth_spring_duel",
     name: "地圣泉决斗",
-    description: "地圣泉名额争夺，莫凡与宇昂的决斗，博城五大势力齐聚观战...",
+    description: "毕业前夕，莫凡与宇昂的魔法决斗，胜者获得地圣泉一周修炼资格，博城五大势力齐聚观战...",
     type: "duel",
     autoTrigger: false,
     conditions: {
@@ -872,7 +872,7 @@ const DataBigEvents = {
       {
         id: "phase_1_prelude",
         name: "决斗前夕",
-        description: "地圣泉名额争夺的日子到了。博城五大势力——天澜魔法高中、猎者联盟、魔法协会、军方、穆氏家族——齐聚穆氏庄园的决斗场。\n\n莫凡将代表学校挑战穆氏的宇昂，胜者获得地圣泉的修炼资格。\n\n你站在观众席上，周围是熟悉的同学和老师。唐月老师、薛木生班主任、许昭霆、周敏、张小侯都在。\n\n你可以选择如何度过这场决斗。",
+        description: "毕业前夕，穆氏庄园的魔法决斗场。\n\n博城五大势力齐聚——天澜魔法高中朱校长、猎者联盟邓凯大长老、魔法协会杨作河、军方斩空教官、穆氏家主穆卓云。\n\n决斗的彩头是博城地圣泉的一周修炼资格——这是博城最珍贵的修炼资源，一年只开启一次，足以让初阶法师冲击中阶。\n\n莫凡将代表学校挑战穆氏的宇昂。宇昂是穆卓云的养子，穆氏有名的修炼疯子，据说已经掌握了3级冰蔓·覆盖。\n\n你站在观众席上，周围是熟悉的同学和老师。这场决斗，你选择如何自处？",
         type: "choice",
         choices: [
           {
@@ -885,7 +885,7 @@ const DataBigEvents = {
             }
           },
           {
-            text: "支持宇昂，看好穆氏",
+            text: "看好宇昂，穆氏实力更强",
             nextPhase: "phase_2_duel",
             effects: {
               npcRelation: { "mu_bai": 5 },
@@ -894,15 +894,16 @@ const DataBigEvents = {
             }
           },
           {
-            text: "中立观战，专注学习",
+            text: "中立观战，专注学习高手对决",
             nextPhase: "phase_2_duel",
             effects: {
-              composure: 5,
+              composure: 10,
+              exp: 20,
               flags: { "duel_side": "neutral" }
             }
           },
           {
-            text: "（如果有决斗约定）我也要挑战地圣泉名额",
+            text: "（年度考核优异）我也要争取地圣泉资格！",
             nextPhase: "phase_1_player_duel",
             conditions: { flag: "duel_promise" },
             effects: {
@@ -913,11 +914,11 @@ const DataBigEvents = {
         ]
       },
 
-      // 第一阶段B：玩家参与决斗
+      // 第一阶段B：玩家挑战宇昂
       {
         id: "phase_1_player_duel",
         name: "你的挑战",
-        description: "你站了出来：\"我也要挑战地圣泉名额！\"\n\n全场哗然。穆卓云皱眉：\"你是？\"\n\n\"年度考核的学生，我有资格挑战。\"\n\n斩空教官饶有兴致地看着你：\"哦？有点意思。\"\n\n穆卓云冷笑：\"好，那就让宇昂先教训你，再对付莫凡。\"",
+        description: "你站了出来：\"我也要争取地圣泉资格！\"\n\n全场哗然。穆卓云皱眉：\"你是？\"\n\n\"天澜魔法高中学生，年度考核优异，我有资格挑战。\"\n\n斩空教官饶有兴致地看着你：\"哦？有点意思。\"\n\n邓凯大长老作为公证人：\"既然有资格，那就按规矩来。你先和宇昂决斗，胜者再与莫凡对决。\"\n\n穆卓云冷笑：\"好，宇昂，让他知道天高地厚。\"",
         type: "battle",
         enemyId: "yu_ang_duel",
         battleOptions: {
@@ -934,15 +935,15 @@ const DataBigEvents = {
       {
         id: "phase_2_player_win",
         name: "一鸣惊人",
-        description: "你击败了宇昂！全场震惊。\n\n斩空教官大笑：\"好小子！有点本事！\"\n\n穆卓云脸色铁青。莫凡拍了拍你的肩膀：\"行啊你，藏得挺深。\"\n\n你获得了地圣泉的修炼资格！",
+        description: "你击败了宇昂！全场震惊。\n\n斩空教官大笑：\"好小子！有点本事！\"\n\n穆卓云脸色铁青。朱校长眼中闪过一丝赞许。\n\n邓凯宣布：\"胜者获得地圣泉一周修炼资格！\"\n\n莫凡走过来拍了拍你的肩膀：\"行啊你，藏得挺深。地圣泉归你了，我萧院长说会给我安排其他资源。\"\n\n（萧院长看中你的魄力，同时为莫凡安排了三步塔提前开放和特殊指导，莫凡走替代成长路线，实力不会掉线）",
         type: "narrative",
         nextPhase: "phase_3_end",
         effects: {
           exp: 200,
           gold: 300,
           reputation: { "grassroots": 30, "brave": 20, "mu_family": -20 },
-          npcRelation: { "mo_fan": 15, "mu_bai": -10 },
-          flags: { "earth_spring_qualification": true, "duel_result": "player_win" },
+          npcRelation: { "mo_fan": 15, "mu_bai": -10, "xiao_yuanzhang": 10 },
+          flags: { "earth_spring_qualification": true, "duel_result": "player_win", "mofan_alternative_growth": true },
           items: [{ itemId: "stardust_device_mortal", count: 1 }]
         }
       },
@@ -951,7 +952,7 @@ const DataBigEvents = {
       {
         id: "phase_2_player_lose",
         name: "虽败犹荣",
-        description: "你输给了宇昂。他的3级冰蔓确实强大，还有地波履魔具的辅助。\n\n但你虽败犹荣，能站在这个决斗场上本身就是一种认可。\n\n唐月老师安慰你：\"已经很厉害了，下次一定能赢。\"",
+        description: "你输给了宇昂。他的3级冰蔓·覆盖确实强大，还有地波履魔具的辅助。\n\n但你虽败犹荣，能站在这个决斗场上本身就是一种认可。\n\n唐月老师安慰你：\"已经很厉害了，宇昂毕竟是穆氏精心培养的。\"\n\n接下来，莫凡将继续挑战宇昂。",
         type: "narrative",
         nextPhase: "phase_2_duel",
         effects: {
@@ -966,11 +967,11 @@ const DataBigEvents = {
       {
         id: "phase_2_duel",
         name: "魔法决斗",
-        description: "决斗开始！宇昂率先释放冰蔓·冻迟，莫凡用火滋·灼烧破冰。\n\n宇昂使用地波履魔具躲避攻击，动作敏捷。莫凡的雷印和火滋交替使用，逐渐占据上风。\n\n突然，宇昂释放了3级冰蔓·覆盖！全场震惊——这是中阶法师才能掌握的技能！\n\n莫凡被冰封，但他用雷印破冰，随后释放火滋·焚骨，一击制胜！\n\n莫凡赢了！地圣泉名额归他。",
+        description: "决斗开始！\n\n宇昂率先释放冰蔓·冻结，寒气弥漫整个决斗场。莫凡不慌不忙，将火滋·灼烧释放在自己脚下，用火焰粉碎冰蔓的冻结效果——1级火滋破了2级冰蔓！\n\n宇昂脸色一变，启动地波履魔具，身形如游鱼般躲避莫凡的攻击。\n\n突然，宇昂双手高举，寒气暴涨：\"冰蔓·覆盖！\"\n\n3级冰蔓！全场震惊——这是中阶法师才能掌握的技能！寒冰如潮水般蔓延，火焰都被熄灭，莫凡无论躲到哪里都会在几秒内被冻成冰雕。\n\n就在所有人以为莫凡输了的时候，他周身雷光闪烁——雷印！破冰！\n\n随后，莫凡双手凝聚出比之前强大数倍的火焰——3级火滋！\n\n更令人震惊的是，他左手雷光，右手火焰——天生双系！\n\n全场哗然。今夜，再没有人比莫凡更加耀眼。\n\n莫凡赢了！地圣泉资格归他。",
         type: "choice",
         choices: [
           {
-            text: "为莫凡欢呼",
+            text: "为莫凡欢呼！草根也能逆袭！",
             nextPhase: "phase_3_end",
             conditions: { flag: "duel_side", value: "mofan" },
             effects: {
@@ -979,7 +980,7 @@ const DataBigEvents = {
             }
           },
           {
-            text: "为宇昂惋惜",
+            text: "为宇昂惋惜，穆氏虽败犹荣",
             nextPhase: "phase_3_end",
             conditions: { flag: "duel_side", value: "yuang" },
             effects: {
@@ -988,7 +989,7 @@ const DataBigEvents = {
             }
           },
           {
-            text: "若有所思，总结经验",
+            text: "若有所思，总结高手对决的经验",
             nextPhase: "phase_3_end",
             effects: {
               composure: 10,
@@ -1002,7 +1003,7 @@ const DataBigEvents = {
       {
         id: "phase_3_end",
         name: "决斗结束",
-        description: "地圣泉决斗结束了。莫凡获得了修炼资格，宇昂虽然输了但展现了实力。\n\n这场决斗让你看到了世家和草根的差距，也看到了努力可以弥补天赋的不足。\n\n（你的选择影响了和各方的关系）",
+        description: "地圣泉决斗结束了。\n\n这场决斗让所有人看到了世家与草根的差距，也看到了努力可以弥补天赋的不足。莫凡的天生双系震惊全场，宇昂的实力也得到了认可。\n\n（你的选择影响了和各方的关系，后续剧情会根据你的立场展开）",
         type: "auto",
         effects: {
           flags: { "earth_spring_duel_completed": true }
