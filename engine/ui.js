@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.99.0 · 每日行动次数系统（替代体力）</div>
+                ">v0.99.1 · 猎魔奖励递减+战斗来源标记</div>
             </div>
         `;
 

@@ -506,8 +506,9 @@ const Game = {
 
         // 处理结果
         if (result.battle) {
-            // 触发战斗
-            this.startBattle(result.battle.enemy);
+            // 触发战斗（v0.99.1: 传递战斗来源用于猎魔奖励递减）
+            const battleOptions = result.battle.source ? { source: result.battle.source } : {};
+            this.startBattle(result.battle.enemy, null, battleOptions);
             return;
         }
 

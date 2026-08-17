@@ -567,6 +567,7 @@ const BattleSystem = {
         this.elementEnergy = 0;  // v0.86.0: 元素能量（初阶魔法积累，满5点后下一个中高阶魔法爆发）
         this.elementEnergyMax = 5;  // 元素能量上限
         this.skillCooldowns = {};  // v0.86.0: 技能冷却状态
+        this.source = options.source || 'normal';  // v0.99.1: 战斗来源（normal/hunt/event/quest）
         
         // 战斗模式选项
         this.battleOptions = {
@@ -6751,6 +6752,16 @@ const BattleSystem = {
 
         // 应用奖励（各系独立经验：使用过的系获全额，其他系获30%）
         const usedElementArray = Array.from(this.usedElements || []);
+        // v0.99.1: 猎魔战斗奖励递减（每日次数）
+        let huntEff = 1.0;
+        if (this.source === 'hunt' && typeof Player.getHuntEfficiency === 'function') {
+            huntEff = Player.getHuntEfficiency();
+            if (huntEff < 1.0) {
+                rewards.exp = Math.floor(rewards.exp * huntEff);
+                rewards.gold = Math.floor(rewards.gold * huntEff);
+                rewards.huntEfficiency = huntEff;
+            }
+        }
         const expResult = Player.gainExp(rewards.exp, usedElementArray);
         Player.gainGold(rewards.gold);
         rewards.levelUps = expResult.levelUps;
@@ -6797,7 +6808,7 @@ const BattleSystem = {
         // 更新任务进度
         const completedQuests = QuestSystem.updateProgress('kill', this.enemy.id, 1);
 
-        this.addLog(`获得 ${rewards.exp} 经验，${rewards.gold} 金币${rewards.goldCrit ? ' 💰金币暴击！' : ''}`, 'system');
+        this.addLog(`获得 ${rewards.exp} 经验，${rewards.gold} 金币${rewards.goldCrit ? ' 💰金币暴击！' : ''}${rewards.huntEfficiency ? ` ⚠️猎魔效率${Math.floor(rewards.huntEfficiency*100)}%（今日第${Player.dailyActions?.hunt || 0}次）` : ''}`, 'system');
         if (rewards.items.length > 0) {
             rewards.items.forEach(item => {
                 this.addLog(`获得 ${item.name} x${item.count}`, 'system');

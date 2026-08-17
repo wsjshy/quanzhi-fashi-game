@@ -363,6 +363,14 @@ const MapSystem = {
             const actionModifier = this.getActionEncounterModifier(actionId);
             if (Math.random() < encounterRate * actionModifier) {
                 result.battle = this.triggerRandomBattle(this.currentLocation);
+                // v0.99.1: 标记战斗来源（用于猎魔奖励递减）
+                if (result.battle) {
+                    if (actionId === 'hunt' || action.id === 'hunt') {
+                        result.battle.source = 'hunt';
+                    } else if (actionId === 'explore' || action.id === 'explore') {
+                        result.battle.source = 'explore';
+                    }
+                }
             }
         }
 
