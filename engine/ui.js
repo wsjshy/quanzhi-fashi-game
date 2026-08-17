@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.3.1 · 博城篇剧情深化</div>
+                ">v1.4.0 · 天赋系统重构</div>
             </div>
         `;
 

@@ -4197,6 +4197,13 @@ const Game = {
 
         let msg = `你获得了天生天赋：${talent.name}！\n${talent.effectDesc}`;
 
+        // v1.4.0: 绑定系天赋 - 天赋决定系别
+        if (talent.boundElement) {
+            const boundName = SkillSystem.getElementName(talent.boundElement);
+            this._pendingElement = talent.boundElement;
+            msg += `\n\n✨ 你的天赋决定了你的第一系为：${boundName}！`;
+        }
+
         // 如果额外觉醒了一系，提示
         if (Player.innateEffects && Player.innateEffects.extraElement) {
             const extraName = SkillSystem.getElementName(Player.innateEffects.extraElement);

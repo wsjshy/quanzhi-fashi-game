@@ -17,40 +17,57 @@ const DataTalents = {
   // 火系天赋
   // ================================================================
 
-  // 普通：烈焰之魂 - 纯伤害型，进化为烈焰领主
+  // 普通：烈焰之魂 - v1.4.0重做，加入Lv5分支选择（爆发流/持续流）
   fire_talent_basic: {
     id: "fire_talent_basic",
     name: "烈焰之魂",
     element: "fire",
     rarity: "common",
     type: "growth",
-    description: "与火元素亲和，火系伤害随成长不断进化，最终化为烈焰领主。",
+    description: "与火元素亲和，火系伤害随成长不断进化。Lv5时可选择爆发流或持续流，最终化为烈焰领主或熔岩君主。",
     maxLevel: 10,
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "烈焰之魂",
-        description: "火系技能伤害+10%。",
-        effects: { damageBonus: 0.10 }
+        description: "火系技能伤害+10%，攻击附加1层燃烧。",
+        effects: { damageBonus: 0.10, burnChance: 1.0, burnStacks: 1 }
       },
       {
         level: 3, stage: "特性", name: "烈焰护体",
-        description: "受到近战攻击时，反弹10%火系伤害给攻击者。",
-        effects: { damageBonus: 0.05, damageReflect: 0.10 }
+        description: "受到近战攻击时，反弹10%火系伤害给攻击者。燃烧每层+3%伤害，最多5层。",
+        effects: { damageBonus: 0.05, damageReflect: 0.10, burnDamageBonus: 0.03, burnStackMax: 5 }
       },
       {
-        level: 5, stage: "进化", name: "烈焰形态",
-        description: "周身环绕火焰光环，每回合对所有敌人造成3%最大HP的灼烧伤害。",
-        effects: { damageBonus: 0.10, fireAura: 0.03 }
+        level: 5, stage: "进化", name: "分支选择",
+        description: "你的火焰之力开始蜕变，选择进化方向：",
+        branchChoices: [
+          {
+            id: "explosion",
+            name: "爆燃",
+            description: "爆发流：满层燃烧时爆炸，造成50%攻击力伤害，爆炸后刷新燃烧。",
+            effects: { damageBonus: 0.10, burnExplode: 0.50, burnExplodeRefresh: true }
+          },
+          {
+            id: "lava",
+            name: "熔岩",
+            description: "持续流：燃烧持续时间+2回合，伤害+50%，燃烧变为真实伤害。",
+            effects: { damageBonus: 0.10, burnDuration: 2, burnDamageBonus: 0.50, burnTrueDamage: true }
+          }
+        ]
       },
       {
-        level: 7, stage: "延伸", name: "炎怒",
-        description: "HP低于30%时进入狂暴状态，火系伤害+50%。",
-        effects: { damageBonus: 0.10, enrageDamage: 0.50, enrageThreshold: 0.30 }
+        level: 7, stage: "延伸",
+        branchEffects: {
+          explosion: { name: "炎怒", description: "HP低于30%时进入狂暴，火系伤害+50%，爆炸伤害+30%。", effects: { damageBonus: 0.10, enrageDamage: 0.50, enrageThreshold: 0.30, explodeBonus: 0.30 } },
+          lava: { name: "岩浆护甲", description: "周身环绕岩浆，每回合对所有敌人造成3%最大HP灼烧，受到伤害-15%。", effects: { damageBonus: 0.10, fireAura: 0.03, damageReduction: 0.15 } }
+        }
       },
       {
-        level: 10, stage: "终极", name: "烈焰领主",
-        description: "所有火系技能等级+1，火系伤害无视30%防御。",
-        effects: { damageBonus: 0.15, skillLevelBonus: 1, firePenetration: 0.30 }
+        level: 10, stage: "终极",
+        branchEffects: {
+          explosion: { name: "烈焰领主", description: "所有火系技能等级+1，火系伤害无视30%防御，爆炸必定暴击。", effects: { damageBonus: 0.15, skillLevelBonus: 1, firePenetration: 0.30, explodeCrit: true } },
+          lava: { name: "熔岩君主", description: "燃烧上限+5层，满层时目标防御-30%，燃烧伤害可暴击。", effects: { damageBonus: 0.15, burnStackMax: 10, burnDefenseDown: 0.30, burnCrit: true } }
+        }
       }
     ]
   },

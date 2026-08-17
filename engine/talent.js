@@ -165,7 +165,14 @@ const TalentSystem = {
      * 2. 数值类效果相加
      * 3. 布尔/特殊效果取最新阶段的值（覆盖）
      */
-    getTalentEffects(talentId, level = 1) {
+    /**
+     * 获取天赋效果
+     * v1.4.0: 支持分支进化（branchChoices/branchEffects）
+     * @param {string} talentId - 天赋ID
+     * @param {number} level - 天赋等级
+     * @param {string} branch - 选择的分支ID（可选，Lv5后生效）
+     */
+    getTalentEffects(talentId, level = 1, branch = null) {
         const talent = this.getTalent(talentId);
         if (!talent) return {};
 
@@ -195,13 +202,29 @@ const TalentSystem = {
         // 成长型：合并所有已达到等级的进化阶段效果
         if (talent.evolutions && talent.evolutions.length > 0) {
             for (const stage of talent.evolutions) {
-                if (actualLevel >= stage.level && stage.effects) {
-                    for (const key in stage.effects) {
-                        if (typeof stage.effects[key] === 'number') {
-                            effects[key] = (effects[key] || 0) + stage.effects[key];
-                        } else {
-                            // 非数值效果（如布尔、字符串、对象）取最新阶段
-                            effects[key] = stage.effects[key];
+                if (actualLevel >= stage.level) {
+                    // v1.4.0: 分支进化处理
+                    if (stage.branchEffects && branch) {
+                        // 有分支效果且玩家选择了分支
+                        const branchEffect = stage.branchEffects[branch];
+                        if (branchEffect && branchEffect.effects) {
+                            for (const key in branchEffect.effects) {
+                                if (typeof branchEffect.effects[key] === 'number') {
+                                    effects[key] = (effects[key] || 0) + branchEffect.effects[key];
+                                } else {
+                                    effects[key] = branchEffect.effects[key];
+                                }
+                            }
+                        }
+                    } else if (stage.effects) {
+                        // 普通阶段效果
+                        for (const key in stage.effects) {
+                            if (typeof stage.effects[key] === 'number') {
+                                effects[key] = (effects[key] || 0) + stage.effects[key];
+                            } else {
+                                // 非数值效果（如布尔、字符串、对象）取最新阶段
+                                effects[key] = stage.effects[key];
+                            }
                         }
                     }
                 }

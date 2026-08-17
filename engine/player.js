@@ -1079,7 +1079,8 @@ const Player = {
     getElementTalentEffects(element) {
         const talentData = this.getElementTalent(element);
         if (!talentData || typeof TalentSystem === 'undefined') return {};
-        return TalentSystem.getTalentEffects(talentData.talentId, talentData.level);
+        // v1.4.0: 支持分支进化，传递branch参数
+        return TalentSystem.getTalentEffects(talentData.talentId, talentData.level, talentData.branch);
     },
 
     /**

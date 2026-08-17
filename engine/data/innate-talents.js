@@ -337,6 +337,109 @@ const DataInnateTalents = {
         },
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
+    },
+
+    // ===== v1.4.0: 新设计模式天赋 =====
+
+    // 绑定系天赋：祝福系（稀有系只能通过此天赋觉醒）
+    blessing_affinity: {
+        id: 'blessing_affinity',
+        name: '教廷祝福',
+        rarity: 'legendary',
+        weight: 1,
+        icon: '✨',
+        description: '你受到了教廷的祝福，天生与祝福之力共鸣。这是极为罕见的天赋，只有被神明选中的人才能拥有。',
+        effectDesc: '第一系固定为祝福系，祝福技能效果+30%',
+        type: 'early', // 早熟型：初始强，少进化
+        boundElement: 'blessing', // 绑定系别，选择后第一系固定
+        evolutions: [
+            { level: 1, name: '教廷祝福', effectDesc: '祝福技能效果+30%', effects: { blessingBonus: 0.3 } },
+            { level: 10, name: '圣者', effectDesc: '祝福技能效果+50%，全队受到治疗+20%', effects: { blessingBonus: 0.5, teamHealBonus: 0.2 } }
+        ],
+        isCanon: true,
+        canonNote: '原著中祝福系极为稀有，教廷专属'
+    },
+
+    // 绑定系天赋：心灵系
+    psychic_affinity: {
+        id: 'psychic_affinity',
+        name: '灵心',
+        rarity: 'legendary',
+        weight: 1,
+        icon: '🧠',
+        description: '你的精神力远超常人，天生就能感知他人的情绪和意念。心灵系是最神秘的魔法之一。',
+        effectDesc: '第一系固定为心灵系，精神力+50%，控制技能命中率+20%',
+        type: 'early',
+        boundElement: 'psychic',
+        evolutions: [
+            { level: 1, name: '灵心', effectDesc: '精神力+50%，控制命中率+20%', effects: { spiritBonus: 0.5, controlHitBonus: 0.2 } },
+            { level: 10, name: '读心者', effectDesc: '精神力+100%，控制命中率+40%，可感知敌人弱点', effects: { spiritBonus: 1.0, controlHitBonus: 0.4, weakPointSense: true } }
+        ],
+        isCanon: true,
+        canonNote: '原著中心灵系稀有，精神力强者专属'
+    },
+
+    // 成长型天赋：元素亲和（弱初始，高成长）
+    element_affinity_v2: {
+        id: 'element_affinity_v2',
+        name: '元素亲和',
+        rarity: 'epic',
+        weight: 3,
+        icon: '🔮',
+        description: '你与元素有着天然的亲和力，虽然初始效果不明显，但随着成长会越来越强。',
+        effectDesc: '所有元素伤害+5%（成长型，最终+25%+穿透）',
+        type: 'growth', // 成长型：弱初始，4次进化
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '元素亲和', effectDesc: '所有元素伤害+5%', effects: { allElementDamage: 0.05 } },
+            { level: 3, stage: '特性', name: '元素抗性', effectDesc: '所有元素伤害+10%，元素抗性+5%', effects: { allElementDamage: 0.10, allElementResistance: 0.05 } },
+            { level: 5, stage: '进化', name: '元素共鸣', effectDesc: '所有元素伤害+15%，双系技能伤害+10%', effects: { allElementDamage: 0.15, dualElementBonus: 0.10 } },
+            { level: 7, stage: '延伸', name: '元素掌控', effectDesc: '所有元素伤害+20%，元素反应伤害+30%', effects: { allElementDamage: 0.20, elementReactionBonus: 0.30 } },
+            { level: 10, stage: '终极', name: '元素领主', effectDesc: '所有元素伤害+25%，无视20%元素抗性', effects: { allElementDamage: 0.25, elementPenetration: 0.20 } }
+        ],
+        isCanon: false,
+        canonNote: '游戏性设计，大器晚成型天赋'
+    },
+
+    // 成长型天赋：修炼天才
+    cultivation_genius_v2: {
+        id: 'cultivation_genius_v2',
+        name: '修炼天才',
+        rarity: 'epic',
+        weight: 3,
+        icon: '📚',
+        description: '你对修炼有着超乎常人的悟性，成长速度极快。',
+        effectDesc: '经验获取+15%（成长型，最终+60%+必定突破）',
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '修炼天才', effectDesc: '经验获取+15%', effects: { expBonus: 0.15 } },
+            { level: 3, stage: '特性', name: '勤学', effectDesc: '经验获取+25%，修炼速度+20%', effects: { expBonus: 0.25, cultivationBonus: 0.20 } },
+            { level: 5, stage: '进化', name: '悟道', effectDesc: '经验获取+35%，突破成功率+10%', effects: { expBonus: 0.35, breakthroughBonus: 0.10 } },
+            { level: 7, stage: '延伸', name: '顿悟', effectDesc: '经验获取+45%，每日修炼次数+1', effects: { expBonus: 0.45, extraTrainCount: 1 } },
+            { level: 10, stage: '终极', name: '道心', effectDesc: '经验获取+60%，突破必定成功', effects: { expBonus: 0.60, breakthroughGuaranteed: true } }
+        ],
+        isCanon: false,
+        canonNote: '游戏性设计，成长型天赋代表'
+    },
+
+    // 波动型天赋：战斗直觉
+    battle_instinct_v2: {
+        id: 'battle_instinct_v2',
+        name: '战斗直觉',
+        rarity: 'epic',
+        weight: 3,
+        icon: '⚔️',
+        description: '你天生就是为战斗而生的，对战斗有着本能的直觉。',
+        effectDesc: '暴击率+5%（波动型，中期崛起）',
+        type: 'volatile', // 波动型：B初始，3次进化，S-最终
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '战斗直觉', effectDesc: '暴击率+5%', effects: { critBonus: 0.05 } },
+            { level: 3, stage: '特性', name: '致命', effectDesc: '暴击率+10%，暴击伤害+15%', effects: { critBonus: 0.10, critDamageBonus: 0.15 } },
+            { level: 5, stage: '进化', name: '连击', effectDesc: '暴击率+15%，连续暴击叠加伤害（每层+5%，最多5层）', effects: { critBonus: 0.15, comboCrit: true } },
+            { level: 7, stage: '延伸', name: '迅捷', effectDesc: '暴击率+20%，暴击后速度+10%（2回合）', effects: { critBonus: 0.20, critSpeedBuff: 0.10 } },
+            { level: 10, stage: '终极', name: '必杀', effectDesc: '暴击率+25%，必定暴击时触发必杀（伤害x1.5）', effects: { critBonus: 0.25, deathBlow: true } }
+        ],
+        isCanon: false,
+        canonNote: '游戏性设计，波动型天赋代表'
     }
 };
 
