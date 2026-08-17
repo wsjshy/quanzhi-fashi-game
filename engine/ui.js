@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.6.1 · 年度考核事件+心境系统</div>
+                ">v1.7.0 · 地圣泉决斗+博城篇深化</div>
             </div>
         `;
 

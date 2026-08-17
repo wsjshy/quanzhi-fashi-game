@@ -854,5 +854,160 @@ const DataBigEvents = {
         }
       }
     ]
+  },
+
+  // 地圣泉决斗 - 博城篇中期高潮
+  big_event_earth_spring_duel: {
+    id: "big_event_earth_spring_duel",
+    name: "地圣泉决斗",
+    description: "地圣泉名额争夺，莫凡与宇昂的决斗，博城五大势力齐聚观战...",
+    type: "duel",
+    autoTrigger: false,
+    conditions: {
+      minLevel: 5,
+      requiredFlags: ["annual_exam_completed"]
+    },
+    phases: [
+      // 第一阶段：决斗前夕
+      {
+        id: "phase_1_prelude",
+        name: "决斗前夕",
+        description: "地圣泉名额争夺的日子到了。博城五大势力——天澜魔法高中、猎者联盟、魔法协会、军方、穆氏家族——齐聚穆氏庄园的决斗场。\n\n莫凡将代表学校挑战穆氏的宇昂，胜者获得地圣泉的修炼资格。\n\n你站在观众席上，周围是熟悉的同学和老师。唐月老师、薛木生班主任、许昭霆、周敏、张小侯都在。\n\n你可以选择如何度过这场决斗。",
+        type: "choice",
+        choices: [
+          {
+            text: "支持莫凡，为他加油",
+            nextPhase: "phase_2_duel",
+            effects: {
+              npcRelation: { "mo_fan": 10 },
+              reputation: { "grassroots": 10 },
+              flags: { "duel_side": "mofan" }
+            }
+          },
+          {
+            text: "支持宇昂，看好穆氏",
+            nextPhase: "phase_2_duel",
+            effects: {
+              npcRelation: { "mu_bai": 5 },
+              reputation: { "mu_family": 10 },
+              flags: { "duel_side": "yuang" }
+            }
+          },
+          {
+            text: "中立观战，专注学习",
+            nextPhase: "phase_2_duel",
+            effects: {
+              composure: 5,
+              flags: { "duel_side": "neutral" }
+            }
+          },
+          {
+            text: "（如果有决斗约定）我也要挑战地圣泉名额",
+            nextPhase: "phase_1_player_duel",
+            conditions: { flag: "duel_promise" },
+            effects: {
+              reputation: { "brave": 15 },
+              flags: { "duel_side": "player" }
+            }
+          }
+        ]
+      },
+
+      // 第一阶段B：玩家参与决斗
+      {
+        id: "phase_1_player_duel",
+        name: "你的挑战",
+        description: "你站了出来：\"我也要挑战地圣泉名额！\"\n\n全场哗然。穆卓云皱眉：\"你是？\"\n\n\"年度考核的学生，我有资格挑战。\"\n\n斩空教官饶有兴致地看着你：\"哦？有点意思。\"\n\n穆卓云冷笑：\"好，那就让宇昂先教训你，再对付莫凡。\"",
+        type: "battle",
+        enemyId: "yu_ang_duel",
+        battleOptions: {
+          mode: "duel",
+          canFlee: false,
+          canUseItems: true,
+          fearLevel: 1
+        },
+        winPhase: "phase_2_player_win",
+        losePhase: "phase_2_player_lose"
+      },
+
+      // 玩家胜利
+      {
+        id: "phase_2_player_win",
+        name: "一鸣惊人",
+        description: "你击败了宇昂！全场震惊。\n\n斩空教官大笑：\"好小子！有点本事！\"\n\n穆卓云脸色铁青。莫凡拍了拍你的肩膀：\"行啊你，藏得挺深。\"\n\n你获得了地圣泉的修炼资格！",
+        type: "narrative",
+        nextPhase: "phase_3_end",
+        effects: {
+          exp: 200,
+          gold: 300,
+          reputation: { "grassroots": 30, "brave": 20, "mu_family": -20 },
+          npcRelation: { "mo_fan": 15, "mu_bai": -10 },
+          flags: { "earth_spring_qualification": true, "duel_result": "player_win" },
+          items: [{ itemId: "stardust_device_mortal", count: 1 }]
+        }
+      },
+
+      // 玩家失败
+      {
+        id: "phase_2_player_lose",
+        name: "虽败犹荣",
+        description: "你输给了宇昂。他的3级冰蔓确实强大，还有地波履魔具的辅助。\n\n但你虽败犹荣，能站在这个决斗场上本身就是一种认可。\n\n唐月老师安慰你：\"已经很厉害了，下次一定能赢。\"",
+        type: "narrative",
+        nextPhase: "phase_2_duel",
+        effects: {
+          exp: 80,
+          reputation: { "brave": 10 },
+          npcRelation: { "tang_yue": 5 },
+          flags: { "duel_result": "player_lose" }
+        }
+      },
+
+      // 第二阶段：莫凡vs宇昂决斗
+      {
+        id: "phase_2_duel",
+        name: "魔法决斗",
+        description: "决斗开始！宇昂率先释放冰蔓·冻迟，莫凡用火滋·灼烧破冰。\n\n宇昂使用地波履魔具躲避攻击，动作敏捷。莫凡的雷印和火滋交替使用，逐渐占据上风。\n\n突然，宇昂释放了3级冰蔓·覆盖！全场震惊——这是中阶法师才能掌握的技能！\n\n莫凡被冰封，但他用雷印破冰，随后释放火滋·焚骨，一击制胜！\n\n莫凡赢了！地圣泉名额归他。",
+        type: "choice",
+        choices: [
+          {
+            text: "为莫凡欢呼",
+            nextPhase: "phase_3_end",
+            conditions: { flag: "duel_side", value: "mofan" },
+            effects: {
+              npcRelation: { "mo_fan": 10 },
+              reputation: { "grassroots": 10 }
+            }
+          },
+          {
+            text: "为宇昂惋惜",
+            nextPhase: "phase_3_end",
+            conditions: { flag: "duel_side", value: "yuang" },
+            effects: {
+              npcRelation: { "mu_bai": 5 },
+              reputation: { "mu_family": 5 }
+            }
+          },
+          {
+            text: "若有所思，总结经验",
+            nextPhase: "phase_3_end",
+            effects: {
+              composure: 10,
+              exp: 30
+            }
+          }
+        ]
+      },
+
+      // 第三阶段：结束
+      {
+        id: "phase_3_end",
+        name: "决斗结束",
+        description: "地圣泉决斗结束了。莫凡获得了修炼资格，宇昂虽然输了但展现了实力。\n\n这场决斗让你看到了世家和草根的差距，也看到了努力可以弥补天赋的不足。\n\n（你的选择影响了和各方的关系）",
+        type: "auto",
+        effects: {
+          flags: { "earth_spring_duel_completed": true }
+        }
+      }
+    ]
   }
 };
