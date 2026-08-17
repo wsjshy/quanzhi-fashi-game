@@ -2,6 +2,37 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v1.5.5 - 风/土/光/暗四系天赋战斗效果实装
+
+### 土系核心效果
+- **rockArmorStack/rockArmorMax/rockArmorDefense/rockArmorReduction**：岩甲层数机制，受击时叠加，每层提升防御和减伤
+- **rockArmorShieldOnMax**：满层岩甲获得护盾（基于最大HP百分比）
+- **rockArmorCounterOnMax/counterDamage/counterStunChance**：满层岩甲反击，造成基于防御力的土系伤害，概率眩晕
+- **counterNoConsume**：反击后不消耗岩甲层数
+
+### 风系核心效果
+- **windBladeStack/windBladeMax/windBladeDamage**：风刃层数机制，风系攻击叠加，每层记录伤害
+- **windBladeDanceOnMax/windBladeDanceCount/windBladeDanceDamage**：满层触发风刃乱舞，多段风刃攻击
+- **dodgeCounter/dodgeCounterDamage/dodgeCounterCrit**：闪避反击，闪避成功后立即反击风系伤害
+
+### 光系核心效果
+- **debuffedDamageBonus**：对处于debuff状态的目标造成额外光系伤害
+
+### 暗系核心效果
+- **shadowStack/shadowMax/shadowLifesteal**：暗影层数机制，暗系攻击叠加并吸血
+- **shadowDrainOnMax/drainLifesteal**：满层触发暗影吞噬，吸取目标大量生命
+- **shadowStealthOnMax/stealthDuration/stealthFirstHitBonus/stealthFirstHitCrit**：满层触发暗影潜行，进入隐身状态
+
+### 召唤系状态确认
+- 召唤系技能5个、召唤兽数据7个、召唤兽战斗逻辑完整（75处代码）
+- 召唤系天赋数据完整（含分支进化），基础效果已实现
+- 分支进化效果（contractStack/beastTide/guard系列）待v1.5.6实装
+
+### 天赋效果实现进度
+- 总字段539个，已处理约350+个（65%）
+- 已实装：火系、冰系、雷系、水系、风系、土系、光系、暗系（核心效果）
+- 待实装：治愈系、植物系、召唤系分支效果
+
 ## v1.5.4 - 冰/雷/水三系天赋战斗效果实装
 
 ### 冰系核心效果

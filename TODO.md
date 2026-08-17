@@ -1,12 +1,37 @@
 # TODO - 全职法师游戏
 
-> 当前版本：v1.5.4（冰雷水天赋效果实装） | 下一版本：**v1.5.5 风土光暗天赋效果实装** | 最后更新：2026-08-18
+> 当前版本：v1.5.5（风土光暗天赋效果实装） | 下一版本：**v1.5.6 治愈/植物/召唤系天赋效果实装** | 最后更新：2026-08-18
 > 状态说明：[ ]待做 [~]进行中 [x]完成 [❌]已废弃
 > 唯一入口：[AGENTS.md](AGENTS.md)
 
 ---
 
 ## P0 - 当前开发
+
+### v1.5.5 风/土/光/暗四系天赋战斗效果实装（2026-08-18，已完成）
+
+**土系核心效果**：
+- [x] rockArmorStack/rockArmorMax 岩甲层数机制（受击叠加）
+- [x] rockArmorShieldOnMax 满层岩甲护盾
+- [x] rockArmorCounterOnMax/counterDamage 满层岩甲反击
+- [x] counterStunChance/counterNoConsume 反击眩晕/不消耗
+
+**风系核心效果**：
+- [x] windBladeStack/windBladeMax 风刃层数机制（攻击叠加）
+- [x] windBladeDanceOnMax 满层风刃乱舞
+- [x] dodgeCounter/dodgeCounterDamage 闪避反击
+
+**光系核心效果**：
+- [x] debuffedDamageBonus 对debuff目标伤害加成
+
+**暗系核心效果**：
+- [x] shadowStack/shadowMax 暗影层数机制（攻击叠加+吸血）
+- [x] shadowDrainOnMax 满层暗影吞噬吸血
+- [x] shadowStealthOnMax 满层暗影潜行
+
+**召唤系状态确认**：技能5个+召唤兽7个+战斗逻辑完整，分支效果待v1.5.6
+
+**进度**：天赋效果539字段，已处理约350+（65%）
 
 ### v1.5.4 冰/雷/水三系天赋战斗效果实装（2026-08-18，已完成）
 

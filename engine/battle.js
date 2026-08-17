@@ -1393,6 +1393,60 @@ const BattleSystem = {
                     this.addLog(`💧 ${this.enemy.name} 被湿润了（${addStacks}层）！`, 'element');
                 }
             }
+            // v1.5.5: 风刃层数机制（windBladeStack）- 风系攻击叠加风刃
+            if (te.windBladeStack && damage.element === 'wind') {
+                const maxBlades = te.windBladeMax || 3;
+                if (!this.player._windBladeStacks) this.player._windBladeStacks = 0;
+                this.player._windBladeStacks = Math.min(this.player._windBladeStacks + 1, maxBlades);
+                const bladeDmg = Math.floor(this.player.attack * (te.windBladeDamage || 0.05));
+                this.addLog(`🌪️ 风刃叠加 ${this.player._windBladeStacks}/${maxBlades}（每刃${bladeDmg}伤害）`, 'element');
+                // 满层风刃乱舞（windBladeDanceOnMax）
+                if (this.player._windBladeStacks >= maxBlades && te.windBladeDanceOnMax) {
+                    const danceCount = te.windBladeDanceCount || 3;
+                    const danceDamage = te.windBladeDanceDamage || 0.4;
+                    for (let i = 0; i < danceCount; i++) {
+                        if (this.enemy.hp <= 0) break;
+                        const dmg = Math.floor(this.player.attack * danceDamage);
+                        this.applyDamage(this.enemy, { amount: dmg, element: 'wind', isCrit: false, isMiss: false }, this.player);
+                    }
+                    this.addLog(`🌪️ 风刃乱舞！${danceCount}道风刃攻击！`, 'element');
+                    this.player._windBladeStacks = 0;
+                }
+            }
+            // v1.5.5: 暗影层数机制（shadowStack）- 暗系攻击叠加暗影
+            if (te.shadowStack && damage.element === 'dark') {
+                const maxShadow = te.shadowMax || 3;
+                if (!this.player._shadowStacks) this.player._shadowStacks = 0;
+                this.player._shadowStacks = Math.min(this.player._shadowStacks + 1, maxShadow);
+                const lifesteal = te.shadowLifesteal || 0.05;
+                const healAmount = Math.floor(damage.amount * lifesteal);
+                if (healAmount > 0) {
+                    this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
+                    this.addLog(`🌑 暗影叠加 ${this.player._shadowStacks}/${maxShadow}（吸血${healAmount}）`, 'element');
+                } else {
+                    this.addLog(`🌑 暗影叠加 ${this.player._shadowStacks}/${maxShadow}`, 'element');
+                }
+                // 满层暗影吸血爆发（shadowDrainOnMax）
+                if (this.player._shadowStacks >= maxShadow && te.shadowDrainOnMax) {
+                    const drainHeal = Math.floor(this.enemy.maxHp * (te.drainLifesteal || 0.3));
+                    this.player.hp = Math.min(this.player.maxHp, this.player.hp + drainHeal);
+                    this.addLog(`🌑 暗影吞噬！吸取 ${drainHeal} 点生命！`, 'heal');
+                    this.player._shadowStacks = 0;
+                }
+                // 满层暗影潜行（shadowStealthOnMax）
+                if (this.player._shadowStacks >= maxShadow && te.shadowStealthOnMax) {
+                    if (!this.player.statusEffects.some(e => e.type === 'stealth')) {
+                        this.addStatusEffect(this.player, {
+                            type: 'stealth', name: '暗影潜行',
+                            duration: te.stealthDuration || 1,
+                            firstHitBonus: te.stealthFirstHitBonus || 1.0,
+                            firstHitCrit: te.stealthFirstHitCrit || false
+                        });
+                        this.addLog(`🌑 暗影潜行！进入隐身状态！`, 'buff');
+                    }
+                    this.player._shadowStacks = 0;
+                }
+            }
             // 眩晕
             if (te.stunChance && Math.random() < te.stunChance) {
                 this.applyStatusEffects(this.enemy, [{
@@ -3608,6 +3662,14 @@ const BattleSystem = {
                     this.player.mp = Math.min(this.player.maxMp, this.player.mp + mpAmount);
                     this.addLog(`🌪️ 风遁回蓝！恢复 ${mpAmount} 点MP！`, 'heal');
                 }
+                // v1.5.5: 闪避反击（dodgeCounter）- 闪避成功后反击
+                if (te.dodgeCounter) {
+                    const counterDmg = Math.floor(this.player.attack * (te.dodgeCounterDamage || 0.8));
+                    const isCrit = te.dodgeCounterCrit ? true : false;
+                    this.applyDamage(this.enemy, { amount: counterDmg, element: 'wind', isCrit: isCrit, isMiss: false }, this.player);
+                    this.addLog(`🌪️ 闪避反击！造成 ${counterDmg} 点风伤${isCrit ? '（暴击！）' : ''}！`, 'counter');
+                    this.showDamageNumber('enemy', counterDmg, isCrit ? 'crit' : 'normal');
+                }
             }
             
             // 天赋：攻击命中效果（流血等）
@@ -4833,6 +4895,14 @@ const BattleSystem = {
                 damage *= (1 + wetBonus);
             }
 
+            // v1.5.5: 光系对debuff目标伤害加成（debuffedDamageBonus）
+            if (element === 'light' && attacker && attacker.talentEffects && attacker.talentEffects.debuffedDamageBonus) {
+                const hasDebuff = target.statusEffects.some(e => ['burn', 'frozen', 'paralyze', 'stun', 'slow', 'poison', 'curse', 'wet', 'shock', 'bind', 'bleed'].includes(e.type));
+                if (hasDebuff) {
+                    damage *= (1 + attacker.talentEffects.debuffedDamageBonus);
+                }
+            }
+
             // 麻痹伤害加成（paralyzeDamage：麻痹时受伤+8%）
             if (attacker && attacker.talentEffects && attacker.talentEffects.paralyzeDamage) {
                 const isParalyzed = target.statusEffects.some(e => e.type === 'paralyze');
@@ -5548,6 +5618,43 @@ const BattleSystem = {
                     this.applyDamage(attacker, { amount: counterDmg, element: 'thunder', isCrit: false, isMiss: false }, this.player);
                     this.addLog(`⚡ 雷殛护体！反击造成 ${counterDmg} 点雷伤！`, 'counter');
                     this.showDamageNumber('enemy', counterDmg, 'normal');
+                }
+            }
+            // v1.5.5: 岩甲层数机制（rockArmorStack）- 受击时叠加岩甲
+            if (target === this.player && this.player.talentEffects && this.player.talentEffects.rockArmorStack && amount > 0) {
+                const te = this.player.talentEffects;
+                const maxArmor = te.rockArmorMax || 3;
+                if (!this.player._rockArmorStacks) this.player._rockArmorStacks = 0;
+                this.player._rockArmorStacks = Math.min(this.player._rockArmorStacks + 1, maxArmor);
+                const defBonus = te.rockArmorDefense || 0.03;
+                const reduction = te.rockArmorReduction || 0.03;
+                this.addLog(`🪨 岩甲叠加 ${this.player._rockArmorStacks}/${maxArmor}（防御+${Math.floor(defBonus*100)}%，减伤+${Math.floor(reduction*100)}%）`, 'buff');
+                // 满层岩甲护盾（rockArmorShieldOnMax）
+                if (this.player._rockArmorStacks >= maxArmor && te.rockArmorShieldOnMax) {
+                    const shieldAmount = Math.floor(this.player.maxHp * te.rockArmorShieldOnMax);
+                    const existingShield = this.player.statusEffects.find(e => e.type === 'shield');
+                    if (existingShield) {
+                        existingShield.value = Math.max(existingShield.value, shieldAmount);
+                    } else {
+                        this.addStatusEffect(this.player, { type: 'shield', name: '岩甲护盾', value: shieldAmount, duration: 3 });
+                    }
+                    this.addLog(`🪨 岩甲满层！获得 ${shieldAmount} 点护盾！`, 'defense');
+                }
+                // 满层岩甲反击（rockArmorCounterOnMax）
+                if (this.player._rockArmorStacks >= maxArmor && te.rockArmorCounterOnMax) {
+                    const counterDmg = Math.floor(this.player.defense * (te.counterDamage || 0.8));
+                    this.applyDamage(attacker, { amount: counterDmg, element: 'earth', isCrit: false, isMiss: false }, this.player);
+                    this.addLog(`🪨 岩甲反击！造成 ${counterDmg} 点土伤！`, 'counter');
+                    this.showDamageNumber('enemy', counterDmg, 'normal');
+                    // 反击眩晕（counterStunChance）
+                    if (te.counterStunChance && Math.random() < te.counterStunChance) {
+                        this.addStatusEffect(attacker, { type: 'stun', name: '岩击眩晕', duration: 1 });
+                        this.addLog(`🪨 岩击眩晕！${attacker === this.player ? '你' : this.enemy.name} 被眩晕！`, 'debuff');
+                    }
+                    // 反击不消耗岩甲（counterNoConsume）
+                    if (!te.counterNoConsume) {
+                        this.player._rockArmorStacks = 0;
+                    }
                 }
             }
         }
