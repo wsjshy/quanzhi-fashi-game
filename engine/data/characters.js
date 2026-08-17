@@ -5961,6 +5961,8 @@ const DataCharacters = {
           choices: [
             { text: "心夏，最近有人欺负你吗？", next: "about_bullies" },
             { text: "姑姑身体还好吗？", next: "about_aunt" },
+            { text: "你最近在研究什么？", next: "about_research" },
+            { text: "有什么我能帮忙的吗？", next: "about_help" },
             { text: "我先走了，好好休息。", next: "default", action: "back" }
           ]
         },
@@ -5975,6 +5977,20 @@ const DataCharacters = {
           texts: ["姑姑身体还是老样子，在医院后勤部工作。", "她总是念叨让你好好学习，成为初阶魔法师就光宗耀祖了。"],
           effects: { familiarity: 3 },
           choices: [{ text: "我会努力的。", next: "default", action: "back" }]
+        },
+        about_research: {
+          id: "about_research",
+          texts: ["我在看一些药剂学的书...", "虽然我不能修炼，但我想以自己的方式帮助大家。", "哥哥总是一个人承担太多，我想替他分担一些。"],
+          effects: { opinion: 3, trust: 3 },
+          choices: [{ text: "你一定可以的", next: "default", action: "back" }]
+        },
+        about_help: {
+          id: "about_help",
+          texts: ["（心夏眼睛亮了一下）真的吗？", "我...我在研究一些药剂，想帮哥哥减轻负担。", "但是我腿脚不方便，没法去野外采集草药..."],
+          choices: [
+            { text: "我帮你采集草药", next: "default", action: "start_quest", actionData: { questId: "quest_yexinxia_herbs" } },
+            { text: "研究药剂很厉害", next: "default", action: "back" }
+          ]
         }
       }
     }

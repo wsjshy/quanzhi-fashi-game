@@ -3187,6 +3187,20 @@ const DataQuests = {
     rewards: { exp: 250, gold: 200, setFlag: "ningxue_training_done" }
   },
 
+  quest_yexinxia_herbs: {
+    id: "quest_yexinxia_herbs",
+    name: "心夏的请求",
+    description: "叶心夏希望研究药剂帮哥哥减轻负担，委托你帮忙采集一些草药材料。",
+    giver: "ye_xinxia",
+    type: "collection",
+    objectives: [
+      { type: "explore", count: 1, description: "去野外采集草药" },
+      { type: "kill", count: 1, description: "击败1只妖魔获取材料" },
+      { type: "talk", npcId: "ye_xinxia", count: 1, description: "把材料交给心夏" }
+    ],
+    rewards: { exp: 150, gold: 100, setFlag: "helped_xinxia" }
+  },
+
   // ========== v0.67.0 博城灾难第二阶段任务 ==========
 
   bocheng_prep_quest: {
