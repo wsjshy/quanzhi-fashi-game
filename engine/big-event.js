@@ -279,6 +279,15 @@ const BigEventSystem = {
             }
         }
         
+        // v1.0.0: 如果nextPhase以"ending_"开头，说明是结局，直接调用endEvent
+        if (nextPhase && nextPhase.startsWith('ending_')) {
+            const endingId = nextPhase.replace('ending_', '');
+            setTimeout(() => {
+                this.endEvent(endingId);
+            }, 500);
+            return;
+        }
+        
         // 推进到下一阶段
         setTimeout(() => {
             this.advanceToPhase(nextPhase);
