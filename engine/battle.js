@@ -108,22 +108,18 @@ const BattleSystem = {
         this._stopAutoBattleWatchdog();
         this._autoBattleTimer = setInterval(() => {
             if (!this.autoBattle || !this.active || this.player.hp <= 0) {
-                console.log(`[DEBUG autoBattle] watchdog stop: autoBattle=${this.autoBattle}, active=${this.active}, hp=${this.player?.hp}`);
                 clearInterval(this._autoBattleTimer);
                 this._autoBattleTimer = null;
                 return;
             }
             // 如果玩家正在引导技能且是玩家回合，自动结束回合推进引导
             if (this.playerCasting && this.isPlayerTurn) {
-                console.log(`[DEBUG autoBattle] watchdog: playerCasting, calling endPlayerTurn`);
                 this.endPlayerTurn();
                 return;
             }
             if (!this.isPlayerTurn || this.playerCasting) {
-                console.log(`[DEBUG autoBattle] watchdog wait: isPlayerTurn=${this.isPlayerTurn}, playerCasting=${!!this.playerCasting}`);
                 return;
             }
-            console.log(`[DEBUG autoBattle] watchdog: calling autoPlayerTurn`);
             this.autoPlayerTurn();
         }, 800);
     },
@@ -143,17 +139,13 @@ const BattleSystem = {
      */
     autoPlayerTurn() {
         if (!this.autoBattle || !this.isPlayerTurn || this.player.hp <= 0) {
-            console.log(`[DEBUG autoBattle] autoPlayerTurn skip: autoBattle=${this.autoBattle}, isPlayerTurn=${this.isPlayerTurn}, hp=${this.player.hp}`);
             return;
         }
         
         // 如果玩家正在引导技能，不要打断
         if (this.playerCasting) {
-            console.log(`[DEBUG autoBattle] autoPlayerTurn skip: playerCasting=${JSON.stringify(this.playerCasting)}`);
             return;
         }
-        
-        console.log(`[DEBUG autoBattle] autoPlayerTurn start, hp=${this.player.hp}/${this.player.maxHp}, mp=${this.player.mp}/${this.player.maxMp}`);
         
         try {
             const player = this.player;
