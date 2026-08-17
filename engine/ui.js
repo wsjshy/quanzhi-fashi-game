@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.1.6 · 右侧面板装备显示修复</div>
+                ">v1.1.7 · debug属性点同步修复</div>
             </div>
         `;
 

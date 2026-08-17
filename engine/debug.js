@@ -739,6 +739,9 @@ const DebugPanel = {
                     dailyEl.textContent = `${d.cultivate}/${d.hunt}/${d.explore}`;
                 }
                 
+                // v1.1.7: 刷新属性点显示（之前遗漏导致不同步）
+                this.refreshAttrPoints();
+                
                 console.log('[Debug] 数值已刷新');
             }
         } catch (e) {
