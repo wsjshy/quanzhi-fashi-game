@@ -1594,6 +1594,7 @@ const Game = {
         // 处理时间事件
         if (events && events.length > 0) {
             Player.save();
+            UI.renderMapScreen();
             UI.showMessage(msg);
             setTimeout(() => {
                 if (typeof EventSystem !== 'undefined') {
@@ -1651,7 +1652,7 @@ const Game = {
                             <span style="font-size:16px;font-weight:bold;color:#eeddff;">💜 充分休息</span>
                             <span style="font-size:12px;color:#cc99ff;">⏱️ ${fullRestHours}小时</span>
                         </div>
-                        <div style="font-size:12px;color:#bb99dd;">根据缺失状态消耗1-4小时，HP/MP全部回满，消除疲劳。${allFull ? '（状态已满）' : ''}</div>
+                        <div style="font-size:12px;color:#bb99dd;">状态回满（HP/MP全满，消除疲劳），耗时根据当前状态自动计算。${allFull ? '（状态已满）' : ''}</div>
                     </div>
                 </div>
             </div>
