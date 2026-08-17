@@ -4961,8 +4961,18 @@ const DataCharacters = {
               next: "special_resources"
             },
             {
+              text: "唐月老师最近怎么样？",
+              next: "about_tang_yue",
+              condition: { minOpinion: 20 }
+            },
+            {
               text: "听说山里不太平",
               next: "demon_warning"
+            },
+            {
+              text: "院长，我要离开博城了",
+              next: "farewell",
+              condition: { hasFlag: "bocheng_disaster_happened", notNpcFlags: ["said_farewell"] }
             },
             {
               text: "打扰了，再见",
@@ -5062,20 +5072,25 @@ const DataCharacters = {
           id: "special_test",
           texts: [
             "好！有志向！",
-            "这样吧，如果你能在期末考核中取得前三名的成绩，我就给你一份特殊的奖励。",
-            "怎么样，有信心吗？",
-            "记住，机会是留给有准备的人的。"
+            "（萧院长打量了你几秒，目光中带着一丝赞许。）",
+            "这样吧，雪峰山最近出现了一只战将级的妖魔，伤了好几个猎者。",
+            "如果你能独自解决它，我就认可你的实力，给你一份特殊的奖励。",
+            "怎么样，敢接下这个挑战吗？",
+            "记住，不要逞强。如果觉得不行，随时可以回来。"
           ],
           effects: {
             opinion: 5,
-            trust: 5,
-            npcFlags: {
-              special_test_accepted: true
-            }
+            trust: 5
           },
           choices: [
             {
-              text: "我有信心！",
+              text: "我接下了！请院长放心。",
+              next: "default",
+              action: "start_quest",
+              actionData: { questId: "quest_xiao_principal_trial" }
+            },
+            {
+              text: "我再准备准备",
               next: "default"
             }
           ]
@@ -5099,6 +5114,56 @@ const DataCharacters = {
           choices: [
             {
               text: "我知道了，谢谢院长提醒",
+              next: "default"
+            }
+          ]
+        },
+        about_tang_yue: {
+          id: "about_tang_yue",
+          texts: [
+            "唐月？",
+            "（萧院长的表情柔和了一些。）",
+            "她是个好老师，也是个好法师。对学生很用心。",
+            "不过啊，她背负的东西比你们想象的多。",
+            "（他顿了顿，语气变得低沉。）",
+            "有些事，我不方便多说。你只要知道，她是真心为你们好的。",
+            "如果她有什么需要帮忙的，你能帮就帮一把。"
+          ],
+          mood: "serious",
+          effects: {
+            trust: 5,
+            giveInfo: "xiao_principal_tang_yue_secret"
+          },
+          choices: [
+            {
+              text: "我会的，谢谢院长告诉我",
+              next: "default"
+            }
+          ]
+        },
+        farewell: {
+          id: "farewell",
+          texts: [
+            "要走了？明珠学府？",
+            "（萧院长沉默了一会儿，从书架上取下一本旧书递给你。）",
+            "这是我年轻时的修炼笔记，或许对你有用。",
+            "（他望向窗外，语气变得低沉。）",
+            "博城这场灾难... 是我的失职。如果我能早一点发现异常...",
+            "（他收回目光，重新看向你，眼神中带着期许。）",
+            "你是个有潜力的孩子。到了明珠，好好修炼，不要辜负了自己。",
+            "记住，实力越强，责任越大。不要忘了你从哪里来。"
+          ],
+          mood: "serious",
+          effects: {
+            giveItem: "xiao_principal_notes",
+            exp: 200,
+            trust: 10,
+            npcFlags: { said_farewell: true }
+          },
+          choices: [
+            {
+              text: "院长保重，我不会忘记您的教诲",
+              effects: { opinion: 10 },
               next: "default"
             }
           ]

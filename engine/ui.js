@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.0.2 · 大事件结局修复</div>
+                ">v1.1.0 · 萧院长对话深化</div>
             </div>
         `;
 

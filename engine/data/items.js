@@ -2646,5 +2646,22 @@ const DataItems = {
     usableInBattle: false,
     usableOutOfBattle: false,
     rarity: "elite"
+  },
+  xiao_principal_notes: {
+    id: "xiao_principal_notes",
+    name: "萧院长的修炼笔记",
+    description: "萧院长年轻时的修炼笔记，记录了他对火系魔法的深刻理解和修炼心得。使用后可获得大量经验和技能点。",
+    type: "consumable",
+    icon: "📖",
+    price: 0,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: true,
+    rarity: "epic",
+    useEffects: {
+      exp: 500,
+      skillPoints: 2
+    }
   }
 };

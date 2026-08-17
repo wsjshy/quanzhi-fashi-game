@@ -3613,5 +3613,28 @@ const DataQuests = {
       { type: "explore", count: 1, description: "探索1次" }
     ],
     rewards: { exp: 300, gold: 200, skillPoints: 1, setFlag: "bd_journey_started" }
+  },
+
+  // ========== v1.1.0 萧院长试炼 ==========
+  quest_xiao_principal_trial: {
+    id: "quest_xiao_principal_trial",
+    name: "院长的试炼",
+    description: "萧院长给你的考验。雪峰山最近出现了一只战将级巨眼猩鼠，伤了好几个猎者。如果你能独自解决它，院长就认可你的实力。",
+    giver: "xiao_principal",
+    type: "side",
+    objectives: [
+      { type: "hunt", enemyId: "giant_eye_rat", count: 1, description: "击败雪峰山的巨眼猩鼠（战将级）" }
+    ],
+    rewards: {
+      exp: 300,
+      gold: 200,
+      items: [
+        { itemId: "xiao_principal_notes", count: 1 }
+      ]
+    },
+    prerequisites: [],
+    dialogueStart: "好！有志向！雪峰山最近出现了一只战将级的巨眼猩鼠，伤了好几个猎者。如果你能独自解决它，我就认可你的实力。",
+    dialogueInProgress: "巨眼猩鼠速度极快，小心它的突袭。不要逞强，觉得不行就回来。",
+    dialogueComplete: "做得好！你果然没有让我失望。这本修炼笔记送给你，希望对你有帮助。"
   }
 };
