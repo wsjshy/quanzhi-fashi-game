@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.4.1 · 冰雷系天赋差异化</div>
+                ">v1.4.2 · 水风系天赋差异化</div>
             </div>
         `;
 

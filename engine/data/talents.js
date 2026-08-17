@@ -792,39 +792,57 @@ const DataTalents = {
   // 风系天赋
   // ================================================================
 
+  // v1.4.2重做：疾风之体 - 加入Lv5分支选择（连击流/闪避流）
   wind_talent_basic: {
     id: "wind_talent_basic",
     name: "疾风之体",
     element: "wind",
     rarity: "common",
     type: "growth",
-    description: "与风元素亲和，疾风之力随成长不断凝聚，最终化为风暴领主。",
+    description: "与风元素亲和，疾风之力随成长不断凝聚。Lv5时可选择连击流（多段输出）或闪避流（反击生存），最终化为风暴领主或风之君主。",
     maxLevel: 10,
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "疾风之体",
-        description: "风系技能伤害+10%，速度+5%。",
-        effects: { damageBonus: 0.10, speedBonus: 0.05 }
+        description: "风系技能伤害+10%，速度+5%，攻击附加1层风刃（最多3层，每层+5%伤害）。",
+        effects: { damageBonus: 0.10, speedBonus: 0.05, windBladeStack: true, windBladeMax: 3, windBladeDamage: 0.05 }
       },
       {
         level: 3, stage: "特性", name: "风之翼",
-        description: "闪避率+10%，先手攻击概率+20%。",
-        effects: { dodgeBonus: 0.10, firstStrikeChance: 0.20 }
+        description: "闪避率+10%，先手攻击概率+20%，风刃每层使速度+3%。",
+        effects: { dodgeBonus: 0.10, firstStrikeChance: 0.20, windBladeSpeed: 0.03 }
       },
       {
-        level: 5, stage: "进化", name: "疾风形态",
-        description: "速度+20%，风系技能有30%概率进行连击（第二次50%伤害）。",
-        effects: { speedBonus: 0.20, comboChance: 0.30, comboDamage: 0.50 }
+        level: 5, stage: "进化", name: "分支选择",
+        description: "你的疾风之力开始蜕变，选择进化方向：",
+        branchChoices: [
+          {
+            id: "combo",
+            name: "连击",
+            description: "连击流：风刃满3层时触发乱舞，追加3道风刃（每道40%伤害），连击概率+30%。",
+            effects: { damageBonus: 0.10, windBladeDanceOnMax: true, windBladeDanceCount: 3, windBladeDanceDamage: 0.40, comboChance: 0.30 }
+          },
+          {
+            id: "dodge",
+            name: "闪避",
+            description: "闪避流：闪避率+20%，闪避成功后反击（造成80%攻击力风系伤害），风刃每层使闪避+3%。",
+            effects: { damageBonus: 0.10, dodgeBonus: 0.20, dodgeCounter: true, dodgeCounterDamage: 0.80, windBladeDodge: 0.03 }
+          }
+        ]
       },
       {
-        level: 7, stage: "延伸", name: "风遁",
-        description: "闪避成功后，下次攻击必定暴击且伤害+50%。",
-        effects: { dodgeCritBuff: true, dodgeCritDamage: 0.50 }
+        level: 7, stage: "延伸",
+        branchEffects: {
+          combo: { name: "风刃乱舞", description: "乱舞风刃数量+2（共5道），连击伤害提升至60%，连击后速度+10%（2回合）。", effects: { damageBonus: 0.10, windBladeDanceCount: 2, windBladeDanceDamage: 0.20, comboSpeedBuff: 0.10 } },
+          dodge: { name: "风遁", description: "闪避成功后下次攻击必定暴击且伤害+50%，受到致命伤害时必定闪避（每场战斗1次）。", effects: { damageBonus: 0.10, dodgeCritBuff: true, dodgeCritDamage: 0.50, lastStandDodge: true } }
+        }
       },
       {
-        level: 10, stage: "终极", name: "风暴领主",
-        description: "风系技能等级+1，速度+25%，风系伤害无视30%防御。",
-        effects: { skillLevelBonus: 1, speedBonus: 0.25, windPenetration: 0.30 }
+        level: 10, stage: "终极",
+        branchEffects: {
+          combo: { name: "风暴领主", description: "风系技能等级+1，无视30%防御，乱舞风刃数量+3（共8道），每道风刃有20%概率附加减速。", effects: { damageBonus: 0.15, skillLevelBonus: 1, windPenetration: 0.30, windBladeDanceCount: 3, windBladeSlowChance: 0.20 } },
+          dodge: { name: "风之君主", description: "风系技能等级+1，速度+30%，闪避率+35%，闪避反击伤害提升至120%且必定暴击。", effects: { damageBonus: 0.15, skillLevelBonus: 1, speedBonus: 0.30, dodgeBonus: 0.15, dodgeCounterDamage: 0.40, dodgeCounterCrit: true } }
+        }
       }
     ]
   },
@@ -971,39 +989,57 @@ const DataTalents = {
   // 水系天赋
   // ================================================================
 
+  // v1.4.2重做：流水之躯 - 加入Lv5分支选择（治愈流/束缚流）
   water_talent_basic: {
     id: "water_talent_basic",
     name: "流水之躯",
     element: "water",
     rarity: "common",
     type: "growth",
-    description: "与水元素亲和，流水之力随成长不断凝聚，最终化为深海领主。",
+    description: "与水元素亲和，流水之力随成长不断凝聚。Lv5时可选择治愈流（续航恢复）或束缚流（控制联动），最终化为深海领主或潮汐之主。",
     maxLevel: 10,
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "流水之躯",
-        description: "水系技能伤害+10%，每回合恢复2%HP。",
-        effects: { damageBonus: 0.10, hpRegen: 0.02 }
+        description: "水系技能伤害+10%，攻击附加1层湿润（最多3层），每回合恢复2%HP。",
+        effects: { damageBonus: 0.10, wetChance: 1.0, wetStacks: 1, wetStackMax: 3, hpRegen: 0.02 }
       },
       {
         level: 3, stage: "特性", name: "水之盾",
-        description: "受到伤害时20%概率用水流化解，伤害-30%。",
-        effects: { waterGuardChance: 0.20, waterGuardReduction: 0.30 }
+        description: "受到伤害时20%概率水流化解（伤害-30%），湿润每层使目标受到水系伤害+8%。",
+        effects: { waterGuardChance: 0.20, waterGuardReduction: 0.30, wetDamageBonus: 0.08 }
       },
       {
-        level: 5, stage: "进化", name: "流水形态",
-        description: "每回合恢复5%HP和3%MP，受到的所有伤害-10%。",
-        effects: { hpRegen: 0.03, mpRegen: 0.03, damageReduction: 0.10 }
+        level: 5, stage: "进化", name: "分支选择",
+        description: "你的流水之力开始蜕变，选择进化方向：",
+        branchChoices: [
+          {
+            id: "heal",
+            name: "治愈",
+            description: "治愈流：湿润满3层时治疗自身15%最大HP，治疗效果+30%，每回合恢复5%HP。",
+            effects: { damageBonus: 0.10, wetHealOnMax: 0.15, healBonus: 0.30, hpRegen: 0.03 }
+          },
+          {
+            id: "bind",
+            name: "束缚",
+            description: "束缚流：湿润满3层时束缚目标1回合（无法行动），束缚期间目标防御-25%且受到水系伤害+50%。",
+            effects: { damageBonus: 0.10, wetBindOnMax: true, bindDuration: 1, bindDefenseDown: 0.25, bindWaterDamageBonus: 0.50 }
+          }
+        ]
       },
       {
-        level: 7, stage: "延伸", name: "水之治愈",
-        description: "攻击时恢复造成伤害15%的HP（吸血）。",
-        effects: { lifesteal: 0.15 }
+        level: 7, stage: "延伸",
+        branchEffects: {
+          heal: { name: "生命之泉", description: "治疗暴击率+25%，治疗时额外恢复目标5%最大HP，受到致命伤害时恢复30%HP（每场战斗1次）。", effects: { damageBonus: 0.10, healCritRate: 0.25, healExtraHp: 0.05, lastStandHeal: 0.30 } },
+          bind: { name: "潮汐", description: "束缚时间+1回合，束缚结束时触发水爆（对周围敌人造成目标最大HP12%伤害），湿润上限+2层。", effects: { damageBonus: 0.10, bindDuration: 1, bindExplosion: 0.12, wetStackMax: 2 } }
+        }
       },
       {
-        level: 10, stage: "终极", name: "深海领主",
-        description: "水系技能等级+1，每回合恢复8%HP和5%MP，受到伤害-15%。",
-        effects: { skillLevelBonus: 1, hpRegen: 0.03, mpRegen: 0.02, damageReduction: 0.05 }
+        level: 10, stage: "终极",
+        branchEffects: {
+          heal: { name: "深海领主", description: "水系技能等级+1，每回合恢复8%HP和5%MP，治疗效果+60%，受到伤害-15%。", effects: { damageBonus: 0.15, skillLevelBonus: 1, hpRegen: 0.03, mpRegen: 0.02, healBonus: 0.30, damageReduction: 0.05 } },
+          bind: { name: "潮汐之主", description: "水系技能等级+1，无视20%防御，束缚变为「深海禁锢」（无法驱散，每回合损失6%最大HP），湿润可扩散到相邻敌人。", effects: { damageBonus: 0.15, skillLevelBonus: 1, waterPenetration: 0.20, bindUnpurgeable: true, bindHpDrain: 0.06, wetSpread: true } }
+        }
       }
     ]
   },
