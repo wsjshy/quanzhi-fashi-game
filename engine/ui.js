@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.1.4 · 消息系统优化</div>
+                ">v1.1.5 · 白藏风对话改造</div>
             </div>
         `;
 

@@ -3636,5 +3636,26 @@ const DataQuests = {
     dialogueStart: "好！有志向！雪峰山最近出现了一只战将级的巨眼猩鼠，伤了好几个猎者。如果你能独自解决它，我就认可你的实力。",
     dialogueInProgress: "巨眼猩鼠速度极快，小心它的突袭。不要逞强，觉得不行就回来。",
     dialogueComplete: "做得好！你果然没有让我失望。这本修炼笔记送给你，希望对你有帮助。"
+  },
+
+  // ========== v1.1.5 白藏风挑战 ==========
+  quest_bai_cangfeng_challenge: {
+    id: "quest_bai_cangfeng_challenge",
+    name: "白家的挑衅",
+    description: "明珠学府的白家子弟白藏锋看不起你，约定在切磋中一决高下。击败他，让他知道草根也能逆袭。",
+    giver: "bai_cangfeng",
+    type: "side",
+    objectives: [
+      { type: "duel", npcId: "bai_cangfeng", count: 1, description: "与白藏锋切磋并击败他" }
+    ],
+    rewards: {
+      exp: 200,
+      gold: 150,
+      reputation: { mingzhu_school: 10 }
+    },
+    prerequisites: [],
+    dialogueStart: "哼，又是你。别以为出了点风头就了不起了。白家的底蕴不是你能想象的。敢不敢和我切磋一下？",
+    dialogueInProgress: "怎么，怕了？我可是中阶光系法师，你一个草根……算了，让你三招。",
+    dialogueComplete: "……你确实有点实力。不过别得意，主校区考核上见真章！"
   }
 };

@@ -8867,8 +8867,20 @@ const DataCharacters = {
             "我可是中阶光系法师，你一个召唤系的……算了，让你三招。"
           ],
           choices: [
-            { id: "fight", text: "来吧！", action: "start_battle", actionData: { enemyId: "bai_cangfeng" } },
+            { id: "fight", text: "来吧！", action: "start_quest", actionData: { questId: "quest_bai_cangfeng_challenge" }, nextNode: "fight_ready" },
             { id: "back", text: "算了，改天", nextNode: "default" }
+          ]
+        },
+        fight_ready: {
+          id: "fight_ready",
+          texts: [
+            "任务已接取：白家的挑衅。",
+            "（白藏锋冷笑一声，摆出战斗姿态。）",
+            "准备好了？那就开始吧！"
+          ],
+          choices: [
+            { id: "start", text: "开始战斗！", action: "start_battle", actionData: { enemyId: "bai_cangfeng" } },
+            { id: "back", text: "我再准备一下", nextNode: "default" }
           ]
         },
         threaten_response: {
