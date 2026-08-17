@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.96.0 · 博城篇体验优化</div>
+                ">v0.97.1 · 博城篇体验深化</div>
             </div>
         `;
 
