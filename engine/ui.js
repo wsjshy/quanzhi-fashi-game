@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.2.2 · UI布局优化</div>
+                ">v1.3.0 · 自动战斗稳定性修复</div>
             </div>
         `;
 

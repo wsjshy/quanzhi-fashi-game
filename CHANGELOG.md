@@ -2,6 +2,18 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v1.3.0 - 自动战斗稳定性修复
+
+### 修复（P1严重）
+- **自动战斗偶尔卡死**：通过全链路防御性try-catch解决
+  - endPlayerTurn：引导技能处理、召唤兽攻击、整体流程包裹try-catch，出错时仍保证进入敌人回合
+  - enemyTurn：整体包裹try-catch，AI决策或技能执行出错时仍保证结束回合
+  - 添加[DEBUG]调试日志（autoPlayerTurn/watchdog），便于后续定位具体卡死点
+  - 根因分析：自动战斗有双重触发机制（endEnemyTurn的setTimeout + watchdog定时器），某个环节异常会导致isPlayerTurn一直为false，后续触发全部跳过
+
+### 文档
+- TODO.md全面整理更新（版本v1.1.2→v1.2.2，规划v1.3.0，历史版本归档）
+
 ## v1.2.2 - UI布局优化
 
 ### 修复（P2体验）

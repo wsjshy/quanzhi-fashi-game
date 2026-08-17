@@ -108,16 +108,22 @@ const BattleSystem = {
         this._stopAutoBattleWatchdog();
         this._autoBattleTimer = setInterval(() => {
             if (!this.autoBattle || !this.active || this.player.hp <= 0) {
+                console.log(`[DEBUG autoBattle] watchdog stop: autoBattle=${this.autoBattle}, active=${this.active}, hp=${this.player?.hp}`);
+                clearInterval(this._autoBattleTimer);
+                this._autoBattleTimer = null;
                 return;
             }
             // 如果玩家正在引导技能且是玩家回合，自动结束回合推进引导
             if (this.playerCasting && this.isPlayerTurn) {
+                console.log(`[DEBUG autoBattle] watchdog: playerCasting, calling endPlayerTurn`);
                 this.endPlayerTurn();
                 return;
             }
             if (!this.isPlayerTurn || this.playerCasting) {
+                console.log(`[DEBUG autoBattle] watchdog wait: isPlayerTurn=${this.isPlayerTurn}, playerCasting=${!!this.playerCasting}`);
                 return;
             }
+            console.log(`[DEBUG autoBattle] watchdog: calling autoPlayerTurn`);
             this.autoPlayerTurn();
         }, 800);
     },
@@ -136,10 +142,18 @@ const BattleSystem = {
      * 自动战斗玩家AI
      */
     autoPlayerTurn() {
-        if (!this.autoBattle || !this.isPlayerTurn || this.player.hp <= 0) return;
+        if (!this.autoBattle || !this.isPlayerTurn || this.player.hp <= 0) {
+            console.log(`[DEBUG autoBattle] autoPlayerTurn skip: autoBattle=${this.autoBattle}, isPlayerTurn=${this.isPlayerTurn}, hp=${this.player.hp}`);
+            return;
+        }
         
         // 如果玩家正在引导技能，不要打断
-        if (this.playerCasting) return;
+        if (this.playerCasting) {
+            console.log(`[DEBUG autoBattle] autoPlayerTurn skip: playerCasting=${JSON.stringify(this.playerCasting)}`);
+            return;
+        }
+        
+        console.log(`[DEBUG autoBattle] autoPlayerTurn start, hp=${this.player.hp}/${this.player.maxHp}, mp=${this.player.mp}/${this.player.maxMp}`);
         
         try {
             const player = this.player;
@@ -2930,6 +2944,7 @@ const BattleSystem = {
      * 结束玩家回合
      */
     endPlayerTurn() {
+        try {
         // 检查战斗是否结束
         if (this.checkBattleEnd()) return;
 
@@ -2950,37 +2965,54 @@ const BattleSystem = {
         
         // 处理玩家引导中的魔法
         if (this.playerCasting) {
-            this.playerCasting.progress++;
-            if (this.playerCasting.progress >= this.playerCasting.totalTime) {
-                // 引导完成，释放魔法
-                const skill = this.playerCasting.skill;
-                this.playerCasting = null;
-                this.addLog(`${skill.name} 引导完成！`, 'magic');
-                
-                // 发布技能完成事件
-                if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
-                    BattleEventBus.emit(BattleEvents.SKILL_COMPLETE, {
-                        caster: 'player',
-                        skill: skill
-                    });
+            try {
+                this.playerCasting.progress++;
+                if (this.playerCasting.progress >= this.playerCasting.totalTime) {
+                    // 引导完成，释放魔法
+                    const skill = this.playerCasting.skill;
+                    this.playerCasting = null;
+                    this.addLog(`${skill.name} 引导完成！`, 'magic');
+                    
+                    // 发布技能完成事件
+                    if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
+                        BattleEventBus.emit(BattleEvents.SKILL_COMPLETE, {
+                            caster: 'player',
+                            skill: skill
+                        });
+                    }
+                    
+                    this.castSkillImmediate(skill, 'player', true);
+                    // 引导技能可能直接击杀敌人
+                    if (this.checkBattleEnd()) return;
+                    // 引导完成后继续执行后续逻辑（召唤兽攻击、敌人回合）
                 }
-                
-                this.castSkillImmediate(skill, 'player', true);
-                // 引导技能可能直接击杀敌人
-                if (this.checkBattleEnd()) return;
-                // 引导完成后继续执行后续逻辑（召唤兽攻击、敌人回合）
+            } catch (e) {
+                console.error('[Battle] 引导技能处理出错:', e);
+                this.addLog(`引导技能处理出错: ${e.message}`, 'system');
+                this.playerCasting = null;
             }
         }
 
         // 召唤兽自动攻击
         if (this.summon && this.summon.hp > 0) {
-            this.summonAttack();
-            // 召唤兽攻击后检查战斗是否结束
-            if (this.checkBattleEnd()) return;
+            try {
+                this.summonAttack();
+                // 召唤兽攻击后检查战斗是否结束
+                if (this.checkBattleEnd()) return;
+            } catch (e) {
+                console.error('[Battle] 召唤兽攻击出错:', e);
+                this.addLog(`召唤兽攻击出错: ${e.message}`, 'system');
+            }
         }
 
         // 敌人回合
         setTimeout(() => this.enemyTurn(), this.getDelay(800));
+        } catch (e) {
+            console.error('[Battle] endPlayerTurn出错:', e);
+            this.addLog(`回合处理出错: ${e.message}，继续战斗`, 'system');
+            // 确保敌人回合能执行
+            setTimeout(() => this.enemyTurn(), this.getDelay(800));
+        }
     },
 
     /**
@@ -3254,6 +3286,7 @@ const BattleSystem = {
         this.addLog(`🌟 兽王天赋！${sd.icon} ${sd.name} 自动出现助战！（持续${duration}回合）`, 'evolution');
     },
     enemyTurn() {
+        try {
         if (!this.active || this.result) return;
 
         // 检查眩晕/冻结/麻痹状态，跳过回合
@@ -3655,6 +3688,12 @@ const BattleSystem = {
         }
 
         this.endEnemyTurn();
+        } catch (e) {
+            console.error('[Battle] enemyTurn出错:', e);
+            this.addLog(`${this.enemy.name}行动出错: ${e.message}，跳过回合`, 'system');
+            // 确保回合能结束
+            this.endEnemyTurn();
+        }
     },
 
     /**
