@@ -2,6 +2,13 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v0.99.2 - debug工具+帮助文档更新
+- debug.js: 移除体力输入框/设置按钮/恢复按钮，添加每日行动次数显示和重置按钮
+- debug.js: "满血满蓝满体力"改为"满血满蓝"，活力药水按钮名称更新
+- debug.js: battlePrep/setLevel/fullRestore移除体力恢复逻辑
+- ui.js: 帮助文档体力系统说明改为每日行动次数系统说明
+- ui.js: 小技巧中体力提示改为每日行动提示
+
 ## v0.99.1 - 猎魔奖励递减+战斗疲劳+探索事件递减
 - battle.js: 新增source属性标记战斗来源（normal/hunt/event/quest）
 - battle.js: 猎魔战斗奖励应用getHuntEfficiency()递减（1-3次100%，4-6次70%，7次后50%）

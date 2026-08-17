@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.99.1 · 猎魔奖励递减+战斗来源标记</div>
+                ">v0.99.2 · debug工具+帮助文档更新</div>
             </div>
         `;
 
@@ -4832,13 +4832,15 @@ const UI = {
                             border: 2px solid #446677;
                             border-radius: 12px;
                         ">
-                            <h3 style="color: #88ccff; font-size: 20px; margin-bottom: 12px;">⏰ 时间与体力</h3>
+                            <h3 style="color: #88ccff; font-size: 20px; margin-bottom: 12px;">⏰ 时间与每日行动</h3>
                             <ul style="color: #cccccc; line-height: 2; font-size: 14px; padding-left: 20px;">
                                 <li><strong>时间系统</strong>：每个行动消耗时间，一天分为多个时段，特定时段有课程</li>
-                                <li><strong>体力系统</strong>：体力是<strong>软限制</strong>，不会阻止行动！<strong>体力不影响修炼和战斗效率</strong>，体力为0时战斗后有概率受伤</li>
-                                <li><strong>体力耗尽</strong>：体力为0时战斗后有概率受伤（疲劳/重伤），休息后恢复</li>
-                                <li><strong>休息恢复</strong>：休息可以恢复 HP、MP 和体力，消除疲劳状态</li>
-                                <li><strong>移动零消耗</strong>：地点之间旅行不消耗体力，只消耗0.5小时</li>
+                                <li><strong>每日行动次数</strong>：v0.99.0替代体力系统，修炼/猎魔/探索每日有高效次数</li>
+                                <li><strong>修炼递减</strong>：每日前3次100%经验，4-6次70%，7次后50%</li>
+                                <li><strong>猎魔递减</strong>：每日前3次100%奖励，4-6次70%，7次后50%，连续猎魔会疲劳</li>
+                                <li><strong>探索递减</strong>：每日前5次有随机事件，之后无随机事件</li>
+                                <li><strong>休息恢复</strong>：休息可以恢复 HP、MP，新的一天重置每日行动次数</li>
+                                <li><strong>移动零消耗</strong>：地点之间旅行只消耗0.5小时</li>
                                 <li><strong>大事件</strong>：特定天数会触发大事件，提前准备很重要</li>
                             </ul>
                         </div>
@@ -4884,7 +4886,7 @@ const UI = {
                             <ul style="color: #ddddcc; line-height: 2; font-size: 14px; padding-left: 20px;">
                                 <li>多和 NPC 聊天，可以获得情报和任务</li>
                                 <li>注意收集情报，大事件来临前会有各种暗示</li>
-                                <li>体力是软限制，不会阻止行动，<strong>不影响效率</strong>，体力为0战斗后可能受伤</li>
+                                <li>每日前3次修炼/猎魔效率最高，之后递减，合理安排每日行动</li>
                                 <li>战斗时注意元素克制，用对元素事半功倍</li>
                                 <li>提升势力声望可以获得商店折扣和更多奖励</li>
                                 <li>探索不同地点，会遇到不同的 NPC 和事件</li>

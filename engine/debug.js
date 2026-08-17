@@ -206,7 +206,7 @@ const DebugPanel = {
                     </div>
                     
                     <div style="margin-bottom: 15px;">
-                        <div style="font-weight: bold; color: #8888ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">生命值/魔法值/体力</div>
+                        <div style="font-weight: bold; color: #8888ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">生命值/魔法值</div>
                         
                         <div style="display: flex; align-items: center; margin-bottom: 8px; gap: 8px;">
                             <span style="flex: 1; font-size: 12px;">当前HP</span>
@@ -220,13 +220,14 @@ const DebugPanel = {
                             <button onclick="DebugPanel.setMp()" style="background: #4444aa; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">设置</button>
                         </div>
                         
+                        <!-- v0.99.2: 体力系统已移除，替换为每日行动次数重置 -->
                         <div style="display: flex; align-items: center; margin-bottom: 8px; gap: 8px;">
-                            <span style="flex: 1; font-size: 12px;">体力</span>
-                            <input type="number" id="debug-stamina" value="100" style="width: 70px; background: #222; border: 1px solid #444; color: #fff; padding: 4px 6px; border-radius: 3px; font-size: 12px; text-align: center;">
-                            <button onclick="DebugPanel.setStamina()" style="background: #4444aa; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">设置</button>
+                            <span style="flex: 1; font-size: 12px;">今日修炼/猎魔/探索</span>
+                            <span id="debug-daily-actions" style="font-size: 11px; color: #aaccff;">0/0/0</span>
+                            <button onclick="DebugPanel.resetDailyActions()" style="background: #aa6644; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">重置</button>
                         </div>
                         
-                        <button onclick="DebugPanel.fullRestore()" style="width: 100%; background: #228844; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 13px; margin-top: 5px;">满血满蓝满体力</button>
+                        <button onclick="DebugPanel.fullRestore()" style="width: 100%; background: #228844; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 13px; margin-top: 5px;">满血满蓝</button>
                     </div>
                     
                     <div style="margin-bottom: 15px;">
@@ -314,7 +315,7 @@ const DebugPanel = {
                             <button onclick="DebugPanel.addItem('mana_potion', 10)" style="background: #4444aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">小蓝瓶x10</button>
                             <button onclick="DebugPanel.addItem('super_health_potion', 5)" style="background: #4444aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">超级血瓶x5</button>
                             <button onclick="DebugPanel.addItem('super_mana_potion', 5)" style="background: #4444aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">超级蓝瓶x5</button>
-                            <button onclick="DebugPanel.addItem('stamina_potion', 10)" style="background: #4444aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">体力药水x10</button>
+                            <button onclick="DebugPanel.addItem('stamina_potion', 10)" style="background: #4444aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">活力药水x10</button>
                             <button onclick="DebugPanel.addItem('demon_core', 20)" style="background: #4444aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">妖魔内核x20</button>
                         </div>
                     </div>
@@ -353,7 +354,7 @@ const DebugPanel = {
                     <div style="margin-bottom: 15px;">
                         <div style="font-weight: bold; color: #ff6644; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">⚡ 快速战斗准备</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                            <button onclick="DebugPanel.battlePrep()" style="background: #22aa66; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">💪 满血满蓝满体力</button>
+                            <button onclick="DebugPanel.battlePrep()" style="background: #22aa66; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">💪 满血满蓝</button>
                             <button onclick="DebugPanel.setLevel(5)" style="background: #4488aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⭐ 设置等级5</button>
                             <button onclick="DebugPanel.setLevel(10)" style="background: #4488aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⭐ 设置等级10</button>
                             <button onclick="DebugPanel.awakenAllElements()" style="background: #aa66cc; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">✨ 觉醒全部元素</button>
@@ -509,9 +510,7 @@ const DebugPanel = {
                         </div>
                     </div>
                     
-                    <div style="margin-bottom: 15px;">
-                        <button onclick="DebugPanel.restoreStamina()" style="width: 100%; background: #228844; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 13px;">⚡ 恢复满体力</button>
-                    </div>
+                    <!-- v0.99.2: 体力系统已移除，删除恢复满体力按钮 -->
                 </div>
                 
                 <!-- 存档标签页 -->
@@ -727,14 +726,18 @@ const DebugPanel = {
                 const expEl = document.getElementById('debug-exp');                const goldEl = document.getElementById('debug-gold');
                 const hpEl = document.getElementById('debug-hp');
                 const mpEl = document.getElementById('debug-mp');
-                const staminaEl = document.getElementById('debug-stamina');
+                // v0.99.2: 体力系统已移除，替换为每日行动次数显示
+                const dailyEl = document.getElementById('debug-daily-actions');
                 
                 if (levelEl) levelEl.value = Player.level || 1;
                 if (expEl) expEl.value = Player.exp || 0;
                 if (goldEl) goldEl.value = Player.gold || 0;
                 if (hpEl) hpEl.value = Player.hp || 100;
                 if (mpEl) mpEl.value = Player.mp || 50;
-                if (staminaEl) staminaEl.value = Player.stamina || 100;
+                if (dailyEl) {
+                    const d = Player.dailyActions || { cultivate: 0, hunt: 0, explore: 0 };
+                    dailyEl.textContent = `${d.cultivate}/${d.hunt}/${d.explore}`;
+                }
                 
                 console.log('[Debug] 数值已刷新');
             }
@@ -839,7 +842,8 @@ const DebugPanel = {
 
                 Player.hp = Player.maxHp;
                 Player.mp = Player.maxMp;
-                Player.stamina = Player.maxStamina;
+                // v0.99.2: 体力系统已移除
+                // Player.stamina = Player.maxStamina;
 
                 this.refreshUI();
                 console.log(`[Debug] 各系等级设置为 ${targetLevel}`);
@@ -927,18 +931,18 @@ const DebugPanel = {
         }
     },
     
-    setStamina() {
+    // v0.99.2: 体力系统已移除，替换为重置每日行动次数
+    resetDailyActions() {
         try {
-            const staminaEl = document.getElementById('debug-stamina');
-            const stamina = parseInt(staminaEl.value);
-            
-            if (typeof Player !== 'undefined') {
-                Player.stamina = Math.max(0, Math.min(stamina, Player.maxStamina));
+            if (typeof Player !== 'undefined' && typeof Player.resetDailyActions === 'function') {
+                Player.resetDailyActions();
+                this.refreshValues();
                 this.refreshUI();
-                console.log(`[Debug] 体力设置为 ${Player.stamina}`);
+                console.log('[Debug] 每日行动次数已重置');
+                alert('每日行动次数已重置！');
             }
         } catch (e) {
-            console.error('[Debug] setStamina错误:', e);
+            console.error('[Debug] resetDailyActions错误:', e);
         }
     },
     
@@ -947,10 +951,11 @@ const DebugPanel = {
             if (typeof Player !== 'undefined') {
                 Player.hp = Player.maxHp;
                 Player.mp = Player.maxMp;
-                Player.stamina = Player.maxStamina;
+                // v0.99.2: 体力系统已移除
+                // Player.stamina = Player.maxStamina;
                 this.refreshValues();
                 this.refreshUI();
-                console.log('[Debug] 满血满蓝满体力');
+                console.log('[Debug] 满血满蓝');
             }
         } catch (e) {
             console.error('[Debug] fullRestore错误:', e);
@@ -1129,8 +1134,8 @@ const DebugPanel = {
                 
                 timeDiv.innerHTML = `
                     第 ${day} 天<br>
-                    ${hour}:00 ${periodName ? '(' + periodName + ')' : ''}<br>
-                    体力: ${Player.stamina || 0}/${Player.maxStamina || 100}
+                    ${hour}:00 ${periodName ? '(' + periodName + ')' : ''}
+                    <!-- v0.99.2: 体力系统已移除 -->
                 `;
             }
         } catch (e) {
@@ -1138,18 +1143,7 @@ const DebugPanel = {
         }
     },
     
-    restoreStamina() {
-        try {
-            if (typeof Player !== 'undefined') {
-                Player.stamina = Player.maxStamina;
-                this.refreshValues();
-                this.refreshUI();
-                console.log('[Debug] 体力已恢复满');
-            }
-        } catch (e) {
-            console.error('[Debug] restoreStamina错误:', e);
-        }
-    },
+    // v0.99.2: restoreStamina方法已移除（体力系统废弃）
     
     // ========== 存档相关功能 ==========
     
@@ -1208,7 +1202,8 @@ const DebugPanel = {
                 Player.gold = gold;
                 Player.hp = Player.maxHp;
                 Player.mp = Player.maxMp;
-                Player.stamina = Player.maxStamina;
+                // v0.99.2: 体力系统已移除
+                // Player.stamina = Player.maxStamina;
                 
                 this.refreshValues();
                 this.refreshUI();
@@ -1395,10 +1390,11 @@ const DebugPanel = {
                     Player.hp = stats.maxHp;
                     Player.mp = stats.maxMp;
                 }
-                Player.stamina = 100;
+                // v0.99.2: 体力系统已移除
+                // Player.stamina = 100;
                 this.refreshUI();
-                console.log('[Debug] 战斗准备完成：满血满蓝满体力');
-                alert('战斗准备完成！\nHP: ' + Player.hp + '\nMP: ' + Player.mp + '\n体力: ' + Player.stamina);
+                console.log('[Debug] 战斗准备完成：满血满蓝');
+                alert('战斗准备完成！\nHP: ' + Player.hp + '\nMP: ' + Player.mp);
             }
         } catch (e) {
             console.error('[Debug] battlePrep错误:', e);
