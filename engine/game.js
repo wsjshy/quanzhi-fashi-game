@@ -1543,32 +1543,29 @@ const Game = {
     },
 
     // v0.9.1: 快速休息（恢复全部状态到满，消耗指定小时数）
+    // v1.0.0: 移除体力系统引用，只恢复HP/MP/疲劳
     quickRestFull(hours = 1) {
         // 检查是否已经全满
         const hpFull = Player.hp >= Player.maxHp;
         const mpFull = Player.mp >= Player.maxMp;
-        const staminaFull = Player.stamina >= (Player.maxStamina || 100);
         const fatigueClear = Player.fatigueLevel <= 0;
 
-        if (hpFull && mpFull && staminaFull && fatigueClear) {
-            UI.showMessage('✨ 状态良好，HP/MP/体力全满，无需休息！');
+        if (hpFull && mpFull && fatigueClear) {
+            UI.showMessage('✨ 状态良好，HP/MP全满，无需休息！');
             return;
         }
 
         const oldHp = Player.hp;
         const oldMp = Player.mp;
-        const oldStamina = Player.stamina;
         const oldFatigue = Player.fatigueLevel;
 
         // 恢复到满
         Player.hp = Player.maxHp;
         Player.mp = Player.maxMp;
-        Player.stamina = Player.maxStamina || 100;
         Player.fatigueLevel = 0;
 
         const actualHp = Player.hp - oldHp;
         const actualMp = Player.mp - oldMp;
-        const actualStamina = Player.stamina - oldStamina;
 
         // 推进指定小时数
         const events = TimeSystem.advanceTime(hours);
@@ -1577,7 +1574,6 @@ const Game = {
         const parts = [];
         if (actualHp > 0) parts.push(`HP +${actualHp}`);
         if (actualMp > 0) parts.push(`MP +${actualMp}`);
-        if (actualStamina > 0) parts.push(`体力 +${actualStamina}`);
         if (oldFatigue > 0) parts.push('疲劳已消除');
         msg += parts.join('，');
 
@@ -1602,7 +1598,8 @@ const Game = {
         UI.showMessage(msg);
     },
 
-    // v0.82.1: 统一休息菜单（合并原地休息/充分休息/宿舍睡眠/睡到明天）
+    // v0.82.1: 统一休息菜单（合并原地休息/充分休息）
+    // v1.0.0: 简化为只有原地休息和充分休息，移除睡到明天
     showRestMenu() {
         try {
             // v0.92.17: 强制恢复点击，防止之前的消息弹窗导致点击被拦截
@@ -1610,14 +1607,10 @@ const Game = {
                 UI._restoreClicks();
             }
             
-            const maxSta = Player.maxStamina || 100;
             const hpMissing = Math.max(0, (Player.maxHp - Player.hp) / Player.maxHp);
             const mpMissing = Math.max(0, (Player.maxMp - Player.mp) / Player.maxMp);
-            const staMissing = Math.max(0, (maxSta - Player.stamina) / maxSta);
-            const fullRestHours = Math.max(1, Math.min(4, Math.ceil(Math.max(hpMissing, mpMissing, staMissing) * 3)));
-            const allFull = Player.hp >= Player.maxHp && Player.mp >= Player.maxMp && Player.stamina >= maxSta && Player.fatigueLevel <= 0;
-            const location = MapSystem.getCurrentLocation();
-            const hasSleepAction = location?.actions?.some(a => a.id === 'sleep');
+            const fullRestHours = Math.max(1, Math.min(4, Math.ceil(Math.max(hpMissing, mpMissing) * 3)));
+            const allFull = Player.hp >= Player.maxHp && Player.mp >= Player.maxMp && Player.fatigueLevel <= 0;
 
         // 移除所有已存在的overlay，避免叠加
         document.querySelectorAll('.rest-overlay, .ei-overlay').forEach(el => el.remove());
@@ -1637,32 +1630,15 @@ const Game = {
                             <span style="font-size:16px;font-weight:bold;color:#ddffdd;">💚 原地休息</span>
                             <span style="font-size:12px;color:#aaffaa;">⏱️ 1小时</span>
                         </div>
-                        <div style="font-size:12px;color:#99bb99;">恢复30%HP、20%MP、30体力，消除疲劳。野外有小概率遇敌。</div>
+                        <div style="font-size:12px;color:#99bb99;">恢复30%HP、20%MP，消除疲劳。野外有小概率遇敌。</div>
                     </div>
                     <div class="rest-option" data-type="full" style="padding:14px;background:linear-gradient(135deg,rgba(60,40,80,0.8),rgba(100,60,140,0.8));border:2px solid #8855aa;border-radius:12px;cursor:pointer;transition:all 0.2s;${allFull ? 'opacity:0.5;cursor:not-allowed;' : ''}">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
                             <span style="font-size:16px;font-weight:bold;color:#eeddff;">💜 充分休息</span>
                             <span style="font-size:12px;color:#cc99ff;">⏱️ ${fullRestHours}小时</span>
                         </div>
-                        <div style="font-size:12px;color:#bb99dd;">根据缺失状态消耗1-4小时，HP/MP/体力全部回满，消除疲劳。${allFull ? '（状态已满）' : ''}</div>
+                        <div style="font-size:12px;color:#bb99dd;">根据缺失状态消耗1-4小时，HP/MP全部回满，消除疲劳。${allFull ? '（状态已满）' : ''}</div>
                     </div>
-                    ${hasSleepAction ? `
-                    <div class="rest-option" data-type="sleepAction" style="padding:14px;background:linear-gradient(135deg,rgba(50,50,90,0.8),rgba(70,70,130,0.8));border:2px solid #6677bb;border-radius:12px;cursor:pointer;transition:all 0.2s;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                            <span style="font-size:16px;font-weight:bold;color:#ccdfff;">🛏️ 宿舍睡眠</span>
-                            <span style="font-size:12px;color:#99bbff;">⏱️ 8小时</span>
-                        </div>
-                        <div style="font-size:12px;color:#8899bb;">在宿舍好好睡一觉到明早，22点前入睡效果最好，大幅恢复状态。</div>
-                    </div>
-                    ` : `
-                    <div class="rest-option" data-type="rest" style="padding:14px;background:linear-gradient(135deg,rgba(40,40,80,0.8),rgba(60,60,120,0.8));border:2px solid #5566aa;border-radius:12px;cursor:pointer;transition:all 0.2s;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                            <span style="font-size:16px;font-weight:bold;color:#ccdfff;">🌙 睡到明天</span>
-                            <span style="font-size:12px;color:#99bbff;">⏱️ 至次日6:00</span>
-                        </div>
-                        <div style="font-size:12px;color:#8899bb;">直接休息到第二天清晨，全部恢复。熬夜睡觉恢复效果较差。</div>
-                    </div>
-                    `}
                 </div>
             </div>
         `;
@@ -1678,8 +1654,6 @@ const Game = {
                 setTimeout(() => {
                     if (type === 'quick') Game.quickRest();
                     else if (type === 'full') Game.quickRestFull(fullRestHours);
-                    else if (type === 'sleepAction') Game.performAction('sleep');
-                    else if (type === 'rest') Game.rest();
                 }, 100);
             };
         });
@@ -2121,23 +2095,40 @@ const Game = {
     },
 
     // v0.15.0: 重复上次技能
+    // v1.0.0: 添加try-catch和返回值检查，与battleUseSkill保持一致，防止界面卡住
     battleRepeatSkill() {
-        if (!BattleSystem.isPlayerTurn) return;
-        const lastSkillId = BattleSystem.lastSkillId;
-        if (!lastSkillId) return;
+        try {
+            if (!BattleSystem.isPlayerTurn) {
+                UI.showMessage('现在不是你的回合！');
+                return;
+            }
+            const lastSkillId = BattleSystem.lastSkillId;
+            if (!lastSkillId) return;
 
-        const skill = SkillSystem.getSkill(lastSkillId);
-        if (!skill) return;
-        if (Player.mp < skill.mpCost) {
-            UI.showMessage('魔法值不足，无法重复上次技能！');
-            return;
-        }
+            const skill = SkillSystem.getSkill(lastSkillId);
+            if (!skill) {
+                UI.showMessage('技能不存在！');
+                return;
+            }
+            if (Player.mp < skill.mpCost) {
+                UI.showMessage(`魔法值不足！需要 ${skill.mpCost} MP，当前 ${Player.mp} MP`);
+                return;
+            }
 
-        BattleSystem.playerCastSkill(lastSkillId);
-        UI.updateBattleScreen();
+            const result = BattleSystem.playerCastSkill(lastSkillId);
+            if (result === null) {
+                UI.showMessage('技能释放失败，请查看战斗日志。');
+                return;
+            }
 
-        if (!BattleSystem.active) {
-            this.endBattle();
+            UI.updateBattleScreen();
+
+            if (!BattleSystem.active) {
+                this.endBattle();
+            }
+        } catch (e) {
+            console.error('[DEBUG] battleRepeatSkill error:', e);
+            UI.showMessage('技能释放出错：' + e.message);
         }
     },
 

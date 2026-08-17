@@ -1805,6 +1805,110 @@ const DataTalents = {
         }
       }
     ]
+  },
+
+  // ================================================================
+  // 植物系天赋
+  // ================================================================
+
+  plant_talent_basic: {
+    id: "plant_talent_basic",
+    name: "草木亲和",
+    element: "plant",
+    rarity: "common",
+    type: "growth",
+    description: "与自然草木有着天然的亲和力。",
+    maxLevel: 10,
+    evolutions: [
+      {
+        level: 1, stage: "觉醒", name: "草木亲和",
+        description: "植物系技能伤害+15%，控制技能命中率+10%。",
+        effects: { plantDamageBonus: 0.15, plantControlHitRate: 0.10 }
+      },
+      {
+        level: 3, stage: "特性", name: "藤蔓缠绕",
+        description: "束缚类技能持续时间+1回合，被束缚目标受到的植物伤害+20%。",
+        effects: { bindDurationBonus: 1, boundTargetPlantDamageBonus: 0.20 }
+      },
+      {
+        level: 5, stage: "进化", name: "生命汲取",
+        description: "植物系技能造成伤害时，恢复伤害量15%的HP。",
+        effects: { plantLifeSteal: 0.15 }
+      },
+      {
+        level: 7, stage: "延伸", name: "荆棘护甲",
+        description: "受到近战攻击时，反弹10%伤害给攻击者。",
+        effects: { thornArmor: 0.10 }
+      },
+      {
+        level: 10, stage: "终极", name: "自然之怒",
+        description: "植物系技能伤害+30%，每回合开始时有20%概率获得1层'生机'（每层HP+5%，最多3层）。",
+        effects: { plantDamageBonus: 0.30, vitalityChance: 0.20, vitalityMaxStacks: 3 }
+      }
+    ]
+  },
+
+  plant_talent_poison: {
+    id: "plant_talent_poison",
+    name: "剧毒精通",
+    element: "plant",
+    rarity: "uncommon",
+    type: "growth",
+    description: "精通植物毒素，让敌人在痛苦中慢慢死去。",
+    maxLevel: 10,
+    evolutions: [
+      {
+        level: 1, stage: "觉醒", name: "剧毒精通",
+        description: "中毒效果伤害+25%，持续时间+1回合。",
+        effects: { poisonDamageBonus: 0.25, poisonDurationBonus: 1 }
+      },
+      {
+        level: 3, stage: "特性", name: "腐蚀",
+        description: "中毒目标防御-15%。",
+        effects: { poisonDefenseReduction: 0.15 }
+      },
+      {
+        level: 5, stage: "进化", name: "剧毒蔓延",
+        description: "中毒目标行动时，20%概率将中毒传染给相邻敌人（PVE中为另一个敌人）。",
+        effects: { poisonSpreadChance: 0.20 }
+      },
+      {
+        level: 7, stage: "延伸", name: "致命毒素",
+        description: "中毒效果每回合伤害递增10%（最多递增50%）。",
+        effects: { poisonEscalation: 0.10, poisonEscalationMax: 0.50 }
+      },
+      {
+        level: 10, stage: "终极", name: "万毒归宗",
+        description: "中毒效果伤害+50%，目标HP低于30%时，中毒伤害翻倍。",
+        effects: { poisonDamageBonus: 0.50, poisonExecuteThreshold: 0.30 }
+      }
+    ]
+  },
+
+  plant_talent_legendary: {
+    id: "plant_talent_legendary",
+    name: "世界树之种",
+    element: "plant",
+    rarity: "legendary",
+    type: "innate",
+    description: "体内蕴含世界树的种子，与自然万物相连。出生即达他人修炼一生的境界。",
+    maxLevel: 1,
+    effects: {
+      plantDamageBonus: 0.50,
+      allHealingBonus: 0.20,
+      maxHpBonus: 0.20,
+      thornArmor: 0.20
+    },
+    evolutions: [
+      {
+        level: 1, stage: "终极", name: "世界树·生机",
+        description: "植物系技能伤害+50%，所有治疗效果+20%，最大HP+20%，受到近战攻击反弹20%伤害。",
+        effects: {
+          plantDamageBonus: 0.50, allHealingBonus: 0.20,
+          maxHpBonus: 0.20, thornArmor: 0.20
+        }
+      }
+    ]
   }
 };
 

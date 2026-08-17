@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.99.4 · 高效期统一1次+剧情时间保障</div>
+                ">v1.0.0 · 休息修复+系别补全+战斗稳定性</div>
             </div>
         `;
 
@@ -770,21 +770,25 @@ const UI = {
 
     // ========== 角色创建界面 ==========
     renderCharacterCreate() {
-        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark'];
+        // v1.0.0: 补全可觉醒系别，添加治愈系和植物系（召唤系需特殊天赋暂不加入）
+        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'plant'];
         const elementNames = {
             fire: '🔥 火系', ice: '❄️ 冰系', thunder: '⚡ 雷系', earth: '🪨 土系',
-            wind: '🌪️ 风系', water: '💧 水系', light: '✨ 光系', dark: '🌑 暗影系'
+            wind: '🌪️ 风系', water: '💧 水系', light: '✨ 光系', dark: '🌑 暗影系',
+            heal: '💚 治愈系', plant: '🌿 植物系'
         };
         const elementColors = {
             fire: '#ff6633', ice: '#66ccff', thunder: '#ffcc00', earth: '#cc9966',
-            wind: '#99ff99', water: '#6699ff', light: '#ffffcc', dark: '#9966ff'
+            wind: '#99ff99', water: '#6699ff', light: '#ffffcc', dark: '#9966ff',
+            heal: '#66ff99', plant: '#66cc66'
         };
         // v0.92.2: 挂载到window，供全局selectElement函数访问
         window._elementColors = elementColors;
         // 元素权重：常见系概率高，稀有系概率低
         const elementWeights = {
             fire: 15, ice: 12, thunder: 10, earth: 15,
-            wind: 15, water: 15, light: 8, dark: 5
+            wind: 15, water: 15, light: 8, dark: 5,
+            heal: 6, plant: 7
         };
 
         // 随机选3个不重复的元素（加权随机）
