@@ -1597,39 +1597,57 @@ const DataTalents = {
   // 治愈系天赋
   // ================================================================
 
+  // v1.4.4重做：慈悲之心 - 加入Lv5分支选择（治疗流/增益流）
   heal_talent_basic: {
     id: "heal_talent_basic",
     name: "慈悲之心",
     element: "heal",
     rarity: "common",
     type: "growth",
-    description: "心怀慈悲，救死扶伤。",
+    description: "心怀慈悲，救死扶伤。Lv5时可选择治疗流（续航复活）或增益流（团队强化），最终化为大慈悲者或圣恩之主。",
     maxLevel: 10,
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "慈悲之心",
-        description: "治疗效果+15%。",
-        effects: { healBonus: 0.15 }
+        description: "治疗效果+15%，治疗时附加1层祝福（最多3层，每层+5%治疗效果）。",
+        effects: { healBonus: 0.15, blessingStack: true, blessingMax: 3, blessingHealBonus: 0.05 }
       },
       {
         level: 3, stage: "特性", name: "治愈之光",
-        description: "治疗时为目标附加护盾（治疗量的20%），持续2回合。",
-        effects: { healShield: 0.20, healShieldDuration: 2 }
+        description: "治疗时为目标附加护盾（治疗量的20%），祝福每层使目标防御+3%。",
+        effects: { healShield: 0.20, healShieldDuration: 2, blessingDefenseBonus: 0.03 }
       },
       {
-        level: 5, stage: "进化", name: "生命链接",
-        description: "治疗时链接目标3回合，期间目标受到伤害的30%由你承担，你受到伤害-20%。",
-        effects: { lifeLink: true, lifeLinkDuration: 3, lifeLinkTransfer: 0.30, linkDamageReduction: 0.20 }
+        level: 5, stage: "进化", name: "分支选择",
+        description: "你的慈悲之力开始蜕变，选择进化方向：",
+        branchChoices: [
+          {
+            id: "restore",
+            name: "治疗",
+            description: "治疗流：祝福满3层时触发「生命绽放」，恢复目标30%最大HP并净化所有debuff，冷却3回合。",
+            effects: { healBonus: 0.10, blessingBloomOnMax: true, bloomHeal: 0.30, bloomPurify: true, bloomCooldown: 3 }
+          },
+          {
+            id: "buff",
+            name: "增益",
+            description: "增益流：祝福满3层时触发「圣恩」，目标攻击+20%、防御+20%、速度+10%，持续3回合。",
+            effects: { healBonus: 0.10, blessingGraceOnMax: true, graceAtkBonus: 0.20, graceDefBonus: 0.20, graceSpeedBonus: 0.10, graceDuration: 3 }
+          }
+        ]
       },
       {
-        level: 7, stage: "延伸", name: "治愈光环",
-        description: "每回合为己方全体恢复3%最大HP。",
-        effects: { healAura: 0.03 }
+        level: 7, stage: "延伸",
+        branchEffects: {
+          restore: { name: "治愈光环", description: "每回合为己方全体恢复5%最大HP，生命绽放恢复提升至45%，绽放后为目标附加20%最大HP护盾。", effects: { healBonus: 0.10, healAura: 0.05, bloomHeal: 0.15, bloomShield: 0.20 } },
+          buff: { name: "祝福之环", description: "圣恩效果提升至攻击+30%、防御+30%，圣恩期间目标造成伤害的10%转化为治疗，祝福上限+2层。", effects: { healBonus: 0.10, graceAtkBonus: 0.10, graceDefBonus: 0.10, graceLifesteal: 0.10, blessingMax: 2 } }
+        }
       },
       {
-        level: 10, stage: "终极", name: "大慈悲",
-        description: "治疗效果+30%，治疗暴击率+25%，治疗量的10%转化为对敌方的伤害。",
-        effects: { healBonus: 0.30, healCritRate: 0.25, healToDamage: 0.10 }
+        level: 10, stage: "终极",
+        branchEffects: {
+          restore: { name: "大慈悲者", description: "治愈系技能等级+1，治疗效果+50%，生命绽放变为「重生」（恢复60%HP+复活阵亡单位，每场战斗1次），免疫所有debuff。", effects: { skillLevelBonus: 1, healBonus: 0.40, bloomHeal: 0.15, bloomRevive: true, debuffImmunity: true } },
+          buff: { name: "圣恩之主", description: "治愈系技能等级+1，圣恩变为「神圣祝福」（全属性+40%+暴击+20%+必中），圣恩持续期间目标受到致命伤害时保留1HP（每场1次）。", effects: { skillLevelBonus: 1, graceAllStats: 0.40, graceCritBonus: 0.20, graceHitGuaranteed: true, graceLastStand: true } }
+        }
       }
     ]
   },
@@ -1775,39 +1793,57 @@ const DataTalents = {
   // 召唤系天赋
   // ================================================================
 
+  // v1.4.4重做：契约之心 - 加入Lv5分支选择（强攻流/防御流）
   summon_talent_basic: {
     id: "summon_talent_basic",
     name: "契约之心",
     element: "summon",
     rarity: "common",
     type: "growth",
-    description: "与召唤兽建立深厚契约，共同成长。",
+    description: "与召唤兽建立深厚契约，共同成长。Lv5时可选择强攻流（协同输出）或防御流（护盾嘲讽），最终化为万兽之王或契约之主。",
     maxLevel: 10,
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "契约之心",
-        description: "召唤兽伤害+10%，召唤兽HP+10%。",
-        effects: { summonDamageBonus: 0.10, summonHpBonus: 0.10 }
+        description: "召唤兽伤害+10%，召唤兽HP+10%，每次召唤兽攻击积累1层契约（最多3层，每层+5%召唤兽伤害）。",
+        effects: { summonDamageBonus: 0.10, summonHpBonus: 0.10, contractStack: true, contractMax: 3, contractDamageBonus: 0.05 }
       },
       {
         level: 3, stage: "特性", name: "灵魂共鸣",
-        description: "召唤兽继承你10%的攻击和防御，你继承召唤兽10%的HP。",
-        effects: { inheritStats: 0.10, summonInheritHp: 0.10 }
+        description: "召唤兽继承你10%的攻击和防御，契约每层使你速度+3%。",
+        effects: { inheritStats: 0.10, contractSpeedBonus: 0.03 }
       },
       {
-        level: 5, stage: "进化", name: "契约进化",
-        description: "召唤兽等级+2，所有属性+15%。",
-        effects: { summonLevelBonus: 2, summonAllStats: 0.15 }
+        level: 5, stage: "进化", name: "分支选择",
+        description: "你的契约之力开始蜕变，选择进化方向：",
+        branchChoices: [
+          {
+            id: "assault",
+            name: "强攻",
+            description: "强攻流：契约满3层时触发「兽潮」，召唤兽额外攻击2次（每次60%伤害），触发后契约不消耗。",
+            effects: { summonDamageBonus: 0.10, contractBeastTideOnMax: true, beastTideCount: 2, beastTideDamage: 0.60, beastTideNoConsume: true }
+          },
+          {
+            id: "guard",
+            name: "防御",
+            description: "防御流：契约满3层时召唤兽获得「守护」状态（吸收你受到的50%伤害，持续2回合），守护期间召唤兽嘲讽所有敌人。",
+            effects: { summonDamageBonus: 0.10, contractGuardOnMax: true, guardDamageAbsorb: 0.50, guardDuration: 2, guardTaunt: true }
+          }
+        ]
       },
       {
-        level: 7, stage: "延伸", name: "兽潮",
-        description: "召唤兽攻击时20%概率召唤一只临时野兽助战（50%伤害，持续3回合）。",
-        effects: { beastTideChance: 0.20, beastTideDamage: 0.50, beastTideDuration: 3 }
+        level: 7, stage: "延伸",
+        branchEffects: {
+          assault: { name: "狂暴契约", description: "兽潮额外攻击+1次（共3次），兽潮伤害提升至80%，契约满层时召唤兽暴击率+30%。", effects: { summonDamageBonus: 0.10, beastTideCount: 1, beastTideDamage: 0.20, contractCritBonus: 0.30 } },
+          guard: { name: "灵魂链接", description: "守护状态伤害吸收提升至70%，守护期间召唤兽受到伤害-30%，守护结束时恢复你20%最大HP。", effects: { summonDamageBonus: 0.10, guardDamageAbsorb: 0.20, guardDamageReduction: 0.30, guardEndHeal: 0.20 } }
+        }
       },
       {
-        level: 10, stage: "终极", name: "万兽之王",
-        description: "召唤兽等级+3，伤害+30%，召唤兽暴击率+20%。",
-        effects: { summonLevelBonus: 1, summonDamageBonus: 0.30, summonCritRate: 0.20 }
+        level: 10, stage: "终极",
+        branchEffects: {
+          assault: { name: "万兽之王", description: "召唤系技能等级+1，可同时召唤2只召唤兽，兽潮变为「万兽奔腾」（5次攻击，每次100%伤害，最后一击必定暴击），契约上限+2层。", effects: { skillLevelBonus: 1, maxSummons: 2, beastTideCount: 2, beastTideDamage: 0.20, beastTideFinalCrit: true, contractMax: 2 } },
+          guard: { name: "契约之主", description: "召唤系技能等级+1，召唤兽HP+50%，守护变为「不朽契约」（伤害吸收100%+召唤兽无敌+你受到致命伤害时召唤兽牺牲替死，每场1次），契约上限+2层。", effects: { skillLevelBonus: 1, summonHpBonus: 0.40, guardDamageAbsorb: 0.30, guardInvincible: true, guardSacrifice: true, contractMax: 2 } }
+        }
       }
     ]
   },
@@ -1954,39 +1990,57 @@ const DataTalents = {
   // 植物系天赋
   // ================================================================
 
+  // v1.4.4重做：草木亲和 - 加入Lv5分支选择（毒伤流/控制流）
   plant_talent_basic: {
     id: "plant_talent_basic",
     name: "草木亲和",
     element: "plant",
     rarity: "common",
     type: "growth",
-    description: "与自然草木有着天然的亲和力。",
+    description: "与自然草木有着天然的亲和力。Lv5时可选择毒伤流（持续输出）或控制流（藤蔓束缚），最终化为自然之怒或森罗之主。",
     maxLevel: 10,
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "草木亲和",
-        description: "植物系技能伤害+15%，控制技能命中率+10%。",
-        effects: { plantDamageBonus: 0.15, plantControlHitRate: 0.10 }
+        description: "植物系技能伤害+15%，攻击附加1层中毒（最多3层，每层5%攻击力伤害/回合），控制命中率+10%。",
+        effects: { plantDamageBonus: 0.15, poisonStack: true, poisonMax: 3, poisonDamage: 0.05, plantControlHitRate: 0.10 }
       },
       {
         level: 3, stage: "特性", name: "藤蔓缠绕",
-        description: "束缚类技能持续时间+1回合，被束缚目标受到的植物伤害+20%。",
-        effects: { bindDurationBonus: 1, boundTargetPlantDamageBonus: 0.20 }
+        description: "束缚类技能持续+1回合，中毒每层使目标速度-5%。",
+        effects: { bindDurationBonus: 1, poisonSpeedDown: 0.05 }
       },
       {
-        level: 5, stage: "进化", name: "生命汲取",
-        description: "植物系技能造成伤害时，恢复伤害量15%的HP。",
-        effects: { plantLifeSteal: 0.15 }
+        level: 5, stage: "进化", name: "分支选择",
+        description: "你的自然之力开始蜕变，选择进化方向：",
+        branchChoices: [
+          {
+            id: "poison",
+            name: "毒伤",
+            description: "毒伤流：中毒满3层时触发「毒爆」，造成目标已损失HP20%的植物系伤害，毒爆后刷新中毒。",
+            effects: { plantDamageBonus: 0.10, poisonBurstOnMax: true, poisonBurstDamage: 0.20, poisonBurstRefresh: true }
+          },
+          {
+            id: "control",
+            name: "控制",
+            description: "控制流：中毒满3层时触发「藤蔓束缚」，束缚目标2回合（无法行动），束缚期间目标防御-30%。",
+            effects: { plantDamageBonus: 0.10, poisonBindOnMax: true, bindDuration: 2, bindDefenseDown: 0.30 }
+          }
+        ]
       },
       {
-        level: 7, stage: "延伸", name: "荆棘护甲",
-        description: "受到近战攻击时，反弹10%伤害给攻击者。",
-        effects: { thornArmor: 0.10 }
+        level: 7, stage: "延伸",
+        branchEffects: {
+          poison: { name: "致命毒素", description: "中毒伤害每回合递增15%（最多+75%），毒爆伤害提升至已损失HP35%，中毒目标防御-20%。", effects: { plantDamageBonus: 0.10, poisonEscalation: 0.15, poisonEscalationMax: 0.75, poisonBurstDamage: 0.15, poisonDefenseDown: 0.20 } },
+          control: { name: "荆棘领域", description: "束缚时间+1回合，束缚结束时触发荆棘爆发（对周围敌人造成20%最大HP伤害），每回合开始有25%概率束缚最低HP敌人。", effects: { plantDamageBonus: 0.10, bindDuration: 1, bindExplosion: 0.20, autoBindChance: 0.25 } }
+        }
       },
       {
-        level: 10, stage: "终极", name: "自然之怒",
-        description: "植物系技能伤害+30%，每回合开始时有20%概率获得1层'生机'（每层HP+5%，最多3层）。",
-        effects: { plantDamageBonus: 0.30, vitalityChance: 0.20, vitalityMaxStacks: 3 }
+        level: 10, stage: "终极",
+        branchEffects: {
+          poison: { name: "自然之怒", description: "植物系技能等级+1，中毒上限+2层，毒爆变为「万毒归宗」（已损失HP50%伤害+真实伤害+中毒不驱散），中毒目标HP低于30%时伤害翻倍。", effects: { skillLevelBonus: 1, poisonMax: 2, poisonBurstDamage: 0.15, poisonBurstTrue: true, poisonUnpurgeable: true, poisonExecute: true } },
+          control: { name: "森罗之主", description: "植物系技能等级+1，束缚变为「森罗万象」（无法驱散+每回合10%最大HP伤害+攻击-40%），束缚结束后目标眩晕1回合。", effects: { skillLevelBonus: 1, bindUnpurgeable: true, bindHpDrain: 0.10, bindAttackDown: 0.40, bindEndStun: 1 } }
+        }
       }
     ]
   },

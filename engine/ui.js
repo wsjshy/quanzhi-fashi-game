@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.4.3 · 土光暗系天赋差异化</div>
+                ">v1.4.4 · 全系天赋差异化完成</div>
             </div>
         `;
 
