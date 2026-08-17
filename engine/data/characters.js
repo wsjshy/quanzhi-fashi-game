@@ -6726,6 +6726,20 @@ const DataCharacters = {
               effects: { npcFlags: { said_farewell: true } },
               next: "farewell_node"
             },
+            // v1.3.1: 真相追寻者结局 - 黑教廷话题
+            {
+              id: "ask_black_church",
+              text: "教官，关于那晚宇昂的事...",
+              condition: { hasFlag: "black_church_aware", minOpinion: 30 },
+              next: "about_black_church"
+            },
+            // v1.3.1: 军方盟友结局 - 军方任务入口
+            {
+              id: "ask_military_task",
+              text: "教官，您之前说有事可以找您",
+              condition: { hasFlag: "military_ally", minOpinion: 20 },
+              next: "about_military_task"
+            },
             { text: "告辞。", next: null, action: "close" }
           ]
         },
@@ -6854,6 +6868,77 @@ const DataCharacters = {
           },
           choices: [
             { id: "thanks", text: "斩空教官，保重", effects: { opinion: 10 }, next: "default" }
+          ]
+        },
+        // v1.3.1: 真相追寻者结局 - 黑教廷话题
+        about_black_church: {
+          id: "about_black_church",
+          texts: [
+            "（斩空的手猛地握紧了酒壶，指节发白。）",
+            "……你还记着那件事。",
+            "（他沉默了很久，周围的空气仿佛都凝固了。）",
+            "我知道你想问什么。但有些事，知道得越多，危险越大。",
+            "（他看向你，眼神锐利如刀。）",
+            "宇昂的事，军方已经在查了。黑教廷……不是你现在能碰的。",
+            "但你既然发现了，我也不瞒你。那个徽章，收好。以后如果遇到穿灰衣的人，离他们远点。",
+            "（他的语气缓和了一些。）",
+            "你做得对。但记住，有些真相，需要等你足够强了才能去面对。"
+          ],
+          mood: "serious",
+          effects: { trust: 10, exp: 50, giveInfo: "zhankong_black_church_warning" },
+          choices: [
+            { text: "我明白了，教官", effects: { opinion: 5 }, next: "default" },
+            { text: "如果我以后想查呢？", next: "about_black_church_future" }
+          ]
+        },
+        about_black_church_future: {
+          id: "about_black_church_future",
+          texts: [
+            "（斩空盯着你看了几秒，忽然笑了。）",
+            "年轻人，有冲劲是好事。但别送死。",
+            "等你到了中阶，再来找我。到时候，我可能有任务给你。",
+            "（他拍了拍你的肩膀。）",
+            "黑教廷的事，不是一个人能解决的。你需要伙伴，需要实力，还需要……运气。"
+          ],
+          mood: "serious",
+          effects: { trust: 5, flags: { black_church_future_task: true } },
+          choices: [
+            { text: "我会变强的", effects: { opinion: 5 }, next: "default" }
+          ]
+        },
+        // v1.3.1: 军方盟友结局 - 军方任务入口
+        about_military_task: {
+          id: "about_military_task",
+          texts: [
+            "（斩空挑了挑眉。）",
+            "哦？这么快就有事找我了？",
+            "（他放下酒壶，认真地看着你。）",
+            "博城灾难后，军方缺人。尤其是像你这样……有实战经验的学生。",
+            "雪峰山驿站最近有个悬赏任务，清剿残留的妖魔。有兴趣吗？",
+            "（他从怀里掏出一张通缉令。）",
+            "报酬不错，还能累计军功。军功够了，以后军方的资源随你用。"
+          ],
+          mood: "neutral",
+          effects: { trust: 5 },
+          choices: [
+            { text: "听起来不错，我考虑一下", effects: { opinion: 3 }, next: "default" },
+            { text: "现在有具体任务吗？", next: "about_military_task_detail" }
+          ]
+        },
+        about_military_task_detail: {
+          id: "about_military_task_detail",
+          texts: [
+            "（斩空想了想。）",
+            "暂时没有适合你的。你现在的实力，去了也是送死。",
+            "（他冷哼一声。）",
+            "等你到了中阶，再来找我。到时候有个大任务给你。",
+            "（他拍了拍你的肩膀。）",
+            "现在嘛……先把基础打牢。博城的事，只是开始。"
+          ],
+          mood: "serious",
+          effects: { trust: 5, exp: 30, flags: { military_future_task: true } },
+          choices: [
+            { text: "我会努力的", effects: { opinion: 3 }, next: "default" }
           ]
         }
       }

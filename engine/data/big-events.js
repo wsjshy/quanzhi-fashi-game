@@ -287,24 +287,71 @@ const DataBigEvents = {
         }
       },
       
-      // 第六阶段：结局
+      // 第六阶段：结局（v1.3.1: 选择+等级双条件判定，让玩家决策有意义）
       {
         id: "phase_6_final",
         name: "黎明",
         description: "经过一夜的激战，黎明终于到来。妖魔们撤退了，博城守住了！\n\n虽然城市遭受了很大的损失，但在所有人的努力下，大部分人都活了下来。\n\n你站在废墟中，望着初升的太阳，心中充满了复杂的感情。这是你第一次经历真正的战争，也是你成长的开始。",
         type: "auto",
         autoCheck: {
-          attribute: "level",
-          thresholds: [
-            { value: 8, nextPhase: "ending_hero" },
-            { value: 6, nextPhase: "ending_survivor" },
-            { value: 1, nextPhase: "ending_survived" }
+          conditions: [
+            // 优先级1：击败宇昂 + Lv6+ → 真相追寻者
+            { flags: { defeated_yu_ang: true }, minLevel: 6, nextPhase: "ending_truth_seeker" },
+            // 优先级2：报告斩空 + Lv6+ → 军方盟友
+            { flags: { reported_yu_ang_to_zhankong: true }, minLevel: 6, nextPhase: "ending_military_ally" },
+            // 优先级3：Lv8+ → 博城英雄（等级碾压）
+            { minLevel: 8, nextPhase: "ending_hero" },
+            // 优先级4：Lv6+ → 幸存者
+            { minLevel: 6, nextPhase: "ending_survivor" },
+            // 默认：艰难求生
+            { minLevel: 1, nextPhase: "ending_survived" }
           ]
         }
       }
     ],
     
     endings: {
+      // v1.3.1新增：真相追寻者（击败宇昂，发现黑教廷真相）
+      truth_seeker: {
+        id: "truth_seeker",
+        name: "真相追寻者",
+        description: "你在博城灾难中追击宇昂，击败了他并发现了黑教廷的秘密。斩空教官叮嘱你不要告诉任何人，但你知道，这只是开始。\n\n黑教廷的徽章在你手中微微发烫，仿佛在预示着未来的风暴。",
+        effects: {
+          exp: 400,
+          gold: 300,
+          reputation: {
+            "military": 30,
+            "school": 20
+          },
+          flags: {
+            "black_church_aware": true,
+            "has_black_church_badge": true
+          },
+          items: [
+            { itemId: "black_church_badge", count: 1 }
+          ]
+        }
+      },
+      // v1.3.1新增：军方盟友（报告斩空，获得军方信任）
+      military_ally: {
+        id: "military_ally",
+        name: "军方盟友",
+        description: "你及时向斩空教官报告了宇昂的异常，虽然没有亲手揭开真相，但你的警觉让军方避免了更大的损失。\n\n斩空教官拍了拍你的肩膀：\"小子，不错。以后有什么事，可以来找我。\"",
+        effects: {
+          exp: 350,
+          gold: 250,
+          reputation: {
+            "military": 60,
+            "school": 15
+          },
+          flags: {
+            "military_ally": true
+          },
+          items: [
+            { itemId: "zhankong_recommendation", count: 1 }
+          ]
+        }
+      },
       hero: {
         id: "hero",
         name: "博城英雄",

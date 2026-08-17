@@ -808,6 +808,19 @@ const DataItems = {
     rarity: "史诗",
     lore: "宇昂说：'黑教廷的计划……才刚刚开始……博城……只是个开始……'"
   },
+  zhankong_recommendation: {
+    id: "zhankong_recommendation",
+    name: "斩空的推荐信",
+    description: "斩空教官亲笔写的推荐信，上面盖着军方的印章。凭借这封信，你可以在军方的任何据点获得帮助和信任。",
+    type: "special",
+    icon: "📜",
+    price: 0,
+    stackable: false,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "稀有",
+    lore: "斩空说：'小子，不错。以后有什么事，可以来找我。'"
+  },
   spirit_star_dust_device: {
     id: "spirit_star_dust_device",
     name: "灵级星尘魔器",

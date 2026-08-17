@@ -3934,16 +3934,18 @@ const Game = {
             return;
         }
 
-        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'summon'];
+        // 博城篇可觉醒的11系（火冰雷土水光暗治愈植物召唤）
+        // 稀有系（心灵/祝福等）通过天赋形式觉醒，不在此列表
+        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'plant', 'summon'];
         const availableElements = allElements.filter(e => !Player.elements.includes(e));
         const currentCount = Player.elements.length;
         const requiredLevel = currentCount === 1 ? 8 : 15;
         const rankName = requiredLevel >= 15 ? '高阶' : '中阶';
 
-        // 元素权重
+        // 元素权重：常见系概率高，稀有系概率低
         const elementWeights = {
             fire: 15, ice: 12, thunder: 10, earth: 15, wind: 15, water: 15,
-            light: 8, dark: 5, heal: 3, summon: 5
+            light: 8, dark: 5, heal: 6, plant: 7, summon: 4
         };
 
         // 随机3个候选
@@ -4073,7 +4075,9 @@ const Game = {
 
     // 随机觉醒
     randomAwaken() {
-        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'summon'];
+        // 博城篇可觉醒的11系（火冰雷土水光暗治愈植物召唤）
+        // 稀有系（心灵/祝福等）通过天赋形式觉醒，不在此列表
+        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'plant', 'summon'];
         const availableElements = allElements.filter(e => !Player.elements.includes(e));
         if (availableElements.length === 0) {
             UI.showMessage('没有可觉醒的系了！');
@@ -4098,6 +4102,7 @@ const Game = {
             light: '净化增益，圣光裁决，克制暗影系',
             dark: '诅咒削弱，潜行爆发，克制光系',
             heal: '强力治疗，净化复苏，生存能力极强',
+            plant: '藤蔓束缚，持续中毒，控制与消耗兼备',
             summon: '召唤召唤兽协同作战，以多打少，战术灵活'
         };
         return descs[element] || '神秘的元素力量';

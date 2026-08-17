@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.3.0 · 自动战斗稳定性修复</div>
+                ">v1.3.1 · 博城篇剧情深化</div>
             </div>
         `;
 
@@ -796,30 +796,32 @@ const UI = {
 
     // ========== 角色创建界面 ==========
     renderCharacterCreate() {
-        // v1.0.0: 补全可觉醒系别，添加治愈系和植物系（召唤系需特殊天赋暂不加入）
-        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'plant'];
+        // v1.3.1: 统一为博城篇11系（火冰雷土水光暗治愈植物召唤）
+        // 稀有系（心灵/祝福等）通过天赋形式觉醒，不在角色创建列表
+        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'plant', 'summon'];
         const elementNames = {
             fire: '🔥 火系', ice: '❄️ 冰系', thunder: '⚡ 雷系', earth: '🪨 土系',
             wind: '🌪️ 风系', water: '💧 水系', light: '✨ 光系', dark: '🌑 暗影系',
-            heal: '💚 治愈系', plant: '🌿 植物系'
+            heal: '💚 治愈系', plant: '🌿 植物系', summon: '📜 召唤系'
         };
         const elementColors = {
             fire: '#ff6633', ice: '#66ccff', thunder: '#ffcc00', earth: '#cc9966',
             wind: '#99ff99', water: '#6699ff', light: '#ffffcc', dark: '#9966ff',
-            heal: '#66ff99', plant: '#66cc66'
+            heal: '#66ff99', plant: '#66cc66', summon: '#cc99ff'
         };
         // v1.2.0: 各系特点说明，帮助新手选择
         const elementDescs = {
             fire: '高爆发·燃烧持续伤害',
             ice: '强控制·冻结减速',
             thunder: '高速度·麻痹连锁',
-            earth: '高防御·召唤能力',
+            earth: '高防御·护盾控制',
             wind: '高闪避·速度快',
-            water: '治疗恢复·防御辅助',
+            water: '治疗恢复·湿润控制',
             light: '神圣伤害·净化治疗',
             dark: '高暴击·吸血诅咒',
             heal: '强力治疗·辅助增益',
-            plant: '控制束缚·持续伤害'
+            plant: '控制束缚·持续中毒',
+            summon: '召唤兽协同·以多打少'
         };
         // v0.92.2: 挂载到window，供全局selectElement函数访问
         window._elementColors = elementColors;
@@ -827,7 +829,7 @@ const UI = {
         const elementWeights = {
             fire: 15, ice: 12, thunder: 10, earth: 15,
             wind: 15, water: 15, light: 8, dark: 5,
-            heal: 6, plant: 7
+            heal: 6, plant: 7, summon: 4
         };
 
         // 随机选3个不重复的元素（加权随机）

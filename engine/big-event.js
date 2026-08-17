@@ -261,29 +261,61 @@ const BigEventSystem = {
                 UI.renderBigEventNarrativePhase(phase, false, true);
             }
 
-            const { attribute, thresholds } = phase.autoCheck;
-            let playerValue = 0;
+            let nextPhase = null;
 
-            // 获取玩家属性值
-            switch (attribute) {
-                case 'level':
-                    playerValue = Player.level;
-                    break;
-                case 'fire_magic':
-                case 'ice_magic':
-                case 'thunder_magic':
-                    playerValue = Player.getTotalStats()[attribute] || 0;
-                    break;
-                default:
-                    playerValue = Player.getTotalStats()[attribute] || 0;
-            }
+            // v1.3.1: 新格式 - 多条件判定（flags + minLevel），支持选择影响结局
+            if (phase.autoCheck.conditions && Array.isArray(phase.autoCheck.conditions)) {
+                for (const condition of phase.autoCheck.conditions) {
+                    let met = true;
+                    // 检查flags条件
+                    if (condition.flags) {
+                        for (const [flagKey, flagVal] of Object.entries(condition.flags)) {
+                            if (Player.flags[flagKey] !== flagVal) {
+                                met = false;
+                                break;
+                            }
+                        }
+                    }
+                    // 检查等级条件
+                    if (met && condition.minLevel !== undefined) {
+                        if (Player.level < condition.minLevel) {
+                            met = false;
+                        }
+                    }
+                    if (met) {
+                        nextPhase = condition.nextPhase;
+                        break;
+                    }
+                }
+                // 如果没有条件满足，使用最后一个作为默认
+                if (!nextPhase && phase.autoCheck.conditions.length > 0) {
+                    nextPhase = phase.autoCheck.conditions[phase.autoCheck.conditions.length - 1].nextPhase;
+                }
+            } else {
+                // 旧格式 - 单属性阈值判定（向后兼容）
+                const { attribute, thresholds } = phase.autoCheck;
+                let playerValue = 0;
 
-            // 判定阈值（从高到低，第一个满足的即为结果）
-            let nextPhase = thresholds[thresholds.length - 1].nextPhase;
-            for (const threshold of thresholds) {
-                if (playerValue >= threshold.value) {
-                    nextPhase = threshold.nextPhase;
-                    break;
+                switch (attribute) {
+                    case 'level':
+                        playerValue = Player.level;
+                        break;
+                    case 'fire_magic':
+                    case 'ice_magic':
+                    case 'thunder_magic':
+                        playerValue = Player.getTotalStats()[attribute] || 0;
+                        break;
+                    default:
+                        playerValue = Player.getTotalStats()[attribute] || 0;
+                }
+
+                // 判定阈值（从高到低，第一个满足的即为结果）
+                nextPhase = thresholds[thresholds.length - 1].nextPhase;
+                for (const threshold of thresholds) {
+                    if (playerValue >= threshold.value) {
+                        nextPhase = threshold.nextPhase;
+                        break;
+                    }
                 }
             }
 
