@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.2.1 · 核心玩法与经济平衡</div>
+                ">v1.2.2 · UI布局优化</div>
             </div>
         `;
 
@@ -2225,7 +2225,9 @@ const UI = {
         const skillCols = isPortrait ? 3 : 5;
         const spriteW = isPortrait ? 70 : 100;
         const spriteH = isPortrait ? 100 : 140;
-        const panelH = isPortrait ? 'auto' : '220px';
+        // v1.2.2: 技能展开时横版面板高度增加，避免滚动
+        const skillsExpanded = !!this._expandedBattleElement;
+        const panelH = isPortrait ? 'auto' : (skillsExpanded ? '300px' : '220px');
         const logW = isPortrait ? 'calc(100% - 20px)' : '340px';
         const logMaxH = isPortrait ? '90px' : '280px';
         const logPos = isPortrait ? 'position:relative; top:auto; left:auto; margin:5px 10px; flex-shrink:0; height:90px;' : 'position: absolute; top: 20px; left: 20px;';
@@ -5388,6 +5390,57 @@ const UI = {
                                     ${perks.length > 0 ? `<div style="color: #88cc88; font-size: 11px; margin-top: 4px;">已解锁：${perks.join(' · ')}</div>` : ''}
                                 </div>
                             `;})()}
+                            
+                            <!-- v1.2.2: 属性分配区域移到顶部，确保可见 -->
+                            ${Player.attributePoints > 0 ? `
+                            <div style="
+                                padding: 12px 15px;
+                                background: rgba(80, 60, 20, 0.5);
+                                border: 2px solid #aa8833;
+                                border-radius: 10px;
+                                margin-bottom: 15px;
+                                text-align: center;
+                            ">
+                                <div style="color: #ffd700; font-size: 16px; margin-bottom: 10px;">
+                                    ⭐ 可分配属性点: ${Player.attributePoints}
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                                    ${['vitality','spirit','attack','defense','speed'].map(attr => {
+                                        const names = {vitality:'体质', spirit:'精神', attack:'攻击', defense:'防御', speed:'速度'};
+                                        const icons = {vitality:'❤️', spirit:'🧠', attack:'⚔️', defense:'🛡️', speed:'👟'};
+                                        return `<div onclick="Game.addAttribute('${attr}')" style="
+                                            padding: 8px 4px;
+                                            background: #44aa44;
+                                            border-radius: 8px;
+                                            cursor: pointer;
+                                            color: #fff;
+                                            font-size: 13px;
+                                            font-weight: bold;
+                                            transition: all 0.2s;
+                                        " onmouseover="this.style.background='#55cc55'" onmouseout="this.style.background='#44aa44'">
+                                            ${icons[attr]} ${names[attr]}+
+                                        </div>`;
+                                    }).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                            <!-- 属性概览（简洁版，详细属性在下方） -->
+                            <div style="
+                                display: grid;
+                                grid-template-columns: repeat(4, 1fr);
+                                gap: 8px;
+                                margin-bottom: 15px;
+                                padding: 10px;
+                                background: rgba(30, 50, 50, 0.5);
+                                border-radius: 8px;
+                            ">
+                                <div style="text-align:center;"><div style="font-size:11px;color:#888;">攻击</div><div style="font-size:16px;color:#ffaaaa;font-weight:bold;">${stats.attack}</div></div>
+                                <div style="text-align:center;"><div style="font-size:11px;color:#888;">防御</div><div style="font-size:16px;color:#aaccff;font-weight:bold;">${stats.defense}</div></div>
+                                <div style="text-align:center;"><div style="font-size:11px;color:#888;">速度</div><div style="font-size:16px;color:#aaffaa;font-weight:bold;">${stats.speed}</div></div>
+                                <div style="text-align:center;"><div style="font-size:11px;color:#888;">暴击</div><div style="font-size:16px;color:#ffcc66;font-weight:bold;">${(stats.critRate*100).toFixed(0)}%</div></div>
+                            </div>
+                            
                             ${typeof RealmSystem !== 'undefined' ? `
                                 <div onclick="Game.showBreakthroughPanel()" style="
                                     padding: 10px 15px;
@@ -5727,30 +5780,14 @@ const UI = {
                             </div>
                         </div>
                         
-                        <!-- 属性点分配 -->
-                        ${Player.attributePoints > 0 ? `
-                        <div style="
-                            padding: 20px;
-                            background: rgba(80, 60, 20, 0.5);
-                            border: 2px solid #aa8833;
-                            border-radius: 10px;
-                            margin-bottom: 25px;
-                            text-align: center;
-                        ">
-                            <div style="color: #ffd700; font-size: 18px; margin-bottom: 15px;">
-                                ⭐ 可分配属性点: ${Player.attributePoints}
-                            </div>
-                        </div>
-                        ` : ''}
-                        
-                        <!-- 属性列表 -->
+                        <!-- 详细属性列表 -->
                         <div style="
                             padding: 25px;
                             background: rgba(30, 50, 50, 0.8);
                             border: 2px solid #447766;
                             border-radius: 15px;
                         ">
-                            <h3 style="color: #ffd700; margin-bottom: 20px;">📊 属性</h3>
+                            <h3 style="color: #ffd700; margin-bottom: 20px;">📊 详细属性</h3>
                             
                             <div style="display: flex; flex-direction: column; gap: 15px;">
                                 ${this.renderAttributeRow('❤️', '生命值', Player.hp, stats.maxHp, 'vitality')}
