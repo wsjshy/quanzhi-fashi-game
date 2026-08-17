@@ -367,6 +367,9 @@ const DebugPanel = {
                             <button onclick="DebugPanel.addItem('super_mana_potion', 5)" style="background: #4444aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">超级蓝瓶x5</button>
                             <button onclick="DebugPanel.addItem('stamina_potion', 10)" style="background: #4444aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">活力药水x10</button>
                             <button onclick="DebugPanel.addItem('demon_core', 20)" style="background: #4444aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">妖魔内核x20</button>
+                            <button onclick="DebugPanel.addItem('servant_soul_essence', 20)" style="background: #4466aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">奴仆精魄x20</button>
+                            <button onclick="DebugPanel.addItem('warrior_soul_essence', 10)" style="background: #6644aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">战将精魄x10</button>
+                            <button onclick="DebugPanel.addItem('commander_soul_essence', 5)" style="background: #aa8844; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">统领精魄x5</button>
                         </div>
                     </div>
                     

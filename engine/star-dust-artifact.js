@@ -201,6 +201,78 @@ const StarDustArtifactSystem = {
     };
   },
 
+  // 用精魄升级星尘魔器（成长型）
+  absorbSoulEssence(playerArtifacts, targetElement, soulEssenceId, count = 1) {
+    const targetArtifact = playerArtifacts[targetElement];
+    if (!targetArtifact) {
+      return {
+        success: false,
+        message: "没有找到目标星尘魔器"
+      };
+    }
+
+    const artifact = this.getArtifact(targetArtifact.id);
+    if (!artifact || artifact.grade !== "growth") {
+      return {
+        success: false,
+        message: "该星尘魔器不是成长型，无法用精魄升级"
+      };
+    }
+
+    // 精魄经验值配置
+    const soulEssenceExp = {
+      servant_soul_essence: 50,
+      warrior_soul_essence: 300,
+      commander_soul_essence: 1500
+    };
+
+    const expPerEssence = soulEssenceExp[soulEssenceId];
+    if (!expPerEssence) {
+      return {
+        success: false,
+        message: "无效的精魄类型"
+      };
+    }
+
+    const currentLevel = targetArtifact.level || 1;
+    const currentExp = targetArtifact.exp || 0;
+    const maxLevel = artifact.maxLevel || 10;
+
+    if (currentLevel >= maxLevel) {
+      return {
+        success: false,
+        message: "星尘魔器已满级"
+      };
+    }
+
+    const gainExp = expPerEssence * count;
+    const newExp = currentExp + gainExp;
+
+    // 计算升级
+    let newLevel = currentLevel;
+    let remainingExp = newExp;
+
+    while (remainingExp >= this.getExpToNextLevel(newLevel) && newLevel < maxLevel) {
+      remainingExp -= this.getExpToNextLevel(newLevel);
+      newLevel++;
+    }
+
+    // 更新目标魔器
+    playerArtifacts[targetElement] = {
+      ...targetArtifact,
+      level: newLevel,
+      exp: remainingExp
+    };
+
+    return {
+      success: true,
+      message: `吸收 ${count} 个精魄，获得 ${gainExp} 经验`,
+      levelUp: newLevel > currentLevel,
+      newLevel: newLevel,
+      gainExp: gainExp
+    };
+  },
+
   // 获取升级所需经验
   getExpToNextLevel(level) {
     // 升级所需经验：100 * 1.5^(level-1)

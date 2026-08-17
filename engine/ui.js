@@ -5505,6 +5505,19 @@ const UI = {
                                                 <div style="height: 4px; background: #333; border-radius: 2px; overflow: hidden;">
                                                     <div style="height: 100%; width: ${Math.min(100, ((artifactData.exp || 0) / StarDustArtifactSystem.getExpToNextLevel(artifactData.level || 1)) * 100).toFixed(1)}%; background: linear-gradient(90deg, #ffcc00, #ffdd44);"></div>
                                                 </div>
+                                                <div onclick="Game.showArtifactUpgradePanel('${elem}')" style="
+                                                    margin-top: 6px;
+                                                    padding: 4px 10px;
+                                                    background: linear-gradient(135deg, #cc9900, #ffcc00);
+                                                    border-radius: 5px;
+                                                    text-align: center;
+                                                    cursor: pointer;
+                                                    color: #332200;
+                                                    font-size: 11px;
+                                                    font-weight: bold;
+                                                " onmouseover="this.style.background='linear-gradient(135deg, #ddaa00, #ffdd44)'" onmouseout="this.style.background='linear-gradient(135deg, #cc9900, #ffcc00)'">
+                                                    ⬆️ 用精魄升级
+                                                </div>
                                             </div>
                                             ` : ''}
                                         </div>
