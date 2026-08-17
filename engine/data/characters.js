@@ -6114,6 +6114,7 @@ const DataCharacters = {
           mood: "threatening",
           effects: { giveInfo: "mu_he_warning" },
           choices: [
+            { text: "我会调查清楚的", next: "default", action: "start_quest", actionData: { questId: "quest_muhe_black_church" } },
             { text: "……我记错了", effects: { opinion: -5 }, next: "default" },
             { text: "我不会乱说的", effects: { trust: 2 }, next: "default" }
           ]

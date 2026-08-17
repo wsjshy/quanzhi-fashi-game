@@ -3227,6 +3227,19 @@ const DataQuests = {
     rewards: { exp: 150, gold: 100, setFlag: "scouted_with_wenjie" }
   },
 
+  quest_muhe_black_church: {
+    id: "quest_muhe_black_church",
+    name: "黑教廷线索",
+    description: "你怀疑穆贺与黑教廷有勾结，决定暗中调查真相。",
+    giver: "mu_he",
+    type: "investigation",
+    objectives: [
+      { type: "reach", locationId: "bo_city_street", count: 1, description: "在博城市街暗中调查" },
+      { type: "talk", npcId: "tang_yue", count: 1, description: "向唐月老师汇报可疑线索" }
+    ],
+    rewards: { exp: 200, gold: 150, setFlag: "investigated_black_church" }
+  },
+
   // ========== v0.67.0 博城灾难第二阶段任务 ==========
 
   bocheng_prep_quest: {
