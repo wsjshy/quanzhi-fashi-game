@@ -215,6 +215,8 @@ const BigEventSystem = {
         if (phase.enemyId) {
             const enemy = DataManager.getEnemy(phase.enemyId);
             if (enemy) {
+                // v1.6.0: 支持battleOptions传递（恐惧等级、环境等）
+                const battleOptions = phase.battleOptions || {};
                 Game.startBattle(enemy, (result, rewards) => {
                     // v1.0.0: 添加错误处理，确保战斗结束后大事件流程不中断
                     try {
@@ -236,7 +238,7 @@ const BigEventSystem = {
                         // 出错时尝试推进到下一阶段
                         this.advanceToNextPhase();
                     }
-                });
+                }, battleOptions);
             } else {
                 console.error(`[大事件] 敌人不存在: ${phase.enemyId}`);
                 this.advanceToNextPhase();
