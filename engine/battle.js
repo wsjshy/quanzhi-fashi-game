@@ -7413,6 +7413,7 @@ const BattleSystem = {
             turn: this.turn,
             player: this.player,
             enemy: this.enemy,
+            allies: this.allies || [], // v1.8.1: 队友列表
             isPlayerTurn: this.isPlayerTurn,
             playerCasting: this.playerCasting,
             enemyCasting: this.enemyCasting,

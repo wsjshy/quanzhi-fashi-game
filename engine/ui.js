@@ -2143,6 +2143,23 @@ const UI = {
                 <!-- 战斗场地 -->
                 <div style="flex: 1; position: relative; overflow: ${isPortrait ? 'auto' : 'hidden'}; z-index: 1; ${arenaFlex}">
                     
+                    <!-- v1.8.1: 队友状态条（组队战斗时显示） -->
+                    ${state.allies && state.allies.length > 0 ? `
+                    <div style="position: absolute; top: 10px; right: 20px; z-index: 10; display: flex; flex-direction: column; gap: 6px; max-width: 200px;">
+                        ${state.allies.map(ally => `
+                            <div style="background: rgba(0,0,0,0.7); border: 1px solid ${ally.hp > 0 ? '#4488ff' : '#666'}; border-radius: 8px; padding: 6px 10px; font-size: 12px; opacity: ${ally.hp > 0 ? 1 : 0.5};">
+                                <div style="color: #fff; font-weight: bold; margin-bottom: 3px;">${ally.name || '队友'}</div>
+                                <div style="display: flex; justify-content: space-between; font-size: 10px; color: #ff6666; margin-bottom: 2px;">
+                                    <span>HP</span><span>${ally.hp || 0}/${ally.maxHp || 100}</span>
+                                </div>
+                                <div style="height: 5px; background: #333; border-radius: 3px; overflow: hidden;">
+                                    <div style="height: 100%; width: ${Math.max(0, ((ally.hp || 0) / (ally.maxHp || 100) * 100)).toFixed(1)}%; background: linear-gradient(90deg, #44ff44, #66ff66); transition: width 0.3s;"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    ` : ''}
+                    
                     <!-- 战斗日志（竖版隐藏，用按钮弹出） -->
                     <div id="battle-log" style="
                         ${logPos}
