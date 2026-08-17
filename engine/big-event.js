@@ -246,52 +246,69 @@ const BigEventSystem = {
     
     /**
      * 处理自动判定阶段
+     * v1.0.1: 先显示剧情文本，再自动判定结局，添加try-catch确保稳定
      */
     processAutoPhase(phase) {
-        if (!phase.autoCheck) {
-            console.error('[大事件] 自动阶段缺少autoCheck配置');
-            return;
-        }
-        
-        const { attribute, thresholds } = phase.autoCheck;
-        let playerValue = 0;
-        
-        // 获取玩家属性值
-        switch (attribute) {
-            case 'level':
-                playerValue = Player.level;
-                break;
-            case 'fire_magic':
-            case 'ice_magic':
-            case 'thunder_magic':
-                playerValue = Player.getTotalStats()[attribute] || 0;
-                break;
-            default:
-                playerValue = Player.getTotalStats()[attribute] || 0;
-        }
-        
-        // 判定阈值
-        let nextPhase = thresholds[thresholds.length - 1].nextPhase; // 默认最低阈值
-        for (const threshold of thresholds) {
-            if (playerValue >= threshold.value) {
-                nextPhase = threshold.nextPhase;
-                break;
+        try {
+            if (!phase.autoCheck) {
+                console.error('[大事件] 自动阶段缺少autoCheck配置');
+                this.advanceToNextPhase();
+                return;
             }
-        }
-        
-        // v1.0.0: 如果nextPhase以"ending_"开头，说明是结局，直接调用endEvent
-        if (nextPhase && nextPhase.startsWith('ending_')) {
-            const endingId = nextPhase.replace('ending_', '');
+
+            // 先显示剧情文本（如果有），auto模式不显示继续按钮
+            if (phase.description) {
+                UI.renderBigEventNarrativePhase(phase, false, true);
+            }
+
+            const { attribute, thresholds } = phase.autoCheck;
+            let playerValue = 0;
+
+            // 获取玩家属性值
+            switch (attribute) {
+                case 'level':
+                    playerValue = Player.level;
+                    break;
+                case 'fire_magic':
+                case 'ice_magic':
+                case 'thunder_magic':
+                    playerValue = Player.getTotalStats()[attribute] || 0;
+                    break;
+                default:
+                    playerValue = Player.getTotalStats()[attribute] || 0;
+            }
+
+            // 判定阈值（从高到低，第一个满足的即为结果）
+            let nextPhase = thresholds[thresholds.length - 1].nextPhase;
+            for (const threshold of thresholds) {
+                if (playerValue >= threshold.value) {
+                    nextPhase = threshold.nextPhase;
+                    break;
+                }
+            }
+
+            // v1.0.0: 如果nextPhase以"ending_"开头，说明是结局，直接调用endEvent
+            if (nextPhase && nextPhase.startsWith('ending_')) {
+                const endingId = nextPhase.replace('ending_', '');
+                setTimeout(() => {
+                    try {
+                        this.endEvent(endingId);
+                    } catch (e) {
+                        console.error('[大事件] 触发结局失败:', e);
+                        Game.returnToMap();
+                    }
+                }, 1500); // 延长到1.5秒，让玩家读完剧情文本
+                return;
+            }
+
+            // 推进到下一阶段
             setTimeout(() => {
-                this.endEvent(endingId);
-            }, 500);
-            return;
+                this.advanceToPhase(nextPhase);
+            }, 1500);
+        } catch (e) {
+            console.error('[大事件] 自动阶段处理失败:', e);
+            this.endEvent('default');
         }
-        
-        // 推进到下一阶段
-        setTimeout(() => {
-            this.advanceToPhase(nextPhase);
-        }, 500);
     },
     
     /**

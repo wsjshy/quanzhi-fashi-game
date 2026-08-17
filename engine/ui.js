@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.0.1 · 充分休息自动计时</div>
+                ">v1.0.2 · 大事件结局修复</div>
             </div>
         `;
 
@@ -3544,7 +3544,8 @@ const UI = {
     },
 
     // 渲染大事件剧情阶段界面
-    renderBigEventNarrativePhase(phase, hasNextPhase) {
+    // v1.0.1: 添加autoMode参数，auto阶段不显示继续按钮
+    renderBigEventNarrativePhase(phase, hasNextPhase, autoMode = false) {
         try {
             console.log('[UI] 渲染大事件剧情阶段:', phase.name);
             
@@ -3601,20 +3602,24 @@ const UI = {
                         ">${phase.description}</div>
                         
                         <div style="text-align: center;">
-                            <div onclick="BigEventSystem.advanceToNextPhase()" style="
-                                padding: 12px 40px;
-                                background: linear-gradient(135deg, #6666aa, #8888cc);
-                                border: 2px solid #9999dd;
-                                border-radius: 10px;
-                                color: #fff;
-                                cursor: pointer;
-                                font-size: 16px;
-                                font-weight: bold;
-                                display: inline-block;
-                                transition: all 0.3s;
-                            " onmouseover="this.style.background='linear-gradient(135deg, #7777bb, #9999dd)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='linear-gradient(135deg, #6666aa, #8888cc)'; this.style.transform='scale(1)'">
-                                ${hasNextPhase ? '继续 →' : '结束'}
-                            </div>
+                            ${autoMode ? `
+                                <div style="color: #ffd700; font-size: 16px; animation: pulse 1.5s infinite;">✨ 命运正在揭晓...</div>
+                            ` : `
+                                <div onclick="BigEventSystem.advanceToNextPhase()" style="
+                                    padding: 12px 40px;
+                                    background: linear-gradient(135deg, #6666aa, #8888cc);
+                                    border: 2px solid #9999dd;
+                                    border-radius: 10px;
+                                    color: #fff;
+                                    cursor: pointer;
+                                    font-size: 16px;
+                                    font-weight: bold;
+                                    display: inline-block;
+                                    transition: all 0.3s;
+                                " onmouseover="this.style.background='linear-gradient(135deg, #7777bb, #9999dd)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='linear-gradient(135deg, #6666aa, #8888cc)'; this.style.transform='scale(1)'">
+                                    ${hasNextPhase ? '继续 →' : '结束'}
+                                </div>
+                            `}
                         </div>
                     </div>
                 </div>
