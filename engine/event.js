@@ -300,13 +300,23 @@ const EventSystem = {
             result.mp = effects.mp;
         }
 
+        // v0.99.0: 体力系统已移除，体力效果转为HP/MP效果
         if (effects.stamina) {
             if (effects.stamina > 0) {
-                Player.restoreStamina(effects.stamina);
+                // 恢复体力 → 恢复HP+MP（好事）
+                const hpRestore = Math.floor(effects.stamina * 0.5);
+                const mpRestore = Math.floor(effects.stamina * 0.5);
+                Player.hp = Math.min(Player.maxHp, Player.hp + hpRestore);
+                Player.mp = Math.min(Player.maxMp, Player.mp + mpRestore);
+                result.hp = hpRestore;
+                result.mp = mpRestore;
             } else {
-                Player.useStamina(-effects.stamina);
+                // 消耗体力 → 消耗少量HP（疲惫体现为轻伤）
+                const hpLoss = Math.floor(-effects.stamina * 0.3);
+                Player.hp = Math.max(1, Player.hp - hpLoss);
+                result.hp = -hpLoss;
             }
-            result.stamina = effects.stamina;
+            // result.stamina = effects.stamina; // 移除体力结果
         }
 
         if (effects.exp) {

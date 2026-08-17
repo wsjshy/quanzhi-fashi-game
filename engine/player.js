@@ -112,8 +112,15 @@ const Player = {
     defense: 5,
     speed: 10,
     spirit: 10,  // 精神力，影响魔法伤害和MP上限
-    maxStamina: 100,  // 体力，每天恢复满，限制行动次数
-    stamina: 100,
+    maxStamina: 100,  // @deprecated v0.99.0: 体力系统已移除，保留字段用于存档兼容
+    stamina: 100,     // @deprecated v0.99.0: 体力系统已移除，保留字段用于存档兼容
+
+    // v0.99.0: 每日行动次数（替代体力系统）
+    dailyActions: {
+        cultivate: 0,  // 今日修炼次数
+        hunt: 0,       // 今日猎魔次数
+        explore: 0     // 今日探索/逛街次数
+    },
 
     // 元素与技能
     elements: [],
@@ -1598,9 +1605,74 @@ const Player = {
 
     /**
      * 完全恢复体力（每天早上）
+     * @deprecated v0.99.0: 体力系统已移除
      */
     fullRestoreStamina() {
         this.stamina = this.maxStamina;
+    },
+
+    // ========== v0.99.0: 每日行动次数系统（替代体力） ==========
+
+    /**
+     * 获取修炼效率倍率
+     * 1-3次100%，4-6次70%，7次后50%
+     */
+    getCultivateEfficiency() {
+        const count = this.dailyActions?.cultivate || 0;
+        if (count < 3) return 1.0;
+        if (count < 6) return 0.7;
+        return 0.5;
+    },
+
+    /**
+     * 获取猎魔奖励倍率
+     * 1-3次100%，4-6次70%，7次后50%
+     */
+    getHuntEfficiency() {
+        const count = this.dailyActions?.hunt || 0;
+        if (count < 3) return 1.0;
+        if (count < 6) return 0.7;
+        return 0.5;
+    },
+
+    /**
+     * 获取探索随机事件概率倍率
+     * 1-5次100%，之后0%（无随机事件）
+     */
+    getExploreEventChance() {
+        const count = this.dailyActions?.explore || 0;
+        if (count < 5) return 1.0;
+        return 0;
+    },
+
+    /**
+     * 记录一次行动
+     * @param {string} type - cultivate/hunt/explore
+     */
+    recordAction(type) {
+        if (!this.dailyActions) this.dailyActions = { cultivate: 0, hunt: 0, explore: 0 };
+        if (this.dailyActions[type] !== undefined) {
+            this.dailyActions[type]++;
+        }
+    },
+
+    /**
+     * 重置每日行动计数（新的一天开始时调用）
+     */
+    resetDailyActions() {
+        this.dailyActions = { cultivate: 0, hunt: 0, explore: 0 };
+    },
+
+    /**
+     * 获取今日行动概览（UI显示用）
+     */
+    getDailyActionsSummary() {
+        const c = this.dailyActions || { cultivate: 0, hunt: 0, explore: 0 };
+        return {
+            cultivate: { count: c.cultivate, efficiency: this.getCultivateEfficiency(), maxEfficient: 3 },
+            hunt: { count: c.hunt, efficiency: this.getHuntEfficiency(), maxEfficient: 3 },
+            explore: { count: c.explore, eventChance: this.getExploreEventChance(), maxEvent: 5 }
+        };
     },
 
     /**
@@ -1904,6 +1976,8 @@ const Player = {
             this.spirit = data.spirit ?? 12;
             this.maxStamina = data.maxStamina ?? 100;
             this.stamina = data.stamina ?? this.maxStamina;
+            // v0.99.0: 每日行动次数（替代体力系统）
+            this.dailyActions = data.dailyActions || { cultivate: 0, hunt: 0, explore: 0 };
             this.elements = data.elements ?? [];
             this.elementLevels = data.elementLevels ?? {};
             this.elementExp = data.elementExp ?? {};

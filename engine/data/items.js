@@ -224,17 +224,18 @@ const DataItems = {
   },
   stamina_potion: {
     id: "stamina_potion",
-    name: "体力药水",
-    description: "恢复 40 点体力，适合长时间探索",
+    name: "活力药水",
+    description: "v0.99.0重制：恢复30点HP和30点MP（原体力药水，体力系统已移除）",
     type: "consumable",
-    icon: "⚡",
+    icon: "✨",
     price: 35,
     stackable: true,
     maxStack: 99,
-    usableInBattle: false,
+    usableInBattle: true,
     usableOutOfBattle: true,
     effects: {
-      stamina: 40
+      hp: 30,
+      mp: 30
     }
   },
   full_potion: {

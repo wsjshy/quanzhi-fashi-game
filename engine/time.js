@@ -375,6 +375,10 @@ const TimeSystem = {
         // 每天早上恢复满体力
         if (Player.timeOfDay === 'morning') {
             Player.fullRestoreStamina();
+            // v0.99.0: 重置每日行动次数（替代体力系统）
+            if (typeof Player.resetDailyActions === 'function') {
+                Player.resetDailyActions();
+            }
         }
         
         // 检查是否有大事件

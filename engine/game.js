@@ -576,7 +576,7 @@ const Game = {
         
         const isTrain = true;
         const baseTime = action.timeCost || 2;
-        const baseStamina = action.staminaCost || 10;
+        // v0.99.0: 体力系统已移除，删除baseStamina
         const baseExp = action.effects?.exp || 10;
         
         // 时长选项：1小时、4小时、8小时、闭关（按基础时长缩放）
@@ -616,7 +616,7 @@ const Game = {
                 ${availableOptions.map((opt, index) => {
                     const multiplier = opt.hours / baseTime;
                     const expGain = Math.floor(baseExp * multiplier * opt.bonus);
-                    const staminaCost = Math.ceil(baseStamina * multiplier * 0.5); // 向上取整，和实际消耗一致
+                    // v0.99.0: 体力系统已移除，删除staminaCost计算
                     const hpChange = Math.floor((action.effects?.hp || 0) * multiplier);
                     const mpChange = Math.floor((action.effects?.mp || 0) * multiplier);
                     const timeCost = opt.hours;
@@ -635,7 +635,7 @@ const Game = {
                                 ${opt.label}
                                 <span style="float: right; font-size: 13px; display: flex; gap: 10px;">
                                     <span style="color: #aaddff;">⏱️ ${timeCost}h</span>
-                                    <span style="color: #888;" title="体力消耗（软限制，不阻止行动，不影响效率）">⚡ ${staminaCost}</span>
+                                    <!-- v0.99.0: 体力系统已移除，删除体力消耗显示 -->
                                     ${hpChange !== 0 ? `<span style="color: ${hpChange > 0 ? '#66ff66' : '#ff6666'};">❤️ ${hpChange > 0 ? '+' : ''}${hpChange}</span>` : ''}
                                     ${mpChange !== 0 ? `<span style="color: ${mpChange > 0 ? '#6666ff' : '#ff6666'};">💧 ${mpChange > 0 ? '+' : ''}${mpChange}</span>` : ''}
                                     <span style="color: #ffd700;">✨ +${expGain}</span>
@@ -1067,20 +1067,21 @@ const Game = {
             const multiplier = hours / baseTime;
             
             // 计算实际效果：按时间倍数 × 收益加成
-            // v0.9.7: 体力不再影响修炼效率，staminaEff.trainExp始终为1.0
-            const staminaEff = Player.getStaminaEfficiency ? Player.getStaminaEfficiency() : { trainExp: 1.0 };
+            // v0.99.0: 用每日行动次数效率替代体力效率
+            const dailyEff = Player.getCultivateEfficiency ? Player.getCultivateEfficiency() : 1.0;
             // v0.24.0: 修炼buff（心境通明等）
             const buffExpBonus = Player.cultivationBuff?.expBonus || 0;
             const result = {
                 success: true,
                 timeCost: hours,
                 effects: {
-                    exp: Math.floor((action.effects?.exp || 0) * multiplier * bonus * staminaEff.trainExp * (1 + buffExpBonus)),
+                    exp: Math.floor((action.effects?.exp || 0) * multiplier * bonus * dailyEff * (1 + buffExpBonus)),
                     hp: Math.floor((action.effects?.hp || 0) * multiplier),
-                    mp: Math.floor((action.effects?.mp || 0) * multiplier),
-                    stamina: Math.floor(-(action.staminaCost || 10) * multiplier * 0.5) // 时间越长单位体力消耗越少
+                    mp: Math.floor((action.effects?.mp || 0) * multiplier)
+                    // v0.99.0: 移除体力消耗（体力系统已废弃）
                 },
-                message: `${action.name} ${hours}小时完成`
+                message: `${action.name} ${hours}小时完成`,
+                dailyEfficiency: dailyEff  // v0.99.0: 记录效率用于UI提示
             };
             
             // 星尘魔器效果：增加修炼经验
@@ -1193,10 +1194,15 @@ const Game = {
             if (result.effects.exp) Player.gainExp(result.effects.exp);
             if (result.effects.hp) Player.hp = Math.max(1, Math.min(Player.maxHp, Player.hp + result.effects.hp));
             if (result.effects.mp) Player.mp = Math.max(0, Math.min(Player.maxMp, Player.mp + result.effects.mp));
-            if (result.effects.stamina) Player.stamina = Math.max(0, Math.min(100, Player.stamina + result.effects.stamina));
+            // v0.99.0: 移除体力恢复（体力系统已废弃）
+            // if (result.effects.stamina) Player.stamina = ...
 
             // v0.25.0: 修炼计数和任务进度
             Player._totalCultivateCount = (Player._totalCultivateCount || 0) + 1;
+            // v0.99.0: 记录每日修炼次数（用于效率递减）
+            if (typeof Player.recordAction === 'function') {
+                Player.recordAction('cultivate');
+            }
             if (typeof QuestSystem !== 'undefined') {
                 QuestSystem.updateProgress('cultivate', null, 1);
             }
@@ -2337,26 +2343,9 @@ const Game = {
                     };
                 }
 
-                // v0.9.1: 低体力受伤机制（体力软限制的实际后果）
-                // 普通战斗后，体力过低有概率受伤，影响下一场战斗
+                // v0.99.0: 体力系统已移除，低体力受伤机制暂时禁用
+                // 后续版本改为：连续猎魔第4次后有概率受伤
                 let fatigueResult = null;
-                if (!isBossBattle) {
-                    const staminaRatio = Player.stamina / (Player.maxStamina || 100);
-                    // v0.9.8: 只有体力=0时战斗才可能受伤，体力<30%但>0时不再疲劳
-                    let injuryChance = 0;
-                    let newFatigue = 0;
-                    if (staminaRatio <= 0) {
-                        injuryChance = 0.2;  // 精疲力竭：20%概率重伤
-                        newFatigue = 2;
-                    }
-                    if (injuryChance > 0 && Math.random() < injuryChance) {
-                        // 不降级：如果已有更高等级疲劳，保持
-                        if (newFatigue > Player.fatigueLevel) {
-                            Player.fatigueLevel = newFatigue;
-                        }
-                        fatigueResult = { level: Player.fatigueLevel };
-                    }
-                }
                 
                 let message = '⚔️ 战斗胜利！\n\n';
                 

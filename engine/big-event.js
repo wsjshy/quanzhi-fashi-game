@@ -362,7 +362,11 @@ const BigEventSystem = {
         // 属性效果
         if (effects.hp) Player.hp = Math.max(0, Math.min(Player.getTotalStats().maxHp, Player.hp + effects.hp));
         if (effects.mp) Player.mp = Math.max(0, Math.min(Player.getTotalStats().maxMp, Player.mp + effects.mp));
-        if (effects.stamina) Player.stamina = Math.max(0, Math.min(Player.getTotalStats().maxStamina, Player.stamina + effects.stamina));
+        // v0.99.0: 体力系统已移除，体力效果转为HP效果
+        if (effects.stamina) {
+            const hpChange = effects.stamina > 0 ? Math.floor(effects.stamina * 0.5) : Math.floor(effects.stamina * 0.3);
+            Player.hp = Math.max(1, Math.min(Player.getTotalStats().maxHp, Player.hp + hpChange));
+        }
         if (effects.exp) Player.gainExp(effects.exp);
         if (effects.gold) Player.gold = Math.max(0, Player.gold + effects.gold);
         

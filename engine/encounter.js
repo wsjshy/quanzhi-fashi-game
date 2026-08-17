@@ -39,7 +39,7 @@ const EncounterSystem = {
         pool.push(
             { type: 'exp', amount: 5 + Math.floor(Math.random() * 10), message: '你在路上捡到了一本修炼笔记，获得了一些经验！' },
             { type: 'gold', amount: 10 + Math.floor(Math.random() * 20), message: '你在路上捡到了一些金币！' },
-            { type: 'stamina', amount: -10, message: '你走了很远的路，感觉有些疲惫。' }
+            { type: 'hp', amount: -5, message: '你走了很远的路，感觉有些疲惫，损失了少量HP。' }
         );
 
         // 学校地点遭遇
@@ -84,9 +84,10 @@ const EncounterSystem = {
                     UI.showMessage(`🎲 随机遭遇\n\n${encounter.message}\n获得 ${encounter.amount} 金币`);
                 }
                 break;
-            case 'stamina':
+            case 'hp':
+                // v0.99.0: 原stamina类型改为hp类型（体力系统已移除）
                 if (typeof Player !== 'undefined') {
-                    Player.stamina = Math.max(0, Player.stamina + encounter.amount);
+                    Player.hp = Math.max(1, Player.hp + encounter.amount);
                 }
                 if (typeof UI !== 'undefined') {
                     UI.showMessage(`🎲 随机遭遇\n\n${encounter.message}`);

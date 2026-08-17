@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.98.15 · 有意义对话全覆盖</div>
+                ">v0.99.0 · 每日行动次数系统（替代体力）</div>
             </div>
         `;
 
@@ -1105,12 +1105,8 @@ const UI = {
     getCurrentGoalText() {
         const stats = Player.getTotalStats();
         
-        // 1. 体力较低提示（v0.9.7: 体力不影响效率）
-        if (Player.stamina < 20) {
-            return '体力较低！休息可以恢复体力（体力不影响效率，体力为0时战斗后可能受伤）';
-        }
-        
-        // 2. HP不足提示
+        // v0.99.0: 体力系统已移除，删除体力较低提示
+        // 1. HP不足提示
         if (Player.hp < stats.maxHp * 0.3) {
             return 'HP太低了！使用治愈药水或休息恢复HP，避免战斗中死亡';
         }
@@ -1336,7 +1332,8 @@ const UI = {
                         <span style="color: #ffd700; font-size: 15px;">💰 ${Player.gold}</span>
                         <span style="color: #ff8888; font-size: 14px;">❤️ ${Player.hp}/${Player.maxHp}</span>
                         <span style="color: #88aaff; font-size: 14px;">💧 ${Player.mp}/${Player.maxMp}</span>
-                        <span style="color: #88ff88; font-size: 14px;">⚡ ${Player.stamina}/${Player.maxStamina || 100}</span>
+                        <!-- v0.99.0: 体力系统已移除，替换为每日行动次数提示 -->
+                        <span style="color: #aaffaa; font-size: 12px;" title="今日修炼${Player.dailyActions?.cultivate || 0}次/猎魔${Player.dailyActions?.hunt || 0}次">📊 修炼${Player.dailyActions?.cultivate || 0}/3 猎魔${Player.dailyActions?.hunt || 0}/3</span>
                         <span style="color: #aaffaa; font-size: 15px; font-weight: bold;">Lv.${Player.level}</span>
                     </div>
                 </div>
@@ -1556,7 +1553,7 @@ const UI = {
                                     let glowEffect = isRecommended ? 'box-shadow: 0 0 10px rgba(255,204,68,0.5);' : '';
                                     // tooltip内容
                                     let tooltipText = actionDesc;
-                                    if (action.staminaCost && action.staminaCost > 0) tooltipText += ` | 体力-${action.staminaCost}`;
+                                    // v0.99.0: 体力系统已移除，删除体力消耗显示
                                     if (expReward) tooltipText += ` | 经验+${expReward}`;
                                     if (isRecommended) tooltipText += ` | ${recommendReason}`;
                                     return `
@@ -1778,12 +1775,12 @@ const UI = {
                                         <div style="height:100%; width:${mpPct}%; background:linear-gradient(90deg,#4488ff,#88bbff); transition:width 0.3s;"></div>
                                     </div>
                                 </div>
-                                <div>
-                                    <div style="display:flex; justify-content:space-between; font-size:11px; color:#88ff88; margin-bottom:2px;">
-                                        <span>⚡ 体力</span><span>${Player.stamina}/${s.maxStamina}</span>
-                                    </div>
-                                    <div style="height:8px; background:#113311; border-radius:4px; overflow:hidden;">
-                                        <div style="height:100%; width:${staPct}%; background:linear-gradient(90deg,#44cc44,#88ff88); transition:width 0.3s;"></div>
+                                <!-- v0.99.0: 体力条已移除，替换为每日行动次数概览 -->
+                                <div style="background:rgba(100,100,150,0.1); border-radius:6px; padding:8px; margin-top:4px;">
+                                    <div style="font-size:11px; color:#8899bb; margin-bottom:6px;">📊 今日行动</div>
+                                    <div style="display:flex; justify-content:space-between; font-size:11px; color:#aaccff;">
+                                        <span>修炼: ${Player.dailyActions?.cultivate || 0}/3 ${(Player.dailyActions?.cultivate || 0) >= 3 ? '⚠️效率↓' : '✅高效'}</span>
+                                        <span>猎魔: ${Player.dailyActions?.hunt || 0}/3 ${(Player.dailyActions?.hunt || 0) >= 3 ? '⚠️奖励↓' : '✅满奖'}</span>
                                     </div>
                                 </div>
                             </div>

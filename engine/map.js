@@ -315,10 +315,18 @@ const MapSystem = {
             return { success: false, message: '行动不存在' };
         }
 
-        // v0.9.0: 体力不再作为硬限制，移除检查
-        // 体力消耗仍保留（修炼等），但useStamina不会阻止行动
-        const staminaCost = action.staminaCost !== undefined ? action.staminaCost : 10;
-        Player.useStamina(staminaCost);
+        // v0.99.0: 体力系统已移除，不再消耗体力
+        // const staminaCost = action.staminaCost !== undefined ? action.staminaCost : 10;
+        // Player.useStamina(staminaCost);
+
+        // v0.99.0: 记录每日行动次数（用于效率递减）
+        if (typeof Player.recordAction === 'function') {
+            if (actionId === 'hunt' || action.id === 'hunt') {
+                Player.recordAction('hunt');
+            } else if (actionId === 'explore' || action.id === 'explore' || actionId === 'stroll' || action.id === 'stroll') {
+                Player.recordAction('explore');
+            }
+        }
 
         const result = {
             success: true,
