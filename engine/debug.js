@@ -163,6 +163,7 @@ const DebugPanel = {
             <div style="display: flex; background: #1a1a2e; border-bottom: 1px solid #333; overflow-x: auto;">
                 <div class="debug-tab active" data-tab="player" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid #6666ff; white-space: nowrap; font-size: 12px; color: #fff;">玩家</div>
                 <div class="debug-tab" data-tab="growth" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">成长</div>
+                <div class="debug-tab" data-tab="talent" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">天赋</div>
                 <div class="debug-tab" data-tab="items" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">物品</div>
                 <div class="debug-tab" data-tab="battle" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">战斗</div>
                 <div class="debug-tab" data-tab="teleport" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">传送</div>
@@ -304,6 +305,55 @@ const DebugPanel = {
                             <button onclick="DebugPanel.addItem('little_loach', 1)" style="background: #ffd700; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🐟 小泥鳅坠</button>
                         </div>
                     </div>
+                </div>
+                
+                <!-- 天赋标签页 -->
+                <div id="debug-tab-talent" class="debug-tab-content" style="display: none;">
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ffd700; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">天生天赋快速设置</div>
+                        <div style="font-size: 11px; color: #888; margin-bottom: 8px;">点击设置对应天生天赋（立即生效）</div>
+                        <div id="innate-talent-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; max-height: 200px; overflow-y: auto;"></div>
+                        <button onclick="DebugPanel.refreshInnateTalentList()" style="width: 100%; background: #666; color: #fff; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 11px; margin-top: 6px;">🔄 刷新列表</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #88ff88; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">系天赋快速设置</div>
+                        <div style="font-size: 11px; color: #888; margin-bottom: 8px;">选择系别后点击天赋设置</div>
+                        <select id="talent-element-select" style="width: 100%; padding: 4px; background: #222; color: #fff; border: 1px solid #444; border-radius: 3px; margin-bottom: 6px;" onchange="DebugPanel.refreshElementTalentList()">
+                            <option value="fire">🔥 火系</option>
+                            <option value="ice">❄️ 冰系</option>
+                            <option value="thunder">⚡ 雷系</option>
+                            <option value="earth">🪨 土系</option>
+                            <option value="wind">🌪️ 风系</option>
+                            <option value="water">💧 水系</option>
+                            <option value="light">✨ 光系</option>
+                            <option value="dark">🌑 暗系</option>
+                            <option value="heal">💚 治愈系</option>
+                            <option value="plant">🌿 植物系</option>
+                            <option value="summon">📜 召唤系</option>
+                        </select>
+                        <div id="element-talent-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; max-height: 150px; overflow-y: auto;"></div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff88ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">天赋等级快速设置</div>
+                        <div style="font-size: 11px; color: #888; margin-bottom: 8px;">设置当前系天赋等级（用于测试进化阶段）</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 4px;">
+                            <button onclick="DebugPanel.setTalentLevel(1)" style="background: #666; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 11px;">Lv1</button>
+                            <button onclick="DebugPanel.setTalentLevel(3)" style="background: #4488dd; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 11px;">Lv3</button>
+                            <button onclick="DebugPanel.setTalentLevel(5)" style="background: #aa44aa; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 11px;">Lv5</button>
+                            <button onclick="DebugPanel.setTalentLevel(7)" style="background: #ff8800; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 11px;">Lv7</button>
+                            <button onclick="DebugPanel.setTalentLevel(10)" style="background: #ffd700; color: #333; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 11px;">Lv10</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #88ccff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">天赋分支选择</div>
+                        <div style="font-size: 11px; color: #888; margin-bottom: 8px;">Lv5后可选择进化分支（需先设置系天赋）</div>
+                        <div id="talent-branch-list" style="display: grid; grid-template-columns: 1fr; gap: 4px;"></div>
+                    </div>
+                    
+                    <button onclick="DebugPanel.showTalentInfo()" style="width: 100%; background: #4488aa; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 12px;">📊 查看当前天赋信息</button>
                 </div>
                 
                 <!-- 物品标签页 -->
@@ -741,6 +791,10 @@ const DebugPanel = {
                 
                 // v1.1.7: 刷新属性点显示（之前遗漏导致不同步）
                 this.refreshAttrPoints();
+                
+                // v1.4.6: 刷新天赋列表
+                this.refreshInnateTalentList();
+                this.refreshElementTalentList();
                 
                 console.log('[Debug] 数值已刷新');
             }
@@ -1379,6 +1433,188 @@ const DebugPanel = {
         } catch (e) {
             console.error('[Debug] breakthroughTo错误:', e);
             alert('突破失败: ' + e.message);
+        }
+    },
+    
+    // ========== 天赋相关功能 ==========
+    
+    // 刷新天生天赋列表
+    refreshInnateTalentList() {
+        try {
+            const container = document.getElementById('innate-talent-list');
+            if (!container || typeof DataInnateTalents === 'undefined') return;
+            let html = '';
+            for (const id in DataInnateTalents) {
+                const t = DataInnateTalents[id];
+                const isActive = Player.innateTalent === id;
+                const bgColor = isActive ? '#228844' : '#4444aa';
+                html += `<button onclick="DebugPanel.setInnateTalent('${id}')" style="background: ${bgColor}; color: #fff; border: none; padding: 4px 6px; border-radius: 3px; cursor: pointer; font-size: 10px; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${t.effectDesc || t.description || ''}">${t.icon || ''} ${t.name}${isActive ? ' ✓' : ''}</button>`;
+            }
+            container.innerHTML = html;
+        } catch (e) {
+            console.error('[Debug] refreshInnateTalentList错误:', e);
+        }
+    },
+    
+    // 设置天生天赋
+    setInnateTalent(talentId) {
+        try {
+            if (typeof InnateTalentSystem !== 'undefined') {
+                InnateTalentSystem.setInnateTalent(talentId);
+                const talent = InnateTalentSystem.getTalent(talentId);
+                // 如果是绑定系天赋，同时设置系别
+                if (talent && talent.boundElement) {
+                    Player.element = talent.boundElement;
+                    if (!Player.elements.includes(talent.boundElement)) {
+                        Player.elements.push(talent.boundElement);
+                    }
+                }
+                this.refreshInnateTalentList();
+                this.refreshUI();
+                console.log(`[Debug] 已设置天生天赋: ${talent?.name || talentId}`);
+                alert(`已设置天生天赋: ${talent?.name || talentId}`);
+            }
+        } catch (e) {
+            console.error('[Debug] setInnateTalent错误:', e);
+            alert('设置天赋失败: ' + e.message);
+        }
+    },
+    
+    // 刷新系天赋列表
+    refreshElementTalentList() {
+        try {
+            const select = document.getElementById('talent-element-select');
+            const container = document.getElementById('element-talent-list');
+            if (!select || !container || typeof TalentSystem === 'undefined') return;
+            const element = select.value;
+            const talents = TalentSystem.getElementTalents(element);
+            let html = '';
+            talents.forEach(t => {
+                const current = Player.talents?.[element];
+                const isActive = current?.talentId === t.id;
+                const bgColor = isActive ? '#228844' : '#4488aa';
+                html += `<button onclick="DebugPanel.setElementTalent('${element}', '${t.id}')" style="background: ${bgColor}; color: #fff; border: none; padding: 4px 6px; border-radius: 3px; cursor: pointer; font-size: 10px; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${t.description || ''}">${t.name}${isActive ? ' ✓' : ''}</button>`;
+            });
+            container.innerHTML = html;
+            this.refreshTalentBranchList();
+        } catch (e) {
+            console.error('[Debug] refreshElementTalentList错误:', e);
+        }
+    },
+    
+    // 设置系天赋
+    setElementTalent(element, talentId) {
+        try {
+            if (!Player.talents) Player.talents = {};
+            Player.talents[element] = { talentId: talentId, level: 1, exp: 0, branch: null };
+            this.refreshElementTalentList();
+            this.refreshUI();
+            const talent = TalentSystem.getTalent(talentId);
+            console.log(`[Debug] 已设置${element}系天赋: ${talent?.name || talentId}`);
+            alert(`已设置${element}系天赋: ${talent?.name || talentId}`);
+        } catch (e) {
+            console.error('[Debug] setElementTalent错误:', e);
+            alert('设置系天赋失败: ' + e.message);
+        }
+    },
+    
+    // 设置天赋等级
+    setTalentLevel(level) {
+        try {
+            const select = document.getElementById('talent-element-select');
+            if (!select) return;
+            const element = select.value;
+            if (Player.talents?.[element]) {
+                Player.talents[element].level = level;
+                this.refreshUI();
+                console.log(`[Debug] ${element}系天赋等级设置为: ${level}`);
+                alert(`${element}系天赋等级已设置为 Lv.${level}`);
+            } else {
+                alert('请先设置该系天赋');
+            }
+        } catch (e) {
+            console.error('[Debug] setTalentLevel错误:', e);
+        }
+    },
+    
+    // 刷新天赋分支列表
+    refreshTalentBranchList() {
+        try {
+            const select = document.getElementById('talent-element-select');
+            const container = document.getElementById('talent-branch-list');
+            if (!select || !container) return;
+            const element = select.value;
+            const talentData = Player.talents?.[element];
+            if (!talentData) {
+                container.innerHTML = '<div style="color:#666; font-size:11px;">请先设置系天赋</div>';
+                return;
+            }
+            const talent = TalentSystem.getTalent(talentData.talentId);
+            if (!talent?.evolutions) {
+                container.innerHTML = '<div style="color:#666; font-size:11px;">该天赋无分支</div>';
+                return;
+            }
+            const evolveStage = talent.evolutions.find(e => e.level === 5 && e.branchChoices);
+            if (!evolveStage) {
+                container.innerHTML = '<div style="color:#666; font-size:11px;">该天赋无分支选择（Lv5）</div>';
+                return;
+            }
+            let html = '';
+            evolveStage.branchChoices.forEach(b => {
+                const isActive = talentData.branch === b.id;
+                const bgColor = isActive ? '#228844' : '#aa6644';
+                html += `<button onclick="DebugPanel.setTalentBranch('${b.id}')" style="background: ${bgColor}; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px; text-align: left;" title="${b.description || ''}">${b.name}${isActive ? ' ✓' : ''}<br><span style="font-size:9px; opacity:0.8;">${(b.description || '').substring(0, 30)}...</span></button>`;
+            });
+            container.innerHTML = html;
+        } catch (e) {
+            console.error('[Debug] refreshTalentBranchList错误:', e);
+        }
+    },
+    
+    // 设置天赋分支
+    setTalentBranch(branchId) {
+        try {
+            const select = document.getElementById('talent-element-select');
+            if (!select) return;
+            const element = select.value;
+            if (Player.talents?.[element]) {
+                Player.talents[element].branch = branchId;
+                this.refreshTalentBranchList();
+                this.refreshUI();
+                console.log(`[Debug] ${element}系天赋分支设置为: ${branchId}`);
+                alert(`${element}系天赋分支已设置`);
+            }
+        } catch (e) {
+            console.error('[Debug] setTalentBranch错误:', e);
+        }
+    },
+    
+    // 显示当前天赋信息
+    showTalentInfo() {
+        try {
+            let info = '=== 天生天赋 ===\n';
+            info += `ID: ${Player.innateTalent || '无'}\n`;
+            info += `等级: ${Player.innateTalentLevel || 1}\n`;
+            if (typeof InnateTalentSystem !== 'undefined') {
+                const t = InnateTalentSystem.getTalent(Player.innateTalent);
+                if (t) info += `名称: ${t.name}\n效果: ${t.effectDesc || t.description}\n`;
+            }
+            info += '\n=== 系天赋 ===\n';
+            if (Player.talents) {
+                for (const elem in Player.talents) {
+                    const td = Player.talents[elem];
+                    const t = TalentSystem.getTalent(td.talentId);
+                    info += `${elem}: ${t?.name || td.talentId} Lv.${td.level}${td.branch ? ` 分支:${td.branch}` : ''}\n`;
+                }
+            } else {
+                info += '无\n';
+            }
+            info += '\n=== 已觉醒系别 ===\n';
+            info += (Player.elements || []).join(', ');
+            alert(info);
+        } catch (e) {
+            console.error('[Debug] showTalentInfo错误:', e);
+            alert('显示天赋信息失败: ' + e.message);
         }
     },
     

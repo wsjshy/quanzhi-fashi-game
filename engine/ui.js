@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.4.5 · 觉醒流程重构</div>
+                ">v1.4.6 · 觉醒bug修复+天赋debug工具</div>
             </div>
         `;
 
@@ -902,7 +902,7 @@ const UI = {
     },
 
     // v1.4.5: 觉醒流程重构 - 天赋决定系别后的系别选择界面
-    showElementSelectionAfterTalent() {
+    showElementSelectionAfterTalent(talent) {
         // 博城篇11系
         const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'plant', 'summon'];
         const elementNames = {
@@ -978,6 +978,17 @@ const UI = {
             `;
         });
 
+        // 天赋信息展示
+        let talentInfo = '';
+        if (talent) {
+            talentInfo = `
+                <div style="background: rgba(255,215,0,0.1); border: 1px solid #ffd700; border-radius: 8px; padding: 12px 20px; margin-bottom: 25px; max-width: 500px; text-align: center;">
+                    <div style="color: #ffd700; font-size: 16px; font-weight: bold; margin-bottom: 4px;">✨ ${talent.name}</div>
+                    <div style="color: #aaa; font-size: 13px;">${talent.effectDesc || talent.description || ''}</div>
+                </div>
+            `;
+        }
+
         this.elements.gameContainer.innerHTML = `
             <div style="
                 width: 100%;
@@ -994,6 +1005,7 @@ const UI = {
             ">
                 <div style="position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center;">
                 <h2 style="font-size: 32px; color: #ffd700; margin-bottom: 10px;">选择元素系</h2>
+                ${talentInfo}
                 <p style="color: #8888aa; margin-bottom: 30px; font-size: 15px;">你的天赋让你与以下3种元素产生了共鸣，选择其一作为初始系别</p>
                 <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; align-items: center;">
                     ${elementsHtml}
