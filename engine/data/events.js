@@ -1577,8 +1577,10 @@ const DataEvents = {
     choices: [
       {
         text: "正面迎战！",
-        effects: { hp: -30, exp: 50, stamina: -20, setFlag: "giant_rat_encountered" },
-        resultText: "你与巨眼猩鼠展开激战！腥红光束擦过你的肩膀，火辣辣地疼。经过一番苦战，你终于击退了它，但它逃进了地下通道。你获得了宝贵的战斗经验。"
+        effects: { hp: -10, stamina: -10, setFlag: "giant_rat_encountered" },
+        startBattle: "giant_eye_rat",
+        battleOptions: { winHpPercent: 0.3, canFlee: true, source: "quest" },
+        resultText: "你与巨眼猩鼠展开激战！腥红光束擦过你的肩膀，火辣辣地疼。"
       },
       {
         text: "快速撤退",
