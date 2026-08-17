@@ -4152,6 +4152,7 @@ const Game = {
             const talent = InnateTalentSystem.getTalent(talentId);
             if (!talent) return '';
             const rarity = InnateTalentSystem.getRarityConfig(talent.rarity);
+            const growthHint = this._getInnateTalentGrowthHint(talent);
 
             return `
                 <div onclick="Game.confirmInnateTalent('${talentId}')" style="
@@ -4174,6 +4175,7 @@ const Game = {
                     </div>
                     <div style="font-size: 14px; color: #ccc; margin-bottom: 6px;">${talent.description}</div>
                     <div style="font-size: 13px; color: #66ff99; font-weight: bold;">效果：${talent.effectDesc}</div>
+                    ${growthHint ? `<div style="font-size: 12px; color: #aa88ff; margin-top: 8px; font-style: italic; border-top: 1px dashed #444; padding-top: 6px;">${growthHint}</div>` : ''}
                 </div>
             `;
         }).join('');
@@ -4521,6 +4523,80 @@ const Game = {
             }
             return `${name}:${v}`;
         }).join('，');
+    },
+
+    /**
+     * 天生天赋成长暗喻（选择时显示，不直接说进化，用暗示性语言）
+     * 根据天赋类型和进化次数生成不同文案
+     */
+    _getInnateTalentGrowthHint(talent) {
+        if (!talent) return '';
+        
+        const evoCount = talent.evolutions ? talent.evolutions.length : 0;
+        const type = talent.type;
+        const name = talent.name;
+        
+        // 无进化：出生即完满
+        if (evoCount === 0) {
+            const hints = {
+                '天生双系': '此乃天命所归，与生俱来的完满，无需后天雕琢',
+                '技能大师': '一法通万法通，天赋已然圆满，再无精进余地',
+                '施法专注': '心无旁骛的极致，从一开始便是终点',
+                '元素亲和': '与元素的羁绊与生俱来，这份共鸣已到极致',
+                '修炼天才': '过目不忘的悟性，起步即是他人的终点',
+                '强健体魄': '钢筋铁骨浑然天成，肉身已达凡躯极限',
+                '精神强大': '精神力如海般深邃，天赋已然定型',
+                '致命一击': '对破绽的敏锐是本能，这种直觉无法培养',
+                '风之迅捷': '身轻如燕是天性，速度已达凡俗之巅',
+                '吸血本能': '嗜血的本能刻入骨髓，无需觉醒便已完整',
+                '快速施法': '咒语在舌尖跳跃的天赋，与生俱来的流畅',
+                '钢铁意志': '心如磐石不可动摇，这份坚韧已是极致',
+                '幸运星': '气运加身之人，命运的眷顾从一而终',
+                '魔法共鸣': '与魔法的共鸣浑然天成，再难寸进',
+                '战斗直觉': '百战而生的直觉，天赋已固化为本能',
+                '治愈传承': '医者仁心的传承，这份力量已然完满',
+                '生命强化': '生命力如汪洋恣肆，已达体魄上限',
+                '魔力强化': '魔力之泉喷涌不息，容量已是天生极限',
+                '攻击强化': '破坏力刻入血脉，这份力量与生俱来',
+                '防御强化': '天生的铜墙铁壁，防御力已达凡躯极致',
+                '速度强化': '迅如雷电的天赋，速度已是天生极限',
+                '自然恢复': '大地之子的韧性，恢复力与生俱来'
+            };
+            return hints[name] || '天赋完满，与生俱来的力量';
+        }
+        
+        // 早熟型（early）：进化少，早年显露
+        if (type === 'early' || evoCount <= 2) {
+            const hints = {
+                '教廷祝福': '圣光的眷顾自幼显现，虽后程平缓，但起点已远超常人',
+                '灵心': '精神力的天赋早慧，年少时便已崭露头角，后续精进有限'
+            };
+            return hints[name] || '天赋早慧，年少时便锋芒毕露，后程趋于平稳';
+        }
+        
+        // 成长型（growth）：进化多，潜力大
+        if (type === 'growth') {
+            const hints = {
+                '元素亲和': '与元素的羁绊日渐深厚，每一次修炼都在唤醒更深的共鸣',
+                '修炼天才': '悟性随阅历增长，今日的天才只是明日的起点',
+                '战斗直觉': '战斗的本能在生死间觉醒，越磨砺越锋芒'
+            };
+            return hints[name] || '天赋如璞玉，需经岁月雕琢，未来不可限量';
+        }
+        
+        // 波动型（volatile）：起伏大
+        if (type === 'volatile') {
+            const hints = {
+                '战斗直觉': '战斗的直觉起伏不定，却总能在绝境中绽放异样光芒'
+            };
+            return hints[name] || '天赋如潮汐起伏，寻常时不显，危难处方见真章';
+        }
+        
+        // 默认：有进化但类型未知
+        if (evoCount >= 4) {
+            return '天赋深藏不露，每一次突破都将揭开新的可能';
+        }
+        return '天赋尚有精进空间，成长之路未尽';
     },
 
     // ========== 境界突破 ==========
