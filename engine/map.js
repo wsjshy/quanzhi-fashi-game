@@ -320,12 +320,12 @@ const MapSystem = {
         // Player.useStamina(staminaCost);
 
         // v0.99.0: 记录每日行动次数（用于效率递减）
-        // v0.99.3: 新增study类别，三步塔修炼算cultivate，酒馆算explore
+        // v0.99.3: 新增study类别，三步塔修炼算cultivate，酒馆/采集算explore
         if (typeof Player.recordAction === 'function') {
             const aid = actionId || action.id;
             if (aid === 'hunt') {
                 Player.recordAction('hunt');
-            } else if (aid === 'explore' || aid === 'stroll' || aid === 'tavern') {
+            } else if (aid === 'explore' || aid === 'stroll' || aid === 'tavern' || aid === 'gather') {
                 Player.recordAction('explore');
             } else if (aid === 'study' || aid === 'library') {
                 Player.recordAction('study');
@@ -352,9 +352,9 @@ const MapSystem = {
 
         // 直接效果
         if (action.effects) {
-            // v0.99.3: 探索类行动（逛街/酒馆）应用收益递减
+            // v0.99.3: 探索类行动（逛街/酒馆/采集草药）应用收益递减
             const aid = actionId || action.id;
-            if ((aid === 'explore' || aid === 'stroll' || aid === 'tavern') 
+            if ((aid === 'explore' || aid === 'stroll' || aid === 'tavern' || aid === 'gather') 
                 && typeof Player.getExploreEfficiency === 'function') {
                 const eff = Player.getExploreEfficiency();
                 const modifiedEffects = { ...action.effects };
