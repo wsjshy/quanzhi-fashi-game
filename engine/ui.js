@@ -2967,6 +2967,7 @@ const UI = {
 
         // 创建遮罩层
         const overlay = document.createElement('div');
+        overlay.id = 'battle-items-overlay';
         overlay.style.cssText = `
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.7); z-index: 99999;

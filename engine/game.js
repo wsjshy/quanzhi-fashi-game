@@ -2187,6 +2187,11 @@ const Game = {
         if (!BattleSystem.isPlayerTurn) return;
         
         BattleSystem.playerUseItem(itemId);
+        
+        // 关闭道具弹窗（使用道具是一个行动，使用后关闭弹窗）
+        const itemsOverlay = document.getElementById('battle-items-overlay');
+        if (itemsOverlay) itemsOverlay.remove();
+        
         UI.updateBattleScreen();
         
         if (!BattleSystem.active) {
