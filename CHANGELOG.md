@@ -2,6 +2,11 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v1.1.2 - 章节系统修复
+
+### 修复
+- **博城灾难章节无法完成**：chapter_05_disaster完成条件引用`bocheng_disaster_survived`，但大事件结束时只设置`bocheng_disaster_happened`，导致章节永远无法完成。已统一为`bocheng_disaster_happened`
+
 ## v1.1.1 - 游戏节奏微调
 
 ### 优化

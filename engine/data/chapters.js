@@ -156,7 +156,7 @@ const DataChapters = {
 
     startConditions: { previousChapterCompleted: "chapter_04_shadows" },
     completeConditions: {
-      requiredFlags: ["bocheng_disaster_survived"]
+      requiredFlags: ["bocheng_disaster_happened"]
     },
 
     mainQuestChain: ["quest_stop_ritual"],

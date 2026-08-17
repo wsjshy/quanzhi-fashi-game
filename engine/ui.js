@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.1.1 · 游戏节奏微调</div>
+                ">v1.1.2 · 章节系统修复</div>
             </div>
         `;
 
