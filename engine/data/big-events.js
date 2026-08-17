@@ -802,7 +802,7 @@ const DataBigEvents = {
             nextPhase: "phase_6_end",
             effects: {
               gold: 500,
-              reputation: { "mu_family": 20 },
+              reputation: { "mu_family": 20, "grassroots": -10 },
               npcRelation: { "mo_fan": -10 },
               flags: { "exam_result": "join_mu" }
             }
@@ -812,6 +812,7 @@ const DataBigEvents = {
             nextPhase: "phase_6_end",
             effects: {
               gold: 100,
+              reputation: { "grassroots": 10 },
               npcRelation: { "mo_fan": 5 },
               flags: { "exam_result": "refuse_polite" }
             }
@@ -820,7 +821,7 @@ const DataBigEvents = {
             text: "怒斥拒绝，不接受施舍",
             nextPhase: "phase_5_duel",
             effects: {
-              reputation: { "mu_family": -20, "brave": 15 },
+              reputation: { "mu_family": -20, "grassroots": 15, "brave": 15 },
               npcRelation: { "mo_fan": 15, "mu_bai": -15 },
               flags: { "exam_result": "refuse_angry" }
             }
