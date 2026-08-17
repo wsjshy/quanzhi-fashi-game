@@ -257,7 +257,29 @@ const UI = {
         // 如果当前没有显示消息且可以显示，立即处理
         if (!this._isMessageShowing && this._canShowMessage()) {
             this._processNextMessage();
+        } else if (!this._isMessageShowing) {
+            // 当前不能显示（如在事件/对话/战斗中），设置定时重试，确保状态恢复后消息自动显示
+            this._scheduleMessageRetry();
         }
+    },
+
+    // 定时重试消息队列（避免事件/对话/战斗结束后消息堆积不显示）
+    _scheduleMessageRetry() {
+        if (this._messageRetryTimer) return; // 已有定时器，不重复设置
+        this._messageRetryTimer = setInterval(() => {
+            if (this._canShowMessage() && !this._isMessageShowing && this._messageQueue.length > 0) {
+                clearInterval(this._messageRetryTimer);
+                this._messageRetryTimer = null;
+                this._processNextMessage();
+            }
+        }, 300);
+        // 最多重试30秒，防止定时器泄漏
+        setTimeout(() => {
+            if (this._messageRetryTimer) {
+                clearInterval(this._messageRetryTimer);
+                this._messageRetryTimer = null;
+            }
+        }, 30000);
     },
 
     // v0.9.4: 显示每日总结
@@ -367,6 +389,10 @@ const UI = {
                 // 恢复行动按钮点击
                 document.body.classList.remove('message-showing');
             }, 50);
+            // 调度重试，确保状态恢复后消息自动显示
+            if (this._messageQueue.length > 0) {
+                this._scheduleMessageRetry();
+            }
             return;
         }
         
@@ -716,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.1.3 · 装备系统修复</div>
+                ">v1.1.4 · 消息系统优化</div>
             </div>
         `;
 
