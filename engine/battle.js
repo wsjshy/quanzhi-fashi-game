@@ -1447,6 +1447,45 @@ const BattleSystem = {
                     this.player._shadowStacks = 0;
                 }
             }
+            // v1.5.6: 毒素层数机制（poisonStack）- 植物系攻击叠加毒素
+            if (te.poisonStack && damage.element === 'plant') {
+                const maxPoison = te.poisonMax || 3;
+                const existingPoison = this.enemy.statusEffects.find(e => e.type === 'poison');
+                if (existingPoison) {
+                    existingPoison.stacks = Math.min((existingPoison.stacks || 1) + 1, maxPoison);
+                    existingPoison.duration = Math.max(existingPoison.duration, 3);
+                    this.addLog(`☠️ 毒素叠加 ${existingPoison.stacks}/${maxPoison}！`, 'element');
+                    // 满层毒爆（poisonBurstOnMax）
+                    if (existingPoison.stacks >= maxPoison && te.poisonBurstOnMax) {
+                        const burstDmg = Math.floor(this.enemy.maxHp * (te.poisonBurstDamage || 0.2));
+                        this.applyDamage(this.enemy, { amount: burstDmg, element: 'plant', isCrit: false, isMiss: false, trueDamage: te.poisonBurstTrue || false }, this.player);
+                        this.addLog(`☠️ 毒爆！造成 ${burstDmg} 点伤害！`, 'element');
+                        // 毒爆刷新（poisonBurstRefresh）
+                        if (!te.poisonBurstRefresh) {
+                            existingPoison.stacks = 0;
+                        }
+                    }
+                    // 满层束缚（poisonBindOnMax）
+                    if (existingPoison.stacks >= maxPoison && te.poisonBindOnMax) {
+                        if (!this.enemy.statusEffects.some(e => e.type === 'bind')) {
+                            this.addStatusEffect(this.enemy, {
+                                type: 'bind', name: '藤蔓束缚', duration: te.bindDuration || 2,
+                                defenseDown: te.bindDefenseDown || 0.3,
+                                unpurgeable: te.bindUnpurgeable || false,
+                                hpDrain: te.bindHpDrain || 0
+                            });
+                            this.addLog(`☠️ 毒素满层！${this.enemy.name} 被藤蔓束缚！`, 'element');
+                        }
+                    }
+                } else {
+                    this.addStatusEffect(this.enemy, {
+                        type: 'poison', name: '中毒', duration: 3, stacks: 1,
+                        damage: te.poisonDamage || 0.05,
+                        unpurgeable: te.poisonUnpurgeable || false
+                    });
+                    this.addLog(`☠️ ${this.enemy.name} 中毒了！`, 'element');
+                }
+            }
             // 眩晕
             if (te.stunChance && Math.random() < te.stunChance) {
                 this.applyStatusEffects(this.enemy, [{
@@ -2537,6 +2576,42 @@ const BattleSystem = {
             }
             healTarget.hp = Math.min(healTarget.maxHp, healTarget.hp + actualHeal);
 
+            // v1.5.6: 祝福层数机制（blessingStack）- 治疗时叠加祝福
+            if (isPlayer && this.player.talentEffects && this.player.talentEffects.blessingStack && healTarget === this.player) {
+                const te = this.player.talentEffects;
+                const maxBlessing = te.blessingMax || 3;
+                if (!this.player._blessingStacks) this.player._blessingStacks = 0;
+                this.player._blessingStacks = Math.min(this.player._blessingStacks + 1, maxBlessing);
+                const healBonus = te.blessingHealBonus || 0.05;
+                this.addLog(`✨ 祝福叠加 ${this.player._blessingStacks}/${maxBlessing}（治疗+${Math.floor(healBonus*100)}%）`, 'heal');
+                // 满层生命绽放（blessingBloomOnMax）
+                if (this.player._blessingStacks >= maxBlessing && te.blessingBloomOnMax) {
+                    const bloomHeal = Math.floor(this.player.maxHp * (te.bloomHeal || 0.3));
+                    this.player.hp = Math.min(this.player.maxHp, this.player.hp + bloomHeal);
+                    this.addLog(`✨ 生命绽放！恢复 ${bloomHeal} 点生命！`, 'heal');
+                    // 绽放净化（bloomPurify）
+                    if (te.bloomPurify) {
+                        const beforeCount = this.player.statusEffects.length;
+                        this.player.statusEffects = this.player.statusEffects.filter(e => !['burn','poison','bleed','slow','curse','wet','shock'].includes(e.type));
+                        const removed = beforeCount - this.player.statusEffects.length;
+                        if (removed > 0) this.addLog(`✨ 绽放净化！清除 ${removed} 个负面状态！`, 'heal');
+                    }
+                    this.player._blessingStacks = 0;
+                }
+                // 满层圣恩（blessingGraceOnMax）
+                if (this.player._blessingStacks >= maxBlessing && te.blessingGraceOnMax) {
+                    const graceDuration = te.graceDuration || 3;
+                    this.addStatusEffect(this.player, {
+                        type: 'grace', name: '圣恩', duration: graceDuration,
+                        attackBonus: te.graceAtkBonus || 0.2,
+                        defenseBonus: te.graceDefBonus || 0.2,
+                        speedBonus: te.graceSpeedBonus || 0.1
+                    });
+                    this.addLog(`✨ 圣恩降临！全属性提升 ${graceDuration} 回合！`, 'buff');
+                    this.player._blessingStacks = 0;
+                }
+            }
+
             // 天赋：治疗转护盾（healShield：治疗量20%转为护盾）
             if (isPlayer && this.player.talentEffects && this.player.talentEffects.healShield && healTarget === this.player) {
                 const shieldRatio = this.player.talentEffects.healShield;
@@ -3307,6 +3382,41 @@ const BattleSystem = {
             const chargeDmg = Math.floor(summon.attack * (this.player.talentEffects.summonChargeDamage || 1.5));
             this.applyDamage(this.enemy, { amount: chargeDmg, element: 'neutral', isMiss: false, isCrit: false }, summon);
             this.addLog(`💨 ${summon.name} 发动冲锋！追加 ${chargeDmg} 点伤害！`, 'special');
+        }
+
+        // v1.5.6: 契约层数机制（contractStack）- 召唤兽攻击时叠加契约
+        if (this.player.talentEffects && this.player.talentEffects.contractStack) {
+            const te = this.player.talentEffects;
+            const maxContract = te.contractMax || 3;
+            if (!this.player._contractStacks) this.player._contractStacks = 0;
+            this.player._contractStacks = Math.min(this.player._contractStacks + 1, maxContract);
+            const dmgBonus = te.contractDamageBonus || 0.05;
+            this.addLog(`📜 契约叠加 ${this.player._contractStacks}/${maxContract}（召唤兽伤害+${Math.floor(dmgBonus*100)}%）`, 'buff');
+            // 满层兽潮（contractBeastTideOnMax）
+            if (this.player._contractStacks >= maxContract && te.contractBeastTideOnMax) {
+                const tideCount = te.beastTideCount || 2;
+                const tideDamage = te.beastTideDamage || 0.6;
+                for (let i = 0; i < tideCount; i++) {
+                    if (this.enemy.hp <= 0) break;
+                    const tideDmg = Math.floor(summon.attack * tideDamage);
+                    this.applyDamage(this.enemy, { amount: tideDmg, element: 'neutral', isMiss: false, isCrit: (i === tideCount - 1 && te.beastTideFinalCrit) || false }, summon);
+                }
+                this.addLog(`🐾 兽潮爆发！${tideCount}次连击攻击！`, 'special');
+                this.player._contractStacks = 0;
+            }
+            // 满层守护（contractGuardOnMax）
+            if (this.player._contractStacks >= maxContract && te.contractGuardOnMax) {
+                const guardDuration = te.guardDuration || 2;
+                this.addStatusEffect(this.player, {
+                    type: 'summon_guard', name: '契约守护',
+                    duration: guardDuration,
+                    damageAbsorb: te.guardDamageAbsorb || 0.5,
+                    taunt: te.guardTaunt || false,
+                    invincible: te.guardInvincible || false
+                });
+                this.addLog(`🛡️ 契约守护！召唤兽为你抵挡伤害！`, 'buff');
+                this.player._contractStacks = 0;
+            }
         }
 
         // 附加效果：中毒

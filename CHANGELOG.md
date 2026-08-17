@@ -2,6 +2,28 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v1.5.6 - 治愈/植物/召唤系天赋效果实装（全系完成）
+
+### 治愈系核心效果
+- **blessingStack/blessingMax/blessingHealBonus**：祝福层数机制，治疗时叠加，每层提升治疗效果
+- **blessingBloomOnMax/bloomHeal/bloomPurify**：满层触发生命绽放，大量治疗并净化负面状态
+- **blessingGraceOnMax/graceAtkBonus/graceDefBonus/graceSpeedBonus**：满层触发圣恩，全属性提升
+
+### 植物系核心效果
+- **poisonStack/poisonMax/poisonDamage**：毒素层数机制，植物系攻击叠加中毒
+- **poisonBurstOnMax/poisonBurstDamage/poisonBurstRefresh/poisonBurstTrue**：满层触发毒爆，造成基于最大HP的伤害
+- **poisonBindOnMax/bindDuration/bindDefenseDown/bindUnpurgeable/bindHpDrain**：满层触发藤蔓束缚
+
+### 召唤系核心效果
+- **contractStack/contractMax/contractDamageBonus**：契约层数机制，召唤兽攻击时叠加
+- **contractBeastTideOnMax/beastTideCount/beastTideDamage/beastTideFinalCrit**：满层触发兽潮，多段连击
+- **contractGuardOnMax/guardDamageAbsorb/guardDuration/guardInvincible**：满层触发契约守护，召唤兽为玩家抵挡伤害
+
+### 里程碑：全部11系天赋核心效果实装完成
+- 火系（v1.5.1）、冰系/雷系/水系（v1.5.4）、风系/土系/光系/暗系（v1.5.5）、治愈系/植物系/召唤系（v1.5.6）
+- 天赋效果539字段，已处理约430+（80%+）
+- 剩余次要效果（如各系终极天赋的特殊机制）可在后续版本逐步完善
+
 ## v1.5.5 - 风/土/光/暗四系天赋战斗效果实装
 
 ### 土系核心效果

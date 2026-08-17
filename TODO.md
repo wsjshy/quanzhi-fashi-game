@@ -1,12 +1,33 @@
 # TODO - 全职法师游戏
 
-> 当前版本：v1.5.5（风土光暗天赋效果实装） | 下一版本：**v1.5.6 治愈/植物/召唤系天赋效果实装** | 最后更新：2026-08-18
+> 当前版本：v1.5.6（全系天赋效果实装完成） | 下一版本：**v1.6.0 天赋效果完善与黑盒测试** | 最后更新：2026-08-18
 > 状态说明：[ ]待做 [~]进行中 [x]完成 [❌]已废弃
 > 唯一入口：[AGENTS.md](AGENTS.md)
 
 ---
 
 ## P0 - 当前开发
+
+### v1.5.6 治愈/植物/召唤系天赋效果实装（2026-08-18，已完成）
+
+**治愈系核心效果**：
+- [x] blessingStack/blessingMax 祝福层数机制（治疗叠加）
+- [x] blessingBloomOnMax/bloomHeal/bloomPurify 满层生命绽放（治疗+净化）
+- [x] blessingGraceOnMax 满层圣恩（全属性提升）
+
+**植物系核心效果**：
+- [x] poisonStack/poisonMax 毒素层数机制（攻击叠加中毒）
+- [x] poisonBurstOnMax/poisonBurstDamage 满层毒爆
+- [x] poisonBindOnMax 满层藤蔓束缚
+
+**召唤系核心效果**：
+- [x] contractStack/contractMax 契约层数机制（召唤兽攻击叠加）
+- [x] contractBeastTideOnMax/beastTideCount 满层兽潮（多段连击）
+- [x] contractGuardOnMax/guardDamageAbsorb 满层契约守护
+
+**里程碑**：全部11系天赋核心效果实装完成！
+- 火系(v1.5.1) + 冰/雷/水(v1.5.4) + 风/土/光/暗(v1.5.5) + 治愈/植物/召唤(v1.5.6)
+- 天赋效果539字段，已处理约430+（80%+）
 
 ### v1.5.5 风/土/光/暗四系天赋战斗效果实装（2026-08-18，已完成）
 

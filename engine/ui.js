@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.5.5 · 风土光暗天赋效果实装</div>
+                ">v1.5.6 · 全系天赋效果实装完成</div>
             </div>
         `;
 
