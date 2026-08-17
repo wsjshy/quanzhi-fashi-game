@@ -7244,7 +7244,7 @@ const DataCharacters = {
     id: "xu_dahuang",
     name: "徐大荒",
     title: "城市猎妖队队长",
-    description: "博城城市猎妖队队长，火系法师，性格豪爽霸道，作战经验丰富。将火滋修炼到第三级爆裂境界，一招火滋·爆裂威力惊人。对队员要求严格，是个负责任的队长。",
+    description: "博城城市猎妖队队长，火系法师，性格豪爽霸道，作战经验丰富，身上常带着新伤（脑袋上总缠着纱布）。将火滋修炼到第三级爆裂境界，一招火滋·爆裂威力惊人。对队员要求严格，是个负责任的队长。",
     avatar: "assets/images/characters/xu_dahuang.jpg",
     location: "bo_city",
     element: "fire",
