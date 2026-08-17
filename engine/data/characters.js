@@ -6650,6 +6650,7 @@ const DataCharacters = {
           mood: "serious",
           effects: { opinion: 5, trust: 3 },
           choices: [
+            { text: "我想证明给你看", next: "default", action: "start_quest", actionData: { questId: "quest_zhankong_discipline" } },
             { text: "明白，先守规矩再变通", effects: {}, next: "default" }
           ]
         },
@@ -7607,6 +7608,7 @@ const DataCharacters = {
           mood: "cold",
           effects: { opinion: 3, trust: 2 },
           choices: [
+            { text: "那我就证明给你看", next: "default", action: "start_quest", actionData: { questId: "quest_yu_ang_proof" } },
             { text: "（离开）", next: "default" }
           ]
         },

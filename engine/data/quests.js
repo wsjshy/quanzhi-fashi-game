@@ -3132,6 +3132,33 @@ const DataQuests = {
     rewards: { exp: 180, gold: 120, setFlag: "practiced_defense" }
   },
 
+  quest_zhankong_discipline: {
+    id: "quest_zhankong_discipline",
+    name: "军纪考验",
+    description: "斩空认为你需要证明自己的纪律性，委托你完成一次巡逻任务。",
+    giver: "zhan_kong",
+    type: "mission",
+    objectives: [
+      { type: "reach", locationId: "snow_peak_mountain", count: 1, description: "前往雪峰山巡逻" },
+      { type: "kill", count: 2, description: "清除巡逻区域的2只妖魔" },
+      { type: "talk", npcId: "zhan_kong", count: 1, description: "巡逻结束向斩空汇报" }
+    ],
+    rewards: { exp: 200, gold: 150, setFlag: "discipline_proven" }
+  },
+
+  quest_yu_ang_proof: {
+    id: "quest_yu_ang_proof",
+    name: "实力证明",
+    description: "宇昂看不起你，认为你需要证明自己的实力。用行动让他闭嘴。",
+    giver: "yu_ang",
+    type: "challenge",
+    objectives: [
+      { type: "kill", count: 3, description: "独立击败3只妖魔" },
+      { type: "cultivate", count: 2, description: "修炼2次提升实力" }
+    ],
+    rewards: { exp: 200, gold: 150, setFlag: "proven_to_yu_ang" }
+  },
+
   // ========== v0.67.0 博城灾难第二阶段任务 ==========
 
   bocheng_prep_quest: {
