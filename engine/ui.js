@@ -597,8 +597,8 @@ const UI = {
             overlay.remove();
             msgBox.remove();
             
-            // v0.93.0: 120ms→200ms，更彻底防止点击穿透
-            setTimeout(() => blocker.remove(), 200);
+            // v1.2.0: 200ms→300ms，更彻底防止点击穿透（部分设备点击事件延迟较长）
+            setTimeout(() => blocker.remove(), 300);
             
             // 处理下一条消息
             ui._processNextMessage();
@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.1.9 · 代码质量清理</div>
+                ">v1.2.0 · 体验优化与bug修复</div>
             </div>
         `;
 
@@ -808,6 +808,19 @@ const UI = {
             wind: '#99ff99', water: '#6699ff', light: '#ffffcc', dark: '#9966ff',
             heal: '#66ff99', plant: '#66cc66'
         };
+        // v1.2.0: 各系特点说明，帮助新手选择
+        const elementDescs = {
+            fire: '高爆发·燃烧持续伤害',
+            ice: '强控制·冻结减速',
+            thunder: '高速度·麻痹连锁',
+            earth: '高防御·召唤能力',
+            wind: '高闪避·速度快',
+            water: '治疗恢复·防御辅助',
+            light: '神圣伤害·净化治疗',
+            dark: '高暴击·吸血诅咒',
+            heal: '强力治疗·辅助增益',
+            plant: '控制束缚·持续伤害'
+        };
         // v0.92.2: 挂载到window，供全局selectElement函数访问
         window._elementColors = elementColors;
         // 元素权重：常见系概率高，稀有系概率低
@@ -862,6 +875,7 @@ const UI = {
                          onmouseover="this.style.borderColor='${elementColors[elem]}'; this.style.boxShadow='0 0 20px ${elementColors[elem]}40'; this.style.transform='translateY(-3px)'"
                          onmouseout="if(!this.classList.contains('selected')){this.style.borderColor='#444477'; this.style.boxShadow='none'; this.style.transform='translateY(0)'}">
                         ${elementNames[elem]}
+                        <div style="font-size:11px; color:#999; margin-top:6px; font-weight:normal; line-height:1.4;">${elementDescs[elem] || ''}</div>
                     </div>
                 `;
             });
@@ -1939,7 +1953,7 @@ const UI = {
             { icon: '💾', name: '保存游戏', color: '#aaaa55', action: () => Game.saveGame() },
         ];
         const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);';
         overlay.innerHTML = `
             <div style="max-width:500px;width:100%;background:linear-gradient(135deg,#1a1a3a,#2a2a5a);border:2px solid #555588;border-radius:16px;padding:20px;max-height:90vh;overflow-y:auto;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">

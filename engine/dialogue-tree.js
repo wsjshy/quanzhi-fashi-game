@@ -306,6 +306,9 @@ const DialogueTree = {
             }
             this.currentNode = 'default';
             return this.getCurrentNodeData();
+        } else if (choice.nextNode === null || choice.next === null) {
+            // v1.2.0: nextNode明确为null表示结束对话（告别选项）
+            return this.endDialogue();
         } else {
             // 没有指定下一个节点且不是关闭动作，返回默认节点
             this.currentNode = 'default';

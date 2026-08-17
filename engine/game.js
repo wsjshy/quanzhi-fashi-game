@@ -1752,8 +1752,8 @@ const Game = {
         const mpRatio = Player.mp / Player.maxMp;
 
         // 状态良好，不需要恢复
-        if (hpRatio >= 0.8 && mpRatio >= 0.8) {
-            UI.showMessage('✨ 状态良好，HP/MP均在80%以上，无需使用药品！');
+        if (hpRatio >= 0.9 && mpRatio >= 0.9) {
+            UI.showMessage('✨ 状态良好，HP/MP均在90%以上，无需使用药品！');
             return;
         }
 
@@ -1793,8 +1793,8 @@ const Game = {
         // 循环使用药品，直到HP/MP都>=80%或没有药品
         for (const healItem of healItems) {
             while (healItem.count > 0) {
-                const needHp = Player.hp < Player.maxHp * 0.8;
-                const needMp = Player.mp < Player.maxMp * 0.8;
+                const needHp = Player.hp < Player.maxHp * 0.9;
+                const needMp = Player.mp < Player.maxMp * 0.9;
                 if (!needHp && !needMp) break;
 
                 // 只有当药品能恢复需要的属性时才使用
@@ -1812,7 +1812,7 @@ const Game = {
                     break;
                 }
             }
-            if (Player.hp >= Player.maxHp * 0.8 && Player.mp >= Player.maxMp * 0.8) break;
+            if (Player.hp >= Player.maxHp * 0.9 && Player.mp >= Player.maxMp * 0.9) break;
         }
 
         if (usedItems.length === 0) {
