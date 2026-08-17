@@ -6204,7 +6204,10 @@ const DataCharacters = {
           id: "prove",
           texts: ["哼，光说没用。", "年度考核上见真章吧。"],
           effects: { opinion: 1 },
-          choices: [{ text: "一定。", next: "default", action: "back" }]
+          choices: [
+            { text: "不如现在就比修炼？", next: "default", action: "start_quest", actionData: { questId: "quest_zhoumin_contest" } },
+            { text: "一定。", next: "default", action: "back" }
+          ]
         }
       }
     }
@@ -6895,7 +6898,10 @@ const DataCharacters = {
           id: "brave",
           texts: ["厉害厉害！", "到时候跟着你混了啊！"],
           effects: { opinion: 5 },
-          choices: [{ text: "好说。", next: "default", action: "back" }]
+          choices: [
+            { text: "那我们一起去历练？", next: "default", action: "start_quest", actionData: { questId: "quest_wangsanpang_expedition" } },
+            { text: "好说。", next: "default", action: "back" }
+          ]
         },
         scared: {
           id: "scared",

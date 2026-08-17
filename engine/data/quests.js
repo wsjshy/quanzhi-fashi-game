@@ -3240,6 +3240,33 @@ const DataQuests = {
     rewards: { exp: 200, gold: 150, setFlag: "investigated_black_church" }
   },
 
+  quest_zhoumin_contest: {
+    id: "quest_zhoumin_contest",
+    name: "火系修炼比拼",
+    description: "周敏看不起你的修炼态度，你决定用实际行动证明自己。",
+    giver: "zhou_min",
+    type: "challenge",
+    objectives: [
+      { type: "cultivate", count: 2, description: "修炼2次提升火系" },
+      { type: "kill", count: 1, description: "击败1只妖魔证明实力" },
+      { type: "talk", npcId: "zhou_min", count: 1, description: "向周敏展示成果" }
+    ],
+    rewards: { exp: 150, gold: 100, setFlag: "proved_to_zhoumin" }
+  },
+
+  quest_wangsanpang_expedition: {
+    id: "quest_wangsanpang_expedition",
+    name: "雪峰山历练",
+    description: "王三胖胆小但想跟着你一起去雪峰山历练，互相照应。",
+    giver: "wang_sanpang",
+    type: "exploration",
+    objectives: [
+      { type: "reach", locationId: "snow_peak_mountain", count: 1, description: "前往雪峰山" },
+      { type: "kill", count: 1, description: "击败1只妖魔完成历练" }
+    ],
+    rewards: { exp: 150, gold: 100, setFlag: "expedition_with_sanpang" }
+  },
+
   // ========== v0.67.0 博城灾难第二阶段任务 ==========
 
   bocheng_prep_quest: {
