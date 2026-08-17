@@ -1410,6 +1410,7 @@ const DataCharacters = {
           mood: "focused",
           effects: { exp: 25, opinion: 3 },
           choices: [
+            { id: "training", text: "能给我布置修炼任务吗？", nextNode: "default", action: "start_quest", actionData: { questId: "quest_muningxue_ice_training" } },
             { id: "back", text: "明白了，谢谢", effects: {}, nextNode: "default" }
           ]
         },
@@ -3320,6 +3321,13 @@ const DataCharacters = {
           ],
           mood: "worried",
           choices: [
+            {
+              id: "investigate",
+              text: "老师，我可以帮忙调查吗？",
+              nextNode: "default",
+              action: "start_quest",
+              actionData: { questId: "quest_tangyue_mountain_investigation" }
+            },
             {
               id: "back",
               text: "好的，我会注意的",

@@ -3159,6 +3159,34 @@ const DataQuests = {
     rewards: { exp: 200, gold: 150, setFlag: "proven_to_yu_ang" }
   },
 
+  quest_tangyue_mountain_investigation: {
+    id: "quest_tangyue_mountain_investigation",
+    name: "雪峰山异动调查",
+    description: "唐月老师注意到雪峰山妖魔异常活跃，学校正在调查。你主动提出帮忙。",
+    giver: "tang_yue",
+    type: "investigation",
+    objectives: [
+      { type: "reach", locationId: "snow_peak_mountain", count: 1, description: "前往雪峰山调查" },
+      { type: "kill", count: 3, description: "击败3只妖魔了解异常原因" },
+      { type: "talk", npcId: "tang_yue", count: 1, description: "向唐月老师汇报调查结果" }
+    ],
+    rewards: { exp: 250, gold: 200, setFlag: "tangyue_investigation_done" }
+  },
+
+  quest_muningxue_ice_training: {
+    id: "quest_muningxue_ice_training",
+    name: "冰系特训",
+    description: "穆宁雪罕见地同意指点你的修炼，给你布置了特训任务。",
+    giver: "mu_ningxue",
+    type: "training",
+    objectives: [
+      { type: "cultivate", count: 3, description: "修炼3次体会冰系精髓" },
+      { type: "kill", count: 2, description: "击败2只妖魔实战验证" },
+      { type: "talk", npcId: "mu_ningxue", count: 1, description: "向穆宁雪汇报修炼成果" }
+    ],
+    rewards: { exp: 250, gold: 200, setFlag: "ningxue_training_done" }
+  },
+
   // ========== v0.67.0 博城灾难第二阶段任务 ==========
 
   bocheng_prep_quest: {
