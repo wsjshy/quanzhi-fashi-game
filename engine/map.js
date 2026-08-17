@@ -385,7 +385,10 @@ const MapSystem = {
         if (this.currentLocation.enemies && this.currentLocation.enemies.length > 0) {
             const encounterRate = this.currentLocation.enemyRate || 0.2;
             const actionModifier = this.getActionEncounterModifier(actionId);
-            if (Math.random() < encounterRate * actionModifier) {
+            // v1.2.1: 猎魔行动保证遇敌（玩家主动选择猎魔就是为了战斗）
+            const isHunt = actionId === 'hunt' || action.id === 'hunt' || actionId === 'deep_hunt';
+            const finalRate = isHunt ? 1.0 : encounterRate * actionModifier;
+            if (Math.random() < finalRate) {
                 result.battle = this.triggerRandomBattle(this.currentLocation);
                 // v0.99.1: 标记战斗来源（用于猎魔奖励递减）
                 if (result.battle) {

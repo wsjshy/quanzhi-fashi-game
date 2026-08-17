@@ -1532,6 +1532,24 @@ const DebugPanel = {
     triggerBigEvent(eventId) {
         try {
             if (typeof BigEventSystem !== 'undefined' && BigEventSystem.triggerBigEvent) {
+                // v1.2.1: debug触发大事件前自动满足条件
+                const event = typeof DataManager !== 'undefined' ? DataManager.getBigEvent(eventId) : null;
+                if (event && event.conditions) {
+                    // 自动满足等级条件
+                    if (event.conditions.minLevel && Player.level < event.conditions.minLevel) {
+                        Player.level = event.conditions.minLevel;
+                        console.log(`[Debug] 自动设置等级为${event.conditions.minLevel}`);
+                    }
+                    // 自动完成前置任务
+                    if (event.conditions.requiredQuests) {
+                        for (const questId of event.conditions.requiredQuests) {
+                            if (!Player.isQuestComplete(questId)) {
+                                Player.completeQuest(questId);
+                                console.log(`[Debug] 自动完成前置任务: ${questId}`);
+                            }
+                        }
+                    }
+                }
                 BigEventSystem.triggerBigEvent(eventId);
                 this.toggle(); // 关闭调试面板
                 console.log(`[Debug] 触发大事件: ${eventId}`);

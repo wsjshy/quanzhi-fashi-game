@@ -228,7 +228,7 @@ const DataItems = {
     description: "v0.99.0重制：恢复30点HP和30点MP（原体力药水，体力系统已移除）",
     type: "consumable",
     icon: "✨",
-    price: 35,
+    price: 50,
     stackable: true,
     maxStack: 99,
     usableInBattle: true,

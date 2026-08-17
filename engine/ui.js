@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.2.0 · 体验优化与bug修复</div>
+                ">v1.2.1 · 核心玩法与经济平衡</div>
             </div>
         `;
 
@@ -4125,8 +4125,18 @@ const UI = {
                                         <div style="font-size: 12px; color: #aabbcc;">
                                             ${Object.entries(item.equipStats || {}).map(([k, v]) => {
                                                 const statNames = { attack: '攻击', defense: '防御', speed: '速度', maxHp: '生命', maxMp: '魔法', critRate: '暴击', hitRate: '命中' };
-                                                const enhancedValue = Math.floor(v * (1 + enhanceLevel * 0.1));
-                                                return `${statNames[k] || k}: +${enhancedValue}${enhanceLevel > 0 ? ` <span style="color:#66ff88;">(基础${v})</span>` : ''}`;
+                                                // v1.2.1: 与player.js强化计算逻辑一致
+                                                let enhancedValue;
+                                                if (v < 1 && v > 0) {
+                                                    enhancedValue = Math.round(v * (1 + enhanceLevel * 0.1) * 10000) / 10000;
+                                                    const displayVal = (enhancedValue * 100).toFixed(1) + '%';
+                                                    const baseDisplay = (v * 100).toFixed(1) + '%';
+                                                    return `${statNames[k] || k}: +${displayVal}${enhanceLevel > 0 ? ` <span style="color:#66ff88;">(基础${baseDisplay})</span>` : ''}`;
+                                                } else {
+                                                    enhancedValue = Math.floor(v * (1 + enhanceLevel * 0.1));
+                                                    if (enhanceLevel > 0 && enhancedValue <= v) enhancedValue = v + enhanceLevel;
+                                                    return `${statNames[k] || k}: +${enhancedValue}${enhanceLevel > 0 ? ` <span style="color:#66ff88;">(基础${v})</span>` : ''}`;
+                                                }
                                             }).join(' | ')}
                                         </div>
                                         <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
@@ -4203,10 +4213,21 @@ const UI = {
                                                 ⬆️ 强化到+${enhanceLevel + 1}后：
                                                 ${Object.entries(item.equipStats || {}).map(([k, v]) => {
                                                     const statNames = { attack: '攻击', defense: '防御', speed: '速度', maxHp: '生命', maxMp: '魔法', critRate: '暴击', hitRate: '命中' };
-                                                    const currentVal = Math.floor(v * (1 + enhanceLevel * 0.1));
-                                                    const nextVal = Math.floor(v * (1 + (enhanceLevel + 1) * 0.1));
-                                                    const diff = nextVal - currentVal;
-                                                    return `${statNames[k] || k}+${diff}`;
+                                                    // v1.2.1: 与player.js强化计算逻辑一致
+                                                    let currentVal, nextVal;
+                                                    if (v < 1 && v > 0) {
+                                                        currentVal = Math.round(v * (1 + enhanceLevel * 0.1) * 10000) / 10000;
+                                                        nextVal = Math.round(v * (1 + (enhanceLevel + 1) * 0.1) * 10000) / 10000;
+                                                        const diff = ((nextVal - currentVal) * 100).toFixed(1) + '%';
+                                                        return `${statNames[k] || k}+${diff}`;
+                                                    } else {
+                                                        currentVal = Math.floor(v * (1 + enhanceLevel * 0.1));
+                                                        if (enhanceLevel > 0 && currentVal <= v) currentVal = v + enhanceLevel;
+                                                        nextVal = Math.floor(v * (1 + (enhanceLevel + 1) * 0.1));
+                                                        if (nextVal <= v) nextVal = v + (enhanceLevel + 1);
+                                                        const diff = nextVal - currentVal;
+                                                        return `${statNames[k] || k}+${diff}`;
+                                                    }
                                                 }).join('、')}
                                             </div>
                                         ` : ''}

@@ -89,7 +89,7 @@ const DataAchievements = {
     category: 'battle',
     rarity: 'rare',
     icon: '🛡️',
-    reward: { gold: 800 },
+    reward: { gold: 300 },
     condition: { type: 'no_damage_battle', value: 1 }
   },
 

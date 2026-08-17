@@ -288,7 +288,20 @@ const Player = {
                     const enhanceLevel = this.enhanceLevels[slot] || 0;
                     const enhanceMultiplier = 1 + enhanceLevel * 0.1; // 每级强化+10%属性
                     Object.keys(item.equipStats).forEach(key => {
-                        stats[key] = (stats[key] || 0) + Math.floor(item.equipStats[key] * enhanceMultiplier);
+                        const baseVal = item.equipStats[key];
+                        // v1.2.1: 百分比属性（值<1，如暴击率/命中率）不向下取整，保留小数；整数属性强化后至少比基础多1
+                        let enhancedVal;
+                        if (baseVal < 1 && baseVal > 0) {
+                            // 百分比属性，保留4位小数
+                            enhancedVal = Math.round(baseVal * enhanceMultiplier * 10000) / 10000;
+                        } else {
+                            // 整数属性，向下取整但确保强化后有提升
+                            enhancedVal = Math.floor(baseVal * enhanceMultiplier);
+                            if (enhanceLevel > 0 && enhancedVal <= baseVal) {
+                                enhancedVal = baseVal + enhanceLevel; // 至少每级+1
+                            }
+                        }
+                        stats[key] = (stats[key] || 0) + enhancedVal;
                     });
                 }
             }
