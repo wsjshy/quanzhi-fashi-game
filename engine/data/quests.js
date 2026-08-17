@@ -3471,6 +3471,88 @@ const DataQuests = {
     rewards: { exp: 180, gold: 120, setFlag: "school_quest_done" }
   },
 
+  quest_zhangxiaohou_training: {
+    id: "quest_zhangxiaohou_training",
+    name: "和小侯一起历练",
+    description: "张小侯想和你一起去历练，互相照应。",
+    giver: "zhang_xiaohou",
+    type: "companion",
+    objectives: [
+      { type: "reach", locationId: "snow_peak_mountain", count: 1, description: "和小侯一起前往雪峰山" },
+      { type: "kill", count: 2, description: "击败2只妖魔完成历练" },
+      { type: "talk", npcId: "zhang_xiaohou", count: 1, description: "和小侯分享历练心得" }
+    ],
+    rewards: { exp: 180, gold: 100, setFlag: "trained_with_xiaohou" }
+  },
+
+  quest_zhaomanyan_hunt: {
+    id: "quest_zhaomanyan_hunt",
+    name: "和满延一起猎魔",
+    description: "赵满延邀请你一起去猎魔，他请客装备。",
+    giver: "zhao_manyan",
+    type: "companion",
+    objectives: [
+      { type: "reach", locationId: "snow_peak_mountain", count: 1, description: "和满延一起前往雪峰山" },
+      { type: "kill", count: 3, description: "击败3只妖魔完成猎魔" },
+      { type: "talk", npcId: "zhao_manyan", count: 1, description: "和满延分享猎魔收获" }
+    ],
+    rewards: { exp: 200, gold: 150, setFlag: "hunted_with_manyan" }
+  },
+
+  quest_bookshop_knowledge: {
+    id: "quest_bookshop_knowledge",
+    name: "魔法书籍收集",
+    description: "书店老板希望你帮忙收集各地的魔法书籍知识。",
+    giver: "book_shop_owner",
+    type: "collection",
+    objectives: [
+      { type: "cultivate", count: 3, description: "修炼3次感悟魔法知识" },
+      { type: "talk", npcId: "book_shop_owner", count: 1, description: "向书店老板分享修炼心得" }
+    ],
+    rewards: { exp: 150, gold: 80, setFlag: "knowledge_collected" }
+  },
+
+  quest_magicassociation_test: {
+    id: "quest_magicassociation_test",
+    name: "魔法协会考核",
+    description: "魔法协会会长建议你参加协会的基础考核。",
+    giver: "magic_association_chairman",
+    type: "challenge",
+    objectives: [
+      { type: "cultivate", count: 2, description: "修炼2次准备考核" },
+      { type: "kill", count: 2, description: "击败2只妖魔展示实力" },
+      { type: "talk", npcId: "magic_association_chairman", count: 1, description: "向会长汇报考核结果" }
+    ],
+    rewards: { exp: 200, gold: 120, setFlag: "magic_assoc_tested" }
+  },
+
+  quest_mysterious_investigation: {
+    id: "quest_mysterious_investigation",
+    name: "神秘事件调查",
+    description: "神秘法师暗示博城有不寻常的事，委托你调查。",
+    giver: "mysterious_mage",
+    type: "investigation",
+    objectives: [
+      { type: "reach", locationId: "bo_city_street", count: 1, description: "在博城市街调查异常" },
+      { type: "reach", locationId: "snow_peak_mountain", count: 1, description: "在雪峰山调查异常" },
+      { type: "talk", npcId: "mysterious_mage", count: 1, description: "向神秘法师汇报发现" }
+    ],
+    rewards: { exp: 200, gold: 100, setFlag: "mystery_investigated" }
+  },
+
+  quest_heyu_mutual_help: {
+    id: "quest_heyu_mutual_help",
+    name: "同学互助",
+    description: "何雨希望和你互相帮助，共同进步。",
+    giver: "he_yu",
+    type: "companion",
+    objectives: [
+      { type: "cultivate", count: 2, description: "修炼2次提升实力" },
+      { type: "talk", npcId: "he_yu", count: 1, description: "和何雨交流修炼心得" }
+    ],
+    rewards: { exp: 120, gold: 60, setFlag: "helped_he_yu" }
+  },
+
   // ========== v0.67.0 博城灾难第二阶段任务 ==========
 
   bocheng_prep_quest: {

@@ -167,6 +167,64 @@ function runDataIntegrityTests() {
         result.warn(`技能与物品: ID冲突: ${conflicts.join(', ')}（可能是故意的，如同名物品）`);
     }
     
+    // ===== 6. 对话触发任务ID验证 =====
+    console.log('\n6️⃣  对话触发任务ID验证');
+    console.log('─'.repeat(40));
+    
+    const questIds = new Set(Object.keys(data.quests || {}));
+    const invalidQuestRefs = [];
+    const validQuestRefs = new Set();
+    
+    function scanDialogueNodes(obj, npcId) {
+        if (!obj || typeof obj !== 'object') return;
+        for (const [key, value] of Object.entries(obj)) {
+            if (key === 'action' && value === 'start_quest' && obj.actionData && obj.actionData.questId) {
+                const qid = obj.actionData.questId;
+                if (!questIds.has(qid)) {
+                    invalidQuestRefs.push(`${npcId}:${qid}`);
+                } else {
+                    validQuestRefs.add(qid);
+                }
+            }
+            if (key === 'effects' && value && typeof value === 'object' && value.startQuest) {
+                const qid = value.startQuest;
+                if (!questIds.has(qid)) {
+                    invalidQuestRefs.push(`${npcId}:${qid}(effects)`);
+                } else {
+                    validQuestRefs.add(qid);
+                }
+            }
+            if (value && typeof value === 'object' && !Array.isArray(value)) {
+                scanDialogueNodes(value, npcId);
+            }
+            if (Array.isArray(value)) {
+                for (const item of value) {
+                    if (item && typeof item === 'object') {
+                        scanDialogueNodes(item, npcId);
+                    }
+                }
+            }
+        }
+    }
+    
+    for (const [npcId, npc] of Object.entries(data.characters || {})) {
+        if (npc.dialogueTree) {
+            scanDialogueNodes(npc.dialogueTree, npcId);
+        }
+    }
+    
+    if (invalidQuestRefs.length === 0) {
+        result.pass(`对话触发任务: ${validQuestRefs.size}个任务引用全部有效`);
+    } else {
+        result.fail(`对话触发任务: 无效任务ID引用: ${invalidQuestRefs.join(', ')}`);
+    }
+    
+    // 检查是否有任务从未被任何对话触发（可能是孤儿任务）
+    const orphanQuests = [...questIds].filter(qid => !validQuestRefs.has(qid) && qid.startsWith('quest_'));
+    if (orphanQuests.length > 0) {
+        result.warn(`对话触发任务: ${orphanQuests.length}个任务未被任何对话触发（可能是主线/其他入口）: ${orphanQuests.slice(0, 5).join(', ')}${orphanQuests.length > 5 ? '...' : ''}`);
+    }
+    
     return result.report();
 }
 

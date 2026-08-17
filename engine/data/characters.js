@@ -1695,6 +1695,12 @@ const DataCharacters = {
               next: "casual_chat"
             },
             {
+              text: "一起去历练？",
+              next: "default",
+              action: "start_quest",
+              actionData: { questId: "quest_zhangxiaohou_training" }
+            },
+            {
               id: "farewell_xiaohou",
               text: "小侯，我要离开博城了",
               condition: {
@@ -2070,6 +2076,12 @@ const DataCharacters = {
             {
               text: "随便聊聊",
               next: "casual_chat"
+            },
+            {
+              text: "一起去猎魔？",
+              next: "default",
+              action: "start_quest",
+              actionData: { questId: "quest_zhaomanyan_hunt" }
             },
             {
               text: "再见",
@@ -4231,6 +4243,12 @@ const DataCharacters = {
               next: "casual_chat"
             },
             {
+              text: "需要帮忙收集书籍吗？",
+              next: "default",
+              action: "start_quest",
+              actionData: { questId: "quest_bookshop_knowledge" }
+            },
+            {
               text: "再见",
               next: null,
               action: "close"
@@ -4490,6 +4508,12 @@ const DataCharacters = {
               next: "casual_chat"
             },
             {
+              text: "有协会考核任务吗？",
+              next: "default",
+              action: "start_quest",
+              actionData: { questId: "quest_magicassociation_test" }
+            },
+            {
               text: "打扰了，再见",
               next: null,
               action: "close"
@@ -4708,6 +4732,12 @@ const DataCharacters = {
             {
               text: "能教我魔法吗？",
               next: "teach_magic"
+            },
+            {
+              text: "有调查任务吗？",
+              next: "default",
+              action: "start_quest",
+              actionData: { questId: "quest_mysterious_investigation" }
             },
             {
               text: "再见",
@@ -5403,6 +5433,12 @@ const DataCharacters = {
               condition: {
                 minOpinion: 20
               }
+            },
+            {
+              text: "有互助任务吗？",
+              next: "default",
+              action: "start_quest",
+              actionData: { questId: "quest_heyu_mutual_help" }
             },
             {
               text: "再见",
