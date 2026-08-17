@@ -672,6 +672,43 @@ const BattleSystem = {
             this.enemy.baseDefense = this.enemy.defense;
         }
 
+        // v1.6.0: 恐惧/勇气系统 - 面对强大妖魔时触发恐惧
+        if (options.fearLevel !== undefined) {
+            // 手动指定恐惧等级（历练副本等特殊场景）
+            if (options.fearLevel > 0) {
+                this.player.statusEffects.push({
+                    type: 'fear',
+                    name: '恐惧',
+                    level: options.fearLevel,
+                    duration: 99
+                });
+                this.addLog(`😰 面对${this.enemy.name}，你感到一阵恐惧！（${options.fearLevel}级）`, 'debuff');
+            }
+        } else if (this.enemy.demonTier === 'warrior' || this.enemy.demonTier === '战将级') {
+            // 战将级妖魔自动触发2级恐惧
+            const playerLevel = Player.level || 1;
+            const enemyLevel = this.enemy.level || 5;
+            if (playerLevel < enemyLevel + 3) {
+                const fearLevel = Math.min(3, Math.max(1, enemyLevel - playerLevel));
+                this.player.statusEffects.push({
+                    type: 'fear',
+                    name: '恐惧',
+                    level: fearLevel,
+                    duration: 99
+                });
+                this.addLog(`😰 面对战将级妖魔${this.enemy.name}，你感到恐惧！（${fearLevel}级）`, 'debuff');
+            }
+        } else if (this.enemy.demonTier === 'commander' || this.enemy.demonTier === '统领级') {
+            // 统领级妖魔自动触发3级恐惧
+            this.player.statusEffects.push({
+                type: 'fear',
+                name: '恐惧',
+                level: 3,
+                duration: 99
+            });
+            this.addLog(`😱 面对统领级妖魔${this.enemy.name}，你感到极度恐惧！（3级）`, 'debuff');
+        }
+
         // v0.9.0: 普通敌人强化（补偿战后恢复80%的平衡）
         // Boss/精英/决斗/试炼不强化（这些战斗本身就有挑战性）
         const battleMode = this.battleOptions?.mode;
@@ -4475,6 +4512,18 @@ const BattleSystem = {
         this.processTraitsOnTurnEnd(this.enemy, false);
         this.processTraitsOnTurnEnd(this.player, true);
 
+        // v1.6.0: 恐惧消退（每回合恐惧等级-1，成功行动后额外消退）
+        const fearEffect = this.player.statusEffects.find(e => e.type === 'fear');
+        if (fearEffect) {
+            fearEffect.level = Math.max(0, (fearEffect.level || 1) - 1);
+            if (fearEffect.level <= 0) {
+                this.player.statusEffects = this.player.statusEffects.filter(e => e.type !== 'fear');
+                this.addLog(`😤 恐惧消退，你恢复了冷静！`, 'buff');
+            } else {
+                this.addLog(`😰 恐惧程度：${fearEffect.level}级`, 'debuff');
+            }
+        }
+
         // 处理召唤兽持续时间和状态
         if (this.summon) {
             // v0.8.27: 共享回复（sharedHpRegen）：双方每回合回复HP
@@ -6755,6 +6804,13 @@ const BattleSystem = {
             // 中毒持续伤害（在回合结束处理，这里只标记）
             if (effect.type === 'poison' && effect.damage) {
                 // 中毒伤害在turnEnd中处理
+            }
+            // v1.6.0: 恐惧状态（fear）- 面对强大妖魔时的心理压力
+            if (effect.type === 'fear') {
+                const fearLevel = effect.level || 1;
+                mods.attackMod -= fearLevel * 5; // 每级恐惧-5攻击
+                mods.hitRateMod -= fearLevel * 0.05; // 每级恐惧-5%命中
+                mods.critRateMod -= fearLevel * 0.03; // 每级恐惧-3%暴击
             }
         });
 

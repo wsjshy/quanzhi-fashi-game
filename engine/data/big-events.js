@@ -392,5 +392,266 @@ const DataBigEvents = {
         }
       }
     }
+  },
+
+  // 雪峰山历练 - 博城篇中期高潮
+  big_event_xuefeng_training: {
+    id: "big_event_xuefeng_training",
+    name: "雪峰山历练",
+    description: "天澜魔法高中一年一度的野外历练，尖子生们将在雪峰山面对真正的妖魔...",
+    type: "training",
+    autoTrigger: false, // 需要手动触发（通过任务/事件入口）
+    conditions: {
+      minLevel: 3,
+      requiredQuests: []
+    },
+    phases: [
+      // 第一阶段：集结与分组
+      {
+        id: "phase_1_gather",
+        name: "集结出发",
+        description: "清晨，天澜魔法高中的操场上聚集了100名尖子生。教官罗云波和潘丽君正在讲解历练规则。\n\n\"这次历练，你们将分成5组，每组20人，没有老师带队！\"罗云波教官的声音洪亮，\"目的地是雪峰山百草谷，任务是采集指定的草药。但要记住，那里是真正的野外，有妖魔出没！\"\n\n同学们议论纷纷，有人兴奋，有人害怕。你需要选择加入哪个小组。",
+        type: "choice",
+        choices: [
+          {
+            text: "加入莫凡那组（有莫凡、张小侯、周敏）",
+            nextPhase: "phase_2_cliff",
+            effects: {
+              flags: { "training_group": "mofan" },
+              reputation: { "school": 5 }
+            }
+          },
+          {
+            text: "加入穆白那组（有穆白、赵坤三）",
+            nextPhase: "phase_2_cliff",
+            effects: {
+              flags: { "training_group": "mubai" },
+              reputation: { "mu_family": 5 }
+            }
+          },
+          {
+            text: "随机分配（听天由命）",
+            nextPhase: "phase_2_cliff",
+            effects: {
+              flags: { "training_group": "random" }
+            }
+          }
+        ]
+      },
+
+      // 第二阶段：河谷悬崖
+      {
+        id: "phase_2_cliff",
+        name: "河谷悬崖",
+        description: "经过半天的跋涉，你们来到了百草谷的入口——一道10米宽的悬崖。\n\n\"风系的同学，跳过去拉绳索！\"组长喊道。\n\n张小侯挺身而出：\"我来！\"他施展风轨·疾行，轻盈地跃过悬崖，固定好绳索。\n\n现在轮到你了。",
+        type: "choice",
+        choices: [
+          {
+            text: "（风系）使用风轨·疾行跳过去",
+            nextPhase: "phase_3_vines",
+            conditions: { element: "wind" },
+            effects: {
+              exp: 30,
+              flags: { "training_cliff": "wind_jump" },
+              reputation: { "school": 10 }
+            }
+          },
+          {
+            text: "帮助拉绳索，保护胆小的同学",
+            nextPhase: "phase_3_vines",
+            effects: {
+              exp: 20,
+              flags: { "training_cliff": "help" },
+              reputation: { "kind": 10 }
+            }
+          },
+          {
+            text: "直接顺着绳索爬过去",
+            nextPhase: "phase_3_vines",
+            effects: {
+              exp: 10,
+              flags: { "training_cliff": "climb" }
+            }
+          }
+        ]
+      },
+
+      // 第三阶段：妖藤狭道
+      {
+        id: "phase_3_vines",
+        name: "妖藤狭道",
+        description: "越过悬崖后，你们进入了一条狭道——两侧布满了会动的妖藤！\n\n\"小心！妖藤会攻击人，火系魔法对它特别有效！\"有经验的同学喊道。\n\n妖藤挥舞着带倒刺的藤蔓，向你们袭来。",
+        type: "battle",
+        enemyId: "demon_vine",
+        battleOptions: {
+          fearLevel: 1,
+          canFlee: true
+        },
+        winPhase: "phase_4_wolf",
+        losePhase: "phase_4_wolf_injured"
+      },
+
+      // 第四阶段：幽狼兽遭遇（高潮）
+      {
+        id: "phase_4_wolf",
+        name: "幽狼兽！",
+        description: "穿过妖藤狭道，你们来到了独眼魔狼的巢穴附近。\n\n突然，一声狼嚎响彻山谷！一只比独眼魔狼大得多的幽狼兽从巢穴中冲出，双目泛着诡异的绿光。\n\n\"是幽狼兽！战将级妖魔！\"有人惊恐地喊道。\n\n学生们溃不成军，四散奔逃。穆白咬着牙，第一个释放了冰蔓·冻迟——虽然效果甚微，但他的勇气令人敬佩。\n\n莫凡拉住你：\"别慌！跟我来，我们把它引到洞窟里去！\"",
+        type: "choice",
+        choices: [
+          {
+            text: "跟莫凡一起，把幽狼兽引入洞窟",
+            nextPhase: "phase_5_cave",
+            effects: {
+              flags: { "training_wolf": "follow_mofan" },
+              reputation: { "brave": 15 }
+            }
+          },
+          {
+            text: "留下来帮助受伤的同学撤退",
+            nextPhase: "phase_5_retreat",
+            effects: {
+              exp: 50,
+              flags: { "training_wolf": "help_retreat" },
+              reputation: { "kind": 20, "brave": 10 }
+            }
+          },
+          {
+            text: "自己先逃跑保命",
+            nextPhase: "phase_5_flee",
+            effects: {
+              flags: { "training_wolf": "flee" },
+              reputation: { "coward": 10 }
+            }
+          }
+        ]
+      },
+
+      // 第四阶段B：战斗中受伤
+      {
+        id: "phase_4_wolf_injured",
+        name: "受伤撤退",
+        description: "在与妖藤的战斗中你受了伤，但还是坚持跟上了队伍。\n\n就在你们休整时，幽狼兽出现了！你因为受伤，只能跟着大家一起撤退。",
+        type: "narrative",
+        nextPhase: "phase_5_retreat",
+        effects: {
+          hp: -30,
+          flags: { "training_wolf": "injured" }
+        }
+      },
+
+      // 第五阶段A：洞窟BOSS战（环境互动）
+      {
+        id: "phase_5_cave",
+        name: "洞窟决战",
+        description: "你跟着莫凡把幽狼兽引入了洞窟深处。这里布满了巨大的钟乳石。\n\n\"看到那些钟乳石了吗？\"莫凡眼中闪过一丝精光，\"用火系魔法烧断它们，让石头砸下来！\"\n\n这是一场智慧与勇气的较量。",
+        type: "battle",
+        enemyId: "demon_wolf_advanced",
+        battleOptions: {
+          fearLevel: 2,
+          canFlee: false,
+          environment: "cave" // 洞窟环境，支持环境互动
+        },
+        winPhase: "phase_6_victory",
+        losePhase: "phase_6_rescued"
+      },
+
+      // 第五阶段B：帮助撤退
+      {
+        id: "phase_5_retreat",
+        name: "掩护撤退",
+        description: "你选择留下来帮助受伤的同学撤退。幽狼兽在后面追杀，你用自己的魔法掩护大家。\n\n就在幽狼兽要扑向一个摔倒的同学时，一道风之翼从天而降——是斩空教官！\n\n\"你们做得很好。\"斩空的声音沉稳有力，\"剩下的交给我。\"",
+        type: "narrative",
+        nextPhase: "phase_6_end",
+        effects: {
+          exp: 80,
+          gold: 50,
+          reputation: { "kind": 15, "military": 10 },
+          flags: { "training_result": "rescuer" }
+        }
+      },
+
+      // 第五阶段C：逃跑
+      {
+        id: "phase_5_flee",
+        name: "独自逃跑",
+        description: "你选择了自己先逃跑。虽然保住了性命，但看着同学们在后面苦战，你心中有些不是滋味。\n\n后来你听说，莫凡用智慧击杀了幽狼兽，而斩空教官及时赶到救了其他人。",
+        type: "narrative",
+        nextPhase: "phase_6_end",
+        effects: {
+          exp: 20,
+          flags: { "training_result": "fled" }
+        }
+      },
+
+      // 第六阶段A：胜利结算
+      {
+        id: "phase_6_victory",
+        name: "历练结束·英雄",
+        description: "在莫凡的配合下，你们利用洞窟中的钟乳石成功击杀了幽狼兽！\n\n斩空教官随后赶到，看到幽狼兽的尸体，眼中闪过一丝惊讶：\"你们两个小子，不简单啊。\"\n\n这次历练，你获得了S级评价！",
+        type: "narrative",
+        nextPhase: "phase_6_end",
+        effects: {
+          exp: 200,
+          gold: 200,
+          reputation: { "brave": 30, "school": 20, "military": 15 },
+          flags: { "training_result": "hero", "training_rating": "S" },
+          items: [{ itemId: "warrior_soul_essence", count: 1 }]
+        }
+      },
+
+      // 第六阶段B：被救
+      {
+        id: "phase_6_rescued",
+        name: "历练结束·被救",
+        description: "在洞窟中你体力不支倒下了。就在幽狼兽要扑向你时，斩空教官及时赶到，一击击退了幽狼兽。\n\n\"没事吧？\"斩空扶起你，\"已经很勇敢了。\"\n\n这次历练，你获得了B级评价。",
+        type: "narrative",
+        nextPhase: "phase_6_end",
+        effects: {
+          exp: 100,
+          gold: 80,
+          reputation: { "brave": 10 },
+          flags: { "training_result": "rescued", "training_rating": "B" }
+        }
+      },
+
+      // 第六阶段：结束
+      {
+        id: "phase_6_end",
+        name: "历练结束",
+        description: "雪峰山历练结束了。你们带着收获和回忆回到了学校。\n\n这次经历让每个人都成长了不少。莫凡因为击杀幽狼兽名声大噪，穆白也展现了勇气。而你，也有了属于自己的历练故事。",
+        type: "auto",
+        effects: {
+          flags: { "xuefeng_training_completed": true }
+        }
+      }
+    ],
+
+    // 历练评分（根据flag计算）
+    ratings: {
+      S: {
+        condition: "training_result === 'hero'",
+        name: "S级·英雄",
+        description: "击杀幽狼兽，拯救全队",
+        rewards: { exp: 200, gold: 200, reputation: { brave: 30 } }
+      },
+      A: {
+        condition: "training_result === 'rescuer'",
+        name: "A级·救援者",
+        description: "掩护同学撤退，表现英勇",
+        rewards: { exp: 120, gold: 100, reputation: { kind: 20 } }
+      },
+      B: {
+        condition: "training_result === 'rescued'",
+        name: "B级·幸存者",
+        description: "坚持战斗，被教官救下",
+        rewards: { exp: 80, gold: 60 }
+      },
+      C: {
+        condition: "training_result === 'fled'",
+        name: "C级·逃生者",
+        description: "选择逃跑，保住性命",
+        rewards: { exp: 30, gold: 20 }
+      }
+    }
   }
 };
