@@ -6805,7 +6805,10 @@ const DataCharacters = {
           id: "about_demon",
           texts: ["雪峰山一带常见的有独眼魔狼、暗影怪。", "深处还有更危险的，不要乱跑。", "驿站是安全区，出了驿站就要小心。"],
           effects: { familiarity: 2 },
-          choices: [{ text: "多谢提醒。", next: "default", action: "back" }]
+          choices: [
+            { text: "有调查任务吗？我想帮忙", next: "default", action: "start_quest", actionData: { questId: "quest_luoyunbo_demon_investigation" } },
+            { text: "多谢提醒。", next: "default", action: "back" }
+          ]
         }
       }
     }
@@ -6860,7 +6863,10 @@ const DataCharacters = {
           id: "about_zhankong",
           texts: ["斩空总教官当然厉害！", "驿站屠妖魔数最高，军法师出身。", "能跟着他历练是你们的运气。"],
           effects: { opinion: 3, familiarity: 2 },
-          choices: [{ text: "确实令人敬佩。", next: "default", action: "back" }]
+          choices: [
+            { text: "斩空教官有训练任务给我吗？", next: "default", action: "start_quest", actionData: { questId: "quest_panlijun_military_training" } },
+            { text: "确实令人敬佩。", next: "default", action: "back" }
+          ]
         }
       }
     }
@@ -6967,7 +6973,10 @@ const DataCharacters = {
           id: "about_other",
           texts: ["还有魔石，各种元素的都有。", "可以镶嵌在魔器魔具上提供能量。", "要看看吗？"],
           effects: { familiarity: 2 },
-          choices: [{ text: "下次吧。", next: "default", action: "back" }]
+          choices: [
+            { text: "有装备准备的建议吗？", next: "default", action: "start_quest", actionData: { questId: "quest_ertuzi_equipment_prep" } },
+            { text: "下次吧。", next: "default", action: "back" }
+          ]
         }
       }
     }

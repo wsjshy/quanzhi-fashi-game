@@ -3308,6 +3308,48 @@ const DataQuests = {
     rewards: { exp: 200, gold: 150, setFlag: "hunter_alliance_member" }
   },
 
+  quest_luoyunbo_demon_investigation: {
+    id: "quest_luoyunbo_demon_investigation",
+    name: "雪峰山异常调查",
+    description: "罗云波注意到雪峰山妖魔活动异常，委托你调查。",
+    giver: "luo_yunbo",
+    type: "investigation",
+    objectives: [
+      { type: "reach", locationId: "snow_peak_mountain", count: 1, description: "前往雪峰山调查" },
+      { type: "kill", count: 1, description: "击败1只妖魔获取线索" },
+      { type: "talk", npcId: "luo_yunbo", count: 1, description: "向罗云波汇报调查结果" }
+    ],
+    rewards: { exp: 150, gold: 100, setFlag: "investigated_snow_peak" }
+  },
+
+  quest_panlijun_military_training: {
+    id: "quest_panlijun_military_training",
+    name: "军方训练委托",
+    description: "潘丽君代表斩空教官给你布置训练任务。",
+    giver: "pan_lijun",
+    type: "challenge",
+    objectives: [
+      { type: "cultivate", count: 2, description: "修炼2次提升实力" },
+      { type: "kill", count: 1, description: "击败1只妖魔实战检验" },
+      { type: "talk", npcId: "pan_lijun", count: 1, description: "向潘丽君汇报训练成果" }
+    ],
+    rewards: { exp: 150, gold: 100, setFlag: "military_training_done" }
+  },
+
+  quest_ertuzi_equipment_prep: {
+    id: "quest_ertuzi_equipment_prep",
+    name: "猎魔装备准备",
+    description: "二秃子建议你准备好装备再进山猎魔。",
+    giver: "er_tuzi",
+    type: "preparation",
+    objectives: [
+      { type: "buy", itemId: "basic_staff", count: 1, description: "购买1件基础装备" },
+      { type: "kill", count: 1, description: "用新装备击败1只妖魔" },
+      { type: "talk", npcId: "er_tuzi", count: 1, description: "向二秃子展示装备效果" }
+    ],
+    rewards: { exp: 150, gold: 100, setFlag: "equipment_prepared" }
+  },
+
   // ========== v0.67.0 博城灾难第二阶段任务 ==========
 
   bocheng_prep_quest: {
