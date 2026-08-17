@@ -1544,7 +1544,8 @@ const Game = {
 
     // v0.9.1: 快速休息（恢复全部状态到满，消耗指定小时数）
     // v1.0.0: 移除体力系统引用，只恢复HP/MP/疲劳
-    quickRestFull(hours = 1) {
+    // v1.0.1: 自动计算所需休息时间，不再依赖外部传入参数
+    quickRestFull(hours) {
         // 检查是否已经全满
         const hpFull = Player.hp >= Player.maxHp;
         const mpFull = Player.mp >= Player.maxMp;
@@ -1553,6 +1554,14 @@ const Game = {
         if (hpFull && mpFull && fatigueClear) {
             UI.showMessage('✨ 状态良好，HP/MP全满，无需休息！');
             return;
+        }
+
+        // 自动计算所需时间（根据HP/MP缺失比例，1-4小时）
+        if (!hours || hours < 1) {
+            const hpMissing = Math.max(0, (Player.maxHp - Player.hp) / Player.maxHp);
+            const mpMissing = Math.max(0, (Player.maxMp - Player.mp) / Player.maxMp);
+            hours = Math.max(1, Math.min(4, Math.ceil(Math.max(hpMissing, mpMissing) * 3)));
+            // 有疲劳时至少1小时（已包含在max(1,...)中）
         }
 
         const oldHp = Player.hp;
@@ -1653,7 +1662,7 @@ const Game = {
                 close();
                 setTimeout(() => {
                     if (type === 'quick') Game.quickRest();
-                    else if (type === 'full') Game.quickRestFull(fullRestHours);
+                    else if (type === 'full') Game.quickRestFull();
                 }, 100);
             };
         });

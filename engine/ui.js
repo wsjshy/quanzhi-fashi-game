@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.0.0 · 休息修复+系别补全+战斗稳定性</div>
+                ">v1.0.1 · 充分休息自动计时</div>
             </div>
         `;
 
@@ -1655,7 +1655,7 @@ const UI = {
                         </button>
                         ` : ''}
 
-                        <!-- 休息（合并原地休息/充分休息/睡到明天） -->
+                        <!-- 休息（原地休息/充分休息） -->
                         <button onclick="Game.showRestMenu()" style="
                             margin-top: 15px;
                             width: 100%;
@@ -1675,7 +1675,7 @@ const UI = {
                                 😴 休息
                                 <span style="font-size: 12px; color: #aabbdd; float: right;">选择休息方式 →</span>
                             </div>
-                            <div style="font-size: 13px; color: #8899bb;">原地休息 / 充分休息 / 睡到明天</div>
+                            <div style="font-size: 13px; color: #8899bb;">原地休息 / 充分休息（自动计时）</div>
                         </button>
 
                         <!-- v0.9.2: 一键恢复（自动使用药品） -->
