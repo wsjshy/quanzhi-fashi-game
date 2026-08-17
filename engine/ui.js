@@ -3693,7 +3693,6 @@ const UI = {
                                 " onmouseover="this.style.borderColor='#7777bb'; this.style.background='linear-gradient(135deg, #3a3a7a, #4a4a9a)'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='#555599'; this.style.background='linear-gradient(135deg, #2a2a5a, #3a3a7a)'; this.style.transform='translateX(0)'">
                                     <span style="color: #ffd700; margin-right: 8px;">▶</span>
                                     ${choice.text}
-                                    ${choice.conditions ? `<div style="font-size: 12px; color: #888; margin-top: 5px; margin-left: 20px;">（需要满足特定条件）</div>` : ''}
                                 </div>
                             `).join('')}
                         </div>

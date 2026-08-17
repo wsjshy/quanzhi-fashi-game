@@ -199,7 +199,11 @@ const BigEventSystem = {
     showBattlePhase(phase) {
         // 应用阶段效果
         if (phase.effects) {
-            this.applyEffects(phase.effects);
+            try {
+                this.applyEffects(phase.effects);
+            } catch (e) {
+                console.error('[大事件] 应用战斗阶段效果失败:', e);
+            }
         }
         
         // 触发战斗
@@ -207,19 +211,25 @@ const BigEventSystem = {
             const enemy = DataManager.getEnemy(phase.enemyId);
             if (enemy) {
                 Game.startBattle(enemy, (result, rewards) => {
-                    // 战斗结束回调
-                    if (result === 'win') {
-                        if (phase.winPhase) {
-                            this.advanceToPhase(phase.winPhase);
+                    // v1.0.0: 添加错误处理，确保战斗结束后大事件流程不中断
+                    try {
+                        if (result === 'win') {
+                            if (phase.winPhase) {
+                                this.advanceToPhase(phase.winPhase);
+                            } else {
+                                this.endEvent('victory');
+                            }
                         } else {
-                            this.endEvent('victory');
+                            if (phase.losePhase) {
+                                this.advanceToPhase(phase.losePhase);
+                            } else {
+                                this.endEvent('defeat');
+                            }
                         }
-                    } else {
-                        if (phase.losePhase) {
-                            this.advanceToPhase(phase.losePhase);
-                        } else {
-                            this.endEvent('defeat');
-                        }
+                    } catch (e) {
+                        console.error('[大事件] 战斗结束回调错误:', e);
+                        // 出错时尝试推进到下一阶段
+                        this.advanceToNextPhase();
                     }
                 });
             } else {
