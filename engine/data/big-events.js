@@ -318,7 +318,7 @@ const DataBigEvents = {
             "city": 100
           },
           items: [
-            { itemId: "fire_staff", count: 1 }
+            { itemId: "flame_staff", count: 1 }
           ]
         }
       },

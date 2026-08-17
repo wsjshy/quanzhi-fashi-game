@@ -433,9 +433,13 @@ const BigEventSystem = {
         
         const ending = event.endings?.[endingId];
         
-        // 应用结局效果
+        // 应用结局效果（v1.0.0: 添加try-catch，确保效果出错不影响结局显示）
         if (ending?.effects) {
-            this.applyEffects(ending.effects);
+            try {
+                this.applyEffects(ending.effects);
+            } catch (e) {
+                console.error('[大事件] 应用结局效果失败:', e);
+            }
         }
         
         // 标记为已完成
@@ -458,7 +462,13 @@ const BigEventSystem = {
         
         // 显示结局界面
         if (ending) {
-            UI.renderBigEventEnding(event, ending);
+            try {
+                UI.renderBigEventEnding(event, ending);
+            } catch (e) {
+                console.error('[大事件] 渲染结局界面失败:', e);
+                // 渲染失败时直接回到地图
+                Game.returnToMap();
+            }
         } else {
             // 没有结局，直接回到地图
             Game.returnToMap();
