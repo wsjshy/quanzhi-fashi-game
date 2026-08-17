@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.1.5 · 白藏风对话改造</div>
+                ">v1.1.6 · 右侧面板装备显示修复</div>
             </div>
         `;
 
@@ -1767,7 +1767,7 @@ const UI = {
                             const mpPct = Math.min(100, (Player.mp / s.maxMp * 100)).toFixed(0);
                             const staPct = Math.min(100, (Player.stamina / s.maxStamina * 100)).toFixed(0);
                             const expPct = Math.min(100, (Player.exp / Player.expToNext * 100)).toFixed(1);
-                            const equip = (typeof ItemSystem !== 'undefined' && ItemSystem.getEquipment) ? ItemSystem.getEquipment() : {weapon:null, armor:null, accessory:null};
+                            const equip = (typeof Inventory !== 'undefined' && Inventory.getEquipment) ? Inventory.getEquipment() : {weapon:null, armor:null, accessory:null};
                             const slotNames = {weapon:'⚔️ 武器', armor:'🛡️ 防具', accessory:'💍 饰品'};
                             const slotColors = {weapon:'#ffaa66', armor:'#66aaff', accessory:'#ff88dd'};
                             return `
