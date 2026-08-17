@@ -3267,6 +3267,20 @@ const DataQuests = {
     rewards: { exp: 150, gold: 100, setFlag: "expedition_with_sanpang" }
   },
 
+  quest_lingling_black_church: {
+    id: "quest_lingling_black_church",
+    name: "黑教廷追踪",
+    description: "灵灵有一个追踪黑教廷的任务，邀请你参与调查。",
+    giver: "lingling",
+    type: "investigation",
+    objectives: [
+      { type: "reach", locationId: "bo_city_street", count: 1, description: "在博城市街调查黑教廷踪迹" },
+      { type: "kill", count: 2, description: "击败2只可疑妖魔获取线索" },
+      { type: "talk", npcId: "lingling", count: 1, description: "向灵灵汇报调查结果" }
+    ],
+    rewards: { exp: 200, gold: 150, setFlag: "tracked_black_church" }
+  },
+
   // ========== v0.67.0 博城灾难第二阶段任务 ==========
 
   bocheng_prep_quest: {

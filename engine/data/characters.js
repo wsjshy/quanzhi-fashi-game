@@ -8495,6 +8495,7 @@ const DataCharacters = {
             "别接超出能力的任务，死了我可懒得给你收尸。"
           ],
           choices: [
+            { id: "accept", text: "追踪黑教廷的任务？我接了！", nextNode: "default", action: "start_quest", actionData: { questId: "quest_lingling_black_church" } },
             { id: "thanks", text: "谢了", effects: { opinion: 2 }, nextNode: "default" }
           ]
         },
