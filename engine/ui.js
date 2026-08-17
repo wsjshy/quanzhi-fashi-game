@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.4.6 · 觉醒bug修复+天赋debug工具</div>
+                ">v1.5.0 · 天赋分支选择UI实装</div>
             </div>
         `;
 

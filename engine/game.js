@@ -1313,6 +1313,11 @@ const Game = {
             
             // 保存游戏
             Player.save();
+            
+            // v1.5.0: 检测是否有天赋分支需要选择
+            setTimeout(() => {
+                if (typeof Game !== 'undefined') Game.checkPendingBranchChoices();
+            }, 800);
         } catch (e) {
             console.error('[修炼] 出错:', e);
             UI.showMessage('修炼出错：' + e.message);
@@ -2432,6 +2437,11 @@ const Game = {
                 this.state = 'map';
                 UI.renderMapScreen();
                 Player.save();
+                
+                // v1.5.0: 检测是否有天赋分支需要选择（延迟等消息显示完）
+                setTimeout(() => {
+                    if (typeof Game !== 'undefined') Game.checkPendingBranchChoices();
+                }, 1000);
                 
             } else if (BattleSystem.result === 'lose') {
                 // 检查是不是车轮战
@@ -4361,6 +4371,142 @@ const Game = {
         } else {
             this.openCharacterPanel();
         }
+    },
+
+    // ========== 天赋分支选择 ==========
+
+    /**
+     * 显示天赋分支选择界面（Lv5时触发）
+     * @param {string} element - 元素系
+     */
+    showTalentBranchChoice(element) {
+        const talentData = Player.talents?.[element];
+        if (!talentData) return;
+
+        const check = TalentSystem.needsBranchChoice(talentData);
+        if (!check) return;
+
+        const { talent, branchChoices } = check;
+        const elementName = SkillSystem.getElementName(element);
+        const elementColor = SkillSystem.getElementColor(element);
+
+        // 清除可能残留的弹窗
+        document.getElementById('talent-branch-dialog')?.remove();
+        document.getElementById('talent-branch-overlay')?.remove();
+
+        let choicesHtml = branchChoices.map(branch => {
+            // 预览该分支Lv7和Lv10的效果
+            let previewHtml = '';
+            if (talent.evolutions) {
+                for (const stage of talent.evolutions) {
+                    if (stage.level >= 7 && stage.branchEffects?.[branch.id]) {
+                        const be = stage.branchEffects[branch.id];
+                        previewHtml += `<div style="font-size:11px;color:#888;margin-bottom:2px;">Lv${stage.level}【${be.name || stage.name}】：${this._summarizeEffects(be.effects)}</div>`;
+                    }
+                }
+            }
+            return `
+                <div onclick="Game.confirmTalentBranch('${element}', '${branch.id}')" style="
+                    padding: 15px;
+                    background: ${elementColor}15;
+                    border: 2px solid ${elementColor};
+                    border-radius: 10px;
+                    cursor: pointer;
+                    margin-bottom: 10px;
+                    transition: all 0.3s;
+                " onmouseover="this.style.background='${elementColor}30'; this.style.transform='scale(1.02)'" onmouseout="this.style.background='${elementColor}15'; this.style.transform='scale(1)'">
+                    <div style="font-size: 17px; font-weight: bold; color: ${elementColor}; margin-bottom: 5px;">
+                        ${branch.name}
+                    </div>
+                    <div style="font-size: 13px; color: #bbb; margin-bottom: 8px;">${branch.description}</div>
+                    ${previewHtml ? '<div style="border-top:1px solid #333;padding-top:6px;">' + previewHtml + '</div>' : ''}
+                </div>
+            `;
+        }).join('');
+
+        const dialog = document.createElement('div');
+        dialog.style.cssText = `
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(10, 10, 30, 0.98); border: 2px solid ${elementColor};
+            border-radius: 15px; padding: 30px; min-width: 450px; max-width: 600px;
+            z-index: 50000; box-shadow: 0 0 30px ${elementColor}44;
+            max-height: 85vh; overflow-y: auto;
+        `;
+        dialog.id = 'talent-branch-dialog';
+        dialog.innerHTML = `
+            <h2 style="color: ${elementColor}; text-align: center; margin-bottom: 10px;">🌟 ${elementName}系天赋进化</h2>
+            <p style="color: #aaa; text-align: center; margin-bottom: 20px; font-size: 14px;">
+                你的「${talent.name}」已达到 Lv.5，需要选择一条进化路线<br>
+                <span style="color:#888;font-size:12px;">选择后不可更改，将决定后续成长方向</span>
+            </p>
+            ${choicesHtml}
+        `;
+
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:49999;';
+        overlay.id = 'talent-branch-overlay';
+        document.body.appendChild(overlay);
+        document.body.appendChild(dialog);
+    },
+
+    /**
+     * 确认选择天赋分支
+     */
+    confirmTalentBranch(element, branchId) {
+        const talentData = Player.talents?.[element];
+        if (!talentData) return;
+
+        talentData.branch = branchId;
+        const talent = TalentSystem.getTalent(talentData.talentId);
+        const branch = talent?.evolutions?.find(e => e.level === 5)?.branchChoices?.find(b => b.id === branchId);
+        const elementName = SkillSystem.getElementName(element);
+
+        document.getElementById('talent-branch-dialog')?.remove();
+        document.getElementById('talent-branch-overlay')?.remove();
+
+        UI.showMessage(`🌟 ${elementName}系天赋进化为「${branch?.name || branchId}」路线！`);
+        Player.save();
+
+        // 如果在角色面板，刷新显示
+        if (this.state === 'character') {
+            this.openCharacterPanel();
+        }
+    },
+
+    /**
+     * 检查所有系天赋是否有需要选择分支的（战斗/修炼结束后调用）
+     */
+    checkPendingBranchChoices() {
+        if (!Player.talents) return false;
+        for (const element in Player.talents) {
+            const check = TalentSystem.needsBranchChoice(Player.talents[element]);
+            if (check) {
+                this.showTalentBranchChoice(element);
+                return true;
+            }
+        }
+        return false;
+    },
+
+    /**
+     * 简要描述天赋效果（用于分支预览）
+     */
+    _summarizeEffects(effects) {
+        if (!effects) return '';
+        const names = {
+            attack: '攻击', defense: '防御', hp: '生命', mp: '法力',
+            critRate: '暴击率', critDamage: '暴击伤害', hitRate: '命中',
+            dodgeRate: '闪避', speed: '速度', lifesteal: '吸血',
+            damageBonus: '伤害加成', damageReduction: '减伤',
+            mpCostReduction: '蓝耗降低', cooldownReduction: '冷却缩减'
+        };
+        return Object.entries(effects).map(([k, v]) => {
+            const name = names[k] || k;
+            if (typeof v === 'number') {
+                return `${name}+${v}`;
+            }
+            return `${name}:${v}`;
+        }).join('，');
     },
 
     // ========== 境界突破 ==========

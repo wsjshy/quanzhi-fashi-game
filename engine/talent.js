@@ -158,6 +158,23 @@ const TalentSystem = {
     },
 
     /**
+     * 检查天赋是否需要选择分支（Lv5且有branchChoices但未选择）
+     * @param {object} talentData - 玩家天赋数据 {talentId, level, branch}
+     * @returns {object|null} 需要选择时返回{talent, branchChoices}，否则null
+     */
+    needsBranchChoice(talentData) {
+        if (!talentData || talentData.branch) return null;
+        const talent = this.getTalent(talentData.talentId);
+        if (!talent || !talent.evolutions) return null;
+        const stage = talent.evolutions.find(e => e.level === 5 && e.branchChoices);
+        if (!stage) return null;
+        if (talentData.level >= 5) {
+            return { talent, branchChoices: stage.branchChoices };
+        }
+        return null;
+    },
+
+    /**
      * 获取天赋在指定等级的全部效果（合并所有已解锁进化阶段的效果 + 等级间插值）
      *
      * 效果合并规则：

@@ -2,6 +2,19 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v1.5.0 - 天赋分支选择UI实装
+
+### 天赋分支选择系统
+- **天赋Lv5自动弹出分支选择**：11系天赋达到Lv5时，自动弹出进化路线选择界面（爆发流/持续流等两条路线）
+- **分支选择后不可更改**：决定后续成长方向，Lv7/Lv10分支效果随之生效
+- **分支预览**：选择界面显示该分支Lv7/Lv10的效果预览，帮助玩家决策
+- **战斗/修炼结束后检测**：天赋在战斗中升级到Lv5，战斗结束后自动弹出选择；修炼升级同理
+
+### 引擎扩展
+- TalentSystem新增`needsBranchChoice(talentData)`方法，检测是否需要选择分支
+- Game新增`showTalentBranchChoice`/`confirmTalentBranch`/`checkPendingBranchChoices`方法
+- 分支效果数据层已在v1.4.x就绪，本版本补全UI触发逻辑
+
 ## v1.4.6 - 觉醒bug修复 + 天赋debug工具
 
 ### Bug修复
