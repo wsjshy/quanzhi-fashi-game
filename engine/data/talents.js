@@ -613,39 +613,57 @@ const DataTalents = {
   // 土系天赋
   // ================================================================
 
+  // v1.4.3重做：岩石之躯 - 加入Lv5分支选择（护盾流/反击流）
   earth_talent_basic: {
     id: "earth_talent_basic",
     name: "岩石之躯",
     element: "earth",
     rarity: "common",
     type: "growth",
-    description: "与土元素亲和，大地之力随成长不断凝聚，最终化为山岳领主。",
+    description: "与土元素亲和，大地之力随成长不断凝聚。Lv5时可选择护盾流（高防反伤）或反击流（受击反击），最终化为山岳领主或地裂之主。",
     maxLevel: 10,
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "岩石之躯",
-        description: "土系技能伤害+10%，防御+5%。",
-        effects: { damageBonus: 0.10, defenseBonus: 0.05 }
+        description: "土系技能伤害+10%，防御+5%，攻击附加1层岩甲（最多3层，每层+3%防御）。",
+        effects: { damageBonus: 0.10, defenseBonus: 0.05, rockArmorStack: true, rockArmorMax: 3, rockArmorDefense: 0.03 }
       },
       {
         level: 3, stage: "特性", name: "坚岩",
-        description: "受到伤害时15%概率触发「坚岩」：本次伤害-50%。",
-        effects: { hardRockChance: 0.15, hardRockReduction: 0.50 }
+        description: "受到伤害时15%概率触发坚岩（伤害-50%），岩甲每层使受到伤害-3%。",
+        effects: { hardRockChance: 0.15, hardRockReduction: 0.50, rockArmorReduction: 0.03 }
       },
       {
-        level: 5, stage: "进化", name: "大地形态",
-        description: "防御+20%，HP上限+15%，免疫击退和击飞。",
-        effects: { defenseBonus: 0.20, hpBonus: 0.15, knockbackImmune: true }
+        level: 5, stage: "进化", name: "分支选择",
+        description: "你的大地之力开始蜕变，选择进化方向：",
+        branchChoices: [
+          {
+            id: "shield",
+            name: "护盾",
+            description: "护盾流：岩甲满3层时获得最大HP20%的岩甲护盾，护盾存在时反伤15%给攻击者。",
+            effects: { damageBonus: 0.10, rockArmorShieldOnMax: 0.20, shieldReflect: 0.15 }
+          },
+          {
+            id: "counter",
+            name: "反击",
+            description: "反击流：岩甲满3层时受到近战攻击触发岩刺反击（造成80%防御力土系伤害），反击有30%概率眩晕目标1回合。",
+            effects: { damageBonus: 0.10, rockArmorCounterOnMax: true, counterDamage: 0.80, counterStunChance: 0.30 }
+          }
+        ]
       },
       {
-        level: 7, stage: "延伸", name: "岩刺",
-        description: "受到近战攻击时，地面长出岩刺反击，造成30%防御力的土系伤害。",
-        effects: { rockSpikes: true, rockSpikesDamage: 0.30 }
+        level: 7, stage: "延伸",
+        branchEffects: {
+          shield: { name: "大地守护", description: "岩甲护盾提升至30%最大HP，反伤提升至25%，护盾破碎时对周围敌人造成15%最大HP土系伤害。", effects: { damageBonus: 0.10, rockArmorShieldOnMax: 0.10, shieldReflect: 0.10, shieldBreakDamage: 0.15 } },
+          counter: { name: "岩刺领域", description: "岩刺反击伤害提升至120%防御力，眩晕概率提升至50%，每次反击恢复5%最大HP。", effects: { damageBonus: 0.10, counterDamage: 0.40, counterStunChance: 0.20, counterHeal: 0.05 } }
+        }
       },
       {
-        level: 10, stage: "终极", name: "山岳领主",
-        description: "土系技能等级+1，防御+25%，HP低于50%时每回合恢复5%最大HP。",
-        effects: { skillLevelBonus: 1, defenseBonus: 0.25, lowHpRegen: 0.05 }
+        level: 10, stage: "终极",
+        branchEffects: {
+          shield: { name: "山岳领主", description: "土系技能等级+1，防御+30%，岩甲护盾提升至40%最大HP，受到致命伤害时护盾自动刷新（每场战斗1次）。", effects: { damageBonus: 0.15, skillLevelBonus: 1, defenseBonus: 0.25, rockArmorShieldOnMax: 0.10, shieldRefreshOnLethal: true } },
+          counter: { name: "地裂之主", description: "土系技能等级+1，无视20%防御，岩刺反击伤害提升至150%防御力，反击后岩甲不消耗。", effects: { damageBonus: 0.15, skillLevelBonus: 1, earthPenetration: 0.20, counterDamage: 0.30, counterNoConsume: true } }
+        }
       }
     ]
   },
@@ -1186,39 +1204,57 @@ const DataTalents = {
   // 光系天赋
   // ================================================================
 
+  // v1.4.3重做：光明之体 - 加入Lv5分支选择（净化流/审判流）
   light_talent_basic: {
     id: "light_talent_basic",
     name: "光明之体",
     element: "light",
     rarity: "common",
     type: "growth",
-    description: "与光元素亲和，光明之力随成长不断凝聚，最终化为圣光领主。",
+    description: "与光元素亲和，光明之力随成长不断凝聚。Lv5时可选择净化流（驱散治疗）或审判流（爆发输出），最终化为圣光领主或裁决之主。",
     maxLevel: 10,
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "光明之体",
-        description: "光系技能伤害+10%，对暗影系伤害+20%。",
-        effects: { damageBonus: 0.10, darkDamageBonus: 0.20 }
+        description: "光系技能伤害+10%，攻击附加1层圣光（最多3层，每层+5%光系伤害），对暗影系伤害+20%。",
+        effects: { damageBonus: 0.10, holyStack: true, holyMax: 3, holyDamageBonus: 0.05, darkDamageBonus: 0.20 }
       },
       {
         level: 3, stage: "特性", name: "光之护封",
-        description: "战斗开始时获得圣光护盾，吸收15%最大HP伤害，对暗影系敌人伤害+30%。",
-        effects: { lightShield: 0.15, darkDamageBonus: 0.10 }
+        description: "战斗开始获得15%最大HP圣光护盾，圣光每层使受到的暗影伤害-5%。",
+        effects: { lightShield: 0.15, holyDarkResist: 0.05 }
       },
       {
-        level: 5, stage: "进化", name: "光明形态",
-        description: "光系伤害+15%，每回合恢复3%MP，免疫致盲。",
-        effects: { damageBonus: 0.15, mpRegen: 0.03, blindImmunity: true }
+        level: 5, stage: "进化", name: "分支选择",
+        description: "你的光明之力开始蜕变，选择进化方向：",
+        branchChoices: [
+          {
+            id: "purify",
+            name: "净化",
+            description: "净化流：圣光满3层时自动净化自身所有debuff并恢复15%最大HP，净化后对周围敌人造成圣光伤害。",
+            effects: { damageBonus: 0.10, holyPurifyOnMax: true, purifyHeal: 0.15, purifyDamage: 0.50 }
+          },
+          {
+            id: "judgment",
+            name: "审判",
+            description: "审判流：圣光满3层时触发「审判」，造成目标最大HP20%的真实伤害（对暗影系翻倍），审判后刷新圣光。",
+            effects: { damageBonus: 0.10, holyJudgmentOnMax: true, judgmentDamage: 0.20, judgmentTrueDamage: true, judgmentDarkDouble: true }
+          }
+        ]
       },
       {
-        level: 7, stage: "延伸", name: "圣光审判",
-        description: "攻击暗影系目标时30%概率造成「审判」：目标最大HP15%的真实伤害。",
-        effects: { judgmentChance: 0.30, judgmentDamage: 0.15, judgmentTrueDamage: true }
+        level: 7, stage: "延伸",
+        branchEffects: {
+          purify: { name: "圣光普照", description: "净化恢复提升至25%最大HP，净化后为己方全体恢复10%HP，每回合开始有30%概率净化1个debuff。", effects: { damageBonus: 0.10, purifyHeal: 0.10, purifyTeamHeal: 0.10, autoPurifyChance: 0.30 } },
+          judgment: { name: "天罚", description: "审判伤害提升至30%最大HP，审判有50%概率眩晕目标1回合，对暗影系审判必定暴击。", effects: { damageBonus: 0.10, judgmentDamage: 0.10, judgmentStunChance: 0.50, judgmentDarkCrit: true } }
+        }
       },
       {
-        level: 10, stage: "终极", name: "圣光领主",
-        description: "光系技能等级+1，光系伤害+25%，对暗影系伤害+100%。",
-        effects: { skillLevelBonus: 1, damageBonus: 0.25, darkDamageBonus: 0.50 }
+        level: 10, stage: "终极",
+        branchEffects: {
+          purify: { name: "圣光领主", description: "光系技能等级+1，圣光上限+2层，净化变为「神圣净化」（恢复40%HP+全体净化+护盾），免疫所有debuff。", effects: { damageBonus: 0.15, skillLevelBonus: 1, holyMax: 2, purifyHeal: 0.15, debuffImmunity: true } },
+          judgment: { name: "裁决之主", description: "光系技能等级+1，无视25%防御，审判伤害提升至40%最大HP，审判后下一次光系技能必定暴击且伤害+50%。", effects: { damageBonus: 0.15, skillLevelBonus: 1, lightPenetration: 0.25, judgmentDamage: 0.10, judgmentNextCrit: true, judgmentNextDamage: 0.50 } }
+        }
       }
     ]
   },
@@ -1364,39 +1400,57 @@ const DataTalents = {
   // 暗影系天赋
   // ================================================================
 
+  // v1.4.3重做：暗影之躯 - 加入Lv5分支选择（吸血流/潜行流）
   dark_talent_basic: {
     id: "dark_talent_basic",
     name: "暗影之躯",
     element: "dark",
     rarity: "common",
     type: "growth",
-    description: "与暗影元素亲和，黑暗之力随成长不断凝聚，最终化为暗影领主。",
+    description: "与暗影元素亲和，黑暗之力随成长不断凝聚。Lv5时可选择吸血流（续航削弱）或潜行流（爆发背刺），最终化为暗影领主或夜魇之主。",
     maxLevel: 10,
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "暗影之躯",
-        description: "暗影系技能伤害+10%，对光系伤害+20%。",
-        effects: { damageBonus: 0.10, lightDamageBonus: 0.20 }
+        description: "暗影系技能伤害+10%，攻击附加1层暗影（最多3层，每层+5%吸血），对光系伤害+20%。",
+        effects: { damageBonus: 0.10, shadowStack: true, shadowMax: 3, shadowLifesteal: 0.05, lightDamageBonus: 0.20 }
       },
       {
         level: 3, stage: "特性", name: "暗影步",
-        description: "闪避率+10%，闪避后下次攻击伤害+30%。",
-        effects: { dodgeBonus: 0.10, dodgeNextHitBonus: 0.30 }
+        description: "闪避率+10%，闪避后下次攻击伤害+30%，暗影每层使目标攻击-3%。",
+        effects: { dodgeBonus: 0.10, dodgeNextHitBonus: 0.30, shadowAttackDown: 0.03 }
       },
       {
-        level: 5, stage: "进化", name: "暗影形态",
-        description: "进入战斗隐身1回合（无法被目标锁定），首次攻击伤害+100%。",
-        effects: { stealthOnStart: 1, stealthFirstHitBonus: 1.00 }
+        level: 5, stage: "进化", name: "分支选择",
+        description: "你的暗影之力开始蜕变，选择进化方向：",
+        branchChoices: [
+          {
+            id: "drain",
+            name: "吸血",
+            description: "吸血流：暗影满3层时攻击附带30%吸血，且使目标受到治疗效果-50%（3回合）。",
+            effects: { damageBonus: 0.10, shadowDrainOnMax: true, drainLifesteal: 0.30, drainHealReduction: 0.50 }
+          },
+          {
+            id: "stealth",
+            name: "潜行",
+            description: "潜行流：暗影满3层时进入隐身1回合（无法被锁定），隐身中首次攻击伤害+100%且必定暴击。",
+            effects: { damageBonus: 0.10, shadowStealthOnMax: true, stealthDuration: 1, stealthFirstHitBonus: 1.00, stealthFirstHitCrit: true }
+          }
+        ]
       },
       {
-        level: 7, stage: "延伸", name: "暗影吞噬",
-        description: "击杀目标时恢复20%HP和MP，且攻击附带5%吸血。",
-        effects: { killHeal: 0.20, lifesteal: 0.05 }
+        level: 7, stage: "延伸",
+        branchEffects: {
+          drain: { name: "暗影吞噬", description: "吸血提升至45%，击杀目标时恢复30%HP和MP，暗影满层时目标防御-20%。", effects: { damageBonus: 0.10, drainLifesteal: 0.15, killHeal: 0.30, shadowDefenseDown: 0.20 } },
+          stealth: { name: "背刺", description: "隐身首次攻击伤害提升至150%，背刺有60%概率眩晕目标1回合，隐身结束后闪避+20%（2回合）。", effects: { damageBonus: 0.10, stealthFirstHitBonus: 0.50, backstabStunChance: 0.60, stealthEndDodge: 0.20 } }
+        }
       },
       {
-        level: 10, stage: "终极", name: "暗影领主",
-        description: "暗影系技能等级+1，暗影伤害+25%，攻击时20%概率使目标恐惧1回合。",
-        effects: { skillLevelBonus: 1, damageBonus: 0.25, fearChance: 0.20 }
+        level: 10, stage: "终极",
+        branchEffects: {
+          drain: { name: "暗影领主", description: "暗影系技能等级+1，吸血提升至60%，暗影满层时触发「生命汲取」（吸取目标20%最大HP），受到致命伤害时化为暗影无敌1回合（每场1次）。", effects: { damageBonus: 0.15, skillLevelBonus: 1, drainLifesteal: 0.15, shadowLifeDrain: 0.20, shadowFormOnLethal: true } },
+          stealth: { name: "夜魇之主", description: "暗影系技能等级+1，无视25%防御，隐身持续2回合，隐身中所有攻击必定暴击且伤害+80%，击杀后自动刷新隐身。", effects: { damageBonus: 0.15, skillLevelBonus: 1, darkPenetration: 0.25, stealthDuration: 1, stealthAllHitCrit: true, stealthAllHitBonus: 0.80, stealthRefreshOnKill: true } }
+        }
       }
     ]
   },
