@@ -186,6 +186,7 @@ const Player = {
         this.defense = 8;
         this.speed = 10;
         this.spirit = 12;
+        this.composure = 50;  // v1.6.1: 心境/定力（0-100），影响技能释放成功率和考核表现
         this.maxStamina = 100;
         this.stamina = 100;
         this.elements = element ? [element] : [];

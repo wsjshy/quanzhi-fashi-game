@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.6.0 · 雪峰山历练副本+恐惧勇气系统</div>
+                ">v1.6.1 · 年度考核事件+心境系统</div>
             </div>
         `;
 

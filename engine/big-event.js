@@ -444,6 +444,10 @@ const BigEventSystem = {
         }
         if (effects.exp) Player.gainExp(effects.exp);
         if (effects.gold) Player.gold = Math.max(0, Player.gold + effects.gold);
+        // v1.6.1: 心境/定力效果
+        if (effects.composure) {
+            Player.composure = Math.max(0, Math.min(100, (Player.composure || 50) + effects.composure));
+        }
         
         // 物品效果
         if (effects.items) {

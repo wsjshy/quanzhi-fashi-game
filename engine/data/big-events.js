@@ -653,5 +653,205 @@ const DataBigEvents = {
         rewards: { exp: 30, gold: 20 }
       }
     }
+  },
+
+  // 年度考核 - 博城篇中期重要事件
+  big_event_annual_exam: {
+    id: "big_event_annual_exam",
+    name: "年度考核",
+    description: "天澜魔法高中一年一度的修为考核，决定分班和资源分配...",
+    type: "exam",
+    autoTrigger: false,
+    conditions: {
+      minLevel: 2
+    },
+    phases: [
+      // 第一阶段：考核前准备
+      {
+        id: "phase_1_prepare",
+        name: "考核前夕",
+        description: "年度考核当天，操场上聚集了全校新生。薛木生老师正在讲解考核规则。\n\n\"第一项是星感石测试，每人三次机会取最好成绩。第二项是魔法释放考核，星感石B级以上的同学可以参加。\"\n\n穆宁雪的到来引起了全校轰动，她是博城第一天才，也是穆氏家族的骄傲。\n\n你可以选择如何度过考核前的这段时间。",
+        type: "choice",
+        choices: [
+          {
+            text: "认真准备，调整心境",
+            nextPhase: "phase_2_stone_test",
+            effects: {
+              composure: 10,
+              flags: { "exam_prepare": "serious" }
+            }
+          },
+          {
+            text: "和莫凡聊天",
+            nextPhase: "phase_2_stone_test",
+            effects: {
+              npcRelation: { "mo_fan": 5 },
+              flags: { "exam_prepare": "chat_mofan" }
+            }
+          },
+          {
+            text: "和穆白聊天",
+            nextPhase: "phase_2_stone_test",
+            effects: {
+              npcRelation: { "mu_bai": 5 },
+              flags: { "exam_prepare": "chat_mubai" }
+            }
+          },
+          {
+            text: "暗中观察考场",
+            nextPhase: "phase_2_stone_test",
+            effects: {
+              flags: { "exam_prepare": "observe", "exam_found_clue": true }
+            }
+          }
+        ]
+      },
+
+      // 第二阶段：星感石测试
+      {
+        id: "phase_2_stone_test",
+        name: "星感石测试",
+        description: "轮到你进行星感石测试了。你将手放在星感石上，集中精神进入冥修状态...\n\n星感石开始发出光芒，考官们在记录你的成绩。",
+        type: "auto",
+        nextPhase: "phase_2_result",
+        effects: {
+          flags: { "exam_stone_test_done": true }
+        }
+      },
+
+      // 第二阶段B：测试结果（根据玩家等级和心境计算）
+      {
+        id: "phase_2_result",
+        name: "测试结果",
+        description: "你的星感石测试成绩出来了！\n\n（系统将根据你的等级、精神力和心境计算评分）",
+        type: "choice",
+        choices: [
+          {
+            text: "查看成绩，继续释放考核",
+            nextPhase: "phase_3_release",
+            effects: {}
+          },
+          {
+            text: "（如果发现暗石）质疑星感石有问题",
+            nextPhase: "phase_2_investigate",
+            conditions: { flag: "exam_found_clue" },
+            effects: {
+              npcRelation: { "tang_yue": 5, "mu_bai": -10 },
+              reputation: { "justice": 10 },
+              flags: { "exam_exposed": true }
+            }
+          }
+        ]
+      },
+
+      // 第二阶段C：暗石调查
+      {
+        id: "phase_2_investigate",
+        name: "暗石事件",
+        description: "你指出星感石可能被动了手脚。唐月老师走过来，感应了一下，脸色微变。\n\n\"确实有问题。\"唐月的声音不大，但很坚定。\n\n校长要求检查，果然在星感石底部发现了一块暗石——它会吸收星感石的能量，让测试者的成绩偏低。\n\n穆贺脸色难看，但把事情推给了设备故障。你获得了重考的机会。",
+        type: "narrative",
+        nextPhase: "phase_3_release",
+        effects: {
+          exp: 30,
+          reputation: { "justice": 10 },
+          flags: { "exam_dark_stone_found": true, "exam_retake": true }
+        }
+      },
+
+      // 第三阶段：魔法释放考核
+      {
+        id: "phase_3_release",
+        name: "魔法释放考核",
+        description: "接下来是魔法释放考核。你需要在考官面前完整释放你的初阶魔法。\n\n许昭霆的雷印获得了S级评价，威力惊人。穆白的冰蔓是B级，稳定而成熟。周敏的火滋也是B级。\n\n轮到你了。",
+        type: "battle",
+        enemyId: "training_dummy",
+        battleOptions: {
+          canFlee: false,
+          canUseItems: false,
+          winHpPercent: 0,
+          isFriendly: true
+        },
+        winPhase: "phase_4_result",
+        losePhase: "phase_4_result"
+      },
+
+      // 第四阶段：成绩公布
+      {
+        id: "phase_4_result",
+        name: "成绩公布",
+        description: "考核结束，成绩公布了！\n\n（综合评分 = 星感石60% + 释放考核40%，根据你的表现计算）\n\n薛木生老师看着成绩单，脸上露出了笑容。",
+        type: "choice",
+        choices: [
+          {
+            text: "查看我的评级和奖励",
+            nextPhase: "phase_5_recruit",
+            effects: {}
+          }
+        ]
+      },
+
+      // 第五阶段：穆卓云招揽（S/A级触发）
+      {
+        id: "phase_5_recruit",
+        name: "穆卓云的招揽",
+        description: "考核结束后，穆卓云亲自找到你。\n\n\"你的天赋不错。\"穆卓云的语气高傲，但带着一丝欣赏，\"加入穆氏，我可以给你星尘魔器、高级导师、最好的修炼资源。\"\n\n这是一个改变命运的机会，但也意味着你将成为穆氏的人。",
+        type: "choice",
+        choices: [
+          {
+            text: "接受招揽，加入穆氏",
+            nextPhase: "phase_6_end",
+            effects: {
+              gold: 500,
+              reputation: { "mu_family": 20 },
+              npcRelation: { "mo_fan": -10 },
+              flags: { "exam_result": "join_mu" }
+            }
+          },
+          {
+            text: "婉拒，保持独立",
+            nextPhase: "phase_6_end",
+            effects: {
+              gold: 100,
+              npcRelation: { "mo_fan": 5 },
+              flags: { "exam_result": "refuse_polite" }
+            }
+          },
+          {
+            text: "怒斥拒绝，不接受施舍",
+            nextPhase: "phase_5_duel",
+            effects: {
+              reputation: { "mu_family": -20, "brave": 15 },
+              npcRelation: { "mo_fan": 15, "mu_bai": -15 },
+              flags: { "exam_result": "refuse_angry" }
+            }
+          }
+        ]
+      },
+
+      // 第五阶段B：决斗约定
+      {
+        id: "phase_5_duel",
+        name: "决斗约定",
+        description: "穆卓云大怒：\"好，好一个不知天高地厚的小子！\"\n\n他转向身后的宇昂：\"宇昂，18岁成年礼时，你和他决斗，让他知道什么叫差距。\"\n\n宇昂冷冷地看着你：\"我会手下留情的。\"\n\n你接受了这个挑战。",
+        type: "narrative",
+        nextPhase: "phase_6_end",
+        effects: {
+          exp: 50,
+          reputation: { "brave": 10 },
+          flags: { "duel_promise": true, "exam_result": "duel" }
+        }
+      },
+
+      // 第六阶段：结束
+      {
+        id: "phase_6_end",
+        name: "考核结束",
+        description: "年度考核结束了。你的表现引起了不少人的关注，未来的路还很长...\n\n（根据你的评级，你获得了相应的奖励和分班结果）",
+        type: "auto",
+        effects: {
+          flags: { "annual_exam_completed": true }
+        }
+      }
+    ]
   }
 };
