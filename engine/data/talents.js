@@ -219,39 +219,57 @@ const DataTalents = {
   // 冰系天赋
   // ================================================================
 
+  // v1.4.1重做：寒冰之躯 - 加入Lv5分支选择（破冰流/冰封流）
   ice_talent_basic: {
     id: "ice_talent_basic",
     name: "寒冰之躯",
     element: "ice",
     rarity: "common",
     type: "growth",
-    description: "与冰元素亲和，寒冰之力随成长不断凝聚，最终化为冰霜领主。",
+    description: "与冰元素亲和，寒冰之力随成长不断凝聚。Lv5时可选择破冰流（高爆发）或冰封流（强控制），最终化为冰霜领主或永冻君主。",
     maxLevel: 10,
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "寒冰之躯",
-        description: "冰系技能伤害+10%，受到火系伤害-10%。",
-        effects: { damageBonus: 0.10, fireResistance: 0.10 }
+        description: "冰系技能伤害+10%，攻击附加1层寒霜（最多3层），受到火系伤害-10%。",
+        effects: { damageBonus: 0.10, frostChance: 1.0, frostStacks: 1, frostStackMax: 3, fireResistance: 0.10 }
       },
       {
         level: 3, stage: "特性", name: "冰甲",
-        description: "战斗开始时获得相当于最大HP15%的冰甲护盾，破碎前免疫第一次控制效果。",
-        effects: { iceShield: 0.15, iceShieldControlImmune: true }
+        description: "战斗开始获得最大HP15%的冰甲护盾，寒霜每层使目标速度-8%。",
+        effects: { iceShield: 0.15, frostSlowPerStack: 0.08 }
       },
       {
-        level: 5, stage: "进化", name: "冰霜形态",
-        description: "攻击附带寒霜，降低目标速度20%，可叠加3层。",
-        effects: { damageBonus: 0.10, frostSlow: 0.20, frostStackMax: 3 }
+        level: 5, stage: "进化", name: "分支选择",
+        description: "你的寒冰之力开始蜕变，选择进化方向：",
+        branchChoices: [
+          {
+            id: "shatter",
+            name: "破冰",
+            description: "破冰流：寒霜满3层时自动破冰，造成80%攻击力冰系伤害并暴击，破冰后刷新寒霜。",
+            effects: { damageBonus: 0.10, frostShatter: true, shatterDamage: 0.80, shatterCrit: true }
+          },
+          {
+            id: "permafrost",
+            name: "永冻",
+            description: "冰封流：寒霜满3层时冻结目标2回合，冻结期间目标防御-30%，受到冰系伤害+50%。",
+            effects: { damageBonus: 0.10, frostFreezeOnMax: true, freezeDuration: 2, freezeDefenseDown: 0.30, frozenIceDamageBonus: 0.50 }
+          }
+        ]
       },
       {
-        level: 7, stage: "延伸", name: "寒冰吸收",
-        description: "受到冰系伤害时恢复HP（伤害值的30%），每回合恢复3%最大MP。",
-        effects: { iceAbsorb: 0.30, mpRegen: 0.03 }
+        level: 7, stage: "延伸",
+        branchEffects: {
+          shatter: { name: "碎裂", description: "破冰伤害提升至120%，破冰后下一次冰系技能必定暴击。", effects: { damageBonus: 0.10, shatterDamage: 0.40, shatterNextCrit: true } },
+          permafrost: { name: "冰封领域", description: "冻结解除时产生冰爆，对周围敌人造成目标最大HP15%伤害，每回合开始有20%概率冻结最低HP敌人。", effects: { damageBonus: 0.10, frostExplosion: 0.15, autoFreezeChance: 0.20 } }
+        }
       },
       {
-        level: 10, stage: "终极", name: "冰霜领主",
-        description: "冰系技能等级+1，冰系伤害无视30%防御，寒霜叠满3层时自动冻结目标1回合。",
-        effects: { damageBonus: 0.15, skillLevelBonus: 1, icePenetration: 0.30, frostFreezeOnMax: true }
+        level: 10, stage: "终极",
+        branchEffects: {
+          shatter: { name: "冰霜领主", description: "冰系技能等级+1，无视30%防御，破冰伤害提升至150%且无视护盾。", effects: { damageBonus: 0.15, skillLevelBonus: 1, icePenetration: 0.30, shatterDamage: 0.30, shatterPierceShield: true } },
+          permafrost: { name: "永冻君主", description: "冻结时间+1回合（共3回合），冻结目标每回合损失8%最大HP，寒霜上限+2层。", effects: { damageBonus: 0.15, freezeDuration: 1, frozenHpDrain: 0.08, frostStackMax: 2 } }
+        }
       }
     ]
   },
@@ -398,39 +416,57 @@ const DataTalents = {
   // 雷系天赋
   // ================================================================
 
+  // v1.4.1重做：雷电之体 - 加入Lv5分支选择（连锁流/麻痹流）
   thunder_talent_basic: {
     id: "thunder_talent_basic",
     name: "雷电之体",
     element: "thunder",
     rarity: "common",
     type: "growth",
-    description: "与雷元素亲和，雷霆之力随成长不断凝聚，最终化为雷霆领主。",
+    description: "与雷元素亲和，雷霆之力随成长不断凝聚。Lv5时可选择连锁流（AOE扩散）或麻痹流（单体控制），最终化为雷霆领主或天罚之主。",
     maxLevel: 10,
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "雷电之体",
-        description: "雷系技能伤害+10%，速度+5%。",
-        effects: { damageBonus: 0.10, speedBonus: 0.05 }
+        description: "雷系技能伤害+10%，速度+5%，攻击附加1层感电（最多3层）。",
+        effects: { damageBonus: 0.10, speedBonus: 0.05, shockChance: 1.0, shockStacks: 1, shockStackMax: 3 }
       },
       {
         level: 3, stage: "特性", name: "雷殛护体",
-        description: "受到攻击时20%概率释放雷电反击，造成50%攻击力的雷系伤害。",
-        effects: { thunderCounter: 0.20, thunderCounterDamage: 0.50 }
+        description: "受到攻击时20%概率雷电反击，感电每层使目标受到雷系伤害+10%。",
+        effects: { thunderCounter: 0.20, thunderCounterDamage: 0.50, shockDamageBonus: 0.10 }
       },
       {
-        level: 5, stage: "进化", name: "雷霆形态",
-        description: "速度+15%，雷系技能有30%概率使目标「麻痹」1回合（无法行动）。",
-        effects: { speedBonus: 0.15, paralyzeChance: 0.30, paralyzeDuration: 1 }
+        level: 5, stage: "进化", name: "分支选择",
+        description: "你的雷霆之力开始蜕变，选择进化方向：",
+        branchChoices: [
+          {
+            id: "chain",
+            name: "连锁",
+            description: "连锁流：感电满3层时触发连锁闪电，对目标及周围敌人造成60%攻击力伤害，感电可扩散。",
+            effects: { damageBonus: 0.10, chainLightning: true, chainDamage: 0.60, shockSpread: true }
+          },
+          {
+            id: "paralyze",
+            name: "麻痹",
+            description: "麻痹流：感电满3层时使目标麻痹2回合，麻痹期间目标受到伤害+30%且无法闪避。",
+            effects: { damageBonus: 0.10, shockParalyzeOnMax: true, paralyzeDuration: 2, paralyzeDamageBonus: 0.30, paralyzeNoDodge: true }
+          }
+        ]
       },
       {
-        level: 7, stage: "延伸", name: "雷鸣",
-        description: "雷系技能暴击时产生雷鸣，使所有敌人麻痹1回合（冷却3回合）。",
-        effects: { thunderRoar: true, thunderRoarCooldown: 3, thunderRoarParalyze: 1 }
+        level: 7, stage: "延伸",
+        branchEffects: {
+          chain: { name: "雷暴", description: "连锁闪电伤害提升至100%，每次连锁有30%概率附加麻痹1回合。", effects: { damageBonus: 0.10, chainDamage: 0.40, chainParalyzeChance: 0.30 } },
+          paralyze: { name: "蓄电", description: "每次释放雷系技能蓄1层电（最多5层），每层使下次麻痹概率+15%，麻痹时间+1回合。", effects: { damageBonus: 0.10, chargeStack: true, chargeMax: 5, chargePerStack: 0.15, paralyzeDuration: 1 } }
+        }
       },
       {
-        level: 10, stage: "终极", name: "雷霆领主",
-        description: "雷系技能等级+1，雷系伤害无视30%防御，麻痹概率+20%。",
-        effects: { damageBonus: 0.15, skillLevelBonus: 1, thunderPenetration: 0.30, paralyzeChance: 0.20 }
+        level: 10, stage: "终极",
+        branchEffects: {
+          chain: { name: "雷霆领主", description: "雷系技能等级+1，无视30%防御，连锁闪电可跳跃5个目标，每次跳跃伤害衰减20%。", effects: { damageBonus: 0.15, skillLevelBonus: 1, thunderPenetration: 0.30, chainTargets: 5, chainFalloff: 0.20 } },
+          paralyze: { name: "天罚之主", description: "麻痹概率+30%，麻痹目标每回合受到感电层数x10%最大HP伤害，麻痹结束时触发雷爆。", effects: { damageBonus: 0.15, paralyzeChance: 0.30, paralyzeHpDrain: 0.10, paralyzeExplode: true } }
+        }
       }
     ]
   },

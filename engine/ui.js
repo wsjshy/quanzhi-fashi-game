@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.4.0 · 天赋系统重构</div>
+                ">v1.4.1 · 冰雷系天赋差异化</div>
             </div>
         `;
 
