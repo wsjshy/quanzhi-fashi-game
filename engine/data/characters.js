@@ -7273,12 +7273,23 @@ const DataCharacters = {
           texts: ["梵墨，今天有什么任务？", "城市猎妖队随时待命，有妖魔就上。", "雷系法师很珍贵，你要好好发挥。"],
           choices: [
             { text: "我想加入城市猎妖队", next: "join_team" },
+            { text: "有什么猎妖任务？", next: "hunt_quests", conditions: { flag: "hunter_team_member" } },
             { text: "请教战斗技巧", next: "about_combat" },
             { text: "城市猎妖队是做什么的？", next: "about_team" },
             { text: "博城最近安全吗？", next: "about_safety" },
             { text: "队长平时压力大吗？", next: "about_pressure" },
             { text: "对新手有什么建议？", next: "about_rookie" },
             { text: "告辞", next: "default", action: "back" }
+          ]
+        },
+        hunt_quests: {
+          id: "hunt_quests",
+          texts: ["当前有这些猎妖任务，你看看哪个合适。", "低级任务适合新手，高级任务必须组队。", "完成任务有金币、经验和精魄奖励。"],
+          choices: [
+            { text: "铭文女子中学的妖魔（低级）", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_school_demon" } },
+            { text: "老街区的怪事（中级）", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_old_district" }, conditions: { flag: "hunt_school_demon_completed" } },
+            { text: "城市边缘的统领（高级）", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_city_edge" }, conditions: { flag: "hunt_old_district_completed" } },
+            { text: "我再想想", next: "default", action: "back" }
           ]
         },
         join_team: {
