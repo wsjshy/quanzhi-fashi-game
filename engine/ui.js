@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.99.3 · 全面行动次数限制+学习类别新增</div>
+                ">v0.99.4 · 高效期统一1次+剧情时间保障</div>
             </div>
         `;
 
@@ -1332,8 +1332,8 @@ const UI = {
                         <span style="color: #ffd700; font-size: 15px;">💰 ${Player.gold}</span>
                         <span style="color: #ff8888; font-size: 14px;">❤️ ${Player.hp}/${Player.maxHp}</span>
                         <span style="color: #88aaff; font-size: 14px;">💧 ${Player.mp}/${Player.maxMp}</span>
-                        <!-- v0.99.3: 显示4类每日行动次数（修炼/学习/猎魔/探索） -->
-                        <span style="color: #aaffaa; font-size: 11px;" title="今日修炼${Player.dailyActions?.cultivate || 0}/学习${Player.dailyActions?.study || 0}/猎魔${Player.dailyActions?.hunt || 0}/探索${Player.dailyActions?.explore || 0}">📊 修${Player.dailyActions?.cultivate || 0}/2 学${Player.dailyActions?.study || 0}/1 猎${Player.dailyActions?.hunt || 0}/2 探${Player.dailyActions?.explore || 0}/2</span>
+                        <!-- v0.99.4: 高效期统一1次，留出剧情探索时间 -->
+                        <span style="color: #aaffaa; font-size: 11px;" title="今日修炼${Player.dailyActions?.cultivate || 0}/学习${Player.dailyActions?.study || 0}/猎魔${Player.dailyActions?.hunt || 0}/探索${Player.dailyActions?.explore || 0}">📊 修${Player.dailyActions?.cultivate || 0}/1 学${Player.dailyActions?.study || 0}/1 猎${Player.dailyActions?.hunt || 0}/1 探${Player.dailyActions?.explore || 0}/1</span>
                         <span style="color: #aaffaa; font-size: 15px; font-weight: bold;">Lv.${Player.level}</span>
                     </div>
                 </div>
@@ -1775,14 +1775,14 @@ const UI = {
                                         <div style="height:100%; width:${mpPct}%; background:linear-gradient(90deg,#4488ff,#88bbff); transition:width 0.3s;"></div>
                                     </div>
                                 </div>
-                                <!-- v0.99.3: 显示4类每日行动次数（修炼/学习/猎魔/探索） -->
+                                <!-- v0.99.4: 高效期统一1次 -->
                                 <div style="background:rgba(100,100,150,0.1); border-radius:6px; padding:8px; margin-top:4px;">
                                     <div style="font-size:11px; color:#8899bb; margin-bottom:6px;">📊 今日行动</div>
                                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; font-size:10px; color:#aaccff;">
-                                        <span>修炼: ${Player.dailyActions?.cultivate || 0}/2 ${(Player.dailyActions?.cultivate || 0) >= 2 ? '⚠️效率↓' : '✅高效'}</span>
+                                        <span>修炼: ${Player.dailyActions?.cultivate || 0}/1 ${(Player.dailyActions?.cultivate || 0) >= 1 ? '⚠️效率↓' : '✅高效'}</span>
                                         <span>学习: ${Player.dailyActions?.study || 0}/1 ${(Player.dailyActions?.study || 0) >= 1 ? '⚠️效率↓' : '✅高效'}</span>
-                                        <span>猎魔: ${Player.dailyActions?.hunt || 0}/2 ${(Player.dailyActions?.hunt || 0) >= 2 ? '⚠️奖励↓' : '✅满奖'}</span>
-                                        <span>探索: ${Player.dailyActions?.explore || 0}/2 ${(Player.dailyActions?.explore || 0) >= 2 ? '⚠️事件↓' : '✅有事件'}</span>
+                                        <span>猎魔: ${Player.dailyActions?.hunt || 0}/1 ${(Player.dailyActions?.hunt || 0) >= 1 ? '⚠️奖励↓' : '✅满奖'}</span>
+                                        <span>探索: ${Player.dailyActions?.explore || 0}/1 ${(Player.dailyActions?.explore || 0) >= 1 ? '⚠️事件↓' : '✅有事件'}</span>
                                     </div>
                                 </div>
                             </div>
@@ -4837,11 +4837,11 @@ const UI = {
                             <h3 style="color: #88ccff; font-size: 20px; margin-bottom: 12px;">⏰ 时间与每日行动</h3>
                             <ul style="color: #cccccc; line-height: 2; font-size: 14px; padding-left: 20px;">
                                 <li><strong>时间系统</strong>：每个行动消耗时间，一天分为多个时段，特定时段有课程</li>
-                                <li><strong>每日行动次数</strong>：v0.99.0替代体力系统，修炼/学习/猎魔/探索每日有高效次数，之后递减</li>
-                                <li><strong>修炼递减</strong>：每日前2次100%经验，3-4次70%，5次后50%（含三步塔）</li>
+                                <li><strong>每日行动次数</strong>：v0.99.0替代体力系统，修炼/学习/猎魔/探索每日1次高效，之后递减</li>
+                                <li><strong>修炼递减</strong>：每日第1次100%经验，2-3次70%，4次后50%（含三步塔）</li>
                                 <li><strong>学习递减</strong>：每日第1次100%经验，2-3次70%，4次后50%（上课+图书馆）</li>
-                                <li><strong>猎魔递减</strong>：每日前2次100%奖励，3-4次70%，5次后50%，连续猎魔会疲劳</li>
-                                <li><strong>探索递减</strong>：每日前2次有随机事件+100%收益，3-4次事件减半+70%收益，5次后无事件+50%收益</li>
+                                <li><strong>猎魔递减</strong>：每日第1次100%奖励，2-3次70%，4次后50%，连续猎魔会疲劳</li>
+                                <li><strong>探索递减</strong>：每日第1次有随机事件+100%收益，2-3次事件减半+70%收益，4次后无事件+50%收益</li>
                                 <li><strong>休息恢复</strong>：休息可以恢复 HP、MP，新的一天重置每日行动次数</li>
                                 <li><strong>移动零消耗</strong>：地点之间旅行只消耗0.5小时</li>
                                 <li><strong>大事件</strong>：特定天数会触发大事件，提前准备很重要</li>
@@ -4889,7 +4889,7 @@ const UI = {
                             <ul style="color: #ddddcc; line-height: 2; font-size: 14px; padding-left: 20px;">
                                 <li>多和 NPC 聊天，可以获得情报和任务</li>
                                 <li>注意收集情报，大事件来临前会有各种暗示</li>
-                                <li>每日前2次修炼/猎魔、第1次学习效率最高，之后递减，高效期做完可以去探索剧情</li>
+                                <li>每日各类行动第1次效率最高，之后递减，高效期很快做完，可以专心探索剧情</li>
                                 <li>战斗时注意元素克制，用对元素事半功倍</li>
                                 <li>提升势力声望可以获得商店折扣和更多奖励</li>
                                 <li>探索不同地点，会遇到不同的 NPC 和事件</li>

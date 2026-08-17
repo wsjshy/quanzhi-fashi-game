@@ -1617,12 +1617,12 @@ const Player = {
 
     /**
      * 获取修炼效率倍率
-     * v0.99.3: 1-2次100%，3-4次70%，5次后50%（缩短高效期，留出剧情时间）
+     * v0.99.4: 1次100%，2-3次70%，4次后50%（高效期1次，留出剧情时间）
      */
     getCultivateEfficiency() {
         const count = this.dailyActions?.cultivate || 0;
-        if (count < 2) return 1.0;
-        if (count < 4) return 0.7;
+        if (count < 1) return 1.0;
+        if (count < 3) return 0.7;
         return 0.5;
     },
 
@@ -1639,34 +1639,34 @@ const Player = {
 
     /**
      * 获取猎魔奖励倍率
-     * v0.99.3: 1-2次100%，3-4次70%，5次后50%
+     * v0.99.4: 1次100%，2-3次70%，4次后50%
      */
     getHuntEfficiency() {
         const count = this.dailyActions?.hunt || 0;
-        if (count < 2) return 1.0;
-        if (count < 4) return 0.7;
+        if (count < 1) return 1.0;
+        if (count < 3) return 0.7;
         return 0.5;
     },
 
     /**
      * 获取探索随机事件概率倍率
-     * v0.99.3: 1-2次100%，3-4次50%，5次后0%
+     * v0.99.4: 1次100%，2-3次50%，4次后0%
      */
     getExploreEventChance() {
         const count = this.dailyActions?.explore || 0;
-        if (count < 2) return 1.0;
-        if (count < 4) return 0.5;
+        if (count < 1) return 1.0;
+        if (count < 3) return 0.5;
         return 0;
     },
 
     /**
-     * 获取探索收益倍率（逛街+酒馆）
-     * v0.99.3新增: 1-2次100%，3-4次70%，5次后50%
+     * 获取探索收益倍率（逛街+酒馆+采集）
+     * v0.99.4: 1次100%，2-3次70%，4次后50%
      */
     getExploreEfficiency() {
         const count = this.dailyActions?.explore || 0;
-        if (count < 2) return 1.0;
-        if (count < 4) return 0.7;
+        if (count < 1) return 1.0;
+        if (count < 3) return 0.7;
         return 0.5;
     },
 
@@ -1694,10 +1694,10 @@ const Player = {
     getDailyActionsSummary() {
         const c = this.dailyActions || { cultivate: 0, study: 0, hunt: 0, explore: 0 };
         return {
-            cultivate: { count: c.cultivate, efficiency: this.getCultivateEfficiency(), maxEfficient: 2 },
+            cultivate: { count: c.cultivate, efficiency: this.getCultivateEfficiency(), maxEfficient: 1 },
             study: { count: c.study, efficiency: this.getStudyEfficiency(), maxEfficient: 1 },
-            hunt: { count: c.hunt, efficiency: this.getHuntEfficiency(), maxEfficient: 2 },
-            explore: { count: c.explore, efficiency: this.getExploreEfficiency(), eventChance: this.getExploreEventChance(), maxEfficient: 2 }
+            hunt: { count: c.hunt, efficiency: this.getHuntEfficiency(), maxEfficient: 1 },
+            explore: { count: c.explore, efficiency: this.getExploreEfficiency(), eventChance: this.getExploreEventChance(), maxEfficient: 1 }
         };
     },
 
