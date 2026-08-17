@@ -3738,5 +3738,190 @@ const DataQuests = {
     dialogueStart: "城市边缘有统领级妖魔，这是硬骨头。必须组队前往， solo就是送死。",
     dialogueInProgress: "统领级妖魔不是闹着玩的，利用环境，集中火力。",
     dialogueComplete: "你居然赢了统领级妖魔！了不起，猎妖队有你是福气。"
+  },
+
+  // ========== v1.8.1 新增城市猎妖任务（7个） ==========
+  quest_hunt_sewer_rats: {
+    id: "quest_hunt_sewer_rats",
+    name: "下水道鼠患",
+    description: "博城下水道暗影鼠泛滥，已经咬伤了几个维修工人。城市猎妖队发布清剿任务。",
+    giver: "xu_dahuang",
+    type: "hunt",
+    objectives: [
+      { type: "investigate", location: "bo_city", count: 1, description: "前往下水道入口调查" },
+      { type: "kill", enemyId: "shadow_rat", count: 5, description: "清剿5只暗影鼠" }
+    ],
+    rewards: {
+      exp: 60,
+      gold: 80,
+      reputation: { hunter_alliance: 5, city_street: 5 },
+      items: [{ itemId: "servant_soul_essence", count: 1 }]
+    },
+    prerequisites: [{ flag: "hunter_team_member" }],
+    isRepeatable: true,
+    difficulty: "easy",
+    recommendedLevel: 4,
+    maxTeamSize: 2,
+    dialogueStart: "下水道的暗影鼠又闹起来了，咬了好几个工人。这种低级任务正好给你练手，去清剿5只。",
+    dialogueInProgress: "暗影鼠喜欢阴暗角落，注意脚下，别被偷袭了。",
+    dialogueComplete: "干得干净利落。下水道暂时安全了，这是你的报酬。"
+  },
+
+  quest_hunt_cemetery_ghost: {
+    id: "quest_hunt_cemetery_ghost",
+    name: "墓地幽灵",
+    description: "博城公墓夜间出现幽灵作祟，附近居民不敢靠近。前往调查并驱除。",
+    giver: "xu_dahuang",
+    type: "hunt",
+    objectives: [
+      { type: "investigate", location: "bo_city", count: 2, description: "在公墓调查2个线索点" },
+      { type: "kill", enemyId: "ghost", count: 3, description: "驱除3只幽灵" }
+    ],
+    rewards: {
+      exp: 70,
+      gold: 100,
+      reputation: { hunter_alliance: 8 },
+      items: [{ itemId: "servant_soul_essence", count: 1 }, { itemId: "mana_potion", count: 2 }]
+    },
+    prerequisites: [{ flag: "hunter_team_member" }],
+    isRepeatable: true,
+    difficulty: "easy",
+    recommendedLevel: 5,
+    maxTeamSize: 2,
+    dialogueStart: "公墓那边闹鬼，居民都不敢去扫墓了。幽灵怕光系和火系，你要是这两系就好办。",
+    dialogueInProgress: "幽灵会穿墙，别让它绕到你背后。集中精神，感知它的位置。",
+    dialogueComplete: "幽灵驱除了，公墓恢复了平静。附近居民会感谢你的。"
+  },
+
+  quest_hunt_warehouse_bugs: {
+    id: "quest_hunt_warehouse_bugs",
+    name: "仓库虫患",
+    description: "城东仓库被食骨虫入侵，大量物资被啃食。需要紧急清剿。",
+    giver: "xu_dahuang",
+    type: "hunt",
+    objectives: [
+      { type: "investigate", location: "bo_city", count: 1, description: "检查仓库受损情况" },
+      { type: "kill", enemyId: "bone_eating_worm", count: 4, description: "消灭4只食骨虫" }
+    ],
+    rewards: {
+      exp: 75,
+      gold: 90,
+      reputation: { hunter_alliance: 6, city_street: 5 },
+      items: [{ itemId: "servant_soul_essence", count: 1 }]
+    },
+    prerequisites: [{ flag: "hunter_team_member" }],
+    isRepeatable: true,
+    difficulty: "easy",
+    recommendedLevel: 5,
+    maxTeamSize: 2,
+    dialogueStart: "城东仓库闹虫灾，食骨虫把粮食都啃了。火系和雷系对虫类效果好，你去处理一下。",
+    dialogueInProgress: "食骨虫会钻地，注意地面震动。它们的牙齿很锋利，别被近身。",
+    dialogueComplete: "虫患清除了，仓库保住了。商会那边会给猎妖队送锦旗的。"
+  },
+
+  quest_hunt_market_protection: {
+    id: "quest_hunt_market_protection",
+    name: "集市护卫",
+    description: "博城最大的集市出现血纹鼠群，威胁到大量市民安全。需要在人群疏散前控制局面。",
+    giver: "xu_dahuang",
+    type: "hunt",
+    objectives: [
+      { type: "investigate", location: "bo_city", count: 2, description: "疏散集市人群并调查鼠群来源" },
+      { type: "kill", enemyId: "blood_pattern_rat", count: 6, description: "消灭6只血纹鼠" }
+    ],
+    rewards: {
+      exp: 120,
+      gold: 180,
+      reputation: { hunter_alliance: 15, city_street: 15, brave: 5 },
+      items: [{ itemId: "servant_soul_essence", count: 2 }, { itemId: "health_potion", count: 3 }]
+    },
+    prerequisites: [{ flag: "hunter_team_member" }, { flag: "hunt_sewer_rats_completed" }],
+    isRepeatable: true,
+    difficulty: "medium",
+    recommendedLevel: 7,
+    maxTeamSize: 2,
+    dialogueStart: "集市出事了！血纹鼠群冲进人群，已经有人受伤。你赶紧去支援，先疏散人群再清剿鼠群。",
+    dialogueInProgress: "血纹鼠比暗影鼠大得多，攻击性更强。注意保护平民，别让鼠群冲散人群。",
+    dialogueComplete: "集市保住了！你反应很快，伤亡控制在最低。徐大荒对你的表现很满意。"
+  },
+
+  quest_hunt_school_patrol: {
+    id: "quest_hunt_school_patrol",
+    name: "校园夜间巡逻",
+    description: "天澜魔法高中夜间发现黑兽踪迹，学校担心学生安全。委托猎妖队夜间巡逻排查。",
+    giver: "xu_dahuang",
+    type: "hunt",
+    objectives: [
+      { type: "investigate", location: "tianlan_school", count: 3, description: "夜间巡逻校园3个区域" },
+      { type: "kill", enemyId: "black_beast", count: 2, description: "驱除2只黑兽" }
+    ],
+    rewards: {
+      exp: 130,
+      gold: 160,
+      reputation: { hunter_alliance: 12, tianlan_school: 15 },
+      items: [{ itemId: "servant_soul_essence", count: 2 }, { itemId: "mana_potion", count: 3 }]
+    },
+    prerequisites: [{ flag: "hunter_team_member" }],
+    isRepeatable: true,
+    difficulty: "medium",
+    recommendedLevel: 7,
+    maxTeamSize: 2,
+    dialogueStart: "天澜魔法高中晚上有黑兽出没，萧院长亲自找我们帮忙。你去巡逻一下，把黑兽找出来。",
+    dialogueInProgress: "黑兽擅长隐藏在阴影里，夜间视力好。用照明魔法或者感知类技能找它们。",
+    dialogueComplete: "校园安全了。萧院长特意让我谢谢你，说天澜的学生有你这样的校友是福气。"
+  },
+
+  quest_hunt_black_church_cell: {
+    id: "quest_hunt_black_church_cell",
+    name: "黑教廷据点",
+    description: "根据线报，博城郊区有一个黑教廷的秘密据点，正在进行邪恶仪式。必须立即捣毁！",
+    giver: "xu_dahuang",
+    type: "hunt",
+    objectives: [
+      { type: "investigate", location: "bo_city", count: 3, description: "追踪线索找到黑教廷据点" },
+      { type: "kill", enemyId: "black_church_acolyte", count: 4, description: "击败4名黑教廷侍僧" }
+    ],
+    rewards: {
+      exp: 250,
+      gold: 400,
+      reputation: { hunter_alliance: 30, magic_association: 20, brave: 15 },
+      items: [{ itemId: "warrior_soul_essence", count: 1 }, { itemId: "demon_core", count: 1 }, { itemId: "super_health_potion", count: 3 }]
+    },
+    prerequisites: [{ flag: "hunter_team_member" }, { flag: "hunt_old_district_completed" }],
+    isRepeatable: false,
+    difficulty: "hard",
+    recommendedLevel: 10,
+    maxTeamSize: 2,
+    requireTeam: true,
+    hasBlackChurchClue: true,
+    dialogueStart: "重大情报！我们找到了黑教廷在博城的一个据点，他们在进行什么邪恶仪式。必须立刻捣毁！这个任务危险，建议组队。",
+    dialogueInProgress: "黑教廷的人都是亡命之徒，下手狠辣。注意他们的配合，别被围殴了。找到仪式现场就打断它！",
+    dialogueComplete: "据点捣毁了！你缴获的情报很有价值，黑教廷在博城的布局比我们想象的更深。这件事我会上报审判会。"
+  },
+
+  quest_hunt_demon_vine: {
+    id: "quest_hunt_demon_vine",
+    name: "魔藤入侵",
+    description: "博城公园被变异魔藤侵占，植物系妖魔疯狂生长，已经困住了数名游客。紧急救援！",
+    giver: "xu_dahuang",
+    type: "hunt",
+    objectives: [
+      { type: "investigate", location: "bo_city", count: 2, description: "调查魔藤来源并救援被困游客" },
+      { type: "kill", enemyId: "demon_vine", count: 3, description: "清除3株魔藤" }
+    ],
+    rewards: {
+      exp: 220,
+      gold: 350,
+      reputation: { hunter_alliance: 25, city_street: 20, brave: 10 },
+      items: [{ itemId: "warrior_soul_essence", count: 1 }, { itemId: "super_mana_potion", count: 3 }]
+    },
+    prerequisites: [{ flag: "hunter_team_member" }, { flag: "hunt_market_protection_completed" }],
+    isRepeatable: true,
+    difficulty: "hard",
+    recommendedLevel: 9,
+    maxTeamSize: 2,
+    dialogueStart: "公园的魔藤疯了！变异植物系妖魔把整个公园都占了，还有游客被困。火克木，你要是火系就占大便宜。",
+    dialogueInProgress: "魔藤会从地下突袭，注意地面裂缝。先救被困的人，再集中火力烧魔藤的根！",
+    dialogueComplete: "魔藤清除了，游客都救出来了。公园管理处给猎妖队送了感谢信，你这次立大功了。"
   }
 };
