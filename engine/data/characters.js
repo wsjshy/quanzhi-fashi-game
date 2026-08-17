@@ -7033,6 +7033,9 @@ const DataCharacters = {
           choices: [
             { text: "请教战斗技巧", next: "about_combat" },
             { text: "城市猎妖队是做什么的？", next: "about_team" },
+            { text: "博城最近安全吗？", next: "about_safety" },
+            { text: "队长平时压力大吗？", next: "about_pressure" },
+            { text: "对新手有什么建议？", next: "about_rookie" },
             { text: "告辞", next: "default", action: "back" }
           ]
         },
@@ -7047,6 +7050,57 @@ const DataCharacters = {
           texts: ["城市猎妖队专门处理城市内的妖魔事件。", "我们比野外猎者安全，但责任更重。", "保护市民是我们的职责，不容有失。"],
           effects: { familiarity: 3 },
           choices: [{ text: "明白了", next: "default", action: "back" }]
+        },
+        about_safety: {
+          id: "about_safety",
+          texts: ["表面平静，暗流涌动。最近城外的妖魔活动频繁了不少。", "我们猎妖队24小时待命，就怕出大事。", "你也是法师，多留个心眼。"],
+          choices: [
+            { text: "会有大灾难吗？", next: "about_disaster_worry" },
+            { text: "我会小心的", next: "default", action: "back" }
+          ]
+        },
+        about_disaster_worry: {
+          id: "about_disaster_worry",
+          texts: ["希望不会。但做我们这行的，不能抱侥幸心理。", "博城三面环山，一旦妖魔潮涌进来...", "不说这些不吉利的。真到那时候，我们猎妖队会顶在前面。"],
+          effects: { opinion: 3, trust: 2 },
+          choices: [
+            { text: "队长真有担当", next: "default", action: "back" }
+          ]
+        },
+        about_pressure: {
+          id: "about_pressure",
+          texts: ["压力？哈哈，当队长的哪能没压力。", "手下十几号人的命都在我手里，一个决策错了就是人命。", "但我不能慌，我慌了队员就更慌了。"],
+          choices: [
+            { text: "队长辛苦了", next: "about_pressure_response" },
+            { text: "那为什么还要当队长？", next: "about_why_captain" }
+          ]
+        },
+        about_pressure_response: {
+          id: "about_pressure_response",
+          texts: ["（徐大荒拍了拍你的肩膀）小子，有你这句话就够了。", "干我们这行的，不怕死，就怕怕死。", "你好好修炼，将来也许能帮上忙。"],
+          effects: { opinion: 5, trust: 3 },
+          choices: [{ text: "我会努力的", next: "default", action: "back" }]
+        },
+        about_why_captain: {
+          id: "about_why_captain",
+          texts: ["因为我能打啊！哈哈，开个玩笑。", "当年我也是个愣头青，跟着老队长出生入死。", "老队长走了，这担子总得有人挑。我不挑，谁挑？"],
+          effects: { opinion: 2, trust: 2 },
+          choices: [
+            { text: "老队长...？", next: "about_old_captain" },
+            { text: "原来如此", next: "default", action: "back" }
+          ]
+        },
+        about_old_captain: {
+          id: "about_old_captain",
+          texts: ["（徐大荒的眼神暗了一下）三年前的事了。", "一只鳞皮妖母偷袭，老队长为了掩护我们撤退...", "不说了。你只要记住，猎妖队的每个人，都是可以把后背交给对方的兄弟。"],
+          effects: { opinion: 3, trust: 5 },
+          choices: [{ text: "我记住了", next: "default", action: "back" }]
+        },
+        about_rookie: {
+          id: "about_rookie",
+          texts: ["新手啊？别逞强，别落单，别小看任何一只妖魔。", "很多新手觉得自己觉醒了魔法就了不起，结果第一次出任务就吓尿了。", "妖魔不是木桩，它们会躲、会跑、会设陷阱。活着，比什么都重要。"],
+          effects: { intelligence: 10 },
+          choices: [{ text: "受教了", next: "default", action: "back" }]
         }
       }
     }
