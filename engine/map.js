@@ -320,11 +320,17 @@ const MapSystem = {
         // Player.useStamina(staminaCost);
 
         // v0.99.0: 记录每日行动次数（用于效率递减）
+        // v0.99.3: 新增study类别，三步塔修炼算cultivate，酒馆算explore
         if (typeof Player.recordAction === 'function') {
-            if (actionId === 'hunt' || action.id === 'hunt') {
+            const aid = actionId || action.id;
+            if (aid === 'hunt') {
                 Player.recordAction('hunt');
-            } else if (actionId === 'explore' || action.id === 'explore' || actionId === 'stroll' || action.id === 'stroll') {
+            } else if (aid === 'explore' || aid === 'stroll' || aid === 'tavern') {
                 Player.recordAction('explore');
+            } else if (aid === 'study' || aid === 'library') {
+                Player.recordAction('study');
+            } else if (aid === 'train' || aid.startsWith('tower_floor')) {
+                Player.recordAction('cultivate');
             }
         }
 
@@ -346,7 +352,18 @@ const MapSystem = {
 
         // 直接效果
         if (action.effects) {
-            result.effects = EventSystem.applyEffects(action.effects);
+            // v0.99.3: 探索类行动（逛街/酒馆）应用收益递减
+            const aid = actionId || action.id;
+            if ((aid === 'explore' || aid === 'stroll' || aid === 'tavern') 
+                && typeof Player.getExploreEfficiency === 'function') {
+                const eff = Player.getExploreEfficiency();
+                const modifiedEffects = { ...action.effects };
+                if (modifiedEffects.exp) modifiedEffects.exp = Math.floor(modifiedEffects.exp * eff);
+                if (modifiedEffects.gold) modifiedEffects.gold = Math.floor(modifiedEffects.gold * eff);
+                result.effects = EventSystem.applyEffects(modifiedEffects);
+            } else {
+                result.effects = EventSystem.applyEffects(action.effects);
+            }
         }
 
         // 随机事件

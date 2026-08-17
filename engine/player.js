@@ -116,8 +116,10 @@ const Player = {
     stamina: 100,     // @deprecated v0.99.0: 体力系统已移除，保留字段用于存档兼容
 
     // v0.99.0: 每日行动次数（替代体力系统）
+    // v0.99.3: 新增study类别，调整高效期次数
     dailyActions: {
-        cultivate: 0,  // 今日修炼次数
+        cultivate: 0,  // 今日修炼次数（修炼魔法+三步塔）
+        study: 0,      // 今日学习次数（上课+图书馆）
         hunt: 0,       // 今日猎魔次数
         explore: 0     // 今日探索/逛街次数
     },
@@ -1615,42 +1617,65 @@ const Player = {
 
     /**
      * 获取修炼效率倍率
-     * 1-3次100%，4-6次70%，7次后50%
+     * v0.99.3: 1-2次100%，3-4次70%，5次后50%（缩短高效期，留出剧情时间）
      */
     getCultivateEfficiency() {
         const count = this.dailyActions?.cultivate || 0;
-        if (count < 3) return 1.0;
-        if (count < 6) return 0.7;
+        if (count < 2) return 1.0;
+        if (count < 4) return 0.7;
+        return 0.5;
+    },
+
+    /**
+     * 获取学习效率倍率（上课+图书馆）
+     * v0.99.3新增: 1次100%，2-3次70%，4次后50%
+     */
+    getStudyEfficiency() {
+        const count = this.dailyActions?.study || 0;
+        if (count < 1) return 1.0;
+        if (count < 3) return 0.7;
         return 0.5;
     },
 
     /**
      * 获取猎魔奖励倍率
-     * 1-3次100%，4-6次70%，7次后50%
+     * v0.99.3: 1-2次100%，3-4次70%，5次后50%
      */
     getHuntEfficiency() {
         const count = this.dailyActions?.hunt || 0;
-        if (count < 3) return 1.0;
-        if (count < 6) return 0.7;
+        if (count < 2) return 1.0;
+        if (count < 4) return 0.7;
         return 0.5;
     },
 
     /**
      * 获取探索随机事件概率倍率
-     * 1-5次100%，之后0%（无随机事件）
+     * v0.99.3: 1-2次100%，3-4次50%，5次后0%
      */
     getExploreEventChance() {
         const count = this.dailyActions?.explore || 0;
-        if (count < 5) return 1.0;
+        if (count < 2) return 1.0;
+        if (count < 4) return 0.5;
         return 0;
     },
 
     /**
+     * 获取探索收益倍率（逛街+酒馆）
+     * v0.99.3新增: 1-2次100%，3-4次70%，5次后50%
+     */
+    getExploreEfficiency() {
+        const count = this.dailyActions?.explore || 0;
+        if (count < 2) return 1.0;
+        if (count < 4) return 0.7;
+        return 0.5;
+    },
+
+    /**
      * 记录一次行动
-     * @param {string} type - cultivate/hunt/explore
+     * @param {string} type - cultivate/study/hunt/explore
      */
     recordAction(type) {
-        if (!this.dailyActions) this.dailyActions = { cultivate: 0, hunt: 0, explore: 0 };
+        if (!this.dailyActions) this.dailyActions = { cultivate: 0, study: 0, hunt: 0, explore: 0 };
         if (this.dailyActions[type] !== undefined) {
             this.dailyActions[type]++;
         }
@@ -1660,18 +1685,19 @@ const Player = {
      * 重置每日行动计数（新的一天开始时调用）
      */
     resetDailyActions() {
-        this.dailyActions = { cultivate: 0, hunt: 0, explore: 0 };
+        this.dailyActions = { cultivate: 0, study: 0, hunt: 0, explore: 0 };
     },
 
     /**
      * 获取今日行动概览（UI显示用）
      */
     getDailyActionsSummary() {
-        const c = this.dailyActions || { cultivate: 0, hunt: 0, explore: 0 };
+        const c = this.dailyActions || { cultivate: 0, study: 0, hunt: 0, explore: 0 };
         return {
-            cultivate: { count: c.cultivate, efficiency: this.getCultivateEfficiency(), maxEfficient: 3 },
-            hunt: { count: c.hunt, efficiency: this.getHuntEfficiency(), maxEfficient: 3 },
-            explore: { count: c.explore, eventChance: this.getExploreEventChance(), maxEvent: 5 }
+            cultivate: { count: c.cultivate, efficiency: this.getCultivateEfficiency(), maxEfficient: 2 },
+            study: { count: c.study, efficiency: this.getStudyEfficiency(), maxEfficient: 1 },
+            hunt: { count: c.hunt, efficiency: this.getHuntEfficiency(), maxEfficient: 2 },
+            explore: { count: c.explore, efficiency: this.getExploreEfficiency(), eventChance: this.getExploreEventChance(), maxEfficient: 2 }
         };
     },
 
@@ -1977,7 +2003,7 @@ const Player = {
             this.maxStamina = data.maxStamina ?? 100;
             this.stamina = data.stamina ?? this.maxStamina;
             // v0.99.0: 每日行动次数（替代体力系统）
-            this.dailyActions = data.dailyActions || { cultivate: 0, hunt: 0, explore: 0 };
+            this.dailyActions = data.dailyActions || { cultivate: 0, study: 0, hunt: 0, explore: 0 };
             this.elements = data.elements ?? [];
             this.elementLevels = data.elementLevels ?? {};
             this.elementExp = data.elementExp ?? {};
