@@ -6278,6 +6278,7 @@ const DataCharacters = {
           texts: ["你是八班的？", "找我有什么事？"],
           choices: [
             { text: "听说你雷系很强？", next: "about_thunder" },
+            { text: "来切磋一下？", next: "default", action: "start_quest", actionData: { questId: "quest_xuzhaoting_thunder_duel" } },
             { text: "年度考核加油。", next: "default", action: "back" }
           ]
         },
@@ -6352,6 +6353,7 @@ const DataCharacters = {
           choices: [
             { text: "最近城里有什么新鲜事吗？", next: "about_gossip" },
             { text: "心夏还好吗？", next: "about_xinxia" },
+            { text: "需要我帮忙送物资吗？", next: "default", action: "start_quest", actionData: { questId: "quest_moqing_deliver_supplies" } },
             { text: "我先走了。", next: "default", action: "back" }
           ]
         },
@@ -6432,7 +6434,8 @@ const DataCharacters = {
           texts: ["你谁啊？", "找我有事？没事别挡道。"],
           choices: [
             { text: "听说你在这一片很罩得住？", next: "about_power" },
-            { text: "离叶心夏远点。", next: "warn" }
+            { text: "离叶心夏远点。", next: "warn" },
+            { text: "再骚扰她我就不客气了", next: "default", action: "start_quest", actionData: { questId: "quest_xubing_teach_lesson" } }
           ]
         },
         about_power: {
@@ -7020,6 +7023,7 @@ const DataCharacters = {
             { text: "召唤系是什么？", next: "about_summon" },
             { text: "幽狼兽厉害吗？", next: "about_wolf" },
             { text: "历练的事...", next: "about_training" },
+            { text: "能指导我召唤系吗？", next: "default", action: "start_quest", actionData: { questId: "quest_baiyang_summon_guide" } },
             { text: "告辞。", next: "default", action: "back" }
           ]
         },
@@ -7504,6 +7508,7 @@ const DataCharacters = {
           choices: [
             { text: "请教中阶魔法", next: "about_mid_magic", action: "talk" },
             { text: "询问魔法协会", next: "about_association", action: "talk" },
+            { text: "能给我布置修炼任务吗？", next: "default", action: "start_quest", actionData: { questId: "quest_yangzuohe_mid_guidance" } },
             { text: "告辞", next: "default", action: "back" }
           ]
         },
@@ -7759,6 +7764,7 @@ const DataCharacters = {
           choices: [
             { text: "地圣泉有多神奇？", next: "about_spring", action: "talk" },
             { text: "这里安全吗？", next: "about_security", action: "talk" },
+            { text: "需要我帮忙守护地圣泉吗？", next: "default", action: "start_quest", actionData: { questId: "quest_liangbin_spring_guard" } },
             { text: "告辞", next: "default", action: "back" }
           ]
         },
@@ -7811,6 +7817,7 @@ const DataCharacters = {
           choices: [
             { text: "你在调查什么？", next: "about_investigation", action: "talk" },
             { text: "听说你妹妹失踪了", next: "about_sister", action: "talk" },
+            { text: "我可以帮忙调查", next: "default", action: "start_quest", actionData: { questId: "quest_linyuxin_sister_missing" } },
             { text: "告辞", next: "default", action: "back" }
           ]
         },
@@ -7863,6 +7870,7 @@ const DataCharacters = {
           choices: [
             { text: "北面情况怎么样？", next: "about_north", action: "talk" },
             { text: "蓝色警戒是什么？", next: "about_alert", action: "talk" },
+            { text: "需要我帮忙巡逻吗？", next: "default", action: "start_quest", actionData: { questId: "quest_wanduanfeng_north_patrol" } },
             { text: "告辞", next: "default", action: "back" }
           ]
         },
@@ -7972,6 +7980,7 @@ const DataCharacters = {
           choices: [
             { text: "请教修炼心得", next: "about_training", action: "talk" },
             { text: "问问学校的情况", next: "about_school", action: "talk" },
+            { text: "学校有委托任务吗？", next: "default", action: "start_quest", actionData: { questId: "quest_zhuprincipal_school_quest" } },
             { text: "告辞", next: "default", action: "back" }
           ]
         },

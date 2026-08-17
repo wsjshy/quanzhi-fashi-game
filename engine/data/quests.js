@@ -3350,6 +3350,127 @@ const DataQuests = {
     rewards: { exp: 150, gold: 100, setFlag: "equipment_prepared" }
   },
 
+  quest_baiyang_summon_guide: {
+    id: "quest_baiyang_summon_guide",
+    name: "召唤系指导",
+    description: "白杨老师愿意指导你了解召唤系的奥秘。",
+    giver: "bai_yang",
+    type: "guidance",
+    objectives: [
+      { type: "cultivate", count: 2, description: "修炼2次感悟元素" },
+      { type: "talk", npcId: "bai_yang", count: 1, description: "向白杨老师请教召唤系" }
+    ],
+    rewards: { exp: 150, gold: 80, setFlag: "summon_guided" }
+  },
+
+  quest_linyuxin_sister_missing: {
+    id: "quest_linyuxin_sister_missing",
+    name: "妹妹失踪调查",
+    description: "林雨欣的妹妹失踪了，她怀疑与地圣泉附近的异常有关。",
+    giver: "lin_yuxin",
+    type: "investigation",
+    objectives: [
+      { type: "reach", locationId: "earth_holy_spring", count: 1, description: "在地圣泉附近调查" },
+      { type: "kill", count: 2, description: "击败2只可疑妖魔寻找线索" },
+      { type: "talk", npcId: "lin_yuxin", count: 1, description: "向林雨欣汇报调查结果" }
+    ],
+    rewards: { exp: 200, gold: 150, setFlag: "sister_case_investigated" }
+  },
+
+  quest_wanduanfeng_north_patrol: {
+    id: "quest_wanduanfeng_north_patrol",
+    name: "北面关卡巡逻",
+    description: "万断峰镇守北面关卡，最近雨下得奇怪，需要人帮忙巡逻。",
+    giver: "wan_duanfeng",
+    type: "patrol",
+    objectives: [
+      { type: "reach", locationId: "snow_peak_mountain", count: 1, description: "前往北面关卡巡逻" },
+      { type: "kill", count: 2, description: "击败2只妖魔确保关卡安全" },
+      { type: "talk", npcId: "wan_duanfeng", count: 1, description: "向万断峰汇报巡逻结果" }
+    ],
+    rewards: { exp: 180, gold: 120, setFlag: "north_patrol_done" }
+  },
+
+  quest_xuzhaoting_thunder_duel: {
+    id: "quest_xuzhaoting_thunder_duel",
+    name: "雷系切磋",
+    description: "许昭霆是八班雷系尖子生，愿意和你切磋交流。",
+    giver: "xu_zhaoting",
+    type: "challenge",
+    objectives: [
+      { type: "kill", count: 1, description: "击败1只妖魔展示雷系实力" },
+      { type: "talk", npcId: "xu_zhaoting", count: 1, description: "与许昭霆交流雷系心得" }
+    ],
+    rewards: { exp: 150, gold: 80, setFlag: "thunder_duel_done" }
+  },
+
+  quest_xubing_teach_lesson: {
+    id: "quest_xubing_teach_lesson",
+    name: "教训地痞",
+    description: "徐兵一直在骚扰叶心夏，你决定给他一个教训。",
+    giver: "xu_bing",
+    type: "conflict",
+    objectives: [
+      { type: "kill", count: 1, description: "击败1只妖魔证明实力" },
+      { type: "talk", npcId: "xu_bing", count: 1, description: "警告徐兵离叶心夏远点" }
+    ],
+    rewards: { exp: 150, gold: 50, setFlag: "xubing_warned" }
+  },
+
+  quest_moqing_deliver_supplies: {
+    id: "quest_moqing_deliver_supplies",
+    name: "帮忙送物资",
+    description: "莫青担心去山里送物资的丈夫，希望你帮忙确认安全。",
+    giver: "mo_qing",
+    type: "errand",
+    objectives: [
+      { type: "reach", locationId: "snow_peak_mountain", count: 1, description: "前往雪峰山确认物资送达" },
+      { type: "talk", npcId: "mo_qing", count: 1, description: "向莫青汇报安全情况" }
+    ],
+    rewards: { exp: 120, gold: 80, setFlag: "supplies_delivered" }
+  },
+
+  quest_liangbin_spring_guard: {
+    id: "quest_liangbin_spring_guard",
+    name: "地圣泉守护",
+    description: "梁斌负责看守地圣泉，希望你帮忙加强安全。",
+    giver: "liang_bin",
+    type: "guard",
+    objectives: [
+      { type: "reach", locationId: "earth_holy_spring", count: 1, description: "在地圣泉巡逻" },
+      { type: "kill", count: 1, description: "击败1只靠近地圣泉的妖魔" },
+      { type: "talk", npcId: "liang_bin", count: 1, description: "向梁斌汇报安全情况" }
+    ],
+    rewards: { exp: 150, gold: 100, setFlag: "spring_guarded" }
+  },
+
+  quest_yangzuohe_mid_guidance: {
+    id: "quest_yangzuohe_mid_guidance",
+    name: "中阶魔法指导",
+    description: "杨作河认可你的雷系天赋，愿意指导你中阶魔法。",
+    giver: "yang_zuohe",
+    type: "guidance",
+    objectives: [
+      { type: "cultivate", count: 3, description: "修炼3次提升雷系" },
+      { type: "talk", npcId: "yang_zuohe", count: 1, description: "向杨作河请教中阶魔法" }
+    ],
+    rewards: { exp: 180, gold: 100, setFlag: "mid_magic_guided" }
+  },
+
+  quest_zhuprincipal_school_quest: {
+    id: "quest_zhuprincipal_school_quest",
+    name: "学校委托",
+    description: "朱校长给你布置了一个学校委托任务。",
+    giver: "zhu_principal",
+    type: "school",
+    objectives: [
+      { type: "cultivate", count: 2, description: "修炼2次完成学校要求" },
+      { type: "kill", count: 1, description: "击败1只妖魔完成实践课" },
+      { type: "talk", npcId: "zhu_principal", count: 1, description: "向朱校长汇报任务完成" }
+    ],
+    rewards: { exp: 180, gold: 120, setFlag: "school_quest_done" }
+  },
+
   // ========== v0.67.0 博城灾难第二阶段任务 ==========
 
   bocheng_prep_quest: {
