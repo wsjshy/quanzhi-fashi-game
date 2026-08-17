@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v0.98.2 · 有意义对话改造</div>
+                ">v0.98.9 · 有意义对话改造</div>
             </div>
         `;
 

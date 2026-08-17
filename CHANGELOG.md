@@ -2,27 +2,48 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v0.98.9 - 灵灵对话触发任务
+- 新增 quest_lingling_black_church（黑教廷追踪）：灵灵邀请参与黑教廷调查
+- 灵灵'hunt_info'节点新增'追踪黑教廷的任务？我接了！'触发任务
+- 与穆贺的黑教廷线索任务形成呼应，从不同角度切入黑教廷剧情
+
+## v0.98.8 - 周敏+王三胖对话触发任务
+- 新增 quest_zhoumin_contest（火系修炼比拼）：周敏看不起你，用行动证明
+- 新增 quest_wangsanpang_expedition（雪峰山历练）：王三胖想跟着你一起历练
+- 周敏'prove'节点、王三胖'brave'节点添加任务触发
+
+## v0.98.7 - 穆贺对话触发任务（黑教廷线索）
+- 新增 quest_muhe_black_church（黑教廷线索）：怀疑穆贺与黑教廷勾结，暗中调查
+- 穆贺'mu_he_stranger'节点（被质问与灰衣人关系后）新增'我会调查清楚的'触发任务
+- 最有剧情深度的任务触发，直接铺垫博城灾难核心剧情
+
+## v0.98.6 - 肥石+黎文杰对话触发任务（猎妖队全员完成）
+- 新增 quest_feishi_training（力量训练）、quest_liwenjie_scout（侦察任务）
+- 猎妖队5人全部有了对话触发的专属任务
+
+## v0.98.5 - 叶心夏对话扩充+任务触发
+- 叶心夏对话从3节点扩充到5节点（新增研究药剂/帮忙采集草药）
+- 新增 quest_yexinxia_herbs（心夏的请求）：帮心夏采集草药研究药剂
+
+## v0.98.4 - 唐月+穆宁雪对话触发任务
+- 新增 quest_tangyue_mountain_investigation（雪峰山异动调查）
+- 新增 quest_muningxue_ice_training（冰系特训）
+- 发现已有 effects.startQuest 机制（莫凡在用），与新增的 action 机制并行
+
+## v0.98.3 - 文档同步
+- TODO/CHANGELOG/AGENTS/ui版本号同步到v0.98.2
+
 ## v0.98.2 - 斩空+宇昂对话触发任务
-- 新增 quest_zhankong_discipline（军纪考验）：斩空委托证明纪律性
-- 新增 quest_yu_ang_proof（实力证明）：宇昂看不起你，用行动让他闭嘴
-- 斩空'纪律辩论'节点新增'我想证明给你看'触发任务
-- 宇昂'反驳傲慢'节点新增'那我就证明给你看'触发任务
-- 博城篇5关键NPC（徐大荒/郭彩棠/小可/斩空/宇昂）全部完成有意义对话改造
+- 新增 quest_zhankong_discipline（军纪考验）、quest_yu_ang_proof（实力证明）
+- 博城篇5关键NPC全部完成有意义对话改造
 
 ## v0.98.1 - 郭彩棠+小可对话触发任务
-- 新增 quest_guo_caitang_mu_clues（穆氏暗流）：调查穆氏在博城的秘密布局
-- 新增 quest_xiao_ke_practice（防御练习）：陪小可练习水系防御
-- 郭彩棠'被救往事-队友'节点新增任务触发
-- 小可'陪练'节点改为触发任务+改天再说返回
+- 新增 quest_guo_caitang_mu_clues（穆氏暗流）、quest_xiao_ke_practice（防御练习）
 
 ## v0.98.0 - 对话触发任务机制+有意义对话标准
-- dialogue-tree.js新增 start_quest action类型，对话可触发任务接取
-- 新增 quest_xu_dahuang_investigation（城外异动调查）：徐大荒委托调查妖魔异常
-- 徐大荒'灾难担忧'节点新增'我可以帮忙调查吗？'触发任务
+- dialogue-tree.js新增 start_quest action类型
+- 新增 quest_xu_dahuang_investigation（城外异动调查）
 - docs/NPC性格与AI设计.md新增第十一章'有意义对话设计标准'
-  - 4层意义：L1触发任务/L2揭示伏笔/L3影响关系网/L4解锁内容
-  - 最低标准：每个NPC至少1个选项达L1或L2
-  - 存量问题：47NPC中31个只有数值变化，1个完全无影响
 
 ## v0.97.3 - 小可对话深度扩充
 - 小可对话从3节点扩充到9节点
