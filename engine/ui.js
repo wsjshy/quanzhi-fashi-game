@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.1.0 · 萧院长对话深化</div>
+                ">v1.1.1 · 游戏节奏微调</div>
             </div>
         `;
 

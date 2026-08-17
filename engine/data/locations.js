@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 地点数据
  * 从 game-data.js 拆分而来
  */
@@ -20,7 +20,7 @@ const DataLocations = {
           subject: "magic_theory",
           name: "魔法理论",
           teacher: "xue_musheng",
-          exp: 25,
+          exp: 30,
           mpCost: 5
         },
         "2": {
@@ -41,7 +41,7 @@ const DataLocations = {
           subject: "magic_theory",
           name: "魔法理论",
           teacher: "xue_musheng",
-          exp: 25,
+          exp: 30,
           mpCost: 5
         },
         "5": {
@@ -106,7 +106,7 @@ const DataLocations = {
         timeCost: 4,
         staminaCost: 20,
         effects: {
-          exp: 25,
+          exp: 30,
           mp: -5
         },
         eventChance: 0.3,
@@ -130,7 +130,7 @@ const DataLocations = {
         timeCost: 1,
         staminaCost: 15,
         effects: {
-          exp: 25,
+          exp: 30,
           hp: -5,
           mp: -10
         },
@@ -693,7 +693,7 @@ const DataLocations = {
         icon: "⚔️",
         timeCost: 2,
         staminaCost: 20,
-        effects: { exp: 25 },
+        effects: { exp: 30 },
         eventChance: 0.6,
         events: ["event_duel_practice", "event_duel_yu_ang"]
       },
@@ -953,7 +953,7 @@ const DataLocations = {
         timeCost: 2,
         staminaCost: 15,
         effects: {
-          exp: 25
+          exp: 30
         },
         eventChance: 0.6,
         events: ["event_cave_explore", "event_wolf_beast_battle", "event_stalactite_tactics"]
@@ -1034,7 +1034,7 @@ const DataLocations = {
         icon: "🍽️",
         timeCost: 2,
         staminaCost: 15,
-        effects: { exp: 25 },
+        effects: { exp: 30 },
         eventChance: 0.6,
         events: ["event_cafeteria_investigate", "event_giant_eye_rat_encounter"]
       },
