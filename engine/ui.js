@@ -716,7 +716,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.1.2 · 章节系统修复</div>
+                ">v1.1.3 · 装备系统修复</div>
             </div>
         `;
 

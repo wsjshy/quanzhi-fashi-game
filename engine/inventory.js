@@ -400,12 +400,26 @@ const Inventory = {
         const item = this.getItem(itemId);
         if (!item) return { success: false, message: '物品不存在' };
 
-        if (item.type !== 'weapon' && item.type !== 'armor' && item.type !== 'accessory') {
-            return { success: false, message: '此物品不能装备' };
+        // 支持两种装备格式：type=weapon/armor/accessory 或 type=equipment+slot
+        const validTypes = ['weapon', 'armor', 'accessory', 'equipment'];
+        if (!validTypes.includes(item.type)) {
+            return { success: false, message: `「${item.name}」不是可装备物品（类型：${item.type}）` };
         }
 
-        const slot = item.equipSlot;
-        if (!slot) return { success: false, message: '装备槽位错误' };
+        // 装备槽位：优先equipSlot，其次slot
+        const slot = item.equipSlot || item.slot;
+        if (!slot) return { success: false, message: `「${item.name}」装备槽位配置错误` };
+
+        // 等级限制检查
+        if (item.requireLevel && Player.level < item.requireLevel) {
+            return { success: false, message: `「${item.name}」需要等级 ${item.requireLevel}，当前等级 ${Player.level}` };
+        }
+
+        // 系别限制检查
+        if (item.requireElement && !Player.elements?.includes(item.requireElement)) {
+            const elemNames = { fire: '火', ice: '冰', thunder: '雷', earth: '土', wind: '风', water: '水', light: '光', dark: '暗', heal: '治愈', plant: '植物', summon: '召唤' };
+            return { success: false, message: `「${item.name}」需要${elemNames[item.requireElement] || item.requireElement}系法师才能装备` };
+        }
 
         // 卸下旧装备
         const oldItemId = Player.equipment[slot];
