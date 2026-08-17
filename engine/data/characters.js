@@ -7244,6 +7244,9 @@ const DataCharacters = {
           choices: [
             { text: "请教水系防御", next: "about_water" },
             { text: "别紧张，你很棒", next: "encourage" },
+            { text: "为什么加入猎妖队？", next: "about_why_join" },
+            { text: "战斗中紧张怎么办？", next: "about_nervous" },
+            { text: "队伍里大家怎么样？", next: "about_team" },
             { text: "告辞", next: "default", action: "back" }
           ]
         },
@@ -7251,13 +7254,54 @@ const DataCharacters = {
           id: "about_water",
           texts: ["水御·化解可以分解魔法攻击。", "但需要提前准备星轨，反应要快。", "我总是慢半拍，队长骂过我好多次。"],
           effects: { familiarity: 5, intelligence: 8 },
-          choices: [{ text: "多练习就好", next: "default", action: "back" }]
+          choices: [
+            { text: "多练习就好", next: "default", action: "back" },
+            { text: "我可以陪你练习", next: "about_practice" }
+          ]
         },
         encourage: {
           id: "encourage",
           texts: ["真、真的吗？", "谢谢你，梵墨哥哥！", "我会更加努力的！"],
           effects: { familiarity: 8, happiness: 10 },
           choices: [{ text: "加油", next: "default", action: "back" }]
+        },
+        about_why_join: {
+          id: "about_why_join",
+          texts: ["我...我小时候被妖魔袭击过，是猎妖队救了我。", "从那以后，我就想成为能保护别人的人。", "虽然我很弱，但我想努力变强。"],
+          effects: { opinion: 5, trust: 3 },
+          choices: [{ text: "你很勇敢", next: "default", action: "back" }]
+        },
+        about_nervous: {
+          id: "about_nervous",
+          texts: ["（小可低下头）每次遇到妖魔，我的手都会抖。", "队长说我不适合当猎妖师，但我不想放弃。", "彩棠姐说，紧张说明你在乎，不在乎的人才不会紧张。"],
+          choices: [
+            { text: "紧张是正常的", next: "about_nervous_response" },
+            { text: "那为什么还要坚持？", next: "about_why_persist" }
+          ]
+        },
+        about_nervous_response: {
+          id: "about_nervous_response",
+          texts: ["（小可抬起头，眼睛亮亮的）真、真的吗？", "梵墨哥哥也会紧张吗？", "那我就放心了...我以为只有我这样。"],
+          effects: { opinion: 5, trust: 5, happiness: 10 },
+          choices: [{ text: "当然，每个人都会紧张", next: "default", action: "back" }]
+        },
+        about_why_persist: {
+          id: "about_why_persist",
+          texts: ["因为...因为我想保护大家。", "队长、彩棠姐、肥石哥、文杰哥，他们都是我的家人。", "我不想再看到有人因为我不够强而受伤。"],
+          effects: { opinion: 3, trust: 5 },
+          choices: [{ text: "你一定可以的", next: "default", action: "back" }]
+        },
+        about_team: {
+          id: "about_team",
+          texts: ["队长虽然凶，但人很好。", "彩棠姐看起来高冷，其实很关心我们。", "肥石哥憨憨的，但是很可靠。文杰哥很帅！"],
+          effects: { familiarity: 3 },
+          choices: [{ text: "你们关系真好", next: "default", action: "back" }]
+        },
+        about_practice: {
+          id: "about_practice",
+          texts: ["（小可的脸红红的）真、真的吗？", "那...那我们什么时候练习？", "谢谢你，梵墨哥哥！你是第一个愿意陪我练习的人。"],
+          effects: { opinion: 8, trust: 5, happiness: 15 },
+          choices: [{ text: "随时都可以", next: "default", action: "back" }]
         }
       }
     }
