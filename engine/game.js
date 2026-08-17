@@ -4268,19 +4268,33 @@ const Game = {
             const rarityConfig = TalentSystem.getRarityConfig(talent.rarity);
             const typeName = talent.type === 'innate' ? '【先天·出生即终极】' : '【成长·可进化】';
 
-            // 构建进化路线预览
+            // 构建进化路线预览（模糊化：告知有进化潜力，但隐藏具体分支和高等级效果）
             let evolutionPreview = '';
             if (talent.evolutions && talent.evolutions.length > 0) {
                 const stageColors = { '觉醒': '#88ccff', '特性': '#44ff88', '进化': '#ffaa44', '延伸': '#cc88ff', '终极': '#ff66ff' };
                 evolutionPreview = '<div style="margin-top:8px;font-size:11px;color:#888;">';
                 if (talent.type === 'innate') {
+                    // 先天型：显示终极阶段名称，效果模糊
                     const evo = talent.evolutions[0];
-                    evolutionPreview += `<div style="color:${stageColors['终极']||'#ff66ff'};margin-bottom:2px;">★ ${evo.name}：${evo.description}</div>`;
+                    evolutionPreview += `<div style="color:${stageColors['终极']||'#ff66ff'};margin-bottom:2px;">★ ${evo.name}：<span style="color:#999;">出生即巅峰，效果随等级成长</span></div>`;
                 } else {
-                    evolutionPreview += '<div style="color:#666;margin-bottom:3px;">进化路线：</div>';
+                    // 成长型：只显示Lv1基础阶段，高等级模糊化
+                    evolutionPreview += '<div style="color:#666;margin-bottom:3px;">进化潜力：</div>';
+                    let shownBase = false;
                     for (const evo of talent.evolutions) {
                         const color = stageColors[evo.stage] || '#aaa';
-                        evolutionPreview += `<div style="color:${color};margin-bottom:2px;">&nbsp;Lv${evo.level}【${evo.stage}】${evo.name}：<span style="color:#999;font-size:10px;">${evo.description}</span></div>`;
+                        if (evo.level <= 3 && !shownBase) {
+                            // Lv1-3基础阶段：显示名称和描述
+                            evolutionPreview += `<div style="color:${color};margin-bottom:2px;">&nbsp;Lv${evo.level}【${evo.stage}】${evo.name}：<span style="color:#999;font-size:10px;">${evo.description}</span></div>`;
+                            shownBase = true;
+                        } else if (evo.level === 5 && evo.branchChoices) {
+                            // Lv5分支选择：模糊化，不显示具体分支
+                            evolutionPreview += `<div style="color:#ffaa44;margin-bottom:2px;">&nbsp;Lv5【进化抉择】<span style="color:#999;font-size:10px;">天赋将出现分化，路线需自行探索</span></div>`;
+                        } else if (evo.level >= 7) {
+                            // Lv7+：模糊化，只提示有高阶进化
+                            evolutionPreview += `<div style="color:#cc88ff;margin-bottom:2px;">&nbsp;Lv${evo.level}+【高阶进化】<span style="color:#999;font-size:10px;">能力大幅提升，具体效果待解锁</span></div>`;
+                            break; // 只显示一个高阶提示即可
+                        }
                     }
                 }
                 evolutionPreview += '</div>';
