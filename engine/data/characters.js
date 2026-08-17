@@ -7171,7 +7171,10 @@ const DataCharacters = {
           id: "about_rescue_teammate",
           texts: ["（郭彩棠愣了一下，眼神柔和了几分）", "队友...吗。", "哼，算你会说话。"],
           effects: { opinion: 3, trust: 2 },
-          choices: [{ text: "（微笑）", next: "default", action: "back" }]
+          choices: [
+            { text: "穆氏的事...需要我帮忙调查吗？", next: "default", action: "start_quest", actionData: { questId: "quest_guo_caitang_mu_clues" } },
+            { text: "（微笑）", next: "default", action: "back" }
+          ]
         },
         about_rescue_tease: {
           id: "about_rescue_tease",
@@ -7302,7 +7305,10 @@ const DataCharacters = {
           id: "about_practice",
           texts: ["（小可的脸红红的）真、真的吗？", "那...那我们什么时候练习？", "谢谢你，梵墨哥哥！你是第一个愿意陪我练习的人。"],
           effects: { opinion: 8, trust: 5, happiness: 15 },
-          choices: [{ text: "随时都可以", next: "default", action: "back" }]
+          choices: [
+            { text: "现在就开始吧", next: "default", action: "start_quest", actionData: { questId: "quest_xiao_ke_practice" } },
+            { text: "改天再说", next: "default", action: "back" }
+          ]
         }
       }
     }

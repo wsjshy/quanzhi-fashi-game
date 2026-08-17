@@ -3105,6 +3105,33 @@ const DataQuests = {
     rewards: { exp: 200, gold: 150, setFlag: "investigated_outside" }
   },
 
+  quest_guo_caitang_mu_clues: {
+    id: "quest_guo_caitang_mu_clues",
+    name: "穆氏暗流",
+    description: "郭彩棠透露穆氏在博城有秘密布局，委托你留意相关线索。",
+    giver: "guo_caitang",
+    type: "investigation",
+    objectives: [
+      { type: "talk", npcId: "mu_bai", count: 1, description: "与穆白对话了解情况" },
+      { type: "talk", npcId: "yu_ang", count: 1, description: "与宇昂对话打探消息" },
+      { type: "reach", locationId: "bo_city_street", count: 1, description: "在博城市街观察" }
+    ],
+    rewards: { exp: 200, gold: 150, setFlag: "mu_clues_found" }
+  },
+
+  quest_xiao_ke_practice: {
+    id: "quest_xiao_ke_practice",
+    name: "防御练习",
+    description: "小可希望你陪她练习实战，提升水系防御的应变能力。",
+    giver: "xiao_ke",
+    type: "practice",
+    objectives: [
+      { type: "kill", count: 3, description: "陪小可击败3只妖魔练习" },
+      { type: "talk", npcId: "xiao_ke", count: 1, description: "练习后与小可交流心得" }
+    ],
+    rewards: { exp: 180, gold: 120, setFlag: "practiced_defense" }
+  },
+
   // ========== v0.67.0 博城灾难第二阶段任务 ==========
 
   bocheng_prep_quest: {
