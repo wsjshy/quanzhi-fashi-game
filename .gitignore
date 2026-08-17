@@ -15,6 +15,9 @@ desktop.ini
 *.log
 *.bak
 
+# 小说原文（不入库，版权/体积）
+全职法师.txt
+
 # 测试文件
 test*.html
 test*.js
