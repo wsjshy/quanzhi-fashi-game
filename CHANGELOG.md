@@ -2,6 +2,26 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v1.5.1 - 天赋战斗效果实装（火系+通用）
+
+### 通用基础效果
+- **天赋基础属性应用到getTotalStats**：hpBonus/mpBonus/maxHpBonus/attackBonus/defenseBonus/speedBonus/critRate/dodgeRate现在影响角色面板属性
+- **元素穿透**：确认已实现（firePenetration/icePenetration等，在calculateDamage中处理）
+- **元素免疫**：确认已实现（fireImmunity/iceImmunity等，在applyDamage中处理）
+
+### 火系分支效果实装
+- **burnDamageBonus**：燃烧伤害加成（熔岩流）
+- **burnCrit**：燃烧伤害可暴击（熔岩流终极）
+- **burnTrueDamage**：燃烧变为真实伤害，忽略防御和减伤（熔岩流）
+- **burnDuration**：燃烧持续时间增加（熔岩流）
+- **burnExplodeRefresh**：爆炸后刷新燃烧层数和持续时间（爆燃流）
+- **explodeBonus**：爆炸伤害加成（爆燃流）
+- **explodeCrit**：爆炸必定暴击（爆燃流终极）
+
+### 引擎扩展
+- applyDamage新增trueDamage快速通道：真实伤害跳过所有减伤直接扣血
+- 天赋效果实现状态文档：docs/version-design/v1.5.1_天赋战斗效果实装规划.md
+
 ## v1.5.0 - 天赋分支选择UI实装
 
 ### 天赋分支选择系统

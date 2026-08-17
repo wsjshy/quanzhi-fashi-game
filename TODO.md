@@ -1,12 +1,32 @@
 # TODO - 全职法师游戏
 
-> 当前版本：v1.5.0（天赋分支选择UI实装） | 下一版本：**v1.5.1 战斗天赋效果验证+体验优化** | 最后更新：2026-08-18
+> 当前版本：v1.5.1（天赋战斗效果实装-火系+通用） | 下一版本：**v1.5.2 冰系/雷系/水系分支效果实装** | 最后更新：2026-08-18
 > 状态说明：[ ]待做 [~]进行中 [x]完成 [❌]已废弃
 > 唯一入口：[AGENTS.md](AGENTS.md)
 
 ---
 
 ## P0 - 当前开发
+
+### v1.5.1 天赋战斗效果实装（火系+通用）（2026-08-18，已完成）
+
+**通用基础效果**：
+- [x] 天赋基础属性应用到getTotalStats（hpBonus/mpBonus/maxHpBonus/attackBonus等）
+- [x] 元素穿透确认已实现（calculateDamage中处理）
+- [x] 元素免疫确认已实现（applyDamage中处理）
+
+**火系分支效果**：
+- [x] burnDamageBonus 燃烧伤害加成
+- [x] burnCrit 燃烧可暴击
+- [x] burnTrueDamage 燃烧真实伤害
+- [x] burnDuration 燃烧持续时间+
+- [x] burnExplodeRefresh 爆炸后刷新燃烧
+- [x] explodeBonus 爆炸伤害加成
+- [x] explodeCrit 爆炸必定暴击
+
+**引擎扩展**：
+- [x] applyDamage新增trueDamage快速通道
+- [x] 天赋效果实现状态文档
 
 ### v1.5.0 天赋分支选择UI实装（2026-08-18，已完成）
 

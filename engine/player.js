@@ -338,6 +338,20 @@ const Player = {
             stats.maxHp = Math.floor(stats.maxHp * 1.05);
             stats.maxMp = Math.floor(stats.maxMp * 1.05);
         }
+        
+        // v1.5.1: 天赋基础属性效果（hpBonus/mpBonus/maxHpBonus等）
+        if (typeof TalentSystem !== 'undefined' && this.talents) {
+            const allTalentEffects = TalentSystem.getAllTalentEffects(this.talents);
+            if (allTalentEffects.hpBonus) stats.maxHp = Math.floor(stats.maxHp * (1 + allTalentEffects.hpBonus));
+            if (allTalentEffects.mpBonus) stats.maxMp = Math.floor(stats.maxMp * (1 + allTalentEffects.mpBonus));
+            if (allTalentEffects.maxHpBonus) stats.maxHp = Math.floor(stats.maxHp * (1 + allTalentEffects.maxHpBonus));
+            if (allTalentEffects.maxMpBonus) stats.maxMp = Math.floor(stats.maxMp * (1 + allTalentEffects.maxMpBonus));
+            if (allTalentEffects.attackBonus) stats.attack = Math.floor(stats.attack * (1 + allTalentEffects.attackBonus));
+            if (allTalentEffects.defenseBonus) stats.defense = Math.floor(stats.defense * (1 + allTalentEffects.defenseBonus));
+            if (allTalentEffects.speedBonus) stats.speed = Math.floor(stats.speed * (1 + allTalentEffects.speedBonus));
+            if (allTalentEffects.critRate) stats.critRate += allTalentEffects.critRate;
+            if (allTalentEffects.dodgeRate || allTalentEffects.dodgeBonus) stats.dodgeRate = (stats.dodgeRate || 0) + (allTalentEffects.dodgeRate || allTalentEffects.dodgeBonus || 0);
+        }
 
         return stats;
     },

@@ -1318,8 +1318,10 @@ const BattleSystem = {
             // 燃烧
             if (te.burnChance && Math.random() < te.burnChance) {
                 const burnDmg = te.burnDamage || 0.05;
+                // v1.5.1: 燃烧持续时间加成（熔岩流）
+                const burnDuration = 3 + (te.burnDuration || 0);
                 this.applyStatusEffects(this.enemy, [{
-                    type: 'burn', name: '燃烧', damage: burnDmg, duration: 3,
+                    type: 'burn', name: '燃烧', damage: burnDmg, duration: burnDuration,
                     unpurgeable: te.burnUnpurgeable || false,
                     defenseDown: te.burnDefenseDown || 0
                 }], true);
@@ -5000,6 +5002,15 @@ const BattleSystem = {
         let amount = damage.amount;
         const te = this.player.talentEffects;
 
+        // v1.5.1: 真实伤害快速通道 - 跳过所有减伤，直接扣血（燃烧真实伤害等）
+        if (damage.trueDamage) {
+            target.hp = Math.max(0, target.hp - amount);
+            if (amount > 0) {
+                this.showDamageNumber(target === this.player ? 'player' : 'enemy', amount, damage.isCrit ? 'crit' : 'normal');
+            }
+            return;
+        }
+
         // 玩家天赋伤害减免
         if (target === this.player && target.damageReduction) {
             amount = Math.floor(amount * (1 - target.damageReduction));
@@ -6129,20 +6140,44 @@ const BattleSystem = {
                 if (!isPlayer && this.player.talentEffects && this.player.talentEffects.windDotBonus) {
                     dotAmount = Math.floor(dotAmount * (1 + this.player.talentEffects.windDotBonus));
                 }
-                const damage = { amount: dotAmount, isCrit: false, isMiss: false, element: effect.type === 'burn' ? 'fire' : null };
+                // v1.5.1: 火系分支效果 - 燃烧伤害加成
+                let burnIsCrit = false;
+                if (!isPlayer && this.player.talentEffects && effect.type === 'burn') {
+                    const te = this.player.talentEffects;
+                    if (te.burnDamageBonus) {
+                        dotAmount = Math.floor(dotAmount * (1 + te.burnDamageBonus));
+                    }
+                    // 燃烧可暴击
+                    if (te.burnCrit && Math.random() < (this.player.critRate || 0.05)) {
+                        dotAmount = Math.floor(dotAmount * 1.5);
+                        burnIsCrit = true;
+                    }
+                }
+                const burnTrueDamage = !isPlayer && this.player.talentEffects?.burnTrueDamage && effect.type === 'burn';
+                const damage = { amount: dotAmount, isCrit: burnIsCrit, isMiss: false, element: effect.type === 'burn' ? 'fire' : null, trueDamage: burnTrueDamage };
                 this.applyDamage(target, damage, null);
-                this.addLog(`${targetName} 受到 ${effect.name} 伤害 ${damage.amount} 点（${stacks}层）`, 'damage');
+                this.addLog(`${targetName} 受到 ${effect.name} 伤害 ${damage.amount} 点（${stacks}层）${burnIsCrit ? ' 暴击！' : ''}`, 'damage');
 
                 // 天赋：燃烧爆炸 - 燃烧层数满时爆炸
                 if (effect.type === 'burn' && !isPlayer && this.player.talentEffects) {
                     const te = this.player.talentEffects;
                     const maxStacks = te.burnStackMax || 3;
                     if (te.burnExplode && stacks >= maxStacks) {
-                        const explodeDmg = Math.floor(this.enemy.maxHp * (te.burnExplodeDamage || 0.15));
-                        this.applyDamage(this.enemy, { amount: explodeDmg, element: 'fire', isCrit: false, isMiss: false }, this.player);
-                        this.addLog(`💥 燃烧爆炸！造成 ${explodeDmg} 点伤害！`, 'element');
-                        this.showDamageNumber('enemy', explodeDmg, 'crit');
-                        effect.stacks = 1; // 重置层数
+                        // v1.5.1: 爆炸伤害加成 + 必定暴击
+                        let explodeDmg = Math.floor(this.enemy.maxHp * (te.burnExplodeDamage || 0.15));
+                        if (te.explodeBonus) explodeDmg = Math.floor(explodeDmg * (1 + te.explodeBonus));
+                        const explodeCrit = te.explodeCrit ? true : false;
+                        if (explodeCrit) explodeDmg = Math.floor(explodeDmg * 1.5);
+                        this.applyDamage(this.enemy, { amount: explodeDmg, element: 'fire', isCrit: explodeCrit, isMiss: false }, this.player);
+                        this.addLog(`💥 燃烧爆炸！造成 ${explodeDmg} 点伤害！${explodeCrit ? ' 暴击！' : ''}`, 'element');
+                        this.showDamageNumber('enemy', explodeDmg, explodeCrit ? 'crit' : 'normal');
+                        // v1.5.1: 爆炸后刷新燃烧（爆燃流）vs 重置层数（默认）
+                        if (te.burnExplodeRefresh) {
+                            effect.stacks = maxStacks; // 刷新到满层
+                            effect.duration = Math.max(effect.duration, 3); // 刷新持续时间
+                        } else {
+                            effect.stacks = 1; // 重置层数
+                        }
                         // 燃烧蔓延
                         if (te.burnSpread) {
                             this.addLog(`🔥 火势蔓延！`, 'element');
