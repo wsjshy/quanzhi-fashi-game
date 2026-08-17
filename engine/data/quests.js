@@ -3201,6 +3201,32 @@ const DataQuests = {
     rewards: { exp: 150, gold: 100, setFlag: "helped_xinxia" }
   },
 
+  quest_feishi_training: {
+    id: "quest_feishi_training",
+    name: "力量训练",
+    description: "肥石觉得你需要增强体魄，邀请你一起进行实战训练。",
+    giver: "fei_shi",
+    type: "training",
+    objectives: [
+      { type: "kill", count: 2, description: "击败2只妖魔训练体魄" },
+      { type: "cultivate", count: 1, description: "修炼1次巩固成果" }
+    ],
+    rewards: { exp: 150, gold: 100, setFlag: "trained_with_feishi" }
+  },
+
+  quest_liwenjie_scout: {
+    id: "quest_liwenjie_scout",
+    name: "侦察任务",
+    description: "黎文杰负责猎妖队侦察，邀请你协助调查城外的妖魔动向。",
+    giver: "li_wenjie",
+    type: "investigation",
+    objectives: [
+      { type: "reach", locationId: "snow_peak_mountain", count: 1, description: "前往雪峰山侦察" },
+      { type: "kill", count: 1, description: "击败1只妖魔获取情报" }
+    ],
+    rewards: { exp: 150, gold: 100, setFlag: "scouted_with_wenjie" }
+  },
+
   // ========== v0.67.0 博城灾难第二阶段任务 ==========
 
   bocheng_prep_quest: {

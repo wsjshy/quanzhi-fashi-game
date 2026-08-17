@@ -7372,6 +7372,7 @@ const DataCharacters = {
           choices: [
             { text: "请教风轨·闪步", next: "about_wind" },
             { text: "你很厉害", next: "compliment" },
+            { text: "有侦察任务需要帮忙吗？", next: "default", action: "start_quest", actionData: { questId: "quest_liwenjie_scout" } },
             { text: "告辞", next: "default", action: "back" }
           ]
         },
@@ -7424,6 +7425,7 @@ const DataCharacters = {
           choices: [
             { text: "请教地波技巧", next: "about_earth" },
             { text: "城市猎妖队的日常", next: "about_daily" },
+            { text: "有任务需要帮忙吗？", next: "default", action: "start_quest", actionData: { questId: "quest_feishi_training" } },
             { text: "告辞", next: "default", action: "back" }
           ]
         },
