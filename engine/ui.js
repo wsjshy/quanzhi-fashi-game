@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.5.1 · 天赋战斗效果实装（火系+通用）</div>
+                ">v1.5.2 · 天赋进化数据补全</div>
             </div>
         `;
 

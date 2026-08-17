@@ -62,6 +62,12 @@ const DataInnateTalents = {
             allElementDamage: 0.15,
             allElementResistance: 0.1
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '元素亲和', effectDesc: '所有元素伤害+15%，元素抗性+10%', effects: { allElementDamage: 0.15, allElementResistance: 0.1 } },
+            { level: 5, stage: '进化', name: '元素共鸣', effectDesc: '所有元素伤害+25%，元素抗性+20%，技能有10%概率不消耗MP', effects: { allElementDamage: 0.25, allElementResistance: 0.2, freeCastChance: 0.1 } },
+            { level: 10, stage: '终极', name: '元素主宰', effectDesc: '所有元素伤害+40%，元素抗性+30%，技能20%概率不消耗MP，每回合随机一个元素伤害翻倍', effects: { allElementDamage: 0.4, allElementResistance: 0.3, freeCastChance: 0.2, randomElementDouble: true } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -77,6 +83,12 @@ const DataInnateTalents = {
             expBonus: 0.3,
             cultivationBonus: 0.3
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '修炼天才', effectDesc: '经验获取+30%，修炼速度+30%', effects: { expBonus: 0.3, cultivationBonus: 0.3 } },
+            { level: 5, stage: '进化', name: '过目不忘', effectDesc: '经验获取+50%，修炼速度+50%，修炼有20%概率顿悟（双倍经验）', effects: { expBonus: 0.5, cultivationBonus: 0.5, enlightenmentChance: 0.2 } },
+            { level: 10, stage: '终极', name: '道法自然', effectDesc: '经验获取+80%，修炼速度+80%，修炼30%概率顿悟，每次升级额外获得1属性点', effects: { expBonus: 0.8, cultivationBonus: 0.8, enlightenmentChance: 0.3, extraStatPoint: true } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -93,6 +105,12 @@ const DataInnateTalents = {
             defenseBonus: 0.15,
             hpRegen: 0.02
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '强健体魄', effectDesc: '最大HP+30%，防御+15%，每回合回复2%HP', effects: { hpBonus: 0.3, defenseBonus: 0.15, hpRegen: 0.02 } },
+            { level: 5, stage: '进化', name: '钢筋铁骨', effectDesc: '最大HP+50%，防御+25%，每回合回复4%HP，受到致命伤害时保留1HP（每场战斗1次）', effects: { hpBonus: 0.5, defenseBonus: 0.25, hpRegen: 0.04, lastStand: true } },
+            { level: 10, stage: '终极', name: '不灭之躯', effectDesc: '最大HP+80%，防御+40%，每回合回复6%HP，濒死时防御翻倍', effects: { hpBonus: 0.8, defenseBonus: 0.4, hpRegen: 0.06, lastStand: true, lowHpDefenseDouble: true } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -109,6 +127,12 @@ const DataInnateTalents = {
             mpRegenBonus: 0.5,
             spiritBonus: 0.2
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '精神强大', effectDesc: '最大MP+30%，MP回复+50%，精神+20%', effects: { mpBonus: 0.3, mpRegenBonus: 0.5, spiritBonus: 0.2 } },
+            { level: 5, stage: '进化', name: '精神海洋', effectDesc: '最大MP+50%，MP回复+80%，精神+35%，技能有10%概率不消耗MP', effects: { mpBonus: 0.5, mpRegenBonus: 0.8, spiritBonus: 0.35, freeCastChance: 0.1 } },
+            { level: 10, stage: '终极', name: '无尽魔海', effectDesc: '最大MP+80%，MP回复+120%，精神+50%，技能20%概率不消耗MP，MP不足时可用HP替代', effects: { mpBonus: 0.8, mpRegenBonus: 1.2, spiritBonus: 0.5, freeCastChance: 0.2, hpAsMp: true } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -124,6 +148,12 @@ const DataInnateTalents = {
             critRate: 0.15,
             critDamage: 0.3
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '致命一击', effectDesc: '暴击率+15%，暴击伤害+30%', effects: { critRate: 0.15, critDamage: 0.3 } },
+            { level: 5, stage: '进化', name: '弱点洞悉', effectDesc: '暴击率+25%，暴击伤害+50%，暴击后下次攻击必暴击', effects: { critRate: 0.25, critDamage: 0.5, critChain: true } },
+            { level: 10, stage: '终极', name: '死神凝视', effectDesc: '暴击率+40%，暴击伤害+80%，暴击有20%概率造成双倍暴击伤害，敌人HP低于30%时必定暴击', effects: { critRate: 0.4, critDamage: 0.8, critChain: true, executeCrit: true } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -139,6 +169,12 @@ const DataInnateTalents = {
             dodgeBonus: 0.15,
             speedBonus: 0.2
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '风之迅捷', effectDesc: '闪避率+15%，速度+20%', effects: { dodgeBonus: 0.15, speedBonus: 0.2 } },
+            { level: 5, stage: '进化', name: '御风而行', effectDesc: '闪避率+25%，速度+35%，闪避后反击造成50%伤害', effects: { dodgeBonus: 0.25, speedBonus: 0.35, dodgeCounter: 0.5 } },
+            { level: 10, stage: '终极', name: '风之化身', effectDesc: '闪避率+40%，速度+60%，闪避后反击造成100%伤害，连续闪避3次后进入无敌1回合', effects: { dodgeBonus: 0.4, speedBonus: 0.6, dodgeCounter: 1.0, dodgeInvincible: true } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -154,6 +190,12 @@ const DataInnateTalents = {
             lifesteal: 0.15,
             killHeal: 0.1
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '吸血本能', effectDesc: '攻击吸血15%，击杀回复10%HP', effects: { lifesteal: 0.15, killHeal: 0.1 } },
+            { level: 5, stage: '进化', name: '血之饥渴', effectDesc: '攻击吸血25%，击杀回复20%HP，HP低于50%时吸血翻倍', effects: { lifesteal: 0.25, killHeal: 0.2, lowHpLifestealDouble: true } },
+            { level: 10, stage: '终极', name: '血魔之体', effectDesc: '攻击吸血40%，击杀回复35%HP，HP低于50%时吸血翻倍，吸血量超过回复时转化为临时护盾', effects: { lifesteal: 0.4, killHeal: 0.35, lowHpLifestealDouble: true, lifestealShield: true } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -171,6 +213,11 @@ const DataInnateTalents = {
             firstStrikeBonus: 0.2,
             mpCostReduction: 0.15
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '快速施法', effectDesc: '先手概率+20%，技能MP消耗-15%', effects: { firstStrikeBonus: 0.2, mpCostReduction: 0.15 } },
+            { level: 7, stage: '进化', name: '瞬发天赋', effectDesc: '先手概率+40%，技能MP消耗-30%，每回合第一个技能引导时间-1', effects: { firstStrikeBonus: 0.4, mpCostReduction: 0.3, firstSkillFast: true } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -186,6 +233,11 @@ const DataInnateTalents = {
             debuffResistance: 0.3,
             controlDurationReduction: 1
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '钢铁意志', effectDesc: '负面状态抗性+30%，被控制时间-1回合', effects: { debuffResistance: 0.3, controlDurationReduction: 1 } },
+            { level: 7, stage: '进化', name: '不动明王', effectDesc: '负面状态抗性+60%，被控制时间-2回合，每3回合自动清除一个负面状态', effects: { debuffResistance: 0.6, controlDurationReduction: 2, autoCleanse: true } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -202,6 +254,11 @@ const DataInnateTalents = {
             luckBonus: 1,
             critRate: 0.05
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '幸运星', effectDesc: '掉落率+20%，随机事件幸运+1，暴击率+5%', effects: { dropBonus: 0.2, luckBonus: 1, critRate: 0.05 } },
+            { level: 7, stage: '进化', name: '天选之人', effectDesc: '掉落率+50%，随机事件幸运+3，暴击率+12%，每次战斗有10%概率获得额外奖励', effects: { dropBonus: 0.5, luckBonus: 3, critRate: 0.12, bonusLootChance: 0.1 } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -217,6 +274,11 @@ const DataInnateTalents = {
             spiritSeedBonus: 0.3,
             seedAbsorbBonus: 0.2
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '魔法共鸣', effectDesc: '灵种效果+30%，灵种吸收成功率+20%', effects: { spiritSeedBonus: 0.3, seedAbsorbBonus: 0.2 } },
+            { level: 7, stage: '进化', name: '元素之语', effectDesc: '灵种效果+60%，灵种吸收成功率+40%，可同时装备2个灵种', effects: { spiritSeedBonus: 0.6, seedAbsorbBonus: 0.4, dualSeed: true } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -233,6 +295,11 @@ const DataInnateTalents = {
             dodgeBonus: 0.08,
             firstStrikeBonus: 0.1
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '战斗直觉', effectDesc: '暴击率+8%，闪避率+8%，先手+10%', effects: { critRate: 0.08, dodgeBonus: 0.08, firstStrikeBonus: 0.1 } },
+            { level: 7, stage: '进化', name: '战斗大师', effectDesc: '暴击率+15%，闪避率+15%，先手+20%，战斗中每3回合获得一层战意（攻击+5%，最多5层）', effects: { critRate: 0.15, dodgeBonus: 0.15, firstStrikeBonus: 0.2, battleFury: true } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -248,6 +315,11 @@ const DataInnateTalents = {
             healBonus: 0.25,
             potionBonus: 0.3
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '治愈传承', effectDesc: '治疗效果+25%，药水效果+30%', effects: { healBonus: 0.25, potionBonus: 0.3 } },
+            { level: 7, stage: '进化', name: '圣手仁心', effectDesc: '治疗效果+50%，药水效果+60%，治疗有20%概率暴击（双倍治疗）', effects: { healBonus: 0.5, potionBonus: 0.6, healCritChance: 0.2 } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -264,6 +336,11 @@ const DataInnateTalents = {
         effects: {
             hpBonus: 0.15
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '生命强化', effectDesc: '最大HP+15%', effects: { hpBonus: 0.15 } },
+            { level: 5, stage: '进化', name: '生命涌泉', effectDesc: '最大HP+30%，每回合回复1%HP', effects: { hpBonus: 0.3, hpRegen: 0.01 } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -278,6 +355,11 @@ const DataInnateTalents = {
         effects: {
             mpBonus: 0.15
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '魔力强化', effectDesc: '最大MP+15%', effects: { mpBonus: 0.15 } },
+            { level: 5, stage: '进化', name: '魔力涌泉', effectDesc: '最大MP+30%，每回合回复1%MP', effects: { mpBonus: 0.3, mpRegen: 0.01 } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -290,8 +372,13 @@ const DataInnateTalents = {
         description: '天生攻击力较强',
         effectDesc: '攻击力+10%',
         effects: {
-            atkBonus: 0.1
+            attackBonus: 0.1
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '攻击强化', effectDesc: '攻击力+10%', effects: { attackBonus: 0.1 } },
+            { level: 5, stage: '进化', name: '锋芒毕露', effectDesc: '攻击力+20%，暴击率+5%', effects: { attackBonus: 0.2, critRate: 0.05 } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -304,8 +391,13 @@ const DataInnateTalents = {
         description: '天生防御力较强',
         effectDesc: '防御力+10%',
         effects: {
-            defBonus: 0.1
+            defenseBonus: 0.1
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '防御强化', effectDesc: '防御力+10%', effects: { defenseBonus: 0.1 } },
+            { level: 5, stage: '进化', name: '坚如磐石', effectDesc: '防御力+20%，受到伤害有10%概率减半', effects: { defenseBonus: 0.2, damageHalveChance: 0.1 } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -320,6 +412,11 @@ const DataInnateTalents = {
         effects: {
             speedBonus: 0.1
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '速度强化', effectDesc: '速度+10%', effects: { speedBonus: 0.1 } },
+            { level: 5, stage: '进化', name: '疾风之体', effectDesc: '速度+20%，闪避率+5%', effects: { speedBonus: 0.2, dodgeBonus: 0.05 } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
@@ -335,6 +432,11 @@ const DataInnateTalents = {
             hpRegen: 0.01,
             mpRegen: 0.01
         },
+        type: 'growth',
+        evolutions: [
+            { level: 1, stage: '觉醒', name: '自然恢复', effectDesc: '每回合回复1%HP和1%MP', effects: { hpRegen: 0.01, mpRegen: 0.01 } },
+            { level: 5, stage: '进化', name: '生生不息', effectDesc: '每回合回复2%HP和2%MP，战斗结束后自动恢复10%HP', effects: { hpRegen: 0.02, mpRegen: 0.02, postBattleHeal: 0.1 } }
+        ],
         isCanon: false,
         canonNote: '非原著具体角色，游戏性设计'
     },
