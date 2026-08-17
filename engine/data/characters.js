@@ -7272,6 +7272,7 @@ const DataCharacters = {
           id: "default",
           texts: ["梵墨，今天有什么任务？", "城市猎妖队随时待命，有妖魔就上。", "雷系法师很珍贵，你要好好发挥。"],
           choices: [
+            { text: "我想加入城市猎妖队", next: "join_team" },
             { text: "请教战斗技巧", next: "about_combat" },
             { text: "城市猎妖队是做什么的？", next: "about_team" },
             { text: "博城最近安全吗？", next: "about_safety" },
@@ -7279,6 +7280,29 @@ const DataCharacters = {
             { text: "对新手有什么建议？", next: "about_rookie" },
             { text: "告辞", next: "default", action: "back" }
           ]
+        },
+        join_team: {
+          id: "join_team",
+          texts: ["哦？你想加入猎妖队？", "这可不是闹着玩的，随时可能没命。", "不过...看你眼神挺坚定的。你是什么系的？等级多少？"],
+          choices: [
+            { text: "我是雷系，等级够了！", next: "join_team_lei", conditions: { element: "thunder", minLevel: 5 } },
+            { text: "我等级够了，想试试", next: "join_team_check", conditions: { minLevel: 5 } },
+            { text: "我再修炼修炼", next: "default", action: "back" }
+          ]
+        },
+        join_team_lei: {
+          id: "join_team_lei",
+          texts: ["雷系？好！雷系法师在猎妖队可是香饽饽。", "麻痹效果对妖魔太有用了。", "行，你就算见习成员了。先从低级任务做起，有任务我会通知你。"],
+          effects: { familiarity: 10, trust: 5 },
+          flags: { hunter_team_member: true, hunter_rank: "apprentice" },
+          choices: [{ text: "谢谢队长！", next: "default", action: "back" }]
+        },
+        join_team_check: {
+          id: "join_team_check",
+          texts: ["等级够了，但猎妖队要看实力。", "这样，你去和训练傀儡打一场，评级B以上就算通过。", "不过...看你挺有诚意的，先收你当见习成员，任务中再考察你。"],
+          effects: { familiarity: 5 },
+          flags: { hunter_team_member: true, hunter_rank: "apprentice" },
+          choices: [{ text: "我会证明自己的！", next: "default", action: "back" }]
         },
         about_combat: {
           id: "about_combat",

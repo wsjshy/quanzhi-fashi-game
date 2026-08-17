@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.7.1 · 地圣泉决斗重制+原文校准</div>
+                ">v1.8.0 · 城市猎妖任务系统</div>
             </div>
         `;
 

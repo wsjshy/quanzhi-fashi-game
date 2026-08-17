@@ -3657,5 +3657,86 @@ const DataQuests = {
     dialogueStart: "哼，又是你。别以为出了点风头就了不起了。白家的底蕴不是你能想象的。敢不敢和我切磋一下？",
     dialogueInProgress: "怎么，怕了？我可是中阶光系法师，你一个草根……算了，让你三招。",
     dialogueComplete: "……你确实有点实力。不过别得意，主校区考核上见真章！"
+  },
+
+  // ========== 城市猎妖任务 ==========
+  quest_hunt_school_demon: {
+    id: "quest_hunt_school_demon",
+    name: "铭文女子中学的妖魔",
+    description: "铭文女子中学出现妖魔潜伏，城市猎妖队发布讨伐任务。",
+    giver: "xu_dahuang",
+    type: "hunt",
+    objectives: [
+      { type: "investigate", location: "mingzhu_school", count: 1, description: "调查铭文女子中学" },
+      { type: "kill", enemyId: "one_eye_wolf", count: 1, description: "清除潜伏的妖魔" }
+    ],
+    rewards: {
+      exp: 80,
+      gold: 120,
+      reputation: { hunter_alliance: 10 },
+      items: [{ itemId: "servant_soul_essence", count: 1 }]
+    },
+    prerequisites: [{ flag: "hunter_team_member" }],
+    isRepeatable: true,
+    difficulty: "easy",
+    recommendedLevel: 5,
+    maxTeamSize: 2,
+    dialogueStart: "铭文女子中学有妖魔潜伏，你去调查一下。注意安全，新手别逞强。",
+    dialogueInProgress: "找到妖魔了吗？小心，学校里可能有学生。",
+    dialogueComplete: "干得不错。这是你的报酬，以后有任务再叫你。"
+  },
+
+  quest_hunt_old_district: {
+    id: "quest_hunt_old_district",
+    name: "老街区的怪事",
+    description: "老街区频繁出现异常事件，疑似有战将级妖魔活动。",
+    giver: "xu_dahuang",
+    type: "hunt",
+    objectives: [
+      { type: "investigate", location: "old_district", count: 3, description: "调查3个线索点" },
+      { type: "kill", enemyId: "demon_wolf_advanced", count: 1, description: "讨伐战将级妖魔" }
+    ],
+    rewards: {
+      exp: 200,
+      gold: 350,
+      reputation: { hunter_alliance: 25 },
+      items: [{ itemId: "warrior_soul_essence", count: 1 }]
+    },
+    prerequisites: [{ flag: "hunter_team_member" }, { flag: "hunt_school_demon_completed" }],
+    isRepeatable: true,
+    difficulty: "medium",
+    recommendedLevel: 8,
+    maxTeamSize: 2,
+    hasBlackChurchClue: true,
+    dialogueStart: "老街区最近不太平，你去查查。如果发现黑教廷的痕迹，立刻报告。",
+    dialogueInProgress: "线索收集得怎么样了？战将级妖魔不好对付，建议带队友。",
+    dialogueComplete: "很好。你发现的黑教廷线索很重要，我会上报给猎者联盟。"
+  },
+
+  quest_hunt_city_edge: {
+    id: "quest_hunt_city_edge",
+    name: "城市边缘的统领",
+    description: "城市边缘发现统领级妖魔踪迹，必须在它进入城市前消灭。",
+    giver: "xu_dahuang",
+    type: "hunt",
+    objectives: [
+      { type: "investigate", location: "city_edge", count: 2, description: "追踪妖魔踪迹" },
+      { type: "kill", enemyId: "winged_gray_wolf", count: 1, description: "讨伐统领级妖魔" }
+    ],
+    rewards: {
+      exp: 500,
+      gold: 800,
+      reputation: { hunter_alliance: 50, brave: 20 },
+      items: [{ itemId: "commander_soul_essence", count: 1 }]
+    },
+    prerequisites: [{ flag: "hunter_team_member" }, { flag: "hunt_old_district_completed" }],
+    isRepeatable: false,
+    difficulty: "hard",
+    recommendedLevel: 12,
+    maxTeamSize: 2,
+    requireTeam: true,
+    dialogueStart: "城市边缘有统领级妖魔，这是硬骨头。必须组队前往， solo就是送死。",
+    dialogueInProgress: "统领级妖魔不是闹着玩的，利用环境，集中火力。",
+    dialogueComplete: "你居然赢了统领级妖魔！了不起，猎妖队有你是福气。"
   }
 };
