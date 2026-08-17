@@ -2308,7 +2308,7 @@ const DataItems = {
     id: "soul_vessel",
     name: "亡魂器皿",
     description: "专门用于收集和保存妖魔精魄的特殊器皿。只有亡灵系法师才能炼制，起拍价500万金币。可将击杀妖魔时的精魄收集起来，避免消散。",
-    type: "equipment",
+    type: "special",
     icon: "🏺",
     price: 5000000,
     stackable: false,

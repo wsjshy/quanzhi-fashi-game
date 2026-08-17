@@ -225,6 +225,97 @@ function runDataIntegrityTests() {
         result.warn(`对话触发任务: ${orphanQuests.length}个任务未被任何对话触发（可能是主线/其他入口）: ${orphanQuests.slice(0, 5).join(', ')}${orphanQuests.length > 5 ? '...' : ''}`);
     }
     
+    // ===== 7. 对话树nextNode引用完整性 =====
+    console.log('\n7️⃣  对话树nextNode引用完整性');
+    console.log('─'.repeat(40));
+    
+    const invalidNextNodeRefs = [];
+    let totalNextNodeRefs = 0;
+    
+    function checkNextNodeRefs(nodes, npcId) {
+        if (!nodes || typeof nodes !== 'object') return;
+        for (const [nodeId, node] of Object.entries(nodes)) {
+            if (!node.choices || !Array.isArray(node.choices)) continue;
+            for (const choice of node.choices) {
+                if (choice.nextNode && choice.nextNode !== null) {
+                    totalNextNodeRefs++;
+                    if (!nodes[choice.nextNode]) {
+                        invalidNextNodeRefs.push(`${npcId}:${nodeId}→${choice.nextNode}`);
+                    }
+                }
+            }
+        }
+    }
+    
+    for (const [npcId, npc] of Object.entries(data.characters || {})) {
+        if (npc.dialogueTree && npc.dialogueTree.nodes) {
+            checkNextNodeRefs(npc.dialogueTree.nodes, npcId);
+        }
+    }
+    
+    if (invalidNextNodeRefs.length === 0) {
+        result.pass(`对话树nextNode: ${totalNextNodeRefs}个引用全部有效`);
+    } else {
+        result.fail(`对话树nextNode: 无效引用: ${invalidNextNodeRefs.slice(0, 5).join(', ')}${invalidNextNodeRefs.length > 5 ? '...' : ''}`);
+    }
+    
+    // ===== 8. 装备物品slot字段完整性 =====
+    console.log('\n8️⃣  装备物品slot字段完整性');
+    console.log('─'.repeat(40));
+    
+    const equipmentWithoutSlot = [];
+    let equipmentCount = 0;
+    
+    for (const [itemId, item] of Object.entries(data.items || {})) {
+        if (item.type === 'equipment' || item.type === 'weapon' || item.type === 'armor' || item.type === 'accessory') {
+            equipmentCount++;
+            if (!item.slot && !item.equipSlot) {
+                equipmentWithoutSlot.push(itemId);
+            }
+        }
+    }
+    
+    if (equipmentWithoutSlot.length === 0) {
+        result.pass(`装备物品: ${equipmentCount}个装备全部有slot字段`);
+    } else {
+        result.fail(`装备物品: ${equipmentWithoutSlot.length}个缺少slot字段: ${equipmentWithoutSlot.join(', ')}`);
+    }
+    
+    // ===== 9. 章节完成条件引用完整性 =====
+    console.log('\n9️⃣  章节完成条件引用完整性');
+    console.log('─'.repeat(40));
+    
+    const invalidChapterQuestRefs = [];
+    let chapterQuestRefs = 0;
+    
+    for (const [chapterId, chapter] of Object.entries(data.chapters || {})) {
+        if (chapter.completeConditions) {
+            const cc = chapter.completeConditions;
+            if (cc.allQuestsCompleted && Array.isArray(cc.allQuestsCompleted)) {
+                for (const qid of cc.allQuestsCompleted) {
+                    chapterQuestRefs++;
+                    if (!data.quests[qid]) {
+                        invalidChapterQuestRefs.push(`${chapterId}:${qid}`);
+                    }
+                }
+            }
+            if (cc.mainQuestChain && Array.isArray(cc.mainQuestChain)) {
+                for (const qid of cc.mainQuestChain) {
+                    chapterQuestRefs++;
+                    if (!data.quests[qid]) {
+                        invalidChapterQuestRefs.push(`${chapterId}:${qid}`);
+                    }
+                }
+            }
+        }
+    }
+    
+    if (invalidChapterQuestRefs.length === 0) {
+        result.pass(`章节任务引用: ${chapterQuestRefs}个引用全部有效`);
+    } else {
+        result.fail(`章节任务引用: 无效引用: ${invalidChapterQuestRefs.join(', ')}`);
+    }
+    
     return result.report();
 }
 
