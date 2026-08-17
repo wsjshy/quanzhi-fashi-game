@@ -15,6 +15,8 @@ const StoryChapterSystem = {
     onChapterStart: null,
     // 章节完成时的回调
     onChapterComplete: null,
+    // v1.0.0: 暂停章节完成检查（大事件进行中时暂停，避免误触发）
+    paused: false,
 
     /**
      * 初始化（从存档恢复）
@@ -148,6 +150,9 @@ const StoryChapterSystem = {
      * 检查当前章节是否完成
      */
     checkCompletion() {
+        // v1.0.0: 大事件进行中时暂停章节完成检查，避免误触发
+        if (this.paused) return false;
+        
         const chapter = this.getCurrentChapter();
         if (!chapter) return false;
 

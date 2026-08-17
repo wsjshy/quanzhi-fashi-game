@@ -63,6 +63,11 @@ const BigEventSystem = {
         // 标记为已开始
         Player.flags['big_event_' + eventId + '_started'] = true;
         
+        // v1.0.0: 大事件进行中暂停章节完成检查，避免等级变化误触发章节完成
+        if (typeof StoryChapterSystem !== 'undefined') {
+            StoryChapterSystem.paused = true;
+        }
+        
         this.saveState();
         
         // 显示第一阶段
@@ -431,6 +436,11 @@ const BigEventSystem = {
         // 博城灾难完成时设置通用标记，供对话/事件条件使用
         if (this.currentEvent === 'big_event_bocheng_disaster') {
             Player.flags['bocheng_disaster_happened'] = true;
+        }
+        
+        // v1.0.0: 大事件结束后恢复章节完成检查
+        if (typeof StoryChapterSystem !== 'undefined') {
+            StoryChapterSystem.paused = false;
         }
         
         // 保存
