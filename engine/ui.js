@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.4.4 · 全系天赋差异化完成</div>
+                ">v1.4.5 · 觉醒流程重构</div>
             </div>
         `;
 
@@ -796,125 +796,14 @@ const UI = {
 
     // ========== 角色创建界面 ==========
     renderCharacterCreate() {
-        // v1.3.1: 统一为博城篇11系（火冰雷土水光暗治愈植物召唤）
-        // 稀有系（心灵/祝福等）通过天赋形式觉醒，不在角色创建列表
-        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'plant', 'summon'];
-        const elementNames = {
-            fire: '🔥 火系', ice: '❄️ 冰系', thunder: '⚡ 雷系', earth: '🪨 土系',
-            wind: '🌪️ 风系', water: '💧 水系', light: '✨ 光系', dark: '🌑 暗影系',
-            heal: '💚 治愈系', plant: '🌿 植物系', summon: '📜 召唤系'
-        };
-        const elementColors = {
-            fire: '#ff6633', ice: '#66ccff', thunder: '#ffcc00', earth: '#cc9966',
-            wind: '#99ff99', water: '#6699ff', light: '#ffffcc', dark: '#9966ff',
-            heal: '#66ff99', plant: '#66cc66', summon: '#cc99ff'
-        };
-        // v1.2.0: 各系特点说明，帮助新手选择
-        const elementDescs = {
-            fire: '高爆发·燃烧持续伤害',
-            ice: '强控制·冻结减速',
-            thunder: '高速度·麻痹连锁',
-            earth: '高防御·护盾控制',
-            wind: '高闪避·速度快',
-            water: '治疗恢复·湿润控制',
-            light: '神圣伤害·净化治疗',
-            dark: '高暴击·吸血诅咒',
-            heal: '强力治疗·辅助增益',
-            plant: '控制束缚·持续中毒',
-            summon: '召唤兽协同·以多打少'
-        };
-        // v0.92.2: 挂载到window，供全局selectElement函数访问
-        window._elementColors = elementColors;
-        // 元素权重：常见系概率高，稀有系概率低
-        const elementWeights = {
-            fire: 15, ice: 12, thunder: 10, earth: 15,
-            wind: 15, water: 15, light: 8, dark: 5,
-            heal: 6, plant: 7, summon: 4
-        };
+        // v1.4.5: 觉醒流程重构 - 先选天生天赋，天赋决定系别
+        // 角色创建界面只输入角色名，然后直接进入天生天赋选择
 
-        // 随机选3个不重复的元素（加权随机）
-        function rollThreeElements() {
-            const available = [...allElements];
-            const result = [];
-            while (result.length < 3 && available.length > 0) {
-                const totalWeight = available.reduce((sum, e) => sum + elementWeights[e], 0);
-                let rand = Math.random() * totalWeight;
-                for (let i = 0; i < available.length; i++) {
-                    rand -= elementWeights[available[i]];
-                    if (rand <= 0) {
-                        result.push(available[i]);
-                        available.splice(i, 1);
-                        break;
-                    }
-                }
-            }
-            return result;
-        }
-
-        let candidateElements = rollThreeElements();
-        let rerollCount = 0;
-        const maxRerolls = 3;
-
-        function renderElements() {
-            let elementsHtml = '';
-            candidateElements.forEach(elem => {
-                elementsHtml += `
-                    <div class="element-card" onclick="selectElement('${elem}')" 
-                         id="elem-${elem}"
-                         style="
-                            padding: 25px 20px;
-                            background: rgba(30, 30, 60, 0.8);
-                            border: 2px solid #444477;
-                            border-radius: 12px;
-                            cursor: pointer;
-                            transition: all 0.3s;
-                            text-align: center;
-                            font-size: 20px;
-                            font-weight: bold;
-                            color: ${elementColors[elem]};
-                            min-width: 140px;
-                         "
-                         onmouseover="this.style.borderColor='${elementColors[elem]}'; this.style.boxShadow='0 0 20px ${elementColors[elem]}40'; this.style.transform='translateY(-3px)'"
-                         onmouseout="if(!this.classList.contains('selected')){this.style.borderColor='#444477'; this.style.boxShadow='none'; this.style.transform='translateY(0)'}">
-                        ${elementNames[elem]}
-                        <div style="font-size:11px; color:#999; margin-top:6px; font-weight:normal; line-height:1.4;">${elementDescs[elem] || ''}</div>
-                    </div>
-                `;
-            });
-            // 添加重新感知按钮作为第四个卡片
-            const remaining = maxRerolls - rerollCount;
-            const rerollStyle = remaining <= 0 
-                ? 'opacity:0.3;pointer-events:none;' 
-                : '';
-            elementsHtml += `
-                <div class="element-card" id="reroll-btn" onclick="rerollCreateElements()"
-                     style="
-                        padding: 25px 20px;
-                        background: rgba(80, 60, 120, 0.6);
-                        border: 2px dashed #8866bb;
-                        border-radius: 12px;
-                        cursor: pointer;
-                        transition: all 0.3s;
-                        text-align: center;
-                        font-size: 16px;
-                        color: #bb99dd;
-                        min-width: 140px;
-                        ${rerollStyle}
-                     "
-                     onmouseover="this.style.background='rgba(100,80,150,0.8)'; this.style.borderColor='#aa88dd'"
-                     onmouseout="this.style.background='rgba(80,60,120,0.6)'; this.style.borderColor='#8866bb'">
-                    🔄 重新感知<br><span style="font-size:12px;opacity:0.8">（剩余${remaining}次）</span>
-                </div>
-            `;
-            return elementsHtml;
-        }
-
-        // v0.92.15: 强制恢复点击 - 立即+延迟双重恢复
+        // v0.92.15: 强制恢复点击
         const forceRestoreClicks = () => {
             document.body.classList.remove('message-showing');
             const gc = document.getElementById('game-container');
             if (gc) gc.style.pointerEvents = '';
-            // 移除所有已知的点击拦截器
             if (typeof UI !== 'undefined') {
                 ['_globalClickInterceptor', '_prevClickInterceptor'].forEach(key => {
                     if (UI[key]) {
@@ -944,7 +833,6 @@ const UI = {
                 pointer-events: auto;
                 z-index: 9999;
             ">
-                <!-- 背景图片 -->
                 <div style="
                     position: absolute;
                     top: 0; left: 0;
@@ -964,9 +852,9 @@ const UI = {
                     letter-spacing: 4px;
                 ">创建角色</h2>
                 
-                <p style="color: #8888aa; margin-bottom: 40px; font-size: 16px;">将手放在觉醒石上，感受与你共鸣的元素...</p>
+                <p style="color: #8888aa; margin-bottom: 40px; font-size: 16px;">觉醒仪式即将开始，先告诉我你的名字...</p>
                 
-                <div style="margin-bottom: 30px;">
+                <div style="margin-bottom: 40px;">
                     <label style="color: #aaa; font-size: 16px; margin-right: 15px;">角色名：</label>
                     <input type="text" id="char-name" maxlength="10" value="冒险者"
                            style="
@@ -979,22 +867,8 @@ const UI = {
                                width: 200px;
                            ">
                 </div>
-                
-                <p style="color: #ffd700; margin-bottom: 8px; font-size: 18px;">✨ 觉醒石感知到3种元素与你共鸣：</p>
-                <p style="color: #888; margin-bottom: 20px; font-size: 13px;">选择其一作为你的初始元素系</p>
-                
-                <div id="element-candidates" class="mobile-element-grid" style="
-                    display: flex;
-                    justify-content: center;
-                    gap: 20px;
-                    margin-bottom: 20px;
-                    flex-wrap: wrap;
-                    align-items: center;
-                ">
-                    ${renderElements()}
-                </div>
 
-                <div onclick="try { if(!window.selectedElement){alert('请先选择元素');return;} Game.createCharacter(document.getElementById('char-name').value||'冒险者', window.selectedElement); } catch(e) { alert('错误:'+e.message); }" style="
+                <div onclick="try { Game.createCharacter(document.getElementById('char-name').value||'冒险者'); } catch(e) { alert('错误:'+e.message); }" style="
                     padding: 15px 50px;
                     font-size: 20px;
                     background: linear-gradient(135deg, #2a2a6a, #4a4aaa);
@@ -1004,13 +878,17 @@ const UI = {
                     border-radius: 10px;
                     transition: all 0.3s;
                     letter-spacing: 4px;
-                    opacity: 1;
                     display: inline-block;
                     position: relative;
                     z-index: 100;
                 " id="confirm-btn">
-                    确认创建
+                    开始觉醒
                 </div>
+
+                <p style="color: #666; margin-top: 30px; font-size: 13px; text-align: center; line-height: 1.8;">
+                    觉醒时将先感知你的<span style="color:#ffd700;">天生天赋</span><br>
+                    天赋决定你的魔法之路，稀有天赋可觉醒稀有系别
+                </p>
                 </div>
             </div>
         `;
@@ -1021,127 +899,115 @@ const UI = {
             _gc.style.pointerEvents = 'auto';
             _gc.style.zIndex = '9999';
         }
+    },
 
-        // 全局函数
-        window.selectedElement = null;
-        window.confirmEnabled = false;
-        window.selectElement = (elem) => {
-            try {
-                // 移除其他选中
-                document.querySelectorAll('.element-card').forEach(card => {
-                    card.classList.remove('selected');
-                    card.style.borderColor = '#444477';
-                    card.style.boxShadow = 'none';
-                });
-                
-                // 选中当前
-                const card = document.getElementById('elem-' + elem);
-                if (card) {
-                    card.classList.add('selected');
-                    card.style.borderColor = window._elementColors[elem];
-                    card.style.boxShadow = `0 0 25px ${window._elementColors[elem]}60`;
+    // v1.4.5: 觉醒流程重构 - 天赋决定系别后的系别选择界面
+    showElementSelectionAfterTalent() {
+        // 博城篇11系
+        const allElements = ['fire', 'ice', 'thunder', 'earth', 'wind', 'water', 'light', 'dark', 'heal', 'plant', 'summon'];
+        const elementNames = {
+            fire: '🔥 火系', ice: '❄️ 冰系', thunder: '⚡ 雷系', earth: '🪨 土系',
+            wind: '🌪️ 风系', water: '💧 水系', light: '✨ 光系', dark: '🌑 暗影系',
+            heal: '💚 治愈系', plant: '🌿 植物系', summon: '📜 召唤系'
+        };
+        const elementColors = {
+            fire: '#ff6633', ice: '#66ccff', thunder: '#ffcc00', earth: '#cc9966',
+            wind: '#99ff99', water: '#6699ff', light: '#ffffcc', dark: '#9966ff',
+            heal: '#66ff99', plant: '#66cc66', summon: '#cc99ff'
+        };
+        const elementDescs = {
+            fire: '高爆发·燃烧持续伤害',
+            ice: '强控制·冻结减速',
+            thunder: '高速度·麻痹连锁',
+            earth: '高防御·护盾控制',
+            wind: '高闪避·速度快',
+            water: '治疗恢复·湿润控制',
+            light: '神圣伤害·净化治疗',
+            dark: '高暴击·吸血诅咒',
+            heal: '强力治疗·辅助增益',
+            plant: '控制束缚·持续中毒',
+            summon: '召唤兽协同·以多打少'
+        };
+        window._elementColors = elementColors;
+
+        const elementWeights = {
+            fire: 15, ice: 12, thunder: 10, earth: 15,
+            wind: 15, water: 15, light: 8, dark: 5,
+            heal: 6, plant: 7, summon: 4
+        };
+
+        // 加权随机选3个
+        const available = [...allElements];
+        const candidateElements = [];
+        while (candidateElements.length < 3 && available.length > 0) {
+            const totalWeight = available.reduce((sum, e) => sum + elementWeights[e], 0);
+            let rand = Math.random() * totalWeight;
+            for (let i = 0; i < available.length; i++) {
+                rand -= elementWeights[available[i]];
+                if (rand <= 0) {
+                    candidateElements.push(available[i]);
+                    available.splice(i, 1);
+                    break;
                 }
-                
-                window.selectedElement = elem;
-                window.confirmEnabled = true;
-                // 恢复确认按钮状态
-                const confirmBtn = document.getElementById('confirm-btn');
-                if (confirmBtn) confirmBtn.style.opacity = '1';
-            } catch (e) {
-                console.error('selectElement error:', e);
-                window.selectedElement = elem;
             }
-        };
+        }
 
-        // 用UI对象方法存储reroll状态
-        this._createRerollCount = rerollCount;
-        this._createMaxRerolls = maxRerolls;
-        this._createCandidateElements = candidateElements;
+        let elementsHtml = '';
+        candidateElements.forEach(elem => {
+            elementsHtml += `
+                <div class="element-card" onclick="Game.selectElementAfterTalent('${elem}')" 
+                     id="elem-${elem}"
+                     style="
+                        padding: 25px 20px;
+                        background: rgba(30, 30, 60, 0.8);
+                        border: 2px solid #444477;
+                        border-radius: 12px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        text-align: center;
+                        font-size: 20px;
+                        font-weight: bold;
+                        color: ${elementColors[elem]};
+                        min-width: 140px;
+                     "
+                     onmouseover="this.style.borderColor='${elementColors[elem]}'; this.style.boxShadow='0 0 20px ${elementColors[elem]}40'; this.style.transform='translateY(-3px)'"
+                     onmouseout="this.style.borderColor='#444477'; this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+                    ${elementNames[elem]}
+                    <div style="font-size:11px; color:#999; margin-top:6px; font-weight:normal; line-height:1.4;">${elementDescs[elem] || ''}</div>
+                </div>
+            `;
+        });
 
-        this.rerollCreateElements = () => {
-            if (this._createRerollCount >= this._createMaxRerolls) return;
-            this._createRerollCount++;
-            this._createCandidateElements = rollThreeElements();
-            window.selectedElement = null;
-            window.confirmEnabled = false;
-            const container = document.getElementById('element-candidates');
-            if (container) {
-                // 重新渲染所有元素卡片+reroll按钮
-                let html = '';
-                this._createCandidateElements.forEach(elem => {
-                    html += `
-                        <div class="element-card" onclick="selectElement('${elem}')" 
-                             id="elem-${elem}"
-                             style="
-                                padding: 25px 20px;
-                                background: rgba(30, 30, 60, 0.8);
-                                border: 2px solid #444477;
-                                border-radius: 12px;
-                                cursor: pointer;
-                                transition: all 0.3s;
-                                text-align: center;
-                                font-size: 20px;
-                                font-weight: bold;
-                                color: ${elementColors[elem]};
-                                min-width: 140px;
-                             "
-                             onmouseover="this.style.borderColor='${elementColors[elem]}'; this.style.boxShadow='0 0 20px ${elementColors[elem]}40'; this.style.transform='translateY(-3px)'"
-                             onmouseout="if(!this.classList.contains('selected')){this.style.borderColor='#444477'; this.style.boxShadow='none'; this.style.transform='translateY(0)'}">
-                            ${elementNames[elem]}
-                        </div>
-                    `;
-                });
-                const remaining = this._createMaxRerolls - this._createRerollCount;
-                const rerollStyle = remaining <= 0 ? 'opacity:0.3;pointer-events:none;' : '';
-                html += `
-                    <div class="element-card" id="reroll-btn" onclick="rerollCreateElements()"
-                         style="
-                            padding: 25px 20px;
-                            background: rgba(80, 60, 120, 0.6);
-                            border: 2px dashed #8866bb;
-                            border-radius: 12px;
-                            cursor: pointer;
-                            transition: all 0.3s;
-                            text-align: center;
-                            font-size: 16px;
-                            color: #bb99dd;
-                            min-width: 140px;
-                            ${rerollStyle}
-                         "
-                         onmouseover="this.style.background='rgba(100,80,150,0.8)'; this.style.borderColor='#aa88dd'"
-                         onmouseout="this.style.background='rgba(80,60,120,0.6)'; this.style.borderColor='#8866bb'">
-                        🔄 重新感知<br><span style="font-size:12px;opacity:0.8">（剩余${remaining}次）</span>
-                    </div>
-                `;
-                container.innerHTML = html;
-            }
-            const confirmBtn = document.getElementById('confirm-btn');
-            if (confirmBtn) confirmBtn.style.opacity = '0.5';
-        };
+        this.elements.gameContainer.innerHTML = `
+            <div style="
+                width: 100%;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                background: linear-gradient(135deg, #0a0a2a 0%, #1a1a4a 50%, #0a0a3a 100%);
+                padding: 40px;
+                position: relative;
+                pointer-events: auto;
+                z-index: 9999;
+            ">
+                <div style="position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center;">
+                <h2 style="font-size: 32px; color: #ffd700; margin-bottom: 10px;">选择元素系</h2>
+                <p style="color: #8888aa; margin-bottom: 30px; font-size: 15px;">你的天赋让你与以下3种元素产生了共鸣，选择其一作为初始系别</p>
+                <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; align-items: center;">
+                    ${elementsHtml}
+                </div>
+                <p style="color: #666; margin-top: 30px; font-size: 12px;">选择后不可更改</p>
+                </div>
+            </div>
+        `;
 
-        // 全局函数供内联onclick使用
-        window.rerollCreateElements = () => this.rerollCreateElements();
-
-        window.confirmCreate = () => {
-            if (!window.selectedElement) {
-                alert('请先选择一个元素系别！');
-                return;
-            }
-            const name = document.getElementById('char-name').value || '冒险者';
-            try {
-                Game.createCharacter(name, window.selectedElement);
-            } catch (e) {
-                console.error('创建角色出错:', e);
-                alert('创建角色出错: ' + e.message);
-            }
-        };
-
-        // v0.92.4: 默认选中第一个元素，避免用户误以为已选中但实际未选中
-        setTimeout(() => {
-            if (candidateElements && candidateElements.length > 0) {
-                window.selectElement(candidateElements[0]);
-            }
-        }, 100);
+        const _gc = document.getElementById('game-container');
+        if (_gc) {
+            _gc.style.pointerEvents = 'auto';
+            _gc.style.zIndex = '9999';
+        }
     },
 
     // ========== 地图/主界面 ==========

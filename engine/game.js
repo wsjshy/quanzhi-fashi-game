@@ -108,14 +108,14 @@ const Game = {
         }
     },
 
-    // 创建角色
-    createCharacter(name, element) {
-        Player.init(name, element);
-        
+    // 创建角色（v1.4.5: 不需要element参数，先选天赋再选系别）
+    createCharacter(name) {
+        Player.init(name, 'fire'); // 临时用fire初始化，后续会被天赋或选择覆盖
+
         // 给初始物品
         Inventory.addItem('health_potion', 5);
         Inventory.addItem('mana_potion', 3);
-        
+
         // 初始化地图
         MapSystem.init();
         
@@ -4201,25 +4201,44 @@ const Game = {
         if (talent.boundElement) {
             const boundName = SkillSystem.getElementName(talent.boundElement);
             this._pendingElement = talent.boundElement;
+            Player.element = talent.boundElement;
             msg += `\n\n✨ 你的天赋决定了你的第一系为：${boundName}！`;
-        }
-
-        // 如果额外觉醒了一系，提示
-        if (Player.innateEffects && Player.innateEffects.extraElement) {
-            const extraName = SkillSystem.getElementName(Player.innateEffects.extraElement);
-            msg += `\n\n你天生就觉醒了第二系：${extraName}！`;
-        }
-
-        UI.showMessage(msg);
-
-        // v0.93.0: 直接进入系天赋选择（showTalentSelection会关闭消息弹窗并清空gameContainer）
-        if (Player.innateEffects && Player.innateEffects.extraElement) {
-            this._pendingElements = [this._pendingElement, Player.innateEffects.extraElement];
-            this._currentTalentElementIndex = 0;
-            this.showTalentSelection(this._pendingElements[0]);
+            UI.showMessage(msg);
+            // 绑定系天赋直接进入系天赋选择
+            if (Player.innateEffects && Player.innateEffects.extraElement) {
+                this._pendingElements = [this._pendingElement, Player.innateEffects.extraElement];
+                this._currentTalentElementIndex = 0;
+                this.showTalentSelection(this._pendingElements[0]);
+            } else {
+                this.showTalentSelection(this._pendingElement);
+            }
         } else {
-            this.showTalentSelection(this._pendingElement);
+            // v1.4.5: 普通天赋 - 显示系别选择界面（3选1，无重新感知）
+            msg += `\n\n你的天赋让你与多种元素产生了共鸣，请选择你的第一系。`;
+            UI.showMessage(msg);
+            // 延迟显示系别选择，等消息弹窗关闭
+            setTimeout(() => {
+                UI.showElementSelectionAfterTalent();
+            }, 500);
         }
+    },
+
+    // v1.4.5: 天赋决定系别后的系别选择
+    selectElementAfterTalent(element) {
+        this._pendingElement = element;
+        Player.element = element;
+        const elemName = SkillSystem.getElementName(element);
+        UI.showMessage(`你选择了${elemName}作为你的第一系！`);
+        // 进入系天赋选择
+        setTimeout(() => {
+            if (Player.innateEffects && Player.innateEffects.extraElement) {
+                this._pendingElements = [this._pendingElement, Player.innateEffects.extraElement];
+                this._currentTalentElementIndex = 0;
+                this.showTalentSelection(this._pendingElements[0]);
+            } else {
+                this.showTalentSelection(this._pendingElement);
+            }
+        }, 500);
     },
 
     // 显示天赋选择面板
