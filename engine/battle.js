@@ -1483,6 +1483,25 @@ const BattleSystem = {
         // 应用伤害
         this.applyDamage(this.enemy, damage, this.player);
 
+        // v2.2.0: 风系疾风状态 - 闪避后触发连击
+        if (!damage.isMiss && typeof TalentCombatSystem !== 'undefined' && TalentCombatSystem.hasWindStreak()) {
+            TalentCombatSystem.consumeWindStreak();
+            const comboDmg = this.calculateDamage(
+                this.player.attack * 0.8,
+                this.enemy.defense * (this.enemy.isDefending ? 2 : 1),
+                1.0,
+                this.player.critRate,
+                this.player.hitRate,
+                'wind',
+                null,
+                this.enemy,
+                this.player
+            );
+            this.applyDamage(this.enemy, comboDmg, this.player);
+            this.addLog(`💨 疾风连击！再造成 ${comboDmg.amount} 点伤害！`, 'element');
+            if (!comboDmg.isMiss) this.showDamageNumber('enemy', comboDmg.amount, 'magic');
+        }
+
         // 天赋异常状态触发（普攻命中时）
         if (!damage.isMiss && damage.amount > 0 && this.player.talentEffects) {
             const te = this.player.talentEffects;
@@ -2298,9 +2317,18 @@ const BattleSystem = {
                 const gain = 2;
                 const max = 6;
                 const reachedMax = TalentCombatSystem.addEnergy('thunder', gain, max);
-                // v2.2.0: 电荷满层触发连锁闪电（待实现）
+                // v2.2.0: 电荷满层触发连锁闪电
                 if (reachedMax) {
-                    this.addLog(`⚡ 电荷已满！连锁闪电蓄势待发！`, 'buff');
+                    const chainCount = te.thunderChainTargets || 2;
+                    const chainRatio = te.thunderChainRatio || 0.6;
+                    let chainDmg = Math.floor(this.player.attack * chainRatio);
+                    this.addLog(`⚡ 电荷已满！触发连锁闪电！`, 'crit');
+                    for (let i = 0; i < chainCount; i++) {
+                        if (i > 0) chainDmg = Math.floor(chainDmg * 0.7);
+                        this.applyDamage(this.enemy, { amount: chainDmg, element: 'thunder', isCrit: false, isMiss: false }, this.player);
+                        this.addLog(`⚡ 连锁闪电第${i+1}段！造成 ${chainDmg} 点伤害！`, 'element');
+                    }
+                    TalentCombatSystem.resetEnergy('thunder');
                 }
             }
             // 其他系的资源积累在各自的天赋效果中处理
@@ -5119,6 +5147,16 @@ const BattleSystem = {
             const attackerMods = this.getStatusModifiers(attacker);
             hitRate += attackerMods.hitRateMod;
             critRate += attackerMods.critRateMod;
+        }
+
+        // v2.2.0: 水系潮汐形态 - 涨潮输出+30%，退潮输出-20%
+        if (element === 'water' && attacker === this.player && typeof TalentCombatSystem !== 'undefined' && TalentCombatSystem.state) {
+            const waterForm = TalentCombatSystem.getWaterForm();
+            if (waterForm === 'tide') {
+                attack = Math.floor(attack * 1.30);
+            } else if (waterForm === 'ebb') {
+                attack = Math.floor(attack * 0.80);
+            }
         }
 
         // 命中判定（考虑目标闪避修正）
