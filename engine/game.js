@@ -3700,6 +3700,10 @@ const Game = {
         if (result.success) {
             UI.showMessage(`接取任务：${result.quest.name}`);
             Player.save();
+            // 如果当前在任务面板，刷新显示
+            if (this.state === 'quest') {
+                UI.renderQuestScreen();
+            }
         } else {
             UI.showMessage(result.message);
         }

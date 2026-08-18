@@ -4389,6 +4389,7 @@ const UI = {
     renderQuestScreen() {
         const activeQuests = Player.activeQuests;
         const completedQuests = Player.completedQuests;
+        const availableQuests = typeof QuestSystem !== 'undefined' ? QuestSystem.getAllAvailableQuests() : [];
         
         this.elements.gameContainer.innerHTML = `
             <div style="width: 100%; height: 100vh; display: flex; flex-direction: column; background: linear-gradient(135deg, #2a1a3a, #3a2a4a); position: relative;">
@@ -4459,6 +4460,51 @@ const UI = {
                                 </div>
                             `;
                         }).join('') || '<p style="color: #8877aa;">暂无进行中的任务</p>'}
+                    </div>
+                    
+                    <h3 style="color: #ffcc66; margin-bottom: 15px;">📋 可接取 (${availableQuests.length})</h3>
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px;">
+                        ${availableQuests.map(quest => {
+                            return `
+                                <div style="
+                                    padding: 15px 20px;
+                                    background: rgba(60, 45, 30, 0.7);
+                                    border: 2px solid #886633;
+                                    border-radius: 10px;
+                                ">
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                        <div style="flex: 1;">
+                                            <div style="font-size: 17px; font-weight: bold; color: #ffdd99; margin-bottom: 5px;">
+                                                ${quest.isMainQuest ? '⭐ ' : ''}${quest.name}
+                                            </div>
+                                            <div style="font-size: 13px; color: #aa9977; margin-bottom: 8px;">${quest.description || ''}</div>
+                                            <div style="font-size: 12px; color: #888;">
+                                                ${quest.giver ? '委托人: ' + (DataManager.getCharacter(quest.giver)?.name || quest.giver) : ''}
+                                                ${quest.difficulty ? ' | 难度: ' + quest.difficulty : ''}
+                                                ${quest.recommendedLevel ? ' | 推荐等级: Lv.' + quest.recommendedLevel : ''}
+                                            </div>
+                                            <div style="margin-top: 6px; font-size: 12px; color: #ffd700;">
+                                                奖励: ${quest.rewards?.exp ? quest.rewards.exp + ' 经验 ' : ''}${quest.rewards?.gold ? quest.rewards.gold + ' 金币' : ''}
+                                            </div>
+                                        </div>
+                                        <div onclick="Game.acceptQuest('${quest.id}')" style="
+                                            padding: 8px 16px;
+                                            background: linear-gradient(135deg, #665522, #887733);
+                                            border: 1px solid #aa9944;
+                                            border-radius: 8px;
+                                            color: #ffeeaa;
+                                            cursor: pointer;
+                                            font-size: 13px;
+                                            font-weight: bold;
+                                            white-space: nowrap;
+                                            margin-left: 15px;
+                                        " onmouseover="this.style.background='linear-gradient(135deg, #776633, #998844)'" onmouseout="this.style.background='linear-gradient(135deg, #665522, #887733)'">
+                                            接取
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('') || '<p style="color: #887766;">暂无可接取的任务（完成更多任务或提升等级后解锁）</p>'}
                     </div>
                     
                     <h3 style="color: #888; margin-bottom: 15px;">✅ 已完成 (${completedQuests.length})</h3>

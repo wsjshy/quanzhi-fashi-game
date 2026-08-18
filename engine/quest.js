@@ -393,6 +393,51 @@ const QuestSystem = {
     },
 
     /**
+     * 获取所有可接取的任务（v1.8.2: 任务面板可接取列表）
+     * 遍历所有任务，检查未接取、未完成、前置条件满足、等级条件满足
+     */
+    getAllAvailableQuests() {
+        const available = [];
+        const allQuests = DataManager.getAllQuests ? DataManager.getAllQuests() : {};
+
+        for (const questId in allQuests) {
+            const quest = allQuests[questId];
+            if (!quest) continue;
+
+            // 已接取或已完成的跳过
+            if (Player.getActiveQuest(questId)) continue;
+            if (Player.isQuestComplete(questId)) continue;
+
+            // 检查前置任务
+            if (quest.prerequisites && quest.prerequisites.length > 0) {
+                let preMet = true;
+                for (const pre of quest.prerequisites) {
+                    if (typeof pre === 'object' && pre.flag) {
+                        if (!Player.flags || !Player.flags[pre.flag]) { preMet = false; break; }
+                    } else if (!Player.isQuestComplete(pre)) {
+                        preMet = false; break;
+                    }
+                }
+                if (!preMet) continue;
+            }
+
+            // 检查等级条件（如果有trigger.minLevel）
+            if (quest.trigger && quest.trigger.minLevel && (Player.level || 1) < quest.trigger.minLevel) continue;
+
+            available.push(quest);
+        }
+
+        // 按主线优先、然后按名称排序
+        available.sort((a, b) => {
+            if (a.isMainQuest && !b.isMainQuest) return -1;
+            if (!a.isMainQuest && b.isMainQuest) return 1;
+            return (a.name || '').localeCompare(b.name || '');
+        });
+
+        return available;
+    },
+
+    /**
      * 获取所有可接取的任务
      */
     getAvailableQuests(npcId) {
