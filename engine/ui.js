@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v2.0.0 · 灾后剧情与去留抉择</div>
+                ">v2.1.0 · 重建任务线与离开节点</div>
             </div>
         `;
 

@@ -485,6 +485,16 @@ const BigEventSystem = {
             }
         }
 
+        // v2.1.0: 接取任务效果
+        if (effects.acceptQuest && typeof QuestSystem !== 'undefined') {
+            const quests = Array.isArray(effects.acceptQuest) ? effects.acceptQuest : [effects.acceptQuest];
+            for (const questId of quests) {
+                if (!Player.isQuestActive(questId) && !Player.isQuestComplete(questId)) {
+                    QuestSystem.acceptQuest(questId);
+                }
+            }
+        }
+
         // v1.8.2: 星尘魔器分配（按评级）
         if (effects.starDustAssignByRank && typeof StarDustArtifactSystem !== 'undefined') {
             let rank = effects.starDustAssignByRank.rank || 'B';

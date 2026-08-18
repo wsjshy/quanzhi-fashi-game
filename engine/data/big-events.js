@@ -1433,6 +1433,7 @@ const DataBigEvents = {
         effects: {
           exp: 200,
           gold: 300,
+          acceptQuest: "quest_rebuild_clear_rubble",
           flags: { "bo_city_arc_completed": true, "rebuilding_arc_started": true }
         }
       },

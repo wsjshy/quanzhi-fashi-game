@@ -507,6 +507,7 @@ const DebugPanel = {
                             <button onclick="DebugPanel.triggerBigEvent('big_event_annual_exam')" style="background: #4466aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">📝 年度考核</button>
                             <button onclick="DebugPanel.triggerBigEvent('big_event_earth_spring_duel')" style="background: #aa6644; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 地圣泉决斗</button>
                             <button onclick="DebugPanel.triggerBigEvent('big_event_post_disaster')" style="background: #6644aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚖️ 灾后审判</button>
+                            <button onclick="DebugPanel.completeRebuildQuests()" style="background: #44aa66; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🏗️ 完成重建任务</button>
                             <button onclick="WorldState.setFlag('hunter_team_member', true); WorldState.setFlag('hunter_rank', 'apprentice'); alert('已加入猎妖队');" style="background: #66aa44; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🏹 加入猎妖队</button>
                             <button onclick="DebugPanel.startBattleWithAlly('one_eye_wolf')" style="background: #44aa88; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 带队友战斗测试</button>
                             <button onclick="DebugPanel.startBattle('mage_student', { mode: 'duel', canUseItems: false, canFlee: false, winHpPercent: 0.2, isFriendly: true })" style="background: #66aa44; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 决斗模式</button>
@@ -1848,6 +1849,40 @@ const DebugPanel = {
         } catch (e) {
             console.error('[Debug] triggerBigEvent错误:', e);
             alert('触发大事件失败: ' + e.message);
+        }
+    },
+
+    // v2.1.0: 快速完成重建任务线
+    completeRebuildQuests() {
+        try {
+            const rebuildQuests = [
+                'quest_rebuild_clear_rubble',
+                'quest_rebuild_rescue_survivors',
+                'quest_rebuild_medical_aid',
+                'quest_rebuild_patrol',
+                'quest_rebuild_school',
+                'quest_rebuild_market',
+                'quest_rebuild_defense',
+                'quest_rebuild_memorial',
+                'quest_rebuild_hunt_guard',
+                'quest_rebuild_train_students',
+                'quest_rebuild_investigation',
+                'quest_rebuild_final_report'
+            ];
+            let count = 0;
+            for (const questId of rebuildQuests) {
+                if (!Player.isQuestComplete(questId)) {
+                    Player.completeQuest(questId);
+                    count++;
+                }
+            }
+            Player.flags['stay_in_bo_city'] = true;
+            Player.flags['rebuilding_arc_started'] = true;
+            alert(`已完成 ${count} 个重建任务！`);
+            console.log(`[Debug] 完成重建任务: ${count}个`);
+        } catch (e) {
+            console.error('[Debug] completeRebuildQuests错误:', e);
+            alert('完成重建任务失败: ' + e.message);
         }
     },
     

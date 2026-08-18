@@ -2,6 +2,41 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v2.1.0 - 重建任务线与离开节点
+
+### 重建任务线（新增12个任务）
+**第一阶段：救援与清理（4个）**
+- quest_rebuild_clear_rubble - 清理主街道废墟
+- quest_rebuild_rescue_survivors - 搜救被困幸存者
+- quest_rebuild_medical_aid - 协助医疗队
+- quest_rebuild_patrol - 夜间巡逻
+
+**第二阶段：重建与恢复（4个）**
+- quest_rebuild_school - 重建天澜魔法高中
+- quest_rebuild_market - 恢复集市运营
+- quest_rebuild_defense - 修复城市防御法阵
+- quest_rebuild_memorial - 灾难纪念碑落成
+
+**第三阶段：守护与成长（4个）**
+- quest_rebuild_hunt_guard - 守护重建区域
+- quest_rebuild_train_students - 指导新生修炼
+- quest_rebuild_investigation - 调查残留黑教廷踪迹
+- quest_rebuild_final_report - 重建成果汇报（获得唐月推荐信）
+
+### 系统支持
+- big-event.js：applyEffects支持acceptQuest效果
+- 留博城结局自动接取第一个重建任务
+- debug.js：新增"完成重建任务"快捷按钮
+
+### 设计思路
+- 留博城是阶段性支线，不是终局
+- 12个重建任务让留博城选择有实际内容
+- 完成重建后获得唐月推荐信，自然过渡到离开节点
+- 所有路径最终汇聚到原著的古都/明珠线
+
+### 设计文档
+- docs/version-design/v2.1.0_重建任务线与离开节点设计.md
+
 ## v2.0.0 - 灾后剧情与去留抉择
 
 ### 灾后审判系统（新增）

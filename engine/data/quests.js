@@ -3982,5 +3982,238 @@ const DataQuests = {
     dialogueStart: "公园的魔藤疯了！变异植物系妖魔把整个公园都占了，还有游客被困。火克木，你要是火系就占大便宜。",
     dialogueInProgress: "魔藤会从地下突袭，注意地面裂缝。先救被困的人，再集中火力烧魔藤的根！",
     dialogueComplete: "魔藤清除了，游客都救出来了。公园管理处给猎妖队送了感谢信，你这次立大功了。"
+  },
+
+  // ========== v2.1.0: 博城重建任务线 ==========
+  quest_rebuild_clear_rubble: {
+    id: "quest_rebuild_clear_rubble",
+    name: "清理主街道废墟",
+    description: "博城灾难后，主街道被废墟堵塞。协助工程队清理主街道的废墟，恢复交通。",
+    giver: "xue_musheng",
+    type: "explore",
+    objectives: [
+      { type: "explore", locationId: "bo_city_street", count: 3, description: "在博城市街探索3次，协助清理废墟" }
+    ],
+    rewards: { exp: 100, gold: 150, reputation: { "bo_city": 10 } },
+    prerequisites: [{ flag: "stay_in_bo_city" }],
+    nextQuest: "quest_rebuild_rescue_survivors",
+    isMainQuest: false,
+    difficulty: "easy",
+    recommendedLevel: 8,
+    dialogueStart: "博城的主街道还被废墟堵着，工程队缺人手。你能去帮帮忙吗？",
+    dialogueInProgress: "清理工作进展如何？注意安全，废墟里可能还有残留的妖魔。",
+    dialogueComplete: "辛苦了！主街道终于通了，市民们都很感激你。"
+  },
+  quest_rebuild_rescue_survivors: {
+    id: "quest_rebuild_rescue_survivors",
+    name: "搜救被困幸存者",
+    description: "灾难后还有一些幸存者被困在废墟中。跟随救援队搜索老街区，救出被困的市民。",
+    giver: "tang_yue",
+    type: "explore",
+    objectives: [
+      { type: "explore", locationId: "old_district", count: 3, description: "在老街区搜索3次，搜救幸存者" }
+    ],
+    rewards: { exp: 120, gold: 100, reputation: { "bo_city": 15 }, npcRelation: { "tang_yue": 5 } },
+    prerequisites: ["quest_rebuild_clear_rubble"],
+    nextQuest: "quest_rebuild_medical_aid",
+    isMainQuest: false,
+    difficulty: "easy",
+    recommendedLevel: 8,
+    dialogueStart: "老街区还有一些幸存者被困，救援队正在搜索。你要一起去吗？",
+    dialogueInProgress: "找到幸存者了吗？他们可能很虚弱，注意安抚情绪。",
+    dialogueComplete: "你救出来的那家人一直在感谢你。做得好，孩子。"
+  },
+  quest_rebuild_medical_aid: {
+    id: "quest_rebuild_medical_aid",
+    name: "协助医疗队",
+    description: "临时医疗点缺少魔法草药和绷带。收集5株魔法草药和3卷绷带，送到医疗点。",
+    giver: "tang_yue",
+    type: "collect",
+    objectives: [
+      { type: "collect", itemId: "magic_herb", count: 5, description: "收集 5 株魔法草药" },
+      { type: "collect", itemId: "bandage", count: 3, description: "收集 3 卷绷带" }
+    ],
+    rewards: { exp: 100, gold: 120, reputation: { "bo_city": 10 }, items: [{ itemId: "health_potion", count: 2 }] },
+    prerequisites: ["quest_rebuild_rescue_survivors"],
+    nextQuest: "quest_rebuild_patrol",
+    isMainQuest: false,
+    difficulty: "easy",
+    recommendedLevel: 8,
+    dialogueStart: "医疗点的物资快用完了，你能帮忙收集一些草药和绷带吗？",
+    dialogueInProgress: "物资收集得怎么样了？伤员们都等着用呢。",
+    dialogueComplete: "太好了！这些物资正好够用。医疗队让我代他们谢谢你。"
+  },
+  quest_rebuild_patrol: {
+    id: "quest_rebuild_patrol",
+    name: "夜间巡逻",
+    description: "灾难后夜间还有残留妖魔出没。跟随猎妖队在博城边缘巡逻，清除3只残留妖魔。",
+    giver: "hunter_leader",
+    type: "kill",
+    objectives: [
+      { type: "kill", enemyId: "demon_wolf", count: 3, description: "击杀 3 只残留妖魔" }
+    ],
+    rewards: { exp: 150, gold: 200, reputation: { "bo_city": 15, "hunter": 10 } },
+    prerequisites: ["quest_rebuild_medical_aid"],
+    nextQuest: "quest_rebuild_school",
+    isMainQuest: false,
+    difficulty: "normal",
+    recommendedLevel: 9,
+    dialogueStart: "夜间还有残留妖魔在城市边缘游荡，市民们不敢出门。你能参加巡逻队吗？",
+    dialogueInProgress: "巡逻情况如何？注意安全，妖魔可能成群出现。",
+    dialogueComplete: "昨晚的巡逻很成功，市民们终于能睡个安稳觉了。"
+  },
+  quest_rebuild_school: {
+    id: "quest_rebuild_school",
+    name: "重建天澜魔法高中",
+    description: "天澜魔法高中在灾难中受损严重。协助收集建筑材料，帮助学校重建。",
+    giver: "xue_musheng",
+    type: "collect",
+    objectives: [
+      { type: "collect", itemId: "magic_stone", count: 5, description: "收集 5 块魔法石材" },
+      { type: "collect", itemId: "reinforced_wood", count: 10, description: "收集 10 根强化木材" }
+    ],
+    rewards: { exp: 200, gold: 250, reputation: { "bo_city": 20, "school": 15 }, npcRelation: { "xue_musheng": 10 } },
+    prerequisites: ["quest_rebuild_patrol"],
+    nextQuest: "quest_rebuild_market",
+    isMainQuest: false,
+    difficulty: "normal",
+    recommendedLevel: 9,
+    dialogueStart: "学校的教学楼受损严重，我们需要建筑材料来重建。你能帮忙收集吗？",
+    dialogueInProgress: "材料收集得怎么样了？学生们都盼着能早日复课。",
+    dialogueComplete: "太好了！有了这些材料，学校很快就能重建完成。你是天澜的骄傲。"
+  },
+  quest_rebuild_market: {
+    id: "quest_rebuild_market",
+    name: "恢复集市运营",
+    description: "博城集市在灾难后停业。帮助商人们重新开张，恢复城市的经济活力。",
+    giver: "merchant_leader",
+    type: "talk",
+    objectives: [
+      { type: "talk", npcId: "merchant_zhang", count: 1, description: "与张商人交谈" },
+      { type: "talk", npcId: "merchant_li", count: 1, description: "与李商人交谈" }
+    ],
+    rewards: { exp: 150, gold: 300, reputation: { "bo_city": 15 } },
+    prerequisites: ["quest_rebuild_school"],
+    nextQuest: "quest_rebuild_defense",
+    isMainQuest: false,
+    difficulty: "easy",
+    recommendedLevel: 9,
+    dialogueStart: "集市的商人们都不敢回来做生意。你能帮忙说服他们重新开张吗？",
+    dialogueInProgress: "商人们怎么说？他们有什么顾虑？",
+    dialogueComplete: "集市又热闹起来了！这都要感谢你。"
+  },
+  quest_rebuild_defense: {
+    id: "quest_rebuild_defense",
+    name: "修复城市防御法阵",
+    description: "博城的外围防御法阵在灾难中被破坏。协助魔法协会修复防御法阵。",
+    giver: "magic_association",
+    type: "collect",
+    objectives: [
+      { type: "collect", itemId: "magic_crystal", count: 3, description: "收集 3 颗魔法水晶" }
+    ],
+    rewards: { exp: 250, gold: 200, reputation: { "bo_city": 20, "magic_association": 10 } },
+    prerequisites: ["quest_rebuild_market"],
+    nextQuest: "quest_rebuild_memorial",
+    isMainQuest: false,
+    difficulty: "normal",
+    recommendedLevel: 10,
+    dialogueStart: "城市的防御法阵需要修复，但魔法水晶不够用。你能帮忙寻找吗？",
+    dialogueInProgress: "魔法水晶找到了吗？法阵的修复全靠它了。",
+    dialogueComplete: "防御法阵修复完成！博城的安全又多了一层保障。"
+  },
+  quest_rebuild_memorial: {
+    id: "quest_rebuild_memorial",
+    name: "灾难纪念碑落成",
+    description: "博城灾难纪念碑落成，参加落成仪式，缅怀遇难者。",
+    giver: "xue_musheng",
+    type: "talk",
+    objectives: [
+      { type: "talk", npcId: "xue_musheng", count: 1, description: "参加纪念碑落成仪式" }
+    ],
+    rewards: { exp: 100, gold: 0, reputation: { "bo_city": 10 }, npcRelation: { "tang_yue": 5, "zhang_xiaohou": 5 } },
+    prerequisites: ["quest_rebuild_defense"],
+    nextQuest: "quest_rebuild_hunt_guard",
+    isMainQuest: false,
+    difficulty: "easy",
+    recommendedLevel: 10,
+    dialogueStart: "灾难纪念碑明天就要落成了，你愿意来参加仪式吗？",
+    dialogueInProgress: "仪式准备得怎么样了？这对博城人民很重要。",
+    dialogueComplete: "愿逝者安息，生者坚强。博城会重新站起来的。"
+  },
+  quest_rebuild_hunt_guard: {
+    id: "quest_rebuild_hunt_guard",
+    name: "守护重建区域",
+    description: "重建区域经常受到妖魔骚扰。连续守护重建区域，确保工程顺利进行。",
+    giver: "hunter_leader",
+    type: "kill",
+    objectives: [
+      { type: "kill", enemyId: "one_eye_wolf", count: 5, description: "击杀 5 只骚扰重建的妖魔" }
+    ],
+    rewards: { exp: 300, gold: 350, reputation: { "bo_city": 25, "hunter": 15 } },
+    prerequisites: ["quest_rebuild_memorial"],
+    nextQuest: "quest_rebuild_train_students",
+    isMainQuest: false,
+    difficulty: "hard",
+    recommendedLevel: 10,
+    dialogueStart: "重建区域老是被妖魔骚扰，工程进度受影响。你能负责守护吗？",
+    dialogueInProgress: "守护情况如何？妖魔还来骚扰吗？",
+    dialogueComplete: "有你在，重建工作顺利多了。猎妖队都佩服你的实力。"
+  },
+  quest_rebuild_train_students: {
+    id: "quest_rebuild_train_students",
+    name: "指导新生修炼",
+    description: "灾后很多新生失去了导师。协助指导新生修炼，帮助他们打好基础。",
+    giver: "tang_yue",
+    type: "cultivate",
+    objectives: [
+      { type: "cultivate", count: 3, description: "修炼3次，指导新生" }
+    ],
+    rewards: { exp: 200, gold: 150, reputation: { "school": 20 }, npcRelation: { "tang_yue": 10 } },
+    prerequisites: ["quest_rebuild_hunt_guard"],
+    nextQuest: "quest_rebuild_investigation",
+    isMainQuest: false,
+    difficulty: "easy",
+    recommendedLevel: 10,
+    dialogueStart: "灾后很多新生没人指导，你能帮忙带带他们吗？",
+    dialogueInProgress: "新生们学得怎么样？要有耐心。",
+    dialogueComplete: "新生们都说你教得好！天澜有你这样的学长，是他们的幸运。"
+  },
+  quest_rebuild_investigation: {
+    id: "quest_rebuild_investigation",
+    name: "调查残留黑教廷踪迹",
+    description: "有报告称博城附近还有黑教廷残党活动。调查并清除他们。",
+    giver: "tang_yue",
+    type: "explore",
+    objectives: [
+      { type: "explore", locationId: "xuefeng_mountain", count: 2, description: "在雪峰山搜索2次" },
+      { type: "kill", enemyId: "black_church_gray", count: 2, description: "击败 2 名黑教廷灰衣教士" }
+    ],
+    rewards: { exp: 350, gold: 300, reputation: { "inquisition": 20, "bo_city": 15 }, npcRelation: { "tang_yue": 10 } },
+    prerequisites: ["quest_rebuild_train_students"],
+    nextQuest: "quest_rebuild_final_report",
+    isMainQuest: false,
+    difficulty: "hard",
+    recommendedLevel: 11,
+    dialogueStart: "有情报显示黑教廷残党还在博城附近活动。你能去调查一下吗？",
+    dialogueInProgress: "调查进展如何？注意安全，黑教廷很危险。",
+    dialogueComplete: "做得好！黑教廷的残党被清除了。审判会会记住你的贡献。"
+  },
+  quest_rebuild_final_report: {
+    id: "quest_rebuild_final_report",
+    name: "重建成果汇报",
+    description: "向唐月老师汇报重建期间的成果，听取她对你未来发展的建议。",
+    giver: "tang_yue",
+    type: "talk",
+    objectives: [
+      { type: "talk", npcId: "tang_yue", count: 1, description: "向唐月汇报重建成果" }
+    ],
+    rewards: { exp: 300, gold: 200, reputation: { "bo_city": 20 }, npcRelation: { "tang_yue": 15 }, items: [{ itemId: "tang_yue_recommendation", count: 1 }] },
+    prerequisites: ["quest_rebuild_investigation"],
+    isMainQuest: false,
+    difficulty: "easy",
+    recommendedLevel: 11,
+    dialogueStart: "重建工作告一段落了，来我办公室一趟，我们聊聊你的未来。",
+    dialogueInProgress: "你来了？坐吧，我有些话想跟你说。",
+    dialogueComplete: "博城的重建有你一份功劳。但你的路还很长，是时候去更广阔的世界了。"
   }
 };
