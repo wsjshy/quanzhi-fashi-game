@@ -9054,7 +9054,7 @@ const DataCharacters = {
       loyal: 0.8, arrogant: 0.2, greedy: 0.1, curious: 0.5
     },
     giftPreferences: {
-      loved: ["thunder_spirit_seed", "rare_demon_core"],
+      loved: ["thunder_basic", "rare_demon_core"],
       liked: ["mana_potion", "magic_stone"],
       disliked: [],
       baseOpinionGain: 5, lovedMultiplier: 3, likedMultiplier: 1.5, dislikedMultiplier: 0.5, dailyGiftLimit: 1

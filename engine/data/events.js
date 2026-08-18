@@ -2649,7 +2649,7 @@ const DataEvents = {
         text: "循感应而去",
         effects: {
           hp: -20,
-          items: [{ itemId: "fire_spirit_seed", count: 1 }]
+          items: [{ itemId: "fire_basic", count: 1 }]
         },
         resultText: "你循着感应来到雪峰山深处，在一处熔岩裂隙中找到了一颗散发着灼热气息的红色晶石——灵种！\n\n守护灵种的是一只中级火系妖魔，你经过一番苦战才将它击退，带着灵种返回。\n\n💡 获得了灵种！在背包中使用可以炼化，大幅提升魔法威力。"
       },
@@ -2712,7 +2712,7 @@ const DataEvents = {
         effects: {
           setFlag: "meiyan_obtained",
           giveInfo: "meiyan_spirit_seed",
-          items: [{ itemId: "fire_spirit_seed", count: 1 }],
+          items: [{ itemId: "fire_basic", count: 1 }],
           exp: 500
         },
         resultText: "你触碰玫炎，那枚嫣红色的火焰灵种像有生命般跳动了一下，随即融入你的身体。\n\n你的火系魔法从此将带有玫炎的力量——温度更高，灼烧更强。"
@@ -2821,7 +2821,7 @@ const DataEvents = {
           setFlag: "parasite_demon_defeated",
           giveInfo: "parasite_demon_incident",
           exp: 1000,
-          items: [{ itemId: "thunder_spirit_seed", count: 1 }]
+          items: [{ itemId: "thunder_basic", count: 1 }]
         },
         resultText: "你用妖母精魄换来了灵级雷种·千钧——天山雷峰采集的稀有灵种，释放雷系魔法时产生空间震荡。\n\n⚡ 获得灵级雷种·千钧！"
       }
