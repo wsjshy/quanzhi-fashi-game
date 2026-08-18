@@ -2324,6 +2324,14 @@ const BattleSystem = {
                     const keep = te.fireExplodeKeep || 0;
                     TalentCombatSystem.state.fireEnergy = keep;
                 }
+                // v2.4.0: 火+土组合 - 熔岩：火系攻击附加灼烧
+                if (te.earthEnergyGain && !this.enemy.statusEffects.some(e => e.type === 'burn')) {
+                    this.applyStatusEffects(this.enemy, [{
+                        type: 'burn', name: '灼烧', duration: 3,
+                        damagePerTurn: Math.floor(this.player.attack * 0.1)
+                    }], true);
+                    this.addLog(`🔥🪨 熔岩！目标被灼烧！`, 'element');
+                }
             } else if (element === 'thunder') {
                 const gain = 2;
                 const max = 6;
@@ -2352,6 +2360,13 @@ const BattleSystem = {
                     this.addLog(`🌑 诅咒满层！引爆造成 ${curseDmg} 点伤害！`, 'crit');
                     this.applyDamage(this.enemy, { amount: curseDmg, element: 'dark', isCrit: false, isMiss: false, trueDamage: true }, this.player);
                     this.enemy.curseStacks = 0;
+                }
+            } else if (element === 'water') {
+                // v2.4.0: 植物+水组合 - 滋养：水系技能使植物生长+2层
+                if (te.plantGrowth && this.player.elements && this.player.elements.includes('plant')) {
+                    if (!this.player.plantGrowthStacks) this.player.plantGrowthStacks = 0;
+                    this.player.plantGrowthStacks = Math.min(te.plantGrowthMax || 8, this.player.plantGrowthStacks + 2);
+                    this.addLog(`🌿💧 滋养！水系技能使植物生长+2（${this.player.plantGrowthStacks}/${te.plantGrowthMax || 8}）`, 'element');
                 }
             }
             // 其他系的资源积累在各自的天赋效果中处理
@@ -5223,6 +5238,31 @@ const BattleSystem = {
         // v2.2.0: 植物系生长 - 每层+5%伤害
         if (element === 'plant' && attacker === this.player && this.player.plantGrowthStacks) {
             attack = Math.floor(attack * (1 + this.player.plantGrowthStacks * 0.05));
+        }
+
+        // v2.4.0: 火+冰组合 - 融化：火系对冻结目标伤害+50%
+        if (element === 'fire' && attacker === this.player && target && target.statusEffects) {
+            const isFrozen = target.statusEffects.some(e => e.type === 'freeze' || e.type === 'frozen');
+            const hasIceTalent = this.player.talentEffects && (this.player.talentEffects.frostStackMax || this.player.talentEffects.freezeChance);
+            if (isFrozen && hasIceTalent) {
+                attack = Math.floor(attack * 1.50);
+            }
+        }
+
+        // v2.4.0: 雷+水组合 - 感电：雷系对潮湿目标伤害+30%
+        if (element === 'thunder' && attacker === this.player && target && target.statusEffects) {
+            const isWet = target.statusEffects.some(e => e.type === 'wet' || e.type === 'soaked' || e.type === 'water');
+            const hasWaterTalent = this.player.talentEffects && this.player.talentEffects.waterFormAuto;
+            if (isWet && hasWaterTalent) {
+                attack = Math.floor(attack * 1.30);
+            }
+        }
+
+        // v2.4.0: 冰+风组合 - 暴风雪：疾风状态下冰系伤害+30%
+        if (element === 'ice' && attacker === this.player && typeof TalentCombatSystem !== 'undefined' && TalentCombatSystem.state) {
+            if (TalentCombatSystem.hasWindStreak() && this.player.talentEffects?.windStreakOnDodge) {
+                attack = Math.floor(attack * 1.30);
+            }
         }
 
         // 命中判定（考虑目标闪避修正）

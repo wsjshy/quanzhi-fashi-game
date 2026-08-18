@@ -132,6 +132,8 @@ const Player = {
     skillLevels: {},  // 技能等级：{ skillId: { level, exp } }
     realm: 'initial',  // 境界：initial/middle/high/super
     talents: {},  // 天赋：{ elementId: { talentId, level, exp } }
+    primaryElement: null,  // v2.4.0: 主修系（100%天赋效果，解锁主动技能）
+    secondaryElement: null,  // v2.4.0: 副修系（70%天赋效果，与主修系触发跨系组合）
     spiritSeeds: {},  // 灵种：{ elementId: seedId }
     starDustArtifacts: {},  // 星尘魔器：{ elementId: { id, level, exp } }
     starDustAssignment: null,  // v1.8.2: 学校/家族分配的星尘魔器临时使用权 { artifactId, grade, daysRemaining, totalDays, source, assignedDay, expireDay }
@@ -1032,6 +1034,11 @@ const Player = {
             this.talents[element] = TalentSystem.initTalentForElement(element);
         }
 
+        // v2.4.0: 自动设置主修系（如果还没有）
+        if (!this.primaryElement) {
+            this.primaryElement = element;
+        }
+
         // 新系从Lv1开始，只解锁该系1级技能
         const unlockedSkills = [];
         const starterTable = SKILL_UNLOCK_TABLE[element];
@@ -1096,6 +1103,53 @@ const Player = {
     },
 
     /**
+     * v2.4.0: 设置主修系
+     * @param {string} element - 元素系ID
+     */
+    setPrimaryElement(element) {
+        if (!this.talents || !this.talents[element]) return false;
+        // 如果与副修系相同，清空副修系
+        if (this.secondaryElement === element) this.secondaryElement = null;
+        this.primaryElement = element;
+        return true;
+    },
+
+    /**
+     * v2.4.0: 设置副修系
+     * @param {string} element - 元素系ID
+     */
+    setSecondaryElement(element) {
+        if (!this.talents || !this.talents[element]) return false;
+        // 不能与主修系相同
+        if (this.primaryElement === element) return false;
+        this.secondaryElement = element;
+        return true;
+    },
+
+    /**
+     * v2.4.0: 获取当前跨系组合
+     * @returns {object|null} 组合信息
+     */
+    getCrossElementCombo() {
+        if (!this.primaryElement || !this.secondaryElement) return null;
+        const combos = {
+            'fire+wind': { name: '火焰风暴', desc: '闪避攒燃点，疾风强化爆炸' },
+            'ice+thunder': { name: '超导', desc: '冻结加速电荷，破冰连锁' },
+            'earth+dark': { name: '岩刺诅咒', desc: '受击上诅咒，反击引爆' },
+            'water+light': { name: '形态协同', desc: '涨潮时光系额外输出' },
+            'summon+heal': { name: '契约治愈', desc: '契约积累时全队回血' },
+            'fire+ice': { name: '融化', desc: '火系对冻结目标伤害+50%' },
+            'thunder+water': { name: '感电', desc: '水系目标受雷伤+30%' },
+            'plant+water': { name: '滋养', desc: '水系技能加速植物生长' },
+            'ice+wind': { name: '暴风雪', desc: '疾风状态下冰系范围+减速' },
+            'fire+earth': { name: '熔岩', desc: '火系附加灼烧地面，土系反击带燃烧' }
+        };
+        const key1 = `${this.primaryElement}+${this.secondaryElement}`;
+        const key2 = `${this.secondaryElement}+${this.primaryElement}`;
+        return combos[key1] || combos[key2] || null;
+    },
+
+    /**
      * 获取某元素系的天赋效果
      * @param {string} element - 元素系ID
      * @returns {object} 天赋效果
@@ -1117,11 +1171,19 @@ const Player = {
 
         for (const element in this.talents) {
             const effects = this.getElementTalentEffects(element);
+            // v2.4.0: 双天赋装备系统 - 主修系100%，副修系70%，其他系50%
+            let multiplier = 0.5; // 默认其他系50%
+            if (element === this.primaryElement) multiplier = 1.0;
+            else if (element === this.secondaryElement) multiplier = 0.7;
+
             for (const key in effects) {
                 if (typeof effects[key] === 'number') {
-                    totalEffects[key] = (totalEffects[key] || 0) + effects[key];
+                    totalEffects[key] = (totalEffects[key] || 0) + effects[key] * multiplier;
                 } else {
-                    totalEffects[key] = effects[key];
+                    // 非数值效果（如activeSkill）只取主修系
+                    if (multiplier >= 1.0 || !totalEffects[key]) {
+                        totalEffects[key] = effects[key];
+                    }
                 }
             }
         }
@@ -1950,6 +2012,8 @@ const Player = {
             skillLevels: this.skillLevels,
             realm: this.realm,
             talents: this.talents,
+            primaryElement: this.primaryElement,
+            secondaryElement: this.secondaryElement,
             spiritSeeds: this.spiritSeeds,
             starDustArtifacts: this.starDustArtifacts,
             starDustAssignment: this.starDustAssignment || null,
@@ -2058,6 +2122,8 @@ const Player = {
             this.skillLevels = data.skillLevels ?? {};
             this.realm = data.realm ?? 'initial';
             this.talents = data.talents ?? {};
+            this.primaryElement = data.primaryElement ?? null;
+            this.secondaryElement = data.secondaryElement ?? null;
             this.spiritSeeds = data.spiritSeeds ?? {};
             this.starDustArtifacts = data.starDustArtifacts ?? {};
             this.starDustAssignment = data.starDustAssignment ?? null;
@@ -2169,6 +2235,12 @@ const Player = {
                         console.log(`[存档迁移] 为 ${elem} 初始化天赋: ${this.talents[elem].talentId}`);
                     }
                 });
+            }
+
+            // v2.4.0: 旧存档兼容 - 自动设置主修系为第一个觉醒的系别
+            if (!this.primaryElement && this.elements && this.elements.length > 0) {
+                this.primaryElement = this.elements[0];
+                console.log(`[存档迁移] 自动设置主修系: ${this.primaryElement}`);
             }
             
             // 测试用：保留存档天数

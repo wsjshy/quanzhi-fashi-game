@@ -5610,6 +5610,32 @@ const UI = {
                             ${Player.talents && Object.keys(Player.talents).length > 0 ? `
                             <div style="margin-bottom: 15px; text-align: left;">
                                 <div style="color: #aaa; font-size: 13px; margin-bottom: 8px;">🌟 系别天赋</div>
+                                ${(() => {
+                                    // v2.4.0: 双天赋装备系统 - 主修系/副修系选择
+                                    const elemNames = { fire:'火系', ice:'冰系', thunder:'雷系', water:'水系', wind:'风系', earth:'土系', light:'光系', dark:'暗系', heal:'治愈系', plant:'植物系', summon:'召唤系' };
+                                    const combo = Player.getCrossElementCombo ? Player.getCrossElementCombo() : null;
+                                    return `
+                                        <div style="margin-bottom: 10px; padding: 8px 12px; background: #2a2a3a; border-radius: 6px; border: 1px solid #444;">
+                                            <div style="display: flex; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+                                                <span style="color: #ffd700; font-size: 12px;">主修:</span>
+                                                <select onchange="Player.setPrimaryElement(this.value); UI.showCharacterPanel();" style="background:#333;color:#fff;border:1px solid #555;border-radius:4px;padding:2px 6px;font-size:12px;">
+                                                    <option value="">未选择</option>
+                                                    ${Player.elements.map(e => `<option value="${e}" ${Player.primaryElement===e?'selected':''}>${elemNames[e]||e}</option>`).join('')}
+                                                </select>
+                                                <span style="color: #88ccff; font-size: 12px; margin-left: 8px;">副修:</span>
+                                                <select onchange="Player.setSecondaryElement(this.value); UI.showCharacterPanel();" style="background:#333;color:#fff;border:1px solid #555;border-radius:4px;padding:2px 6px;font-size:12px;">
+                                                    <option value="">未选择</option>
+                                                    ${Player.elements.filter(e => e !== Player.primaryElement).map(e => `<option value="${e}" ${Player.secondaryElement===e?'selected':''}>${elemNames[e]||e}</option>`).join('')}
+                                                </select>
+                                            </div>
+                                            <div style="font-size: 11px; color: #888;">主修100%效果 | 副修70%效果 | 其他50%效果</div>
+                                            ${combo ? `<div style="margin-top: 6px; padding: 4px 8px; background: #ffd70022; border-radius: 4px; border: 1px solid #ffd70055;">
+                                                <span style="color: #ffd700; font-size: 12px; font-weight: bold;">✨ ${combo.name}</span>
+                                                <span style="color: #ccc; font-size: 11px; margin-left: 6px;">${combo.desc}</span>
+                                            </div>` : ''}
+                                        </div>
+                                    `;
+                                })()}
                                 ${Player.elements.map(elem => {
                                     const talentData = Player.talents[elem];
                                     if (!talentData || typeof TalentSystem === 'undefined') return '';
