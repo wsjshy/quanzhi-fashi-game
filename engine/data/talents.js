@@ -17,25 +17,37 @@ const DataTalents = {
   // 火系天赋
   // ================================================================
 
-  // 普通：烈焰之魂 - v1.4.0重做，加入Lv5分支选择（爆发流/持续流）
+  // v2.2.0重做：资源积累型 - 燃点系统
   fire_talent_basic: {
     id: "fire_talent_basic",
     name: "烈焰之魂",
     element: "fire",
     rarity: "common",
     type: "growth",
-    description: "与火元素亲和，火系伤害随成长不断进化。Lv5时可选择爆发流或持续流，最终化为烈焰领主或熔岩君主。",
+    mechanism: "resource",  // v2.2.0: 机制类型 resource/state/form/trigger/passive
+    resourceType: "fire",   // 资源类型
+    resourceMax: 10,        // 资源上限
+    description: "与火元素亲和，火系攻击积累燃点，满层爆炸或主动消耗强化。Lv5解锁主动技能「烈焰冲击」，可选择爆炸流/燃尽流/强化流。",
     maxLevel: 10,
+    activeSkill: {  // v2.2.0: 主动技能（Lv5解锁）
+      id: "fire_active_burst",
+      name: "烈焰冲击",
+      description: "消耗5燃点，造成150%攻击力火焰伤害，附带3层燃烧。",
+      cost: 5,
+      cooldown: 2,
+      damageMultiplier: 1.5,
+      burnStacks: 3
+    },
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "烈焰之魂",
-        description: "火系技能伤害+10%，攻击附加1层燃烧。",
-        effects: { damageBonus: 0.10, burnChance: 1.0, burnStacks: 1 }
+        description: "火系伤害+10%，火系攻击积累1燃点（上限10）。",
+        effects: { damageBonus: 0.10, fireEnergyGain: 1, fireEnergyMax: 10 }
       },
       {
         level: 3, stage: "特性", name: "烈焰护体",
-        description: "受到近战攻击时，反弹10%火系伤害给攻击者。燃烧每层+3%伤害，最多5层。",
-        effects: { damageBonus: 0.05, damageReflect: 0.10, burnDamageBonus: 0.03, burnStackMax: 5 }
+        description: "燃点满层时自动爆炸，对所有敌人造成80%攻击力火焰伤害，燃点清零。燃烧每层+3%伤害。",
+        effects: { damageBonus: 0.05, fireExplodeOnMax: true, fireExplodeDamage: 0.80, burnDamageBonus: 0.03 }
       },
       {
         level: 5, stage: "进化", name: "分支选择",
@@ -43,30 +55,38 @@ const DataTalents = {
         branchChoices: [
           {
             id: "explosion",
-            name: "爆燃",
-            description: "爆发流：满层燃烧时爆炸，造成50%攻击力伤害，爆炸后刷新燃烧。",
-            effects: { damageBonus: 0.10, burnExplode: 0.50, burnExplodeRefresh: true }
+            name: "爆炸流",
+            description: "爆炸伤害+50%，爆炸后燃点保留3层。",
+            effects: { damageBonus: 0.10, fireExplodeBonus: 0.50, fireExplodeKeep: 3 }
           },
           {
-            id: "lava",
-            name: "熔岩",
-            description: "持续流：燃烧持续时间+2回合，伤害+50%，燃烧变为真实伤害。",
-            effects: { damageBonus: 0.10, burnDuration: 2, burnDamageBonus: 0.50, burnTrueDamage: true }
+            id: "burn",
+            name: "燃尽流",
+            description: "燃烧伤害+100%，燃烧变为真实伤害。",
+            effects: { damageBonus: 0.10, burnDamageBonus: 1.0, burnTrueDamage: true }
+          },
+          {
+            id: "enhance",
+            name: "强化流",
+            description: "消耗3燃点强化下一次普攻，伤害+80%且必暴击。",
+            effects: { damageBonus: 0.10, fireEnhanceAttack: true, fireEnhanceCost: 3, fireEnhanceBonus: 0.80, fireEnhanceCrit: true }
           }
         ]
       },
       {
         level: 7, stage: "延伸",
         branchEffects: {
-          explosion: { name: "炎怒", description: "HP低于30%时进入狂暴，火系伤害+50%，爆炸伤害+30%。", effects: { damageBonus: 0.10, enrageDamage: 0.50, enrageThreshold: 0.30, explodeBonus: 0.30 } },
-          lava: { name: "岩浆护甲", description: "周身环绕岩浆，每回合对所有敌人造成3%最大HP灼烧，受到伤害-15%。", effects: { damageBonus: 0.10, fireAura: 0.03, damageReduction: 0.15 } }
+          explosion: { name: "炎怒", description: "HP低于30%时狂暴，火系伤害+50%，爆炸伤害+30%。", effects: { damageBonus: 0.10, enrageDamage: 0.50, enrageThreshold: 0.30, fireExplodeBonus: 0.30 } },
+          burn: { name: "岩浆护甲", description: "每回合对所有敌人造成3%最大HP灼烧，受到伤害-15%。", effects: { damageBonus: 0.10, fireAura: 0.03, damageReduction: 0.15 } },
+          enhance: { name: "连击", description: "强化普攻后获得1回合连击状态。", effects: { damageBonus: 0.10, fireEnhanceCombo: true } }
         }
       },
       {
         level: 10, stage: "终极",
         branchEffects: {
-          explosion: { name: "烈焰领主", description: "所有火系技能等级+1，火系伤害无视30%防御，爆炸必定暴击。", effects: { damageBonus: 0.15, skillLevelBonus: 1, firePenetration: 0.30, explodeCrit: true } },
-          lava: { name: "熔岩君主", description: "燃烧上限+5层，满层时目标防御-30%，燃烧伤害可暴击。", effects: { damageBonus: 0.15, burnStackMax: 10, burnDefenseDown: 0.30, burnCrit: true } }
+          explosion: { name: "烈焰领主", description: "爆炸无冷却，燃点上限+5，爆炸必定暴击。", effects: { damageBonus: 0.15, fireExplodeNoCooldown: true, fireEnergyMax: 15, fireExplodeCrit: true } },
+          burn: { name: "熔岩君主", description: "燃烧可暴击，暴击时触发爆炸，燃烧上限+5层。", effects: { damageBonus: 0.15, burnCrit: true, burnCritExplode: true, burnStackMax: 10 } },
+          enhance: { name: "炎暴", description: "强化普攻变为AOE，击杀后重置冷却，燃点获取+1。", effects: { damageBonus: 0.15, fireEnhanceAOE: true, fireEnhanceResetOnKill: true, fireEnergyGain: 1 } }
         }
       }
     ]
@@ -219,15 +239,27 @@ const DataTalents = {
   // 冰系天赋
   // ================================================================
 
-  // v1.4.1重做：寒冰之躯 - 加入Lv5分支选择（破冰流/冰封流）
+  // v2.2.0更新：状态叠加型 - 寒霜层数系统
   ice_talent_basic: {
     id: "ice_talent_basic",
     name: "寒冰之躯",
     element: "ice",
     rarity: "common",
     type: "growth",
-    description: "与冰元素亲和，寒冰之力随成长不断凝聚。Lv5时可选择破冰流（高爆发）或冰封流（强控制），最终化为冰霜领主或永冻君主。",
+    mechanism: "state",  // v2.2.0: 状态叠加型
+    stateType: "frost",  // 状态类型 寒霜
+    stateMax: 5,         // 状态上限
+    description: "与冰元素亲和，冰系攻击叠加寒霜层数，满层冻结或破冰爆发。Lv5解锁主动技能「破冰一击」，可选择破冰流/冰封流/霜盾流。",
     maxLevel: 10,
+    activeSkill: {  // v2.2.0: 主动技能
+      id: "ice_active_shatter",
+      name: "破冰一击",
+      description: "对冻结目标造成200%伤害，对非冻结目标造成100%伤害并+2寒霜。",
+      cooldown: 2,
+      frozenDamageMultiplier: 2.0,
+      normalDamageMultiplier: 1.0,
+      frostGain: 2
+    },
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "寒冰之躯",
@@ -613,14 +645,16 @@ const DataTalents = {
   // 土系天赋
   // ================================================================
 
-  // v1.4.3重做：岩石之躯 - 加入Lv5分支选择（护盾流/反击流）
+  // v2.2.0更新：条件触发型 - 受击反击系统
   earth_talent_basic: {
     id: "earth_talent_basic",
     name: "岩石之躯",
     element: "earth",
     rarity: "common",
     type: "growth",
-    description: "与土元素亲和，大地之力随成长不断凝聚。Lv5时可选择护盾流（高防反伤）或反击流（受击反击），最终化为山岳领主或地裂之主。",
+    mechanism: "trigger",  // v2.2.0: 条件触发型
+    triggerType: "hit",    // 触发条件：受击
+    description: "与土元素亲和，受击积累岩力，满层反击眩晕。防守反击，越战越勇。Lv5可选择磐石流/地震流/不屈流。",
     maxLevel: 10,
     evolutions: [
       {

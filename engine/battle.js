@@ -584,6 +584,11 @@ const BattleSystem = {
         this.allies.forEach(a => { if (!a.style) a.style = 'balanced'; });
         this.allyCommands = {};  // v1.8.0: 队友指令（集火/防御/技能/自由）
         this.investigationBonus = options.investigationBonus || 0;  // v1.8.0: 调查加成（0-0.3）
+
+        // v2.2.0: 初始化天赋战斗状态系统
+        if (typeof TalentCombatSystem !== 'undefined') {
+            TalentCombatSystem.init(this.player);
+        }
         
         // 战斗模式选项
         this.battleOptions = {
@@ -2157,6 +2162,18 @@ const BattleSystem = {
         // 记录玩家使用过的元素系（用于经验分配）
         if (isPlayer && skill.element && skill.element !== 'neutral') {
             this.usedElements.add(skill.element);
+        }
+
+        // v2.2.0: 天赋资源积累（根据技能元素）
+        if (isPlayer && typeof TalentCombatSystem !== 'undefined' && skill.type === 'damage') {
+            const element = skill.element;
+            const isCrit = false; // 暴击判断在后面，这里先基础积累
+            if (element === 'fire') {
+                TalentCombatSystem.addEnergy('fire', 1, 10);
+            } else if (element === 'thunder') {
+                TalentCombatSystem.addEnergy('thunder', 2, 6);
+            }
+            // 其他系的资源积累在各自的天赋效果中处理
         }
         
         // 发布技能释放事件
@@ -3879,9 +3896,27 @@ const BattleSystem = {
 
             this.applyDamage(this.player, damage, this.enemy);
 
+            // v2.2.0: 土系天赋 - 受击积累岩力
+            if (!damage.isMiss && typeof TalentCombatSystem !== 'undefined' && this.player.talentEffects) {
+                const te = this.player.talentEffects;
+                if (te.earthEnergyGain) {
+                    const reachedMax = TalentCombatSystem.addEnergy('earth', te.earthEnergyGain, te.earthEnergyMax || 10);
+                    if (reachedMax && te.earthCounterOnMax) {
+                        // 岩力满层触发反击
+                        this.addLog(`🪨 岩力已满！触发岩刺反击！`, 'buff');
+                        TalentCombatSystem.resetEnergy('earth');
+                    }
+                }
+            }
+
             // 天赋：闪避后效果
             if (damage.isMiss && this.player.talentEffects) {
                 const te = this.player.talentEffects;
+                // v2.2.0: 风系天赋 - 闪避触发疾风状态
+                if (te.windStreakOnDodge && typeof TalentCombatSystem !== 'undefined') {
+                    TalentCombatSystem.triggerWindStreak(te.windStreakTurns || 1);
+                    this.addLog(`💨 疾风！下次攻击连击2次！`, 'buff');
+                }
                 if (te.dodgeCritBuff) {
                     this.player._dodgeCritBuff = te.dodgeCritBuff;
                     this.addLog(`🌪️ 风遁！下次攻击暴击伤害提升！`, 'buff');
@@ -4920,6 +4955,11 @@ const BattleSystem = {
         
         this.isPlayerTurn = true;
         this.isProcessingAction = false; // 重置行动锁，允许下一次行动
+
+        // v2.2.0: 天赋战斗状态回合更新（形态切换、冷却减少等）
+        if (typeof TalentCombatSystem !== 'undefined') {
+            TalentCombatSystem.onTurnStart();
+        }
 
         // 更新UI
         if (typeof UI !== 'undefined') {
