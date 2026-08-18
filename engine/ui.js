@@ -2881,6 +2881,31 @@ const UI = {
         return info[element] || { icon: '✨', name: element, desc: '', color: '#ffffff' };
     },
 
+    // v2.5.0: 选择天赋进化分支
+    selectTalentBranch(element, branchId) {
+        if (!Player.talents || !Player.talents[element]) return;
+        const talentData = Player.talents[element];
+        const talent = typeof DataTalents !== 'undefined' ? DataTalents[talentData.talentId] : null;
+        if (!talent || !talent.evolutions) return;
+
+        const evolveStage = talent.evolutions.find(e => e.level === 5 && e.branchChoices);
+        if (!evolveStage) return;
+
+        const branch = evolveStage.branchChoices.find(b => b.id === branchId);
+        if (!branch) return;
+
+        talentData.branch = branchId;
+        if (typeof Game !== 'undefined' && Game.addLog) {
+            Game.addLog(`✨ ${talent.name} 选择了「${branch.name}」进化方向！`);
+        }
+        // 刷新角色面板
+        if (typeof this.showCharacterPanel === 'function') {
+            this.showCharacterPanel();
+        } else if (typeof Game !== 'undefined' && Game.showCharacterPanel) {
+            Game.showCharacterPanel();
+        }
+    },
+
     // v0.94.0: 战斗技能内联展开 - 切换元素系展开状态
     toggleBattleElement(element) {
         if (this._expandedBattleElement === element) {
@@ -5693,6 +5718,34 @@ const UI = {
                                                 <span style="color: #888; font-size: 12px;">Lv.${talentData.level}${talentData.level >= maxLevel ? ' (满)' : ''}</span>
                                             </div>
                                             ${stageInfo}
+                                            ${(() => {
+                                                // v2.5.0: 天赋分支选择（Lv5且有branchChoices但未选择）
+                                                if (talentData.level >= 5 && talent.evolutions) {
+                                                    const evolveStage = talent.evolutions.find(e => e.level === 5 && e.branchChoices);
+                                                    if (evolveStage && !talentData.branch) {
+                                                        return `
+                                                            <div style="margin-top: 6px; padding: 6px 8px; background: #ffd70022; border: 1px solid #ffd70055; border-radius: 4px;">
+                                                                <div style="color: #ffd700; font-size: 11px; margin-bottom: 4px;">⚡ 可选择进化分支</div>
+                                                                <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                                                                    ${evolveStage.branchChoices.map(b => `
+                                                                        <button onclick="UI.selectTalentBranch('${elem}', '${b.id}')" 
+                                                                                style="flex: 1; min-width: 60px; padding: 4px 6px; background: #ffd70033; border: 1px solid #ffd700; border-radius: 3px; color: #ffd700; font-size: 11px; cursor: pointer;"
+                                                                                title="${b.description}">${b.name}</button>
+                                                                    `).join('')}
+                                                                </div>
+                                                            </div>
+                                                        `;
+                                                    }
+                                                    // 已选择分支，显示当前分支
+                                                    if (talentData.branch && evolveStage) {
+                                                        const selectedBranch = evolveStage.branchChoices.find(b => b.id === talentData.branch);
+                                                        if (selectedBranch) {
+                                                            return `<div style="margin-top: 4px; color: #66ff99; font-size: 11px;">分支：${selectedBranch.name}</div>`;
+                                                        }
+                                                    }
+                                                }
+                                                return '';
+                                            })()}
                                             ${talentData.level < maxLevel ? `
                                             <div style="height: 4px; background: #333; border-radius: 2px; overflow: hidden; margin-top: 4px;">
                                                 <div style="height: 100%; width: ${expPercent.toFixed(1)}%; background: ${rarityConfig.color};"></div>
