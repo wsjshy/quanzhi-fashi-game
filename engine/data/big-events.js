@@ -280,6 +280,12 @@ const DataBigEvents = {
             effects: { flags: { "reported_yu_ang": true } }
           },
           {
+            text: "地圣泉可能有危险，我去守护（v1.9.0）",
+            nextPhase: "phase_5_earth_spring_guard",
+            conditions: { minLevel: 7 },
+            effects: { flags: { "guarded_earth_spring": true } }
+          },
+          {
             text: "现在战斗更重要，先不管",
             nextPhase: "phase_6_final",
             effects: {}
@@ -384,6 +390,76 @@ const DataBigEvents = {
           giveInfo: "yu_ang_zhankong_knew"
         }
       },
+
+      // v1.9.0: 地圣泉守护 - 前往地圣泉
+      {
+        id: "phase_5_earth_spring_guard",
+        name: "地圣泉危机",
+        description: "你想起了之前调查到的线索——黑教廷的目标不仅仅是引来妖魔，他们还想释放地圣泉的温泽，吸引更多统领级妖魔！\n\n地圣泉是博城的命脉，如果温泽被释放，百公里内的妖魔都会被吸引过来，博城将彻底沦陷。\n\n你立刻转向地圣泉方向。宇昂的事可以交给斩空教官，但地圣泉不能有失！\n\n当你赶到地圣泉时，果然看到一个黑色教袍的身影正在泉边布置阵法。",
+        type: "narrative",
+        nextPhase: "phase_5_earth_spring_battle",
+        effects: {
+          exp: 50,
+          flags: { "earth_spring_guard_started": true }
+        }
+      },
+
+      // v1.9.0: 地圣泉守护 - 战斗
+      {
+        id: "phase_5_earth_spring_battle",
+        name: "守护地圣泉",
+        description: "黑教廷执事察觉到你的到来，停下了手中的阵法。\n\n\"又来一个碍事的。\"他的声音冰冷，\"不过没关系，你会和这座城市一起化为灰烬。\"\n\n黑色的暗影能量在他手中凝聚，你必须阻止他完成阵法！",
+        type: "battle",
+        enemyId: "black_church_deacon",
+        winPhase: "phase_5_earth_spring_success",
+        losePhase: "phase_5_earth_spring_failed"
+      },
+
+      // v1.9.0: 地圣泉守护 - 成功
+      {
+        id: "phase_5_earth_spring_success",
+        name: "地圣泉守护者",
+        description: "你击败了黑教廷执事！他倒在地上，阵法的光芒逐渐消散。\n\n\"不可能...\"他咳出黑色的血液，\"执事大人...不会放过你的...\"\n\n他的身体化作黑雾消散，只留下一枚黑色徽章。\n\n地圣泉的温泽没有被释放，博城避免了更大的灾难。\n\n唐月老师赶到时，看到被破坏的阵法和你手中的徽章，眼神中充满了欣慰。\n\n\"你做到了。\"她的声音有些颤抖，\"如果地圣泉温泽被释放，博城就真的完了。谢谢你。\"\n\n斩空教官随后赶到，了解情况后沉默了很久。\n\n\"地圣泉一周的修炼资格，是你应得的。\"斩空的语气郑重，\"还有，这件事...不要对任何人提起。审判会会处理后续。\"",
+        type: "narrative",
+        nextPhase: "phase_6_final",
+        effects: {
+          exp: 500,
+          gold: 400,
+          reputation: {
+            "military": 40,
+            "school": 20
+          },
+          flags: {
+            "earth_spring_guarded": true,
+            "defeated_black_church_deacon": true,
+            "earth_spring_week_access": true
+          },
+          giveInfo: "earth_spring_guardian",
+          items: [{ itemId: "black_church_badge", count: 1 }]
+        }
+      },
+
+      // v1.9.0: 地圣泉守护 - 失败
+      {
+        id: "phase_5_earth_spring_failed",
+        name: "温泽泄漏",
+        description: "你不是黑教廷执事的对手，被他的暗影魔法击退。\n\n当你挣扎着爬起来时，阵法已经完成了。地圣泉的温泽开始向外扩散，一股浓郁的灵气涌向远方。\n\n\"成功了。\"执事冷笑，\"很快，更多的统领级妖魔会被吸引过来。博城...完了。\"\n\n他消失在黑暗中。你无力地倒在泉边，看着温泽继续扩散。\n\n幸运的是，唐月老师和斩空教官及时赶到，用封印魔法暂时遏制了温泽的扩散，但已经有一部分泄漏出去了。\n\n\"你尽力了。\"唐月老师扶起你，\"但接下来的战斗，会更加艰难。\"\n\n那一夜，博城遭受了更多妖魔的袭击，伤亡比预期中更大。但你知道，如果你没有去，情况会更糟。",
+        type: "narrative",
+        nextPhase: "phase_6_final",
+        effects: {
+          hp: -60,
+          exp: 200,
+          reputation: {
+            "military": 15,
+            "school": 10
+          },
+          flags: {
+            "earth_spring_failed": true,
+            "earth_spring_partial_leak": true
+          },
+          giveInfo: "earth_spring_partial_leak"
+        }
+      },
       
       // 第六阶段：结局（v1.3.1: 选择+等级双条件判定，让玩家决策有意义）
       {
@@ -393,6 +469,8 @@ const DataBigEvents = {
         type: "auto",
         autoCheck: {
           conditions: [
+            // v1.9.0: 优先级0：地圣泉守护成功 → 地圣泉守护者
+            { flags: { earth_spring_guarded: true }, minLevel: 7, nextPhase: "ending_earth_spring_guardian" },
             // 优先级1：击败宇昂 + Lv6+ → 真相追寻者
             { flags: { defeated_yu_ang: true }, minLevel: 6, nextPhase: "ending_truth_seeker" },
             // 优先级2：报告斩空 + Lv6+ → 军方盟友
@@ -409,6 +487,30 @@ const DataBigEvents = {
     ],
     
     endings: {
+      // v1.9.0新增：地圣泉守护者（守护地圣泉成功）
+      earth_spring_guardian: {
+        id: "earth_spring_guardian",
+        name: "地圣泉守护者",
+        description: "你在博城灾难中选择守护地圣泉，击败了黑教廷执事，阻止了地圣泉温泽的释放。\n\n因为你的行动，博城避免了更大的灾难，无数人因此活了下来。斩空教官授予你地圣泉一周的修炼资格，唐月老师对你刮目相看。\n\n\"你守护的不仅仅是地圣泉，\"唐月老师说，\"更是博城的未来。\"\n\n你站在地圣泉边，感受着浓郁的灵气，知道这只是你与黑教廷较量的开始。",
+        effects: {
+          exp: 500,
+          gold: 400,
+          reputation: {
+            "military": 50,
+            "school": 30,
+            "tang_yue_faction": 20
+          },
+          flags: {
+            "earth_spring_guardian": true,
+            "earth_spring_week_access": true,
+            "black_church_aware": true
+          },
+          items: [
+            { itemId: "black_church_badge", count: 1 },
+            { itemId: "earth_spring_pass", count: 1 }
+          ]
+        }
+      },
       // v1.3.1新增：真相追寻者（击败宇昂，发现黑教廷真相）
       truth_seeker: {
         id: "truth_seeker",

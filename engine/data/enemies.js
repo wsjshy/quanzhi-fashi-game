@@ -2433,6 +2433,41 @@ const DataEnemies = {
     traits: ["black_church", "ambusher", "works_with_demons"]
   },
 
+  // v1.9.0: 黑教廷执事（地圣泉守护战敌人）
+  black_church_deacon: {
+    id: "black_church_deacon",
+    name: "黑教廷执事",
+    title: "地圣泉执行者",
+    description: "黑教廷执事，负责执行释放地圣泉温泽的任务。穿着黑色教袍，倒十字标记在胸前闪烁。实力达到中阶法师水平，擅长暗影和诅咒魔法。",
+    elements: ["shadow", "curse"],
+    level: 20,
+    maxHp: 500,
+    maxMp: 300,
+    attack: 40,
+    defense: 22,
+    speed: 22,
+    spirit: 35,
+    skills: [
+      "basic_attack",
+      "shadow_step",
+      "shadow_claw",
+      "curse_weakness",
+      "shadow_assault"
+    ],
+    aiType: "tactical",
+    enemyType: "human",
+    spriteColor: "#1a0033",
+    expReward: 600,
+    goldReward: 1000,
+    isCanon: false,
+    canonNote: "v1.9.0地圣泉守护分支敌人，黑教廷执行地圣泉任务的执事",
+    traits: ["black_church", "deacon", "earth_spring_mission"],
+    battleQuotes: {
+      start: "地圣泉的温泽将唤醒沉睡的妖魔，博城将化为炼狱！",
+      defeat: "不可能...执事大人不会放过你的..."
+    }
+  },
+
   // ===== 傅天明（被利用的风系学长）=====
   fu_tianming: {
     id: "fu_tianming",

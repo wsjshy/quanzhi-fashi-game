@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.8.2 · 星尘魔器分配</div>
+                ">v1.9.0 · 博城灾难分支深化</div>
             </div>
         `;
 
