@@ -1955,7 +1955,7 @@ const DataEnemies = {
       base: {
         level: 7,
         elements: ["dark"],
-        skills: ["basic_attack", "demon_life_drain", "demon_climb"],
+        skills: ["basic_attack", "life_drain", "demon_wall_climb"],
         traits: ["scale_armor", "wall_climbing", "blood_sucker", "cunning"],
         form: "human_form",
         title: "人皮伪装",
