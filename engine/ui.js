@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.8.0 · 城市猎妖任务系统</div>
+                ">v1.8.1 · 阴谋调查系统</div>
             </div>
         `;
 
