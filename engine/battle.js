@@ -1125,8 +1125,9 @@ const BattleSystem = {
     useTalentActiveSkill(talentId) {
         if (!this.active || !this.isPlayerTurn) return null;
 
-        // 获取玩家天赋
-        const playerTalent = this.player.talents ? this.player.talents.find(t => t.id === talentId) : null;
+        // 获取玩家天赋（v2.4.1: 修复talents是对象格式）
+        const talentList = this.player.talents ? Object.values(this.player.talents) : [];
+        const playerTalent = talentList.find(t => t.talentId === talentId);
         if (!playerTalent) {
             this.addLog('未装备该天赋', 'system');
             return null;
