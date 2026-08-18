@@ -2330,6 +2330,18 @@ const BattleSystem = {
                     }
                     TalentCombatSystem.resetEnergy('thunder');
                 }
+            } else if (element === 'dark') {
+                // v2.2.0: 暗系诅咒叠加
+                if (!this.enemy.curseStacks) this.enemy.curseStacks = 0;
+                this.enemy.curseStacks = Math.min(te.curseMax || 5, this.enemy.curseStacks + 1);
+                this.addLog(`🌑 诅咒叠加 ${this.enemy.curseStacks}/${te.curseMax || 5}层！`, 'element');
+                // 满层引爆
+                if (this.enemy.curseStacks >= (te.curseMax || 5)) {
+                    const curseDmg = Math.floor(this.player.attack * 0.5 * this.enemy.curseStacks);
+                    this.addLog(`🌑 诅咒满层！引爆造成 ${curseDmg} 点伤害！`, 'crit');
+                    this.applyDamage(this.enemy, { amount: curseDmg, element: 'dark', isCrit: false, isMiss: false, trueDamage: true }, this.player);
+                    this.enemy.curseStacks = 0;
+                }
             }
             // 其他系的资源积累在各自的天赋效果中处理
         }
@@ -4913,6 +4925,13 @@ const BattleSystem = {
                     this.addLog(`✨ 治疗光环恢复 ${auraHeal} 点生命！`, 'heal');
                 }
             }
+
+            // v2.2.0: 植物系生长 - 每回合自动生长
+            if (te.plantGrowth && this.player.elements && this.player.elements.includes('plant')) {
+                if (!this.player.plantGrowthStacks) this.player.plantGrowthStacks = 0;
+                this.player.plantGrowthStacks = Math.min(te.plantGrowthMax || 8, this.player.plantGrowthStacks + (te.plantGrowthPerTurn || 2));
+                this.addLog(`🌿 植物生长 ${this.player.plantGrowthStacks}/${te.plantGrowthMax || 8}层！植物系技能伤害+${this.player.plantGrowthStacks * 5}%`, 'element');
+            }
             // 雷鸣CD减少
             if (this._thunderRoarCd > 0) this._thunderRoarCd--;
 
@@ -5159,6 +5178,21 @@ const BattleSystem = {
             }
         }
 
+        // v2.2.0: 光系形态 - 圣光形态输出+20%，圣盾形态输出-10%
+        if (element === 'light' && attacker === this.player && typeof TalentCombatSystem !== 'undefined' && TalentCombatSystem.state) {
+            const lightForm = TalentCombatSystem.getLightForm();
+            if (lightForm === 'holy') {
+                attack = Math.floor(attack * 1.20);
+            } else if (lightForm === 'shield') {
+                attack = Math.floor(attack * 0.90);
+            }
+        }
+
+        // v2.2.0: 植物系生长 - 每层+5%伤害
+        if (element === 'plant' && attacker === this.player && this.player.plantGrowthStacks) {
+            attack = Math.floor(attack * (1 + this.player.plantGrowthStacks * 0.05));
+        }
+
         // 命中判定（考虑目标闪避修正）
         let evasion = 0;
         if (target) {
@@ -5214,6 +5248,12 @@ const BattleSystem = {
             defense = Math.max(0, defense + targetMods.defenseMod);
             // 大地祝福防御叠加
             if (target._defenseStackBonus) defense *= (1 + target._defenseStackBonus);
+            // v2.2.0: 光系圣盾形态 - 防御+30%
+            if (target === this.player && typeof TalentCombatSystem !== 'undefined' && TalentCombatSystem.state) {
+                if (TalentCombatSystem.getLightForm() === 'shield') {
+                    defense *= 1.30;
+                }
+            }
             // 护盾时防御加成（shieldDefenseBonus）
             if (target === this.player && target.talentEffects && target.talentEffects.shieldDefenseBonus) {
                 const hasShield = target.statusEffects.some(e => e.type === 'shield');
