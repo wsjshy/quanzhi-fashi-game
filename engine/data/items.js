@@ -2676,5 +2676,36 @@ const DataItems = {
       exp: 500,
       skillPoints: 2
     }
+  },
+
+  // v2.0.0: 审判会相关物品
+  inquisition_badge: {
+    id: "inquisition_badge",
+    name: "审判会协助者徽章",
+    description: "审判会颁发给协助调查的法师的徽章。持此徽章可在各地审判会分部获得协助，是荣誉和信任的象征。",
+    type: "quest",
+    icon: "⚖️",
+    price: 0,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "epic",
+    lore: "审判会，制裁黑教廷的中坚力量。"
+  },
+
+  tang_yue_recommendation: {
+    id: "tang_yue_recommendation",
+    name: "唐月的介绍信",
+    description: "唐月老师写给古都审判会分部的介绍信。有了这封信，你在古都可以获得审判会的协助和资源。",
+    type: "quest",
+    icon: "📜",
+    price: 0,
+    stackable: false,
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "rare",
+    lore: "唐月，审判员，也是你的老师。"
   }
 };

@@ -523,6 +523,9 @@ const DataBigEvents = {
         name: "黎明",
         description: "经过一夜的激战，黎明终于到来。妖魔们撤退了，博城守住了！\n\n虽然城市遭受了很大的损失，但在所有人的努力下，大部分人都活了下来。\n\n你站在废墟中，望着初升的太阳，心中充满了复杂的感情。这是你第一次经历真正的战争，也是你成长的开始。",
         type: "auto",
+        effects: {
+          flags: { "bo_city_disaster_completed": true }
+        },
         autoCheck: {
           conditions: [
             // v1.9.0: 优先级0：地圣泉守护成功 → 地圣泉守护者
@@ -1270,5 +1273,223 @@ const DataBigEvents = {
         }
       }
     ]
+  },
+
+  // v2.0.0: 灾后审判与去留
+  big_event_post_disaster: {
+    id: "big_event_post_disaster",
+    name: "灾后审判",
+    description: "博城灾难结束后，审判会介入调查，玩家面临去留抉择...",
+    type: "narrative",
+    autoTrigger: false,
+    conditions: {
+      requiredFlags: ["bo_city_disaster_completed"]
+    },
+    phases: [
+      // 第一阶段：审判会到来
+      {
+        id: "phase_1_inquisitor",
+        name: "审判会到来",
+        description: "博城灾难后的第三天，天空依然阴沉。\n\n城市的废墟还在清理，空气中弥漫着焦糊和血腥的气味。就在这时，一队身穿银白长袍的法师来到了博城——审判会的调查员。\n\n为首的是一位面容严肃的中年女法师，她的徽章上刻着天平与利剑的标记。\n\n\"我是审判会调查员冷青。\"她的声音不带感情，\"我们来调查博城灾难的真相。所有经历过灾难的人都需要接受问询。\"\n\n唐月老师走到你身边，低声说：\"轮到你的时候，把你知道的都说出来。审判会是唯一能真正制裁黑教廷的组织。\"",
+        type: "choice",
+        choices: [
+          {
+            text: "我愿意配合调查",
+            nextPhase: "phase_2_evidence",
+            effects: {
+              reputation: { "inquisition": 5 }
+            }
+          },
+          {
+            text: "我有重要证据要提供",
+            nextPhase: "phase_2_evidence",
+            effects: {
+              reputation: { "inquisition": 10 },
+              exp: 30
+            }
+          }
+        ]
+      },
+
+      // 第二阶段：提交证据
+      {
+        id: "phase_2_evidence",
+        name: "提交证据",
+        description: "冷青调查员带你到一间临时设立的问询室。\n\n\"说说你在灾难中的经历。\"她打开记录本，\"任何细节都不要遗漏。\"\n\n你可以选择提供以下证据：",
+        type: "choice",
+        choices: [
+          {
+            text: "提交黑教廷徽章（击败宇昂/执事获得）",
+            nextPhase: "phase_3_judgment",
+            conditions: { hasItem: "black_church_badge" },
+            effects: {
+              flags: { "evidence_badge": true },
+              reputation: { "inquisition": 15 }
+            }
+          },
+          {
+            text: "报告宇昂的黑教廷身份",
+            nextPhase: "phase_3_judgment",
+            conditions: { requiredFlags: ["yu_ang_black_church_confirmed"] },
+            effects: {
+              flags: { "evidence_yuang": true },
+              reputation: { "inquisition": 20 }
+            }
+          },
+          {
+            text: "报告地圣泉守护经过",
+            nextPhase: "phase_3_judgment",
+            conditions: { requiredFlags: ["earth_spring_guarded"] },
+            effects: {
+              flags: { "evidence_earth_spring": true },
+              reputation: { "inquisition": 20 }
+            }
+          },
+          {
+            text: "提交暴躁之泉调查线索",
+            nextPhase: "phase_3_judgment",
+            conditions: { requiredFlags: ["violent_spring_known"] },
+            effects: {
+              flags: { "evidence_violent_spring": true },
+              reputation: { "inquisition": 15 }
+            }
+          },
+          {
+            text: "提交阴谋调查报告",
+            nextPhase: "phase_3_judgment",
+            conditions: { requiredFlags: ["investigation_started"] },
+            effects: {
+              flags: { "evidence_investigation": true },
+              reputation: { "inquisition": 10 }
+            }
+          },
+          {
+            text: "我没有更多证据了",
+            nextPhase: "phase_3_judgment",
+            effects: {}
+          }
+        ]
+      },
+
+      // 第三阶段：审判结果
+      {
+        id: "phase_3_judgment",
+        name: "审判结果",
+        description: "冷青调查员仔细记录了你的证词，沉默了片刻。\n\n\"你的证词很有价值。\"她合上记录本，\"根据我们目前掌握的证据，审判会将对穆氏世家展开正式调查。黑教廷在博城的据点已经被端掉，但他们的网络远比我们想象的庞大。\"\n\n\"你在灾难中的表现，审判会已经记录在案。如果未来你愿意为审判会提供更多帮助，我们会非常欢迎。\"\n\n她递给你一枚银色的徽章：\"这是审判会协助者的徽章，持此徽章可以在各地审判会分部获得协助。\"",
+        type: "narrative",
+        nextPhase: "phase_4_farewell",
+        effects: {
+          exp: 100,
+          gold: 200,
+          reputation: { "inquisition": 20 },
+          items: [{ itemId: "inquisition_badge", count: 1 }],
+          flags: { "inquisition_ally": true }
+        }
+      },
+
+      // 第四阶段：NPC告别
+      {
+        id: "phase_4_farewell",
+        name: "告别",
+        description: "审判结束后，你走在博城的街道上。\n\n废墟中已经有人开始清理和重建，城市正在慢慢恢复生机。一些熟悉的身影出现在你面前。\n\n唐月老师找到你：\"博城的事暂时告一段落了。你接下来有什么打算？\"\n\n\"斩空教官推荐了古都的进修名额，那里有最古老的魔法学院和陵墓遗迹。明珠学府也发来了邀请，上海的资源和眼界是博城无法比拟的。当然，你也可以选择留下来，帮助博城重建。\"\n\n\"无论你选择哪里，我都支持你的决定。\"",
+        type: "choice",
+        choices: [
+          {
+            text: "留在博城，参与重建",
+            nextPhase: "phase_5_stay",
+            effects: {
+              reputation: { "bo_city": 30, "school": 10 },
+              npcRelation: { "tang_yue": 10, "zhang_xiaohou": 10 },
+              flags: { "stay_in_bo_city": true }
+            }
+          },
+          {
+            text: "去古都进修（西安）",
+            nextPhase: "phase_5_ancient_capital",
+            effects: {
+              reputation: { "military": 15 },
+              npcRelation: { "tang_yue": 5 },
+              flags: { "go_to_ancient_capital": true, "ancient_capital_unlocked": true }
+            }
+          },
+          {
+            text: "去明珠学府（上海）",
+            nextPhase: "phase_5_pearl",
+            effects: {
+              reputation: { "school": 20 },
+              npcRelation: { "tang_yue": 5 },
+              flags: { "go_to_pearl": true, "pearl_academy_unlocked": true }
+            }
+          }
+        ]
+      },
+
+      // 第五阶段A：留博城
+      {
+        id: "phase_5_stay",
+        name: "博城新生",
+        description: "你决定留在博城，参与这座城市的重建。\n\n唐月老师欣慰地点头：\"博城需要像你这样的年轻人。重建的路很长，但有你们在，博城一定会恢复往日的繁荣。\"\n\n张小侯拍了拍你的肩膀：\"太好了，有你在，重建也没那么无聊了！\"\n\n你站在废墟之上，望着远方初升的太阳。博城的故事还没有结束，你的故事也才刚刚开始。\n\n（博城篇完成！你选择了留在博城，后续将解锁重建任务线）",
+        type: "auto",
+        effects: {
+          exp: 200,
+          gold: 300,
+          flags: { "bo_city_arc_completed": true, "rebuilding_arc_started": true }
+        }
+      },
+
+      // 第五阶段B：去古都
+      {
+        id: "phase_5_ancient_capital",
+        name: "西行古都",
+        description: "你决定接受斩空教官的推荐，前往古都进修。\n\n唐月老师递给你一封信：\"这是我给古都审判会分部的介绍信。到了西安，有任何事都可以找他们。\"\n\n\"古都有最古老的魔法传承，也有最危险的陵墓遗迹。\"她的语气有些担忧，\"但我相信你能在那里闯出一片天地。\"\n\n你收拾好行囊，踏上了西行的道路。博城的一切渐渐远去，但那些人和事，将永远留在你心中。\n\n（博城篇完成！古都篇前置已解锁，后续将开启古都冒险）",
+        type: "auto",
+        effects: {
+          exp: 200,
+          gold: 200,
+          items: [{ itemId: "tang_yue_recommendation", count: 1 }],
+          flags: { "bo_city_arc_completed": true }
+        }
+      },
+
+      // 第五阶段C：去明珠
+      {
+        id: "phase_5_pearl",
+        name: "东行明珠",
+        description: "你决定前往上海明珠学府进修。\n\n唐月老师微笑着说：\"明珠学府是全国最好的魔法学院之一，那里有最优秀的导师和最丰富的资源。你一定会有更大的发展。\"\n\n\"上海是个大城市，机会多，竞争也大。\"她叮嘱道，\"保持本心，不要被繁华迷失了方向。\"\n\n你登上了东去的列车，博城在视野中越来越小。新的城市，新的开始，你的魔法之路将在那里继续延伸。\n\n（博城篇完成！明珠学府前置已解锁，后续将开启明珠篇）",
+        type: "auto",
+        effects: {
+          exp: 200,
+          gold: 200,
+          flags: { "bo_city_arc_completed": true }
+        }
+      }
+    ],
+
+    endings: {
+      stay: {
+        id: "stay",
+        name: "博城新生",
+        description: "你选择留在博城参与重建，成为这座城市新生的见证者和建设者。",
+        effects: {
+          reputation: { "bo_city": 50 }
+        }
+      },
+      ancient_capital: {
+        id: "ancient_capital",
+        name: "西行古都",
+        description: "你选择前往古都进修，开启了新的冒险篇章。",
+        effects: {
+          reputation: { "military": 20 }
+        }
+      },
+      pearl: {
+        id: "pearl",
+        name: "东行明珠",
+        description: "你选择前往明珠学府进修，在繁华都市中继续你的魔法之路。",
+        effects: {
+          reputation: { "school": 30 }
+        }
+      }
+    }
   }
 };

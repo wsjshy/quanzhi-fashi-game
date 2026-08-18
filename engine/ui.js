@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.9.1 · NPC命运与暴躁之泉</div>
+                ">v2.0.0 · 灾后剧情与去留抉择</div>
             </div>
         `;
 

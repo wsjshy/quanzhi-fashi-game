@@ -116,6 +116,14 @@ const BigEventSystem = {
                 if (stats[stat] < minValue) return false;
             }
         }
+
+        // v2.0.0: 物品条件
+        if (conditions.hasItem && typeof Inventory !== 'undefined') {
+            const items = Array.isArray(conditions.hasItem) ? conditions.hasItem : [conditions.hasItem];
+            for (const itemId of items) {
+                if (!Inventory.hasItem(itemId)) return false;
+            }
+        }
         
         return true;
     },
