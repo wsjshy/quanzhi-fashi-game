@@ -2761,9 +2761,10 @@ const UI = {
 
                     ${(() => {
                         // v2.2.0: 天赋资源显示和主动技能
-                        const playerTalents = state.player.talents || [];
+                        // v2.4.0: 修复talents是对象格式，转为数组
+                        const playerTalents = state.player.talents ? Object.values(state.player.talents) : [];
                         const activeTalents = playerTalents.filter(t => {
-                            const td = typeof DataTalents !== 'undefined' ? DataTalents[t.id] : null;
+                            const td = typeof DataTalents !== 'undefined' ? DataTalents[t.talentId] : null;
                             return td && td.mechanism;
                         });
                         if (activeTalents.length === 0) return '';
@@ -2780,7 +2781,7 @@ const UI = {
                                 summon: { name: '契约', icon: '🐺', color: '#ffaa66', max: 5 }
                             };
                             for (const [key, label] of Object.entries(resourceLabels)) {
-                                if (ts.resources[key] > 0 || activeTalents.some(t => DataTalents[t.id]?.resourceType === key)) {
+                                if (ts.resources[key] > 0 || activeTalents.some(t => DataTalents[t.talentId]?.resourceType === key)) {
                                     const val = ts.resources[key];
                                     const max = label.max;
                                     const pct = Math.min(100, (val / max) * 100);
@@ -2813,19 +2814,19 @@ const UI = {
 
                         // 天赋主动技能按钮
                         const activeSkillTalents = activeTalents.filter(t => {
-                            const td = DataTalents[t.id];
+                            const td = DataTalents[t.talentId];
                             return td.activeSkill && t.level >= 5;
                         });
                         if (activeSkillTalents.length > 0) {
                             html += '<div style="display: grid; grid-template-columns: repeat(' + Math.min(activeSkillTalents.length, 3) + ', 1fr); gap: 8px; margin-top: 8px;">';
                             activeSkillTalents.forEach(t => {
-                                const td = DataTalents[t.id];
+                                const td = DataTalents[t.talentId];
                                 const sk = td.activeSkill;
                                 const cd = typeof TalentCombatSystem !== 'undefined' ? TalentCombatSystem.getSkillCooldown(sk.id) : 0;
                                 const canUse = state.isPlayerTurn && cd === 0;
                                 const elemInfo = UI.getElementInfo(td.element);
                                 html += `
-                                    <button onclick="Game.battleUseTalentSkill('${t.id}')" ${!canUse ? 'disabled' : ''}
+                                    <button onclick="Game.battleUseTalentSkill('${t.talentId}')" ${!canUse ? 'disabled' : ''}
                                             title="${sk.description}"
                                             style="
                                         padding: 10px 8px;
