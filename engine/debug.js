@@ -174,7 +174,7 @@ const DebugPanel = {
                 <div class="debug-tab" data-tab="other" style="padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 12px;">其他</div>
             </div>
             
-            <div style="height: calc(100vh - 85px); overflow-y: auto; padding: 12px;">
+            <div style="height: calc(100vh - 85px); overflow-y: scroll; overflow-x: hidden; padding: 12px; -webkit-overflow-scrolling: touch; scrollbar-width: thin;">
                 <!-- 玩家标签页 -->
                 <div id="debug-tab-player" class="debug-tab-content">
                     <div style="margin-bottom: 15px;">
