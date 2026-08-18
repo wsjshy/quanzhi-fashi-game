@@ -1235,6 +1235,27 @@ const Player = {
     },
 
     /**
+     * v2.5.2: 重置某系天赋（经验归零，等级回到1，分支清空）
+     * @param {string} element - 元素系别
+     * @returns {boolean} 是否成功重置
+     */
+    resetElementTalent(element) {
+        if (!this.talents || !this.talents[element]) return false;
+        const talentData = this.talents[element];
+        const talent = typeof TalentSystem !== 'undefined' ? TalentSystem.getTalent(talentData.talentId) : null;
+        if (!talent) return false;
+
+        talentData.level = 1;
+        talentData.exp = 0;
+        talentData.branch = null;
+
+        if (typeof Game !== 'undefined' && Game.addLog) {
+            Game.addLog(`✨ ${talent.name} 已重置，可重新选择进化方向。`);
+        }
+        return true;
+    },
+
+    /**
      * 获取技能等级
      * @param {string} skillId - 技能ID
      * @returns {number} 技能等级（1-3）

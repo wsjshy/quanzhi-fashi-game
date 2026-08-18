@@ -2908,6 +2908,20 @@ const UI = {
         }
     },
 
+    // v2.5.2: 重置天赋
+    resetTalent(element) {
+        if (!confirm(`确定要重置${SkillSystem.getElementName(element)}天赋吗？等级将回到1，经验和分支将清空。`)) return;
+        if (Player.resetElementTalent) {
+            Player.resetElementTalent(element);
+            // 刷新角色面板
+            if (typeof this.showCharacterPanel === 'function') {
+                this.showCharacterPanel();
+            } else if (typeof Game !== 'undefined' && Game.showCharacterPanel) {
+                Game.showCharacterPanel();
+            }
+        }
+    },
+
     // v0.94.0: 战斗技能内联展开 - 切换元素系展开状态
     toggleBattleElement(element) {
         if (this._expandedBattleElement === element) {
@@ -5753,6 +5767,13 @@ const UI = {
                                                 <div style="height: 100%; width: ${expPercent.toFixed(1)}%; background: ${rarityConfig.color};"></div>
                                             </div>
                                             <div style="color: #666; font-size: 11px; text-align: right; margin-top: 2px;">${talentData.exp} / ${expToNext}</div>
+                                            ` : ''}
+                                            ${(talentData.level > 1 || talentData.branch) ? `
+                                            <div style="margin-top: 6px; text-align: right;">
+                                                <button onclick="UI.resetTalent('${elem}')" 
+                                                        style="padding: 3px 8px; background: #663333; border: 1px solid #aa5555; border-radius: 3px; color: #ff9999; font-size: 10px; cursor: pointer;"
+                                                        title="重置天赋：等级回到1，经验归零，分支清空">🔄 重置</button>
+                                            </div>
                                             ` : ''}
                                         </div>
                                     `;
