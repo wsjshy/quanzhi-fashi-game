@@ -51,6 +51,23 @@ const DataBigEvents = {
             }
           },
           {
+            text: "可能是暴躁之泉！黑教廷在雨里动了手脚（v1.9.1）",
+            nextPhase: "phase_2_violent_spring_warning",
+            conditions: {
+              requiredFlags: ["violent_spring_known"]
+            },
+            effects: {
+              reputation: {
+                "military": 15,
+                "tang_yue_faction": 10
+              },
+              exp: 80,
+              flags: {
+                "violent_spring_exposed": true
+              }
+            }
+          },
+          {
             text: "我去告诉其他老师",
             nextPhase: "phase_2_report",
             effects: {
@@ -96,6 +113,29 @@ const DataBigEvents = {
             "investigation_lead": true,
             "early_warning": true,
             "fully_prepared": true
+          }
+        }
+      },
+
+      // v1.9.1: 第二阶段A3：暴躁之泉预警
+      {
+        id: "phase_2_violent_spring_warning",
+        name: "暴躁之泉",
+        description: "唐月老师听到你说\"暴躁之泉\"，脸色骤变。\n\n\"你怎么知道暴躁之泉？\"她的声音压得很低，\"这是审判会内部的情报...\"\n\n你把收集到的线索告诉了她——雪峰山的诡异液体痕迹、黑教廷在云层中动手脚的推断。唐月越听越凝重。\n\n\"如果真是暴躁之泉...\"她深吸一口气，\"那这场灾难会比我们想象的更严重。暴躁之泉会让妖魔失去理智，疯狂进攻。\"\n\n\"我立刻联系军方和审判会，让他们准备防化措施。你提供的情报，可能挽救了无数人的生命。\"\n\n因为你提前识破了暴躁之泉的阴谋，军方做好了针对性准备，妖魔的攻击力大幅降低。",
+        type: "narrative",
+        nextPhase: "phase_3_fully_prepared",
+        effects: {
+          exp: 100,
+          gold: 100,
+          reputation: {
+            "military": 25,
+            "tang_yue_faction": 15
+          },
+          flags: {
+            "violent_spring_exposed": true,
+            "early_warning": true,
+            "fully_prepared": true,
+            "demon_attack_reduced": true
           }
         }
       },
@@ -221,7 +261,23 @@ const DataBigEvents = {
         type: "battle",
         enemyId: "demon_wolf_pack",
         winPhase: "phase_5_second_wave",
-        losePhase: "phase_5_rescued"
+        losePhase: "phase_5_rescued",
+        effects: {
+          npcSupport: {
+            tang_yue: {
+              highThreshold: 50,
+              highEffect: { hp: 50, exp: 50, relation: 10 },
+              midThreshold: 20,
+              midEffect: { relation: 5 }
+            },
+            zhang_xiaohou: {
+              highThreshold: 40,
+              highEffect: { exp: 30, relation: 10 },
+              midThreshold: 20,
+              midEffect: { relation: 5 }
+            }
+          }
+        }
       },
       
       // 第五阶段：第二波

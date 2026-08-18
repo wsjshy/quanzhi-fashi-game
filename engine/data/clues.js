@@ -98,6 +98,25 @@ const DataClues = {
     source: "下水道探索任务"
   },
 
+  // v1.9.1: 暴躁之泉相关线索
+  clue_violent_spring_trace: {
+    id: "clue_violent_spring_trace",
+    name: "暴躁之泉踪迹",
+    type: "black_church",
+    description: "在雪峰山发现了一种诡异的液体痕迹，散发着令人不安的气息，与地圣泉的灵气相似但性质截然相反——它能激化妖魔的野性，让它们失去理智。",
+    progress: 20,
+    source: "雪峰山探索/追踪黑教廷踪迹任务"
+  },
+
+  clue_rain_catalyst: {
+    id: "clue_rain_catalyst",
+    name: "雨水催化剂",
+    type: "black_church",
+    description: "综合多条线索推断：黑教廷将暴躁之泉洒在博城上空的云层中，一旦下大雨，暴躁之泉会随着雨水降下，成为激化妖魔疯狂进攻的催化剂。",
+    progress: 25,
+    source: "收集3条黑教廷踪迹线索后自动解锁/唐月对话分享"
+  },
+
   // ========== 宇昂疑点类 ==========
   clue_yuang_training: {
     id: "clue_yuang_training",

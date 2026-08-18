@@ -730,6 +730,12 @@ const BattleSystem = {
             this.enemy.maxHp = Math.floor(this.enemy.maxHp * 1.15);   // HP+15%
             this.enemy.hp = this.enemy.maxHp;
         }
+
+        // v1.9.1: 暴躁之泉提前识破 - 妖魔攻击力降低20%
+        if (this.player.flags?.demon_attack_reduced && this.enemy.enemyType === 'demon') {
+            this.enemy.attack = Math.floor(this.enemy.attack * 0.8);
+            this.addLog('🛡️ 军方防化措施生效！妖魔攻击力降低20%', 'buff');
+        }
         
         // 初始化精神力
         if (!this.enemy.spirit) {

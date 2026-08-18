@@ -83,6 +83,12 @@ const InvestigationSystem = {
       }
     }
 
+    // v1.9.1: 暴躁之泉线索特殊处理
+    if (clueId === 'clue_violent_spring_trace' || clueId === 'clue_rain_catalyst') {
+      player.flags['violent_spring_known'] = true;
+      result.violentSpringKnown = true;
+    }
+
     // 检查是否解锁地圣泉是目标的线索
     if (clueId !== 'clue_spring_target' && this.shouldUnlockSpringTarget(data)) {
       if (!data.discoveredClues.includes('clue_spring_target')) {

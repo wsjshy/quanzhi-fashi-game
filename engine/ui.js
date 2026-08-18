@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.9.0 · 博城灾难分支深化</div>
+                ">v1.9.1 · NPC命运与暴躁之泉</div>
             </div>
         `;
 

@@ -495,6 +495,43 @@ const BigEventSystem = {
                 console.log('[大事件] 星尘魔器分配:', result.message);
             }
         }
+
+        // v1.9.1: NPC命运分支 - 根据关系应用支援效果
+        if (effects.npcSupport && typeof NPCStateSystem !== 'undefined') {
+            const npcs = effects.npcSupport;
+            for (const [npcId, config] of Object.entries(npcs)) {
+                const state = NPCStateSystem.getNPCState(npcId);
+                if (!state) continue;
+                const opinion = state.opinion || 0;
+                // 高好感：强力支援
+                if (opinion >= (config.highThreshold || 50)) {
+                    if (config.highEffect) {
+                        if (config.highEffect.hp) Player.hp = Math.min(Player.getTotalStats().maxHp, Player.hp + config.highEffect.hp);
+                        if (config.highEffect.exp) Player.gainExp(config.highEffect.exp);
+                        if (config.highEffect.gold) Player.gold += config.highEffect.gold;
+                        if (config.highEffect.items) {
+                            for (const item of config.highEffect.items) {
+                                Inventory.addItem(item.itemId, item.count || 1);
+                            }
+                        }
+                        if (config.highEffect.relation) {
+                            NPCStateSystem.changeRelation(npcId, config.highEffect.relation);
+                        }
+                    }
+                    console.log('[大事件] NPC高好感支援:', npcId, opinion);
+                }
+                // 中等好感：普通支援
+                else if (opinion >= (config.midThreshold || 20)) {
+                    if (config.midEffect) {
+                        if (config.midEffect.relation) {
+                            NPCStateSystem.changeRelation(npcId, config.midEffect.relation);
+                        }
+                        if (config.midEffect.exp) Player.gainExp(config.midEffect.exp);
+                    }
+                    console.log('[大事件] NPC中好感支援:', npcId, opinion);
+                }
+            }
+        }
     },
     
     /**

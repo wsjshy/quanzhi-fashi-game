@@ -713,6 +713,7 @@ const DebugPanel = {
                         <div style="font-weight: bold; color: #8888ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">阴谋调查 (v1.8.1)</div>
                         <button onclick="DebugPanel.giveRandomClue()" style="width: 100%; background: #5544aa; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 13px; margin-bottom: 6px;">🔍 获得随机线索</button>
                         <button onclick="DebugPanel.giveAllClues()" style="width: 100%; background: #aa4455; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 13px; margin-bottom: 6px;">📋 获得所有线索</button>
+                        <button onclick="DebugPanel.giveViolentSpringClue()" style="width: 100%; background: #44aa88; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 13px; margin-bottom: 6px;">💧 获得暴躁之泉线索</button>
                         <button onclick="DebugPanel.resetInvestigation()" style="width: 100%; background: #555; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 13px;">🔄 重置调查进度</button>
                     </div>
                     
@@ -1959,6 +1960,24 @@ const DebugPanel = {
             }
         } catch (e) {
             console.error('[Debug] assignStarDust错误:', e);
+            alert('错误：' + e.message);
+        }
+    },
+
+    // v1.9.1: 获得暴躁之泉线索
+    giveViolentSpringClue() {
+        try {
+            if (typeof InvestigationSystem === 'undefined') {
+                alert('阴谋调查系统未加载');
+                return;
+            }
+            const result1 = InvestigationSystem.discoverClue(Player, 'clue_violent_spring_trace');
+            const result2 = InvestigationSystem.discoverClue(Player, 'clue_rain_catalyst');
+            Player.save();
+            alert('已获得暴躁之泉线索！\n' + (result1.success ? '✓ 暴躁之泉踪迹\n' : '') + (result2.success ? '✓ 雨水催化剂' : ''));
+            this.refreshUI();
+        } catch (e) {
+            console.error('[Debug] giveViolentSpringClue错误:', e);
             alert('错误：' + e.message);
         }
     },
