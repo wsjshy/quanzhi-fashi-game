@@ -2812,10 +2812,12 @@ const UI = {
                             }
                         }
 
-                        // 天赋主动技能按钮
+                        // 天赋主动技能按钮（v2.4.0: 只显示主修系的主动技能）
                         const activeSkillTalents = activeTalents.filter(t => {
                             const td = DataTalents[t.talentId];
-                            return td.activeSkill && t.level >= 5;
+                            // 只显示主修系的主动技能
+                            const isPrimary = state.player.primaryElement && td.element === state.player.primaryElement;
+                            return td.activeSkill && t.level >= 5 && isPrimary;
                         });
                         if (activeSkillTalents.length > 0) {
                             html += '<div style="display: grid; grid-template-columns: repeat(' + Math.min(activeSkillTalents.length, 3) + ', 1fr); gap: 8px; margin-top: 8px;">';
