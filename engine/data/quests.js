@@ -3702,7 +3702,7 @@ const DataQuests = {
       reputation: { hunter_alliance: 25 },
       items: [{ itemId: "warrior_soul_essence", count: 1 }]
     },
-    prerequisites: [{ flag: "hunter_team_member" }, { flag: "hunt_school_demon_completed" }],
+    prerequisites: [{ flag: "hunter_team_member" }, { flag: "quest_hunt_school_demon_completed" }],
     isRepeatable: true,
     difficulty: "medium",
     recommendedLevel: 8,
@@ -3729,7 +3729,7 @@ const DataQuests = {
       reputation: { hunter_alliance: 50, brave: 20 },
       items: [{ itemId: "commander_soul_essence", count: 1 }]
     },
-    prerequisites: [{ flag: "hunter_team_member" }, { flag: "hunt_old_district_completed" }],
+    prerequisites: [{ flag: "hunter_team_member" }, { flag: "quest_hunt_old_district_completed" }],
     isRepeatable: false,
     difficulty: "hard",
     recommendedLevel: 12,
@@ -3835,7 +3835,7 @@ const DataQuests = {
       reputation: { hunter_alliance: 15, city_street: 15, brave: 5 },
       items: [{ itemId: "servant_soul_essence", count: 2 }, { itemId: "health_potion", count: 3 }]
     },
-    prerequisites: [{ flag: "hunter_team_member" }, { flag: "hunt_sewer_rats_completed" }],
+    prerequisites: [{ flag: "hunter_team_member" }, { flag: "quest_hunt_sewer_rats_completed" }],
     isRepeatable: true,
     difficulty: "medium",
     recommendedLevel: 7,
@@ -3887,7 +3887,7 @@ const DataQuests = {
       reputation: { hunter_alliance: 30, magic_association: 20, brave: 15 },
       items: [{ itemId: "warrior_soul_essence", count: 1 }, { itemId: "demon_core", count: 1 }, { itemId: "super_health_potion", count: 3 }]
     },
-    prerequisites: [{ flag: "hunter_team_member" }, { flag: "hunt_old_district_completed" }],
+    prerequisites: [{ flag: "hunter_team_member" }, { flag: "quest_hunt_old_district_completed" }],
     isRepeatable: false,
     difficulty: "hard",
     recommendedLevel: 10,
@@ -3915,7 +3915,7 @@ const DataQuests = {
       reputation: { hunter_alliance: 25, city_street: 20, brave: 10 },
       items: [{ itemId: "warrior_soul_essence", count: 1 }, { itemId: "super_mana_potion", count: 3 }]
     },
-    prerequisites: [{ flag: "hunter_team_member" }, { flag: "hunt_market_protection_completed" }],
+    prerequisites: [{ flag: "hunter_team_member" }, { flag: "quest_hunt_market_protection_completed" }],
     isRepeatable: true,
     difficulty: "hard",
     recommendedLevel: 9,

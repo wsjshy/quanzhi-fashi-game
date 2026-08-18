@@ -54,6 +54,20 @@
 - 角色面板星尘魔器卡片新增"⬆️ 用精魄升级"按钮
 - debug物品标签页新增3种精魄快捷获取按钮
 
+### 猎妖任务系统质量修复（核心流程修复）
+**问题**：所有10个猎妖任务（含原有3个）存在核心流程断裂，玩家无法正常完成任务链。
+
+**修复内容**：
+- quest.js新增`investigate`目标类型支持：探索行动时触发进度，可指定地点限制
+- quest.js任务完成后自动设置`quest_id_completed` flag（对话树靠此解锁后续任务）
+- quest.js的`prerequisites`支持`{ flag: "xxx" }`格式（之前只认任务ID字符串）
+- quest.js可重复任务（isRepeatable）完成后不加入completedQuests，可再次接取
+- game.js探索行动时同步触发investigate进度
+- characters.js徐大荒对话树hunt_quests节点扩充至10个任务，按难度分级，用flag控制解锁顺序
+- quests.js统一flag名称为`quest_`前缀格式，与自动设置机制对齐
+
+**影响**：猎妖任务从"接了就卡死"变为完整可玩的任务链，支持简单→中等→困难的递进解锁。
+
 ## v1.8.0 - 城市猎妖任务系统（基础框架）
 
 ### 猎妖任务数据

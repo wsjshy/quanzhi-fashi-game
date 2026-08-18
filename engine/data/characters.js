@@ -7286,9 +7286,16 @@ const DataCharacters = {
           id: "hunt_quests",
           texts: ["当前有这些猎妖任务，你看看哪个合适。", "低级任务适合新手，高级任务必须组队。", "完成任务有金币、经验和精魄奖励。"],
           choices: [
-            { text: "铭文女子中学的妖魔（低级）", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_school_demon" } },
-            { text: "老街区的怪事（中级）", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_old_district" }, conditions: { flag: "hunt_school_demon_completed" } },
-            { text: "城市边缘的统领（高级）", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_city_edge" }, conditions: { flag: "hunt_old_district_completed" } },
+            { text: "【简单】下水道鼠患", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_sewer_rats" } },
+            { text: "【简单】墓地幽灵", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_cemetery_ghost" } },
+            { text: "【简单】仓库虫患", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_warehouse_bugs" } },
+            { text: "【简单】铭文女子中学的妖魔", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_school_demon" } },
+            { text: "【中等】集市护卫", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_market_protection" }, conditions: { flag: "quest_hunt_sewer_rats_completed" } },
+            { text: "【中等】校园夜间巡逻", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_school_patrol" } },
+            { text: "【中等】老街区的怪事", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_old_district" }, conditions: { flag: "quest_hunt_school_demon_completed" } },
+            { text: "【困难】魔藤入侵", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_demon_vine" }, conditions: { flag: "quest_hunt_market_protection_completed" } },
+            { text: "【困难】黑教廷据点", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_black_church_cell" }, conditions: { flag: "quest_hunt_old_district_completed" } },
+            { text: "【困难】城市边缘的统领", next: "default", action: "start_quest", actionData: { questId: "quest_hunt_city_edge" }, conditions: { flag: "quest_hunt_old_district_completed" } },
             { text: "我再想想", next: "default", action: "back" }
           ]
         },

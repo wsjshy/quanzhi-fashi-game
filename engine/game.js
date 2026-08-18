@@ -400,6 +400,8 @@ const Game = {
             Player._totalExploreCount = (Player._totalExploreCount || 0) + 1;
             if (typeof QuestSystem !== 'undefined') {
                 QuestSystem.updateProgress('explore', null, 1);
+                // v1.8.2: 调查类任务进度（猎妖任务的调查目标）
+                QuestSystem.updateProgress('investigate', Player.currentLocation, 1);
             }
         }
 

@@ -34,15 +34,20 @@ const QuestSystem = {
             return { success: false, message: '已经接取了这个任务' };
         }
 
-        // 检查是否已经完成
-        if (Player.isQuestComplete(questId)) {
+        // 检查是否已经完成（可重复任务除外）
+        if (!quest.isRepeatable && Player.isQuestComplete(questId)) {
             return { success: false, message: '已经完成了这个任务' };
         }
 
         // 检查前置任务
         if (quest.prerequisites && quest.prerequisites.length > 0) {
             for (const pre of quest.prerequisites) {
-                if (!Player.isQuestComplete(pre)) {
+                // v1.8.2: 支持 { flag: "xxx" } 格式的前置条件
+                if (typeof pre === 'object' && pre.flag) {
+                    if (!Player.flags || !Player.flags[pre.flag]) {
+                        return { success: false, message: '前置条件未满足' };
+                    }
+                } else if (!Player.isQuestComplete(pre)) {
                     return { success: false, message: '前置任务未完成' };
                 }
             }
@@ -139,7 +144,18 @@ const QuestSystem = {
                 }
 
                 // v0.25.0: cultivate/explore/talk_any类型不需要目标ID，直接计数
-                if (type === 'cultivate' || type === 'explore' || type === 'talk_any') {
+                // v1.8.2: investigate类型 - 调查/探索行动计数，可指定地点限制
+                if (type === 'cultivate' || type === 'explore' || type === 'talk_any' || type === 'investigate') {
+                    // investigate类型如果指定了location，检查当前地点是否匹配
+                    if (type === 'investigate' && obj.location) {
+                        const currentLoc = Player.currentLocation || '';
+                        // 大地图名匹配（如bo_city匹配所有博城子地点）
+                        const locMatch = currentLoc === obj.location || 
+                                        currentLoc.includes(obj.location) || 
+                                        obj.location.includes(currentLoc) ||
+                                        obj.location === 'bo_city' || obj.location === 'any';
+                        if (!locMatch) return;
+                    }
                     activeQuest.progress[index] = Math.min(
                         activeQuest.progress[index] + amount,
                         obj.count
@@ -204,7 +220,13 @@ const QuestSystem = {
         if (!quest) return { success: false, message: '任务不存在' };
 
         // 先标记任务完成（从activeQuests中移除），防止发放奖励时触发无限递归
-        Player.completeQuest(questId);
+        // v1.8.2: 可重复任务不加入completedQuests，以便再次接取
+        if (quest.isRepeatable) {
+            const index = Player.activeQuests.findIndex(q => q.questId === questId);
+            if (index !== -1) Player.activeQuests.splice(index, 1);
+        } else {
+            Player.completeQuest(questId);
+        }
 
         // 发放奖励
         const rewards = quest.rewards || {};
@@ -269,6 +291,10 @@ const QuestSystem = {
             if (!Player.flags) Player.flags = {};
             Player.flags[rewards.setFlag] = true;
         }
+
+        // v1.8.2: 任务完成自动设置 quest_id_completed flag，用于对话树解锁后续任务
+        if (!Player.flags) Player.flags = {};
+        Player.flags[questId + '_completed'] = true;
 
         // v0.39.0: 任务完成获得影响力
         const influenceGain = rewards.influence || (quest.type === 'main' ? 8 : quest.type === 'personal' ? 4 : 3);
@@ -402,7 +428,10 @@ const QuestSystem = {
         // 检查前置任务
         if (quest.prerequisites && quest.prerequisites.length > 0) {
             for (const pre of quest.prerequisites) {
-                if (!Player.isQuestComplete(pre)) return false;
+                // v1.8.2: 支持 { flag: "xxx" } 格式
+                if (typeof pre === 'object' && pre.flag) {
+                    if (!Player.flags || !Player.flags[pre.flag]) return false;
+                } else if (!Player.isQuestComplete(pre)) return false;
             }
         }
 
