@@ -37,6 +37,20 @@ const DataBigEvents = {
             }
           },
           {
+            text: "我已经在调查这件事了（阴谋调查）",
+            nextPhase: "phase_2_investigation_lead",
+            conditions: {
+              requiredFlags: ["investigation_started"]
+            },
+            effects: {
+              reputation: {
+                "military": 10,
+                "school": 5
+              },
+              exp: 50
+            }
+          },
+          {
             text: "我去告诉其他老师",
             nextPhase: "phase_2_report",
             effects: {
@@ -62,6 +76,28 @@ const DataBigEvents = {
         enemyId: "demon_wolf",
         winPhase: "phase_3_early_warning",
         losePhase: "phase_3_injured"
+      },
+      
+      // 第二阶段A2：阴谋调查领先（v1.8.1）
+      {
+        id: "phase_2_investigation_lead",
+        name: "有备无患",
+        description: "唐月老师听到你说已经在调查，眼神一亮。\n\n\"你也发现了？\"她压低声音，\"看来你比我想象的更敏锐。\"\n\n你把这段时间收集到的线索告诉了唐月——妖魔异常迁徙、黑教廷踪迹、地圣泉守卫调动。唐月的表情越来越凝重。\n\n\"这些线索...都指向同一个方向。\"她深吸一口气，\"我会立刻联系审判会和军方。你提供的情报，可能会挽救很多人的生命。\"\n\n因为你的提前调查，军方和学校获得了更充分的准备时间。",
+        type: "narrative",
+        nextPhase: "phase_3_fully_prepared",
+        effects: {
+          exp: 150,
+          gold: 150,
+          reputation: {
+            "military": 20,
+            "school": 15
+          },
+          flags: {
+            "investigation_lead": true,
+            "early_warning": true,
+            "fully_prepared": true
+          }
+        }
       },
       
       // 第二阶段B：报告
@@ -146,6 +182,23 @@ const DataBigEvents = {
         }
       },
       
+      // 第三阶段E：充分准备（v1.8.1阴谋调查领先分支）
+      {
+        id: "phase_3_fully_prepared",
+        name: "充分准备",
+        description: "得益于你提供的详细情报，博城进入了最高戒备状态。\n\n军方在城市外围布置了防线，学校组织了紧急疏散演练，魔法协会也派出了支援法师。\n\n唐月老师找到你，递给你一瓶高级魔法药水。\"这是给你的，关键时刻能救命。\"\n\n\"还有...\"她犹豫了一下，\"如果今晚看到宇昂有异常举动，不要犹豫，立刻告诉我或斩空教官。\"\n\n你点了点头。空气中的紧张感越来越浓，但你知道，这一次博城准备好了。",
+        type: "narrative",
+        nextPhase: "phase_4_battle_begin",
+        effects: {
+          exp: 100,
+          items: [{ itemId: "super_mana_potion", count: 2 }],
+          flags: {
+            "fully_prepared": true,
+            "tang_yue_warned_yu_ang": true
+          }
+        }
+      },
+      
       // 第三阶段D：突然袭击
       {
         id: "phase_3_sudden_attack",
@@ -206,6 +259,16 @@ const DataBigEvents = {
         type: "choice",
         choices: [
           {
+            text: "我早就怀疑宇昂了（阴谋调查）",
+            nextPhase: "phase_5_chase_yuang_prepared",
+            conditions: {
+              requiredFlags: ["yu_ang_suspicion_triggered"]
+            },
+            effects: {
+              flags: { "chased_yu_ang": true, "yu_ang_prepared": true }
+            }
+          },
+          {
             text: "追上去看看",
             nextPhase: "phase_5_chase_yuang",
             conditions: { minLevel: 7 },
@@ -233,6 +296,41 @@ const DataBigEvents = {
         enemyId: "yu_ang_black_church",
         winPhase: "phase_5_yuang_defeated",
         losePhase: "phase_5_yuang_lost"
+      },
+
+      // 追击宇昂（有准备，v1.8.1阴谋调查分支）
+      {
+        id: "phase_5_chase_yuang_prepared",
+        name: "有备而来",
+        description: "你早就怀疑宇昂了，所以当看到他往后山去时，你立刻跟了上去，并且提前通知了唐月老师。\n\n在后山的树林中，你看到宇昂站在一个散发着黑光的阵法前。\n\n\"果然是你。\"你握紧了法杖。\n\n宇昂转过头，脸上露出阴冷的笑容：\"哦？你居然发现了？看来我小看你了。\"\n\n\"不过没关系，今晚你一样要死在这里。\"\n\n就在这时，一道火焰从远处袭来——唐月老师赶到了！\"宇昂，你的阴谋到此为止了！\"\n\n宇昂脸色一变，但已经来不及了。你和唐月老师前后夹击，他无路可逃！",
+        type: "battle",
+        enemyId: "yu_ang_black_church_weakened",
+        winPhase: "phase_5_yuang_defeated_prepared",
+        losePhase: "phase_5_yuang_lost"
+      },
+
+      // 击败宇昂（有准备分支）
+      {
+        id: "phase_5_yuang_defeated_prepared",
+        name: "真相大白",
+        description: "在你和唐月老师的夹击下，宇昂终于倒下了。\n\n他的灰衣裂开，露出了里面黑色的教袍——倒十字的标记在月光下格外刺眼。\n\n\"你……你们以为赢了吗？\"宇昂咳出鲜血，\"黑教廷的计划……才刚刚开始……博城……只是个开始……\"\n\n他的身体开始化作黑色雾气消散。唐月老师挥手，一道火焰将剩余的黑雾焚烧殆尽。\n\n\"结束了。\"唐月老师看着你，眼神中带着欣慰，\"谢谢你。如果不是你提前调查，我们可能永远都发现不了他的真面目。\"\n\n斩空教官带人赶到时，只看到了被破坏的阵法和一枚黑色徽章。\n\n\"做得好。\"斩空的表情前所未有的凝重，\"这件事……审判会会处理。你们两个，不要对任何人提起。\"",
+        type: "narrative",
+        nextPhase: "phase_6_final",
+        effects: {
+          exp: 400,
+          gold: 300,
+          reputation: {
+            "military": 20,
+            "school": 15
+          },
+          flags: {
+            "defeated_yu_ang": true,
+            "yu_ang_black_church_confirmed": true,
+            "yu_ang_defeated_with_tangyue": true
+          },
+          giveInfo: "yu_ang_black_church_confirmed",
+          items: [{ itemId: "black_church_badge", count: 1 }]
+        }
       },
 
       // 击败宇昂

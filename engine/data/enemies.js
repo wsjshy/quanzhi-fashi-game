@@ -2370,6 +2370,40 @@ const DataEnemies = {
     }
   },
 
+  // v1.8.1: 弱化版宇昂（被唐月夹击，状态受损）
+  yu_ang_black_church_weakened: {
+    id: "yu_ang_black_church_weakened",
+    name: "宇昂（负伤）",
+    title: "黑教廷教士",
+    description: "穆氏养子，实为黑教廷教士。被你和唐月老师前后夹击，已经负伤，状态大不如前。",
+    elements: ["ice", "shadow"],
+    level: 15,
+    maxHp: 350,
+    maxMp: 200,
+    attack: 25,
+    defense: 15,
+    speed: 18,
+    spirit: 20,
+    skills: [
+      "basic_attack",
+      "ice_spike",
+      "ice_freeze",
+      "shadow_claw"
+    ],
+    aiType: "aggressive",
+    enemyType: "human",
+    spriteColor: "#4A0080",
+    expReward: 600,
+    goldReward: 1500,
+    isCanon: false,
+    canonNote: "阴谋调查系统分支敌人，唐月夹击下的弱化版宇昂",
+    traits: ["black_church", "masked", "weakened"],
+    battleQuotes: {
+      start: "你们...居然联手！",
+      defeat: "不可能...黑教廷不会放过你们的..."
+    }
+  },
+
   // ===== 黑教廷灰衣人 =====
   black_church_gray: {
     id: "black_church_gray",
