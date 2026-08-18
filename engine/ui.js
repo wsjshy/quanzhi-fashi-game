@@ -2758,6 +2758,96 @@ const UI = {
                             }).join('')}
                         </div>
                     ` : ''}
+
+                    ${(() => {
+                        // v2.2.0: 天赋资源显示和主动技能
+                        const playerTalents = state.player.talents || [];
+                        const activeTalents = playerTalents.filter(t => {
+                            const td = typeof DataTalents !== 'undefined' ? DataTalents[t.id] : null;
+                            return td && td.mechanism;
+                        });
+                        if (activeTalents.length === 0) return '';
+
+                        let html = '<div style="color: #ffaa44; font-size: 18px; margin-bottom: 10px; margin-top: 15px; font-weight: bold;">✨ 天赋能力</div>';
+
+                        // 天赋资源条
+                        if (typeof TalentCombatSystem !== 'undefined' && TalentCombatSystem.state) {
+                            const ts = TalentCombatSystem.getStateForUI();
+                            const resourceLabels = {
+                                fire: { name: '燃点', icon: '🔥', color: '#ff6644', max: 10 },
+                                thunder: { name: '电荷', icon: '⚡', color: '#ffee44', max: 6 },
+                                earth: { name: '岩力', icon: '🪨', color: '#bb8844', max: 10 },
+                                summon: { name: '契约', icon: '🐺', color: '#ffaa66', max: 5 }
+                            };
+                            for (const [key, label] of Object.entries(resourceLabels)) {
+                                if (ts.resources[key] > 0 || activeTalents.some(t => DataTalents[t.id]?.resourceType === key)) {
+                                    const val = ts.resources[key];
+                                    const max = label.max;
+                                    const pct = Math.min(100, (val / max) * 100);
+                                    html += `
+                                        <div style="margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-size: 16px; width: 24px;">${label.icon}</span>
+                                            <span style="color: ${label.color}; font-size: 12px; width: 40px;">${label.name}</span>
+                                            <div style="flex: 1; height: 12px; background: #222; border-radius: 6px; overflow: hidden; border: 1px solid ${label.color}44;">
+                                                <div style="width: ${pct}%; height: 100%; background: linear-gradient(90deg, ${label.color}88, ${label.color}); transition: width 0.3s;"></div>
+                                            </div>
+                                            <span style="color: #fff; font-size: 11px; width: 35px; text-align: right;">${val}/${max}</span>
+                                        </div>
+                                    `;
+                                }
+                            }
+                            // 形态显示
+                            if (ts.forms.water === 'tide' || ts.forms.water === 'ebb') {
+                                const isTide = ts.forms.water === 'tide';
+                                html += `<div style="margin-bottom: 6px; color: #4488ff; font-size: 12px;">💧 潮汐形态：${isTide ? '涨潮（输出+30%）' : '退潮（治疗+30%）'}</div>`;
+                            }
+                            if (ts.forms.light === 'holy' || ts.forms.light === 'shield') {
+                                const isHoly = ts.forms.light === 'holy';
+                                html += `<div style="margin-bottom: 6px; color: #ffffaa; font-size: 12px;">✨ 光系形态：${isHoly ? '圣光（输出+20%）' : '圣盾（防御+30%）'}</div>`;
+                            }
+                            // 触发状态显示
+                            if (ts.triggers.windStreak) {
+                                html += `<div style="margin-bottom: 6px; color: #88ffaa; font-size: 12px;">💨 疾风状态（下次攻击连击，剩余${ts.triggers.windStreakTurns}回合）</div>`;
+                            }
+                        }
+
+                        // 天赋主动技能按钮
+                        const activeSkillTalents = activeTalents.filter(t => {
+                            const td = DataTalents[t.id];
+                            return td.activeSkill && t.level >= 5;
+                        });
+                        if (activeSkillTalents.length > 0) {
+                            html += '<div style="display: grid; grid-template-columns: repeat(' + Math.min(activeSkillTalents.length, 3) + ', 1fr); gap: 8px; margin-top: 8px;">';
+                            activeSkillTalents.forEach(t => {
+                                const td = DataTalents[t.id];
+                                const sk = td.activeSkill;
+                                const cd = typeof TalentCombatSystem !== 'undefined' ? TalentCombatSystem.getSkillCooldown(sk.id) : 0;
+                                const canUse = state.isPlayerTurn && cd === 0;
+                                const elemInfo = UI.getElementInfo(td.element);
+                                html += `
+                                    <button onclick="Game.battleUseTalentSkill('${t.id}')" ${!canUse ? 'disabled' : ''}
+                                            title="${sk.description}"
+                                            style="
+                                        padding: 10px 8px;
+                                        background: linear-gradient(135deg, ${elemInfo.color}22, ${elemInfo.color}44);
+                                        border: 2px solid ${elemInfo.color};
+                                        border-radius: 8px;
+                                        color: #fff;
+                                        cursor: ${canUse ? 'pointer' : 'not-allowed'};
+                                        text-align: center;
+                                        opacity: ${canUse ? 1 : 0.4};
+                                        transition: all 0.2s;
+                                    " ${canUse ? 'onmouseover="this.style.boxShadow=\'0 0 12px ' + elemInfo.color + '80\'" onmouseout="this.style.boxShadow=\'none\'"' : ''}>
+                                        <div style="font-size: 13px; font-weight: bold; margin-bottom: 3px;">${elemInfo.icon} ${sk.name}</div>
+                                        <div style="font-size: 10px; color: #ccc;">${cd > 0 ? '冷却: ' + cd + '回合' : (sk.cost ? '消耗' + sk.cost + '资源' : '可使用')}</div>
+                                    </button>
+                                `;
+                            });
+                            html += '</div>';
+                        }
+
+                        return html;
+                    })()}
                 </div>
             </div>
         `;

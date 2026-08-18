@@ -361,6 +361,18 @@ const DebugPanel = {
                         <div id="talent-branch-list" style="display: grid; grid-template-columns: 1fr; gap: 4px;"></div>
                     </div>
                     
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ffaa44; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">v2.2.0 天赋战斗资源</div>
+                        <div style="font-size: 11px; color: #888; margin-bottom: 8px;">战斗中快速设置天赋资源（用于测试主动技能）</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                            <button onclick="DebugPanel.setTalentResource('fire', 10)" style="background: #aa4422; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 11px;">🔥 燃点满</button>
+                            <button onclick="DebugPanel.setTalentResource('thunder', 6)" style="background: #aaaa22; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚡ 电荷满</button>
+                            <button onclick="DebugPanel.setTalentResource('earth', 10)" style="background: #886622; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 11px;">🪨 岩力满</button>
+                            <button onclick="DebugPanel.setTalentResource('summon', 5)" style="background: #aa6622; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 11px;">🐺 契约满</button>
+                            <button onclick="DebugPanel.resetAllTalentResources()" style="background: #666; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 11px; grid-column: span 2;">🔄 重置所有资源</button>
+                        </div>
+                    </div>
+                    
                     <button onclick="DebugPanel.showTalentInfo()" style="width: 100%; background: #4488aa; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 12px;">📊 查看当前天赋信息</button>
                 </div>
                 
@@ -1463,7 +1475,39 @@ const DebugPanel = {
     },
     
     // ========== 天赋相关功能 ==========
-    
+
+    // v2.2.0: 设置天赋战斗资源
+    setTalentResource(type, amount) {
+        try {
+            if (typeof TalentCombatSystem === 'undefined' || !TalentCombatSystem.state) {
+                alert('请先进入战斗');
+                return;
+            }
+            TalentCombatSystem.state[type + 'Energy'] = amount;
+            console.log(`[Debug] 天赋资源 ${type} 设置为 ${amount}`);
+            if (typeof UI !== 'undefined') UI.updateBattleScreen();
+        } catch (e) {
+            console.error('[Debug] setTalentResource错误:', e);
+        }
+    },
+
+    // v2.2.0: 重置所有天赋资源
+    resetAllTalentResources() {
+        try {
+            if (typeof TalentCombatSystem === 'undefined' || !TalentCombatSystem.state) {
+                alert('请先进入战斗');
+                return;
+            }
+            ['fire', 'thunder', 'earth', 'summon'].forEach(t => {
+                TalentCombatSystem.state[t + 'Energy'] = 0;
+            });
+            console.log('[Debug] 所有天赋资源已重置');
+            if (typeof UI !== 'undefined') UI.updateBattleScreen();
+        } catch (e) {
+            console.error('[Debug] resetAllTalentResources错误:', e);
+        }
+    },
+
     // 刷新天生天赋列表
     refreshInnateTalentList() {
         try {

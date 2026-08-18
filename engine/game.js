@@ -2175,6 +2175,18 @@ const Game = {
         }
     },
 
+    // v2.2.0: 使用天赋主动技能
+    battleUseTalentSkill(talentId) {
+        if (!BattleSystem.isPlayerTurn) return;
+
+        BattleSystem.useTalentActiveSkill(talentId);
+        UI.updateBattleScreen();
+
+        if (!BattleSystem.active) {
+            this.endBattle();
+        }
+    },
+
     // 玩家防御
     battleDefend() {
         if (!BattleSystem.isPlayerTurn) return;
