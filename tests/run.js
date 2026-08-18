@@ -14,6 +14,7 @@ const { runDataIntegrityTests } = require('./unit/data-integrity');
 const { runBattleLogicTests } = require('./unit/battle-logic');
 const { runProgressionTests } = require('./unit/progression');
 const { runTests: runTalentCombatTests } = require('./unit/talent-combat');
+const { runTests: runDualTalentTests } = require('./unit/dual-talent');
 
 const TESTS = {
     l1: {
@@ -30,6 +31,11 @@ const TESTS = {
         name: 'L2.5 天赋战斗状态系统测试',
         run: runTalentCombatTests,
         description: '天赋资源积累/消耗、形态切换、触发状态、主动技能冷却'
+    },
+    l2c: {
+        name: 'L2.6 双天赋装备系统测试',
+        run: runDualTalentTests,
+        description: '主修系/副修系设置、效果比例、跨系组合检测'
     },
     l3: {
         name: 'L3 成长流程测试',

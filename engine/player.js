@@ -1116,9 +1116,13 @@ const Player = {
 
     /**
      * v2.4.0: 设置副修系
-     * @param {string} element - 元素系ID
+     * @param {string|null} element - 元素系ID，传null清空副修系
      */
     setSecondaryElement(element) {
+        if (element === null) {
+            this.secondaryElement = null;
+            return true;
+        }
         if (!this.talents || !this.talents[element]) return false;
         // 不能与主修系相同
         if (this.primaryElement === element) return false;
@@ -1180,8 +1184,8 @@ const Player = {
                 if (typeof effects[key] === 'number') {
                     totalEffects[key] = (totalEffects[key] || 0) + effects[key] * multiplier;
                 } else {
-                    // 非数值效果（如activeSkill）只取主修系
-                    if (multiplier >= 1.0 || !totalEffects[key]) {
+                    // v2.4.0: 非数值效果（如activeSkill）只取主修系
+                    if (multiplier >= 1.0) {
                         totalEffects[key] = effects[key];
                     }
                 }
