@@ -173,8 +173,8 @@ const DataQuests = {
     type: "duel",
     objectives: [
       {
-        type: "duel",
-        npcId: "mu_bai",
+        type: "kill",
+        enemyId: "mu_bai_duel",
         count: 1,
         description: "在决斗中击败穆白"
       }
@@ -1791,8 +1791,7 @@ const DataQuests = {
     type: "story",
     objectives: [
       {
-        type: "attend_class",
-        classId: "magic_theory",
+        type: "explore",
         count: 3,
         description: "参加 3 次魔法理论课"
       }
@@ -1828,14 +1827,14 @@ const DataQuests = {
     type: "story",
     objectives: [
       {
-        type: "duel",
-        npcId: "zhao_kunsan",
+        type: "kill",
+        enemyId: "zhao_kunsan_duel",
         count: 1,
         description: "击败赵坤三"
       },
       {
-        type: "duel",
-        npcId: "zhang_xiaohou",
+        type: "kill",
+        enemyId: "zhang_xiaohou_duel",
         count: 1,
         description: "击败张小侯"
       }
@@ -1871,7 +1870,7 @@ const DataQuests = {
     type: "story",
     objectives: [
       {
-        type: "library",
+        type: "explore",
         count: 5,
         description: "去图书馆看书 5 次"
       }
@@ -1907,8 +1906,7 @@ const DataQuests = {
     type: "story",
     objectives: [
       {
-        type: "eat",
-        locationId: "cafeteria",
+        type: "explore",
         count: 1,
         description: "去食堂吃一顿饭"
       }
@@ -3343,7 +3341,7 @@ const DataQuests = {
     giver: "er_tuzi",
     type: "preparation",
     objectives: [
-      { type: "buy", itemId: "basic_staff", count: 1, description: "购买1件基础装备" },
+      { type: "collect", itemId: "basic_staff", count: 1, description: "购买1件基础装备" },
       { type: "kill", count: 1, description: "用新装备击败1只妖魔" },
       { type: "talk", npcId: "er_tuzi", count: 1, description: "向二秃子展示装备效果" }
     ],
@@ -3646,7 +3644,7 @@ const DataQuests = {
     giver: "bai_cangfeng",
     type: "side",
     objectives: [
-      { type: "duel", npcId: "bai_cangfeng", count: 1, description: "与白藏锋切磋并击败他" }
+      { type: "kill", enemyId: "bai_cangfeng", count: 1, description: "与白藏锋切磋并击败他" }
     ],
     rewards: {
       exp: 200,

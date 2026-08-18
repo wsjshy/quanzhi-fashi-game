@@ -1402,6 +1402,37 @@ const DataEnemies = {
       { itemId: "health_potion", chance: 0.5, min: 1, max: 2 }
     ]
   },
+
+  zhang_xiaohou_duel: {
+    id: "zhang_xiaohou_duel",
+    name: "张小侯",
+    title: "风系初阶法师",
+    description: "莫凡的发小，风系法师，速度很快，性格活泼热心。切磋时很认真但不会下狠手。",
+    elements: ["wind"],
+    level: 5,
+    maxHp: 100,
+    maxMp: 70,
+    attack: 11,
+    defense: 5,
+    speed: 18,
+    spirit: 10,
+    skills: [
+      "basic_attack",
+      "wind_blade",
+      "wind_speed"
+    ],
+    aiType: "agile",
+    enemyType: "mage",
+    spriteColor: "#99ff99",
+    isEnemy: true,
+    isMage: true,
+    expReward: 50,
+    goldReward: 80,
+    dropItems: [
+      { itemId: "magic_stone", chance: 0.6, min: 1, max: 3 },
+      { itemId: "mana_potion", chance: 0.4, min: 1, max: 1 }
+    ]
+  },
   
   black_church_mage: {
     id: "black_church_mage",

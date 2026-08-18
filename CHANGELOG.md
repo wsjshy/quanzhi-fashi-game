@@ -68,6 +68,19 @@
 
 **影响**：猎妖任务从"接了就卡死"变为完整可玩的任务链，支持简单→中等→困难的递进解锁。
 
+### 全任务目标类型质量审计与修复
+**问题**：审计160个任务的292个目标，发现8个目标使用了引擎不支持的类型（duel/attend_class/library/eat/buy），导致这些任务无法正常完成。
+
+**修复内容**：
+- duel类型(4个) → 改为kill类型，使用对应duel敌人ID（mu_bai_duel/zhao_kunsan_duel/zhang_xiaohou_duel/bai_cangfeng）
+- attend_class类型(1个) → 改为explore类型
+- library类型(1个) → 改为explore类型
+- eat类型(1个) → 改为explore类型
+- buy类型(1个) → 改为collect类型
+- 新增zhang_xiaohou_duel敌人数据（风系初阶法师）
+
+**结果**：所有292个任务目标类型均被引擎支持，无断裂任务。
+
 ## v1.8.0 - 城市猎妖任务系统（基础框架）
 
 ### 猎妖任务数据
