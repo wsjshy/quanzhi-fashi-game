@@ -409,6 +409,14 @@ const DialogueTree = {
             });
         }
 
+        // v1.8.1: 发现阴谋调查线索
+        if (effects.discoverClue && typeof InvestigationSystem !== 'undefined') {
+            const clues = Array.isArray(effects.discoverClue) ? effects.discoverClue : [effects.discoverClue];
+            clues.forEach(clueId => {
+                InvestigationSystem.discoverClue(Player, clueId);
+            });
+        }
+
         // 声望
         if (effects.reputation) {
             for (const [factionId, amount] of Object.entries(effects.reputation)) {

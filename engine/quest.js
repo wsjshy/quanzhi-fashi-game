@@ -292,6 +292,17 @@ const QuestSystem = {
             Player.flags[rewards.setFlag] = true;
         }
 
+        // v1.8.1: 任务完成发现阴谋调查线索
+        if (rewards.discoverClue && typeof InvestigationSystem !== 'undefined') {
+            const clues = Array.isArray(rewards.discoverClue) ? rewards.discoverClue : [rewards.discoverClue];
+            clues.forEach(clueId => {
+                const result = InvestigationSystem.discoverClue(Player, clueId);
+                if (result.success) {
+                    rewardMessages.push(`🔍 发现线索：${result.clue.name}`);
+                }
+            });
+        }
+
         // v1.8.2: 任务完成自动设置 quest_id_completed flag，用于对话树解锁后续任务
         if (!Player.flags) Player.flags = {};
         Player.flags[questId + '_completed'] = true;

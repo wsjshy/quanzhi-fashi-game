@@ -3206,6 +3206,36 @@ const DataCharacters = {
               nextNode: "demon_warning"
             },
             {
+              id: "ask_black_church",
+              text: "老师，您听说过黑教廷吗？",
+              condition: {
+                minOpinion: 30,
+                minTrust: 20,
+                minDay: 15
+              },
+              effects: {
+                opinion: 1,
+                trust: 2,
+                discoverClue: "clue_black_church_stranger"
+              },
+              nextNode: "black_church_talk"
+            },
+            {
+              id: "share_investigation",
+              text: "老师，我发现了一些可疑的事情...",
+              condition: {
+                minOpinion: 35,
+                minTrust: 25,
+                hasFlag: "investigation_started"
+              },
+              effects: {
+                opinion: 2,
+                trust: 3,
+                discoverClue: "clue_black_church_communication"
+              },
+              nextNode: "share_findings"
+            },
+            {
               id: "ask_about_you",
               text: "老师，你来学校之前是做什么的？",
               condition: {
@@ -3344,6 +3374,93 @@ const DataCharacters = {
               id: "back",
               text: "好的，我会注意的",
               effects: {},
+              nextNode: "default"
+            }
+          ]
+        },
+        black_church_talk: {
+          id: "black_church_talk",
+          texts: [
+            "（唐月的表情微微一变，但很快恢复了平静。）",
+            "黑教廷...你怎么会问起这个？",
+            "那是一个非常危险的组织，你不要去招惹他们。",
+            "...如果你听到什么关于黑教廷的消息，一定要第一时间告诉我，知道吗？"
+          ],
+          mood: "serious",
+          choices: [
+            {
+              id: "promise",
+              text: "好的老师，我会注意的",
+              effects: { opinion: 1, trust: 1 },
+              nextNode: "default"
+            },
+            {
+              id: "ask_more",
+              text: "老师，您好像对黑教廷很了解？",
+              condition: { minTrust: 30 },
+              effects: { opinion: -1, trust: 2 },
+              nextNode: "black_church_more"
+            }
+          ]
+        },
+        black_church_more: {
+          id: "black_church_more",
+          texts: [
+            "（唐月沉默了一会儿。）",
+            "...我以前在魔法协会的时候，接触过一些相关的资料。",
+            "黑教廷的人非常狡猾，他们会伪装成普通人，潜伏在各个城市。",
+            "博城...可能也有他们的人。你平时一定要多加小心。"
+          ],
+          mood: "serious",
+          choices: [
+            {
+              id: "understand",
+              text: "我明白了，谢谢老师提醒",
+              effects: { opinion: 1, trust: 2, flags: { investigation_started: true } },
+              nextNode: "default"
+            }
+          ]
+        },
+        share_findings: {
+          id: "share_findings",
+          texts: [
+            "（唐月认真地看着你。）",
+            "你发现了什么？慢慢说。",
+            "...你说的这些，和我调查到的一些情况吻合。",
+            "看来博城确实有问题。谢谢你告诉我这些，这件事我会继续追查的。",
+            "你自己也要小心，不要轻易暴露你在调查这件事。"
+          ],
+          mood: "serious",
+          choices: [
+            {
+              id: "offer_help",
+              text: "老师，我可以帮您一起调查",
+              condition: { minOpinion: 40, minTrust: 30 },
+              effects: { opinion: 2, trust: 3, flags: { tang_yue_investigation_partner: true } },
+              nextNode: "investigation_partner"
+            },
+            {
+              id: "leave_it",
+              text: "好的老师，那就交给您了",
+              effects: { opinion: 1 },
+              nextNode: "default"
+            }
+          ]
+        },
+        investigation_partner: {
+          id: "investigation_partner",
+          texts: [
+            "（唐月露出了欣慰的笑容。）",
+            "有你帮忙太好了。不过你一定要记住，安全第一。",
+            "如果发现什么重要线索，随时来找我。",
+            "...这场风暴，可能比我们想象的要大得多。"
+          ],
+          mood: "gentle",
+          choices: [
+            {
+              id: "acknowledge",
+              text: "我会小心的，老师",
+              effects: { opinion: 2, trust: 2 },
               nextNode: "default"
             }
           ]

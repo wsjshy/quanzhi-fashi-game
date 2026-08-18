@@ -3171,6 +3171,52 @@ const DataQuests = {
     rewards: { exp: 250, gold: 200, setFlag: "tangyue_investigation_done" }
   },
 
+  // v1.8.1: 阴谋调查系统任务
+  quest_investigate_city_anomaly: {
+    id: "quest_investigate_city_anomaly",
+    name: "城市异常调查",
+    description: "唐月老师提到城市边缘的妖魔行为异常，委托你去调查具体情况。",
+    giver: "tang_yue",
+    type: "investigation",
+    prerequisites: ["quest_tangyue_mountain_investigation"],
+    objectives: [
+      { type: "explore", count: 3, description: "探索城市边缘3次寻找异常迹象" },
+      { type: "kill", count: 5, description: "击败5只妖魔了解它们的异常状态" },
+      { type: "talk", npcId: "tang_yue", count: 1, description: "向唐月老师汇报调查结果" }
+    ],
+    rewards: { exp: 300, gold: 250, discoverClue: ["clue_demon_agitation", "clue_demon_gathering"], setFlag: "city_anomaly_investigated" }
+  },
+
+  quest_trace_black_church: {
+    id: "quest_trace_black_church",
+    name: "追踪黑教廷踪迹",
+    description: "根据唐月老师提供的线索，去追查黑教廷在博城的秘密据点。",
+    giver: "tang_yue",
+    type: "investigation",
+    prerequisites: [{ flag: "investigation_started" }],
+    objectives: [
+      { type: "explore", count: 2, description: "在老街区探索寻找黑教廷踪迹" },
+      { type: "investigate", locationId: "old_town", count: 1, description: "调查老街区的可疑仪式痕迹" },
+      { type: "talk", npcId: "tang_yue", count: 1, description: "向唐月老师汇报发现" }
+    ],
+    rewards: { exp: 350, gold: 300, discoverClue: ["clue_black_church_ritual", "clue_black_church_underground"], setFlag: "black_church_traced" }
+  },
+
+  quest_earth_spring_guard: {
+    id: "quest_earth_spring_guard",
+    name: "地圣泉守卫异动",
+    description: "你注意到地圣泉的守卫似乎有调动，决定去调查背后的原因。",
+    giver: "tang_yue",
+    type: "investigation",
+    prerequisites: [{ flag: "investigation_started" }],
+    objectives: [
+      { type: "reach", locationId: "earth_spring", count: 1, description: "前往地圣泉附近观察" },
+      { type: "talk", npcId: "tang_yue", count: 1, description: "向唐月老师询问守卫调动的事" },
+      { type: "explore", count: 2, description: "在地圣泉周围探索寻找线索" }
+    ],
+    rewards: { exp: 280, gold: 200, discoverClue: ["clue_spring_value", "clue_spring_target"], setFlag: "earth_spring_guard_investigated" }
+  },
+
   quest_muningxue_ice_training: {
     id: "quest_muningxue_ice_training",
     name: "冰系特训",
