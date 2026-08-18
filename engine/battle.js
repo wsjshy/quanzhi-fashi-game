@@ -7706,6 +7706,18 @@ const BattleSystem = {
         this.autoBattle = false; // 结束战斗时关闭自动战斗
         this._stopAutoBattleWatchdog(); // v0.47.1: 停止看门狗
 
+        // v2.2.0: 清理天赋战斗状态
+        if (typeof TalentCombatSystem !== 'undefined') {
+            TalentCombatSystem.cleanup();
+        }
+        // v2.2.0: 重置战斗临时状态
+        if (this.player) {
+            this.player.plantGrowthStacks = 0;
+        }
+        if (this.enemy) {
+            this.enemy.curseStacks = 0;
+        }
+
         // 关闭战斗帮助界面（避免残留）
         this.closeHelp();
 
