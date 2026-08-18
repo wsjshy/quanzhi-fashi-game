@@ -408,6 +408,10 @@ const Game = {
                 const clueResult = InvestigationSystem.tryDiscoverClue(Player, 0.15, null);
                 if (clueResult && clueResult.success) {
                     message += `\n\n🔍 发现新线索：${clueResult.clue.name}\n${clueResult.clue.description}`;
+                    // 宇昂疑点达到3条时的特殊提示
+                    if (clueResult.yuAngSuspicionTriggered) {
+                        message += `\n\n⚠️ 你收集了足够多关于宇昂的疑点，他的身份似乎并不简单...也许应该告诉唐月老师。`;
+                    }
                 }
             }
         }

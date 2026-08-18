@@ -3236,6 +3236,23 @@ const DataCharacters = {
               nextNode: "share_findings"
             },
             {
+              id: "report_yu_ang",
+              text: "老师，我觉得宇昂这个人有问题...",
+              condition: {
+                minOpinion: 40,
+                minTrust: 30,
+                hasFlag: "yu_ang_suspicion_triggered",
+                notNpcFlags: ["reported_yu_ang"]
+              },
+              effects: {
+                opinion: 3,
+                trust: 5,
+                npcFlags: { reported_yu_ang: true },
+                flags: { yu_ang_reported_to_tangyue: true }
+              },
+              nextNode: "yu_ang_report"
+            },
+            {
               id: "ask_about_you",
               text: "老师，你来学校之前是做什么的？",
               condition: {
@@ -3461,6 +3478,54 @@ const DataCharacters = {
               id: "acknowledge",
               text: "我会小心的，老师",
               effects: { opinion: 2, trust: 2 },
+              nextNode: "default"
+            }
+          ]
+        },
+        yu_ang_report: {
+          id: "yu_ang_report",
+          texts: [
+            "（唐月的表情瞬间变得严肃。）",
+            "宇昂？你具体发现了什么？",
+            "...深夜外出、可疑的魔具、还有他的身世。",
+            "（唐月沉默了很久。）",
+            "你说的这些...和我调查到的一些情况吻合。",
+            "宇昂确实有问题。但他背后的势力，比你想象的要大得多。",
+            "这件事你不要再单独行动了，太危险。",
+            "...谢谢你告诉我。接下来的事，交给我和审判会。"
+          ],
+          mood: "serious",
+          choices: [
+            {
+              id: "want_to_help",
+              text: "老师，我也想帮忙",
+              condition: { minOpinion: 45, minTrust: 35 },
+              effects: { opinion: 2, trust: 3, flags: { help_investigate_yu_ang: true } },
+              nextNode: "yu_ang_help"
+            },
+            {
+              id: "understand",
+              text: "好的老师，我会小心的",
+              effects: { opinion: 1, trust: 2 },
+              nextNode: "default"
+            }
+          ]
+        },
+        yu_ang_help: {
+          id: "yu_ang_help",
+          texts: [
+            "（唐月看着你，眼神复杂。）",
+            "...你确定？这可能会有生命危险。",
+            "好吧。如果你坚持的话，我需要你帮我做一件事。",
+            "去穆家庄园附近，留意宇昂的行踪。如果发现他和陌生人接触，立刻告诉我。",
+            "记住，只观察，不要行动。你的安全比什么都重要。"
+          ],
+          mood: "serious",
+          choices: [
+            {
+              id: "agree",
+              text: "我明白了，老师",
+              effects: { opinion: 2, trust: 3, startQuest: "quest_investigate_yu_ang" },
               nextNode: "default"
             }
           ]
@@ -7929,6 +7994,20 @@ const DataCharacters = {
               effects: { npcFlags: { asked_disaster: true } },
               next: "disaster_whereabouts"
             },
+            {
+              id: "ask_night_training",
+              text: "听说你最近总是深夜外出修炼？",
+              condition: { minOpinion: 15, notNpcFlags: ["asked_night_training"] },
+              effects: { opinion: -2, npcFlags: { asked_night_training: true }, discoverClue: "clue_yuang_training" },
+              next: "night_training_response"
+            },
+            {
+              id: "ask_magic_gear",
+              text: "你的地波履魔具很特别，哪来的？",
+              condition: { minOpinion: 20, notNpcFlags: ["asked_magic_gear"] },
+              effects: { opinion: -3, npcFlags: { asked_magic_gear: true }, discoverClue: "clue_yuang_behavior" },
+              next: "magic_gear_response"
+            },
             { text: "告辞", next: null, action: "close" }
           ]
         },
@@ -8070,6 +8149,62 @@ const DataCharacters = {
           effects: { giveInfo: "yu_ang_disaster_alibi" },
           choices: [
             { text: "（那个印记……）", next: "default" }
+          ]
+        },
+        night_training_response: {
+          id: "night_training_response",
+          texts: [
+            "（宇昂的眼神瞬间变得锐利。）",
+            "我的修炼时间，需要向你汇报吗？",
+            "……深夜安静，适合专注修炼。仅此而已。",
+            "（他的语气带着一丝警惕，似乎在隐藏什么。）"
+          ],
+          mood: "cold",
+          choices: [
+            { text: "抱歉，只是好奇", next: "default" },
+            { text: "深夜修炼的地点在哪？", condition: { minOpinion: 25 }, next: "night_training_location" }
+          ]
+        },
+        night_training_location: {
+          id: "night_training_location",
+          texts: [
+            "（宇昂沉默了一会儿。）",
+            "……老城区那边，人少，适合修炼。",
+            "怎么，你也想去？那里可不安全。",
+            "（他的回答太快了，像是早就准备好的。）"
+          ],
+          mood: "cold",
+          effects: { opinion: -2 },
+          choices: [
+            { text: "我知道了", next: "default" }
+          ]
+        },
+        magic_gear_response: {
+          id: "magic_gear_response",
+          texts: [
+            "（宇昂低头看了一眼脚上的魔具。）",
+            "地波履？父亲给的修炼辅助工具罢了。",
+            "怎么，你也想要？可惜，这不是你能拥有的东西。",
+            "（他的语气带着轻蔑，但你注意到他下意识地把脚往后缩了缩。）"
+          ],
+          mood: "arrogant",
+          choices: [
+            { text: "确实很特别", next: "default" },
+            { text: "这种魔具不像是学生用的", condition: { minTrust: 15 }, next: "magic_gear_press" }
+          ]
+        },
+        magic_gear_press: {
+          id: "magic_gear_press",
+          texts: [
+            "（宇昂的表情微微一变。）",
+            "你懂什么？世家的修炼资源，不是你能想象的。",
+            "……不该问的别问。",
+            "（他的语气突然变得冰冷，你感觉到了一丝危险的气息。）"
+          ],
+          mood: "dangerous",
+          effects: { opinion: -5, flags: { yu_ang_warned: true } },
+          choices: [
+            { text: "（退后一步）", next: "default" }
           ]
         }
       }

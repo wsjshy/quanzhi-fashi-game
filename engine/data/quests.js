@@ -3217,6 +3217,21 @@ const DataQuests = {
     rewards: { exp: 280, gold: 200, discoverClue: ["clue_spring_value", "clue_spring_target"], setFlag: "earth_spring_guard_investigated" }
   },
 
+  quest_investigate_yu_ang: {
+    id: "quest_investigate_yu_ang",
+    name: "暗中调查宇昂",
+    description: "唐月委托你暗中观察宇昂的行踪，确认他是否与黑教廷有关联。注意安全，只观察不行动。",
+    giver: "tang_yue",
+    type: "investigation",
+    prerequisites: [{ flag: "help_investigate_yu_ang" }],
+    objectives: [
+      { type: "reach", locationId: "mu_manor", count: 1, description: "前往穆家庄园附近观察" },
+      { type: "explore", count: 3, description: "在穆家庄园附近探索3次寻找线索" },
+      { type: "talk", npcId: "tang_yue", count: 1, description: "向唐月老师汇报观察结果" }
+    ],
+    rewards: { exp: 400, gold: 350, discoverClue: ["clue_yuang_origin", "clue_black_church_potion"], setFlag: "yu_ang_investigated" }
+  },
+
   quest_muningxue_ice_training: {
     id: "quest_muningxue_ice_training",
     name: "冰系特训",

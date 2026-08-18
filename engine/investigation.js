@@ -76,6 +76,11 @@ const InvestigationSystem = {
     // 宇昂疑点特殊处理
     if (type === 'yu_ang') {
       data.yuAngSuspicion = (data.yuAngSuspicion || 0) + 1;
+      // v1.8.1: 收集3条宇昂疑点触发身份发现线
+      if (data.yuAngSuspicion >= 3 && !player.flags['yu_ang_suspicion_triggered']) {
+        player.flags['yu_ang_suspicion_triggered'] = true;
+        result.yuAngSuspicionTriggered = true;
+      }
     }
 
     // 检查是否解锁地圣泉是目标的线索
