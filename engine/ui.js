@@ -5628,6 +5628,16 @@ const UI = {
                                         return `${names[k]||k}+${pct}%`;
                                     }).join(', ');
                                     const stageColors = { '觉醒': '#88ccff', '特性': '#44ff88', '进化': '#ffaa44', '延伸': '#cc88ff', '终极': '#ff66ff' };
+                                    // v2.2.0: 机制类型显示
+                                    const mechanismLabels = {
+                                        resource: { name: '资源型', icon: '⚡', color: '#ffaa44' },
+                                        state: { name: '状态型', icon: '❄️', color: '#66ccff' },
+                                        form: { name: '形态型', icon: '🔄', color: '#aa66ff' },
+                                        trigger: { name: '触发型', icon: '💥', color: '#ff6666' },
+                                        passive: { name: '光环型', icon: '✨', color: '#66ff88' }
+                                    };
+                                    const mech = talent.mechanism ? mechanismLabels[talent.mechanism] : null;
+                                    let mechTag = mech ? `<span style="font-size:10px;color:${mech.color};background:${mech.color}22;padding:1px 5px;border-radius:3px;margin-left:6px;">${mech.icon}${mech.name}</span>` : '';
                                     let stageInfo = '';
                                     if (currentStage) {
                                         const sc = stageColors[currentStage.stage] || '#aaa';
@@ -5651,6 +5661,7 @@ const UI = {
                                                 <span>
                                                     <span style="color: ${SkillSystem.getElementColor(elem)}; font-weight: bold;">${SkillSystem.getElementName(elem)}</span>
                                                     <span style="color: ${rarityConfig.color}; margin-left: 8px;">${talent.name}</span>
+                                                    ${mechTag}
                                                 </span>
                                                 <span style="color: #888; font-size: 12px;">Lv.${talentData.level}${talentData.level >= maxLevel ? ' (满)' : ''}</span>
                                             </div>

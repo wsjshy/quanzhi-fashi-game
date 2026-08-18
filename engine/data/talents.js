@@ -455,8 +455,21 @@ const DataTalents = {
     element: "thunder",
     rarity: "common",
     type: "growth",
-    description: "与雷元素亲和，雷霆之力随成长不断凝聚。Lv5时可选择连锁流（AOE扩散）或麻痹流（单体控制），最终化为雷霆领主或天罚之主。",
+    mechanism: "resource",
+    resourceType: "thunder",
+    resourceMax: 6,
+    description: "与雷元素亲和，雷系攻击快速积累电荷，满层连锁闪电。Lv5解锁主动技能「雷霆一击」，可选择连锁流/麻痹流/爆发流。",
     maxLevel: 10,
+    activeSkill: {
+      id: "thunder_active_strike",
+      name: "雷霆一击",
+      description: "消耗3电荷，造成120%伤害并必定麻痹1回合。",
+      cost: 3,
+      cooldown: 2,
+      damageMultiplier: 1.2,
+      paralyzeChance: 1.0,
+      paralyzeDuration: 1
+    },
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "雷电之体",
@@ -851,7 +864,9 @@ const DataTalents = {
     element: "wind",
     rarity: "common",
     type: "growth",
-    description: "与风元素亲和，疾风之力随成长不断凝聚。Lv5时可选择连击流（多段输出）或闪避流（反击生存），最终化为风暴领主或风之君主。",
+    mechanism: "trigger",
+    triggerType: "dodge",
+    description: "与风元素亲和，闪避后触发疾风状态，下次攻击连击。高风险高回报。Lv5可选择疾风流/风暴流/轻盈流。",
     maxLevel: 10,
     evolutions: [
       {
@@ -1041,14 +1056,16 @@ const DataTalents = {
   // 水系天赋
   // ================================================================
 
-  // v1.4.2重做：流水之躯 - 加入Lv5分支选择（治愈流/束缚流）
+  // v2.2.0更新：形态切换型 - 潮汐自动切换
   water_talent_basic: {
     id: "water_talent_basic",
     name: "流水之躯",
     element: "water",
     rarity: "common",
     type: "growth",
-    description: "与水元素亲和，流水之力随成长不断凝聚。Lv5时可选择治愈流（续航恢复）或束缚流（控制联动），最终化为深海领主或潮汐之主。",
+    mechanism: "form",
+    formType: "tide",
+    description: "与水元素亲和，潮汐形态自动切换（每2回合）：涨潮输出+30%，退潮治疗+30%。节奏把控，攻防兼备。Lv5可选择潮汐掌控/潮涌/深海。",
     maxLevel: 10,
     evolutions: [
       {
@@ -1238,15 +1255,25 @@ const DataTalents = {
   // 光系天赋
   // ================================================================
 
-  // v1.4.3重做：光明之体 - 加入Lv5分支选择（净化流/审判流）
+  // v2.2.0更新：形态切换型 - 圣盾手动切换
   light_talent_basic: {
     id: "light_talent_basic",
     name: "光明之体",
     element: "light",
     rarity: "common",
     type: "growth",
-    description: "与光元素亲和，光明之力随成长不断凝聚。Lv5时可选择净化流（驱散治疗）或审判流（爆发输出），最终化为圣光领主或裁决之主。",
+    mechanism: "form",
+    formType: "holyShield",
+    description: "与光元素亲和，可手动切换圣光形态（输出+20%）/圣盾形态（防御+30%反伤）。战术切换，攻防转换。Lv5解锁主动技能「圣光爆发」。",
     maxLevel: 10,
+    activeSkill: {
+      id: "light_active_nova",
+      name: "圣光爆发",
+      description: "仅圣光形态可用，造成150%光系伤害并净化目标1个增益。",
+      cooldown: 3,
+      damageMultiplier: 1.5,
+      purgeBuff: 1
+    },
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "光明之体",
@@ -1434,15 +1461,26 @@ const DataTalents = {
   // 暗影系天赋
   // ================================================================
 
-  // v1.4.3重做：暗影之躯 - 加入Lv5分支选择（吸血流/潜行流）
+  // v2.2.0更新：状态叠加型 - 诅咒层数
   dark_talent_basic: {
     id: "dark_talent_basic",
     name: "暗影之躯",
     element: "dark",
     rarity: "common",
     type: "growth",
-    description: "与暗影元素亲和，黑暗之力随成长不断凝聚。Lv5时可选择吸血流（续航削弱）或潜行流（爆发背刺），最终化为暗影领主或夜魇之主。",
+    mechanism: "state",
+    stateType: "curse",
+    stateMax: 5,
+    description: "与暗影元素亲和，暗系攻击叠加诅咒层数，满层引爆。DoT为主，诅咒蔓延。Lv5解锁主动技能「诅咒引爆」，可选择蔓延流/加深流/吸取流。",
     maxLevel: 10,
+    activeSkill: {
+      id: "dark_active_detonate",
+      name: "诅咒引爆",
+      description: "立即结算目标所有诅咒伤害，每层诅咒额外造成20%伤害。",
+      cooldown: 2,
+      curseDetonate: true,
+      curseBonusPerStack: 0.20
+    },
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "暗影之躯",
@@ -1631,14 +1669,15 @@ const DataTalents = {
   // 治愈系天赋
   // ================================================================
 
-  // v1.4.4重做：慈悲之心 - 加入Lv5分支选择（治疗流/增益流）
+  // v2.2.0更新：纯被动光环型
   heal_talent_basic: {
     id: "heal_talent_basic",
     name: "慈悲之心",
     element: "heal",
     rarity: "common",
     type: "growth",
-    description: "心怀慈悲，救死扶伤。Lv5时可选择治疗流（续航复活）或增益流（团队强化），最终化为大慈悲者或圣恩之主。",
+    mechanism: "passive",
+    description: "心怀慈悲，常驻生命光环，每回合回复全队HP。纯辅助，团队增益。Lv5可选择生命流/净化流/庇护流。",
     maxLevel: 10,
     evolutions: [
       {
@@ -1827,15 +1866,26 @@ const DataTalents = {
   // 召唤系天赋
   // ================================================================
 
-  // v1.4.4重做：契约之心 - 加入Lv5分支选择（强攻流/防御流）
+  // v2.2.0更新：资源积累型 - 契约
   summon_talent_basic: {
     id: "summon_talent_basic",
     name: "契约之心",
     element: "summon",
     rarity: "common",
     type: "growth",
-    description: "与召唤兽建立深厚契约，共同成长。Lv5时可选择强攻流（协同输出）或防御流（护盾嘲讽），最终化为万兽之王或契约之主。",
+    mechanism: "resource",
+    resourceType: "summon",
+    resourceMax: 5,
+    description: "与召唤兽建立契约，召唤兽攻击积累契约层，满层触发兽潮。与召唤兽协同作战。Lv5解锁主动技能「召唤号令」，可选择强攻流/防御流。",
     maxLevel: 10,
+    activeSkill: {
+      id: "summon_active_command",
+      name: "召唤号令",
+      description: "消耗3契约，召唤兽立即进行3次额外攻击。",
+      cost: 3,
+      cooldown: 3,
+      summonExtraAttacks: 3
+    },
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "契约之心",
@@ -2024,15 +2074,27 @@ const DataTalents = {
   // 植物系天赋
   // ================================================================
 
-  // v1.4.4重做：草木亲和 - 加入Lv5分支选择（毒伤流/控制流）
+  // v2.2.0更新：状态叠加型 - 生长层数
   plant_talent_basic: {
     id: "plant_talent_basic",
     name: "草木亲和",
     element: "plant",
     rarity: "common",
     type: "growth",
-    description: "与自然草木有着天然的亲和力。Lv5时可选择毒伤流（持续输出）或控制流（藤蔓束缚），最终化为自然之怒或森罗之主。",
+    mechanism: "state",
+    stateType: "growth",
+    stateMax: 8,
+    description: "与自然草木亲和，每回合自动生长，层数越高植物系技能越强。后期发力，越战越强。Lv5解锁主动技能「绽放」，可选择绽放流/缠绕流/共生流。",
     maxLevel: 10,
+    activeSkill: {
+      id: "plant_active_bloom",
+      name: "绽放",
+      description: "消耗所有生长层数，每层造成30%攻击力AOE伤害。",
+      cooldown: 3,
+      growthConsumeAll: true,
+      damagePerStack: 0.30,
+      aoe: true
+    },
     evolutions: [
       {
         level: 1, stage: "觉醒", name: "草木亲和",
