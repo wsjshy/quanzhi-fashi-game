@@ -403,6 +403,13 @@ const Game = {
                 // v1.8.2: 调查类任务进度（猎妖任务的调查目标）
                 QuestSystem.updateProgress('investigate', Player.currentLocation, 1);
             }
+            // v1.8.1: 阴谋调查线索触发（探索时概率获得线索）
+            if (typeof InvestigationSystem !== 'undefined') {
+                const clueResult = InvestigationSystem.tryDiscoverClue(Player, 0.15, null);
+                if (clueResult && clueResult.success) {
+                    message += `\n\n🔍 发现新线索：${clueResult.clue.name}\n${clueResult.clue.description}`;
+                }
+            }
         }
 
         // v0.25.0: 检查玩家个人任务触发

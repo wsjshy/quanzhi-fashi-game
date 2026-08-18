@@ -4592,6 +4592,74 @@ const UI = {
                 </div>
                 
                 <div style="flex: 1; padding: 30px; overflow-y: auto; position: relative; z-index: 1;">
+                    
+                    <!-- v1.8.1: 阴谋调查分区 -->
+                    ${typeof InvestigationSystem !== 'undefined' ? (() => {
+                        const invData = InvestigationSystem.getData(Player);
+                        const invLevel = InvestigationSystem.getInvestigationLevel(Player);
+                        const totalProgress = InvestigationSystem.getTotalProgress(Player);
+                        const clueTypes = InvestigationSystem.CLUE_TYPES;
+                        
+                        let typeBars = '';
+                        for (const type in clueTypes) {
+                            const config = clueTypes[type];
+                            const progress = invData[type] || 0;
+                            typeBars += `
+                                <div style="margin-bottom: 8px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #aaa; margin-bottom: 3px;">
+                                        <span>${config.icon} ${config.name}</span>
+                                        <span>${progress}%</span>
+                                    </div>
+                                    <div style="height: 5px; background: #333; border-radius: 3px; overflow: hidden;">
+                                        <div style="height: 100%; width: ${progress}%; background: ${config.color}; transition: width 0.3s;"></div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
+                        const discoveredClues = InvestigationSystem.getDiscoveredClues(Player);
+                        
+                        return `
+                            <div style="
+                                background: rgba(20, 30, 50, 0.9);
+                                border: 2px solid #5566aa;
+                                border-radius: 12px;
+                                padding: 20px;
+                                margin-bottom: 30px;
+                            ">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h3 style="color: #88aaff; font-size: 18px; margin: 0;">🕵️ 阴谋调查</h3>
+                                    <div style="text-align: right;">
+                                        <div style="color: #ffd700; font-size: 15px; font-weight: bold;">${invLevel.name}</div>
+                                        <div style="color: #888; font-size: 11px;">总进度: ${totalProgress}%</div>
+                                    </div>
+                                </div>
+                                <div style="color: #99aabb; font-size: 12px; margin-bottom: 15px; font-style: italic;">${invLevel.desc}</div>
+                                ${typeBars}
+                                ${discoveredClues.length > 0 ? `
+                                    <div style="margin-top: 15px; padding-top: 12px; border-top: 1px solid #334466;">
+                                        <div style="color: #8899bb; font-size: 12px; margin-bottom: 8px;">已发现线索 (${discoveredClues.length}):</div>
+                                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                            ${discoveredClues.map(clue => `
+                                                <div style="
+                                                    padding: 4px 10px;
+                                                    background: rgba(80, 100, 150, 0.3);
+                                                    border: 1px solid #5566aa;
+                                                    border-radius: 12px;
+                                                    font-size: 11px;
+                                                    color: #aabbdd;
+                                                    cursor: help;
+                                                " title="${clue.description}">
+                                                    ${clue.name}
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    })() : ''}
+                    
                     ${categories.map(cat => {
                         const catInfos = knownInfo
                             .map(id => infoDatabase.infos[id])

@@ -218,6 +218,14 @@ const Player = {
         this.hour = 8;  // 初始时间：早上8点
         this.timeOfDay = 'morning';
         this.flags = {};
+        this.investigation = {  // v1.8.1: 阴谋调查系统
+          demon: 0,
+          black_church: 0,
+          yu_ang: 0,
+          earth_spring: 0,
+          discoveredClues: [],
+          yuAngSuspicion: 0
+        };
         this.bestiary = {};
         this.dailyData = null;  // 由 DailySystem.initNewGame() 初始化
         this.unlockedLocations = ['tianlan_school', 'city_street', 'xuefeng_mountain'];
@@ -1960,6 +1968,7 @@ const Player = {
             hour: this.hour,
             timeOfDay: this.timeOfDay,
             flags: this.flags,
+            investigation: this.investigation || { demon: 0, black_church: 0, yu_ang: 0, earth_spring: 0, discoveredClues: [], yuAngSuspicion: 0 },
             bestiary: this.bestiary,
             dailyData: this.dailyData,
             unlockedLocations: this.unlockedLocations,
@@ -2066,6 +2075,7 @@ const Player = {
             this.hour = data.hour ?? 8;  // 默认早上8点
             this.timeOfDay = data.timeOfDay ?? 'morning';
             this.flags = data.flags ?? {};
+            this.investigation = data.investigation ?? { demon: 0, black_church: 0, yu_ang: 0, earth_spring: 0, discoveredClues: [], yuAngSuspicion: 0 };
             this.bestiary = data.bestiary ?? {};
             this.dailyData = data.dailyData ?? null;
             this.unlockedLocations = data.unlockedLocations ?? ['tianlan_school', 'city_street', 'xuefeng_mountain'];

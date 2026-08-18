@@ -702,6 +702,13 @@ const DebugPanel = {
                 <!-- 其他标签页 -->
                 <div id="debug-tab-other" class="debug-tab-content" style="display: none;">
                     <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #8888ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">阴谋调查 (v1.8.1)</div>
+                        <button onclick="DebugPanel.giveRandomClue()" style="width: 100%; background: #5544aa; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 13px; margin-bottom: 6px;">🔍 获得随机线索</button>
+                        <button onclick="DebugPanel.giveAllClues()" style="width: 100%; background: #aa4455; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 13px; margin-bottom: 6px;">📋 获得所有线索</button>
+                        <button onclick="DebugPanel.resetInvestigation()" style="width: 100%; background: #555; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 13px;">🔄 重置调查进度</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
                         <div style="font-weight: bold; color: #8888ff; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">刷新UI</div>
                         <button onclick="DebugPanel.refreshUI()" style="width: 100%; background: #4444aa; color: #fff; border: none; padding: 8px; border-radius: 3px; cursor: pointer; font-size: 13px;">🔄 刷新所有UI</button>
                     </div>
@@ -1856,6 +1863,74 @@ const DebugPanel = {
             this.refreshValues();
         } catch (e) {
             console.warn('[Debug] refreshUI警告:', e);
+        }
+    },
+
+    // v1.8.1: 阴谋调查快捷方法
+    giveRandomClue() {
+        try {
+            if (typeof InvestigationSystem === 'undefined') {
+                alert('阴谋调查系统未加载');
+                return;
+            }
+            const clue = InvestigationSystem.getRandomClue(Player, null);
+            if (!clue) {
+                alert('所有线索都已发现');
+                return;
+            }
+            const result = InvestigationSystem.discoverClue(Player, clue.id);
+            if (result.success) {
+                alert('发现线索：' + result.clue.name + '\n' + result.clue.description);
+                Player.save();
+            } else {
+                alert(result.message);
+            }
+        } catch (e) {
+            console.error('[Debug] giveRandomClue错误:', e);
+            alert('错误：' + e.message);
+        }
+    },
+
+    giveAllClues() {
+        try {
+            if (typeof InvestigationSystem === 'undefined' || typeof DataClues === 'undefined') {
+                alert('阴谋调查系统未加载');
+                return;
+            }
+            let count = 0;
+            for (const clueId in DataClues) {
+                const result = InvestigationSystem.discoverClue(Player, clueId);
+                if (result.success) count++;
+            }
+            alert('已发现 ' + count + ' 条新线索');
+            Player.save();
+            this.refreshUI();
+        } catch (e) {
+            console.error('[Debug] giveAllClues错误:', e);
+            alert('错误：' + e.message);
+        }
+    },
+
+    resetInvestigation() {
+        try {
+            if (typeof InvestigationSystem === 'undefined') {
+                alert('阴谋调查系统未加载');
+                return;
+            }
+            Player.investigation = {
+                demon: 0,
+                black_church: 0,
+                yu_ang: 0,
+                earth_spring: 0,
+                discoveredClues: [],
+                yuAngSuspicion: 0
+            };
+            Player.save();
+            alert('调查进度已重置');
+            this.refreshUI();
+        } catch (e) {
+            console.error('[Debug] resetInvestigation错误:', e);
+            alert('错误：' + e.message);
         }
     },
     
