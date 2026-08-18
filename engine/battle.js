@@ -1194,6 +1194,18 @@ const BattleSystem = {
             this.enemy.frostStacks = (this.enemy.frostStacks || 0) + activeSkill.frostGain;
         }
 
+        // 麻痹效果（雷系主动技能）
+        if (activeSkill.paralyzeChance && Math.random() < activeSkill.paralyzeChance) {
+            const paralyzeEffect = {
+                type: 'paralyze',
+                name: '麻痹',
+                duration: activeSkill.paralyzeDuration || 1,
+                missChance: 0.5
+            };
+            this.applyStatusEffects(this.enemy, [paralyzeEffect], true);
+            this.addLog(`目标被麻痹了！（${activeSkill.paralyzeDuration || 1}回合）`, 'debuff');
+        }
+
         // 设置冷却
         if (typeof TalentCombatSystem !== 'undefined') {
             TalentCombatSystem.useActiveSkill(activeSkill.id, activeSkill.cooldown || 2);
@@ -1415,6 +1427,20 @@ const BattleSystem = {
             }
         }
 
+        // v2.2.0: 火系强化流 - 消耗燃点强化普攻
+        let fireEnhanceBonus = 0;
+        let fireEnhanceCrit = false;
+        const te = this.player.talentEffects || {};
+        if (te.fireEnhanceAttack && typeof TalentCombatSystem !== 'undefined') {
+            const cost = te.fireEnhanceCost || 3;
+            if (TalentCombatSystem.getEnergy('fire') >= cost) {
+                TalentCombatSystem.consumeEnergy('fire', cost);
+                fireEnhanceBonus = te.fireEnhanceBonus || 0.80;
+                fireEnhanceCrit = te.fireEnhanceCrit || false;
+                this.addLog(`🔥 燃点强化！普攻伤害+${Math.floor(fireEnhanceBonus * 100)}%${fireEnhanceCrit ? '，必定暴击' : ''}！`, 'buff');
+            }
+        }
+
         // 计算伤害（含攻击者状态修正）
         const attackerMods = this.getStatusModifiers(this.player);
         // v0.8.27: 召唤兽在场时玩家伤害加成
@@ -1438,10 +1464,10 @@ const BattleSystem = {
             : { battleDamage: 1.0 };
 
         const damage = this.calculateDamage(
-            this.player.attack * (1 + firstStrikeBonus + summonMasterDmgBonus + debuffedBonus) * staminaEff.battleDamage + attackerMods.attackMod,
+            this.player.attack * (1 + firstStrikeBonus + summonMasterDmgBonus + debuffedBonus + fireEnhanceBonus) * staminaEff.battleDamage + attackerMods.attackMod,
             this.enemy.defense * (this.enemy.isDefending ? 2 : 1), // 防御时防御翻倍
             1.0,
-            this.player.critRate,
+            fireEnhanceCrit ? 1.0 : this.player.critRate,
             this.player.hitRate,
             'physical',
             null,
@@ -2254,11 +2280,28 @@ const BattleSystem = {
         // v2.2.0: 天赋资源积累（根据技能元素）
         if (isPlayer && typeof TalentCombatSystem !== 'undefined' && skill.type === 'damage') {
             const element = skill.element;
-            const isCrit = false; // 暴击判断在后面，这里先基础积累
+            const te = this.player.talentEffects || {};
             if (element === 'fire') {
-                TalentCombatSystem.addEnergy('fire', 1, 10);
+                const gain = te.fireEnergyGain || 1;
+                const max = te.fireEnergyMax || 10;
+                const reachedMax = TalentCombatSystem.addEnergy('fire', gain, max);
+                // v2.2.0: 燃点满层自动爆炸
+                if (reachedMax && te.fireExplodeOnMax) {
+                    const explodeDmg = Math.floor(this.player.attack * (te.fireExplodeDamage || 0.80) * (te.fireExplodeBonus || 1));
+                    this.addLog(`🔥 燃点已满！触发烈焰爆炸！`, 'crit');
+                    this.applyDamage(this.enemy, { amount: explodeDmg, element: 'fire', isCrit: te.fireExplodeCrit || false, isMiss: false }, this.player);
+                    // 爆炸后保留部分燃点（分支效果）
+                    const keep = te.fireExplodeKeep || 0;
+                    TalentCombatSystem.state.fireEnergy = keep;
+                }
             } else if (element === 'thunder') {
-                TalentCombatSystem.addEnergy('thunder', 2, 6);
+                const gain = 2;
+                const max = 6;
+                const reachedMax = TalentCombatSystem.addEnergy('thunder', gain, max);
+                // v2.2.0: 电荷满层触发连锁闪电（待实现）
+                if (reachedMax) {
+                    this.addLog(`⚡ 电荷已满！连锁闪电蓄势待发！`, 'buff');
+                }
             }
             // 其他系的资源积累在各自的天赋效果中处理
         }

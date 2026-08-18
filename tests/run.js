@@ -13,6 +13,7 @@
 const { runDataIntegrityTests } = require('./unit/data-integrity');
 const { runBattleLogicTests } = require('./unit/battle-logic');
 const { runProgressionTests } = require('./unit/progression');
+const { runTests: runTalentCombatTests } = require('./unit/talent-combat');
 
 const TESTS = {
     l1: {
@@ -24,6 +25,11 @@ const TESTS = {
         name: 'L2 战斗逻辑单元测试',
         run: runBattleLogicTests,
         description: '纯函数测试，元素克制、伤害计算、引导时间、状态效果'
+    },
+    l2b: {
+        name: 'L2.5 天赋战斗状态系统测试',
+        run: runTalentCombatTests,
+        description: '天赋资源积累/消耗、形态切换、触发状态、主动技能冷却'
     },
     l3: {
         name: 'L3 成长流程测试',
