@@ -1709,6 +1709,11 @@ const BattleSystem = {
                             type: 'freeze', name: '冰霜冻结', duration: te.freezeDuration || 1
                         });
                         this.addLog(`❄️ 冰霜满层！${this.enemy.name} 被冻结！`, 'element');
+                        // v2.3.0: 冰+雷组合 - 超导：冻结时电荷+3
+                        if (te.thunderEnergyGain && typeof TalentCombatSystem !== 'undefined' && TalentCombatSystem.state) {
+                            TalentCombatSystem.addEnergy('thunder', 3, te.thunderEnergyMax || 6);
+                            this.addLog(`⚡ 超导！冻结触发电荷+3！`, 'element');
+                        }
                         // 移除减速状态
                         this.enemy.statusEffects = this.enemy.statusEffects.filter(e => e !== existingSlow);
                     }
@@ -2306,7 +2311,13 @@ const BattleSystem = {
                 const reachedMax = TalentCombatSystem.addEnergy('fire', gain, max);
                 // v2.2.0: 燃点满层自动爆炸
                 if (reachedMax && te.fireExplodeOnMax) {
-                    const explodeDmg = Math.floor(this.player.attack * (te.fireExplodeDamage || 0.80) * (te.fireExplodeBonus || 1));
+                    // v2.3.0: 火+风组合 - 疾风状态下爆炸伤害+50%
+                    let windBonus = 1;
+                    if (te.windStreakOnDodge && TalentCombatSystem.hasWindStreak()) {
+                        windBonus = 1.5;
+                        this.addLog(`🔥💨 火焰风暴！疾风强化爆炸！`, 'crit');
+                    }
+                    const explodeDmg = Math.floor(this.player.attack * (te.fireExplodeDamage || 0.80) * (te.fireExplodeBonus || 1) * windBonus);
                     this.addLog(`🔥 燃点已满！触发烈焰爆炸！`, 'crit');
                     this.applyDamage(this.enemy, { amount: explodeDmg, element: 'fire', isCrit: te.fireExplodeCrit || false, isMiss: false }, this.player);
                     // 爆炸后保留部分燃点（分支效果）
@@ -3632,6 +3643,12 @@ const BattleSystem = {
             this.player._contractStacks = Math.min(this.player._contractStacks + 1, maxContract);
             const dmgBonus = te.contractDamageBonus || 0.05;
             this.addLog(`📜 契约叠加 ${this.player._contractStacks}/${maxContract}（召唤兽伤害+${Math.floor(dmgBonus*100)}%）`, 'buff');
+            // v2.3.0: 召唤+治愈组合 - 契约治愈：契约积累时全队回血
+            if (te.healAura && this.player.hp < this.player.maxHp) {
+                const contractHeal = Math.floor(this.player.maxHp * 0.03);
+                this.player.hp = Math.min(this.player.maxHp, this.player.hp + contractHeal);
+                this.addLog(`💚 契约治愈！恢复 ${contractHeal} 点生命！`, 'heal');
+            }
             // 满层兽潮（contractBeastTideOnMax）
             if (this.player._contractStacks >= maxContract && te.contractBeastTideOnMax) {
                 const tideCount = te.beastTideCount || 2;
@@ -4076,6 +4093,12 @@ const BattleSystem = {
                         this.addLog(`🪨 岩力已满！触发岩刺反击！`, 'buff');
                         TalentCombatSystem.resetEnergy('earth');
                     }
+                    // v2.3.0: 土+暗组合 - 岩刺诅咒：受击时给敌人上诅咒
+                    if (te.curseMax) {
+                        if (!this.enemy.curseStacks) this.enemy.curseStacks = 0;
+                        this.enemy.curseStacks = Math.min(te.curseMax, this.enemy.curseStacks + 1);
+                        this.addLog(`🌑 岩刺诅咒！敌人诅咒+1（${this.enemy.curseStacks}/${te.curseMax}）`, 'element');
+                    }
                 }
             }
 
@@ -4086,6 +4109,11 @@ const BattleSystem = {
                 if (te.windStreakOnDodge && typeof TalentCombatSystem !== 'undefined') {
                     TalentCombatSystem.triggerWindStreak(te.windStreakTurns || 1);
                     this.addLog(`💨 疾风！下次攻击连击2次！`, 'buff');
+                    // v2.3.0: 火+风组合 - 火焰风暴：闪避后燃点+3
+                    if (te.fireEnergyGain && TalentCombatSystem.state) {
+                        TalentCombatSystem.addEnergy('fire', 3, te.fireEnergyMax || 10);
+                        this.addLog(`🔥 火焰风暴！闪避触发燃点+3！`, 'element');
+                    }
                 }
                 if (te.dodgeCritBuff) {
                     this.player._dodgeCritBuff = te.dodgeCritBuff;
@@ -5183,6 +5211,10 @@ const BattleSystem = {
             const lightForm = TalentCombatSystem.getLightForm();
             if (lightForm === 'holy') {
                 attack = Math.floor(attack * 1.20);
+                // v2.3.0: 水+光组合 - 形态协同：涨潮时光系额外+10%
+                if (TalentCombatSystem.getWaterForm() === 'tide' && this.player.talentEffects?.waterFormAuto) {
+                    attack = Math.floor(attack * 1.10);
+                }
             } else if (lightForm === 'shield') {
                 attack = Math.floor(attack * 0.90);
             }
