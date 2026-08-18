@@ -1106,6 +1106,16 @@ const Game = {
                     result.effects.exp += bonusExp;
                     result.starDustBonus = bonusExp;
                 }
+
+                // v1.8.2: 学校/家族分配的星尘魔器临时使用权加成
+                if (StarDustArtifactSystem.hasActiveArtifact(Player)) {
+                    const activeBonus = StarDustArtifactSystem.getActiveBonus(Player);
+                    if (activeBonus.expBonus > 0) {
+                        const assignBonusExp = Math.floor(result.effects.exp * activeBonus.expBonus);
+                        result.effects.exp += assignBonusExp;
+                        result.assignedStarDustBonus = assignBonusExp;
+                    }
+                }
             }
 
             // v0.19.0: 地圣泉内泉效果 - 修炼经验×3（玩家争夺到的机缘）

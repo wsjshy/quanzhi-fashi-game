@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v1.8.1 · 阴谋调查系统</div>
+                ">v1.8.2 · 星尘魔器分配</div>
             </div>
         `;
 
@@ -1193,6 +1193,26 @@ const UI = {
                     }, idx * 1500);
                 });
             }, 500);
+        }
+
+        // v1.8.2: 星尘魔器到期/即将到期提示
+        if (Player._pendingStarDustExpire) {
+            const msg = Player._pendingStarDustExpire;
+            Player._pendingStarDustExpire = null;
+            setTimeout(() => {
+                if (typeof UI.showMessage === 'function') {
+                    UI.showMessage(`⏰ ${msg}`);
+                }
+            }, 800);
+        }
+        if (Player._pendingStarDustWarning) {
+            const msg = Player._pendingStarDustWarning;
+            Player._pendingStarDustWarning = null;
+            setTimeout(() => {
+                if (typeof UI.showMessage === 'function') {
+                    UI.showMessage(`⚠️ ${msg}`);
+                }
+            }, 1000);
         }
         
         const location = MapSystem.getCurrentLocation();
@@ -5639,6 +5659,39 @@ const UI = {
                                 }).join('')}
                             </div>
                             ` : ''}
+                            ${Player.starDustAssignment && typeof StarDustArtifactSystem !== 'undefined' ? (() => {
+                                const assign = Player.starDustAssignment;
+                                const artifact = StarDustArtifactSystem.getArtifact(assign.artifactId);
+                                if (!artifact) return '';
+                                const gradeName = assign.grade === 'exquisite' ? '精品' : '普通';
+                                const gradeColor = assign.grade === 'exquisite' ? '#aa88ff' : '#88aacc';
+                                const sourceName = assign.source === 'mu_family' ? '穆氏家族' : '学校分配';
+                                const bonus = StarDustArtifactSystem.getActiveBonus(Player);
+                                return `
+                            <div style="margin-bottom: 15px; text-align: left;">
+                                <div style="color: #aaa; font-size: 13px; margin-bottom: 8px;">📜 星尘魔器使用权</div>
+                                <div style="
+                                    padding: 8px 12px;
+                                    background: ${gradeColor}11;
+                                    border: 1px solid ${gradeColor}55;
+                                    border-radius: 8px;
+                                    font-size: 13px;
+                                ">
+                                    <span style="color: ${gradeColor}; font-weight: bold;">${artifact.name}</span>
+                                    <span style="color: #888; font-size: 12px; margin-left: 8px;">[${gradeName}级·${sourceName}]</span>
+                                    <div style="color: #ffcc44; font-size: 12px; margin-top: 4px;">
+                                        ⏳ 剩余 ${assign.daysRemaining} 天 / 共 ${assign.totalDays} 天
+                                    </div>
+                                    <div style="color: #888; font-size: 11px; margin-top: 4px;">
+                                        修炼经验 +${Math.round(bonus.expBonus * 100)}% · 疲劳恢复 +${Math.round(bonus.fatigueBonus * 100)}%
+                                    </div>
+                                    <div style="height: 4px; background: #333; border-radius: 2px; overflow: hidden; margin-top: 6px;">
+                                        <div style="height: 100%; width: ${(assign.daysRemaining / assign.totalDays * 100).toFixed(1)}%; background: linear-gradient(90deg, ${gradeColor}, ${gradeColor}aa);"></div>
+                                    </div>
+                                </div>
+                            </div>
+                                `;
+                            })() : ''}
                             ${(() => {
                                 Player.migrateSummonData();
                                 const beasts = Player.summonBeasts || [];

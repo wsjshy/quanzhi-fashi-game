@@ -134,6 +134,7 @@ const Player = {
     talents: {},  // 天赋：{ elementId: { talentId, level, exp } }
     spiritSeeds: {},  // 灵种：{ elementId: seedId }
     starDustArtifacts: {},  // 星尘魔器：{ elementId: { id, level, exp } }
+    starDustAssignment: null,  // v1.8.2: 学校/家族分配的星尘魔器临时使用权 { artifactId, grade, daysRemaining, totalDays, source, assignedDay, expireDay }
     tempBreakthroughBonus: 0,  // 临时突破成功率加成
     npcRelations: {},  // NPC关系：{ npcId: { opinion, trust, familiarity } }
 
@@ -1951,6 +1952,7 @@ const Player = {
             talents: this.talents,
             spiritSeeds: this.spiritSeeds,
             starDustArtifacts: this.starDustArtifacts,
+            starDustAssignment: this.starDustAssignment || null,
             npcRelations: this.npcRelations,
             tempBreakthroughBonus: this.tempBreakthroughBonus,
             gold: this.gold,
@@ -2058,6 +2060,7 @@ const Player = {
             this.talents = data.talents ?? {};
             this.spiritSeeds = data.spiritSeeds ?? {};
             this.starDustArtifacts = data.starDustArtifacts ?? {};
+            this.starDustAssignment = data.starDustAssignment ?? null;
             this.npcRelations = data.npcRelations ?? {};
             this.tempBreakthroughBonus = data.tempBreakthroughBonus ?? 0;
             this.gold = data.gold ?? 50;

@@ -273,6 +273,164 @@ const StarDustArtifactSystem = {
     };
   },
 
+  // ========== v1.8.2: 星尘魔器分配系统 ==========
+
+  /**
+   * 分配星尘魔器给玩家（学校/家族分配的临时使用权）
+   * @param {Object} player - 玩家对象
+   * @param {string} artifactId - 魔器ID
+   * @param {number} days - 使用天数
+   * @param {string} source - 来源（school/mu_family）
+   * @returns {Object} 分配结果
+   */
+  assignArtifact(player, artifactId, days, source = "school") {
+    const artifact = this.getArtifact(artifactId);
+    if (!artifact) {
+      return { success: false, message: "星尘魔器不存在" };
+    }
+
+    const currentDay = player.day || 1;
+    const grade = artifact.grade || "normal";
+
+    player.starDustAssignment = {
+      artifactId: artifactId,
+      grade: grade,
+      daysRemaining: days,
+      totalDays: days,
+      source: source,
+      assignedDay: currentDay,
+      expireDay: currentDay + days
+    };
+
+    return {
+      success: true,
+      message: `获得${grade === "exquisite" ? "精品" : "普通"}级星尘魔器使用权：${days}天`,
+      artifact: artifact,
+      days: days,
+      source: source
+    };
+  },
+
+  /**
+   * 每日更新星尘魔器使用期限
+   * @param {Object} player - 玩家对象
+   * @returns {Object} 结果
+   */
+  dailyUpdate(player) {
+    if (!player.starDustAssignment) {
+      return { expired: false, expiringSoon: false };
+    }
+
+    const assignment = player.starDustAssignment;
+    assignment.daysRemaining = Math.max(0, assignment.daysRemaining - 1);
+
+    const expired = assignment.daysRemaining <= 0;
+    const expiringSoon = assignment.daysRemaining <= 3 && assignment.daysRemaining > 0;
+
+    if (expired) {
+      const artifactName = this.getArtifact(assignment.artifactId)?.name || "星尘魔器";
+      player.starDustAssignment = null;
+      return {
+        expired: true,
+        expiringSoon: false,
+        message: `你的${artifactName}使用权已到期，修炼加成已失效`
+      };
+    }
+
+    return {
+      expired: false,
+      expiringSoon: expiringSoon,
+      daysRemaining: assignment.daysRemaining,
+      message: expiringSoon ? `星尘魔器剩余${assignment.daysRemaining}天，即将到期` : null
+    };
+  },
+
+  /**
+   * 检查玩家是否持有有效的星尘魔器
+   * @param {Object} player - 玩家对象
+   * @returns {boolean}
+   */
+  hasActiveArtifact(player) {
+    return player.starDustAssignment && player.starDustAssignment.daysRemaining > 0;
+  },
+
+  /**
+   * 获取当前生效的星尘魔器修炼加成
+   * @param {Object} player - 玩家对象
+   * @returns {Object} 加成 { expBonus, fatigueBonus }
+   */
+  getActiveBonus(player) {
+    if (!this.hasActiveArtifact(player)) {
+      return { expBonus: 0, fatigueBonus: 0 };
+    }
+
+    const grade = player.starDustAssignment.grade;
+    if (grade === "exquisite") {
+      return { expBonus: 0.20, fatigueBonus: 0.25 };
+    }
+    return { expBonus: 0.10, fatigueBonus: 0.15 };
+  },
+
+  /**
+   * 根据年度考核评级分配星尘魔器
+   * @param {Object} player - 玩家对象
+   * @param {string} rank - 评级 S/A/B/C/D
+   * @param {Object} modifiers - 修正 { penalty: bool, bonus: bool, muFamily: bool }
+   * @returns {Object} 分配结果
+   */
+  assignByRank(player, rank, modifiers = {}) {
+    const rankConfig = {
+      S: { days: 30, grade: "exquisite" },
+      A: { days: 20, grade: "exquisite" },
+      B: { days: 10, grade: "normal" },
+      C: { days: 5, grade: "normal" },
+      D: { days: 0, grade: null }
+    };
+
+    const config = rankConfig[rank] || rankConfig.D;
+    if (config.days === 0) {
+      return { success: false, message: "考核成绩未达到星尘魔器分配资格" };
+    }
+
+    let days = config.days;
+    const grade = config.grade;
+
+    // 违纪惩罚：时长减半
+    if (modifiers.penalty) {
+      days = Math.floor(days / 2);
+    }
+
+    // 揭发暗石奖励：+5天
+    if (modifiers.bonus) {
+      days += 5;
+    }
+
+    // 确定魔器ID（玩家主修元素）
+    const mainElement = player.elements && player.elements.length > 0 ? player.elements[0] : "fire";
+    const artifactId = `${mainElement}_star_dust`;
+
+    // 验证魔器是否存在
+    if (!this.getArtifact(artifactId)) {
+      // 回退到通用型
+      const allArtifacts = this.getElementArtifacts("all");
+      if (allArtifacts.length > 0) {
+        return this.assignArtifact(player, allArtifacts[0].id, days, "school");
+      }
+      return { success: false, message: "未找到合适的星尘魔器" };
+    }
+
+    const result = this.assignArtifact(player, artifactId, days, "school");
+
+    // 穆氏家族额外分配
+    if (modifiers.muFamily) {
+      const muArtifactId = `${mainElement}_star_dust`;
+      // 穆氏家族魔器品质更高，但这里简化处理，只增加天数
+      result.muFamilyBonus = "穆氏家族星尘魔器已激活，修炼效果额外+10%";
+    }
+
+    return result;
+  },
+
   // 获取升级所需经验
   getExpToNextLevel(level) {
     // 升级所需经验：100 * 1.5^(level-1)

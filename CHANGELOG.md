@@ -2,6 +2,35 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v1.8.2 - 星尘魔器分配系统
+
+### 核心机制
+- 年度考核评级(S/A/B/C/D)→星尘魔器使用时长(30/20/10/5/0天)和品质(精品/精品/普通/普通/无)
+- 自动评级：根据玩家等级计算(Lv.15+→S, Lv.12-14→A, Lv.9-11→B, Lv.6-8→C, Lv.5以下→D)
+- 星尘魔器临时使用权，按游戏内天数计算，到期自动失效
+- 到期前3天提示，到期当天通知
+
+### 修炼加成
+- 普通级：修炼经验+10%，疲劳恢复+15%
+- 精品级：修炼经验+20%，疲劳恢复+25%
+- 与玩家已拥有的成长型星尘魔器效果叠加
+
+### UI展示
+- 角色面板新增"星尘魔器使用权"卡片，显示剩余天数/总天数/品质/来源/加成
+- 进度条显示使用进度
+- 每日更新时显示到期/即将到期提示
+
+### 系统支持
+- player.js：starDustAssignment字段+存档/读档
+- star-dust-artifact.js：assignArtifact/dailyUpdate/hasActiveArtifact/getActiveBonus/assignByRank方法
+- big-event.js：applyEffects支持starDustAssignByRank效果
+- time.js：advanceDay中添加每日期限更新
+- game.js：修炼时应用分配的星尘魔器加成
+- debug.js：按评级分配快捷功能(S/A/B/C)+清除分配
+
+### 设计文档
+- docs/version-design/v1.8.2_星尘魔器分配逻辑设计.md
+
 ## v1.8.1 - 原文回归校准 + 组队战斗完善 + Bug修复
 
 ### 原文回归校准（7项）

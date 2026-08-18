@@ -349,6 +349,16 @@ const TimeSystem = {
                 Player._pendingNPCMessages = messages;
             }
         }
+
+        // v1.8.2: 星尘魔器每日期限更新
+        if (typeof StarDustArtifactSystem !== 'undefined' && Player.starDustAssignment) {
+            const result = StarDustArtifactSystem.dailyUpdate(Player);
+            if (result.expired && result.message) {
+                Player._pendingStarDustExpire = result.message;
+            } else if (result.expiringSoon && result.message) {
+                Player._pendingStarDustWarning = result.message;
+            }
+        }
         
         // v0.9.4: 重置每日统计
         if (Player.dailyStats) {

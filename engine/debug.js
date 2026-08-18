@@ -304,6 +304,14 @@ const DebugPanel = {
                             <button onclick="DebugPanel.addItem('thunder_star_dust', 1)" style="background: #ffcc00; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">⚡ 雷系星尘</button>
                             <button onclick="DebugPanel.addItem('little_loach', 1)" style="background: #ffd700; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🐟 小泥鳅坠</button>
                         </div>
+                        <div style="font-size: 11px; color: #888; margin: 8px 0 4px;">v1.8.2: 学校分配使用权</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
+                            <button onclick="DebugPanel.assignStarDust('S')" style="background: #aa44ff; color: #fff; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">S级30天</button>
+                            <button onclick="DebugPanel.assignStarDust('A')" style="background: #4488ff; color: #fff; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">A级20天</button>
+                            <button onclick="DebugPanel.assignStarDust('B')" style="background: #44aa88; color: #fff; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">B级10天</button>
+                            <button onclick="DebugPanel.assignStarDust('C')" style="background: #888; color: #fff; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">C级5天</button>
+                            <button onclick="DebugPanel.clearStarDustAssign()" style="background: #aa4444; color: #fff; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">清除分配</button>
+                        </div>
                     </div>
                 </div>
                 
@@ -1930,6 +1938,40 @@ const DebugPanel = {
             this.refreshUI();
         } catch (e) {
             console.error('[Debug] resetInvestigation错误:', e);
+            alert('错误：' + e.message);
+        }
+    },
+
+    // v1.8.2: 按评级分配星尘魔器使用权
+    assignStarDust(rank) {
+        try {
+            if (typeof StarDustArtifactSystem === 'undefined') {
+                alert('星尘魔器系统未加载');
+                return;
+            }
+            const result = StarDustArtifactSystem.assignByRank(Player, rank, {});
+            if (result.success) {
+                Player.save();
+                alert(result.message);
+                this.refreshUI();
+            } else {
+                alert('分配失败：' + result.message);
+            }
+        } catch (e) {
+            console.error('[Debug] assignStarDust错误:', e);
+            alert('错误：' + e.message);
+        }
+    },
+
+    // v1.8.2: 清除星尘魔器分配
+    clearStarDustAssign() {
+        try {
+            Player.starDustAssignment = null;
+            Player.save();
+            alert('星尘魔器使用权已清除');
+            this.refreshUI();
+        } catch (e) {
+            console.error('[Debug] clearStarDustAssign错误:', e);
             alert('错误：' + e.message);
         }
     },

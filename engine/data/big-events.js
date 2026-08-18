@@ -945,10 +945,14 @@ const DataBigEvents = {
       {
         id: "phase_6_end",
         name: "考核结束",
-        description: "年度考核结束了。你的表现引起了不少人的关注，未来的路还很长...\n\n（根据你的评级，你获得了相应的奖励和分班结果）",
+        description: "年度考核结束了。你的表现引起了不少人的关注，未来的路还很长...\n\n（根据你的评级，你获得了相应的奖励和星尘魔器使用权）",
         type: "auto",
         effects: {
-          flags: { "annual_exam_completed": true }
+          flags: { "annual_exam_completed": true },
+          starDustAssignByRank: {
+            rank: "auto",
+            modifiers: {}
+          }
         }
       }
     ]

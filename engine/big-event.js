@@ -476,6 +476,25 @@ const BigEventSystem = {
                 NPCStateSystem.changeRelation(npcId, value);
             }
         }
+
+        // v1.8.2: 星尘魔器分配（按评级）
+        if (effects.starDustAssignByRank && typeof StarDustArtifactSystem !== 'undefined') {
+            let rank = effects.starDustAssignByRank.rank || 'B';
+            // 自动评级：根据玩家等级计算
+            if (rank === 'auto') {
+                const level = Player.level || 1;
+                if (level >= 15) rank = 'S';
+                else if (level >= 12) rank = 'A';
+                else if (level >= 9) rank = 'B';
+                else if (level >= 6) rank = 'C';
+                else rank = 'D';
+            }
+            const modifiers = effects.starDustAssignByRank.modifiers || {};
+            const result = StarDustArtifactSystem.assignByRank(Player, rank, modifiers);
+            if (result.success) {
+                console.log('[大事件] 星尘魔器分配:', result.message);
+            }
+        }
     },
     
     /**
