@@ -4338,6 +4338,50 @@ const BattleSystem = {
                     this.endEnemyTurn();
                     return;
                 }
+
+                // 诅咒削弱
+                if (mech === 'curse') {
+                    const curseDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 0.5));
+                    this.addLog(`💀 ${this.enemy.name}释放诅咒！造成${curseDmg}点暗影伤害！`, 'element');
+                    this.player.hp -= curseDmg;
+                    this.showDamageNumber('player', curseDmg, 'dark');
+                    // 攻击降低
+                    if (trait.effects?.attackDebuff) {
+                        this.addStatusEffect(this.player, {
+                            type: 'attack_down',
+                            name: '诅咒',
+                            duration: trait.effects.debuffDuration || 2,
+                            description: `被诅咒，攻击降低${Math.floor(trait.effects.attackDebuff * 100)}%`,
+                            attackMod: -Math.floor(this.player.attack * trait.effects.attackDebuff)
+                        });
+                        this.addLog(`⚔️ 你的攻击力被诅咒降低！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 暗影火球
+                if (mech === 'shadow_fireball') {
+                    const fireballDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 1.5));
+                    this.addLog(`🔥 ${this.enemy.name}释放暗影火球！造成${fireballDmg}点暗火混合伤害！`, 'element');
+                    this.player.hp -= fireballDmg;
+                    this.showDamageNumber('player', fireballDmg, 'fire');
+                    // 燃烧效果
+                    if (trait.effects?.burnChance && Math.random() < trait.effects.burnChance) {
+                        this.addStatusEffect(this.player, {
+                            type: 'burn',
+                            name: '暗焰燃烧',
+                            duration: trait.effects.burnDuration || 3,
+                            description: '被暗焰灼烧，每回合受到伤害',
+                            damagePerTurn: trait.effects.burnDamage || 10
+                        });
+                        this.addLog(`🔥 你被暗焰灼烧！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.endEnemyTurn();
+                    return;
+                }
             }
         }
 

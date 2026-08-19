@@ -221,7 +221,83 @@ const DemonTraits = {
             }
         ]
     },
-    
+
+    // 黑教廷教徒
+    black_church_acolyte: {
+        traits: [
+            {
+                id: "dark_robe",
+                name: "黑色长袍",
+                description: "穿着黑色长袍，暗属性伤害+20%，暗抗性+30%",
+                type: "passive",
+                effects: {
+                    darkDamageBonus: 0.2,
+                    darkDamageReduction: 0.3
+                }
+            },
+            {
+                id: "sneaky",
+                name: "行踪诡秘",
+                description: "行踪诡秘，闪避+15%",
+                type: "passive",
+                effects: {
+                    dodgeBonus: 0.15
+                }
+            },
+            {
+                id: "curse_weakness",
+                name: "诅咒削弱",
+                description: "每3回合释放诅咒，降低玩家攻击15%",
+                type: "mechanic",
+                mechanic: "curse",
+                cooldown: 3,
+                effects: {
+                    damageMultiplier: 0.5,
+                    attackDebuff: 0.15,
+                    debuffDuration: 2
+                }
+            }
+        ]
+    },
+
+    // 黑教廷执事
+    black_church_deacon: {
+        traits: [
+            {
+                id: "shadow_master",
+                name: "暗影精通",
+                description: "精通暗影魔法，暗属性伤害+30%",
+                type: "passive",
+                effects: {
+                    darkDamageBonus: 0.3
+                }
+            },
+            {
+                id: "dark_fire",
+                name: "暗火双修",
+                description: "同时掌握暗系和火系，火属性伤害+20%",
+                type: "passive",
+                effects: {
+                    fireDamageBonus: 0.2
+                }
+            },
+            {
+                id: "shadow_fireball",
+                name: "暗影火球",
+                description: "每3回合释放暗影火球，造成150%暗+火混合伤害",
+                type: "mechanic",
+                mechanic: "shadow_fireball",
+                cooldown: 3,
+                effects: {
+                    damageMultiplier: 1.5,
+                    burnChance: 0.4,
+                    burnDamage: 10,
+                    burnDuration: 3
+                }
+            }
+        ]
+    },
+
     // 风翼鸟
     wind_bird: {
         traits: [
