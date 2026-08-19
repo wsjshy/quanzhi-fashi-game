@@ -1089,7 +1089,7 @@ const UI = {
             </div>
         ` : '';
 
-        this.elements.gameContainer.innerHTML = `
+        this.elements.gameContainer.innerHTML += `
             <div id="ps-selection-overlay" style="
                 position:fixed;top:0;left:0;width:100%;height:100%;
                 background:rgba(0,0,0,0.85);
@@ -1476,7 +1476,7 @@ const UI = {
             }).join('');
         }
 
-        this.elements.gameContainer.innerHTML = `
+        this.elements.gameContainer.innerHTML += `
             <div id="talent-detail-overlay" style="
                 position:fixed;top:0;left:0;width:100%;height:100%;
                 background:rgba(0,0,0,0.88);
