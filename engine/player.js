@@ -2224,6 +2224,12 @@ const Player = {
                 }
             }
             
+            // v2.4.0 存档兼容：如果没有主修系但有觉醒系，自动设置第一个觉醒系为主修系
+            if (!this.primaryElement && this.elements && this.elements.length > 0) {
+                this.primaryElement = this.elements[0];
+                console.log(`[存档] 自动设置主修系为: ${this.primaryElement}`);
+            }
+
             // 存档迁移：补全缺失的初始技能（旧存档可能只有basic_attack）
             this.elements.forEach(elem => {
                 const starterSkills = {
