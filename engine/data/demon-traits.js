@@ -272,21 +272,34 @@ const DemonTraits = {
             {
                 id: "blood_rage",
                 name: "血怒",
-                description: "HP越低，攻击力越高，最多+50%",
+                description: "HP越低，攻击力越高，每损失10%HP攻击+5%，最多+50%",
                 type: "passive_scaling",
                 effects: {
-                    attackPerHpLost: 0.01  // 每损失1%HP，攻击+1%
+                    attackPerHpLost: 0.005  // 每损失1%HP，攻击+0.5%
                 }
             },
             {
-                id: "giant_size",
-                name: "巨型体型",
-                description: "HP+50%，攻击+20%，速度-10%",
-                type: "passive",
+                id: "tear",
+                name: "撕裂",
+                description: "攻击有40%概率造成撕裂，持续掉血且治疗效果-50%",
+                type: "on_hit",
                 effects: {
-                    hpBonus: 0.5,
-                    attackBonus: 0.2,
-                    speedPenalty: 0.1
+                    tearChance: 0.4,
+                    tearDamage: 10,
+                    tearDuration: 3,
+                    healReduction: 0.5
+                }
+            },
+            {
+                id: "speed_charge",
+                name: "极速冲锋",
+                description: "每3回合发动冲锋，造成150%伤害+击退",
+                type: "mechanic",
+                mechanic: "charge",
+                cooldown: 3,
+                effects: {
+                    damageMultiplier: 1.5,
+                    knockback: true
                 }
             }
         ]
@@ -350,32 +363,40 @@ const DemonTraits = {
     demon_wolf: {
         traits: [
             {
-                id: "fierce",
-                name: "凶猛",
-                description: "生性凶猛，攻击力+15%",
-                type: "passive",
+                id: "berserk",
+                name: "狂暴",
+                description: "HP低于50%时进入狂暴状态，攻击+30%，速度+20%",
+                type: "trigger",
+                trigger: "low_hp",
+                threshold: 0.5,
                 effects: {
-                    attackBonus: 0.15
+                    attackBonus: 0.3,
+                    speedBonus: 0.2
                 }
             },
             {
-                id: "pack_hunter",
-                name: "群居",
-                description: "群居生物，同类越多越强",
-                type: "passive",
+                id: "triple_charge",
+                name: "三段冲刺",
+                description: "每3回合连续攻击3次，每次伤害递减",
+                type: "mechanic",
+                mechanic: "multi_strike",
+                cooldown: 3,
                 effects: {
-                    attackBonus: 0.1
+                    strikeCount: 3,
+                    damageDecay: 0.7
                 }
             },
             {
-                id: "sharp_claws",
-                name: "锋利爪子",
-                description: "爪子锋利，攻击有几率造成流血",
-                type: "on_hit",
+                id: "sand_breath",
+                name: "飞沙走石",
+                description: "每2回合释放土系吐息，造成伤害+致盲（命中-20%）",
+                type: "mechanic",
+                mechanic: "sand_breath",
+                cooldown: 2,
                 effects: {
-                    bleedChance: 0.2,
-                    bleedDamage: 3,
-                    bleedDuration: 2
+                    damageMultiplier: 0.8,
+                    blindChance: 0.5,
+                    blindDuration: 2
                 }
             }
         ]

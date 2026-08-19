@@ -4011,6 +4011,22 @@ const BattleSystem = {
 
         // v2.7.0: 机制型妖魔特性触发
         if (this.enemy.traits && this.enemy.mechanicCooldowns) {
+            // 狂暴机制：HP低于阈值时触发
+            const berserkTrait = this.enemy.traits.find(t => t.type === 'trigger' && t.trigger === 'low_hp');
+            if (berserkTrait && !this.enemy.mechanicState.berserked) {
+                const threshold = berserkTrait.threshold || 0.5;
+                if (this.enemy.hp / this.enemy.maxHp < threshold) {
+                    this.enemy.mechanicState.berserked = true;
+                    if (berserkTrait.effects?.attackBonus) {
+                        this.enemy.attack = Math.floor(this.enemy.attack * (1 + berserkTrait.effects.attackBonus));
+                    }
+                    if (berserkTrait.effects?.speedBonus) {
+                        this.enemy.speed = Math.floor(this.enemy.speed * (1 + berserkTrait.effects.speedBonus));
+                    }
+                    this.addLog(`💢 ${this.enemy.name}进入狂暴状态！攻击力和速度大幅提升！`, 'warning');
+                }
+            }
+
             // 减少所有机制冷却
             for (const mech in this.enemy.mechanicCooldowns) {
                 if (this.enemy.mechanicCooldowns[mech] > 0) {
@@ -4095,6 +4111,56 @@ const BattleSystem = {
                     this.player.hp -= aoeDmg;
                     this.showDamageNumber('player', aoeDmg, 'wind');
                     this.enemy.mechanicCooldowns[mech] = trait.cooldown || 4;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 三段冲刺
+                if (mech === 'multi_strike') {
+                    const strikeCount = trait.effects?.strikeCount || 3;
+                    const decay = trait.effects?.damageDecay || 0.7;
+                    let totalDmg = 0;
+                    for (let i = 0; i < strikeCount; i++) {
+                        const strikeDmg = Math.floor(this.enemy.attack * Math.pow(decay, i));
+                        totalDmg += strikeDmg;
+                        this.showDamageNumber('player', strikeDmg, 'normal');
+                    }
+                    this.addLog(`⚡ ${this.enemy.name}发动三段冲刺！连续攻击${strikeCount}次，共造成${totalDmg}点伤害！`, 'damage');
+                    this.player.hp -= totalDmg;
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 飞沙走石
+                if (mech === 'sand_breath') {
+                    const sandDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 0.8));
+                    this.addLog(`🌪️ ${this.enemy.name}吐出飞沙走石！造成${sandDmg}点土系伤害！`, 'element');
+                    this.player.hp -= sandDmg;
+                    this.showDamageNumber('player', sandDmg, 'earth');
+                    // 致盲效果
+                    if (trait.effects?.blindChance && Math.random() < trait.effects.blindChance) {
+                        this.addStatusEffect(this.player, {
+                            type: 'blind',
+                            name: '致盲',
+                            duration: trait.effects.blindDuration || 2,
+                            description: '被沙尘迷眼，命中率降低20%',
+                            hitRateMod: -0.2
+                        });
+                        this.addLog(`👁️ 你被沙尘迷眼，命中率降低！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 2;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 极速冲锋
+                if (mech === 'charge') {
+                    const chargeDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 1.5));
+                    this.addLog(`💨 ${this.enemy.name}发动极速冲锋！造成${chargeDmg}点伤害！`, 'damage');
+                    this.player.hp -= chargeDmg;
+                    this.showDamageNumber('player', chargeDmg, 'normal');
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
                     this.endEnemyTurn();
                     return;
                 }
