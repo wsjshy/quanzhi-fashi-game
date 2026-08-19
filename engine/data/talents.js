@@ -1264,7 +1264,7 @@ const DataTalents = {
     type: "growth",
     mechanism: "form",
     formType: "holyShield",
-    description: "与光元素亲和，可手动切换圣光形态（输出+20%）/圣盾形态（防御+30%反伤）。战术切换，攻防转换。Lv5解锁主动技能「圣光爆发」。",
+    description: "与光元素亲和，可手动切换圣光形态（输出+30%，攻击附带净化）/圣盾形态（防御+40%，受击反弹伤害）。战术切换，攻防转换。Lv5解锁主动技能「圣光爆发」。",
     maxLevel: 10,
     activeSkill: {
       id: "light_active_nova",
