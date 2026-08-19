@@ -1467,6 +1467,9 @@ const DataSkills = {
     targetType: "enemy",
     cooldown: 0,
     tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 0.20,
+    unlockLevel: 11,
     realmRequired: "middle",
     // 小说第133章：雷系中阶无明显起手式，速度极快
     castSpeed: "fast",
@@ -1558,6 +1561,9 @@ const DataSkills = {
     targetType: "enemy",
     cooldown: 0,
     tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 0.20,
+    unlockLevel: 11,
     realmRequired: "middle",
     statusEffects: [
       {

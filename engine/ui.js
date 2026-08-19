@@ -1865,6 +1865,16 @@ const UI = {
         if (skill.cooldown) statsHtml.push(`<span style="color:#ffcc66;">冷却: ${skill.cooldown}回合</span>`);
         if (skill.hitRate) statsHtml.push(`<span style="color:#aaffaa;">命中率: ${(skill.hitRate*100).toFixed(0)}%</span>`);
         if (skill.critRate) statsHtml.push(`<span style="color:#ff66aa;">暴击率: ${(skill.critRate*100).toFixed(0)}%</span>`);
+        // v2.9.0: 打断概率和解锁等级
+        if (skill.interruptChance !== undefined && skill.interruptChance > 0) {
+            const interruptColor = skill.interruptChance >= 0.4 ? '#ff4444' : skill.interruptChance >= 0.2 ? '#ffaa44' : '#88ff88';
+            statsHtml.push(`<span style="color:${interruptColor};">打断概率: ${(skill.interruptChance*100).toFixed(0)}%</span>`);
+        }
+        if (skill.unlockLevel) {
+            const playerLv = typeof Player !== 'undefined' ? Player.getPlayerLevel() : 1;
+            const locked = playerLv < skill.unlockLevel;
+            statsHtml.push(`<span style="color:${locked?'#ff4444':'#88ff88'};">解锁等级: Lv.${skill.unlockLevel}${locked?' (未解锁)':''}</span>`);
+        }
         if (skill.targetType) {
             const targetNames = {enemy:'敌方单体', all_enemies:'敌方全体', self:'自身', ally:'友方单体', all_allies:'友方全体'};
             statsHtml.push(`<span style="color:#aaa;">目标: ${targetNames[skill.targetType] || skill.targetType}</span>`);
