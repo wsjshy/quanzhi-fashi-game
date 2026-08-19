@@ -1550,20 +1550,25 @@ const DataEvents = {
   event_cafeteria_investigate: {
     id: "event_cafeteria_investigate",
     name: "食堂调查",
-    description: "你进入了铭文女子中学的食堂，里面黑漆漆的，只有远处的灯光照亮了些许位置。整齐的餐桌餐椅冷冷清清地摆在那里。",
+    description: "你进入了铭文女子中学的食堂。据校方说，这半年来每到深夜食堂就会出现莫名其妙的颤震——桌椅自己晃动、餐具叮当作响，就像有什么东西在地下活动。半年前有一名女生深夜留在食堂复习后失踪，校方不了了之；直到上周又有一名女生在校内失踪，学校才不得不找猎妖队介入。食堂里黑漆漆的，只有远处的应急灯照亮了些许位置，整齐的餐桌餐椅冷冷清清地摆在那里，空气中弥漫着一股若有若无的腥臭味。",
     trigger: "exploring",
     chance: 1.0,
     conditions: { location: "mingwen_girls_school", action: "investigate_cafeteria" },
     choices: [
       {
         text: "蹲在角落观察",
-        effects: { stamina: -10, exp: 15 },
-        resultText: "你蹲在一个角落，静静观察。突然，不知从什么地方发出了一阵响声，一个铁勺随着桌椅的晃动抖动起来。"
+        effects: { stamina: -10, exp: 15, setFlag: "cafeteria_observed" },
+        resultText: "你蹲在一个角落，静静观察。突然，脚下传来一阵微弱的震动——就像有什么东西在地下挖掘。紧接着，不远处的一张餐桌自己晃动起来，上面的铁勺随着桌椅的晃动叮当作响。震动持续了大约十秒后停止，你注意到后厨方向的地板有轻微的隆起痕迹。"
+      },
+      {
+        text: "查看失踪女生留下的物品",
+        effects: { stamina: -5, exp: 20, setFlag: "missing_girl_clue" },
+        resultText: "你在食堂角落发现了一个被遗忘的书包，应该是上周失踪女生留下的。书包里有一本魔法理论笔记，最后一页写着：'深夜食堂又在震了，我决定今晚留下来看看是什么东西……'笔记到这里就断了，字迹潦草，似乎写得很匆忙。"
       },
       {
         text: "直接去后厨",
         effects: { stamina: -15, exp: 25, hp: -20 },
-        resultText: "你直接走向后厨，一股腐臭气味扑面而来。突然，一道腥红光线射来，你勉强躲开，但还是被擦伤了。"
+        resultText: "你直接走向后厨，一股腐臭气味扑面而来，地面上有明显的拖拽痕迹。突然，一道腥红光线从黑暗中射来，你勉强躲开，但还是被擦伤了肩膀。那道光线来自后厨深处——有什么东西潜伏在那里！"
       }
     ]
   },
