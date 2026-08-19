@@ -2,6 +2,31 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v2.7.11 - 战斗启动bug修复
+
+### Bug修复
+- **修复战斗启动Script error**：根本原因是`this.player`初始化顺序问题——`BattleSystem.startBattle`中第590行调用`TalentCombatSystem.init(this.player)`时`this.player`还是null，但它在第828行才初始化。已将`this.player`初始化块（包括天赋属性加成和疲劳减益）移到`this.enemy`初始化之后，确保在使用之前已经初始化。
+- **TalentCombatSystem.init添加null检查**：如果player参数为null，则使用全局Player对象作为后备，增强容错性。
+
+### 测试验证
+- 自动化测试118通过/0失败
+- 浏览器端战斗启动正常，完整战斗流程验证通过
+- 机制型妖魔特性（巨眼猩鼠掘地突袭+恐惧系统）验证成功
+
+## v2.7.0-v2.7.10 - 机制型妖魔特性系统
+
+### 核心系统
+- **机制型妖魔特性设计**：妖魔强度来自独特机制和特性，而非纯数值堆砌
+- 35个敌人定义，39个机制型特性，23种mechanic类型
+- 博城篇重要敌人100%覆盖机制型特性
+
+### 已实现mechanic类型
+burrow / bone_spike / fly_switch / summon_wolves / aoe_wind / multi_strike / sand_breath / charge / stomp / screech / gaze / fire_burst / dodge_next / thorn_shot / mutation / acid_spray / bone_slash / curse / shadow_fireball / dark_ice_spike / ice_shield / shadow_curse / shadow_lurk / bite / double_strike / smash / phase_strike
+
+### 设计方法论
+- 创建`docs/机制型妖魔特性设计方法论.md`
+- 明确敌人类型标记：妖魔用demonTier，人类用isBoss，蓝衣执事分类为人类/BOSS
+
 ## v2.2.0 - 天赋系统半重写
 
 ### 核心机制重构
