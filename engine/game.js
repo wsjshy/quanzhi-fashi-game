@@ -4248,6 +4248,10 @@ const Game = {
             const boundName = SkillSystem.getElementName(talent.boundElement);
             this._pendingElement = talent.boundElement;
             Player.element = talent.boundElement;
+            // v2.8.1 修复：同步更新elements数组，否则UI和战斗仍显示初始火系
+            Player.elements = [talent.boundElement];
+            Player.elementLevels[talent.boundElement] = 1;
+            Player.elementExp[talent.boundElement] = 0;
             const msg = `你获得了天生天赋：${talent.name}！\n${talent.effectDesc}\n\n✨ 你的天赋决定了你的第一系为：${boundName}！`;
             UI.showMessage(msg);
             // 绑定系天赋直接进入系天赋选择
@@ -4270,6 +4274,10 @@ const Game = {
     selectElementAfterTalent(element) {
         this._pendingElement = element;
         Player.element = element;
+        // v2.8.1 修复：同步更新elements数组，否则UI和战斗仍显示初始火系
+        Player.elements = [element];
+        Player.elementLevels[element] = 1;
+        Player.elementExp[element] = 0;
         // 不显示消息弹窗，直接进入系天赋选择，避免弹窗遮挡
         if (Player.innateEffects && Player.innateEffects.extraElement) {
             this._pendingElements = [this._pendingElement, Player.innateEffects.extraElement];
