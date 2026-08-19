@@ -167,6 +167,57 @@ const DemonTraits = {
                     defenseDownAmount: 0.15,
                     defenseDownDuration: 3
                 }
+            },
+            {
+                id: "acid_spray",
+                name: "腐蚀酸液",
+                description: "每3回合喷射酸液，造成伤害+防御降低20%",
+                type: "mechanic",
+                mechanic: "acid_spray",
+                cooldown: 3,
+                effects: {
+                    damageMultiplier: 0.9,
+                    defenseDown: 0.2,
+                    defenseDownDuration: 3
+                }
+            }
+        ]
+    },
+
+    // 骷髅战士
+    skeleton_warrior: {
+        traits: [
+            {
+                id: "undead_body",
+                name: "亡灵之躯",
+                description: "不知疼痛，受到伤害时有30%概率无视20%伤害",
+                type: "passive",
+                effects: {
+                    damageIgnoreChance: 0.3,
+                    damageIgnoreAmount: 0.2
+                }
+            },
+            {
+                id: "bone_armor",
+                name: "骨甲",
+                description: "骨骼坚硬，物理伤害减免+25%",
+                type: "damage_reduction",
+                effects: {
+                    physicalReduction: 0.25
+                }
+            },
+            {
+                id: "bone_slash",
+                name: "骨剑斩击",
+                description: "每3回合强力斩击，造成140%伤害+破甲",
+                type: "mechanic",
+                mechanic: "bone_slash",
+                cooldown: 3,
+                effects: {
+                    damageMultiplier: 1.4,
+                    armorBreak: 0.15,
+                    armorBreakDuration: 2
+                }
             }
         ]
     },

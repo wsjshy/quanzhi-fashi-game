@@ -4294,6 +4294,50 @@ const BattleSystem = {
                     this.endEnemyTurn();
                     return;
                 }
+
+                // 腐蚀酸液
+                if (mech === 'acid_spray') {
+                    const acidDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 0.9));
+                    this.addLog(`🧪 ${this.enemy.name}喷射腐蚀酸液！造成${acidDmg}点伤害！`, 'element');
+                    this.player.hp -= acidDmg;
+                    this.showDamageNumber('player', acidDmg, 'earth');
+                    // 防御降低
+                    if (trait.effects?.defenseDown) {
+                        this.addStatusEffect(this.player, {
+                            type: 'defense_down',
+                            name: '腐蚀',
+                            duration: trait.effects.defenseDownDuration || 3,
+                            description: `被酸液腐蚀，防御降低${Math.floor(trait.effects.defenseDown * 100)}%`,
+                            defenseMod: -Math.floor(this.player.defense * trait.effects.defenseDown)
+                        });
+                        this.addLog(`🛡️ 你的防御被酸液腐蚀降低！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 骨剑斩击
+                if (mech === 'bone_slash') {
+                    const slashDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 1.4));
+                    this.addLog(`⚔️ ${this.enemy.name}发动骨剑斩击！造成${slashDmg}点伤害！`, 'damage');
+                    this.player.hp -= slashDmg;
+                    this.showDamageNumber('player', slashDmg, 'normal');
+                    // 破甲效果
+                    if (trait.effects?.armorBreak) {
+                        this.addStatusEffect(this.player, {
+                            type: 'armor_break',
+                            name: '破甲',
+                            duration: trait.effects.armorBreakDuration || 2,
+                            description: `被破甲，防御降低${Math.floor(trait.effects.armorBreak * 100)}%`,
+                            defenseMod: -Math.floor(this.player.defense * trait.effects.armorBreak)
+                        });
+                        this.addLog(`🛡️ 你的护甲被击破！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.endEnemyTurn();
+                    return;
+                }
             }
         }
 
