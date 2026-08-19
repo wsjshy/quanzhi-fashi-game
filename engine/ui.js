@@ -1276,17 +1276,180 @@ const UI = {
             }
         };
 
-        // 获取当前系别的术语解释
+        // v2.8.3 术语解释：根据天赋实际涉及的效果字段动态显示，而非显示该系所有术语
+        // 术语与效果关键词的映射关系
+        const termKeywordMap = {
+          // 火系
+          '燃点': ['fireEnergy', 'fireExplode', 'fireEnhance', 'fireAura', 'fireGround', 'fireRain'],
+          '灼烧': ['burnChance', 'burnDamage', 'burnSpread', 'burnStack', 'burnCrit', 'burnExplode', 'burnDefense', 'burnTrue'],
+          '爆裂': ['fireExplode', 'burnCritExplode', 'explosionChance', 'explosionDamage', 'explosionCrit'],
+          // 冰系
+          '冻结': ['freezeChance', 'freezeDuration', 'freezeSpread', 'frozen', 'fieldFreeze'],
+          '减速': ['slowChance', 'slowBonus', 'frostSlow', 'earthquakeSlow', 'hurricaneVulnerable'],
+          '冰盾': ['iceShield', 'frostNova', 'crystalShield', 'shieldRatio'],
+          // 雷系
+          '电荷': ['chargeMax', 'chargeStack', 'chargePerStack', 'fullCharge'],
+          '麻痹': ['paralyzeChance', 'paralyzeDuration', 'paralyzeDamage', 'shockParalyze', 'chainParalyze'],
+          '感电': ['shockStack', 'shockDamage', 'shockSpread', 'shockThunder', 'wetDamage'],
+          // 水系
+          '潮汐形态': ['tide', 'autoTide', 'tideHeal', 'tideDamage', 'tideShield', 'tideCleanse', 'tideInterval'],
+          '湿润': ['wetChance', 'wetStack', 'wetSpread', 'wetHeal', 'wetBind'],
+          '治愈之泉': ['aoeHeal', 'healAura', 'regenAmount', 'regenChance', 'autoHeal'],
+          // 风系
+          '疾风连击': ['comboChance', 'comboDamage', 'comboSpeed', 'comboMp', 'windBlade', 'windBladeDance'],
+          '闪避': ['dodgeBonus', 'dodgeCounter', 'dodgeCrit', 'dodgeHeal', 'dodgeMp', 'lastStandDodge'],
+          '风刃': ['windBlade', 'windBladeCount', 'windBladeDamage', 'windBladeSpeed', 'windBladeMax'],
+          // 土系
+          '岩力': ['rockArmor', 'earthquake', 'hardRock', 'defenseStack', 'defenseToDamage'],
+          '护盾': ['shieldChance', 'shieldRatio', 'shieldReflect', 'shieldRegen', 'permanentShield', 'guardDamage'],
+          '眩晕': ['stunChance', 'stunExtend', 'earthquakeSlow', 'counterStun', 'judgmentStun', 'meteorStun'],
+          // 光系
+          '圣光/圣盾形态': ['holyStack', 'holyMax', 'holyShield', 'holyJudgment', 'holyPurify', 'holyDamage'],
+          '净化': ['purifyChance', 'purifyAll', 'purifyHeal', 'purifyTeam', 'autoPurify', 'bloomPurify'],
+          '圣光裁决': ['holyJudgment', 'judgmentDamage', 'judgmentTrue', 'judgmentDark', 'judgmentNext'],
+          // 暗系
+          '暗影潜行': ['stealth', 'autoStealth', 'reStealth', 'shadowForm', 'shadowStealth', 'stealthFirst'],
+          '诅咒': ['curseChance', 'curseDuration', 'curseDamage', 'curseAtk', 'curseDef', 'curseSpread', 'curseEnd'],
+          '吸血': ['shadowLifesteal', 'shadowLifeDrain', 'drainLifesteal', 'curseKillHeal', 'killHeal'],
+          // 治愈系
+          '治愈之力': ['blessingStack', 'blessingMax', 'blessingHeal', 'blessingDefense', 'blessingBloom', 'blessingGrace'],
+          '复苏': ['revive', 'autoRevive', 'bloomRevive', 'reviveCount', 'reviveHp', 'lifeSeed'],
+          '净化': ['purifyChance', 'purifyAll', 'bloomPurify', 'autoPurify', 'purifyHeal'],
+          // 植物系
+          '荆棘': ['thornArmor', 'shieldReflect', 'counterDamage', 'dodgeCounter'],
+          '束缚': ['bindDuration', 'bindEndStun', 'bindExplosion', 'bindHpDrain', 'bindWater', 'poisonBind', 'wetBind'],
+          '中毒': ['poisonStack', 'poisonMax', 'poisonDamage', 'poisonSpread', 'poisonEscalation', 'poisonExecute', 'poisonBurst'],
+          // 召唤系
+          '召唤兽': ['summonDamage', 'summonHp', 'summonDuration', 'summonCrit', 'summonLevel', 'summonDeath', 'summonEnrage', 'maxSummons', 'openingSummon'],
+          '契约': ['contract', 'summonMaster', 'contractCrit', 'contractDamage', 'contractSpeed', 'contractStack', 'contractMax'],
+          '协同攻击': ['comboChance', 'summonCharge', 'doubleSummon', 'extraSummon', 'beastTide', 'chainSummon']
+        };
+
+        // 获取当前天赋的所有效果字段
+        const talentEffectKeys = new Set();
+        if (effects) Object.keys(effects).forEach(k => talentEffectKeys.add(k));
+        // 也检查进化路线中的效果
+        if (talent.evolutions) {
+          talent.evolutions.forEach(evo => {
+            if (evo.effects) Object.keys(evo.effects).forEach(k => talentEffectKeys.add(k));
+          });
+        }
+
+        // 根据效果字段判断涉及哪些术语
+        const relevantTerms = [];
         const elemTerms = termExplanations[elem] || {};
-        const termsHtml = Object.entries(elemTerms).map(([term, desc]) => `
+        Object.entries(elemTerms).forEach(([term, desc]) => {
+          const keywords = termKeywordMap[term] || [];
+          const isRelevant = keywords.some(kw => 
+            [...talentEffectKeys].some(effectKey => effectKey.toLowerCase().includes(kw.toLowerCase()))
+          );
+          if (isRelevant) relevantTerms.push({term, desc});
+        });
+
+        // 如果没有匹配到任何术语，显示该系最核心的1-2个术语（避免完全空白）
+        if (relevantTerms.length === 0) {
+          const coreTerms = Object.entries(elemTerms).slice(0, 2);
+          coreTerms.forEach(([term, desc]) => relevantTerms.push({term, desc}));
+        }
+
+        const termsHtml = relevantTerms.map(({term, desc}) => `
             <div style="margin-bottom:8px;padding:8px 10px;background:rgba(255,215,0,0.05);border-left:3px solid #ffd700;border-radius:0 6px 6px 0;">
                 <span style="color:#ffd700;font-size:12px;font-weight:bold;">📖 ${term}</span>
                 <div style="color:#bbb;font-size:11px;margin-top:3px;line-height:1.5;">${desc}</div>
             </div>
         `).join('');
 
-        // 效果列表
-        const effectNames = {damageBonus:'伤害加成', healBonus:'治疗加成', defenseBonus:'防御加成', speedBonus:'速度加成', hpBonus:'生命加成', critRate:'暴击率', critDamage:'暴击伤害', mpCostReduction:'耗蓝减少', dodgeBonus:'闪避率', hpRegen:'HP回复', mpRegen:'MP回复', burnChance:'灼烧概率', freezeChance:'冰冻概率', paralyzeChance:'麻痹概率'};
+        // 效果列表 - v2.8.3 扩充中文名称，覆盖各系常见效果
+        const effectNames = {
+          // 通用基础
+          damageBonus:'伤害加成', healBonus:'治疗加成', defenseBonus:'防御加成', speedBonus:'速度加成',
+          hpBonus:'生命加成', critRate:'暴击率', critDamage:'暴击伤害', mpCostReduction:'耗蓝减少',
+          dodgeBonus:'闪避率', hpRegen:'HP回复', mpRegen:'MP回复', maxHpBonus:'最大生命加成',
+          damageReduction:'伤害减免', cooldownReduction:'冷却缩减', skillLevelBonus:'技能等级加成',
+          // 火系
+          burnChance:'灼烧概率', burnDamage:'灼烧伤害', burnSpread:'灼烧扩散', burnCrit:'灼烧暴击',
+          burnExplode:'灼烧爆炸', burnStackMax:'灼烧最大层数', fireExplodeDamage:'爆裂伤害',
+          fireExplodeBonus:'爆裂加成', fireEnergyGain:'燃点获取', fireEnergyMax:'燃点上限',
+          fireAura:'火焰光环', fireGround:'火焰领域', fireRain:'火焰之雨',
+          // 冰系
+          freezeChance:'冰冻概率', freezeDuration:'冰冻时长', freezeSpread:'冰冻扩散',
+          frostStacks:'寒霜层数', frostStackMax:'寒霜最大层数', frostSlowPerStack:'每层减速',
+          frostNova:'冰霜新星', frostShatter:'冰霜碎裂', iceShield:'冰盾',
+          // 雷系
+          paralyzeChance:'麻痹概率', paralyzeDuration:'麻痹时长', paralyzeDamage:'麻痹伤害',
+          chainLightning:'连锁闪电', chainTargets:'连锁目标数', chainDamage:'连锁伤害',
+          chainFalloff:'连锁衰减', shockStacks:'感电层数', shockStackMax:'感电最大层数',
+          skyThunder:'天雷', thunderCounter:'雷系反击', thunderExecute:'雷系处决',
+          // 水系
+          tide:'潮汐形态', tideHeal:'潮汐治疗', tideDamage:'潮汐伤害', tideShield:'潮汐护盾',
+          wetChance:'湿润概率', wetStacks:'湿润层数', wetStackMax:'湿润最大层数',
+          healCritRate:'治疗暴击率', healCritDouble:'治疗暴击双倍', aoeHeal:'群体治疗',
+          aoeHealRatio:'群疗比例', purifyChance:'净化概率', autoHeal:'自动治疗',
+          // 风系
+          comboChance:'连击概率', comboDamageIncrease:'连击伤害提升', comboSpeedBuff:'连击速度加成',
+          comboMpReduction:'连击耗蓝减少', windBladeCount:'风刃数量', windBladeDamage:'风刃伤害',
+          windBladeSpeed:'风刃速度', windBladeMax:'风刃上限', windBladeStack:'风刃层数',
+          windBladeDance:'风刃舞', dodgeCounter:'闪避反击', dodgeCritDamage:'闪避暴击伤害',
+          // 土系
+          earthquakeChance:'地震概率', earthquakeDamage:'地震伤害', earthquakeSlow:'地震减速',
+          rockArmorStack:'岩甲层数', rockArmorMax:'岩甲上限', rockArmorDefense:'岩甲防御',
+          rockArmorReduction:'岩甲减伤', shieldChance:'护盾概率', shieldRatio:'护盾比例',
+          shieldReflect:'护盾反伤', shieldRegen:'护盾回复', hardRockChance:'磐石概率',
+          hardRockReduction:'磐石减伤',
+          // 光系
+          holyStack:'圣光层数', holyMax:'圣光上限', holyShield:'圣光护盾',
+          holyJudgmentOnMax:'满层圣光裁决', holyPurifyOnMax:'满层圣光净化',
+          holyDamageBonus:'神圣伤害加成', holyDarkResist:'暗影抗性', divineProtection:'神圣守护',
+          purifyAll:'全体净化', purifyHeal:'净化治疗', purifyTeamHeal:'团队净化治疗',
+          graceAtkBonus:'恩典攻击加成', graceDefBonus:'恩典防御加成', graceCritBonus:'恩典暴击加成',
+          graceSpeedBonus:'恩典速度加成', graceDuration:'恩典持续', graceLastStand:'恩典背水一战',
+          // 暗系
+          curseChance:'诅咒概率', curseDuration:'诅咒时长', curseDamage:'诅咒伤害',
+          curseAtkDown:'诅咒降攻', curseDefDown:'诅咒降防', curseSpreadChance:'诅咒扩散概率',
+          shadowStack:'暗影层数', shadowMax:'暗影上限', shadowForm:'暗影形态',
+          shadowFormDuration:'暗影形态时长', shadowFormHeal:'暗影形态治疗',
+          shadowLifesteal:'暗影吸血', shadowLifeDrain:'暗影吸取生命',
+          stealthDuration:'潜行时长', stealthCritBonus:'潜行暴击加成', stealthDamageBonus:'潜行伤害加成',
+          stealthFirstHitBonus:'潜行首击加成', stealthFirstHitCrit:'潜行首击暴击',
+          reStealthChance:'再次潜行概率', reStealthCrit:'再次潜行暴击',
+          // 治愈系
+          blessingStack:'祝福层数', blessingMax:'祝福上限', blessingHealBonus:'祝福治疗加成',
+          blessingDefenseBonus:'祝福防御加成', blessingBloomOnMax:'满层生命绽放',
+          blessingGraceOnMax:'满层恩典降临', bloomHeal:'绽放治疗', bloomPurify:'绽放净化',
+          bloomRevive:'绽放复活', bloomShield:'绽放护盾', bloomCooldown:'绽放冷却',
+          autoRevive:'自动复活', autoReviveHp:'复活血量', reviveCount:'复活次数',
+          emergencyHeal:'紧急治疗', emergencyThreshold:'紧急阈值',
+          // 植物系
+          poisonStack:'中毒层数', poisonMax:'中毒上限', poisonDamage:'中毒伤害',
+          poisonDamageBonus:'中毒伤害加成', poisonDurationBonus:'中毒时长加成',
+          poisonSpreadChance:'中毒扩散概率', poisonEscalation:'毒性升级', poisonExecute:'毒性处决',
+          thornArmor:'荆棘护甲', bindDuration:'束缚时长', bindDurationBonus:'束缚时长加成',
+          bindEndStun:'束缚结束眩晕', bindExplosion:'束缚爆炸', bindHpDrain:'束缚吸血',
+          plantControlHitRate:'植物控制命中', plantDamageBonus:'植物伤害加成',
+          // 召唤系
+          summonDamageBonus:'召唤兽伤害加成', summonHpBonus:'召唤兽生命加成',
+          summonDurationBonus:'召唤兽时长加成', summonLevelBonus:'召唤兽等级加成',
+          summonCritRate:'召唤兽暴击率', summonCritDamage:'召唤兽暴击伤害',
+          doubleSummonChance:'双重召唤概率', extraSummonChance:'额外召唤概率',
+          extraSummonDuration:'额外召唤时长', maxSummons:'最大召唤数',
+          summonDeathBurst:'召唤兽死亡爆裂', summonDeathHeal:'召唤兽死亡治疗',
+          summonMasterDamageBonus:'主人伤害加成', summonMasterDefBonus:'主人防御加成',
+          summonEnrage:'召唤兽狂暴', summonChargeChance:'召唤冲锋概率',
+          summonChargeDamage:'召唤冲锋伤害', summonChargeKnockback:'召唤冲锋击退',
+          contractCritBonus:'契约暴击加成', contractDamageBonus:'契约伤害加成',
+          contractSpeedBonus:'契约速度加成', contractStack:'契约层数', contractMax:'契约上限',
+          openingSummon:'开场召唤', summonHasTalent:'召唤兽天赋',
+          // 状态效果通用
+          stunChance:'眩晕概率', stunExtendChance:'眩晕延长概率', stunnedDamageBonus:'眩晕伤害加成',
+          slowChance:'减速概率', slowBonus:'减速加成', slowUnpurgeable:'减速不可净化',
+          blindChance:'致盲概率', blindDuration:'致盲时长', debuffImmunity:'免疫减益',
+          critImmunity:'免疫暴击', executeChance:'处决概率', executeThreshold:'处决阈值',
+          firstStrikeChance:'先攻概率', firstStrikeDamage:'先攻伤害',
+          counterDamage:'反击伤害', counterHeal:'反击治疗', counterStunChance:'反击眩晕概率',
+          ignoreDodgeChance:'必中概率', critArmorPenetration:'暴击破甲',
+          defenseToDamage:'防御转伤害', defenseStack:'防御层数', defenseStackMax:'防御上限',
+          attackSpeedStack:'攻速层数', attackSpeedMax:'攻速上限', hitCritStack:'命中暴击层数', hitCritMax:'命中暴击上限'
+        };
         const effectsHtml = Object.entries(effects).map(([k, v]) => {
             const pct = (v * 100).toFixed(0);
             return `<span style="display:inline-block;padding:3px 8px;background:#44aa4422;border:1px solid #44aa4455;border-radius:10px;font-size:11px;color:#88ff88;margin:2px;">${effectNames[k]||k} +${pct}%</span>`;
