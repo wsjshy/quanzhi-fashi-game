@@ -773,6 +773,17 @@ const DemonTraits = {
                 effects: {
                     defenseBonus: -0.1
                 }
+            },
+            {
+                id: "wind_step",
+                name: "疾风步",
+                description: "每2回合进入疾风状态，下次攻击必定闪避",
+                type: "mechanic",
+                mechanic: "dodge_next",
+                cooldown: 2,
+                effects: {
+                    dodgeGuaranteed: true
+                }
             }
         ]
     },
@@ -807,6 +818,19 @@ const DemonTraits = {
                 type: "on_turn_end",
                 effects: {
                     hpRegenPercent: 0.05
+                }
+            },
+            {
+                id: "thorn_shot",
+                name: "荆棘射击",
+                description: "每3回合发射荆棘，造成伤害+30%概率束缚",
+                type: "mechanic",
+                mechanic: "thorn_shot",
+                cooldown: 3,
+                effects: {
+                    damageMultiplier: 1.0,
+                    bindChance: 0.3,
+                    bindDuration: 1
                 }
             }
         ]

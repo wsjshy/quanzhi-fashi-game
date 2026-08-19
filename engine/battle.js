@@ -4011,6 +4011,14 @@ const BattleSystem = {
 
         // v2.7.0: 机制型妖魔特性触发
         if (this.enemy.traits && this.enemy.mechanicCooldowns) {
+            // 疾风步：进入必定闪避状态（不替代普通攻击）
+            const windStepTrait = this.enemy.traits.find(t => t.mechanic === 'dodge_next');
+            if (windStepTrait && this.enemy.mechanicCooldowns['dodge_next'] === 0) {
+                this.enemy.mechanicState.dodgeNext = true;
+                this.enemy.mechanicCooldowns['dodge_next'] = windStepTrait.cooldown || 2;
+                this.addLog(`💨 ${this.enemy.name}进入疾风步状态！下次攻击必定闪避！`, 'warning');
+            }
+
             // 狂暴机制：HP低于阈值时触发
             const berserkTrait = this.enemy.traits.find(t => t.type === 'trigger' && t.trigger === 'low_hp');
             if (berserkTrait && !this.enemy.mechanicState.berserked) {
@@ -4245,6 +4253,28 @@ const BattleSystem = {
                             damagePerTurn: trait.effects.burnDamage || 8
                         });
                         this.addLog(`🔥 你被火焰灼烧，开始燃烧！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 荆棘射击
+                if (mech === 'thorn_shot') {
+                    const thornDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 1.0));
+                    this.addLog(`🌿 ${this.enemy.name}发射荆棘！造成${thornDmg}点伤害！`, 'damage');
+                    this.player.hp -= thornDmg;
+                    this.showDamageNumber('player', thornDmg, 'normal');
+                    // 束缚效果
+                    if (trait.effects?.bindChance && Math.random() < trait.effects.bindChance) {
+                        this.addStatusEffect(this.player, {
+                            type: 'bind',
+                            name: '束缚',
+                            duration: trait.effects.bindDuration || 1,
+                            description: '被藤蔓束缚，无法行动',
+                            skipTurn: true
+                        });
+                        this.addLog(`🌿 你被藤蔓束缚，无法行动！`, 'debuff');
                     }
                     this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
                     this.endEnemyTurn();
@@ -5617,6 +5647,13 @@ const BattleSystem = {
             // 玩家天赋闪避
             if (target === this.player && target.dodgeBonus) {
                 evasion += target.dodgeBonus;
+            }
+            // v2.7.3: 疾风步必定闪避
+            if (target === this.enemy && target.mechanicState?.dodgeNext) {
+                target.mechanicState.dodgeNext = false;
+                result.isMiss = true;
+                this.addLog(`💨 ${target.name}用疾风步闪避了攻击！`, 'dodge');
+                return result;
             }
             // v2.7.0: 飞行状态闪避加成
             if (target === this.enemy && target.mechanicState?.flying) {
