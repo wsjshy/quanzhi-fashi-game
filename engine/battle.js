@@ -4011,6 +4011,15 @@ const BattleSystem = {
 
         // v2.7.0: 机制型妖魔特性触发
         if (this.enemy.traits && this.enemy.mechanicCooldowns) {
+            // 冰盾：获得护盾（不替代普通攻击）
+            const iceShieldTrait = this.enemy.traits.find(t => t.mechanic === 'ice_shield');
+            if (iceShieldTrait && this.enemy.mechanicCooldowns['ice_shield'] === 0) {
+                const shieldAmount = iceShieldTrait.effects?.shieldAmount || 50;
+                this.enemy.shield = (this.enemy.shield || 0) + shieldAmount;
+                this.enemy.mechanicCooldowns['ice_shield'] = iceShieldTrait.cooldown || 4;
+                this.addLog(`🧊 ${this.enemy.name}召唤冰盾！获得${shieldAmount}点护盾！`, 'buff');
+            }
+
             // 进阶蜕变：每5回合攻击+10%（不替代普通攻击）
             const mutationTrait = this.enemy.traits.find(t => t.mechanic === 'mutation');
             if (mutationTrait && this.enemy.mechanicCooldowns['mutation'] === 0) {
@@ -4377,6 +4386,28 @@ const BattleSystem = {
                             damagePerTurn: trait.effects.burnDamage || 10
                         });
                         this.addLog(`🔥 你被暗焰灼烧！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 暗黑冰刺
+                if (mech === 'dark_ice_spike') {
+                    const iceDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 1.6));
+                    this.addLog(`❄️ ${this.enemy.name}释放暗黑冰刺！造成${iceDmg}点暗冰混合伤害！`, 'element');
+                    this.player.hp -= iceDmg;
+                    this.showDamageNumber('player', iceDmg, 'ice');
+                    // 冻结效果
+                    if (trait.effects?.freezeChance && Math.random() < trait.effects.freezeChance) {
+                        this.addStatusEffect(this.player, {
+                            type: 'frozen',
+                            name: '冻结',
+                            duration: trait.effects.freezeDuration || 1,
+                            description: '被冰刺冻结，无法行动',
+                            skipTurn: true
+                        });
+                        this.addLog(`❄️ 你被冰刺冻结了！`, 'debuff');
                     }
                     this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
                     this.endEnemyTurn();

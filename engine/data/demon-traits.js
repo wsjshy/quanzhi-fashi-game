@@ -298,6 +298,55 @@ const DemonTraits = {
         ]
     },
 
+    // 蓝衣执事
+    black_church_blue_deacon: {
+        traits: [
+            {
+                id: "ice_master",
+                name: "冰系精通",
+                description: "精通冰系魔法，冰属性伤害+30%，冰抗性+40%",
+                type: "passive",
+                effects: {
+                    iceDamageBonus: 0.3,
+                    iceDamageReduction: 0.4
+                }
+            },
+            {
+                id: "dark_ice",
+                name: "暗冰双修",
+                description: "同时掌握暗系和冰系，暗属性伤害+20%",
+                type: "passive",
+                effects: {
+                    darkDamageBonus: 0.2
+                }
+            },
+            {
+                id: "dark_ice_spike",
+                name: "暗黑冰刺",
+                description: "每3回合释放暗黑冰刺，造成160%暗冰混合伤害+30%概率冻结",
+                type: "mechanic",
+                mechanic: "dark_ice_spike",
+                cooldown: 3,
+                effects: {
+                    damageMultiplier: 1.6,
+                    freezeChance: 0.3,
+                    freezeDuration: 1
+                }
+            },
+            {
+                id: "ice_shield_mechanic",
+                name: "冰盾",
+                description: "每4回合获得冰盾，吸收50点伤害",
+                type: "mechanic",
+                mechanic: "ice_shield",
+                cooldown: 4,
+                effects: {
+                    shieldAmount: 50
+                }
+            }
+        ]
+    },
+
     // 风翼鸟
     wind_bird: {
         traits: [
