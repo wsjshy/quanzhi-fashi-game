@@ -2089,8 +2089,30 @@ const UI = {
                         <span style="color: #ffd700; font-size: 15px;">💰 ${Player.gold}</span>
                         <span style="color: #ff8888; font-size: 14px;">❤️ ${Player.hp}/${Player.maxHp}</span>
                         <span style="color: #88aaff; font-size: 14px;">💧 ${Player.mp}/${Player.maxMp}</span>
-                        <!-- v0.99.4: 高效期统一1次，留出剧情探索时间 -->
-                        <span style="color: #aaffaa; font-size: 11px;" title="今日修炼${Player.dailyActions?.cultivate || 0}/学习${Player.dailyActions?.study || 0}/猎魔${Player.dailyActions?.hunt || 0}/探索${Player.dailyActions?.explore || 0}">📊 修${Player.dailyActions?.cultivate || 0}/1 学${Player.dailyActions?.study || 0}/1 猎${Player.dailyActions?.hunt || 0}/1 探${Player.dailyActions?.explore || 0}/1</span>
+                        <!-- v2.8.4: 每日行动收益率提示，执行过1次后明显提示收益下降 -->
+                        ${(() => {
+                            const da = Player.dailyActions || { cultivate: 0, study: 0, hunt: 0, explore: 0 };
+                            const getEffLabel = (count) => {
+                                if (count < 1) return { text: '高效', color: '#88ff88' };
+                                if (count < 3) return { text: '70%', color: '#ffcc66' };
+                                return { text: '50%', color: '#ff8866' };
+                            };
+                            const c = getEffLabel(da.cultivate);
+                            const s = getEffLabel(da.study);
+                            const h = getEffLabel(da.hunt);
+                            const e = getEffLabel(da.explore);
+                            const anyReduced = da.cultivate >= 1 || da.study >= 1 || da.hunt >= 1 || da.explore >= 1;
+                            return `
+                                <span style="font-size: 11px; ${anyReduced ? 'background: rgba(255,150,50,0.15); padding: 3px 8px; border-radius: 8px; border: 1px solid rgba(255,150,50,0.3);' : ''}" 
+                                    title="每日首次行动100%收益，第2-3次70%，第4次后50%">
+                                    📊 
+                                    <span style="color:${c.color};">修${da.cultivate}(${c.text})</span>
+                                    <span style="color:${s.color};">学${da.study}(${s.text})</span>
+                                    <span style="color:${h.color};">猎${da.hunt}(${h.text})</span>
+                                    <span style="color:${e.color};">探${da.explore}(${e.text})</span>
+                                </span>
+                            `;
+                        })()}
                         <span style="color: #aaffaa; font-size: 15px; font-weight: bold;">Lv.${Player.level}</span>
                     </div>
                 </div>

@@ -232,9 +232,9 @@ const Game = {
         //     console.error('DEBUG显示失败', e);
         // }
         
-        // 修炼类行动：先弹时长选择菜单
+        // v2.8.4: 修炼时间固定为4小时，移除四档选择减少玩家决策压力
         if (actionId === 'train') {
-            this.showCultivateMenu(actionId);
+            this.performCultivate(actionId, 4, 1.1);
             return;
         }
         

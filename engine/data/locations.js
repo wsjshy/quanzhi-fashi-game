@@ -125,9 +125,9 @@ const DataLocations = {
       {
         id: "train",
         name: "修炼魔法",
-        description: "实战修炼（高经验，消耗HP/MP，有概率突破或受伤）",
+        description: "实战修炼4小时（+10%收益，消耗HP/MP，有概率突破或受伤）",
         icon: "✨",
-        timeCost: 1,
+        timeCost: 4,
         staminaCost: 15,
         effects: {
           exp: 30,
