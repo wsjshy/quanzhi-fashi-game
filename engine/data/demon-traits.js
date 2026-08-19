@@ -239,13 +239,6 @@ const DemonTraits = {
     bone_spike_zheng: {
         traits: [
             {
-                id: "bone_spike_shot_trait",
-                name: "骨刺射击",
-                description: "可以远程射击骨刺",
-                type: "ability",
-                skill: "bone_spike_shot"
-            },
-            {
                 id: "bone_regeneration",
                 name: "骨刺再生",
                 description: "每回合恢复5%最大HP",
@@ -257,10 +250,24 @@ const DemonTraits = {
             {
                 id: "bone_armor",
                 name: "骨刺护甲",
-                description: "受到攻击时反弹10%伤害",
+                description: "受到物理攻击时反弹15%伤害，魔法攻击不反弹",
                 type: "on_hit_taken",
                 effects: {
-                    damageReflect: 0.1
+                    damageReflect: 0.15,
+                    reflectPhysicalOnly: true
+                }
+            },
+            {
+                id: "war_stomp",
+                name: "战争践踏",
+                description: "每3回合践踏地面，造成120%伤害+30%概率眩晕",
+                type: "mechanic",
+                mechanic: "stomp",
+                cooldown: 3,
+                effects: {
+                    damageMultiplier: 1.2,
+                    stunChance: 0.3,
+                    stunDuration: 1
                 }
             }
         ]
@@ -874,6 +881,20 @@ const DemonTraits = {
                 type: "damage_reduction",
                 effects: {
                     physicalReduction: 0.2
+                }
+            },
+            {
+                id: "terror_screech",
+                name: "恐惧尖啸",
+                description: "每3回合发出尖啸，造成伤害+恐惧（攻击-20%）",
+                type: "mechanic",
+                mechanic: "screech",
+                cooldown: 3,
+                effects: {
+                    damageMultiplier: 0.6,
+                    fearChance: 0.7,
+                    fearDuration: 2,
+                    attackDebuff: 0.2
                 }
             }
         ]

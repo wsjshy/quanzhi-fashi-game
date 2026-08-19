@@ -4164,6 +4164,49 @@ const BattleSystem = {
                     this.endEnemyTurn();
                     return;
                 }
+
+                // 战争践踏
+                if (mech === 'stomp') {
+                    const stompDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 1.2));
+                    this.addLog(`💥 ${this.enemy.name}发动战争践踏！造成${stompDmg}点伤害！`, 'damage');
+                    this.player.hp -= stompDmg;
+                    this.showDamageNumber('player', stompDmg, 'normal');
+                    // 眩晕效果
+                    if (trait.effects?.stunChance && Math.random() < trait.effects.stunChance) {
+                        this.addStatusEffect(this.player, {
+                            type: 'stun',
+                            name: '眩晕',
+                            duration: trait.effects.stunDuration || 1,
+                            description: '被践踏震晕，无法行动'
+                        });
+                        this.addLog(`😵 你被震晕了！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 恐惧尖啸
+                if (mech === 'screech') {
+                    const screechDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 0.6));
+                    this.addLog(`👻 ${this.enemy.name}发出恐惧尖啸！造成${screechDmg}点精神伤害！`, 'element');
+                    this.player.hp -= screechDmg;
+                    this.showDamageNumber('player', screechDmg, 'dark');
+                    // 恐惧效果
+                    if (trait.effects?.fearChance && Math.random() < trait.effects.fearChance) {
+                        this.addStatusEffect(this.player, {
+                            type: 'fear',
+                            name: '恐惧',
+                            duration: trait.effects.fearDuration || 2,
+                            description: '陷入恐惧，攻击力降低20%',
+                            attackMod: -Math.floor((trait.effects.attackDebuff || 0.2) * 100)
+                        });
+                        this.addLog(`😨 你陷入恐惧状态，攻击力降低！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.endEnemyTurn();
+                    return;
+                }
             }
         }
 
