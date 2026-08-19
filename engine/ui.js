@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v2.1.0 · 重建任务线与离开节点</div>
+                ">v2.5.4 · 天赋系统半重写与双主修系</div>
             </div>
         `;
 
