@@ -5560,8 +5560,9 @@ const DataCharacters = {
           id: "star_sense_tips",
           texts: [
             "星感石测试的技巧？嗯……其实也没什么特别的技巧，主要是看你平时对元素的感知积累。",
+            "你注意到训练场前端那块星感石了吗？它看上去有点像黑色的鹅卵石，西瓜那么大，被石墩托着。",
             "不过，有一点要注意：测试时不要紧张，放松心态，用心去感受周围的元素流动。",
-            "星感石会根据你感知到的元素浓度和纯度来评级，从F到SSS不等。",
+            "星感石会根据你星尘光辉的强弱印射出一样的光芒，考官通过光芒亮度来评级，从F到SSS不等。",
             "一般来说，初阶法师能达到C级就不错了，B级就算优秀，A级是天才级别，S级以上就是凤毛麟角了。",
             "穆宁雪去年就是S级，全校震惊，穆氏家族直接给了她大量资源。",
             "你也别给自己太大压力，尽力就好，老师相信你。"
@@ -7993,13 +7994,13 @@ const DataCharacters = {
   yu_ang: {
     id: "yu_ang",
     name: "宇昂",
-    title: "穆氏养子 / 冰系天才",
-    description: "穆卓云的养子，冰系天才，已掌握冰蔓·凝结。穆卓云安排他在成年礼上与莫凡决斗，作为立威的垫脚石。性格阴沉高傲。",
+    title: "穆氏养子 / 冰系修炼疯子",
+    description: "穆卓云的养子，冰系法师，穆氏世家有名的修炼疯子——大家一提到这个人都不由浑身发冷。一年三百六十五天几乎都在修炼，长期使用星尘魔器，已掌握冰蔓·凝结。对穆卓云唯命是从，就算让他直接杀人也不会犹豫。穆卓云安排他在成年礼上与莫凡决斗。性格阴沉冷漠，除了修炼对一切都不感兴趣。",
     avatar: "assets/images/characters/yu_ang.jpg",
     location: "mu_manor",
     element: "ice",
     level: 7,
-    personality: ["高傲", "阴沉", "勤奋", "冷漠"],
+    personality: ["阴沉", "冷漠", "修炼疯子", "唯命是从", "勤奋到变态"],
     baseStats: { hp: 120, mp: 80, attack: 22, defense: 12, speed: 14 },
     skills: ["ice_spike", "ice_frost", "ice_shield"],
     faction: "mu_family",
@@ -8066,9 +8067,15 @@ const DataCharacters = {
         },
         about_self: {
           id: "about_self",
-          texts: ["没错，我是穆卓云的养子。", "冰系，已经掌握冰蔓·凝结。", "同龄人中，没几个是我的对手。"],
+          texts: ["没错，我是穆卓云的养子。", "冰系，已经掌握冰蔓·凝结。", "同龄人中，没几个是我的对手——因为他们把时间浪费在玩乐上，而我在修炼。", "一天不修炼，我就浑身不舒服。"],
           effects: { familiarity: 3 },
-          choices: [{ text: "厉害", next: "default" }]
+          choices: [{ text: "难怪大家叫你修炼疯子", next: "about_crazy" }]
+        },
+        about_crazy: {
+          id: "about_crazy",
+          texts: ["疯子？哼，那是弱者对强者的嫉妒。", "穆氏家族那么多子弟，星尘魔器就那些，要轮流使用。", "但我每年能获得大半年的使用时间——因为我值得。", "父亲的命令，我绝对服从。包括...除掉某些人。"],
+          effects: { familiarity: 5, trust: -2 },
+          choices: [{ text: "...我先走了", next: "default", action: "close" }]
         },
         about_duel: {
           id: "about_duel",
