@@ -701,6 +701,45 @@ const Player = {
     },
 
     /**
+     * v2.9.0: 获取玩家当前魔法境界
+     * 根据最高系等级判断：初阶(Lv1-10)/中阶(Lv11-30)/高阶(Lv31-55)/超阶(Lv56+)
+     * @returns {string} 境界名称
+     */
+    getMagicTier() {
+        const maxLevel = this.getPlayerLevel();
+        if (maxLevel >= 56) return "超阶";
+        if (maxLevel >= 31) return "高阶";
+        if (maxLevel >= 11) return "中阶";
+        return "初阶";
+    },
+
+    /**
+     * v2.9.0: 获取境界压制减免（打断概率减免）
+     * 境界越高，对低阶魔法掌控越强，打断概率越低
+     * @param {string} skillTier - 技能阶级（初阶/中阶/高阶）
+     * @returns {number} 打断概率减免（0-0.45），null表示不能释放该阶级魔法
+     */
+    getInterruptReduction(skillTier) {
+        const tier = this.getMagicTier();
+        const reductionMap = {
+            "初阶": { "初阶": 0, "中阶": null, "高阶": null },
+            "中阶": { "初阶": 0.15, "中阶": 0, "高阶": null },
+            "高阶": { "初阶": 0.30, "中阶": 0.15, "高阶": 0 },
+            "超阶": { "初阶": 0.45, "中阶": 0.30, "高阶": 0.15 }
+        };
+        return reductionMap[tier]?.[skillTier] ?? 0;
+    },
+
+    /**
+     * v2.9.0: 检查玩家是否能释放指定阶级的魔法
+     * @param {string} skillTier - 技能阶级（初阶/中阶/高阶）
+     * @returns {boolean} 是否能释放
+     */
+    canCastTier(skillTier) {
+        return this.getInterruptReduction(skillTier) !== null;
+    },
+
+    /**
      * 给指定系加经验
      * @param {string} element - 元素系ID
      * @param {number} amount - 经验值

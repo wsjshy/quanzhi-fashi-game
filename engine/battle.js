@@ -2289,6 +2289,36 @@ const BattleSystem = {
         const casterData = isPlayer ? this.player : this.enemy;
         const targetData = isPlayer ? this.enemy : this.player;
 
+        // v2.9.0: 打断概率系统（施法速度体现在被打断概率上）
+        if (isPlayer && skill.interruptChance && skill.interruptChance > 0) {
+            const skillTier = skill.tier || '初阶';
+            // 检查玩家是否能释放该阶级魔法
+            if (typeof Player !== 'undefined' && !Player.canCastTier(skillTier)) {
+                this.addLog(`❌ 境界不足，无法释放${skillTier}魔法！`, 'error');
+                return { success: false, interrupted: false, reason: '境界不足' };
+            }
+            // 计算实际打断概率 = 基础打断概率 - 境界压制减免 - 抗打断加成
+            let actualInterruptChance = skill.interruptChance;
+            if (typeof Player !== 'undefined') {
+                const reduction = Player.getInterruptReduction(skillTier);
+                if (reduction !== null) {
+                    actualInterruptChance = Math.max(0, actualInterruptChance - reduction);
+                }
+            }
+            // 防御姿态抗打断（后续实现）
+            // 天赋/装备抗打断（后续实现）
+            
+            // 打断判定
+            if (Math.random() < actualInterruptChance) {
+                const lostMp = Math.floor(skill.mpCost * 0.5);
+                casterData.mp = Math.max(0, casterData.mp - lostMp);
+                this.addLog(`💥 施法被打断！${skill.name} 释放失败，损失 ${lostMp} MP（打断概率 ${(actualInterruptChance*100).toFixed(0)}%）`, 'interrupt');
+                return { success: false, interrupted: true, reason: '被打断', interruptChance: actualInterruptChance };
+            } else if (actualInterruptChance > 0.1) {
+                this.addLog(`✨ 施法成功！${skill.name}（打断概率 ${(actualInterruptChance*100).toFixed(0)}%）`, 'cast');
+            }
+        }
+
         // 消耗MP
         // 消耗MP（天赋可减少消耗）
         let actualMpCost = skill.mpCost;

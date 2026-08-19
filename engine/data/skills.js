@@ -1436,6 +1436,9 @@ const DataSkills = {
     targetType: "enemy",
     cooldown: 0,
     tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 0.25,
+    unlockLevel: 11,
     realmRequired: "middle",
     statusEffects: [
       {
@@ -3982,5 +3985,359 @@ const DataSkills = {
     tier: "奴仆级",
     isDemonSkill: true,
     hits: 4
+  },
+
+  // ========== v2.9.0 高阶魔法（打断概率系统） ==========
+  // 🔥 火系高阶魔法
+  fire_heaven_flame: {
+    id: "fire_heaven_flame",
+    name: "天焰葬礼",
+    description: "高阶火系魔法。召唤漫天火焰如葬礼般降临，火雨持续3回合，每回合对全体敌人造成灼烧伤害。威力巨大，施法需专注，易被打断。",
+    element: "fire",
+    type: "damage",
+    mpCost: 80,
+    baseDamage: 120,
+    damageMultiplier: 2.5,
+    hitRate: 0.85,
+    critRate: 0.15,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 0.50,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "天焰灼烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 25,
+        duration: 3,
+        chance: 1.0,
+        stacks: 1,
+        maxStacks: 5
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      perTurnDamage: true,
+      description: "火雨持续3回合，每回合全体灼烧"
+    }
+  },
+  fire_heaven_flame_rain: {
+    id: "fire_heaven_flame_rain",
+    name: "天焰葬礼·火雨",
+    description: "高阶火系第二级。火雨更加密集，伤害提升50%，灼烧效果更强。",
+    element: "fire",
+    type: "damage",
+    mpCost: 100,
+    baseDamage: 180,
+    damageMultiplier: 2.8,
+    hitRate: 0.85,
+    critRate: 0.18,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 0.55,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "烈焰灼烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 40,
+        duration: 3,
+        chance: 1.0,
+        stacks: 2,
+        maxStacks: 5
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      perTurnDamage: true,
+      description: "火雨持续3回合，每回合全体灼烧（伤害+50%）"
+    }
+  },
+  fire_heaven_flame_sea: {
+    id: "fire_heaven_flame_sea",
+    name: "天焰葬礼·火海",
+    description: "高阶火系第三级。火海覆盖全场，敌人每回合受到灼烧+移动减速，火焰领域内火系伤害+30%。终极火焰魔法，毁天灭地。",
+    element: "fire",
+    type: "damage",
+    mpCost: 120,
+    baseDamage: 250,
+    damageMultiplier: 3.2,
+    hitRate: 0.85,
+    critRate: 0.20,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 0.60,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "火海灼烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 60,
+        duration: 3,
+        chance: 1.0,
+        stacks: 3,
+        maxStacks: 5
+      },
+      {
+        name: "火海减速",
+        type: "slow",
+        element: "fire",
+        slowAmount: 0.3,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      perTurnDamage: true,
+      fireDamageBonus: 0.30,
+      description: "火海持续3回合，每回合全体灼烧+减速，火系伤害+30%"
+    }
+  },
+
+  // ❄️ 冰系高阶魔法
+  ice_coffin: {
+    id: "ice_coffin",
+    name: "冰棺",
+    description: "高阶冰系魔法。将目标冻结在冰棺中3回合，无法行动。3回合后冰棺碎裂，造成大量冰系伤害，冰冻状态的敌人受到双倍伤害。",
+    element: "ice",
+    type: "damage",
+    mpCost: 80,
+    baseDamage: 100,
+    damageMultiplier: 2.2,
+    hitRate: 0.80,
+    critRate: 0.12,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 0.45,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "冰棺冻结",
+        type: "freeze",
+        element: "ice",
+        duration: 3,
+        chance: 1.0,
+        breakDamage: 150,
+        frozenDoubleDamage: true
+      }
+    ],
+    specialEffects: {
+      freezeDuration: 3,
+      breakDamage: 150,
+      frozenDoubleDamage: true,
+      description: "冻结3回合，冰碎时大量伤害，冰冻目标双倍"
+    }
+  },
+  ice_coffin_crystal: {
+    id: "ice_coffin_crystal",
+    name: "冰棺·冰晶",
+    description: "高阶冰系第二级。冰棺更加坚固，冰碎伤害提升50%，范围扩大至相邻敌人。",
+    element: "ice",
+    type: "damage",
+    mpCost: 100,
+    baseDamage: 150,
+    damageMultiplier: 2.5,
+    hitRate: 0.80,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 0.50,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "冰晶冻结",
+        type: "freeze",
+        element: "ice",
+        duration: 3,
+        chance: 1.0,
+        breakDamage: 225,
+        frozenDoubleDamage: true,
+        splashDamage: true
+      }
+    ],
+    specialEffects: {
+      freezeDuration: 3,
+      breakDamage: 225,
+      frozenDoubleDamage: true,
+      splashDamage: true,
+      description: "冻结3回合，冰碎伤害+50%，波及相邻敌人"
+    }
+  },
+  ice_coffin_eternal: {
+    id: "ice_coffin_eternal",
+    name: "冰棺·永冻",
+    description: "高阶冰系第三级。永恒冰封，冰碎伤害提升100%，普通敌人被永久冰冻（BOSS免疫）。终极冰系魔法，冰封一切。",
+    element: "ice",
+    type: "damage",
+    mpCost: 120,
+    baseDamage: 200,
+    damageMultiplier: 2.8,
+    hitRate: 0.80,
+    critRate: 0.18,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 0.55,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "永冻冰封",
+        type: "freeze",
+        element: "ice",
+        duration: 99,
+        chance: 1.0,
+        breakDamage: 300,
+        frozenDoubleDamage: true,
+        bossImmune: true,
+        eternalFreeze: true
+      }
+    ],
+    specialEffects: {
+      freezeDuration: 99,
+      breakDamage: 300,
+      frozenDoubleDamage: true,
+      bossImmune: true,
+      eternalFreeze: true,
+      description: "永久冰冻（BOSS免疫），冰碎伤害+100%"
+    }
+  },
+
+  // ⚡ 雷系高阶魔法
+  thunder_storm: {
+    id: "thunder_storm",
+    name: "雷暴",
+    description: "高阶雷系魔法。召唤雷暴云笼罩战场，持续3回合，每回合随机劈雷攻击敌人。雷电威力巨大，施法需专注，易被打断。",
+    element: "thunder",
+    type: "damage",
+    mpCost: 80,
+    baseDamage: 110,
+    damageMultiplier: 2.3,
+    hitRate: 0.90,
+    critRate: 0.18,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 0.50,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "雷暴麻痹",
+        type: "stun",
+        element: "thunder",
+        duration: 1,
+        chance: 0.3
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      randomStrikes: true,
+      strikesPerTurn: 2,
+      description: "雷暴持续3回合，每回合随机劈雷2次"
+    }
+  },
+  thunder_storm_heaven: {
+    id: "thunder_storm_heaven",
+    name: "雷暴·天劫",
+    description: "高阶雷系第二级。天雷降临，必中且无视防御，雷暴伤害提升50%，麻痹概率提升。",
+    element: "thunder",
+    type: "damage",
+    mpCost: 100,
+    baseDamage: 165,
+    damageMultiplier: 2.6,
+    hitRate: 1.0,
+    critRate: 0.22,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 0.55,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "天劫麻痹",
+        type: "stun",
+        element: "thunder",
+        duration: 1,
+        chance: 0.5
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      randomStrikes: true,
+      strikesPerTurn: 2,
+      guaranteedHit: true,
+      ignoreDefense: true,
+      description: "雷暴持续3回合，天雷必中+无视防御，伤害+50%"
+    }
+  },
+  thunder_storm_destruction: {
+    id: "thunder_storm_destruction",
+    name: "雷暴·毁灭",
+    description: "高阶雷系第三级。毁灭雷电，对麻痹状态的敌人造成三倍伤害。雷暴领域内雷系伤害+30%，敌人速度-30%。终极雷系魔法，毁灭一切。",
+    element: "thunder",
+    type: "damage",
+    mpCost: 120,
+    baseDamage: 220,
+    damageMultiplier: 3.0,
+    hitRate: 1.0,
+    critRate: 0.25,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 0.60,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "毁灭麻痹",
+        type: "stun",
+        element: "thunder",
+        duration: 2,
+        chance: 0.6
+      },
+      {
+        name: "雷暴减速",
+        type: "slow",
+        element: "thunder",
+        slowAmount: 0.3,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      randomStrikes: true,
+      strikesPerTurn: 3,
+      guaranteedHit: true,
+      ignoreDefense: true,
+      stunnedTripleDamage: true,
+      thunderDamageBonus: 0.30,
+      description: "雷暴持续3回合，每回合3次劈雷，麻痹目标三倍伤害，雷系+30%"
+    }
   }
 };
