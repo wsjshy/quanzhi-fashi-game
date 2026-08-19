@@ -1022,6 +1022,375 @@ const UI = {
         }
     },
 
+    /**
+     * v2.8.2: 主副修选择弹窗（卡片式选择，非下拉）
+     * 当玩家觉醒第二系时主动弹出，说明机制并让玩家选择
+     * @param {Array} elements - 可选系别列表，如 ['fire', 'ice']
+     * @param {Function} callback - 选择完成后的回调 (primary, secondary) => {}
+     * @param {boolean} isFirstTime - 是否首次觉醒第二系（显示更详细的说明）
+     */
+    showPrimarySecondarySelection(elements, callback, isFirstTime = false) {
+        const elemNames = { fire:'🔥 火系', ice:'❄️ 冰系', thunder:'⚡ 雷系', water:'💧 水系', wind:'🌪️ 风系', earth:'🪨 土系', light:'✨ 光系', dark:'🌑 暗系', heal:'💚 治愈系', plant:'🌿 植物系', summon:'📜 召唤系' };
+        const elemColors = { fire:'#ff6633', ice:'#66ccff', thunder:'#ffcc00', water:'#6699ff', wind:'#99ff99', earth:'#cc9966', light:'#ffffcc', dark:'#9966ff', heal:'#66ff99', plant:'#66cc66', summon:'#cc99ff' };
+        const elemDescs = {
+            fire:'高爆发·燃烧持续伤害', ice:'强控制·冻结减速', thunder:'高速度·麻痹连锁',
+            earth:'高防御·护盾控制', wind:'高闪避·速度快', water:'治疗恢复·湿润控制',
+            light:'神圣伤害·净化治疗', dark:'高暴击·吸血诅咒', heal:'强力治疗·辅助增益',
+            plant:'控制束缚·持续中毒', summon:'召唤兽协同·以多打少'
+        };
+
+        let selectedPrimary = elements[0] || '';
+        let selectedSecondary = elements[1] || '';
+
+        const renderCards = () => {
+            return elements.map(elem => {
+                const isPrimary = selectedPrimary === elem;
+                const isSecondary = selectedSecondary === elem;
+                const borderColor = isPrimary ? '#ffd700' : (isSecondary ? '#88ccff' : '#444477');
+                const bgColor = isPrimary ? 'rgba(255,215,0,0.15)' : (isSecondary ? 'rgba(136,204,255,0.1)' : 'rgba(30,30,60,0.8)');
+                const tag = isPrimary ? '<span style="background:#ffd700;color:#000;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:bold;">主修</span>' : (isSecondary ? '<span style="background:#88ccff;color:#000;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:bold;">副修</span>' : '');
+                return `
+                    <div id="ps-card-${elem}" onclick="UI._selectPrimarySecondary('${elem}')" style="
+                        padding: 20px;
+                        background: ${bgColor};
+                        border: 3px solid ${borderColor};
+                        border-radius: 14px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        text-align: center;
+                        min-width: 160px;
+                        flex: 1;
+                    " onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 25px ${elemColors[elem]}40';" onmouseout="this.style.transform='';this.style.boxShadow='none';">
+                        <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:10px;">
+                            <span style="font-size:32px;">${elemNames[elem]?.split(' ')[0] || '✨'}</span>
+                            ${tag}
+                        </div>
+                        <div style="font-size:18px;font-weight:bold;color:${elemColors[elem]};margin-bottom:6px;">${elemNames[elem]?.split(' ')[1] || elem}</div>
+                        <div style="font-size:11px;color:#999;line-height:1.4;">${elemDescs[elem] || ''}</div>
+                        <div style="margin-top:10px;font-size:11px;color:${isPrimary ? '#ffd700' : (isSecondary ? '#88ccff' : '#666')};font-weight:bold;">
+                            ${isPrimary ? '100% 天赋效果' : (isSecondary ? '70% 天赋效果' : '点击设为主修')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        const explanation = isFirstTime ? `
+            <div style="background:linear-gradient(135deg,rgba(255,215,0,0.1),rgba(136,204,255,0.1));border:1px solid #ffd70055;border-radius:10px;padding:15px 20px;margin-bottom:20px;max-width:520px;">
+                <div style="color:#ffd700;font-size:15px;font-weight:bold;margin-bottom:8px;">🎉 双系觉醒！新机制解锁</div>
+                <div style="color:#ccc;font-size:12px;line-height:1.7;">
+                    你已觉醒第二个元素系！现在可以选择<b style="color:#ffd700;">主修系</b>和<b style="color:#88ccff;">副修系</b>：<br>
+                    • <b style="color:#ffd700;">主修系</b>：获得 <b>100%</b> 天赋效果，解锁主动技能<br>
+                    • <b style="color:#88ccff;">副修系</b>：获得 <b>70%</b> 天赋效果<br>
+                    • 其他系：获得 <b>50%</b> 天赋效果<br>
+                    • 主修+副修可触发<b style="color:#ff88ff;">跨系组合效果</b>！<br>
+                    <span style="color:#888;font-size:11px;">（后续可在角色信息中随时更改）</span>
+                </div>
+            </div>
+        ` : '';
+
+        this.elements.gameContainer.innerHTML = `
+            <div id="ps-selection-overlay" style="
+                position:fixed;top:0;left:0;width:100%;height:100%;
+                background:rgba(0,0,0,0.85);
+                display:flex;flex-direction:column;justify-content:center;align-items:center;
+                padding:40px;z-index:10000;
+            ">
+                <div style="text-align:center;margin-bottom:20px;">
+                    <div style="font-size:28px;font-weight:bold;color:#ffd700;margin-bottom:8px;">⚔️ 主修 / 副修 选择</div>
+                    <div style="color:#aaa;font-size:13px;">点击卡片选择主修系，另一系自动设为副修</div>
+                </div>
+                ${explanation}
+                <div id="ps-cards-container" style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;max-width:600px;margin-bottom:25px;">
+                    ${renderCards()}
+                </div>
+                <div style="display:flex;gap:15px;">
+                    <button id="ps-confirm-btn" onclick="UI._confirmPrimarySecondary()" style="
+                        padding:12px 40px;background:linear-gradient(135deg,#ffd700,#ffaa00);
+                        color:#000;border:none;border-radius:10px;font-size:16px;font-weight:bold;
+                        cursor:pointer;transition:all 0.3s;
+                    " onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 0 20px #ffd70060';" onmouseout="this.style.transform='';this.style.boxShadow='none';">
+                        确认选择
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // 保存状态供回调使用
+        this._psState = { elements, callback, selectedPrimary, selectedSecondary };
+    },
+
+    /**
+     * 内部方法：点击卡片选择主副修
+     */
+    _selectPrimarySecondary(elem) {
+        if (!this._psState) return;
+        const { elements } = this._psState;
+        // 点击的设为主修，另一个设为副修
+        this._psState.selectedPrimary = elem;
+        this._psState.selectedSecondary = elements.find(e => e !== elem) || '';
+        // 重新渲染卡片
+        const container = document.getElementById('ps-cards-container');
+        if (container) {
+            const elemNames = { fire:'🔥 火系', ice:'❄️ 冰系', thunder:'⚡ 雷系', water:'💧 水系', wind:'🌪️ 风系', earth:'🪨 土系', light:'✨ 光系', dark:'🌑 暗系', heal:'💚 治愈系', plant:'🌿 植物系', summon:'📜 召唤系' };
+            const elemColors = { fire:'#ff6633', ice:'#66ccff', thunder:'#ffcc00', water:'#6699ff', wind:'#99ff99', earth:'#cc9966', light:'#ffffcc', dark:'#9966ff', heal:'#66ff99', plant:'#66cc66', summon:'#cc99ff' };
+            const elemDescs = { fire:'高爆发·燃烧持续伤害', ice:'强控制·冻结减速', thunder:'高速度·麻痹连锁', earth:'高防御·护盾控制', wind:'高闪避·速度快', water:'治疗恢复·湿润控制', light:'神圣伤害·净化治疗', dark:'高暴击·吸血诅咒', heal:'强力治疗·辅助增益', plant:'控制束缚·持续中毒', summon:'召唤兽协同·以多打少' };
+            container.innerHTML = elements.map(elem => {
+                const isPrimary = this._psState.selectedPrimary === elem;
+                const isSecondary = this._psState.selectedSecondary === elem;
+                const borderColor = isPrimary ? '#ffd700' : (isSecondary ? '#88ccff' : '#444477');
+                const bgColor = isPrimary ? 'rgba(255,215,0,0.15)' : (isSecondary ? 'rgba(136,204,255,0.1)' : 'rgba(30,30,60,0.8)');
+                const tag = isPrimary ? '<span style="background:#ffd700;color:#000;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:bold;">主修</span>' : (isSecondary ? '<span style="background:#88ccff;color:#000;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:bold;">副修</span>' : '');
+                return `
+                    <div id="ps-card-${elem}" onclick="UI._selectPrimarySecondary('${elem}')" style="
+                        padding: 20px;
+                        background: ${bgColor};
+                        border: 3px solid ${borderColor};
+                        border-radius: 14px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        text-align: center;
+                        min-width: 160px;
+                        flex: 1;
+                    " onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 25px ${elemColors[elem]}40';" onmouseout="this.style.transform='';this.style.boxShadow='none';">
+                        <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:10px;">
+                            <span style="font-size:32px;">${elemNames[elem]?.split(' ')[0] || '✨'}</span>
+                            ${tag}
+                        </div>
+                        <div style="font-size:18px;font-weight:bold;color:${elemColors[elem]};margin-bottom:6px;">${elemNames[elem]?.split(' ')[1] || elem}</div>
+                        <div style="font-size:11px;color:#999;line-height:1.4;">${elemDescs[elem] || ''}</div>
+                        <div style="margin-top:10px;font-size:11px;color:${isPrimary ? '#ffd700' : (isSecondary ? '#88ccff' : '#666')};font-weight:bold;">
+                            ${isPrimary ? '100% 天赋效果' : (isSecondary ? '70% 天赋效果' : '点击设为主修')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    },
+
+    /**
+     * 内部方法：确认主副修选择
+     */
+    _confirmPrimarySecondary() {
+        if (!this._psState) return;
+        const { selectedPrimary, selectedSecondary, callback } = this._psState;
+        // 清理
+        document.getElementById('ps-selection-overlay')?.remove();
+        this._psState = null;
+        // 恢复game-container
+        const _gc = document.getElementById('game-container');
+        if (_gc) {
+            _gc.style.pointerEvents = '';
+            _gc.style.zIndex = '';
+        }
+        // 调用回调
+        if (callback) callback(selectedPrimary, selectedSecondary);
+    },
+
+    /**
+     * v2.8.2: 天赋详细介绍弹窗
+     * 点击系别天赋卡片时显示，包含详细效果、进化路线、特殊术语解释
+     * @param {string} elem - 元素系别
+     */
+    showTalentDetail(elem) {
+        const talentData = Player.talents[elem];
+        if (!talentData || typeof TalentSystem === 'undefined') return;
+        const talent = TalentSystem.getTalent(talentData.talentId);
+        if (!talent) return;
+
+        const rarityConfig = TalentSystem.getRarityConfig(talent.rarity);
+        const maxLevel = talent.maxLevel || 10;
+        const expToNext = TalentSystem.getExpToNextLevel(talentData.level);
+        const expPercent = talentData.level >= maxLevel ? 100 : (talentData.exp / expToNext * 100);
+        const effects = TalentSystem.getTalentEffects(talentData.talentId, talentData.level);
+        const currentStage = TalentSystem.getCurrentStage(talentData.talentId, talentData.level);
+        const nextStage = TalentSystem.getNextStage(talentData.talentId, talentData.level);
+        const stageColors = { '觉醒': '#88ccff', '特性': '#44ff88', '进化': '#ffaa44', '延伸': '#cc88ff', '终极': '#ff66ff' };
+
+        // 机制类型
+        const mechanismLabels = {
+            resource: { name: '资源型', icon: '⚡', color: '#ffaa44', desc: '通过战斗积累专属资源，消耗资源释放强力技能或触发特殊效果' },
+            state: { name: '状态型', icon: '❄️', color: '#66ccff', desc: '通过施加状态效果（灼烧/冰冻/麻痹等）控制敌人或造成持续伤害' },
+            form: { name: '形态型', icon: '🔄', color: '#aa66ff', desc: '在不同形态间切换，每种形态有独特的技能和效果' },
+            trigger: { name: '触发型', icon: '💥', color: '#ff6666', desc: '满足特定条件时自动触发强力效果（连击/暴击/反击等）' },
+            passive: { name: '光环型', icon: '✨', color: '#66ff88', desc: '持续提供被动增益，无需主动操作' }
+        };
+        const mech = talent.mechanism ? mechanismLabels[talent.mechanism] : null;
+
+        // 特殊术语解释（根据系别和机制类型）
+        const termExplanations = {
+            fire: {
+                '燃点': '火系专属资源，通过使用火系技能积累。燃点满时可释放「爆裂」技能，造成高额范围伤害并附加灼烧。',
+                '灼烧': '持续伤害效果，每回合造成基于攻击力的百分比伤害，可叠加层数。',
+                '爆裂': '消耗满燃点释放的强力技能，造成150%攻击力的范围伤害。'
+            },
+            ice: {
+                '冻结': '控制效果，使目标无法行动1-2回合，对已减速目标概率提升。',
+                '减速': '降低目标速度，影响行动顺序和闪避率。',
+                '冰盾': '吸收伤害的护盾，冰系技能可生成或强化冰盾。'
+            },
+            thunder: {
+                '电荷': '雷系专属资源，通过雷系技能积累。电荷满时可释放「连锁闪电」，在多个敌人间跳跃造成伤害。',
+                '麻痹': '控制效果，使目标有概率无法行动，并降低其命中率。',
+                '感电': '使目标受到的雷系伤害提升，可与水系的「湿润」触发感电反应。'
+            },
+            water: {
+                '潮汐形态': '水系专属形态，每2回合自动切换。涨潮形态：治疗效果+50%；退潮形态：伤害+30%。',
+                '湿润': '使目标受到的雷系伤害提升50%，与雷系触发「感电」反应。',
+                '治愈之泉': '消耗MP的持续治疗技能，每回合恢复一定HP。'
+            },
+            wind: {
+                '疾风连击': '风系触发型效果，连续使用风系技能可叠加连击层数，每层提升伤害和速度，最高5层。',
+                '闪避': '完全躲避攻击的概率，风系天赋大幅提升闪避率。',
+                '风刃': '风系基础攻击技能，有概率触发连击。'
+            },
+            earth: {
+                '岩力': '土系专属资源，通过受到攻击或使用土系技能积累。岩力满时可释放「地震」，造成高额伤害并眩晕。',
+                '护盾': '吸收伤害的保护层，土系技能可生成各种护盾。',
+                '眩晕': '控制效果，使目标无法行动1回合。'
+            },
+            light: {
+                '圣光/圣盾形态': '光系专属形态，可手动切换。圣光形态：伤害+30%，攻击附带净化；圣盾形态：防御+40%，受击时反弹伤害。',
+                '净化': '移除目标身上的负面状态效果。',
+                '圣光裁决': '光系强力技能，对暗影系敌人造成额外伤害。'
+            },
+            dark: {
+                '暗影潜行': '暗系触发型效果，进入战斗后自动潜行，首次攻击暴击率+100%，攻击后显形。',
+                '诅咒': '持续削弱效果，降低目标攻击力或防御力。',
+                '吸血': '造成伤害时恢复一定比例的HP。'
+            },
+            heal: {
+                '治愈之力': '治愈系专属资源，通过治疗技能积累。治愈之力满时可释放「生命绽放」，全队大幅恢复HP并解除负面状态。',
+                '复苏': '复活已倒下的队友，恢复一定比例HP。',
+                '净化': '移除目标身上的负面状态效果。'
+            },
+            plant: {
+                '荆棘': '反伤效果，受到攻击时对攻击者造成一定比例伤害。',
+                '束缚': '控制效果，使目标无法行动，持续2回合。',
+                '中毒': '持续伤害效果，每回合造成伤害，可叠加。'
+            },
+            summon: {
+                '召唤兽': '召唤系核心机制，可召唤各种召唤兽协同作战，召唤兽有独立的HP和技能。',
+                '契约': '与召唤兽建立契约，契约等级影响召唤兽的属性和技能。',
+                '协同攻击': '召唤兽与主人同时攻击，造成额外伤害。'
+            }
+        };
+
+        // 获取当前系别的术语解释
+        const elemTerms = termExplanations[elem] || {};
+        const termsHtml = Object.entries(elemTerms).map(([term, desc]) => `
+            <div style="margin-bottom:8px;padding:8px 10px;background:rgba(255,215,0,0.05);border-left:3px solid #ffd700;border-radius:0 6px 6px 0;">
+                <span style="color:#ffd700;font-size:12px;font-weight:bold;">📖 ${term}</span>
+                <div style="color:#bbb;font-size:11px;margin-top:3px;line-height:1.5;">${desc}</div>
+            </div>
+        `).join('');
+
+        // 效果列表
+        const effectNames = {damageBonus:'伤害加成', healBonus:'治疗加成', defenseBonus:'防御加成', speedBonus:'速度加成', hpBonus:'生命加成', critRate:'暴击率', critDamage:'暴击伤害', mpCostReduction:'耗蓝减少', dodgeBonus:'闪避率', hpRegen:'HP回复', mpRegen:'MP回复', burnChance:'灼烧概率', freezeChance:'冰冻概率', paralyzeChance:'麻痹概率'};
+        const effectsHtml = Object.entries(effects).map(([k, v]) => {
+            const pct = (v * 100).toFixed(0);
+            return `<span style="display:inline-block;padding:3px 8px;background:#44aa4422;border:1px solid #44aa4455;border-radius:10px;font-size:11px;color:#88ff88;margin:2px;">${effectNames[k]||k} +${pct}%</span>`;
+        }).join('');
+
+        // 进化路线
+        let evolutionHtml = '';
+        if (talent.evolutions && talent.evolutions.length > 0) {
+            evolutionHtml = talent.evolutions.map((evo, idx) => {
+                const sc = stageColors[evo.stage] || '#aaa';
+                const isCurrent = currentStage && currentStage.name === evo.name;
+                const isLocked = evo.level > talentData.level;
+                return `
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;opacity:${isLocked?'0.5':'1'};">
+                        <span style="width:24px;height:24px;border-radius:50%;background:${isCurrent?sc:'#333'};border:2px solid ${sc};display:flex;align-items:center;justify-content:center;font-size:10px;color:${isCurrent?'#000':sc};font-weight:bold;">${evo.level}</span>
+                        <div style="flex:1;">
+                            <span style="color:${sc};font-size:12px;font-weight:bold;">【${evo.stage}】${evo.name}</span>
+                            ${isCurrent ? '<span style="color:#ffd700;font-size:10px;margin-left:6px;">← 当前</span>' : ''}
+                            ${evo.branchChoices ? '<span style="color:#ffaa44;font-size:10px;margin-left:6px;">[分支选择]</span>' : ''}
+                            <div style="color:#888;font-size:10px;margin-top:2px;">${evo.description || ''}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        this.elements.gameContainer.innerHTML = `
+            <div id="talent-detail-overlay" style="
+                position:fixed;top:0;left:0;width:100%;height:100%;
+                background:rgba(0,0,0,0.88);
+                display:flex;flex-direction:column;justify-content:center;align-items:center;
+                padding:20px;z-index:10000;overflow-y:auto;
+            ">
+                <div style="max-width:560px;width:100%;background:linear-gradient(135deg,#1a1a2e,#16213e);border:2px solid ${rarityConfig.color};border-radius:16px;padding:25px;max-height:90vh;overflow-y:auto;">
+                    <!-- 标题栏 -->
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:15px;">
+                        <div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+                                <span style="font-size:24px;">${SkillSystem.getElementColor(elem) ? '' : '✨'}</span>
+                                <span style="color:${SkillSystem.getElementColor(elem)};font-size:18px;font-weight:bold;">${SkillSystem.getElementName(elem)}</span>
+                                <span style="color:${rarityConfig.color};font-size:16px;font-weight:bold;">${talent.name}</span>
+                                ${mech ? `<span style="font-size:10px;color:${mech.color};background:${mech.color}22;padding:2px 8px;border-radius:10px;">${mech.icon}${mech.name}</span>` : ''}
+                            </div>
+                            <div style="color:#888;font-size:12px;">${talent.description || ''}</div>
+                        </div>
+                        <button onclick="document.getElementById('talent-detail-overlay').remove();" style="background:#333;color:#fff;border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;" onmouseover="this.style.background='#555'" onmouseout="this.style.background='#333'">×</button>
+                    </div>
+
+                    <!-- 等级和经验 -->
+                    <div style="background:#0a0a1a;border-radius:8px;padding:12px;margin-bottom:15px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                            <span style="color:${rarityConfig.color};font-size:14px;font-weight:bold;">Lv.${talentData.level}${talentData.level >= maxLevel ? ' (满级)' : ''}</span>
+                            <span style="color:#888;font-size:11px;">${talentData.level >= maxLevel ? '已满级' : `${talentData.exp}/${expToNext} 经验`}</span>
+                        </div>
+                        <div style="height:6px;background:#222;border-radius:3px;overflow:hidden;">
+                            <div style="height:100%;width:${expPercent}%;background:linear-gradient(90deg,${rarityConfig.color},${rarityConfig.color}88);border-radius:3px;transition:width 0.3s;"></div>
+                        </div>
+                    </div>
+
+                    <!-- 当前效果 -->
+                    <div style="margin-bottom:15px;">
+                        <div style="color:#aaa;font-size:12px;margin-bottom:8px;">📊 当前效果</div>
+                        <div style="display:flex;flex-wrap:wrap;gap:4px;">
+                            ${effectsHtml || '<span style="color:#666;font-size:11px;">暂无效果</span>'}
+                        </div>
+                    </div>
+
+                    <!-- 机制说明 -->
+                    ${mech ? `
+                    <div style="margin-bottom:15px;padding:10px 12px;background:${mech.color}11;border:1px solid ${mech.color}44;border-radius:8px;">
+                        <div style="color:${mech.color};font-size:12px;font-weight:bold;margin-bottom:4px;">${mech.icon} ${mech.name}机制</div>
+                        <div style="color:#bbb;font-size:11px;line-height:1.5;">${mech.desc}</div>
+                    </div>
+                    ` : ''}
+
+                    <!-- 进化路线 -->
+                    ${evolutionHtml ? `
+                    <div style="margin-bottom:15px;">
+                        <div style="color:#aaa;font-size:12px;margin-bottom:8px;">🌱 进化路线</div>
+                        <div style="background:#0a0a1a;border-radius:8px;padding:12px;">
+                            ${evolutionHtml}
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- 特殊术语解释 -->
+                    ${termsHtml ? `
+                    <div style="margin-bottom:15px;">
+                        <div style="color:#aaa;font-size:12px;margin-bottom:8px;">📖 术语解释</div>
+                        ${termsHtml}
+                    </div>
+                    ` : ''}
+
+                    <!-- 关闭按钮 -->
+                    <div style="text-align:center;margin-top:20px;">
+                        <button onclick="document.getElementById('talent-detail-overlay').remove();" style="padding:10px 30px;background:linear-gradient(135deg,${rarityConfig.color},${rarityConfig.color}88);color:#000;border:none;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            关闭
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
     // ========== 地图/主界面 ==========
     /**
      * 获取当前目标提示文字（新手引导）
@@ -5656,27 +6025,39 @@ const UI = {
                             <div style="margin-bottom: 15px; text-align: left;">
                                 <div style="color: #aaa; font-size: 13px; margin-bottom: 8px;">🌟 系别天赋</div>
                                 ${(() => {
-                                    // v2.4.0: 双天赋装备系统 - 主修系/副修系选择
-                                    const elemNames = { fire:'火系', ice:'冰系', thunder:'雷系', water:'水系', wind:'风系', earth:'土系', light:'光系', dark:'暗系', heal:'治愈系', plant:'植物系', summon:'召唤系' };
+                                    // v2.8.2: 双天赋装备系统 - 卡片式主副修显示，点击可重新选择
+                                    const elemNames = { fire:'🔥 火系', ice:'❄️ 冰系', thunder:'⚡ 雷系', water:'💧 水系', wind:'🌪️ 风系', earth:'🪨 土系', light:'✨ 光系', dark:'🌑 暗系', heal:'💚 治愈系', plant:'🌿 植物系', summon:'📜 召唤系' };
+                                    const elemColors = { fire:'#ff6633', ice:'#66ccff', thunder:'#ffcc00', water:'#6699ff', wind:'#99ff99', earth:'#cc9966', light:'#ffffcc', dark:'#9966ff', heal:'#66ff99', plant:'#66cc66', summon:'#cc99ff' };
                                     const combo = Player.getCrossElementCombo ? Player.getCrossElementCombo() : null;
-                                    return `
-                                        <div style="margin-bottom: 10px; padding: 8px 12px; background: #2a2a3a; border-radius: 6px; border: 1px solid #444;">
-                                            <div style="display: flex; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
-                                                <span style="color: #ffd700; font-size: 12px;">主修:</span>
-                                                <select onchange="Player.setPrimaryElement(this.value); UI.showCharacterPanel();" style="background:#333;color:#fff;border:1px solid #555;border-radius:4px;padding:2px 6px;font-size:12px;">
-                                                    <option value="">未选择</option>
-                                                    ${Player.elements.map(e => `<option value="${e}" ${Player.primaryElement===e?'selected':''}>${elemNames[e]||e}</option>`).join('')}
-                                                </select>
-                                                <span style="color: #88ccff; font-size: 12px; margin-left: 8px;">副修:</span>
-                                                <select onchange="Player.setSecondaryElement(this.value); UI.showCharacterPanel();" style="background:#333;color:#fff;border:1px solid #555;border-radius:4px;padding:2px 6px;font-size:12px;">
-                                                    <option value="">未选择</option>
-                                                    ${Player.elements.filter(e => e !== Player.primaryElement).map(e => `<option value="${e}" ${Player.secondaryElement===e?'selected':''}>${elemNames[e]||e}</option>`).join('')}
-                                                </select>
+                                    const primary = Player.primaryElement;
+                                    const secondary = Player.secondaryElement;
+                                    const canChange = Player.elements.length >= 2;
+
+                                    const renderElemCard = (elem, role, color) => {
+                                        if (!elem) return `<div style="flex:1;padding:12px;background:#1a1a2a;border:2px dashed #444;border-radius:10px;text-align:center;color:#555;font-size:12px;">未选择${role}</div>`;
+                                        return `
+                                            <div style="flex:1;padding:12px;background:${color}15;border:2px solid ${color};border-radius:10px;text-align:center;cursor:${canChange?'pointer':'default'};transition:all 0.3s;" ${canChange ? `onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 15px ${color}40';" onmouseout="this.style.transform='';this.style.boxShadow='none';"` : ''}>
+                                                <div style="font-size:10px;color:${color};font-weight:bold;margin-bottom:4px;">${role === '主修' ? '⭐ 主修' : '💫 副修'}</div>
+                                                <div style="font-size:15px;font-weight:bold;color:${color};">${elemNames[elem] || elem}</div>
+                                                <div style="font-size:10px;color:#888;margin-top:3px;">${role === '主修' ? '100% 效果' : '70% 效果'}</div>
                                             </div>
-                                            <div style="font-size: 11px; color: #888;">主修100%效果 | 副修70%效果 | 其他50%效果</div>
-                                            ${combo ? `<div style="margin-top: 6px; padding: 4px 8px; background: #ffd70022; border-radius: 4px; border: 1px solid #ffd70055;">
-                                                <span style="color: #ffd700; font-size: 12px; font-weight: bold;">✨ ${combo.name}</span>
-                                                <span style="color: #ccc; font-size: 11px; margin-left: 6px;">${combo.desc}</span>
+                                        `;
+                                    };
+
+                                    return `
+                                        <div onclick="${canChange ? "UI.showPrimarySecondarySelection(Player.elements.slice(-2), function(p,s){Player.setPrimaryElement(p);Player.setSecondaryElement(s);Player.save();Game.openCharacterPanel();}, false)" : ''}" style="margin-bottom: 10px; padding: 12px; background: linear-gradient(135deg,#1a1a2e,#16213e); border-radius: 10px; border: 1px solid #333;cursor:${canChange?'pointer':'default'};">
+                                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                                                <span style="color:#aaa;font-size:11px;">⚔️ 主副修配置</span>
+                                                ${canChange ? '<span style="color:#ffd700;font-size:10px;">点击更换 ›</span>' : ''}
+                                            </div>
+                                            <div style="display:flex;gap:10px;">
+                                                ${renderElemCard(primary, '主修', '#ffd700')}
+                                                ${renderElemCard(secondary, '副修', '#88ccff')}
+                                            </div>
+                                            <div style="font-size:10px;color:#666;margin-top:8px;text-align:center;">主修100% | 副修70% | 其他50%</div>
+                                            ${combo ? `<div style="margin-top: 8px; padding: 6px 10px; background: linear-gradient(90deg,#ffd70022,#ff88ff22); border-radius: 6px; border: 1px solid #ffd70055;text-align:center;">
+                                                <span style="color: #ffd700; font-size: 11px; font-weight: bold;">✨ ${combo.name}</span>
+                                                <span style="color: #ccc; font-size: 10px; margin-left: 6px;">${combo.desc}</span>
                                             </div>` : ''}
                                         </div>
                                     `;
@@ -5720,14 +6101,16 @@ const UI = {
                                     }
                                     const talentTooltip = `${talent.description || ''}\n[Lv.${talentData.level}] ${effectDesc}${currentStage ? '\n当前：【'+currentStage.stage+'】'+currentStage.name+' - '+currentStage.description : ''}${nextStage ? '\n下一进化：Lv'+nextStage.level+'【'+nextStage.stage+'】'+nextStage.name+' - '+nextStage.description : ''}`;
                                     return `
-                                        <div style="
+                                        <div onclick="UI.showTalentDetail('${elem}')" style="
                                             padding: 8px 12px;
                                             background: ${rarityConfig.color}11;
                                             border: 1px solid ${rarityConfig.color}55;
                                             border-radius: 8px;
                                             margin-bottom: 6px;
                                             font-size: 13px;
-                                        " title="${talentTooltip.replace(/"/g, '&quot;')}">
+                                            cursor: pointer;
+                                            transition: all 0.2s;
+                                        " onmouseover="this.style.background='${rarityConfig.color}22';this.style.borderColor='${rarityConfig.color}';" onmouseout="this.style.background='${rarityConfig.color}11';this.style.borderColor='${rarityConfig.color}55';" title="${talentTooltip.replace(/"/g, '&quot;')}">
                                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                                                 <span>
                                                     <span style="color: ${SkillSystem.getElementColor(elem)}; font-weight: bold;">${SkillSystem.getElementName(elem)}</span>

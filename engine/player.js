@@ -1076,7 +1076,10 @@ const Player = {
         return {
             success: true,
             message: `成功觉醒${this.getElementName(element)}！`,
-            unlockedSkills: unlockedSkills
+            unlockedSkills: unlockedSkills,
+            // v2.8.2: 觉醒第二系时需要弹出主副修选择弹窗
+            shouldShowPrimarySecondarySelection: currentElementCount === 1,
+            awakenedElements: this.elements.slice()
         };
     },
 

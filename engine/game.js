@@ -4161,6 +4161,23 @@ const Game = {
             return;
         }
 
+        // v2.8.2: 觉醒第二系时，先弹出主副修选择弹窗说明机制
+        if (result.shouldShowPrimarySecondarySelection && result.awakenedElements && result.awakenedElements.length >= 2) {
+            const elementsToChoose = result.awakenedElements.slice(-2); // 最后两个系
+            UI.showPrimarySecondarySelection(elementsToChoose, (primary, secondary) => {
+                Player.setPrimaryElement(primary);
+                Player.setSecondaryElement(secondary);
+                Player.save();
+                // 选择完成后弹出新系的天赋选择面板
+                if (typeof TalentSystem !== 'undefined') {
+                    this.showTalentSelection(element);
+                } else {
+                    this.openCharacterPanel();
+                }
+            }, true); // isFirstTime = true，显示详细说明
+            return;
+        }
+
         // 弹出天赋选择面板
         if (typeof TalentSystem !== 'undefined') {
             this.showTalentSelection(element);
