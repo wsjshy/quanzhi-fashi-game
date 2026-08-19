@@ -1788,14 +1788,12 @@ const Player = {
     },
 
     /**
-     * 获取探索收益倍率（逛街+酒馆+采集）
-     * v0.99.4: 1次100%，2-3次70%，4次后50%
+     * 获取探索收益倍率
+     * v2.8.4: 探索完全自由，无每日次数限制，收益始终100%
+     * （仅随机事件概率有递减，避免玩家无限刷事件，这不是限制探索）
      */
     getExploreEfficiency() {
-        const count = this.dailyActions?.explore || 0;
-        if (count < 1) return 1.0;
-        if (count < 3) return 0.7;
-        return 0.5;
+        return 1.0;
     },
 
     /**

@@ -232,9 +232,9 @@ const Game = {
         //     console.error('DEBUG显示失败', e);
         // }
         
-        // v2.8.4: 修炼时间固定为4小时，移除四档选择减少玩家决策压力
+        // v2.8.4: 修炼时间固定为2小时，移除四档选择减少玩家决策压力，留更多时间探索
         if (actionId === 'train') {
-            this.performCultivate(actionId, 4, 1.1);
+            this.performCultivate(actionId, 2, 1.0);
             return;
         }
         

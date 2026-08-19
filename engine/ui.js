@@ -2089,9 +2089,9 @@ const UI = {
                         <span style="color: #ffd700; font-size: 15px;">💰 ${Player.gold}</span>
                         <span style="color: #ff8888; font-size: 14px;">❤️ ${Player.hp}/${Player.maxHp}</span>
                         <span style="color: #88aaff; font-size: 14px;">💧 ${Player.mp}/${Player.maxMp}</span>
-                        <!-- v2.8.4: 每日行动收益率提示，执行过1次后明显提示收益下降 -->
+                        <!-- v2.8.4: 每日行动收益率提示，修炼/学习/猎魔有每日效率递减，探索完全自由不限制 -->
                         ${(() => {
-                            const da = Player.dailyActions || { cultivate: 0, study: 0, hunt: 0, explore: 0 };
+                            const da = Player.dailyActions || { cultivate: 0, study: 0, hunt: 0 };
                             const getEffLabel = (count) => {
                                 if (count < 1) return { text: '高效', color: '#88ff88' };
                                 if (count < 3) return { text: '70%', color: '#ffcc66' };
@@ -2100,16 +2100,14 @@ const UI = {
                             const c = getEffLabel(da.cultivate);
                             const s = getEffLabel(da.study);
                             const h = getEffLabel(da.hunt);
-                            const e = getEffLabel(da.explore);
-                            const anyReduced = da.cultivate >= 1 || da.study >= 1 || da.hunt >= 1 || da.explore >= 1;
+                            const anyReduced = da.cultivate >= 1 || da.study >= 1 || da.hunt >= 1;
                             return `
                                 <span style="font-size: 11px; ${anyReduced ? 'background: rgba(255,150,50,0.15); padding: 3px 8px; border-radius: 8px; border: 1px solid rgba(255,150,50,0.3);' : ''}" 
-                                    title="每日首次行动100%收益，第2-3次70%，第4次后50%">
+                                    title="每日首次修炼/学习/猎魔100%收益，第2-3次70%，第4次后50%。探索完全自由，无次数限制。">
                                     📊 
                                     <span style="color:${c.color};">修${da.cultivate}(${c.text})</span>
                                     <span style="color:${s.color};">学${da.study}(${s.text})</span>
                                     <span style="color:${h.color};">猎${da.hunt}(${h.text})</span>
-                                    <span style="color:${e.color};">探${da.explore}(${e.text})</span>
                                 </span>
                             `;
                         })()}
