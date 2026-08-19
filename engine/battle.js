@@ -4455,6 +4455,76 @@ const BattleSystem = {
                     this.endEnemyTurn();
                     return;
                 }
+
+                // 撕咬
+                if (mech === 'bite') {
+                    const biteDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 1.2));
+                    this.addLog(`🦷 ${this.enemy.name}撕咬！造成${biteDmg}点伤害！`, 'damage');
+                    this.player.hp -= biteDmg;
+                    this.showDamageNumber('player', biteDmg, 'normal');
+                    // 流血效果
+                    if (trait.effects?.bleedChance && Math.random() < trait.effects.bleedChance) {
+                        this.addStatusEffect(this.player, {
+                            type: 'bleed',
+                            name: '流血',
+                            duration: trait.effects.bleedDuration || 2,
+                            damagePerTurn: trait.effects.bleedDamage || 3
+                        });
+                        this.addLog(`🩸 你被撕咬，开始流血！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 4;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 快速撕咬（多段攻击）
+                if (mech === 'double_strike') {
+                    const strikeCount = trait.effects?.strikeCount || 2;
+                    const multiplier = trait.effects?.damageMultiplier || 0.8;
+                    let totalDmg = 0;
+                    for (let i = 0; i < strikeCount; i++) {
+                        const strikeDmg = Math.floor(this.enemy.attack * multiplier);
+                        totalDmg += strikeDmg;
+                        this.showDamageNumber('player', strikeDmg, 'normal');
+                    }
+                    this.addLog(`⚡ ${this.enemy.name}快速撕咬！连续攻击${strikeCount}次，共造成${totalDmg}点伤害！`, 'damage');
+                    this.player.hp -= totalDmg;
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 5;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 猛砸
+                if (mech === 'smash') {
+                    const smashDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 1.3));
+                    this.addLog(`💥 ${this.enemy.name}猛砸地面！造成${smashDmg}点伤害！`, 'damage');
+                    this.player.hp -= smashDmg;
+                    this.showDamageNumber('player', smashDmg, 'normal');
+                    // 眩晕效果
+                    if (trait.effects?.stunChance && Math.random() < trait.effects.stunChance) {
+                        this.addStatusEffect(this.player, {
+                            type: 'stun',
+                            name: '眩晕',
+                            duration: trait.effects.stunDuration || 1,
+                            description: '被砸晕，无法行动'
+                        });
+                        this.addLog(`😵 你被砸晕了！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 4;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 相位突袭
+                if (mech === 'phase_strike') {
+                    const phaseDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 1.3));
+                    this.addLog(`👻 ${this.enemy.name}相位突袭！造成${phaseDmg}点伤害（必定命中）！`, 'damage');
+                    this.player.hp -= phaseDmg;
+                    this.showDamageNumber('player', phaseDmg, 'dark');
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 4;
+                    this.endEnemyTurn();
+                    return;
+                }
             }
         }
 

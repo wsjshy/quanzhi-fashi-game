@@ -6,7 +6,100 @@
 
 const DemonTraits = {
     // ==================== 奴仆级妖魔天赋 ====================
-    
+
+    // 独狼兽
+    stray_wolf: {
+        traits: [
+            {
+                id: "lonely_wolf",
+                name: "孤狼",
+                description: "独自游荡，攻击+10%",
+                type: "passive",
+                effects: {
+                    attackBonus: 0.1
+                }
+            },
+            {
+                id: "wolf_bite",
+                name: "撕咬",
+                description: "每4回合撕咬，造成120%伤害+流血",
+                type: "mechanic",
+                mechanic: "bite",
+                cooldown: 4,
+                effects: {
+                    damageMultiplier: 1.2,
+                    bleedChance: 0.3,
+                    bleedDamage: 3,
+                    bleedDuration: 2
+                }
+            }
+        ]
+    },
+
+    // 影鼠
+    shadow_rat: {
+        traits: [
+            {
+                id: "swarm",
+                name: "成群",
+                description: "常成群出没，速度+15%",
+                type: "passive",
+                effects: {
+                    speedBonus: 0.15
+                }
+            },
+            {
+                id: "quick_bite",
+                name: "快速撕咬",
+                description: "每5回合快速撕咬，造成两次攻击",
+                type: "mechanic",
+                mechanic: "double_strike",
+                cooldown: 5,
+                effects: {
+                    strikeCount: 2,
+                    damageMultiplier: 0.8
+                }
+            }
+        ]
+    },
+
+    // 山猿
+    mountain_ape: {
+        traits: [
+            {
+                id: "strong",
+                name: "力大无穷",
+                description: "力气大，攻击+20%",
+                type: "passive",
+                effects: {
+                    attackBonus: 0.2
+                }
+            },
+            {
+                id: "slow",
+                name: "动作迟缓",
+                description: "动作慢，速度-20%",
+                type: "passive",
+                effects: {
+                    speedPenalty: 0.2
+                }
+            },
+            {
+                id: "smash",
+                name: "猛砸",
+                description: "每4回合猛砸地面，造成130%伤害+眩晕概率",
+                type: "mechanic",
+                mechanic: "smash",
+                cooldown: 4,
+                effects: {
+                    damageMultiplier: 1.3,
+                    stunChance: 0.2,
+                    stunDuration: 1
+                }
+            }
+        ]
+    },
+
     // 巨眼猩鼠
     giant_eye_rat: {
         traits: [
@@ -75,10 +168,21 @@ const DemonTraits = {
                 effects: {
                     allStatsBonus: 0.1
                 }
+            },
+            {
+                id: "wild_charge",
+                name: "狂暴冲撞",
+                description: "每4回合冲撞，造成130%伤害",
+                type: "mechanic",
+                mechanic: "charge",
+                cooldown: 4,
+                effects: {
+                    damageMultiplier: 1.3
+                }
             }
         ]
     },
-    
+
     // 石怪
     rock_monster: {
         traits: [
@@ -108,10 +212,23 @@ const DemonTraits = {
                 description: "可以远程投掷巨石攻击",
                 type: "ability",
                 skill: "rock_throw"
+            },
+            {
+                id: "rock_smash",
+                name: "巨石砸击",
+                description: "每4回合投掷巨石，造成140%伤害+眩晕概率",
+                type: "mechanic",
+                mechanic: "smash",
+                cooldown: 4,
+                effects: {
+                    damageMultiplier: 1.4,
+                    stunChance: 0.25,
+                    stunDuration: 1
+                }
             }
         ]
     },
-    
+
     // 暗影怪
     shadow_creature: {
         traits: [
@@ -141,10 +258,22 @@ const DemonTraits = {
                 effects: {
                     lightDamageBonus: 0.5
                 }
+            },
+            {
+                id: "shadow_strike",
+                name: "暗影突袭",
+                description: "每4回合从暗影中突袭，造成130%伤害+必定命中",
+                type: "mechanic",
+                mechanic: "phase_strike",
+                cooldown: 4,
+                effects: {
+                    damageMultiplier: 1.3,
+                    hitGuaranteed: true
+                }
             }
         ]
     },
-    
+
     // 噬骨虫
     bone_eating_worm: {
         traits: [
@@ -217,6 +346,43 @@ const DemonTraits = {
                     damageMultiplier: 1.4,
                     armorBreak: 0.15,
                     armorBreakDuration: 2
+                }
+            }
+        ]
+    },
+
+    // 幽灵
+    ghost: {
+        traits: [
+            {
+                id: "ethereal",
+                name: "灵体",
+                description: "飘忽不定，闪避+30%，物理伤害减免50%",
+                type: "passive",
+                effects: {
+                    dodgeBonus: 0.3,
+                    physicalReduction: 0.5
+                }
+            },
+            {
+                id: "life_drain_trait",
+                name: "生命汲取",
+                description: "攻击时吸取造成伤害20%的生命",
+                type: "on_hit",
+                effects: {
+                    lifesteal: 0.2
+                }
+            },
+            {
+                id: "phase_strike",
+                name: "相位突袭",
+                description: "每4回合相位突袭，造成130%伤害+必定命中",
+                type: "mechanic",
+                mechanic: "phase_strike",
+                cooldown: 4,
+                effects: {
+                    damageMultiplier: 1.3,
+                    hitGuaranteed: true
                 }
             }
         ]
@@ -417,10 +583,21 @@ const DemonTraits = {
                 description: "翅膀挥出风刃，远程攻击",
                 type: "ability",
                 skill: "wind_slash"
+            },
+            {
+                id: "wind_dive",
+                name: "俯冲攻击",
+                description: "每4回合俯冲攻击，造成140%伤害",
+                type: "mechanic",
+                mechanic: "charge",
+                cooldown: 4,
+                effects: {
+                    damageMultiplier: 1.4
+                }
             }
         ]
     },
-    
+
     // ==================== 战将级妖魔天赋 ====================
     
     // 三眼魔狼
@@ -667,10 +844,23 @@ const DemonTraits = {
                 effects: {
                     waterDamageReduction: 0.3
                 }
+            },
+            {
+                id: "web_trap",
+                name: "蛛网束缚",
+                description: "每4回合吐丝束缚，造成伤害+减速",
+                type: "mechanic",
+                mechanic: "thorn_shot",
+                cooldown: 4,
+                effects: {
+                    damageMultiplier: 0.9,
+                    bindChance: 0.4,
+                    bindDuration: 1
+                }
             }
         ]
     },
-    
+
     // 火鼠
     fire_rat: {
         traits: [
@@ -748,6 +938,18 @@ const DemonTraits = {
                 effects: {
                     attackBonus: 0.1
                 }
+            },
+            {
+                id: "swarm_attack",
+                name: "蚁群围攻",
+                description: "每4回合蚁群围攻，造成3次攻击",
+                type: "mechanic",
+                mechanic: "multi_strike",
+                cooldown: 4,
+                effects: {
+                    strikeCount: 3,
+                    damageDecay: 0.6
+                }
             }
         ]
     },
@@ -781,6 +983,19 @@ const DemonTraits = {
                 type: "passive",
                 effects: {
                     hpBonus: 0.2
+                }
+            },
+            {
+                id: "frost_breath",
+                name: "冰冻吐息",
+                description: "每4回合吐息，造成伤害+30%概率冻结",
+                type: "mechanic",
+                mechanic: "dark_ice_spike",
+                cooldown: 4,
+                effects: {
+                    damageMultiplier: 1.0,
+                    freezeChance: 0.3,
+                    freezeDuration: 1
                 }
             }
         ]
@@ -816,6 +1031,20 @@ const DemonTraits = {
                 effects: {
                     speedBonus: 0.25
                 }
+            },
+            {
+                id: "thunder_strike",
+                name: "雷电轰击",
+                description: "每4回合释放雷电，造成伤害+麻痹概率",
+                type: "mechanic",
+                mechanic: "fire_burst",
+                cooldown: 4,
+                effects: {
+                    damageMultiplier: 1.2,
+                    burnChance: 0.3,
+                    burnDamage: 5,
+                    burnDuration: 2
+                }
             }
         ]
     },
@@ -850,6 +1079,19 @@ const DemonTraits = {
                 effects: {
                     dodgeBonus: 0.15,
                     speedBonus: 0.15
+                }
+            },
+            {
+                id: "light_scales",
+                name: "光粉散射",
+                description: "每4回合散射光粉，造成伤害+致盲概率",
+                type: "mechanic",
+                mechanic: "sand_breath",
+                cooldown: 4,
+                effects: {
+                    damageMultiplier: 0.9,
+                    blindChance: 0.4,
+                    blindDuration: 2
                 }
             }
         ]
@@ -887,10 +1129,24 @@ const DemonTraits = {
                     crit: true,
                     damageBonus: 0.3
                 }
+            },
+            {
+                id: "venom_bite",
+                name: "剧毒撕咬",
+                description: "每4回合撕咬，造成伤害+高概率中毒",
+                type: "mechanic",
+                mechanic: "bite",
+                cooldown: 4,
+                effects: {
+                    damageMultiplier: 1.1,
+                    bleedChance: 0.6,
+                    bleedDamage: 5,
+                    bleedDuration: 3
+                }
             }
         ]
     },
-    
+
     // 巨眼鼹鼠
     giant_eye_mole_rat: {
         traits: [
