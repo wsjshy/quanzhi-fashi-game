@@ -803,6 +803,24 @@ const BattleSystem = {
                 }
                 
                 this.addLog(`${this.enemy.name} 的种族天赋：${traits.map(t => t.name).join('、')}`, 'system');
+
+                // v2.7.0: 机制型特性初始化
+                this.enemy.mechanicCooldowns = {};
+                this.enemy.mechanicState = {};
+                traits.forEach(t => {
+                    if (t.type === 'mechanic' && t.cooldown) {
+                        this.enemy.mechanicCooldowns[t.mechanic] = 0; // 0表示可用
+                    }
+                });
+
+                // v2.7.0: 统领威压 - 战斗开始时降低玩家攻击
+                const pressureTrait = traits.find(t => t.id === 'commander_aura');
+                if (pressureTrait && pressureTrait.effects) {
+                    const debuff = pressureTrait.effects.playerAttackDebuff || 0.15;
+                    const duration = pressureTrait.effects.duration || 3;
+                    this.player._commanderPressure = { attackDebuff: debuff, turns: duration };
+                    this.addLog(`👑 ${this.enemy.name}的统领威压！你的攻击力降低${Math.floor(debuff*100)}%（${duration}回合）`, 'debuff');
+                }
             }
         }
 
@@ -3991,6 +4009,98 @@ const BattleSystem = {
             }
         }
 
+        // v2.7.0: 机制型妖魔特性触发
+        if (this.enemy.traits && this.enemy.mechanicCooldowns) {
+            // 减少所有机制冷却
+            for (const mech in this.enemy.mechanicCooldowns) {
+                if (this.enemy.mechanicCooldowns[mech] > 0) {
+                    this.enemy.mechanicCooldowns[mech]--;
+                }
+            }
+
+            // 掘地突袭：检查是否在地下状态
+            if (this.enemy.mechanicState.burrowed) {
+                this.enemy.mechanicState.burrowed = false;
+                this.enemy.mechanicState.burrowCritNext = true;
+                this.addLog(`🕳️ ${this.enemy.name}从地下钻出！下次攻击必定暴击！`, 'warning');
+            }
+
+            // 检查可用机制并触发
+            for (const trait of this.enemy.traits) {
+                if (trait.type !== 'mechanic') continue;
+                const mech = trait.mechanic;
+                if (!mech || this.enemy.mechanicCooldowns[mech] === undefined) continue;
+                if (this.enemy.mechanicCooldowns[mech] > 0) continue;
+
+                // 掘地突袭：潜入地下
+                if (mech === 'burrow') {
+                    this.enemy.mechanicState.burrowed = true;
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.addLog(`🕳️ ${this.enemy.name}潜入地下！下回合将发动突袭！`, 'warning');
+                    this.endEnemyTurn(); // 潜入地下本回合不攻击
+                    return;
+                }
+
+                // 骨刺齐射
+                if (mech === 'bone_spike') {
+                    const spikeDmg = Math.floor(this.enemy.attack * 0.8);
+                    this.addLog(`🦴 ${this.enemy.name}发射骨刺齐射！造成${spikeDmg}点伤害！`, 'damage');
+                    this.showDamageNumber('player', spikeDmg, 'normal');
+                    this.player.hp -= spikeDmg;
+                    // 流血效果
+                    if (trait.effects && trait.effects.bleedChance && Math.random() < trait.effects.bleedChance) {
+                        this.addStatusEffect(this.player, {
+                            type: 'bleed',
+                            name: '流血',
+                            duration: trait.effects.bleedDuration || 3,
+                            damagePerTurn: trait.effects.bleedDamage || 8
+                        });
+                        this.addLog(`🩸 你被骨刺击中，开始流血！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 2;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 飞行/落地切换
+                if (mech === 'fly_switch') {
+                    if (!this.enemy.mechanicState.flying) {
+                        this.enemy.mechanicState.flying = true;
+                        this.addLog(`🦅 ${this.enemy.name}飞向天空！闪避大幅提升，但攻击力降低！`, 'warning');
+                    } else {
+                        this.enemy.mechanicState.flying = false;
+                        this.addLog(`🐺 ${this.enemy.name}落回地面！攻击力提升，但闪避降低！`, 'warning');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 2;
+                    // 切换形态后继续普通攻击
+                }
+
+                // 召唤狼群
+                if (mech === 'summon_wolves') {
+                    this.addLog(`🐺 ${this.enemy.name}发出狼啸！召唤了${trait.summonCount || 2}只独眼魔狼！`, 'warning');
+                    // 简化处理：召唤狼群造成伤害（实际多敌人系统较复杂）
+                    const summonDmg = Math.floor(this.enemy.attack * 0.5 * (trait.summonCount || 2));
+                    this.player.hp -= summonDmg;
+                    this.showDamageNumber('player', summonDmg, 'normal');
+                    this.addLog(`狼群围攻造成${summonDmg}点伤害！`, 'damage');
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 风刃风暴
+                if (mech === 'aoe_wind') {
+                    const aoeDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 1.5));
+                    this.addLog(`🌪️ ${this.enemy.name}释放风刃风暴！造成${aoeDmg}点风系伤害！`, 'element');
+                    this.player.hp -= aoeDmg;
+                    this.showDamageNumber('player', aoeDmg, 'wind');
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 4;
+                    this.endEnemyTurn();
+                    return;
+                }
+            }
+        }
+
         // 处理敌人引导中的魔法
         if (this.enemyCasting) {
             this.enemyCasting.progress++;
@@ -5191,6 +5301,15 @@ const BattleSystem = {
         this.isPlayerTurn = true;
         this.isProcessingAction = false; // 重置行动锁，允许下一次行动
 
+        // v2.7.0: 统领威压回合数减少
+        if (this.player._commanderPressure) {
+            this.player._commanderPressure.turns--;
+            if (this.player._commanderPressure.turns <= 0) {
+                this.addLog(`👑 统领威压效果消失！`, 'buff');
+                this.player._commanderPressure = null;
+            }
+        }
+
         // v2.2.0: 天赋战斗状态回合更新（形态切换、冷却减少等）
         if (typeof TalentCombatSystem !== 'undefined') {
             TalentCombatSystem.onTurnStart();
@@ -5224,6 +5343,30 @@ const BattleSystem = {
             const attackerMods = this.getStatusModifiers(attacker);
             hitRate += attackerMods.hitRateMod;
             critRate += attackerMods.critRateMod;
+        }
+
+        // v2.7.0: 掘地突袭 - 从地下钻出后必定暴击
+        if (attacker === this.enemy && this.enemy.mechanicState?.burrowCritNext) {
+            critRate = 1.0;
+            attack = Math.floor(attack * 1.5);
+            this.enemy.mechanicState.burrowCritNext = false;
+        }
+
+        // v2.7.0: 飞行状态 - 飞行时攻击-20%，落地时攻击+30%
+        if (attacker === this.enemy && this.enemy.mechanicState?.flying !== undefined) {
+            const flyTrait = this.enemy.traits?.find(t => t.mechanic === 'fly_switch');
+            if (flyTrait?.effects) {
+                if (this.enemy.mechanicState.flying) {
+                    attack = Math.floor(attack * (1 - (flyTrait.effects.flyingAttackPenalty || 0.2)));
+                } else {
+                    attack = Math.floor(attack * (1 + (flyTrait.effects.groundAttackBonus || 0.3)));
+                }
+            }
+        }
+
+        // v2.7.0: 统领威压 - 玩家攻击减益
+        if (attacker === this.player && this.player._commanderPressure) {
+            attack = Math.floor(attack * (1 - this.player._commanderPressure.attackDebuff));
         }
 
         // v2.2.0: 水系潮汐形态 - 涨潮输出+30%，退潮输出-20%
@@ -5322,6 +5465,15 @@ const BattleSystem = {
             // 玩家天赋闪避
             if (target === this.player && target.dodgeBonus) {
                 evasion += target.dodgeBonus;
+            }
+            // v2.7.0: 飞行状态闪避加成
+            if (target === this.enemy && target.mechanicState?.flying) {
+                const flyTrait = target.traits?.find(t => t.mechanic === 'fly_switch');
+                if (flyTrait?.effects?.flyingDodge) {
+                    evasion += flyTrait.effects.flyingDodge;
+                } else {
+                    evasion += 0.5; // 默认飞行闪避+50%
+                }
             }
         }
         if (Math.random() > (hitRate - evasion)) {
@@ -5632,6 +5784,14 @@ const BattleSystem = {
             // 魔法伤害减免
             if (element && target.traitBonuses.magicDamageReduction) {
                 damage *= (1 - target.traitBonuses.magicDamageReduction);
+            }
+        }
+
+        // v2.7.0: 钢铁身躯 - 魔法伤害增加（弱点）
+        if (target && target.traits) {
+            const steelTrait = target.traits.find(t => t.id === 'steel_body');
+            if (steelTrait?.effects?.magicDamageTaken && element) {
+                damage *= (1 + steelTrait.effects.magicDamageTaken);
             }
         }
 
