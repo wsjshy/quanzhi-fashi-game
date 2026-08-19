@@ -4011,6 +4011,20 @@ const BattleSystem = {
 
         // v2.7.0: 机制型妖魔特性触发
         if (this.enemy.traits && this.enemy.mechanicCooldowns) {
+            // 进阶蜕变：每5回合攻击+10%（不替代普通攻击）
+            const mutationTrait = this.enemy.traits.find(t => t.mechanic === 'mutation');
+            if (mutationTrait && this.enemy.mechanicCooldowns['mutation'] === 0) {
+                const maxStacks = mutationTrait.effects?.maxStacks || 3;
+                const bonus = mutationTrait.effects?.attackBonusPerStack || 0.1;
+                if (!this.enemy.mechanicState.mutationStacks) this.enemy.mechanicState.mutationStacks = 0;
+                if (this.enemy.mechanicState.mutationStacks < maxStacks) {
+                    this.enemy.mechanicState.mutationStacks++;
+                    this.enemy.attack = Math.floor(this.enemy.attack * (1 + bonus));
+                    this.addLog(`💪 ${this.enemy.name}身体发生蜕变！攻击力提升！（${this.enemy.mechanicState.mutationStacks}/${maxStacks}）`, 'warning');
+                }
+                this.enemy.mechanicCooldowns['mutation'] = mutationTrait.cooldown || 5;
+            }
+
             // 疾风步：进入必定闪避状态（不替代普通攻击）
             const windStepTrait = this.enemy.traits.find(t => t.mechanic === 'dodge_next');
             if (windStepTrait && this.enemy.mechanicCooldowns['dodge_next'] === 0) {

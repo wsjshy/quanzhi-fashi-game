@@ -695,6 +695,18 @@ const DemonTraits = {
                     bleedDamage: 4,
                     bleedDuration: 2
                 }
+            },
+            {
+                id: "burrow_assault",
+                name: "掘地突袭",
+                description: "每4回合潜入地下，下回合必定暴击+50%伤害",
+                type: "mechanic",
+                mechanic: "burrow",
+                cooldown: 4,
+                effects: {
+                    critGuaranteed: true,
+                    damageBonus: 0.5
+                }
             }
         ]
     },
@@ -738,6 +750,30 @@ const DemonTraits = {
                 type: "damage_reduction",
                 effects: {
                     physicalReduction: 0.15
+                }
+            },
+            {
+                id: "berserk_charge",
+                name: "狂暴冲撞",
+                description: "每3回合高速冲撞，造成160%伤害",
+                type: "mechanic",
+                mechanic: "charge",
+                cooldown: 3,
+                effects: {
+                    damageMultiplier: 1.6
+                }
+            },
+            {
+                id: "advancing_mutation",
+                name: "进阶蜕变",
+                description: "每5回合攻击+10%（可被雷系抑制）",
+                type: "mechanic",
+                mechanic: "mutation",
+                cooldown: 5,
+                effects: {
+                    attackBonusPerStack: 0.1,
+                    maxStacks: 3,
+                    thunderSuppress: true
                 }
             }
         ]
