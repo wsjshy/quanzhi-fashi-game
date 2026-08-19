@@ -1554,6 +1554,287 @@ const UI = {
         `;
     },
 
+    // ========== v2.8.3 技能详情弹窗 ==========
+    /**
+     * 显示技能详细介绍弹窗
+     * @param {string} skillId - 技能ID
+     */
+    showSkillDetail(skillId) {
+        const skill = SkillSystem.getSkill(skillId);
+        if (!skill) return;
+
+        const elemInfo = this.getElementInfo(skill.element);
+        const color = elemInfo.color || '#888';
+        const icon = elemInfo.icon || '✨';
+
+        // 技能类型中文
+        const typeNames = {
+            damage: '伤害技能', heal: '治疗技能', buff: '增益技能',
+            debuff: '减益技能', summon: '召唤技能', utility: '辅助技能',
+            passive: '被动技能', special: '特殊技能'
+        };
+        const typeName = typeNames[skill.type] || skill.type || '技能';
+
+        // 技能效果信息
+        const statsHtml = [];
+        if (skill.damageMultiplier) statsHtml.push(`<span style="color:#ff8866;">伤害倍率: ${(skill.damageMultiplier*100).toFixed(0)}%</span>`);
+        if (skill.baseDamage) statsHtml.push(`<span style="color:#ff8866;">基础伤害: ${skill.baseDamage}</span>`);
+        if (skill.mpCost !== undefined) statsHtml.push(`<span style="color:#88aaff;">MP消耗: ${skill.mpCost}</span>`);
+        if (skill.cooldown) statsHtml.push(`<span style="color:#ffcc66;">冷却: ${skill.cooldown}回合</span>`);
+        if (skill.hitRate) statsHtml.push(`<span style="color:#aaffaa;">命中率: ${(skill.hitRate*100).toFixed(0)}%</span>`);
+        if (skill.critRate) statsHtml.push(`<span style="color:#ff66aa;">暴击率: ${(skill.critRate*100).toFixed(0)}%</span>`);
+        if (skill.targetType) {
+            const targetNames = {enemy:'敌方单体', all_enemies:'敌方全体', self:'自身', ally:'友方单体', all_allies:'友方全体'};
+            statsHtml.push(`<span style="color:#aaa;">目标: ${targetNames[skill.targetType] || skill.targetType}</span>`);
+        }
+
+        // 元素反应说明
+        const reactionExplanations = {
+            fire: { '燃烧': '火系技能对目标附加灼烧状态，持续造成伤害，灼烧层数越高伤害越高。', '融化': '火系攻击对冰冻状态的目标造成双倍伤害，并解除冰冻。' },
+            ice: { '冻结': '冰系技能有概率使目标冻结，无法行动1-2回合，对已减速目标概率提升。', '碎冰': '攻击冻结状态的目标造成额外暴击伤害。' },
+            thunder: { '感电': '雷系技能使目标感电，受到的雷系伤害提升50%，与水系湿润触发连锁反应。', '麻痹': '雷系技能有概率使目标麻痹，有概率无法行动并降低命中率。' },
+            water: { '湿润': '水系技能使目标湿润，受到的雷系伤害提升50%，与雷系触发感电反应。', '治疗': '水系技能可恢复HP，部分技能可净化负面状态。' },
+            wind: { '连击': '风系技能可触发连击，连续攻击多次，每次伤害递减。', '闪避': '风系技能可提升闪避率，完全躲避攻击。' },
+            earth: { '眩晕': '土系技能有概率使目标眩晕，无法行动1回合。', '护盾': '土系技能可生成护盾，吸收伤害。' },
+            light: { '净化': '光系技能可移除负面状态，对暗影系敌人造成额外伤害。', '圣光': '光系技能附带圣光效果，持续恢复HP或提升防御。' },
+            dark: { '诅咒': '暗系技能可附加诅咒，降低目标攻击力或防御力。', '吸血': '暗系技能造成伤害时恢复一定比例的HP。' },
+            heal: { '治疗': '治愈系技能恢复HP，部分技能可复活队友。', '净化': '治愈系技能可移除负面状态。' },
+            plant: { '中毒': '植物系技能可附加中毒，持续造成伤害，可叠加层数。', '束缚': '植物系技能可使目标束缚，无法行动。' },
+            summon: { '召唤': '召唤系技能可召唤召唤兽协同作战，召唤兽有独立的HP和技能。' }
+        };
+
+        // 根据技能系别显示相关元素反应
+        const elemReactions = reactionExplanations[skill.element] || {};
+        const reactionsHtml = Object.entries(elemReactions).map(([name, desc]) => `
+            <div style="margin-bottom:6px;padding:6px 8px;background:${color}11;border-left:2px solid ${color};border-radius:0 4px 4px 0;">
+                <span style="color:${color};font-size:11px;font-weight:bold;">${name}</span>
+                <div style="color:#aaa;font-size:10px;margin-top:2px;line-height:1.4;">${desc}</div>
+            </div>
+        `).join('');
+
+        // 术语解释（根据技能系别和效果关键词）
+        const skillTerms = {
+            fire: [['灼烧', '持续伤害效果，每回合造成基于攻击力的百分比伤害，可叠加层数。'], ['燃点', '火系专属资源，通过使用火系技能积累，满时可释放强力技能。']],
+            ice: [['冻结', '控制效果，使目标无法行动1-2回合，对已减速目标概率提升。'], ['减速', '降低目标速度，影响行动顺序和闪避率。']],
+            thunder: [['麻痹', '控制效果，使目标有概率无法行动，并降低其命中率。'], ['感电', '使目标受到的雷系伤害提升，可与水系湿润触发反应。']],
+            water: [['湿润', '使目标受到的雷系伤害提升50%，与雷系触发感电反应。'], ['潮汐', '水系专属形态，每2回合自动切换涨潮/退潮，影响治疗和伤害。']],
+            wind: [['连击', '连续使用风系技能可叠加连击层数，每层提升伤害和速度。'], ['闪避', '完全躲避攻击的概率，风系天赋大幅提升闪避率。']],
+            earth: [['岩力', '土系专属资源，通过受到攻击或使用土系技能积累，满时可释放地震。'], ['护盾', '吸收伤害的保护层，土系技能可生成各种护盾。']],
+            light: [['净化', '移除目标身上的负面状态效果。'], ['圣光', '光系专属形态，可切换圣光/圣盾形态，影响伤害和防御。']],
+            dark: [['诅咒', '持续削弱效果，降低目标攻击力或防御力。'], ['潜行', '暗系触发型效果，进入战斗后自动潜行，首次攻击暴击率大幅提升。']],
+            heal: [['治愈之力', '治愈系专属资源，通过治疗技能积累，满时可释放生命绽放。'], ['复苏', '复活已倒下的队友，恢复一定比例HP。']],
+            plant: [['中毒', '持续伤害效果，每回合造成伤害，可叠加层数。'], ['束缚', '控制效果，使目标无法行动，持续2回合。']],
+            summon: [['召唤兽', '召唤系核心机制，可召唤各种召唤兽协同作战。'], ['契约', '与召唤兽建立契约，契约等级影响召唤兽的属性和技能。']]
+        };
+
+        const terms = skillTerms[skill.element] || [];
+        const termsHtml = terms.map(([term, desc]) => `
+            <div style="margin-bottom:6px;padding:6px 8px;background:rgba(255,215,0,0.05);border-left:2px solid #ffd700;border-radius:0 4px 4px 0;">
+                <span style="color:#ffd700;font-size:11px;font-weight:bold;">📖 ${term}</span>
+                <div style="color:#aaa;font-size:10px;margin-top:2px;line-height:1.4;">${desc}</div>
+            </div>
+        `).join('');
+
+        this.elements.gameContainer.innerHTML += `
+            <div id="skill-detail-overlay" style="
+                position:fixed;top:0;left:0;width:100%;height:100%;
+                background:rgba(0,0,0,0.85);z-index:10000;
+                display:flex;align-items:center;justify-content:center;
+                backdrop-filter:blur(4px);
+            " onclick="if(event.target===this)this.remove()">
+                <div style="
+                    width:90%;max-width:500px;max-height:85vh;overflow-y:auto;
+                    background:linear-gradient(135deg,#1a1a2e,#16213e);
+                    border:2px solid ${color};border-radius:16px;
+                    padding:20px;box-shadow:0 0 40px ${color}44;
+                ">
+                    <!-- 标题 -->
+                    <div style="text-align:center;margin-bottom:15px;">
+                        <div style="font-size:22px;font-weight:bold;color:${color};margin-bottom:4px;">
+                            ${icon} ${skill.name}
+                        </div>
+                        <div style="font-size:11px;color:#888;">
+                            ${skill.tier || ''} · ${typeName} · ${elemInfo.name || skill.element}
+                        </div>
+                    </div>
+
+                    <!-- 技能描述 -->
+                    <div style="background:#0a0a1a;border-radius:8px;padding:12px;margin-bottom:15px;">
+                        <div style="color:#ccc;font-size:12px;line-height:1.6;">${skill.description}</div>
+                    </div>
+
+                    <!-- 技能数值 -->
+                    ${statsHtml.length > 0 ? `
+                    <div style="margin-bottom:15px;">
+                        <div style="color:#aaa;font-size:12px;margin-bottom:8px;">📊 技能数值</div>
+                        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                            ${statsHtml.map(s => `<span style="padding:4px 8px;background:#0a0a1a;border:1px solid #333;border-radius:6px;font-size:11px;">${s}</span>`).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- 元素反应 -->
+                    ${reactionsHtml ? `
+                    <div style="margin-bottom:15px;">
+                        <div style="color:#aaa;font-size:12px;margin-bottom:8px;">⚡ 元素反应</div>
+                        ${reactionsHtml}
+                    </div>
+                    ` : ''}
+
+                    <!-- 术语解释 -->
+                    ${termsHtml ? `
+                    <div style="margin-bottom:15px;">
+                        <div style="color:#aaa;font-size:12px;margin-bottom:8px;">📖 术语解释</div>
+                        ${termsHtml}
+                    </div>
+                    ` : ''}
+
+                    <!-- 关闭按钮 -->
+                    <div style="text-align:center;margin-top:15px;">
+                        <button onclick="document.getElementById('skill-detail-overlay').remove();" style="
+                            padding:10px 30px;background:linear-gradient(135deg,${color},${color}88);
+                            color:#000;border:none;border-radius:8px;font-size:14px;font-weight:bold;
+                            cursor:pointer;transition:all 0.2s;
+                        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            关闭
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    // ========== v2.8.3 敌人详情弹窗 ==========
+    /**
+     * 显示敌人详细介绍弹窗
+     * @param {string} enemyId - 敌人ID
+     */
+    showEnemyDetail(enemyId) {
+        const enemy = (typeof DataEnemies !== 'undefined' && DataEnemies[enemyId]) || 
+                      (typeof Enemies !== 'undefined' && Enemies[enemyId]) || null;
+        if (!enemy) return;
+
+        // 妖魔类型颜色
+        const tierColors = {
+            servant: '#88cc88', warrior: '#ccaa44', commander: '#cc6644',
+            monarch: '#aa44cc', boss: '#ff4444', human: '#aaaaff', dummy: '#888'
+        };
+        const tierNames = {
+            servant: '奴仆级', warrior: '战将级', commander: '统领级',
+            monarch: '君主级', boss: 'BOSS', human: '人类', dummy: '训练目标'
+        };
+        const tier = enemy.demonTier || enemy.enemyType || 'servant';
+        const color = tierColors[tier] || '#888';
+        const tierName = tierNames[tier] || tier;
+
+        // 机制型特性 - 从DemonTraits获取
+        const traitData = (typeof DemonTraits !== 'undefined' && DemonTraits[enemyId]) ? DemonTraits[enemyId] : null;
+        const traits = traitData ? (traitData.traits || []) : (enemy.traits || []);
+        const traitsHtml = [];
+        if (traits.length > 0) {
+            traits.forEach(trait => {
+                const isMechanic = trait.type === 'mechanic';
+                const traitColor = isMechanic ? '#ff8844' : '#88aaff';
+                const traitIcon = isMechanic ? '⚙️' : '✨';
+                traitsHtml.push(`
+                    <div style="margin-bottom:8px;padding:8px 10px;background:${traitColor}11;border:1px solid ${traitColor}44;border-radius:8px;">
+                        <div style="color:${traitColor};font-size:12px;font-weight:bold;margin-bottom:3px;">
+                            ${traitIcon} ${trait.name} ${isMechanic ? '<span style="font-size:10px;color:#ff8844aa;">[机制型]</span>' : '<span style="font-size:10px;color:#88aaffaa;">[被动]</span>'}
+                        </div>
+                        <div style="color:#bbb;font-size:11px;line-height:1.5;">${trait.description}</div>
+                        ${trait.cooldown ? `<div style="color:#ffcc66;font-size:10px;margin-top:3px;">冷却: ${trait.cooldown}回合</div>` : ''}
+                    </div>
+                `);
+            });
+        }
+
+        // 弱点和抗性（如果有）
+        const weaknesses = enemy.weaknesses || [];
+        const resistances = enemy.resistances || [];
+        const weakHtml = weaknesses.length > 0 ? `
+            <div style="margin-bottom:8px;">
+                <span style="color:#ff6666;font-size:11px;font-weight:bold;">弱点: </span>
+                ${weaknesses.map(w => `<span style="color:#ff8888;font-size:11px;margin-right:6px;">${w}</span>`).join('')}
+            </div>
+        ` : '';
+        const resistHtml = resistances.length > 0 ? `
+            <div style="margin-bottom:8px;">
+                <span style="color:#66aaff;font-size:11px;font-weight:bold;">抗性: </span>
+                ${resistances.map(r => `<span style="color:#88aaff;font-size:11px;margin-right:6px;">${r}</span>`).join('')}
+            </div>
+        ` : '';
+
+        // 掉落物品（如果有）
+        const drops = enemy.drops || [];
+        const dropsHtml = drops.length > 0 ? `
+            <div style="margin-bottom:15px;">
+                <div style="color:#aaa;font-size:12px;margin-bottom:8px;">🎁 可能掉落</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    ${drops.map(d => `<span style="padding:4px 8px;background:#0a0a1a;border:1px solid #44aa4444;border-radius:6px;font-size:11px;color:#88ff88;">${d.itemId || d.name || '物品'}</span>`).join('')}
+                </div>
+            </div>
+        ` : '';
+
+        this.elements.gameContainer.innerHTML += `
+            <div id="enemy-detail-overlay" style="
+                position:fixed;top:0;left:0;width:100%;height:100%;
+                background:rgba(0,0,0,0.85);z-index:10000;
+                display:flex;align-items:center;justify-content:center;
+                backdrop-filter:blur(4px);
+            " onclick="if(event.target===this)this.remove()">
+                <div style="
+                    width:90%;max-width:500px;max-height:85vh;overflow-y:auto;
+                    background:linear-gradient(135deg,#1a1a2e,#16213e);
+                    border:2px solid ${color};border-radius:16px;
+                    padding:20px;box-shadow:0 0 40px ${color}44;
+                ">
+                    <!-- 标题 -->
+                    <div style="text-align:center;margin-bottom:15px;">
+                        <div style="font-size:22px;font-weight:bold;color:${color};margin-bottom:4px;">
+                            👹 ${enemy.name || enemyId}
+                        </div>
+                        <div style="font-size:11px;color:#888;">
+                            Lv.${enemy.level || '?'} · ${tierName} ${enemy.isBoss ? '· BOSS' : ''}
+                        </div>
+                    </div>
+
+                    <!-- 基础数值 -->
+                    <div style="background:#0a0a1a;border-radius:8px;padding:12px;margin-bottom:15px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;">
+                            <div><span style="color:#888;">HP: </span><span style="color:#ff6666;">${enemy.hp || enemy.maxHp || '?'}</span></div>
+                            <div><span style="color:#888;">攻击: </span><span style="color:#ff8866;">${enemy.attack || '?'}</span></div>
+                            <div><span style="color:#888;">防御: </span><span style="color:#88aaff;">${enemy.defense || '?'}</span></div>
+                            <div><span style="color:#888;">速度: </span><span style="color:#aaffaa;">${enemy.speed || '?'}</span></div>
+                        </div>
+                        ${weakHtml}
+                        ${resistHtml}
+                    </div>
+
+                    <!-- 特性列表 -->
+                    ${traitsHtml.length > 0 ? `
+                    <div style="margin-bottom:15px;">
+                        <div style="color:#aaa;font-size:12px;margin-bottom:8px;">⚙️ 特性与机制</div>
+                        ${traitsHtml.join('')}
+                    </div>
+                    ` : '<div style="color:#666;font-size:11px;margin-bottom:15px;">暂无特殊特性</div>'}
+
+                    ${dropsHtml}
+
+                    <!-- 关闭按钮 -->
+                    <div style="text-align:center;margin-top:15px;">
+                        <button onclick="document.getElementById('enemy-detail-overlay').remove();" style="
+                            padding:10px 30px;background:linear-gradient(135deg,${color},${color}88);
+                            color:#000;border:none;border-radius:8px;font-size:14px;font-weight:bold;
+                            cursor:pointer;transition:all 0.2s;
+                        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            关闭
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
     // ========== 地图/主界面 ==========
     /**
      * 获取当前目标提示文字（新手引导）
@@ -2900,10 +3181,11 @@ const UI = {
                             margin-bottom: 10px;
                             box-shadow: 0 0 30px ${state.enemy.spriteColor || '#663399'}60;
                         " id="enemy-sprite" class="battle-sprite"></div>
-                        <div style="font-size: 18px; font-weight: bold; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
+                        <div style="font-size: 18px; font-weight: bold; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); cursor:pointer;" onclick="UI.showEnemyDetail('${state.enemy.id || ''}')" title="点击查看敌人详情">
                             ${state.enemy.name}
                             <span style="font-size: 14px; color: #ffcc66;">Lv.${state.enemy.level}</span>
                             ${state.enemy.isElite ? '<span style="color: #ff6600;"> ⭐精英</span>' : ''}
+                            <span style="font-size:14px;opacity:0.7;margin-left:4px;">ℹ️</span>
                         </div>
                         ${state.enemy.title ? `<div style="font-size: 12px; color: #ff9966; margin-bottom: 8px;">${state.enemy.title}</div>` : ''}
                         <!-- 敌人元素系 -->
@@ -3191,27 +3473,34 @@ const UI = {
                                     const cooldown = (BattleSystem.skillCooldowns && BattleSystem.skillCooldowns[skillId]) || 0;
                                     const isCd = cooldown > 0;
                                     return `
-                                        <button onclick="Game.battleUseSkillAndClose('${skillId}')" ${(!canUse || isCd) ? 'disabled' : ''}
-                                            title="${skill.description}"
-                                            style="
-                                                padding:10px;
-                                                background:linear-gradient(135deg, ${info.color}22, ${info.color}44);
-                                                border:2px solid ${info.color};
-                                                border-radius:10px;
-                                                color:#fff;
-                                                cursor:${(canUse && !isCd) ? 'pointer' : 'not-allowed'};
-                                                text-align:left;
-                                                opacity:${(canUse && !isCd) ? 1 : 0.4};
-                                                transition:all 0.2s;
-                                            ">
-                                            <div style="font-size:14px; font-weight:bold; margin-bottom:3px;">${info.icon} ${skill.name}</div>
-                                            <div style="font-size:11px; color:#ccc; margin-bottom:3px;">${skill.description.substring(0, 25)}${skill.description.length > 25 ? '...' : ''}</div>
-                                            <div style="font-size:11px; display:flex; justify-content:space-between;">
-                                                <span style="color:${state.player.mp >= skill.mpCost ? '#aaccff' : '#ff6666'};">MP: ${skill.mpCost}</span>
-                                                <span style="color:#ffcc66;">${skill.tier || ''}</span>
-                                                ${isCd ? `<span style="color:#ff8866;">CD:${cooldown}</span>` : ''}
-                                            </div>
-                                        </button>
+                                        <div style="position:relative;">
+                                            <button onclick="Game.battleUseSkillAndClose('${skillId}')" ${(!canUse || isCd) ? 'disabled' : ''}
+                                                title="${skill.description}"
+                                                style="
+                                                    padding:10px;
+                                                    background:linear-gradient(135deg, ${info.color}22, ${info.color}44);
+                                                    border:2px solid ${info.color};
+                                                    border-radius:10px;
+                                                    color:#fff;
+                                                    cursor:${(canUse && !isCd) ? 'pointer' : 'not-allowed'};
+                                                    text-align:left;
+                                                    opacity:${(canUse && !isCd) ? 1 : 0.4};
+                                                    transition:all 0.2s;
+                                                    width:100%;
+                                                ">
+                                                <div style="font-size:14px; font-weight:bold; margin-bottom:3px; padding-right:20px;">${info.icon} ${skill.name}</div>
+                                                <div style="font-size:11px; color:#ccc; margin-bottom:3px;">${skill.description.substring(0, 25)}${skill.description.length > 25 ? '...' : ''}</div>
+                                                <div style="font-size:11px; display:flex; justify-content:space-between;">
+                                                    <span style="color:${state.player.mp >= skill.mpCost ? '#aaccff' : '#ff6666'};">MP: ${skill.mpCost}</span>
+                                                    <span style="color:#ffcc66;">${skill.tier || ''}</span>
+                                                    ${isCd ? `<span style="color:#ff8866;">CD:${cooldown}</span>` : ''}
+                                                </div>
+                                            </button>
+                                            <span onclick="event.stopPropagation();UI.showSkillDetail('${skillId}')" 
+                                                style="position:absolute;top:6px;right:8px;cursor:pointer;color:${info.color};font-size:14px;opacity:0.7;transition:opacity 0.2s;"
+                                                onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'"
+                                                title="查看技能详情">ℹ️</span>
+                                        </div>
                                     `;
                                 }).join('')}
                             </div>
