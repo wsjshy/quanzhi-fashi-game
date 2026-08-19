@@ -474,6 +474,20 @@ const DemonTraits = {
                     speedBonus: 0.2,
                     dodgeBonus: 0.1
                 }
+            },
+            {
+                id: "fire_burst",
+                name: "火焰爆裂",
+                description: "每3回合释放火焰爆裂，造成130%伤害+燃烧",
+                type: "mechanic",
+                mechanic: "fire_burst",
+                cooldown: 3,
+                effects: {
+                    damageMultiplier: 1.3,
+                    burnChance: 0.6,
+                    burnDamage: 8,
+                    burnDuration: 3
+                }
             }
         ]
     },
@@ -838,6 +852,19 @@ const DemonTraits = {
                 type: "passive",
                 effects: {
                     hpBonus: 0.3
+                }
+            },
+            {
+                id: "evil_gaze",
+                name: "邪眼凝视",
+                description: "每3回合凝视玩家，造成伤害+40%概率混乱",
+                type: "mechanic",
+                mechanic: "gaze",
+                cooldown: 3,
+                effects: {
+                    damageMultiplier: 0.7,
+                    confuseChance: 0.4,
+                    confuseDuration: 2
                 }
             }
         ]

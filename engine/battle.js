@@ -4207,6 +4207,49 @@ const BattleSystem = {
                     this.endEnemyTurn();
                     return;
                 }
+
+                // 邪眼凝视
+                if (mech === 'gaze') {
+                    const gazeDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 0.7));
+                    this.addLog(`👁️ ${this.enemy.name}用邪眼凝视你！造成${gazeDmg}点精神伤害！`, 'element');
+                    this.player.hp -= gazeDmg;
+                    this.showDamageNumber('player', gazeDmg, 'dark');
+                    // 混乱效果
+                    if (trait.effects?.confuseChance && Math.random() < trait.effects.confuseChance) {
+                        this.addStatusEffect(this.player, {
+                            type: 'confusion',
+                            name: '混乱',
+                            duration: trait.effects.confuseDuration || 2,
+                            description: '被邪眼蛊惑，技能可能打错目标'
+                        });
+                        this.addLog(`🌀 你被邪眼蛊惑，陷入混乱！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 火焰爆裂
+                if (mech === 'fire_burst') {
+                    const burstDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 1.3));
+                    this.addLog(`🔥 ${this.enemy.name}释放火焰爆裂！造成${burstDmg}点火系伤害！`, 'element');
+                    this.player.hp -= burstDmg;
+                    this.showDamageNumber('player', burstDmg, 'fire');
+                    // 燃烧效果
+                    if (trait.effects?.burnChance && Math.random() < trait.effects.burnChance) {
+                        this.addStatusEffect(this.player, {
+                            type: 'burn',
+                            name: '燃烧',
+                            duration: trait.effects.burnDuration || 3,
+                            description: '被火焰灼烧，每回合受到伤害',
+                            damagePerTurn: trait.effects.burnDamage || 8
+                        });
+                        this.addLog(`🔥 你被火焰灼烧，开始燃烧！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.endEnemyTurn();
+                    return;
+                }
             }
         }
 
