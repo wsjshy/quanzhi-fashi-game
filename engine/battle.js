@@ -1217,6 +1217,20 @@ const BattleSystem = {
 
         return { success: true, skill: activeSkill };
     },
+
+    /**
+     * v2.5.4: 切换光系形态（圣光/圣盾）
+     */
+    toggleLightForm() {
+        if (typeof TalentCombatSystem === 'undefined') return;
+        const current = TalentCombatSystem.getLightForm();
+        const next = current === 'holy' ? 'shield' : 'holy';
+        TalentCombatSystem.setLightForm(next);
+        this.addLog(`✨ 光系形态切换为${next === 'holy' ? '圣光（输出+20%）' : '圣盾（防御+30%）'}！`, 'buff');
+        if (typeof UI !== 'undefined') {
+            UI.updateBattleScreen();
+        }
+    },
     
     /**
      * 应用魔具效果

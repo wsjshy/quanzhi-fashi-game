@@ -2804,7 +2804,10 @@ const UI = {
                             }
                             if (ts.forms.light === 'holy' || ts.forms.light === 'shield') {
                                 const isHoly = ts.forms.light === 'holy';
-                                html += `<div style="margin-bottom: 6px; color: #ffffaa; font-size: 12px;">✨ 光系形态：${isHoly ? '圣光（输出+20%）' : '圣盾（防御+30%）'}</div>`;
+                                html += `<div style="margin-bottom: 6px; color: #ffffaa; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
+                                    <span>✨ 光系形态：${isHoly ? '圣光（输出+20%）' : '圣盾（防御+30%）'}</span>
+                                    <button onclick="Battle.toggleLightForm()" style="padding: 2px 6px; background: #ffffaa33; border: 1px solid #ffffaa; border-radius: 3px; color: #ffffaa; font-size: 10px; cursor: pointer;">切换</button>
+                                </div>`;
                             }
                             // 触发状态显示
                             if (ts.triggers.windStreak) {
