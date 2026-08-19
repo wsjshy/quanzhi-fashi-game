@@ -653,21 +653,21 @@ const BattleSystem = {
             
             const tier = this.enemy.demonTier;
             if (tier === 'servant' || tier === '奴仆级') {
-                hpBonus = 0.15;  // HP+15%
-                atkBonus = 0.1;  // 攻击+10%
-                defBonus = 0.05; // 防御+5%
-            } else if (tier === 'warrior' || tier === '战将级') {
-                hpBonus = 0.3;   // HP+30%
-                atkBonus = 0.2;  // 攻击+20%
+                hpBonus = 0.2;   // HP+20%
+                atkBonus = 0.15; // 攻击+15%
                 defBonus = 0.1;  // 防御+10%
+            } else if (tier === 'warrior' || tier === '战将级') {
+                hpBonus = 0.5;   // HP+50%
+                atkBonus = 0.3;  // 攻击+30%
+                defBonus = 0.2;  // 防御+20%
             } else if (tier === 'commander' || tier === '统领级') {
-                hpBonus = 0.8;   // HP+80%
-                atkBonus = 0.4;  // 攻击+40%
-                defBonus = 0.3;  // 防御+30%
+                hpBonus = 1.0;   // HP+100%
+                atkBonus = 0.5;  // 攻击+50%
+                defBonus = 0.4;  // 防御+40%
             } else if (tier === 'monarch' || tier === '君主级') {
-                hpBonus = 1.5;   // HP+150%
-                atkBonus = 0.8;  // 攻击+80%
-                defBonus = 0.6;  // 防御+60%
+                hpBonus = 2.0;   // HP+200%
+                atkBonus = 1.0;  // 攻击+100%
+                defBonus = 0.8;  // 防御+80%
             }
             
             if (hpBonus > 0) {

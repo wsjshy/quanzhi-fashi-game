@@ -2621,7 +2621,7 @@ const DataEnemies = {
     skills: ["basic_attack", "bone_spike", "wolf_bite", "wolf_howl"],
     aiType: "aggressive",
     enemyType: "demon",
-    demonTier: "commander",
+    demonTier: "warrior",
     elite: true,
     eliteMechanics: {
       view_270: true,
