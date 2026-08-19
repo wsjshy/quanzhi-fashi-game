@@ -4363,5 +4363,988 @@ const DataSkills = {
       thunderDamageBonus: 0.30,
       description: "雷暴持续3回合，每回合3次劈雷，麻痹目标三倍伤害，雷系+30%"
     }
+  },
+
+  // ========== v2.9.0 P1: 剩余8系高阶魔法 ==========
+  // 🌪️ 风系高阶魔法
+  wind_devour: {
+    id: "wind_devour",
+    name: "风噬",
+    description: "高阶风系魔法。形成黑洞将所有敌人吸入中心，无法移动，持续2回合。风系终极控制魔法。",
+    element: "wind",
+    type: "damage",
+    mpCost: 80,
+    baseDamage: 90,
+    damageMultiplier: 2.0,
+    hitRate: 0.90,
+    critRate: 0.15,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 0.45,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "风噬吸入",
+        type: "stun",
+        element: "wind",
+        duration: 2,
+        chance: 1.0,
+        noMove: true
+      }
+    ],
+    specialEffects: {
+      duration: 2,
+      pullToCenter: true,
+      noMove: true,
+      description: "黑洞吸入2回合，无法移动"
+    }
+  },
+  wind_devour_black: {
+    id: "wind_devour_black",
+    name: "风噬·黑风",
+    description: "高阶风系第二级。黑洞更加猛烈，每回合受到高伤害，持续时间+1回合。",
+    element: "wind",
+    type: "damage",
+    mpCost: 100,
+    baseDamage: 135,
+    damageMultiplier: 2.3,
+    hitRate: 0.90,
+    critRate: 0.18,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 0.50,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "黑风吸入",
+        type: "stun",
+        element: "wind",
+        duration: 3,
+        chance: 1.0,
+        noMove: true
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      pullToCenter: true,
+      noMove: true,
+      perTurnDamage: true,
+      description: "黑洞吸入3回合，无法移动，每回合高伤害"
+    }
+  },
+  wind_devour_storm: {
+    id: "wind_devour_storm",
+    name: "风噬·风暴",
+    description: "高阶风系第三级。黑洞+风暴领域，风系技能伤害+50%，敌人命中率-30%。终极风系魔法，风暴吞噬一切。",
+    element: "wind",
+    type: "damage",
+    mpCost: 120,
+    baseDamage: 180,
+    damageMultiplier: 2.6,
+    hitRate: 0.90,
+    critRate: 0.20,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 0.55,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "风暴吸入",
+        type: "stun",
+        element: "wind",
+        duration: 3,
+        chance: 1.0,
+        noMove: true
+      },
+      {
+        name: "风暴致盲",
+        type: "blind",
+        element: "wind",
+        hitRateDown: 0.30,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      pullToCenter: true,
+      noMove: true,
+      perTurnDamage: true,
+      windDamageBonus: 0.50,
+      enemyHitRateDown: 0.30,
+      description: "风暴领域3回合，风系+50%，敌人命中-30%"
+    }
+  },
+
+  // 🪨 土系高阶魔法
+  earth_giant: {
+    id: "earth_giant",
+    name: "巨岩降临",
+    description: "高阶土系魔法。召唤岩石巨人替玩家承受伤害并攻击，持续3回合。巨人HP=玩家最大HP×2，攻击=玩家攻击×1.5。",
+    element: "earth",
+    type: "summon",
+    mpCost: 80,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0.1,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 0.40,
+    unlockLevel: 31,
+    realmRequired: "high",
+    specialEffects: {
+      summonGolem: true,
+      golemHpMultiplier: 2.0,
+      golemAtkMultiplier: 1.5,
+      duration: 3,
+      description: "召唤岩石巨人3回合，替玩家承受伤害并攻击"
+    }
+  },
+  earth_giant_mountain: {
+    id: "earth_giant_mountain",
+    name: "巨岩降临·山岳",
+    description: "高阶土系第二级。岩石巨人更加强大，HP×3，攻击×2，持续时间+1回合。",
+    element: "earth",
+    type: "summon",
+    mpCost: 100,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0.1,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 0.45,
+    unlockLevel: 38,
+    realmRequired: "high",
+    specialEffects: {
+      summonGolem: true,
+      golemHpMultiplier: 3.0,
+      golemAtkMultiplier: 2.0,
+      duration: 4,
+      description: "召唤山岳巨人4回合，HP×3，攻击×2"
+    }
+  },
+  earth_giant_avalanche: {
+    id: "earth_giant_avalanche",
+    name: "巨岩降临·山崩",
+    description: "高阶土系第三级。岩石巨人+死亡时触发山崩，全体敌人受到大量伤害+眩晕。终极土系魔法，山崩地裂。",
+    element: "earth",
+    type: "summon",
+    mpCost: 120,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0.1,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 0.50,
+    unlockLevel: 45,
+    realmRequired: "high",
+    specialEffects: {
+      summonGolem: true,
+      golemHpMultiplier: 3.5,
+      golemAtkMultiplier: 2.5,
+      duration: 4,
+      avalancheOnDeath: true,
+      avalancheDamage: 200,
+      avalancheStun: 1,
+      description: "召唤山崩巨人4回合，死亡时山崩全体伤害+眩晕"
+    }
+  },
+
+  // 🌊 水系高阶魔法
+  water_tornado: {
+    id: "water_tornado",
+    name: "水龙卷",
+    description: "高阶水系魔法。召唤水龙卷将敌人卷入空中2回合，无法行动，落下时受到伤害+眩晕。",
+    element: "water",
+    type: "damage",
+    mpCost: 80,
+    baseDamage: 95,
+    damageMultiplier: 2.1,
+    hitRate: 0.85,
+    critRate: 0.12,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 0.45,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "水龙卷卷入",
+        type: "stun",
+        element: "water",
+        duration: 2,
+        chance: 1.0,
+        noAction: true
+      },
+      {
+        name: "落下眩晕",
+        type: "stun",
+        element: "water",
+        duration: 1,
+        chance: 1.0,
+        delayed: 2
+      }
+    ],
+    specialEffects: {
+      airDuration: 2,
+      landingDamage: true,
+      landingStun: 1,
+      description: "卷入空中2回合，落下时伤害+眩晕"
+    }
+  },
+  water_tornado_vortex: {
+    id: "water_tornado_vortex",
+    name: "水龙卷·漩涡",
+    description: "高阶水系第二级。水龙卷更加强力，持续时间+1回合，落下伤害提升50%。",
+    element: "water",
+    type: "damage",
+    mpCost: 100,
+    baseDamage: 140,
+    damageMultiplier: 2.4,
+    hitRate: 0.85,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 0.50,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "漩涡卷入",
+        type: "stun",
+        element: "water",
+        duration: 3,
+        chance: 1.0,
+        noAction: true
+      },
+      {
+        name: "落下眩晕",
+        type: "stun",
+        element: "water",
+        duration: 1,
+        chance: 1.0,
+        delayed: 3
+      }
+    ],
+    specialEffects: {
+      airDuration: 3,
+      landingDamage: true,
+      landingDamageBonus: 0.50,
+      landingStun: 1,
+      description: "卷入空中3回合，落下伤害+50%+眩晕"
+    }
+  },
+  water_tornado_deep: {
+    id: "water_tornado_deep",
+    name: "水龙卷·深海",
+    description: "高阶水系第三级。水龙卷+深海领域，水系技能+50%，敌人速度-30%。终极水系魔法，深海吞噬一切。",
+    element: "water",
+    type: "damage",
+    mpCost: 120,
+    baseDamage: 190,
+    damageMultiplier: 2.7,
+    hitRate: 0.85,
+    critRate: 0.18,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 0.55,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "深海卷入",
+        type: "stun",
+        element: "water",
+        duration: 3,
+        chance: 1.0,
+        noAction: true
+      },
+      {
+        name: "深海减速",
+        type: "slow",
+        element: "water",
+        slowAmount: 0.30,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      airDuration: 3,
+      landingDamage: true,
+      landingStun: 1,
+      waterDamageBonus: 0.50,
+      enemySpeedDown: 0.30,
+      description: "深海领域3回合，水系+50%，敌人速度-30%"
+    }
+  },
+
+  // ✨ 光系高阶魔法
+  light_holy_domain: {
+    id: "light_holy_domain",
+    name: "圣光领域",
+    description: "高阶光系魔法。召唤圣光领域持续3回合，友方每回合恢复HP+净化debuff，敌方暗系伤害-50%。",
+    element: "light",
+    type: "buff",
+    mpCost: 80,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "all_allies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 0.40,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "圣光恢复",
+        type: "heal",
+        element: "light",
+        healAmount: 0.15,
+        duration: 3,
+        chance: 1.0
+      },
+      {
+        name: "圣光净化",
+        type: "purify",
+        element: "light",
+        duration: 3,
+        chance: 1.0,
+        purifyPerTurn: 1
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      healPerTurn: 0.15,
+      purifyPerTurn: 1,
+      darkDamageDown: 0.50,
+      description: "圣光领域3回合，友方每回合恢复15%HP+净化，暗系伤害-50%"
+    }
+  },
+  light_holy_domain_sacred: {
+    id: "light_holy_domain_sacred",
+    name: "圣光领域·神圣",
+    description: "高阶光系第二级。圣光领域更加强力，恢复量+50%，光系伤害+30%，持续时间+1回合。",
+    element: "light",
+    type: "buff",
+    mpCost: 100,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "all_allies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 0.45,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "神圣恢复",
+        type: "heal",
+        element: "light",
+        healAmount: 0.22,
+        duration: 4,
+        chance: 1.0
+      },
+      {
+        name: "神圣净化",
+        type: "purify",
+        element: "light",
+        duration: 4,
+        chance: 1.0,
+        purifyPerTurn: 2
+      }
+    ],
+    specialEffects: {
+      duration: 4,
+      healPerTurn: 0.22,
+      purifyPerTurn: 2,
+      darkDamageDown: 0.50,
+      lightDamageBonus: 0.30,
+      description: "神圣领域4回合，恢复22%HP+净化2个，光系+30%"
+    }
+  },
+  light_holy_domain_judgment: {
+    id: "light_holy_domain_judgment",
+    name: "圣光领域·神罚",
+    description: "高阶光系第三级。圣光领域+每回合天降神罚，对敌方造成神圣伤害（无视防御）。终极光系魔法，神罚降临。",
+    element: "light",
+    type: "buff",
+    mpCost: 120,
+    baseDamage: 100,
+    damageMultiplier: 2.0,
+    hitRate: 1.0,
+    critRate: 0.15,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 0.50,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "神罚恢复",
+        type: "heal",
+        element: "light",
+        healAmount: 0.20,
+        duration: 4,
+        chance: 1.0
+      },
+      {
+        name: "神罚净化",
+        type: "purify",
+        element: "light",
+        duration: 4,
+        chance: 1.0,
+        purifyPerTurn: 2
+      }
+    ],
+    specialEffects: {
+      duration: 4,
+      healPerTurn: 0.20,
+      purifyPerTurn: 2,
+      darkDamageDown: 0.50,
+      lightDamageBonus: 0.30,
+      judgmentPerTurn: true,
+      judgmentDamage: 100,
+      judgmentIgnoreDefense: true,
+      description: "神罚领域4回合，每回合天降神罚（无视防御），友方恢复+净化"
+    }
+  },
+
+  // 🌑 暗系高阶魔法
+  dark_shadow_domain: {
+    id: "dark_shadow_domain",
+    name: "暗影领域",
+    description: "高阶暗系魔法。召唤暗影领域持续3回合，玩家自动进入潜行，每次攻击附带最大HP10%的真实伤害，治疗效果-50%。",
+    element: "dark",
+    type: "buff",
+    mpCost: 80,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 0.45,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "暗影潜行",
+        type: "stealth",
+        element: "dark",
+        duration: 3,
+        chance: 1.0,
+        enemyHitRateDown: 0.40
+      },
+      {
+        name: "暗影真实伤害",
+        type: "trueDamage",
+        element: "dark",
+        trueDamagePercent: 0.10,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      autoStealth: true,
+      trueDamagePerHit: 0.10,
+      healReduction: 0.50,
+      description: "暗影领域3回合，自动潜行，攻击附10%真伤，治疗-50%"
+    }
+  },
+  dark_shadow_domain_devour: {
+    id: "dark_shadow_domain_devour",
+    name: "暗影领域·吞噬",
+    description: "高阶暗系第二级。暗影领域更加强力，真实伤害提升至15%，敌人攻击力-20%，持续时间+1回合。",
+    element: "dark",
+    type: "buff",
+    mpCost: 100,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 0.50,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "吞噬潜行",
+        type: "stealth",
+        element: "dark",
+        duration: 4,
+        chance: 1.0,
+        enemyHitRateDown: 0.40
+      },
+      {
+        name: "吞噬真伤",
+        type: "trueDamage",
+        element: "dark",
+        trueDamagePercent: 0.15,
+        duration: 4,
+        chance: 1.0
+      },
+      {
+        name: "吞噬削弱",
+        type: "debuff",
+        element: "dark",
+        atkDown: 0.20,
+        duration: 4,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 4,
+      autoStealth: true,
+      trueDamagePerHit: 0.15,
+      healReduction: 0.50,
+      enemyAtkDown: 0.20,
+      description: "吞噬领域4回合，真伤15%，敌人攻击-20%"
+    }
+  },
+  dark_shadow_domain_eternal: {
+    id: "dark_shadow_domain_eternal",
+    name: "暗影领域·永夜",
+    description: "高阶暗系第三级。永夜降临，持续时间+2回合，敌人无法使用任何道具/恢复技能。终极暗系魔法，永夜吞噬一切光明。",
+    element: "dark",
+    type: "buff",
+    mpCost: 120,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 0.55,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "永夜潜行",
+        type: "stealth",
+        element: "dark",
+        duration: 5,
+        chance: 1.0,
+        enemyHitRateDown: 0.50
+      },
+      {
+        name: "永夜真伤",
+        type: "trueDamage",
+        element: "dark",
+        trueDamagePercent: 0.15,
+        duration: 5,
+        chance: 1.0
+      },
+      {
+        name: "永夜禁疗",
+        type: "debuff",
+        element: "dark",
+        noHeal: true,
+        noItem: true,
+        duration: 5,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 5,
+      autoStealth: true,
+      trueDamagePerHit: 0.15,
+      healReduction: 1.0,
+      enemyAtkDown: 0.20,
+      noItemUse: true,
+      description: "永夜领域5回合，禁疗禁道具，潜行命中-50%"
+    }
+  },
+
+  // 💚 治愈系高阶魔法
+  heal_life_tree: {
+    id: "heal_life_tree",
+    name: "生命领域",
+    description: "高阶治愈系魔法。召唤生命之树持续5回合，每回合全体恢复20%HP，友方死亡时自动复活1次（恢复30%HP）。",
+    element: "heal",
+    type: "buff",
+    mpCost: 80,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "all_allies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 0.40,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "生命恢复",
+        type: "heal",
+        element: "heal",
+        healAmount: 0.20,
+        duration: 5,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 5,
+      healPerTurn: 0.20,
+      autoRevive: true,
+      reviveCount: 1,
+      reviveHpPercent: 0.30,
+      description: "生命之树5回合，每回合恢复20%HP，死亡自动复活1次"
+    }
+  },
+  heal_life_tree_revival: {
+    id: "heal_life_tree_revival",
+    name: "生命领域·复苏",
+    description: "高阶治愈系第二级。生命之树更加强力，恢复量+50%，复活次数+1，持续时间不变。",
+    element: "heal",
+    type: "buff",
+    mpCost: 100,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "all_allies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 0.45,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "复苏恢复",
+        type: "heal",
+        element: "heal",
+        healAmount: 0.30,
+        duration: 5,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 5,
+      healPerTurn: 0.30,
+      autoRevive: true,
+      reviveCount: 2,
+      reviveHpPercent: 0.30,
+      description: "复苏之树5回合，每回合恢复30%HP，死亡自动复活2次"
+    }
+  },
+  heal_life_tree_eternal: {
+    id: "heal_life_tree_eternal",
+    name: "生命领域·永生",
+    description: "高阶治愈系第三级。永生之树，每回合恢复30%HP，复活后满血，树可以被攻击（HP=玩家最大HP×3）。终极治愈系魔法，永生不灭。",
+    element: "heal",
+    type: "buff",
+    mpCost: 120,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "all_allies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 0.50,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "永生恢复",
+        type: "heal",
+        element: "heal",
+        healAmount: 0.30,
+        duration: 5,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 5,
+      healPerTurn: 0.30,
+      autoRevive: true,
+      reviveCount: 2,
+      reviveHpPercent: 1.0,
+      treeHp: 3.0,
+      treeTargetable: true,
+      description: "永生之树5回合，每回合恢复30%HP，复活满血，树可被攻击"
+    }
+  },
+
+  // 🌿 植物系高阶魔法
+  plant_thorn_domain: {
+    id: "plant_thorn_domain",
+    name: "荆棘领域",
+    description: "高阶植物系魔法。召唤荆棘牢笼困住全体敌人3回合，每回合受到伤害，敌人攻击时反伤50%，牢笼可以被打破（HP=玩家最大HP×2）。",
+    element: "plant",
+    type: "damage",
+    mpCost: 80,
+    baseDamage: 80,
+    damageMultiplier: 1.8,
+    hitRate: 0.90,
+    critRate: 0.10,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 0.45,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "荆棘束缚",
+        type: "stun",
+        element: "plant",
+        duration: 3,
+        chance: 1.0,
+        noMove: true
+      },
+      {
+        name: "荆棘反伤",
+        type: "thorns",
+        element: "plant",
+        reflectPercent: 0.50,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      perTurnDamage: true,
+      reflectPercent: 0.50,
+      cageHp: 2.0,
+      cageBreakable: true,
+      description: "荆棘牢笼3回合，每回合伤害，攻击反伤50%，牢笼可打破"
+    }
+  },
+  plant_thorn_domain_man_eater: {
+    id: "plant_thorn_domain_man_eater",
+    name: "荆棘领域·食人花",
+    description: "高阶植物系第二级。荆棘牢笼+召唤食人花，每回合吞噬一个敌人（造成大量伤害），反伤提升至70%。",
+    element: "plant",
+    type: "damage",
+    mpCost: 100,
+    baseDamage: 120,
+    damageMultiplier: 2.1,
+    hitRate: 0.90,
+    critRate: 0.12,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 0.50,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "食人花束缚",
+        type: "stun",
+        element: "plant",
+        duration: 3,
+        chance: 1.0,
+        noMove: true
+      },
+      {
+        name: "食人花反伤",
+        type: "thorns",
+        element: "plant",
+        reflectPercent: 0.70,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      perTurnDamage: true,
+      reflectPercent: 0.70,
+      cageHp: 2.5,
+      cageBreakable: true,
+      manEater: true,
+      manEaterDamage: 150,
+      description: "食人花牢笼3回合，每回合吞噬1人，反伤70%"
+    }
+  },
+  plant_thorn_domain_forest: {
+    id: "plant_thorn_domain_forest",
+    name: "荆棘领域·森林",
+    description: "高阶植物系第三级。森林降临，持续时间+2回合，中毒不可驱散，反伤提升至100%。终极植物系魔法，森林吞噬一切。",
+    element: "plant",
+    type: "damage",
+    mpCost: 120,
+    baseDamage: 160,
+    damageMultiplier: 2.4,
+    hitRate: 0.90,
+    critRate: 0.15,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 0.55,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "森林束缚",
+        type: "stun",
+        element: "plant",
+        duration: 5,
+        chance: 1.0,
+        noMove: true
+      },
+      {
+        name: "森林反伤",
+        type: "thorns",
+        element: "plant",
+        reflectPercent: 1.0,
+        duration: 5,
+        chance: 1.0
+      },
+      {
+        name: "森林剧毒",
+        type: "poison",
+        element: "plant",
+        dotDamage: 30,
+        duration: 5,
+        chance: 1.0,
+        unpurgeable: true
+      }
+    ],
+    specialEffects: {
+      duration: 5,
+      perTurnDamage: true,
+      reflectPercent: 1.0,
+      cageHp: 3.0,
+      cageBreakable: true,
+      manEater: true,
+      manEaterDamage: 200,
+      unpurgeablePoison: true,
+      description: "森林领域5回合，反伤100%，中毒不可驱散，每回合吞噬"
+    }
+  },
+
+  // 🐺 召唤系高阶魔法
+  summon_monarch: {
+    id: "summon_monarch",
+    name: "君临",
+    description: "高阶召唤系魔法。召唤统领级召唤兽（比战将级强3倍）持续5回合，兽王有独立HP/攻击/技能，会自动战斗。",
+    element: "summon",
+    type: "summon",
+    mpCost: 80,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0.1,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 0.40,
+    unlockLevel: 31,
+    realmRequired: "high",
+    specialEffects: {
+      summonMonarch: true,
+      monarchTier: "统领级",
+      monarchMultiplier: 3.0,
+      duration: 5,
+      description: "召唤统领级召唤兽5回合，强度3倍，自动战斗"
+    }
+  },
+  summon_monarch_beast_king: {
+    id: "summon_monarch_beast_king",
+    name: "君临·兽王",
+    description: "高阶召唤系第二级。兽王光环，所有召唤兽伤害+50%，统领级召唤兽更加强力（强度4倍）。",
+    element: "summon",
+    type: "summon",
+    mpCost: 100,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0.1,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 0.45,
+    unlockLevel: 38,
+    realmRequired: "high",
+    specialEffects: {
+      summonMonarch: true,
+      monarchTier: "统领级",
+      monarchMultiplier: 4.0,
+      duration: 5,
+      beastKingAura: true,
+      allSummonDamageBonus: 0.50,
+      description: "召唤兽王5回合，强度4倍，所有召唤兽伤害+50%"
+    }
+  },
+  summon_monarch_beast_tide: {
+    id: "summon_monarch_beast_tide",
+    name: "君临·兽潮",
+    description: "高阶召唤系第三级。统领级召唤兽+死亡时触发兽潮，召唤5只奴仆级召唤兽。终极召唤系魔法，万兽奔腾。",
+    element: "summon",
+    type: "summon",
+    mpCost: 120,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0.1,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 0.50,
+    unlockLevel: 45,
+    realmRequired: "high",
+    specialEffects: {
+      summonMonarch: true,
+      monarchTier: "统领级",
+      monarchMultiplier: 4.5,
+      duration: 5,
+      beastKingAura: true,
+      allSummonDamageBonus: 0.50,
+      beastTideOnDeath: true,
+      beastTideCount: 5,
+      beastTideTier: "奴仆级",
+      description: "召唤兽潮5回合，强度4.5倍，死亡时召唤5只奴仆级"
+    }
   }
 };
