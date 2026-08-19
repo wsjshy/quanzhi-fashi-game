@@ -21,24 +21,25 @@ const DemonTraits = {
                 }
             },
             {
-                id: "sharp_claws",
-                name: "锋利爪子",
-                description: "利爪攻击有30%概率造成流血效果",
-                type: "on_hit",
+                id: "crimson_beam",
+                name: "猩红光束",
+                description: "眼睛释放穿透腥红暗光束，无视30%防御",
+                type: "passive",
                 effects: {
-                    bleedChance: 0.3,
-                    bleedDamage: 4,
-                    bleedDuration: 3
+                    armorPenetration: 0.3  // 无视30%防御
                 }
             },
             {
-                id: "cowardly",
-                name: "胆小",
-                description: "HP低于30%时会尝试逃跑",
-                type: "trigger",
-                trigger: "low_hp",
-                threshold: 0.3,
-                effect: "flee_attempt"
+                id: "burrow_assault",
+                name: "掘地突袭",
+                description: "每3回合潜入地下，下回合出现时必定暴击且伤害+50%",
+                type: "mechanic",
+                mechanic: "burrow",
+                cooldown: 3,
+                effects: {
+                    critGuaranteed: true,
+                    damageBonus: 0.5
+                }
             }
         ]
     },
@@ -199,29 +200,37 @@ const DemonTraits = {
     three_eye_wolf: {
         traits: [
             {
-                id: "third_eye",
-                name: "第三只眼",
-                description: "可以看穿幻术，免疫控制效果",
+                id: "wide_vision",
+                name: "270度视角",
+                description: "三只眼睛几乎拥有270度视角，无法被偷袭，闪避+15%",
                 type: "passive",
                 effects: {
-                    controlImmune: true
+                    dodgeBonus: 0.15,
+                    backstabImmune: true
                 }
             },
             {
-                id: "demon_wolf_body",
-                name: "魔狼之躯",
-                description: "全属性+30%",
+                id: "steel_body",
+                name: "钢铁身躯",
+                description: "钢铁般结实的身躯，物理伤害减免40%，但魔法伤害+20%（弱点）",
                 type: "passive",
                 effects: {
-                    allStatsBonus: 0.3
+                    physicalDamageReduction: 0.4,
+                    magicDamageTaken: 0.2
                 }
             },
             {
-                id: "wolf_howl",
-                name: "狼嚎",
-                description: "战斗开始时召唤1只独眼魔狼",
-                type: "on_battle_start",
-                effect: "summon_allies"
+                id: "bone_spike_volley",
+                name: "骨刺齐射",
+                description: "每2回合发射骨刺，造成物理伤害+流血效果",
+                type: "mechanic",
+                mechanic: "bone_spike",
+                cooldown: 2,
+                effects: {
+                    bleedChance: 0.5,
+                    bleedDamage: 8,
+                    bleedDuration: 3
+                }
             }
         ]
     },
@@ -289,40 +298,49 @@ const DemonTraits = {
     winged_gray_wolf: {
         traits: [
             {
-                id: "wings",
-                name: "飞行",
-                description: "背生双翼，可以飞行，闪避+40%，速度+50%",
-                type: "passive",
+                id: "sky_dance",
+                name: "翱翔天际",
+                description: "飞行状态下闪避+50%但攻击-20%，每2回合切换落地（攻击+30%，闪避-10%）",
+                type: "mechanic",
+                mechanic: "fly_switch",
+                cooldown: 2,
                 effects: {
-                    dodgeBonus: 0.4,
-                    speedBonus: 0.5
+                    flyingDodge: 0.5,
+                    flyingAttackPenalty: 0.2,
+                    groundAttackBonus: 0.3,
+                    groundDodgePenalty: 0.1
                 }
             },
             {
-                id: "commander_pressure",
-                name: "统领威压",
-                description: "低阶妖魔全属性-20%，对玩家降低10%属性",
-                type: "passive_aura",
-                effects: {
-                    lowerLevelDebuff: 0.2,
-                    playerDebuff: 0.1
-                }
-            },
-            {
-                id: "summon_wolf_pack",
-                name: "召唤狼群",
-                description: "战斗中可以召唤3只独眼魔狼",
-                type: "summon",
+                id: "wolf_howl_command",
+                name: "狼啸号令",
+                description: "每3回合咆哮召唤2只独眼魔狼助战",
+                type: "mechanic",
+                mechanic: "summon_wolves",
+                cooldown: 3,
                 summon: "one_eye_wolf",
-                summonCount: 3
+                summonCount: 2
             },
             {
-                id: "wind_attribute",
-                name: "风属性",
-                description: "掌握风系力量，速度极快",
-                type: "passive",
+                id: "wind_blade_storm",
+                name: "风刃风暴",
+                description: "每4回合释放全屏风刃，造成150%攻击力风系伤害+击退",
+                type: "mechanic",
+                mechanic: "aoe_wind",
+                cooldown: 4,
                 effects: {
-                    windDamageBonus: 0.3
+                    damageMultiplier: 1.5,
+                    knockback: true
+                }
+            },
+            {
+                id: "commander_aura",
+                name: "统领威压",
+                description: "战斗开始时降低玩家攻击力15%，持续3回合",
+                type: "on_battle_start",
+                effects: {
+                    playerAttackDebuff: 0.15,
+                    duration: 3
                 }
             }
         ]
