@@ -742,7 +742,7 @@ const UI = {
                     right: 20px;
                     font-size: 14px;
                     color: #555;
-                ">v2.7.11 · 机制型妖魔特性与战斗修复</div>
+                ">v2.8.3 · 详情弹窗系统与天赋优化</div>
             </div>
         `;
 
