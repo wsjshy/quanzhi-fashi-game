@@ -786,8 +786,8 @@ const BattleSystem = {
             || this.enemy.tier === 'commander' || this.enemy.demonTier === 'commander'
             || battleMode === 'duel' || battleMode === 'trial' || battleMode === 'boss';
         if (!isSpecialBattle) {
-            this.enemy.attack = Math.floor(this.enemy.attack * 1.1);  // 攻击力+10%
-            this.enemy.maxHp = Math.floor(this.enemy.maxHp * 1.15);   // HP+15%
+            this.enemy.attack = Math.floor(this.enemy.attack * 1.05);  // 攻击力+5%（v2.8.0从10%下调，避免叠加体质加成后过强）
+            this.enemy.maxHp = Math.floor(this.enemy.maxHp * 1.10);   // HP+10%（v2.8.0从15%下调）
             this.enemy.hp = this.enemy.maxHp;
         }
 
