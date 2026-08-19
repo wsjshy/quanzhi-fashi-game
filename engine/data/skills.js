@@ -1500,6 +1500,9 @@ const DataSkills = {
     maxTargets: 5,
     cooldown: 2,
     tier: "中阶",
+    magicLevel: 2,
+    interruptChance: 0.25,
+    unlockLevel: 18,
     skillLevel: 2,
     realmRequired: "middle",
     castSpeed: "fast",
@@ -1652,6 +1655,9 @@ const DataSkills = {
     targetType: "enemy",
     cooldown: 0,
     tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 0.25,
+    unlockLevel: 15,
     realmRequired: "middle",
     statusEffects: [
       {
@@ -1676,6 +1682,9 @@ const DataSkills = {
     targetType: "self",
     cooldown: 4,
     tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 0.25,
+    unlockLevel: 15,
     realmRequired: "middle",
     statusEffects: [
       {
@@ -1737,6 +1746,9 @@ const DataSkills = {
     targetType: "self",
     cooldown: 3,
     tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 0.2,
+    unlockLevel: 15,
     realmRequired: "middle",
     statusEffects: [
       {
@@ -1808,6 +1820,9 @@ const DataSkills = {
     targetType: "all_enemies", // 范围攻击
     cooldown: 3,
     tier: "中阶",
+    magicLevel: 3,
+    interruptChance: 0.35,
+    unlockLevel: 25,
     realmRequired: "middle",
     skillLevelRequired: 3,
     isCanon: true,
@@ -1840,6 +1855,9 @@ const DataSkills = {
     targetType: "self",
     cooldown: 2,
     tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 0.2,
+    unlockLevel: 15,
     realmRequired: "middle",
     isCanon: true,
     canonSource: "第132章 激战",
