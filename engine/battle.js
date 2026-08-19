@@ -577,6 +577,7 @@ const BattleSystem = {
         this.usedElements = new Set();  // 本场战斗使用过的元素系
         this.elementEnergy = 0;  // v0.86.0: 元素能量（初阶魔法积累，满5点后下一个中高阶魔法爆发）
         this.elementEnergyMax = 5;  // 元素能量上限
+        this.playerDefendedLastTurn = false;  // v2.9.0: 玩家上回合是否防御（用于抗打断）
         this.skillCooldowns = {};  // v0.86.0: 技能冷却状态
         this.source = options.source || 'normal';  // v0.99.1: 战斗来源（normal/hunt/event/quest）
         this.allies = options.allies || [];  // v1.8.0: NPC队友列表
@@ -2305,6 +2306,10 @@ const BattleSystem = {
                     actualInterruptChance = Math.max(0, actualInterruptChance - reduction);
                 }
             }
+            // v2.9.0: 防御姿态抗打断（上回合防御，本回合打断概率-20%）
+            if (this.playerDefendedLastTurn) {
+                actualInterruptChance = Math.max(0, actualInterruptChance - 0.20);
+            }
             // 防御姿态抗打断（后续实现）
             // 天赋/装备抗打断（后续实现）
             
@@ -2317,6 +2322,8 @@ const BattleSystem = {
             } else if (actualInterruptChance > 0.1) {
                 this.addLog(`✨ 施法成功！${skill.name}（打断概率 ${(actualInterruptChance*100).toFixed(0)}%）`, 'cast');
             }
+            // v2.9.0: 释放技能后重置防御状态（本回合没有防御）
+            this.playerDefendedLastTurn = false;
         }
 
         // 消耗MP
@@ -3297,6 +3304,7 @@ const BattleSystem = {
         if (!this.active || !this.isPlayerTurn) return null;
 
         this.player.isDefending = true;
+        this.playerDefendedLastTurn = true;  // v2.9.0: 标记上回合防御，下回合施法抗打断+20%
         
         // 防御恢复MP（10%最大MP）
         const mpRecover = Math.floor(this.player.maxMp * 0.10);
