@@ -641,6 +641,61 @@ const BattleSystem = {
         this.enemy.statusEffects = [];
         this.enemy.isDefending = false;
         
+        // 玩家战斗状态（必须在使用this.player之前初始化）
+        this.player = {
+            name: Player.name,
+            level: Player.level,
+            maxHp: Player.getTotalStats().maxHp,
+            hp: Player.hp,
+            maxMp: Player.getTotalStats().maxMp,
+            mp: Player.mp,
+            attack: Player.getTotalStats().attack,
+            defense: Player.getTotalStats().defense,
+            speed: Player.getTotalStats().speed,
+            spirit: Player.spirit,
+            critRate: Player.getTotalStats().critRate,
+            hitRate: Player.getTotalStats().hitRate,
+            elements: Player.elements,
+            skills: Player.skills,
+            buffs: [],
+            statusEffects: [],
+            isDefending: false,
+            talentEffects: (typeof Player !== 'undefined' && Player.getAllTalentEffects) ? Player.getAllTalentEffects() : {},
+            chargeStack: 0,
+            chargeMax: 5,
+            comboCount: 0,
+            tideStack: 0,
+            stealthActive: false,
+            reviveUsed: false
+        };
+
+        // 应用天赋基础属性加成
+        const te = this.player.talentEffects;
+        if (te) {
+            if (te.critRate) this.player.critRate += te.critRate;
+            if (te.dodgeBonus) this.player.dodgeBonus = te.dodgeBonus;
+            if (te.speedBonus) this.player.speed = Math.floor(this.player.speed * (1 + te.speedBonus));
+            if (te.defenseBonus) this.player.defense = Math.floor(this.player.defense * (1 + te.defenseBonus));
+            if (te.hpBonus) {
+                this.player.maxHp = Math.floor(this.player.maxHp * (1 + te.hpBonus));
+                this.player.hp = Math.min(this.player.hp, this.player.maxHp);
+            }
+            if (te.damageReduction) this.player.damageReduction = te.damageReduction;
+            if (te.mpCostReduction) this.player.mpCostReduction = te.mpCostReduction;
+        }
+
+        // 应用疲劳减益
+        if (typeof Player !== 'undefined' && Player.fatigueLevel > 0) {
+            if (Player.fatigueLevel >= 2) {
+                this.player.attack = Math.floor(this.player.attack * 0.7);
+                this.player.defense = Math.floor(this.player.defense * 0.85);
+                this.addLog('⚠️ 你受了重伤，攻击力-30%，防御力-15%！', 'debuff');
+            } else {
+                this.player.attack = Math.floor(this.player.attack * 0.85);
+                this.addLog('⚠️ 你感到疲惫，攻击力-15%！', 'debuff');
+            }
+        }
+        
         // 妖魔体质加成：不同级别妖魔实力差距巨大
         // 奴仆级：普通初阶法师打不过，突出的才能单挑
         // 战将级：普通中阶法师打不过，优秀的才能单挑
@@ -821,64 +876,6 @@ const BattleSystem = {
                     this.player._commanderPressure = { attackDebuff: debuff, turns: duration };
                     this.addLog(`👑 ${this.enemy.name}的统领威压！你的攻击力降低${Math.floor(debuff*100)}%（${duration}回合）`, 'debuff');
                 }
-            }
-        }
-
-        // 玩家战斗状态
-        this.player = {
-            name: Player.name,
-            level: Player.level,
-            maxHp: Player.getTotalStats().maxHp,
-            hp: Player.hp,
-            maxMp: Player.getTotalStats().maxMp,
-            mp: Player.mp,
-            attack: Player.getTotalStats().attack,
-            defense: Player.getTotalStats().defense,
-            speed: Player.getTotalStats().speed,
-            spirit: Player.spirit,
-            critRate: Player.getTotalStats().critRate,
-            hitRate: Player.getTotalStats().hitRate,
-            elements: Player.elements,
-            skills: Player.skills,
-            buffs: [],
-            statusEffects: [],
-            isDefending: false,
-            talentEffects: (typeof Player !== 'undefined' && Player.getAllTalentEffects) ? Player.getAllTalentEffects() : {},
-            // 第五批效果：战斗状态计数器
-            chargeStack: 0,       // 雷系蓄电层数
-            chargeMax: 5,         // 最大蓄电层数
-            comboCount: 0,        // 连斩计数（本回合连击数）
-            tideStack: 0,         // 潮汐层数
-            stealthActive: false, // 是否处于隐身状态
-            reviveUsed: false     // 本局是否已用过复活
-        };
-
-        // 应用天赋基础属性加成
-        const te = this.player.talentEffects;
-        if (te) {
-            if (te.critRate) this.player.critRate += te.critRate;
-            if (te.dodgeBonus) this.player.dodgeBonus = te.dodgeBonus;
-            if (te.speedBonus) this.player.speed = Math.floor(this.player.speed * (1 + te.speedBonus));
-            if (te.defenseBonus) this.player.defense = Math.floor(this.player.defense * (1 + te.defenseBonus));
-            if (te.hpBonus) {
-                this.player.maxHp = Math.floor(this.player.maxHp * (1 + te.hpBonus));
-                this.player.hp = Math.min(this.player.hp, this.player.maxHp);
-            }
-            if (te.damageReduction) this.player.damageReduction = te.damageReduction;
-            if (te.mpCostReduction) this.player.mpCostReduction = te.mpCostReduction;
-        }
-
-        // v0.9.1: 应用疲劳减益（低体力战斗后受伤，休息后清除）
-        if (typeof Player !== 'undefined' && Player.fatigueLevel > 0) {
-            if (Player.fatigueLevel >= 2) {
-                // 重伤：攻击-30%，防御-15%
-                this.player.attack = Math.floor(this.player.attack * 0.7);
-                this.player.defense = Math.floor(this.player.defense * 0.85);
-                this.addLog('⚠️ 你受了重伤，攻击力-30%，防御力-15%！', 'debuff');
-            } else {
-                // 疲劳：攻击-15%
-                this.player.attack = Math.floor(this.player.attack * 0.85);
-                this.addLog('⚠️ 你感到疲惫，攻击力-15%！', 'debuff');
             }
         }
 

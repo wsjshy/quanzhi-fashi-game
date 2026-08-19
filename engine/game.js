@@ -1927,11 +1927,7 @@ const Game = {
     startBattle(enemy, endCallback, options = {}) {
         this.state = 'battle';
         this.battleEndCallback = endCallback || null;
-        // 保存上一次战斗数据（用于再次挑战）
-        this.lastBattle = {
-            enemy: JSON.parse(JSON.stringify(enemy)),  // 深拷贝
-            options: options
-        };
+        this.lastBattle = { enemy: enemy, options: options };
         BattleSystem.startBattle(enemy, options);
         UI.renderBattleScreen();
     },

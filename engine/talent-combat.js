@@ -19,6 +19,11 @@ const TalentCombatSystem = {
      * @param {Object} player - 玩家数据
      */
     init(player) {
+        // 容错：如果player为null（调用顺序问题），使用全局Player
+        if (!player && typeof Player !== 'undefined') {
+            player = Player;
+        }
+        
         this.state = {
             // 资源型
             fireEnergy: 0,      // 燃点
