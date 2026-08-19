@@ -4011,6 +4011,14 @@ const BattleSystem = {
 
         // v2.7.0: 机制型妖魔特性触发
         if (this.enemy.traits && this.enemy.mechanicCooldowns) {
+            // 暗影潜行：进入潜行状态，下次攻击必定暴击（不替代普攻）
+            const lurkTrait = this.enemy.traits.find(t => t.mechanic === 'shadow_lurk');
+            if (lurkTrait && this.enemy.mechanicCooldowns['shadow_lurk'] === 0) {
+                this.enemy.mechanicState.shadowLurk = true;
+                this.enemy.mechanicCooldowns['shadow_lurk'] = lurkTrait.cooldown || 4;
+                this.addLog(`🌑 ${this.enemy.name}融入暗影之中！下次攻击必定暴击！`, 'warning');
+            }
+
             // 冰盾：获得护盾（不替代普通攻击）
             const iceShieldTrait = this.enemy.traits.find(t => t.mechanic === 'ice_shield');
             if (iceShieldTrait && this.enemy.mechanicCooldowns['ice_shield'] === 0) {
@@ -4408,6 +4416,40 @@ const BattleSystem = {
                             skipTurn: true
                         });
                         this.addLog(`❄️ 你被冰刺冻结了！`, 'debuff');
+                    }
+                    this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
+                    this.endEnemyTurn();
+                    return;
+                }
+
+                // 暗影诅咒
+                if (mech === 'shadow_curse') {
+                    const curseDmg = Math.floor(this.enemy.attack * (trait.effects?.damageMultiplier || 0.8));
+                    this.addLog(`💀 ${this.enemy.name}释放暗影诅咒！造成${curseDmg}点暗影伤害！`, 'element');
+                    this.player.hp -= curseDmg;
+                    this.showDamageNumber('player', curseDmg, 'dark');
+                    // 攻击降低
+                    if (trait.effects?.attackDebuff) {
+                        this.addStatusEffect(this.player, {
+                            type: 'attack_down',
+                            name: '暗影诅咒',
+                            duration: trait.effects.debuffDuration || 3,
+                            description: `被暗影诅咒，攻击降低${Math.floor(trait.effects.attackDebuff * 100)}%`,
+                            attackMod: -Math.floor(this.player.attack * trait.effects.attackDebuff)
+                        });
+                    }
+                    // 防御降低
+                    if (trait.effects?.defenseDebuff) {
+                        this.addStatusEffect(this.player, {
+                            type: 'defense_down',
+                            name: '暗影诅咒',
+                            duration: trait.effects.debuffDuration || 3,
+                            description: `被暗影诅咒，防御降低${Math.floor(trait.effects.defenseDebuff * 100)}%`,
+                            defenseMod: -Math.floor(this.player.defense * trait.effects.defenseDebuff)
+                        });
+                    }
+                    if (trait.effects?.attackDebuff || trait.effects?.defenseDebuff) {
+                        this.addLog(`💀 你被暗影诅咒，属性降低！`, 'debuff');
                     }
                     this.enemy.mechanicCooldowns[mech] = trait.cooldown || 3;
                     this.endEnemyTurn();
@@ -5665,6 +5707,14 @@ const BattleSystem = {
             critRate = 1.0;
             attack = Math.floor(attack * 1.5);
             this.enemy.mechanicState.burrowCritNext = false;
+        }
+
+        // v2.7.8: 暗影潜行 - 下次攻击必定暴击
+        if (attacker === this.enemy && this.enemy.mechanicState?.shadowLurk) {
+            critRate = 1.0;
+            attack = Math.floor(attack * 1.5);
+            this.enemy.mechanicState.shadowLurk = false;
+            this.addLog(`🌑 ${this.enemy.name}从暗影中突袭！暴击！`, 'damage');
         }
 
         // v2.7.0: 飞行状态 - 飞行时攻击-20%，落地时攻击+30%

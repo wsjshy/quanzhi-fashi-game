@@ -347,6 +347,57 @@ const DemonTraits = {
         ]
     },
 
+    // 黑教廷法师
+    black_church_mage: {
+        traits: [
+            {
+                id: "shadow_master",
+                name: "暗影精通",
+                description: "精通暗影魔法，暗属性伤害+30%，暗抗性+40%",
+                type: "passive",
+                effects: {
+                    darkDamageBonus: 0.3,
+                    darkDamageReduction: 0.4
+                }
+            },
+            {
+                id: "curse_expert",
+                name: "诅咒专家",
+                description: "擅长诅咒，诅咒效果持续时间+50%",
+                type: "passive",
+                effects: {
+                    curseDurationBonus: 0.5
+                }
+            },
+            {
+                id: "shadow_curse",
+                name: "暗影诅咒",
+                description: "每3回合释放暗影诅咒，造成伤害+攻击降低20%+防御降低15%",
+                type: "mechanic",
+                mechanic: "shadow_curse",
+                cooldown: 3,
+                effects: {
+                    damageMultiplier: 0.8,
+                    attackDebuff: 0.2,
+                    defenseDebuff: 0.15,
+                    debuffDuration: 3
+                }
+            },
+            {
+                id: "shadow_lurk",
+                name: "暗影潜行",
+                description: "每4回合进入潜行状态，下次攻击必定暴击+50%伤害",
+                type: "mechanic",
+                mechanic: "shadow_lurk",
+                cooldown: 4,
+                effects: {
+                    critGuaranteed: true,
+                    damageBonus: 0.5
+                }
+            }
+        ]
+    },
+
     // 风翼鸟
     wind_bird: {
         traits: [
