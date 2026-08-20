@@ -4962,5 +4962,91 @@ const DataEvents = {
       { text: "循声探查", effects: { exp: 12, hp: -10, setFlag: ["investigated_night_sounds"] }, resultText: "你鼓起勇气，循着奇怪的声音前去探查。走了一段路后，你发现是一只罕见的夜行妖魔在觅食。你悄悄观察了一会儿，获得了宝贵的情报，然后返回休息。经验+12，HP-10" },
       { text: "生火驱赶妖魔", effects: { hp: 20, mp: 15, exp: 3 }, resultText: "你生起一堆篝火，利用火光和热度驱赶附近的妖魔。大多数低阶妖魔都惧怕火光，你因此获得了一个相对安全的休息环境。HP+20，MP+15，经验+3" }
     ]
+  },
+
+  // ========== v2.9.2 雪峰山深处新互动事件 ==========
+
+  event_secret_guardian: {
+    id: "event_secret_guardian",
+    name: "秘境守护者",
+    description: "你在寻找秘境时，遇到了一只强大的妖魔。从它的气息来看，这绝对不是普通的妖魔，至少是战将级以上的存在。它似乎在守护着什么，警惕地盯着你。",
+    weight: 25,
+    choices: [
+      { text: "尝试绕过守护者", effects: { exp: 10, stamina: -15, setFlag: ["bypassed_secret_guardian"] }, resultText: "你小心翼翼地尝试绕过这只强大的守护者。经过一番迂回，你成功避开了它的视线，但也消耗了不少体力。经验+10，体力-15" },
+      { text: "主动发起攻击", effects: { exp: 25, hp: -30, mp: -25, setFlag: ["fought_secret_guardian"] }, resultText: "你决定主动出击，与这只强大的守护者展开激战。经过一番苦战，你虽然受了不轻的伤，但成功击退了它。守护者撤退时，你看到了它身后隐藏的洞穴入口。经验+25，HP-30，MP-25" },
+      { text: "用食物引开守护者", effects: { exp: 8, addItem: { itemId: "magic_herb", count: -1 }, setFlag: ["distracted_secret_guardian"] }, resultText: "你拿出采集的魔法草药，扔向远处。守护者被草药的气味吸引，追了过去。你趁机前往它守护的地方。经验+8，消耗魔法草药x1" }
+    ]
+  },
+
+  event_hidden_treasure: {
+    id: "event_hidden_treasure",
+    name: "隐藏宝藏",
+    description: "你在深山的一个隐蔽洞穴中，发现了一个古老的宝箱。宝箱上布满了灰尘和蜘蛛网，看起来已经很久没有人来过了。宝箱上刻着奇怪的符文，似乎有某种封印。",
+    weight: 20,
+    choices: [
+      { text: "强行打开宝箱", effects: { exp: 20, hp: -15, addItem: { itemId: "spirit_seed_fragment", count: 1 }, setFlag: ["opened_hidden_treasure"] }, resultText: "你用蛮力强行打开了宝箱。宝箱上的符文释放出一道冲击波，你受了一些伤，但也成功打开了宝箱。里面有一枚灵种碎片，散发着微弱的光芒。经验+20，HP-15，获得灵种碎片x1" },
+      { text: "研究符文后打开", effects: { exp: 30, addItem: { itemId: "ancient_relic", count: 1 }, setFlag: ["resealed_hidden_treasure"] }, resultText: "你仔细研究宝箱上的符文，发现这是一个简单的封印。你按照符文的指引，用精神力缓缓解开了封印。宝箱轻轻打开，里面是一件古老的法器，散发着神秘的气息。经验+30，获得古老法器x1" },
+      { text: "不碰宝箱，离开", effects: { exp: 5, setFlag: ["left_hidden_treasure"] }, resultText: "你觉得这个宝箱太过诡异，决定不碰它，选择离开。有时候，谨慎才是生存之道。经验+5" }
+    ]
+  },
+
+  event_dead_end: {
+    id: "event_dead_end",
+    name: "死路",
+    description: "你沿着一条看似有希望的小路前进，最终却发现这是一条死路。前方是陡峭的悬崖，根本无法通行。你浪费了不少时间和体力，却一无所获。",
+    weight: 30,
+    choices: [
+      { text: "原路返回", effects: { stamina: -10, exp: 3 }, resultText: "你无奈地原路返回。虽然浪费了一些时间，但至少没有遇到危险。体力-10，经验+3" },
+      { text: "尝试攀爬悬崖", effects: { exp: 15, hp: -25, setFlag: ["climbed_dead_end"] }, resultText: "你决定尝试攀爬这座陡峭的悬崖。经过一番艰难的攀爬，你终于到达了崖顶。虽然受了不少伤，但你发现了一条新的路径。经验+15，HP-25" },
+      { text: "在附近搜索", effects: { exp: 8, addItem: { itemId: "magic_herb", count: 1 }, setFlag: ["searched_dead_end"] }, resultText: "你在死路附近仔细搜索，发现了一些生长在悬崖边的魔法草药。虽然没有找到秘境，但也不算一无所获。经验+8，获得魔法草药x1" }
+    ]
+  },
+
+  event_cultivation_breakthrough: {
+    id: "event_cultivation_breakthrough",
+    name: "修炼突破",
+    description: "你在雪峰山深处修炼时，感受到周围浓郁的灵气涌入体内。你的星子变得异常活跃，精神力在急速增长。你感觉到了突破的契机！",
+    weight: 20,
+    choices: [
+      { text: "抓住契机突破", effects: { exp: 60, mp: -30, setFlag: ["deep_cultivation_breakthrough"] }, resultText: "你抓住这难得的突破契机，全力引导灵气冲击瓶颈。经过一番艰苦的努力，你成功突破了！星子变得更加凝练，精神力也有了质的提升。经验+60，MP-30，修炼突破！" },
+      { text: "稳扎稳打，不急于突破", effects: { exp: 30, mp: -15, setFlag: ["stable_cultivation"] }, resultText: "你选择稳扎稳打，不急于突破。虽然没有立刻突破，但你的基础更加扎实了。经验+30，MP-15" },
+      { text: "记录突破感悟", effects: { exp: 25, setFlag: ["recorded_breakthrough_insight"] }, resultText: "你没有强行突破，而是将此刻的感悟记录下来。这些感悟日后可能会成为突破的关键。经验+25，记录了突破感悟" }
+    ]
+  },
+
+  event_cultivation_interrupted: {
+    id: "event_cultivation_interrupted",
+    name: "修炼被打断",
+    description: "你正在深处修炼时，突然感受到一股强大的妖气正在靠近。你不得不中断修炼，准备应对即将到来的危险。",
+    weight: 30,
+    choices: [
+      { text: "立即进入战斗", effects: { exp: 20, hp: -20, mp: -15 }, resultText: "你迅速做出反应，与来袭的妖魔展开战斗。虽然被打断了修炼，但你还是凭借实力击败了它。经验+20，HP-20，MP-15" },
+      { text: "快速撤离", effects: { stamina: -15, hp: -5 }, resultText: "你选择不与这只妖魔纠缠，快速收拾东西撤离。虽然有些狼狈，但至少避免了一场不必要的战斗。体力-15，HP-5" },
+      { text: "用威慑吓退妖魔", effects: { exp: 10, mp: -20 }, resultText: "你释放出强大的魔法气息，试图吓退这只妖魔。对方感受到你的力量后，犹豫了一下，最终选择了撤退。经验+10，MP-20" }
+    ]
+  },
+
+  event_spirit_gain: {
+    id: "event_spirit_gain",
+    name: "精神力增长",
+    description: "在雪峰山深处修炼时，你感受到周围的灵气在滋养你的精神力。星子在意识中缓缓旋转，每一次旋转都让你的精神力更加凝练。这种感觉非常美妙。",
+    weight: 25,
+    choices: [
+      { text: "继续深入冥想", effects: { exp: 35, mp: 40, setFlag: ["deep_meditation_spirit"] }, resultText: "你继续深入冥想，让精神力在灵气的滋养下自由生长。不知过了多久，你从冥想中醒来，感到精神力有了显著的提升。经验+35，MP+40" },
+      { text: "引导精神力淬炼星子", effects: { exp: 25, mp: 20, setFlag: ["refined_stars"] }, resultText: "你引导增长的精神力淬炼星子，让星子变得更加凝练。虽然精神力增长不多，但星子的品质提升了。经验+25，MP+20" },
+      { text: "适可而止，结束修炼", effects: { exp: 15, mp: 25 }, resultText: "你感到精神力已经有所提升，适可而止地结束了修炼。贪多嚼不烂，稳步提升才是正道。经验+15，MP+25" }
+    ]
+  },
+
+  event_peaceful_cultivation: {
+    id: "event_peaceful_cultivation",
+    name: "宁静修炼",
+    description: "你在雪峰山深处找到了一个宁静的修炼之地。周围没有妖魔的打扰，只有浓郁的灵气和潺潺的溪水声。在这样的环境中修炼，真是一种享受。",
+    weight: 25,
+    choices: [
+      { text: "全力修炼", effects: { exp: 45, mp: -20, hp: -5 }, resultText: "你在这个宁静的地方全力修炼，效率远超平时。星子在灵气的滋养下快速成长，你感到实力在稳步提升。经验+45，MP-20，HP-5" },
+      { text: "边修炼边欣赏风景", effects: { exp: 25, hp: 15, mp: 20 }, resultText: "你没有全力修炼，而是边修炼边欣赏周围的风景。修炼效率虽然不高，但身心都得到了放松和恢复。经验+25，HP+15，MP+20" },
+      { text: "在修炼中感悟自然", effects: { exp: 30, setFlag: ["understood_nature"] }, resultText: "你在修炼中感悟自然，感受着天地间的灵气流动。你对魔法的本质有了更深的理解，这种感悟比单纯的实力提升更加珍贵。经验+30，感悟了自然之道" }
+    ]
   }
 };

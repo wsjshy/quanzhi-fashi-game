@@ -604,6 +604,45 @@ const DataLocations = {
           "event_find_rare_herb",
           "event_find_herb"
         ]
+      },
+      {
+        id: "search_secret",
+        name: "寻找秘境",
+        description: "在深山寻找传说中的秘境或古老遗迹。雪峰山深处据说藏有上古法师的遗迹，里面可能有珍贵的宝物和传承。但秘境周围通常有强大的妖魔守护。",
+        icon: "🗝️",
+        timeCost: 3,
+        staminaCost: 30,
+        effects: {
+          exp: 15,
+          hp: -15
+        },
+        eventChance: 0.6,
+        events: [
+          "event_ancient_ruins",
+          "event_secret_guardian",
+          "event_hidden_treasure",
+          "event_dead_end"
+        ]
+      },
+      {
+        id: "deep_cultivation",
+        name: "深处修炼",
+        description: "雪峰山深处灵气浓郁，在这里修炼效果远超外界。但深处妖魔横行，修炼时被打扰的风险也很高。需要Lv8以上。",
+        icon: "🧘",
+        timeCost: 2,
+        staminaCost: 15,
+        condition: { level: 8 },
+        effects: {
+          exp: 50,
+          mp: -20
+        },
+        eventChance: 0.4,
+        events: [
+          "event_cultivation_breakthrough",
+          "event_cultivation_interrupted",
+          "event_spirit_gain",
+          "event_peaceful_cultivation"
+        ]
       }
     ],
     connectedLocations: [
