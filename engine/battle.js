@@ -7294,6 +7294,14 @@ const BattleSystem = {
         const isPlayerTarget = target === this.player;
         const targetName = isPlayerTarget ? '你' : (this.enemy?.name || '目标');
 
+        // v2.9.0: 控制技能100%打断敌方魔法师施法（仅魔法师敌人，妖魔不适用）
+        const isEnemyMage = !isPlayerTarget && (this.enemy?.isMage === true || this.enemy?.enemyType === 'mage');
+        const controlTypes = ['stun', 'silence', 'freeze', 'frozen', 'paralyze', 'bind', 'fear', 'sleep'];
+        if (isEnemyMage && this.enemyCasting && controlTypes.includes(effect.type)) {
+            this.addLog(`💥 ${effect.name || effect.type}打断了 ${this.enemy.name} 的魔法引导！`, 'system');
+            this.enemyCasting = null;
+        }
+
         // debuffImmunity：玩家免疫负面状态
         const debuffTypes = ['burn', 'freeze', 'frozen', 'stun', 'slow', 'poison', 'curse', 'paralyze', 'weakness', 'bleed', 'bind', 'blind', 'fear', 'shock', 'attack_down', 'defense_down'];
         if (isPlayerTarget && target.talentEffects && target.talentEffects.debuffImmunity) {
