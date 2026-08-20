@@ -4849,5 +4849,55 @@ const DataEvents = {
       { text: "冥想修炼", effects: { exp: 15, mp: 30 }, resultText: "你借着日落的宁静，开始冥想修炼。星子在意识中缓缓流转，精神力得到了滋养。经验+15，MP+30" },
       { text: "许下心愿", effects: { exp: 5, setFlag: ["sunset_wish"] }, resultText: "你对着日落许下心愿：希望自己能变得更强，守护这座城市和身边的人。微风拂过，仿佛是对心愿的回应。经验+5" }
     ]
+  },
+
+  // ========== v2.9.2 三步塔新互动事件 ==========
+
+  event_spirit_growth: {
+    id: "event_spirit_growth",
+    name: "精神力成长",
+    description: "你在三步塔内冥想，感受着周围活跃的星子。渐渐地，你感觉到自己的精神力在缓缓增长，意识变得更加清晰。星子的流动似乎也变得更加顺畅了。",
+    weight: 30,
+    choices: [
+      { text: "继续深入冥想", effects: { exp: 20, mp: 40, setFlag: ["spirit_growth_deep"] }, resultText: "你继续深入冥想，精神力得到了显著的提升。星子在你的意识中形成了一个微小的漩涡，缓缓旋转。经验+20，MP+40，精神力显著提升" },
+      { text: "适可而止，结束冥想", effects: { exp: 10, mp: 20 }, resultText: "你感觉到精神力已经有所提升，适可而止地结束了冥想。贪多嚼不烂，稳步提升才是正道。经验+10，MP+20" },
+      { text: "尝试引导星子", effects: { exp: 15, hp: -10, mp: 30 }, resultText: "你尝试引导周围的星子为己用，但塔内的星子太过活跃，一时难以控制。精神力有所提升，但也消耗了不少体力。经验+15，HP-10，MP+30" }
+    ]
+  },
+
+  event_meditate_calm: {
+    id: "event_meditate_calm",
+    name: "心境澄明",
+    description: "冥想中，你感到心中的杂念渐渐消散，心境变得澄明如水。在这种状态下，你对魔法的理解似乎有了新的感悟。之前困惑的问题，此刻仿佛有了答案。",
+    weight: 25,
+    choices: [
+      { text: "抓住感悟，深入思考", effects: { exp: 25, setFlag: ["magic_insight_calm"] }, resultText: "你抓住这难得的感悟，深入思考魔法的本质。星子、精神力、魔法，三者之间的关系似乎变得更加清晰了。经验+25，获得魔法感悟" },
+      { text: "保持心境，享受宁静", effects: { exp: 10, hp: 15, mp: 20 }, resultText: "你没有刻意去追求什么，只是保持着这份澄明的心境，享受着难得的宁静。身心都得到了恢复。经验+10，HP+15，MP+20" },
+      { text: "将感悟记录下来", effects: { exp: 15, setFlag: ["recorded_insight"] }, resultText: "你将此刻的感悟记录下来，方便日后回味和研究。好记性不如烂笔头，这些感悟日后可能会成为突破的关键。经验+15，记录了魔法感悟" }
+    ]
+  },
+
+  event_magic_understanding: {
+    id: "event_magic_understanding",
+    name: "魔法理解",
+    description: "你观察着塔内星子的流动，渐渐地看出了一些规律。星子的流动并非杂乱无章，而是遵循着某种深奥的法则。你对魔法的理解又深了一层。",
+    weight: 30,
+    choices: [
+      { text: "研究星子流动规律", effects: { exp: 20, setFlag: ["studied_star_flow"] }, resultText: "你仔细研究星子的流动规律，发现它们似乎与元素属性有关。不同系别的星子流动方式各不相同，但又遵循着共同的法则。经验+20，对星子流动有了更深理解" },
+      { text: "尝试模拟星子流动", effects: { exp: 15, mp: -10 }, resultText: "你尝试在意识中模拟星子的流动，虽然还很粗糙，但已经能感受到其中的奥妙。这种练习有助于提升魔法掌控力。经验+15，MP-10" },
+      { text: "向其他修炼者请教", effects: { exp: 10, reputation: { school: 3 } }, resultText: "你向旁边的修炼者请教星子流动的问题。对方是一位高年级的学长，耐心地解答了你的疑问。经验+10，学校声望+3" }
+    ]
+  },
+
+  event_star_pattern: {
+    id: "event_star_pattern",
+    name: "星之轨迹",
+    description: "你凝视着塔内的星子，突然发现它们在流动中形成了一个奇特的图案。这个图案似乎蕴含着某种古老的魔法阵，你从未见过这样的星之轨迹。",
+    weight: 15,
+    choices: [
+      { text: "仔细研究这个图案", effects: { exp: 30, setFlag: ["discovered_star_pattern"] }, resultText: "你仔细研究这个奇特的星之图案，发现它似乎是一种古老的魔法阵雏形。虽然还无法完全理解，但你已经记住了它的形状。经验+30，发现了古老的星之轨迹" },
+      { text: "用精神力触碰图案", effects: { exp: 25, hp: -15, mp: -20, setFlag: ["touched_star_pattern"] }, resultText: "你鼓起勇气，用精神力触碰这个星之图案。一股强大的能量涌入你的意识，你感到精神力在急速增长，但也承受了不小的压力。经验+25，HP-15，MP-20，精神力得到了质的提升" },
+      { text: "只是观察，不做干预", effects: { exp: 12 }, resultText: "你选择只是观察，不做任何干预。星之图案缓缓消散，但它的形状已经深深地印在了你的脑海中。经验+12" }
+    ]
   }
 };

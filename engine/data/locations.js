@@ -279,6 +279,33 @@ const DataLocations = {
         eventChance: 0.3,
         events: ["event_breakthrough", "event_training_fail", "event_tower_insight"],
         condition: { level: 8 }
+      },
+      {
+        id: "tower_meditate",
+        name: "塔内冥想",
+        description: "在三步塔内安静冥想，感受活跃的星子流动，提升精神力和心境。不消耗体力，但需要专注。",
+        icon: "🧘",
+        timeCost: 1,
+        staminaCost: 5,
+        effects: {
+          exp: 25,
+          mp: 30
+        },
+        eventChance: 0.25,
+        events: ["event_tower_insight", "event_spirit_growth", "event_meditate_calm"]
+      },
+      {
+        id: "tower_observe",
+        name: "观察星子流动",
+        description: "仔细观察塔内活跃的星子，理解魔法的本质。可能获得魔法理解或触发顿悟。",
+        icon: "✨",
+        timeCost: 0,
+        staminaCost: 10,
+        effects: {
+          exp: 15
+        },
+        eventChance: 0.35,
+        events: ["event_tower_insight", "event_magic_understanding", "event_star_pattern"]
       }
     ],
     connectedLocations: [
