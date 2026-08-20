@@ -1860,6 +1860,13 @@ const UI = {
         };
         const typeName = typeNames[skill.type] || skill.type || '技能';
 
+        // v2.9.1: 控制技能标记（可打断魔法师施法）
+        const controlEffects = ['stun', 'silence', 'freeze', 'paralyze', 'bind', 'fear', 'sleep', 'confuse', 'charm'];
+        const hasControlEffect = skill.statusEffects?.some(e => controlEffects.includes(e.type || e)) ||
+            skill.effects?.some(e => controlEffects.includes(e.type || e)) ||
+            (skill.description && /眩晕|沉默|冰冻|冻结|麻痹|束缚|恐惧|睡眠|混乱|魅惑/.test(skill.description));
+        const controlTag = hasControlEffect ? '<span style="color:#66ccff;font-size:11px;margin-left:6px;" title="控制技能，可100%打断正在引导施法的魔法师敌人">🔮 控制技能（可打断施法）</span>' : '';
+
         // 技能效果信息
         const statsHtml = [];
         if (skill.damageMultiplier) statsHtml.push(`<span style="color:#ff8866;">伤害倍率: ${(skill.damageMultiplier*100).toFixed(0)}%</span>`);
@@ -1958,6 +1965,7 @@ const UI = {
                         </div>
                         <div style="font-size:11px;color:#888;">
                             ${skill.tier || ''} · ${typeName} · ${elemInfo.name || skill.element}
+                            ${controlTag}
                         </div>
                     </div>
 
