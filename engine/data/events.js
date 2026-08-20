@@ -5122,5 +5122,79 @@ const DataEvents = {
       { text: "用精神力触碰幻象", effects: { exp: 20, hp: -10, mp: -20, setFlag: ["touched_spring_vision"] }, resultText: "你用精神力触碰泉中的幻象，试图看清更多内容。一股强大的力量将你的精神力反弹回来，你受到了一些伤害，但也看到了更多的画面。经验+20，HP-10，MP-20" },
       { text: "闭上眼睛，不去观看", effects: { exp: 10 }, resultText: "你选择闭上眼睛，不去观看泉中的幻象。幻象渐渐消失了，你感到一阵轻松。有些事情，不知道也许更好。经验+10" }
     ]
+  },
+
+  // ========== v2.9.2 莫凡家新互动事件 ==========
+
+  event_mo_jiaxing_story: {
+    id: "event_mo_jiaxing_story",
+    name: "莫叔叔的故事",
+    description: "你帮莫家兴叔叔做家务时，他一边干活一边和你聊起了往事。莫叔叔虽然只是个普通人，但他的人生经历却很丰富。",
+    weight: 25,
+    choices: [
+      { text: "认真听他讲故事", effects: { exp: 10, npcOpinion: { npcId: "mo_jiaxing", value: 5 }, setFlag: ["heard_mo_jiaxing_story"] }, resultText: "你认真地听莫叔叔讲故事。他说起了年轻时的经历，说起了莫凡小时候的事情，说起了生活的艰辛和温暖。虽然都是些平凡的故事，但你从中感受到了很多。经验+10，莫家兴好感+5" },
+      { text: "问他关于莫凡的事情", effects: { exp: 8, npcOpinion: { npcId: "mo_jiaxing", value: 3 }, setFlag: ["asked_about_mo_fan"] }, resultText: "你问莫叔叔关于莫凡的事情。他笑着说起了莫凡小时候的调皮事，说起了莫凡觉醒时的激动，说起了他对莫凡的期望。\"那孩子啊，\"莫叔叔说，\"虽然有时候让人操心，但我知道他一定会有出息的。\"经验+8，莫家兴好感+3" },
+      { text: "和他聊生活琐事", effects: { exp: 5, npcOpinion: { npcId: "mo_jiaxing", value: 8 }, setFlag: ["chatted_life_with_mo_jiaxing"] }, resultText: "你和莫叔叔聊起了生活琐事——菜价、天气、街坊邻居。虽然都是些小事，但莫叔叔聊得很开心。\"难得有人愿意陪我这个老头子聊天，\"他说，\"你要是不嫌弃，以后常来家里坐坐。\"经验+5，莫家兴好感+8" }
+    ]
+  },
+
+  event_housework_reward: {
+    id: "event_housework_reward",
+    name: "家务奖励",
+    description: "你帮莫家兴叔叔做完家务后，他非常感激，非要给你一些东西作为感谢。虽然都是些不起眼的小东西，但都很实用。",
+    weight: 20,
+    choices: [
+      { text: "接受他的感谢", effects: { addItem: { itemId: "magic_herb", count: 2 }, exp: 8, npcOpinion: { npcId: "mo_jiaxing", value: 3 } }, resultText: "你接受了莫叔叔的感谢。他从屋里拿出了一些魔法草药，说是之前在山上采的，一直没用上。\"这些你拿着，\"他说，\"修炼的时候用得上。\"获得魔法草药x2，经验+8，莫家兴好感+3" },
+      { text: "婉拒，说只是举手之劳", effects: { exp: 12, npcOpinion: { npcId: "mo_jiaxing", value: 10 }, setFlag: ["refused_housework_reward"] }, resultText: "你婉拒了莫叔叔的感谢，说只是举手之劳。莫叔叔非常感动，\"你这孩子，\"他说，\"真是个好人。以后有什么困难，尽管来找叔叔。\"经验+12，莫家兴好感+10" },
+      { text: "收下，但回赠一些东西", effects: { addItem: { itemId: "magic_herb", count: 1 }, exp: 10, npcOpinion: { npcId: "mo_jiaxing", value: 8 }, setFlag: ["exchanged_gifts_with_mo_jiaxing"] }, resultText: "你收下了莫叔叔的一些魔法草药，同时回赠了他一些你采集的材料。莫叔叔非常高兴，\"你这孩子，太客气了，\"他说，\"以后常来家里吃饭啊。\"获得魔法草药x1，经验+10，莫家兴好感+8" }
+    ]
+  },
+
+  event_neighbor_visit: {
+    id: "event_neighbor_visit",
+    name: "邻居来访",
+    description: "你在莫凡家帮忙做家务时，邻居王阿姨来串门。她看到你在帮忙，非常热情地和你聊了起来。王阿姨是个消息灵通的人，总能听到各种八卦。",
+    weight: 20,
+    choices: [
+      { text: "和她聊天，打听消息", effects: { exp: 8, setFlag: ["chatted_with_neighbor"] }, resultText: "你和王阿姨聊了起来，她果然消息灵通。她说起了最近博城发生的各种事情——谁家的孩子觉醒了什么系，谁家又买了新的法器，最近城里有什么新鲜事。虽然大多是些八卦，但也有一些有用的信息。经验+8，获得了一些博城的消息" },
+      { text: "礼貌地打招呼，继续做家务", effects: { exp: 5, npcOpinion: { npcId: "mo_jiaxing", value: 3 } }, resultText: "你礼貌地和王阿姨打了个招呼，然后继续做家务。王阿姨和莫叔叔聊了一会儿就走了。莫叔叔对你的踏实很满意。经验+5，莫家兴好感+3" },
+      { text: "帮她一起搬东西", effects: { exp: 10, reputation: { civilian: 5 }, setFlag: ["helped_neighbor"] }, resultText: "王阿姨手里提着不少东西，你主动上前帮忙。她非常感激，\"你这孩子真懂事，\"她说，\"比我家那小子强多了。\"你帮她把东西搬回了家，她非要塞给你一些水果。经验+10，平民声望+5" }
+    ]
+  },
+
+  event_xiaohou_gossip: {
+    id: "event_xiaohou_gossip",
+    name: "张小侯的八卦",
+    description: "张小侯看到你来了，非常热情地拉着你聊天。他是个消息灵通的人，学校里的各种八卦他都知道。",
+    weight: 25,
+    choices: [
+      { text: "听他说学校的八卦", effects: { exp: 8, setFlag: ["heard_school_gossip"] }, resultText: "你听张小侯说起了学校里的各种八卦——哪个老师最近心情不好，哪个同学觉醒了罕见的系，最近学校里有什么新鲜事。虽然大多是些无聊的八卦，但也有一些有趣的信息。经验+8，获得了一些学校的消息" },
+      { text: "问他关于修炼的事情", effects: { exp: 12, setFlag: ["asked_xiaohou_training"] }, resultText: "你问张小侯关于修炼的事情。他虽然平时看起来大大咧咧，但说起修炼来却很认真。他和你分享了一些修炼心得，虽然都是些基础的东西，但对你也有一些启发。经验+12，获得了一些修炼心得" },
+      { text: "和他聊最近的猎魔经历", effects: { exp: 10, npcOpinion: { npcId: "zhang_xiaohou", value: 5 }, setFlag: ["chatted_hunting_with_xiaohou"] }, resultText: "你和张小侯聊起了最近的猎魔经历。他听得津津有味，\"哇，你真厉害，\"他说，\"我什么时候才能像你一样去猎魔啊。\"你鼓励了他几句，他非常开心。经验+10，张小侯好感+5" }
+    ]
+  },
+
+  event_xiaohou_training: {
+    id: "event_xiaohou_training",
+    name: "张小侯的修炼",
+    description: "张小侯正在莫凡家的院子里修炼，看到你来了，他有些不好意思地挠了挠头。\"我修炼得还不太好，\"他说，\"你能指点我一下吗？\"",
+    weight: 20,
+    choices: [
+      { text: "指点他修炼", effects: { exp: 15, npcOpinion: { npcId: "zhang_xiaohou", value: 10 }, setFlag: ["taught_xiaohou"] }, resultText: "你认真地指点了张小侯的修炼，指出了他的一些问题，教了他一些技巧。他非常认真地听着，不时点头。\"谢谢你，\"他说，\"我感觉明白了很多。\"经验+15，张小侯好感+10" },
+      { text: "和他一起修炼", effects: { exp: 20, mp: -15, npcOpinion: { npcId: "zhang_xiaohou", value: 8 }, setFlag: ["trained_with_xiaohou"] }, resultText: "你和张小侯一起修炼，互相监督，互相鼓励。虽然环境不如三步塔，但有个人一起修炼的感觉很不错。你们都有了一些收获。经验+20，MP-15，张小侯好感+8" },
+      { text: "鼓励他，说他已经很棒了", effects: { exp: 8, npcOpinion: { npcId: "zhang_xiaohou", value: 12 }, setFlag: ["encouraged_xiaohou"] }, resultText: "你鼓励张小侯，说他已经很棒了，只要继续努力一定会有进步。他非常感动，\"谢谢你，\"他说，\"有你这样的朋友真好。\"经验+8，张小侯好感+12" }
+    ]
+  },
+
+  event_xiaohou_advice: {
+    id: "event_xiaohou_advice",
+    name: "张小侯的建议",
+    description: "张小侯和你聊了一会儿后，突然认真地看着你。\"我虽然实力不如你，\"他说，\"但有些事情我可能比你清楚。你愿意听听我的建议吗？\"",
+    weight: 15,
+    choices: [
+      { text: "认真听他的建议", effects: { exp: 12, npcOpinion: { npcId: "zhang_xiaohou", value: 8 }, setFlag: ["listened_xiaohou_advice"] }, resultText: "你认真地听张小侯的建议。他说起了学校里的人际关系，说起了哪些老师比较好说话，说起了哪些同学值得深交。虽然都是些小事，但对你在学校的生活确实有帮助。经验+12，张小侯好感+8，获得了一些学校生活的建议" },
+      { text: "问他关于博城的事情", effects: { exp: 10, setFlag: ["asked_xiaohou_about_bocheng"] }, resultText: "你问张小侯关于博城的事情。他虽然年纪不大，但从小在博城长大，对这座城市非常熟悉。他给你介绍了一些你不知道的地方，一些好吃的小店，一些有趣的角落。经验+10，获得了一些博城的信息" },
+      { text: "笑着说他太客气了", effects: { exp: 5, npcOpinion: { npcId: "zhang_xiaohou", value: 5 } }, resultText: "你笑着说他太客气了，朋友之间不用这么正式。他也笑了，\"也是，\"他说，\"我们是朋友嘛。\"你们又聊了一会儿，气氛很轻松。经验+5，张小侯好感+5" }
+    ]
   }
 };

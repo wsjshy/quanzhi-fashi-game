@@ -726,6 +726,47 @@ const DataLocations = {
           hp: 30,
           mp: 20
         }
+      },
+      {
+        id: "help_housework",
+        name: "帮忙做家务",
+        description: "帮莫家兴叔叔做些家务，虽然都是些琐事，但能感受到家的温暖。莫叔叔总是很感激有人帮忙。",
+        icon: "🧹",
+        timeCost: 1,
+        staminaCost: 10,
+        effects: {
+          npcOpinion: {
+            npcId: "mo_jiaxing",
+            value: 8
+          },
+          exp: 5
+        },
+        eventChance: 0.4,
+        events: [
+          "event_mo_jiaxing_story",
+          "event_housework_reward",
+          "event_neighbor_visit"
+        ]
+      },
+      {
+        id: "chat_zhang_xiaohou",
+        name: "与张小侯聊天",
+        description: "莫凡的发小张小侯经常来莫凡家玩。他性格活泼，消息灵通，和他聊天总能听到一些有趣的事情。",
+        icon: "💬",
+        timeCost: 0,
+        staminaCost: 0,
+        effects: {
+          npcOpinion: {
+            npcId: "zhang_xiaohou",
+            value: 5
+          }
+        },
+        eventChance: 0.5,
+        events: [
+          "event_xiaohou_gossip",
+          "event_xiaohou_training",
+          "event_xiaohou_advice"
+        ]
       }
     ],
     connectedLocations: [
