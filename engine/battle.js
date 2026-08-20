@@ -2319,6 +2319,14 @@ const BattleSystem = {
                 const lostMp = Math.floor(skill.mpCost * 0.5);
                 casterData.mp = Math.max(0, casterData.mp - lostMp);
                 this.addLog(`💥 施法被打断！${skill.name} 释放失败，损失 ${lostMp} MP（打断概率 ${(actualInterruptChance*100).toFixed(0)}%）`, 'interrupt');
+                // v2.9.0: 屏幕红色闪烁效果
+                const battleScreen = document.getElementById('battle-screen');
+                if (battleScreen) {
+                    const flash = document.createElement('div');
+                    flash.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,50,50,0.4);z-index:9999;pointer-events:none;animation:flashRed 0.5s ease-out;';
+                    battleScreen.appendChild(flash);
+                    setTimeout(() => flash.remove(), 500);
+                }
                 return { success: false, interrupted: true, reason: '被打断', interruptChance: actualInterruptChance };
             } else if (actualInterruptChance > 0.1) {
                 this.addLog(`✨ 施法成功！${skill.name}（打断概率 ${(actualInterruptChance*100).toFixed(0)}%）`, 'cast');
