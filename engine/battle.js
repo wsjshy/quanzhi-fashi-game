@@ -2333,6 +2333,11 @@ const BattleSystem = {
             }
             // v2.9.0: 释放技能后重置防御状态（本回合没有防御）
             this.playerDefendedLastTurn = false;
+
+            // v2.9.1: 高阶魔法释放全屏特效
+            if (skill.tier === '高阶' || skill.tier === '超阶') {
+                this.triggerHighTierEffect(skill);
+            }
         }
 
         // 消耗MP
@@ -7153,6 +7158,57 @@ const BattleSystem = {
             '超阶': 5
         };
         return castTimes[tier] || 2;
+    },
+
+    /**
+     * v2.9.1: 高阶魔法释放全屏特效
+     * 屏幕闪光+震屏+元素颜色渐变+魔法爆发光圈
+     */
+    triggerHighTierEffect(skill) {
+        if (typeof document === 'undefined') return;
+        const elemColors = {
+            fire: { main: '#ff4400', glow: '#ff8800', name: '烈焰' },
+            ice: { main: '#00aaff', glow: '#88ddff', name: '寒冰' },
+            thunder: { main: '#ffdd00', glow: '#ffff88', name: '雷霆' },
+            wind: { main: '#88ffcc', glow: '#aaffdd', name: '风暴' },
+            earth: { main: '#aa8844', glow: '#ccaa66', name: '山岳' },
+            water: { main: '#0066ff', glow: '#4488ff', name: '深海' },
+            light: { main: '#ffffcc', glow: '#ffffff', name: '圣光' },
+            dark: { main: '#6600cc', glow: '#9933ff', name: '暗影' },
+            heal: { main: '#00ff66', glow: '#66ffaa', name: '生命' },
+            plant: { main: '#22aa22', glow: '#66dd44', name: '荆棘' },
+            summon: { main: '#cc9966', glow: '#ddbb88', name: '召唤' }
+        };
+        const color = elemColors[skill.element] || { main: '#ffffff', glow: '#cccccc', name: '魔法' };
+        const isSuper = skill.tier === '超阶';
+        const intensity = isSuper ? 1.5 : 1;
+
+        // 1. 全屏闪光覆盖
+        const overlay = document.createElement('div');
+        overlay.className = 'high-tier-overlay';
+        overlay.style.background = `radial-gradient(circle at center, ${color.glow} 0%, ${color.main} 40%, transparent 70%)`;
+        overlay.style.animationDuration = `${1.2 * intensity}s`;
+        document.body.appendChild(overlay);
+        setTimeout(() => overlay.remove(), 1500 * intensity);
+
+        // 2. 震屏效果
+        const battleScreen = document.getElementById('battle-screen') || document.querySelector('.battle-container') || document.body;
+        if (battleScreen) {
+            battleScreen.classList.add('screen-shake');
+            setTimeout(() => battleScreen.classList.remove('screen-shake'), 600);
+        }
+
+        // 3. 魔法爆发光圈
+        const burst = document.createElement('div');
+        burst.className = 'magic-burst';
+        burst.style.background = `radial-gradient(circle, ${color.glow} 0%, ${color.main} 50%, transparent 70%)`;
+        burst.style.boxShadow = `0 0 60px ${color.main}, 0 0 120px ${color.glow}`;
+        burst.style.animationDuration = `${0.8 * intensity}s`;
+        document.body.appendChild(burst);
+        setTimeout(() => burst.remove(), 1000 * intensity);
+
+        // 4. 战斗日志提示
+        this.addLog(`🌟 ${isSuper ? '超阶' : '高阶'}魔法释放！${skill.name}`, 'high-tier');
     },
 
     /**
