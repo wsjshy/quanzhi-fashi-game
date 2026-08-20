@@ -2137,8 +2137,9 @@ const BattleSystem = {
             this.showDamageNumber('enemy', 0, 'dodge');
         }
 
-        // 检查是否打断敌人引导（精神力对抗）
-        if (this.enemyCasting && !damage.isMiss) {
+        // 检查是否打断敌人引导（精神力对抗）- v2.9.0: 仅魔法师敌人可被打断，妖魔不存在打断
+        const isMageEnemy = this.enemy.isMage === true || this.enemy.enemyType === 'mage';
+        if (this.enemyCasting && !damage.isMiss && isMageEnemy) {
             // 基础打断概率20%，精神力差每1点增减0.5%，最低10%，最高60%
             const playerSpirit = this.player.spirit || 30;
             const enemySpirit = this.enemy.spirit || 20;
@@ -4867,12 +4868,15 @@ const BattleSystem = {
                 const spirit = this.enemy.spirit || 20;
                 const castTime = Math.max(1, Math.floor(baseCastTime * (100 - spirit * 0.5) / 100));
 
-                if (castTime <= 1 || skill.type === 'buff' || skill.targetType === 'self') {
-                    // 瞬发
+                // v2.9.0: 只有魔法师类型的敌人才有引导/打断机制，妖魔直接瞬发
+                const isMageEnemy = this.enemy.isMage === true || this.enemy.enemyType === 'mage';
+                
+                if (castTime <= 1 || skill.type === 'buff' || skill.targetType === 'self' || !isMageEnemy) {
+                    // 瞬发（妖魔不引导，直接释放）
                     this.castSkillImmediate(skill, 'enemy');
                     return;
                 } else {
-                    // 开始引导
+                    // 开始引导（仅魔法师敌人）
                     this.enemyCasting = {
                         skillId: action.skillId,
                         skill: skill,
