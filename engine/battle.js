@@ -447,6 +447,33 @@ const BattleSystem = {
                     </div>
                     
                     <div style="margin-bottom: 16px;">
+                        <h3 style="color: #ff9966; margin-bottom: 8px; font-size: 16px;">⚡ 打断概率系统（v2.9.0）</h3>
+                        <div style="color: #ccc; font-size: 14px; line-height: 1.8;">
+                            <p style="margin: 0 0 8px 0;">施法速度体现在<b style="color:#ff9966;">被打断概率</b>上，不是回合引导：</p>
+                            <ul style="margin: 0; padding-left: 20px;">
+                                <li><b style="color:#88ff88;">初阶魔法</b>：打断概率5-15%（几乎瞬发）</li>
+                                <li><b style="color:#ffcc66;">中阶魔法</b>：打断概率20-40%</li>
+                                <li><b style="color:#ff6644;">高阶魔法</b>：打断概率45-70%</li>
+                                <li>被打断后魔法失败，损失50%MP</li>
+                            </ul>
+                            <p style="margin: 8px 0 4px 0;"><b style="color:#66ccff;">境界压制减免</b>：境界越高，对低阶魔法掌控越强：</p>
+                            <ul style="margin: 0; padding-left: 20px;">
+                                <li>中阶放初阶：-15%打断概率</li>
+                                <li>高阶放初阶：-30%，放中阶：-15%</li>
+                                <li>超阶放初阶：-45%，放中阶：-30%，放高阶：-15%</li>
+                            </ul>
+                            <p style="margin: 8px 0 4px 0;"><b style="color:#66ffaa;">防御姿态抗打断</b>：上回合防御，本回合打断概率-20%</p>
+                            <p style="margin: 8px 0 4px 0;"><b style="color:#ff66ff;">打断敌方施法</b>：</p>
+                            <ul style="margin: 0; padding-left: 20px;">
+                                <li>仅<b style="color:#66ccff;">魔法师敌人</b>（🔮法师标记）有引导施法，妖魔不引导</li>
+                                <li>普通攻击命中有概率打断（10-60%，精神力对抗）</li>
+                                <li><b style="color:#66ccff;">控制技能</b>（眩晕/沉默/冰冻/麻痹/束缚等）100%打断</li>
+                                <li>敌方引导时头顶显示进度，脉冲动画提示</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
                         <h3 style="color: #66ccff; margin-bottom: 8px; font-size: 16px;">👹 妖魔天赋</h3>
                         <div style="color: #ccc; font-size: 14px; line-height: 1.8;">
                             <p style="margin: 0 0 8px 0;">每个妖魔都有独特的种族天赋：</p>
