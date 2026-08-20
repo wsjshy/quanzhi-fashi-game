@@ -12,13 +12,56 @@ const DialogueTree = {
     currentNode: null,
     dialogueHistory: [],
 
+    // v2.9.3: 已读选项记录（每个NPC的已读选项ID集合）
+    _readChoices: {},
+
     // 初始化
     init() {
         this._dialogueData = {};
         this.currentNPC = null;
         this.currentNode = null;
         this.dialogueHistory = [];
+        this._readChoices = {};
         console.log('对话树系统初始化完成');
+    },
+
+    // ========== 已读选项管理（v2.9.3） ==========
+
+    /**
+     * 加载玩家的已读选项记录
+     */
+    loadReadChoices() {
+        if (typeof Player !== 'undefined' && Player.readDialogueChoices) {
+            this._readChoices = Player.readDialogueChoices;
+        }
+    },
+
+    /**
+     * 保存已读选项记录到玩家
+     */
+    saveReadChoices() {
+        if (typeof Player !== 'undefined') {
+            Player.readDialogueChoices = this._readChoices;
+        }
+    },
+
+    /**
+     * 检查某个NPC的某个选项是否已读
+     */
+    isChoiceRead(npcId, choiceId) {
+        if (!this._readChoices[npcId]) return false;
+        return this._readChoices[npcId].has(choiceId);
+    },
+
+    /**
+     * 标记某个选项为已读
+     */
+    markChoiceRead(npcId, choiceId) {
+        if (!this._readChoices[npcId]) {
+            this._readChoices[npcId] = new Set();
+        }
+        this._readChoices[npcId].add(choiceId);
+        this.saveReadChoices();
     },
 
     // ========== 对话数据加载 ==========
@@ -84,6 +127,9 @@ const DialogueTree = {
         this.currentNPC = npcId;
         this.currentNode = 'default';
         this.dialogueHistory = [];
+
+        // v2.9.3: 加载已读选项记录
+        this.loadReadChoices();
 
         // 检测是否首次见面（在设置flag之前）
         this._isFirstMeet = !NPCStateSystem.getNPCFlag(npcId, 'has_met_player');
@@ -267,6 +313,9 @@ const DialogueTree = {
         }
         if (!choice) return null;
 
+        // v2.9.3: 记录已读选项
+        this.markChoiceRead(this.currentNPC, choiceId);
+
         // 记录历史
         this.dialogueHistory.push({
             nodeId: this.currentNode,
@@ -282,9 +331,22 @@ const DialogueTree = {
             this._executeAction(choice.action, choice.actionData);
         }
 
-        // 如果是返回/关闭动作，直接结束对话，不再跳转
-        // v0.73.1: 兼容"close"和"close_dialogue"两种写法
-        if (choice.action === 'back' || choice.action === 'close_dialogue' || choice.action === 'close') {
+        // v2.9.3: back动作返回上一级，而不是结束对话
+        if (choice.action === 'back') {
+            if (this.dialogueHistory.length > 1) {
+                // 移除当前记录，返回上一级
+                this.dialogueHistory.pop();
+                const prev = this.dialogueHistory[this.dialogueHistory.length - 1];
+                this.currentNode = prev.nodeId;
+                return this.getCurrentNodeData();
+            }
+            // 没有上一级，返回默认节点
+            this.currentNode = 'default';
+            return this.getCurrentNodeData();
+        }
+
+        // 如果是关闭动作，直接结束对话
+        if (choice.action === 'close_dialogue' || choice.action === 'close') {
             return this.endDialogue();
         }
 
@@ -297,15 +359,6 @@ const DialogueTree = {
                 nodeData.text = choice.response;
             }
             return nodeData;
-        } else if (choice.action === 'back') {
-            // 返回上一节点
-            if (this.dialogueHistory.length > 1) {
-                const prev = this.dialogueHistory[this.dialogueHistory.length - 2];
-                this.currentNode = prev.nodeId;
-                return this.getCurrentNodeData();
-            }
-            this.currentNode = 'default';
-            return this.getCurrentNodeData();
         } else if (choice.nextNode === null || choice.next === null) {
             // v1.2.0: nextNode明确为null表示结束对话（告别选项）
             return this.endDialogue();
@@ -319,6 +372,28 @@ const DialogueTree = {
             }
             return nodeData;
         }
+    },
+
+    // ========== v2.9.3: 返回上一级 ==========
+
+    /**
+     * 返回上一级对话节点
+     */
+    goBack() {
+        if (!this.currentNPC) return null;
+
+        if (this.dialogueHistory.length > 1) {
+            // 移除当前记录，返回上一级
+            this.dialogueHistory.pop();
+            const prev = this.dialogueHistory[this.dialogueHistory.length - 1];
+            this.currentNode = prev.nodeId;
+            return this.getCurrentNodeData();
+        }
+
+        // 没有上一级，返回默认节点
+        this.currentNode = 'default';
+        this.dialogueHistory = [];
+        return this.getCurrentNodeData();
     },
 
     /**

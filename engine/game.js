@@ -3050,7 +3050,8 @@ const Game = {
             background: rgba(0, 0, 0, 0.85);
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
+            justify-content: center;
+            align-items: center;
             z-index: 99999;
             overflow: hidden;
         `;
@@ -3076,7 +3077,7 @@ const Game = {
         const familiarityPercent = Math.max(0, Math.min(100, npcState.familiarity));
 
         dialog.innerHTML = `
-            <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;">
+            <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
             <!-- 退出按钮 -->
             <div style="position: absolute; top: 20px; right: 20px; z-index: 10;">
                 <div onclick="Game._closeDialogue()" style="
@@ -3093,29 +3094,30 @@ const Game = {
                 </div>
             </div>
             
-            <!-- NPC 立绘区域 -->
-            <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+            <!-- NPC 立绘区域（左上角小尺寸） -->
+            <div style="position: absolute; top: 20px; left: 20px; display: flex; align-items: flex-start; gap: 15px;">
                 <div style="text-align: center;">
                     <div style="
-                        width: 150px;
-                        height: 150px;
+                        width: 80px;
+                        height: 80px;
                         border-radius: 50%;
-                        margin: 0 auto 20px;
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        font-size: 60px;
-                        box-shadow: 0 0 50px ${npc.spriteColor || '#666666'}80;
+                        font-size: 36px;
+                        box-shadow: 0 0 30px ${npc.spriteColor || '#666666'}80;
                         overflow: hidden;
                         background: ${npc.spriteColor || '#666'};
                     ">
                         ${npc.image ? `<img src="${npc.image}" style="width: 100%; height: 100%; object-fit: cover;">` : (npc.elements?.[0] ? this._getElementEmoji(npc.elements[0]) : '👤')}
                     </div>
-                    <div style="font-size: 24px; color: #fff; font-weight: bold;">${npc.name}</div>
-                    <div style="font-size: 14px; color: #aaa; margin-top: 5px;">${npc.title || ''}</div>
-                    <div style="font-size: 16px; color: ${relationLevel.color}; margin-top: 10px; font-weight: bold;">
+                    <div style="font-size: 16px; color: #fff; font-weight: bold; margin-top: 8px;">${npc.name}</div>
+                    <div style="font-size: 12px; color: #aaa; margin-top: 3px;">${npc.title || ''}</div>
+                    <div style="font-size: 13px; color: ${relationLevel.color}; margin-top: 5px; font-weight: bold;">
                         ${relationLevel.name}
                     </div>
+                </div>
+            </div>
                     ${(() => {
                         // v0.18.0: 下一阶段提示
                         const score = npcState.opinion * 0.6 + npcState.trust * 0.3 + npcState.familiarity * 0.1;
@@ -3204,45 +3206,83 @@ const Game = {
                 </div>
             </div>
 
-            <!-- 对话框 -->
+            <!-- 对话框（v2.9.3优化：居中、大字体、圆角边框） -->
             <div style="
                 background: rgba(20, 20, 50, 0.95);
-                border-top: 3px solid #6666aa;
-                padding: 25px 30px;
-                min-height: 200px;
+                border: 3px solid #6666aa;
+                border-radius: 15px;
+                padding: 30px;
+                width: 90%;
+                max-width: 700px;
+                max-height: 70vh;
+                overflow-y: auto;
+                box-shadow: 0 0 40px rgba(100, 100, 255, 0.3);
             ">
                 <!-- 对话文本 -->
                 <div id="dialogue-text" style="
-                    font-size: 17px;
+                    font-size: 19px;
                     color: #e0e0ff;
                     line-height: 1.8;
-                    margin-bottom: 20px;
+                    margin-bottom: 25px;
                     min-height: 60px;
                 ">
-                    ${levelReaction ? `<div style="color: #888; font-size: 14px; font-style: italic; margin-bottom: 10px; border-left: 3px solid #555; padding-left: 10px;">${levelReaction}</div>` : ''}
-                    ${influenceReaction ? `<div style="color: #ffd93d; font-size: 14px; font-style: italic; margin-bottom: 10px; border-left: 3px solid #ffd93d; padding-left: 10px;">${influenceReaction}</div>` : ''}
-                    ${npcMention ? `<div style="color: #88ccff; font-size: 14px; font-style: italic; margin-bottom: 10px; border-left: 3px solid #88ccff; padding-left: 10px;">${npcMention}</div>` : ''}
+                    ${levelReaction ? `<div style="color: #888; font-size: 15px; font-style: italic; margin-bottom: 10px; border-left: 3px solid #555; padding-left: 10px;">${levelReaction}</div>` : ''}
+                    ${influenceReaction ? `<div style="color: #ffd93d; font-size: 15px; font-style: italic; margin-bottom: 10px; border-left: 3px solid #ffd93d; padding-left: 10px;">${influenceReaction}</div>` : ''}
+                    ${npcMention ? `<div style="color: #88ccff; font-size: 15px; font-style: italic; margin-bottom: 10px; border-left: 3px solid #88ccff; padding-left: 10px;">${npcMention}</div>` : ''}
                     ${dialogueData.text}
                 </div>
 
-                <!-- 选项列表 -->
-                <div id="dialogue-choices" style="display: flex; flex-direction: column; gap: 8px;">
-                    ${dialogueData.choices.map((choice, index) => `
+                <!-- 选项列表（v2.9.3优化：已读置灰、任务提示、大字体） -->
+                <div id="dialogue-choices" style="display: flex; flex-direction: column; gap: 10px;">
+                    ${dialogueData.choices.map((choice, index) => {
+                        // v2.9.3: 检查是否已读
+                        const isRead = DialogueTree.isChoiceRead(npc.id, choice.id);
+                        // v2.9.3: 检查是否可接任务
+                        const hasQuest = choice.effects && (choice.effects.triggerQuest || choice.effects.acceptQuest || choice.effects.startQuest || choice.effects.questId);
+                        const readStyle = isRead ? 'opacity: 0.5;' : '';
+                        const questBorder = hasQuest ? 'border-color: #55aa55; background: rgba(50, 80, 50, 0.6);' : '';
+                        return `
                         <div onclick="Game.selectDialogueChoice('${choice.id}')" style="
-                            padding: 12px 20px;
+                            padding: 14px 22px;
                             background: rgba(40, 40, 80, 0.8);
                             border: 2px solid #444477;
-                            border-radius: 8px;
+                            border-radius: 10px;
                             color: #e0e0ff;
                             cursor: pointer;
                             text-align: left;
                             transition: all 0.3s;
-                            font-size: 15px;
-                        " onmouseover="this.style.borderColor='#7777bb'; this.style.background='rgba(60, 60, 120, 0.8)'" onmouseout="this.style.borderColor='#444477'; this.style.background='rgba(40, 40, 80, 0.8)'">
-                            <span style="color: #ffd700; margin-right: 10px;">${index + 1}.</span>
+                            font-size: 17px;
+                            ${readStyle}
+                            ${questBorder}
+                        " onmouseover="this.style.borderColor='${hasQuest ? '#77cc77' : '#7777bb'}'; this.style.background='${hasQuest ? 'rgba(70, 100, 70, 0.7)' : 'rgba(60, 60, 120, 0.8)'}'" onmouseout="this.style.borderColor='${hasQuest ? '#55aa55' : '#444477'}'; this.style.background='${hasQuest ? 'rgba(50, 80, 50, 0.6)' : 'rgba(40, 40, 80, 0.8)'}'>
+                            <span style="color: #ffd700; margin-right: 12px; font-weight: bold;">${index + 1}.</span>
                             ${choice.text}
+                            ${hasQuest ? '<span style="color: #88ff88; margin-left: 10px; font-size: 14px;">📜 可接任务</span>' : ''}
+                            ${isRead ? '<span style="color: #888; margin-left: 10px; font-size: 13px;">（已读）</span>' : ''}
                         </div>
-                    `).join('')}
+                    `}).join('')}
+                    ${(() => {
+                        // v2.9.3: 非默认节点添加返回上一级选项
+                        if (DialogueTree.currentNode !== 'default' && DialogueTree.dialogueHistory.length > 0) {
+                            return `
+                            <div onclick="Game.selectDialogueChoice('__back__')" style="
+                                padding: 14px 22px;
+                                background: rgba(60, 60, 80, 0.6);
+                                border: 2px solid #666688;
+                                border-radius: 10px;
+                                color: #aaaacc;
+                                cursor: pointer;
+                                text-align: center;
+                                transition: all 0.3s;
+                                font-size: 16px;
+                                margin-top: 5px;
+                            " onmouseover="this.style.borderColor='#9999bb'; this.style.background='rgba(80, 80, 100, 0.7)'" onmouseout="this.style.borderColor='#666688'; this.style.background='rgba(60, 60, 80, 0.6)'">
+                                ↩️ 返回上一级
+                            </div>
+                            `;
+                        }
+                        return '';
+                    })()}
                     ${npc.canDuel ? `
                         <div onclick="Game.startDuel('${npc.id}')" style="
                             padding: 12px 20px;
@@ -3296,12 +3336,29 @@ const Game = {
     selectDialogueChoice(choiceId) {
         if (!this._currentDialogueNPC) return;
 
+        // v2.9.3: 处理返回上一级虚拟选项
+        if (choiceId === '__back__') {
+            const result = DialogueTree.goBack();
+            if (result) {
+                const npc = DataManager.getCharacter(this._currentDialogueNPC);
+                this._updateDialogueScreen(npc, result);
+            }
+            return;
+        }
+
         const result = DialogueTree.selectChoice(choiceId);
         
         if (result.ended) {
             // 对话结束
             this._closeDialogue();
             return;
+        }
+
+        // v2.9.3: 检查是否触发了任务，显示即时反馈
+        if (result.triggeredQuest) {
+            setTimeout(() => {
+                UI.showMessage(`📜 任务已接受：${result.triggeredQuest}`);
+            }, 300);
         }
 
         // 更新对话内容
@@ -3323,22 +3380,55 @@ const Game = {
         }
 
         if (choicesEl) {
-            choicesEl.innerHTML = dialogueData.choices.map((choice, index) => `
+            const npc = DataManager.getCharacter(this._currentDialogueNPC);
+            choicesEl.innerHTML = dialogueData.choices.map((choice, index) => {
+                // v2.9.3: 检查是否已读
+                const isRead = DialogueTree.isChoiceRead(npc.id, choice.id);
+                // v2.9.3: 检查是否可接任务
+                const hasQuest = choice.effects && (choice.effects.triggerQuest || choice.effects.acceptQuest || choice.effects.startQuest || choice.effects.questId);
+                const readStyle = isRead ? 'opacity: 0.5;' : '';
+                const questBorder = hasQuest ? 'border-color: #55aa55; background: rgba(50, 80, 50, 0.6);' : '';
+                return `
                 <div onclick="Game.selectDialogueChoice('${choice.id}')" style="
-                    padding: 12px 20px;
+                    padding: 14px 22px;
                     background: rgba(40, 40, 80, 0.8);
                     border: 2px solid #444477;
-                    border-radius: 8px;
+                    border-radius: 10px;
                     color: #e0e0ff;
                     cursor: pointer;
                     text-align: left;
                     transition: all 0.3s;
-                    font-size: 15px;
-                " onmouseover="this.style.borderColor='#7777bb'; this.style.background='rgba(60, 60, 120, 0.8)'" onmouseout="this.style.borderColor='#444477'; this.style.background='rgba(40, 40, 80, 0.8)'">
-                    <span style="color: #ffd700; margin-right: 10px;">${index + 1}.</span>
+                    font-size: 17px;
+                    ${readStyle}
+                    ${questBorder}
+                " onmouseover="this.style.borderColor='${hasQuest ? '#77cc77' : '#7777bb'}'; this.style.background='${hasQuest ? 'rgba(70, 100, 70, 0.7)' : 'rgba(60, 60, 120, 0.8)'}'" onmouseout="this.style.borderColor='${hasQuest ? '#55aa55' : '#444477'}'; this.style.background='${hasQuest ? 'rgba(50, 80, 50, 0.6)' : 'rgba(40, 40, 80, 0.8)'}'>
+                    <span style="color: #ffd700; margin-right: 12px; font-weight: bold;">${index + 1}.</span>
                     ${choice.text}
+                    ${hasQuest ? '<span style="color: #88ff88; margin-left: 10px; font-size: 14px;">📜 可接任务</span>' : ''}
+                    ${isRead ? '<span style="color: #888; margin-left: 10px; font-size: 13px;">（已读）</span>' : ''}
                 </div>
-            `).join('');
+            `}).join('') + (() => {
+                // v2.9.3: 非默认节点添加返回上一级选项
+                if (DialogueTree.currentNode !== 'default' && DialogueTree.dialogueHistory.length > 0) {
+                    return `
+                    <div onclick="Game.selectDialogueChoice('__back__')" style="
+                        padding: 14px 22px;
+                        background: rgba(60, 60, 80, 0.6);
+                        border: 2px solid #666688;
+                        border-radius: 10px;
+                        color: #aaaacc;
+                        cursor: pointer;
+                        text-align: center;
+                        transition: all 0.3s;
+                        font-size: 16px;
+                        margin-top: 5px;
+                    " onmouseover="this.style.borderColor='#9999bb'; this.style.background='rgba(80, 80, 100, 0.7)'" onmouseout="this.style.borderColor='#666688'; this.style.background='rgba(60, 60, 80, 0.6)'">
+                        ↩️ 返回上一级
+                    </div>
+                    `;
+                }
+                return '';
+            })();
         }
 
         // 保存游戏
