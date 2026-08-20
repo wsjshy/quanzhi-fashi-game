@@ -5196,5 +5196,31 @@ const DataEvents = {
       { text: "问他关于博城的事情", effects: { exp: 10, setFlag: ["asked_xiaohou_about_bocheng"] }, resultText: "你问张小侯关于博城的事情。他虽然年纪不大，但从小在博城长大，对这座城市非常熟悉。他给你介绍了一些你不知道的地方，一些好吃的小店，一些有趣的角落。经验+10，获得了一些博城的信息" },
       { text: "笑着说他太客气了", effects: { exp: 5, npcOpinion: { npcId: "zhang_xiaohou", value: 5 } }, resultText: "你笑着说他太客气了，朋友之间不用这么正式。他也笑了，\"也是，\"他说，\"我们是朋友嘛。\"你们又聊了一会儿，气氛很轻松。经验+5，张小侯好感+5" }
     ]
+  },
+
+  // ========== 修复缺失事件 ==========
+
+  event_encounter_one_eye_wolf: {
+    id: "event_encounter_one_eye_wolf",
+    name: "遭遇独眼魔狼",
+    description: "你在老榕树街区探索时，突然听到一阵低沉的咆哮声。一只独眼魔狼从阴影中走出来，它的独眼闪烁着凶光，正盯着你。这只妖魔看起来很饥饿，随时可能发起攻击。",
+    weight: 20,
+    choices: [
+      { text: "准备战斗", effects: { exp: 25, hp: -20, mp: -15, setFlag: ["fought_one_eye_wolf"] }, resultText: "你迅速做好战斗准备，与这只独眼魔狼展开激战。经过一番苦战，你成功击退了它。虽然受了一些伤，但你也获得了宝贵的战斗经验。经验+25，HP-20，MP-15" },
+      { text: "慢慢后退，寻找机会逃跑", effects: { hp: -10, stamina: -15, setFlag: ["escaped_one_eye_wolf"] }, resultText: "你慢慢后退，试图寻找机会逃跑。独眼魔狼警惕地盯着你，一步步逼近。就在它即将发起攻击时，你转身就跑，虽然被它的爪子划伤了一下，但成功逃脱了。HP-10，体力-15" },
+      { text: "用魔法威慑它", effects: { exp: 15, mp: -25, setFlag: ["intimidated_one_eye_wolf"] }, resultText: "你释放出强大的魔法气息，试图威慑这只独眼魔狼。它感受到你的力量后，犹豫了一下，最终选择了撤退。你成功避免了一场战斗。经验+15，MP-25" }
+    ]
+  },
+
+  event_underground_explore: {
+    id: "event_underground_explore",
+    name: "地下通道探索",
+    description: "你在地圣泉周围的地下通道中探索，发现了一些有趣的东西。这些地下通道错综复杂，有些地方已经坍塌，有些地方则保存完好。你注意到墙壁上有一些奇怪的刻痕，似乎是很久以前留下的。",
+    weight: 25,
+    choices: [
+      { text: "仔细研究墙壁上的刻痕", effects: { exp: 20, setFlag: ["studied_underground_carvings"] }, resultText: "你仔细研究墙壁上的刻痕，发现这些似乎是古代法师留下的修炼心得。虽然大部分已经模糊不清，但你还是从中获得了一些启发。经验+20，研究了地下通道的古代刻痕" },
+      { text: "继续深入探索", effects: { exp: 25, hp: -15, stamina: -20, setFlag: ["deep_underground_explore"] }, resultText: "你决定继续深入探索地下通道。走了一段路后，你发现了一个隐藏的房间，里面有一些古老的物品。但你也触发了一些陷阱，受了一些伤。经验+25，HP-15，体力-20，发现了隐藏房间" },
+      { text: "记录路线后返回", effects: { exp: 10, setFlag: ["mapped_underground"] }, resultText: "你仔细记录了地下通道的路线，然后选择返回。这些地图信息日后可能会派上用场。经验+10，绘制了地下通道地图" }
+    ]
   }
 };
