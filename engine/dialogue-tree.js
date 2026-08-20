@@ -32,35 +32,56 @@ const DialogueTree = {
      */
     loadReadChoices() {
         if (typeof Player !== 'undefined' && Player.readDialogueChoices) {
-            this._readChoices = Player.readDialogueChoices;
+            // 将保存的数组转换为Set
+            this._readChoices = {};
+            Object.entries(Player.readDialogueChoices).forEach(([npcId, choices]) => {
+                if (Array.isArray(choices)) {
+                    this._readChoices[npcId] = new Set(choices);
+                } else if (choices instanceof Set) {
+                    this._readChoices[npcId] = choices;
+                } else {
+                    this._readChoices[npcId] = new Set();
+                }
+            });
         }
     },
 
     /**
-     * 保存已读选项记录到玩家
+     * 保存已读选项记录到玩家（Set转换为数组以便序列化）
      */
     saveReadChoices() {
         if (typeof Player !== 'undefined') {
-            Player.readDialogueChoices = this._readChoices;
+            const saveData = {};
+            Object.entries(this._readChoices).forEach(([npcId, choices]) => {
+                if (choices instanceof Set) {
+                    saveData[npcId] = Array.from(choices);
+                } else if (Array.isArray(choices)) {
+                    saveData[npcId] = choices;
+                }
+            });
+            Player.readDialogueChoices = saveData;
         }
     },
 
     /**
-     * 检查某个NPC的某个选项是否已读
+     * 检查某个NPC的某个节点的某个选项是否已读
+     * 使用"节点id:选项id"作为唯一标识，避免不同节点相同选项id导致误标记
      */
-    isChoiceRead(npcId, choiceId) {
+    isChoiceRead(npcId, nodeId, choiceId) {
         if (!this._readChoices[npcId]) return false;
-        return this._readChoices[npcId].has(choiceId);
+        const key = nodeId + ':' + choiceId;
+        return this._readChoices[npcId].has(key);
     },
 
     /**
-     * 标记某个选项为已读
+     * 标记某个节点的某个选项为已读
      */
-    markChoiceRead(npcId, choiceId) {
+    markChoiceRead(npcId, nodeId, choiceId) {
         if (!this._readChoices[npcId]) {
             this._readChoices[npcId] = new Set();
         }
-        this._readChoices[npcId].add(choiceId);
+        const key = nodeId + ':' + choiceId;
+        this._readChoices[npcId].add(key);
         this.saveReadChoices();
     },
 
@@ -313,8 +334,8 @@ const DialogueTree = {
         }
         if (!choice) return null;
 
-        // v2.9.3: 记录已读选项
-        this.markChoiceRead(this.currentNPC, choiceId);
+        // v2.9.3: 记录已读选项（使用节点id+选项id作为唯一标识）
+        this.markChoiceRead(this.currentNPC, this.currentNode, choiceId);
 
         // 记录历史
         this.dialogueHistory.push({

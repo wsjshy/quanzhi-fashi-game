@@ -3147,7 +3147,7 @@ const Game = {
                 <div id="dialogue-choices" style="display: flex; flex-direction: column; gap: 10px;">
                     ${dialogueData.choices.map((choice, index) => {
                         // v2.9.3: 检查是否已读
-                        const isRead = DialogueTree.isChoiceRead(npc.id, choice.id);
+                        const isRead = DialogueTree.isChoiceRead(npc.id, DialogueTree.currentNode, choice.id);
                         // v2.9.3: 检查是否可接任务
                         const hasQuest = choice.effects && (choice.effects.triggerQuest || choice.effects.acceptQuest || choice.effects.startQuest || choice.effects.questId);
                         const readStyle = isRead ? 'opacity: 0.5;' : '';
