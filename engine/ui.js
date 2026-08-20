@@ -2400,6 +2400,7 @@ const UI = {
                         <span style="color: #ffd700; font-size: 15px;">💰 ${Player.gold}</span>
                         <span style="color: #ff8888; font-size: 14px;">❤️ ${Player.hp}/${Player.maxHp}</span>
                         <span style="color: #88aaff; font-size: 14px;">💧 ${Player.mp}/${Player.maxMp}</span>
+                        <span style="color: #888; font-size: 11px; opacity: 0.6;" title="全职法师网页游戏 当前版本">v2.9.1</span>
                         <!-- v2.8.4: 每日行动收益率提示，修炼/学习/猎魔有每日效率递减，探索完全自由不限制 -->
                         ${(() => {
                             const da = Player.dailyActions || { cultivate: 0, study: 0, hunt: 0 };
