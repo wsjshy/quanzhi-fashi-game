@@ -2972,11 +2972,13 @@ const Game = {
     // 显示对话界面
     _showDialogueScreen(npc, dialogueData, isFirstDialogue = false) {
         try {
+        console.log('[对话调试] 开始显示对话界面, NPC:', npc.name, '节点:', dialogueData.nodeId);
         // v0.93.0: restore clicks, close messages, clear overlays first
         if (typeof UI !== 'undefined' && UI._restoreClicks) {
             UI._restoreClicks();
         }
         document.querySelectorAll('.msg-overlay, .msg-box, #message-blocker, .rest-overlay, .ei-overlay, .npc-dialog-overlay, .daily-overlay').forEach(el => el.remove());
+        console.log('[对话调试] 清理旧弹窗完成');
         
         const npcState = NPCStateSystem.getNPCState(npc.id);
         const relationLevel = NPCStateSystem.getRelationshipLevel(npc.id);
@@ -3076,6 +3078,7 @@ const Game = {
         const trustPercent = Math.max(0, Math.min(100, (npcState.trust + 100) / 2));
         const familiarityPercent = Math.max(0, Math.min(100, npcState.familiarity));
 
+        console.log('[对话调试] 开始设置innerHTML, 选项数:', dialogueData.choices?.length);
         dialog.innerHTML = `
             <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
             <!-- 退出按钮 -->
@@ -3267,6 +3270,7 @@ const Game = {
         `;
 
         document.body.appendChild(dialog);
+        console.log('[对话调试] 对话界面显示完成');
         } catch (e) {
             console.error('_showDialogueScreen error:', e);
             UI.showMessage('对话界面出错：' + e.message);
