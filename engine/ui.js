@@ -3500,6 +3500,14 @@ const UI = {
                             <span style="font-size:14px;opacity:0.7;margin-left:4px;">ℹ️</span>
                         </div>
                         ${state.enemy.title ? `<div style="font-size: 12px; color: #ff9966; margin-bottom: 8px;">${state.enemy.title}</div>` : ''}
+                        <!-- v2.9.0: 敌方施法状态显示（仅魔法师敌人） -->
+                        ${state.enemyCasting ? `
+                            <div style="margin-bottom: 8px; padding: 6px 12px; background: linear-gradient(90deg, rgba(255,100,100,0.3), rgba(255,200,100,0.3)); border: 1px solid #ff6644; border-radius: 12px; animation: pulse 1.5s infinite;">
+                                <span style="color: #ff8866; font-size: 12px; font-weight: bold;">⚡ 正在引导：${state.enemyCasting.skill?.name || '魔法'}</span>
+                                <span style="color: #ffcc66; font-size: 11px; margin-left: 6px;">(${state.enemyCasting.progress || 1}/${state.enemyCasting.totalTime || 1}回合)</span>
+                                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">用控制技能可打断！</div>
+                            </div>
+                        ` : ''}
                         <!-- 敌人元素系 -->
                         ${state.enemy.elements && state.enemy.elements.length > 0 ? `
                             <div style="margin-bottom: 8px; display: flex; gap: 4px; justify-content: center;">
