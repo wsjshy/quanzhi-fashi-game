@@ -3094,9 +3094,9 @@ const Game = {
                 </div>
             </div>
             
-            <!-- NPC 立绘区域（左上角小尺寸） -->
-            <div style="position: absolute; top: 20px; left: 20px; display: flex; align-items: flex-start; gap: 15px;">
-                <div style="text-align: center;">
+            <!-- NPC 立绘区域（左上角，含详细信息） -->
+            <div style="position: absolute; top: 20px; left: 20px; display: flex; align-items: flex-start; gap: 15px; max-width: 280px;">
+                <div style="text-align: center; flex-shrink: 0;">
                     <div style="
                         width: 80px;
                         height: 80px;
@@ -3113,8 +3113,37 @@ const Game = {
                     </div>
                     <div style="font-size: 16px; color: #fff; font-weight: bold; margin-top: 8px;">${npc.name}</div>
                     <div style="font-size: 12px; color: #aaa; margin-top: 3px;">${npc.title || ''}</div>
-                    <div style="font-size: 13px; color: ${relationLevel.color}; margin-top: 5px; font-weight: bold;">
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                    <!-- 关系等级 -->
+                    <div style="font-size: 13px; color: ${relationLevel.color}; font-weight: bold; margin-bottom: 8px;">
                         ${relationLevel.name}
+                    </div>
+                    <!-- NPC等级 -->
+                    ${(() => {
+                        const npcLevel = NPCStateSystem.getNPCLevel(npc.id);
+                        return `<div style="font-size: 12px; color: #aaddff; margin-bottom: 4px;">⚔️ 等级 Lv.${npcLevel}</div>`;
+                    })()}
+                    <!-- 魔法系 -->
+                    ${npc.elements && npc.elements.length > 0 ? `
+                        <div style="font-size: 12px; color: #ffcc66; margin-bottom: 4px;">
+                            🔮 ${npc.elements.map(e => this._getElementName(e)).join(' / ')}
+                        </div>
+                    ` : ''}
+                    <!-- 关系数值条（简化版） -->
+                    <div style="margin-top: 8px;">
+                        <div style="font-size: 11px; color: #ff9999; margin-bottom: 2px;">❤️ 好感 ${Math.round(npcState.opinion)}</div>
+                        <div style="height: 3px; background: #333; border-radius: 2px; margin-bottom: 4px;">
+                            <div style="height: 100%; width: ${Math.max(0, Math.min(100, (npcState.opinion + 100) / 2))}%; background: linear-gradient(90deg, #ff6666, #ff9999); border-radius: 2px;"></div>
+                        </div>
+                        <div style="font-size: 11px; color: #99ff99; margin-bottom: 2px;">🤝 信任 ${Math.round(npcState.trust)}</div>
+                        <div style="height: 3px; background: #333; border-radius: 2px; margin-bottom: 4px;">
+                            <div style="height: 100%; width: ${Math.max(0, Math.min(100, (npcState.trust + 100) / 2))}%; background: linear-gradient(90deg, #66cc66, #99ff99); border-radius: 2px;"></div>
+                        </div>
+                        <div style="font-size: 11px; color: #9999ff;">👁️ 熟悉 ${Math.round(npcState.familiarity)}</div>
+                        <div style="height: 3px; background: #333; border-radius: 2px;">
+                            <div style="height: 100%; width: ${Math.max(0, Math.min(100, npcState.familiarity))}%; background: linear-gradient(90deg, #6666cc, #9999ff); border-radius: 2px;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
