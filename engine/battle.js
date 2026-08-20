@@ -2147,15 +2147,24 @@ const BattleSystem = {
             interruptChance = Math.max(0.1, Math.min(0.6, interruptChance));
             
             if (Math.random() < interruptChance) {
-                this.addLog(`打断了 ${this.enemy.name} 的魔法引导！`, 'system');
+                const interruptedSkill = this.enemyCasting.skill?.name || '魔法';
+                this.addLog(`💥 攻击打断了 ${this.enemy.name} 的 ${interruptedSkill} 引导！（打断概率 ${(interruptChance*100).toFixed(0)}%）`, 'interrupt-success');
                 this.enemyCasting = null;
+                // v2.9.1: 打断成功视觉反馈（青色闪光+震屏）
+                if (typeof document !== 'undefined') {
+                    const flash = document.createElement('div');
+                    flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,rgba(100,220,255,0.3) 0%,rgba(100,200,255,0.15) 50%,transparent 70%);z-index:9998;pointer-events:none;animation:highTierFlash 0.5s ease-out forwards;';
+                    document.body.appendChild(flash);
+                    setTimeout(() => flash.remove(), 600);
+                }
+                this.interruptCount = (this.interruptCount || 0) + 1;
                 
                 // 发布打断事件
                 if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
                     BattleEventBus.emit(BattleEvents.INTERRUPT, {
                         attacker: 'player',
                         target: 'enemy',
-                        skill: this.enemyCasting?.skill
+                        skill: null
                     });
                 }
             }
@@ -7362,8 +7371,23 @@ const BattleSystem = {
         const isEnemyMage = !isPlayerTarget && (this.enemy?.isMage === true || this.enemy?.enemyType === 'mage');
         const controlTypes = ['stun', 'silence', 'freeze', 'frozen', 'paralyze', 'bind', 'fear', 'sleep'];
         if (isEnemyMage && this.enemyCasting && controlTypes.includes(effect.type)) {
-            this.addLog(`💥 ${effect.name || effect.type}打断了 ${this.enemy.name} 的魔法引导！`, 'system');
+            const interruptedSkill = this.enemyCasting.skill?.name || '魔法';
+            this.addLog(`💥 ${effect.name || effect.type}打断了 ${this.enemy.name} 的 ${interruptedSkill} 引导！敌方施法失败！`, 'interrupt-success');
             this.enemyCasting = null;
+            // v2.9.1: 打断成功视觉反馈（青色闪光+震屏）
+            if (typeof document !== 'undefined') {
+                const flash = document.createElement('div');
+                flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,rgba(100,220,255,0.4) 0%,rgba(100,200,255,0.2) 50%,transparent 70%);z-index:9998;pointer-events:none;animation:highTierFlash 0.6s ease-out forwards;';
+                document.body.appendChild(flash);
+                setTimeout(() => flash.remove(), 700);
+                const battleScreen = document.getElementById('battle-screen') || document.querySelector('.battle-container') || document.body;
+                if (battleScreen) {
+                    battleScreen.classList.add('screen-shake');
+                    setTimeout(() => battleScreen.classList.remove('screen-shake'), 400);
+                }
+            }
+            // 打断次数统计
+            this.interruptCount = (this.interruptCount || 0) + 1;
         }
 
         // debuffImmunity：玩家免疫负面状态
