@@ -3118,95 +3118,8 @@ const Game = {
                     </div>
                 </div>
             </div>
-                    ${(() => {
-                        // v0.18.0: 下一阶段提示
-                        const score = npcState.opinion * 0.6 + npcState.trust * 0.3 + npcState.familiarity * 0.1;
-                        const thresholds = [
-                            { score: 5, name: '友善', hint: '多对话和送礼' },
-                            { score: 15, name: '熟人', hint: '完成相关任务' },
-                            { score: 30, name: '熟络', hint: '一起修炼/猎魔' },
-                            { score: 45, name: '朋友', hint: '深入对话' },
-                            { score: 60, name: '好友', hint: '约会邀请' },
-                            { score: 75, name: '挚友', hint: '共同经历大事件' },
-                            { score: 90, name: '知己', hint: '告白/特殊事件' }
-                        ];
-                        const next = thresholds.find(t => score < t.score);
-                        if (next && score < 90) {
-                            const need = Math.ceil(next.score - score);
-                            return `<div style="font-size: 11px; color: #888; margin-top: 5px;">下一阶段：${next.name}（还需${need}分，${next.hint}）</div>`;
-                        }
-                        if (score >= 90 && !npcState.flags?.is_lover) {
-                            return `<div style="font-size: 11px; color: #ff99cc; margin-top: 5px;">💖 关系已达顶峰，尝试告白吧！</div>`;
-                        }
-                        return '';
-                    })()}
-                    <div style="font-size: 12px; color: #888; margin-top: 3px;">
-                        语气：${dialogueTone}
-                    </div>
-                    ${(() => {
-                        // v0.27.0: NPC等级显示（自主成长）
-                        const npcLevel = NPCStateSystem.getNPCLevel(npc.id);
-                        const npcExp = npcState.exp || 0;
-                        const expToNext = NPCStateSystem.getNPCExpToNextLevel(npc.id);
-                        const expPercent = Math.min(100, Math.round((npcExp / expToNext) * 100));
-                        return `
-                            <div style="font-size: 12px; color: #aaddff; margin-top: 3px;">
-                                ⚔️ 等级 Lv.${npcLevel} <span style="color: #666;">(${npcExp}/${expToNext} EXP)</span>
-                            </div>
-                            <div style="height: 2px; background: #333; border-radius: 1px; width: 120px; margin-top: 2px;">
-                                <div style="height: 100%; width: ${expPercent}%; background: #4488ff; border-radius: 1px;"></div>
-                            </div>
-                        `;
-                    })()}
-                    ${(() => {
-                        // v0.23.0: 综合连接评分（Connection Score）
-                        const connScore = NPCStateSystem.computeConnectionScore(npc.id, 'player');
-                        const connState = NPCStateSystem.getRelationshipState(npc.id, 'player');
-                        const connColor = connScore >= 70 ? '#ffcc66' : connScore >= 50 ? '#99ccff' : connScore >= 30 ? '#aaffaa' : '#aaaaaa';
-                        return `
-                            <div style="margin-top: 10px; padding: 6px 12px; background: rgba(255,255,255,0.05); border-radius: 6px; display: inline-block;">
-                                <div style="font-size: 11px; color: ${connColor}; font-weight: bold;">羁绊：${connState.label} (${connScore}/100)</div>
-                                <div style="height: 3px; background: #333; border-radius: 2px; margin-top: 4px; width: 120px;">
-                                    <div style="height: 100%; width: ${connScore}%; background: ${connColor}; border-radius: 2px;"></div>
-                                </div>
-                            </div>
-                        `;
-                    })()}
-                    
-                    <!-- 关系数值条 -->
-                    <div style="margin-top: 15px; width: 200px; text-align: left;">
-                        <!-- 好感度 -->
-                        <div style="margin-bottom: 8px;">
-                            <div style="font-size: 11px; color: #ff9999; margin-bottom: 3px;">
-                                ❤️ 好感 ${Math.round(npcState.opinion)}
-                            </div>
-                            <div style="height: 4px; background: #333; border-radius: 2px;">
-                                <div style="height: 100%; width: ${opinionPercent}%; background: linear-gradient(90deg, #ff6666, #ff9999); border-radius: 2px;"></div>
-                            </div>
-                        </div>
-                        <!-- 信任度 -->
-                        <div style="margin-bottom: 8px;">
-                            <div style="font-size: 11px; color: #99ff99; margin-bottom: 3px;">
-                                🤝 信任 ${Math.round(npcState.trust)}
-                            </div>
-                            <div style="height: 4px; background: #333; border-radius: 2px;">
-                                <div style="height: 100%; width: ${trustPercent}%; background: linear-gradient(90deg, #66cc66, #99ff99); border-radius: 2px;"></div>
-                            </div>
-                        </div>
-                        <!-- 熟悉度 -->
-                        <div>
-                            <div style="font-size: 11px; color: #9999ff; margin-bottom: 3px;">
-                                👁️ 熟悉 ${Math.round(npcState.familiarity)}
-                            </div>
-                            <div style="height: 4px; background: #333; border-radius: 2px;">
-                                <div style="height: 100%; width: ${familiarityPercent}%; background: linear-gradient(90deg, #6666cc, #9999ff); border-radius: 2px;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- 对话框（v2.9.3优化：居中、大字体、圆角边框） -->
+            <!-- 对话框（v2.9.3优化：居中、大字体、圆角边框，无滚动） -->
             <div style="
                 background: rgba(20, 20, 50, 0.95);
                 border: 3px solid #6666aa;
@@ -3214,8 +3127,6 @@ const Game = {
                 padding: 30px;
                 width: 90%;
                 max-width: 700px;
-                max-height: 70vh;
-                overflow-y: auto;
                 box-shadow: 0 0 40px rgba(100, 100, 255, 0.3);
             ">
                 <!-- 对话文本 -->
