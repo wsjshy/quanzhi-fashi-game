@@ -1328,6 +1328,41 @@ const DataLocations = {
         effects: { exp: 30 },
         eventChance: 0.6,
         events: ["event_underground_explore", "event_giant_eye_rat_encounter"]
+      },
+      {
+        id: "observe_spring",
+        name: "观察地圣泉",
+        description: "仔细观察地圣泉的灵气流动，感受天地灵泉的奥秘。可能获得特殊感悟，也可能发现异常。",
+        icon: "👁️",
+        timeCost: 1,
+        staminaCost: 5,
+        effects: { exp: 15 },
+        eventChance: 0.7,
+        events: [
+          "event_spring_insight",
+          "event_spring_anomaly",
+          "event_spring_whisper",
+          "event_spring_calm"
+        ]
+      },
+      {
+        id: "rest_by_spring",
+        name: "泉边休息",
+        description: "在地圣泉边找个安静的地方休息，吸收周围浓郁的灵气恢复体力和魔力。地圣泉的灵气有治愈效果。",
+        icon: "🏕️",
+        timeCost: 1,
+        staminaCost: 0,
+        effects: {
+          hp: 50,
+          mp: 40,
+          exp: 8
+        },
+        eventChance: 0.3,
+        events: [
+          "event_spring_healing",
+          "event_spring_vision",
+          "event_peaceful_rest"
+        ]
       }
     ],
     connectedLocations: [

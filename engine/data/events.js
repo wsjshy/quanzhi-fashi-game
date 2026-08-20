@@ -5048,5 +5048,79 @@ const DataEvents = {
       { text: "边修炼边欣赏风景", effects: { exp: 25, hp: 15, mp: 20 }, resultText: "你没有全力修炼，而是边修炼边欣赏周围的风景。修炼效率虽然不高，但身心都得到了放松和恢复。经验+25，HP+15，MP+20" },
       { text: "在修炼中感悟自然", effects: { exp: 30, setFlag: ["understood_nature"] }, resultText: "你在修炼中感悟自然，感受着天地间的灵气流动。你对魔法的本质有了更深的理解，这种感悟比单纯的实力提升更加珍贵。经验+30，感悟了自然之道" }
     ]
+  },
+
+  // ========== v2.9.2 地圣泉新互动事件 ==========
+
+  event_spring_insight: {
+    id: "event_spring_insight",
+    name: "地圣泉感悟",
+    description: "你观察着地圣泉的灵气流动，渐渐地看出了一些门道。地圣泉的灵气并非杂乱无章，而是遵循着某种深奥的规律在流动。你对魔法的本质有了新的感悟。",
+    weight: 25,
+    choices: [
+      { text: "深入感悟灵气规律", effects: { exp: 40, mp: 30, setFlag: ["spring_insight_deep"] }, resultText: "你深入感悟地圣泉的灵气流动规律，星子在意识中与灵气产生了共鸣。你感到魔法掌控力有了显著提升。经验+40，MP+30，获得地圣泉感悟" },
+      { text: "记录灵气流动轨迹", effects: { exp: 25, setFlag: ["recorded_spring_flow"] }, resultText: "你仔细记录下地圣泉的灵气流动轨迹，这些数据日后可能会成为突破的关键。经验+25，记录了灵气流动轨迹" },
+      { text: "只是观察，不做干预", effects: { exp: 15 }, resultText: "你选择只是观察，不做任何干预。地圣泉的灵气流动已经深深地印在了你的脑海中。经验+15" }
+    ]
+  },
+
+  event_spring_anomaly: {
+    id: "event_spring_anomaly",
+    name: "地圣泉异常",
+    description: "你观察着地圣泉，突然发现灵气的流动出现了异常。某个方向的灵气似乎在被什么东西吸收，流速明显加快。这种异常让你感到不安。",
+    weight: 20,
+    choices: [
+      { text: "追踪异常来源", effects: { exp: 20, hp: -10, setFlag: ["tracked_spring_anomaly"] }, resultText: "你决定追踪异常的来源。沿着灵气异常的方向，你发现了一个隐蔽的阵法痕迹。这个阵法似乎在吸收地圣泉的灵气，但你无法确定它的用途。经验+20，HP-10，发现了异常阵法痕迹" },
+      { text: "报告守卫", effects: { exp: 10, reputation: { military: 5 }, setFlag: ["reported_spring_anomaly"] }, resultText: "你将地圣泉的异常情况报告给了守卫。守卫队长非常重视，立即加强了警戒。\"年轻人，多谢你的提醒，\"队长说，\"地圣泉是博城的根基，绝不能出问题。\"经验+10，军方声望+5" },
+      { text: "继续观察，不做行动", effects: { exp: 8, setFlag: ["observed_spring_anomaly"] }, resultText: "你选择继续观察，不采取任何行动。异常持续了一会儿后恢复了正常，但你总觉得事情没有那么简单。经验+8" }
+    ]
+  },
+
+  event_spring_whisper: {
+    id: "event_spring_whisper",
+    name: "泉边低语",
+    description: "你静静地观察着地圣泉，恍惚间似乎听到了某种低语。那声音非常微弱，仿佛来自远古的记忆。你集中精神，试图听清那低语的内容。",
+    weight: 15,
+    choices: [
+      { text: "集中精神聆听", effects: { exp: 35, mp: -20, setFlag: ["heard_spring_whisper"] }, resultText: "你集中精神聆听那神秘的低语。渐渐地，你听清了一些片段——那似乎是远古法师留下的修炼心得。虽然只是片段，但已经让你受益匪浅。经验+35，MP-20，听到了远古低语" },
+      { text: "用精神力触碰声源", effects: { exp: 25, hp: -15, mp: -15, setFlag: ["touched_spring_whisper"] }, resultText: "你鼓起勇气，用精神力触碰那低语的声源。一股强大的信息流涌入你的意识，你感到精神力在急速增长，但也承受了不小的压力。经验+25，HP-15，MP-15，精神力得到了提升" },
+      { text: "不去理会，继续观察", effects: { exp: 12 }, resultText: "你选择不去理会那神秘的低语，继续观察地圣泉。低语渐渐消失了，但你总觉得错过了什么。经验+12" }
+    ]
+  },
+
+  event_spring_calm: {
+    id: "event_spring_calm",
+    name: "泉心如镜",
+    description: "地圣泉的水面平静如镜，倒映着地下洞穴的穹顶。你看着水中的倒影，心境也渐渐平静下来。在这种状态下，你感到与周围的灵气产生了更深的联系。",
+    weight: 25,
+    choices: [
+      { text: "进入冥想状态", effects: { exp: 30, mp: 40, hp: 20, setFlag: ["spring_meditation_calm"] }, resultText: "你进入了深度冥想状态，与地圣泉的灵气融为一体。不知过了多久，你从冥想中醒来，感到身心都得到了极大的恢复和提升。经验+30，MP+40，HP+20" },
+      { text: "欣赏泉中倒影", effects: { exp: 15, hp: 15, mp: 15 }, resultText: "你欣赏着泉水中的倒影，感受着这份难得的宁静。地圣泉的灵气缓缓滋养着你的身体，你感到身心都得到了放松。经验+15，HP+15，MP+15" },
+      { text: "在泉边小睡", effects: { exp: 10, hp: 30, mp: 25 }, resultText: "你在泉边找了个舒适的位置，小睡了一会儿。地圣泉的灵气在你睡眠中缓缓滋养着你的身体，醒来时感到精神饱满。经验+10，HP+30，MP+25" }
+    ]
+  },
+
+  event_spring_healing: {
+    id: "event_spring_healing",
+    name: "灵泉治愈",
+    description: "你在地圣泉边休息时，感到周围浓郁的灵气正在缓缓治愈你的身体。伤口在灵气的滋养下快速愈合，疲惫也渐渐消散。地圣泉不愧是天地灵泉，连休息都有如此神奇的效果。",
+    weight: 30,
+    choices: [
+      { text: "全力吸收灵气治愈", effects: { hp: 60, mp: 50, exp: 15 }, resultText: "你全力吸收地圣泉的灵气，让它们治愈你的身体。伤口以肉眼可见的速度愈合，体力和魔力也快速恢复。经验+15，HP+60，MP+50" },
+      { text: "自然吸收，享受宁静", effects: { hp: 40, mp: 35, exp: 10 }, resultText: "你没有刻意吸收灵气，而是顺其自然地享受这份宁静。灵气缓缓地滋养着你的身体，虽然恢复速度不如全力吸收，但你感到更加舒适。经验+10，HP+40，MP+35" },
+      { text: "将灵气引导至经脉淬炼", effects: { hp: 20, mp: 20, exp: 25, setFlag: ["spring_meridian_refine"] }, resultText: "你将地圣泉的灵气引导至经脉中进行淬炼。虽然身体恢复不多，但你的经脉变得更加坚韧，魔法掌控力也有了提升。经验+25，HP+20，MP+20，经脉得到了淬炼" }
+    ]
+  },
+
+  event_spring_vision: {
+    id: "event_spring_vision",
+    name: "泉中幻象",
+    description: "你在地圣泉边休息时，看着泉水中的倒影，突然发现倒影开始变化。泉水中出现了一幅幅画面，似乎是过去或未来的影像。你感到非常惊讶，这是地圣泉的神奇力量吗？",
+    weight: 15,
+    choices: [
+      { text: "仔细观看幻象", effects: { exp: 30, setFlag: ["watched_spring_vision"] }, resultText: "你仔细观看泉中的幻象，看到了一些模糊的画面——似乎是博城未来的景象，但非常不清晰。虽然无法确定具体内容，但你感到这些影像可能预示着什么。经验+30，观看了泉中幻象" },
+      { text: "用精神力触碰幻象", effects: { exp: 20, hp: -10, mp: -20, setFlag: ["touched_spring_vision"] }, resultText: "你用精神力触碰泉中的幻象，试图看清更多内容。一股强大的力量将你的精神力反弹回来，你受到了一些伤害，但也看到了更多的画面。经验+20，HP-10，MP-20" },
+      { text: "闭上眼睛，不去观看", effects: { exp: 10 }, resultText: "你选择闭上眼睛，不去观看泉中的幻象。幻象渐渐消失了，你感到一阵轻松。有些事情，不知道也许更好。经验+10" }
+    ]
   }
 };
