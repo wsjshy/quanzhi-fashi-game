@@ -771,6 +771,41 @@ const DataLocations = {
           "event_patrol_find",
           "event_patrol_attack"
         ]
+      },
+      {
+        id: "chat_guard",
+        name: "与守卫交谈",
+        description: "和城门守卫聊聊，了解城外的消息和博城的安全状况",
+        icon: "💬",
+        timeCost: 0,
+        staminaCost: 0,
+        effects: {
+          exp: 2,
+          reputation: { military: 2 }
+        },
+        eventChance: 0.4,
+        events: [
+          "event_gate_news",
+          "event_guard_chat",
+          "event_guard_warning"
+        ]
+      },
+      {
+        id: "look_outside",
+        name: "眺望远方",
+        description: "站在城墙上眺望远方，看看城外的风景和动静",
+        icon: "🔭",
+        timeCost: 0,
+        staminaCost: 0,
+        effects: {
+          exp: 1
+        },
+        eventChance: 0.3,
+        events: [
+          "event_gate_news",
+          "event_distant_sight",
+          "event_sunset_view"
+        ]
       }
     ],
     connectedLocations: [

@@ -4810,5 +4810,44 @@ const DataEvents = {
       { text: "询问黑教廷的情况", effects: { setFlag: ["bd_ask_blackchurch", "bocheng_aftermath_event_done"], npcOpinion: { tang_yue: 5 } }, resultText: "你问：\"黑教廷...会被抓住吗？\"唐月的表情变得严肃：\"他们跑了。但圣裁院已经介入调查。你如果有什么线索...可以告诉我。\"唐月好感+5，黑教廷剧情线开启" },
       { text: "接受推荐信，准备离开", effects: { setFlag: ["bd_accept_letter", "bocheng_aftermath_event_done"] }, resultText: "你接过推荐信：\"我会的。\"唐月拍了拍你的肩膀：\"去吧。记住，魔法的意义不是力量，而是守护。\"经验+150，你准备离开博城" }
     ]
+  },
+
+  // ========== v2.9.2 博城北门新互动事件 ==========
+
+  event_guard_warning: {
+    id: "event_guard_warning",
+    name: "守卫的警告",
+    description: "守卫队长看到你，走过来压低声音：\"最近城外不太太平，雪峰山方向有妖魔活动的迹象。如果要出城，务必小心。\"他顿了顿，\"听说有小队在城外失联了，军方正在调查。\"",
+    weight: 30,
+    choices: [
+      { text: "询问具体情况", effects: { exp: 5, reputation: { military: 3 } }, resultText: "守卫队长详细说明了情况：三天前，一支猎魔小队在雪峰山外围失联，搜索队只找到了破损的武器和血迹。\"不像是普通妖魔干的，\"他皱眉，\"手法很干净。\"你获得了重要情报，军方声望+3，经验+5" },
+      { text: "表示会小心", effects: { exp: 2 }, resultText: "你点头表示明白：\"谢谢提醒，我会注意的。\"守卫队长拍了拍你的肩膀：\"年轻人，小心驶得万年船。\"经验+2" },
+      { text: "主动请求参与搜索", effects: { exp: 10, reputation: { military: 5 }, setFlag: ["volunteer_search"] }, resultText: "你主动请求：\"队长，我也想出一份力。\"守卫队长有些意外，随即点头：\"好，有勇气。明天搜索队出发，你到北门集合。\"军方声望+5，经验+10，你获得了参与搜索的资格" }
+    ]
+  },
+
+  event_distant_sight: {
+    id: "event_distant_sight",
+    name: "远眺所见",
+    description: "你站在城墙上眺望远方。天气晴朗，视野很好。你看到远处的雪峰山轮廓清晰，山脚下似乎有什么东西在移动。仔细看去，像是一群飞鸟被什么惊起，四散飞逃。",
+    weight: 25,
+    choices: [
+      { text: "仔细观察", effects: { exp: 3, setFlag: ["noticed_distant_anomaly"] }, resultText: "你凝神观察，发现飞鸟惊起的方向正是雪峰山外围。那里似乎有烟尘升起，但距离太远，看不清楚。你记下了这个异常情况。经验+3" },
+      { text: "告诉守卫", effects: { exp: 5, reputation: { military: 2 } }, resultText: "你把看到的情况告诉了守卫。守卫皱眉望去，随即点头：\"多谢提醒，我们会加强警戒。\"军方声望+2，经验+5" },
+      { text: "只是风景，不放在心上", effects: {}, resultText: "你觉得可能只是普通的野兽惊扰了飞鸟，没有太在意。毕竟博城周围有妖魔活动也是常事。" }
+    ]
+  },
+
+  event_sunset_view: {
+    id: "event_sunset_view",
+    name: "日落美景",
+    description: "夕阳西下，金色的阳光洒在城墙上，远处的雪峰山被染成一片金红。你靠在城墙上，看着这壮丽的景色，心中涌起一股平静的力量。这样的景色，值得守护。",
+    weight: 20,
+    condition: { timeOfDay: "evening" },
+    choices: [
+      { text: "静静欣赏", effects: { exp: 8, hp: 20, mp: 15 }, resultText: "你静静地看着日落，感受着阳光的温暖。心中的疲惫渐渐消散，对魔法的理解似乎也更深了一层。经验+8，HP+20，MP+15" },
+      { text: "冥想修炼", effects: { exp: 15, mp: 30 }, resultText: "你借着日落的宁静，开始冥想修炼。星子在意识中缓缓流转，精神力得到了滋养。经验+15，MP+30" },
+      { text: "许下心愿", effects: { exp: 5, setFlag: ["sunset_wish"] }, resultText: "你对着日落许下心愿：希望自己能变得更强，守护这座城市和身边的人。微风拂过，仿佛是对心愿的回应。经验+5" }
+    ]
   }
 };
