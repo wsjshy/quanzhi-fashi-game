@@ -8570,6 +8570,24 @@ const BattleSystem = {
             Player.hp = Math.min(Player.maxHp, Player.hp + hpRestore);
             Player.mp = Math.min(Player.maxMp, Player.mp + mpRestore);
             this.addLog(`💚 战斗胜利，恢复 ${hpRestore} HP、${mpRestore} MP`, 'system');
+
+            // v2.9.1: 战斗统计信息
+            const battleStats = [];
+            if (this.interruptCount && this.interruptCount > 0) {
+                battleStats.push(`🔮 打断施法 ${this.interruptCount} 次`);
+            }
+            if (this.stats?.critCount && this.stats.critCount > 0) {
+                battleStats.push(`💥 暴击 ${this.stats.critCount} 次`);
+            }
+            if (this.stats?.totalDamage && this.stats.totalDamage > 0) {
+                battleStats.push(`⚔️ 总伤害 ${this.stats.totalDamage}`);
+            }
+            if (this.turn && this.turn > 0) {
+                battleStats.push(`⏱️ 用时 ${this.turn} 回合`);
+            }
+            if (battleStats.length > 0) {
+                this.addLog(`📊 战斗统计：${battleStats.join('，')}`, 'system');
+            }
         }
 
         // v0.15.0: 战斗胜利时记录技能记忆（对该妖魔最后使用的技能）
