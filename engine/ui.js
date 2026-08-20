@@ -3534,6 +3534,7 @@ const UI = {
                             ${state.enemy.name}
                             <span style="font-size: 14px; color: #ffcc66;">Lv.${state.enemy.level}</span>
                             ${state.enemy.isElite ? '<span style="color: #ff6600;"> ⭐精英</span>' : ''}
+                            ${(state.enemy.isMage || state.enemy.enemyType === 'mage') ? '<span style="color: #66ccff; font-size:12px;" title="魔法师敌人，施法可被控制技能打断"> 🔮法师</span>' : ''}
                             <span style="font-size:14px;opacity:0.7;margin-left:4px;">ℹ️</span>
                         </div>
                         ${state.enemy.title ? `<div style="font-size: 12px; color: #ff9966; margin-bottom: 8px;">${state.enemy.title}</div>` : ''}
