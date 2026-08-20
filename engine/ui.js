@@ -3803,10 +3803,29 @@ const UI = {
                                     const canUse = state.isPlayerTurn && state.player.mp >= skill.mpCost;
                                     const cooldown = (BattleSystem.skillCooldowns && BattleSystem.skillCooldowns[skillId]) || 0;
                                     const isCd = cooldown > 0;
+                                    // v2.9.0: 计算实际打断概率（考虑境界减免）
+                                    let actualInterrupt = null;
+                                    let interruptTitle = '';
+                                    if (skill.interruptChance && skill.tier) {
+                                        const playerLevel = state.player.level || 1;
+                                        const playerTier = playerLevel >= 56 ? '超阶' : playerLevel >= 31 ? '高阶' : playerLevel >= 11 ? '中阶' : '初阶';
+                                        const reductionMap = {
+                                            "初阶": { "初阶": 0, "中阶": null, "高阶": null },
+                                            "中阶": { "初阶": 0.15, "中阶": 0, "高阶": null },
+                                            "高阶": { "初阶": 0.30, "中阶": 0.15, "高阶": 0 },
+                                            "超阶": { "初阶": 0.45, "中阶": 0.30, "高阶": 0.15 }
+                                        };
+                                        const reduction = reductionMap[playerTier]?.[skill.tier];
+                                        if (reduction !== null && reduction !== undefined) {
+                                            actualInterrupt = Math.max(0, skill.interruptChance - reduction);
+                                            interruptTitle = `基础打断${(skill.interruptChance*100).toFixed(0)}%，境界减免${(reduction*100).toFixed(0)}%，实际打断${(actualInterrupt*100).toFixed(0)}%`;
+                                        }
+                                    }
+                                    const interruptColor = actualInterrupt !== null ? (actualInterrupt >= 0.4 ? '#ff4444' : actualInterrupt >= 0.2 ? '#ffaa44' : '#88ff88') : '';
                                     return `
                                         <div style="position:relative;">
                                             <button onclick="Game.battleUseSkillAndClose('${skillId}')" ${(!canUse || isCd) ? 'disabled' : ''}
-                                                title="${skill.description}"
+                                                title="${skill.description}${interruptTitle ? ' | ' + interruptTitle : ''}"
                                                 style="
                                                     padding:10px;
                                                     background:linear-gradient(135deg, ${info.color}22, ${info.color}44);
@@ -3821,9 +3840,10 @@ const UI = {
                                                 ">
                                                 <div style="font-size:14px; font-weight:bold; margin-bottom:3px; padding-right:20px;">${info.icon} ${skill.name}</div>
                                                 <div style="font-size:11px; color:#ccc; margin-bottom:3px;">${skill.description.substring(0, 25)}${skill.description.length > 25 ? '...' : ''}</div>
-                                                <div style="font-size:11px; display:flex; justify-content:space-between;">
+                                                <div style="font-size:11px; display:flex; justify-content:space-between; align-items:center;">
                                                     <span style="color:${state.player.mp >= skill.mpCost ? '#aaccff' : '#ff6666'};">MP: ${skill.mpCost}</span>
                                                     <span style="color:#ffcc66;">${skill.tier || ''}</span>
+                                                    ${actualInterrupt !== null ? `<span style="color:${interruptColor};font-size:10px;" title="${interruptTitle}">打断${(actualInterrupt*100).toFixed(0)}%</span>` : ''}
                                                     ${isCd ? `<span style="color:#ff8866;">CD:${cooldown}</span>` : ''}
                                                 </div>
                                             </button>
