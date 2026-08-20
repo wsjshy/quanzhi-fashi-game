@@ -479,6 +479,44 @@ const DataLocations = {
           "event_find_herb",
           "event_find_rare_herb"
         ]
+      },
+      {
+        id: "track_demon",
+        name: "观察妖魔踪迹",
+        description: "仔细观察山中的妖魔踪迹，了解它们的活动规律。可能获得重要情报或发现罕见妖魔的线索。",
+        icon: "👣",
+        timeCost: 1,
+        staminaCost: 8,
+        effects: {
+          exp: 6,
+          reputation: { hunter: 2 }
+        },
+        eventChance: 0.5,
+        events: [
+          "event_find_demon_tracks",
+          "event_find_demon_clue",
+          "event_rare_demon_sighting",
+          "event_track_wolf_pack"
+        ]
+      },
+      {
+        id: "mountain_rest",
+        name: "山中休息",
+        description: "在山中找个安全的地方休息，恢复体力和魔力。但山中并不安全，有概率被妖魔偷袭。",
+        icon: "🏕️",
+        timeCost: 1,
+        staminaCost: 0,
+        effects: {
+          hp: 30,
+          mp: 25,
+          exp: 2
+        },
+        eventChance: 0.25,
+        events: [
+          "event_rest_interrupted",
+          "event_peaceful_rest",
+          "event_night_sounds"
+        ]
       }
     ],
     connectedLocations: [

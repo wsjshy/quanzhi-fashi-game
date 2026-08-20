@@ -4899,5 +4899,68 @@ const DataEvents = {
       { text: "用精神力触碰图案", effects: { exp: 25, hp: -15, mp: -20, setFlag: ["touched_star_pattern"] }, resultText: "你鼓起勇气，用精神力触碰这个星之图案。一股强大的能量涌入你的意识，你感到精神力在急速增长，但也承受了不小的压力。经验+25，HP-15，MP-20，精神力得到了质的提升" },
       { text: "只是观察，不做干预", effects: { exp: 12 }, resultText: "你选择只是观察，不做任何干预。星之图案缓缓消散，但它的形状已经深深地印在了你的脑海中。经验+12" }
     ]
+  },
+
+  // ========== v2.9.2 雪峰山新互动事件 ==========
+
+  event_rare_demon_sighting: {
+    id: "event_rare_demon_sighting",
+    name: "罕见妖魔目击",
+    description: "你在观察妖魔踪迹时，突然发现了一组罕见的脚印。这组脚印比普通妖魔大得多，而且形状奇特，你从未见过这样的妖魔踪迹。从脚印的深度来看，这只妖魔的体型和力量都非同寻常。",
+    weight: 20,
+    choices: [
+      { text: "追踪这只妖魔", effects: { exp: 15, hp: -10, setFlag: ["tracking_rare_demon"] }, resultText: "你决定追踪这只罕见的妖魔。沿着脚印走了一段路后，你发现了它栖息的洞穴入口。从洞口传来的气息让你不寒而栗，这绝对不是你现在能对付的对手。你悄悄记下了位置，选择撤退。经验+15，HP-10，获得罕见妖魔的位置情报" },
+      { text: "记录踪迹后离开", effects: { exp: 8, reputation: { hunter: 5 } }, resultText: "你仔细记录了这组罕见脚印的形状、大小和深度，然后选择离开。这些情报对猎魔队来说非常有价值。经验+8，猎魔者声望+5" },
+      { text: "通知附近的猎魔者", effects: { exp: 10, reputation: { hunter: 8 }, setFlag: ["reported_rare_demon"] }, resultText: "你找到附近的猎魔者小队，将罕见妖魔的情报告诉了他们。队长非常重视，立即组织了侦察队伍。\"年轻人，你的情报很有价值，\"队长拍了拍你的肩膀，\"这只妖魔可能是战将级甚至更高，我们需要谨慎应对。\"经验+10，猎魔者声望+8" }
+    ]
+  },
+
+  event_track_wolf_pack: {
+    id: "event_track_wolf_pack",
+    name: "魔狼群踪迹",
+    description: "你发现了一群魔狼的踪迹。从脚印的数量来看，这是一个不小的狼群，至少有七八只魔狼。魔狼是群居妖魔，单独一只并不可怕，但成群的魔狼就连中阶法师也要忌惮三分。",
+    weight: 25,
+    choices: [
+      { text: "跟踪狼群找到巢穴", effects: { exp: 12, hp: -8, setFlag: ["found_wolf_den"] }, resultText: "你小心翼翼地跟踪狼群，最终找到了它们的巢穴——一个隐蔽的山洞。洞口散落着白骨，空气中弥漫着血腥味。你记下了位置，然后悄悄离开。经验+12，HP-8，发现了魔狼巢穴" },
+      { text: "观察狼群的活动规律", effects: { exp: 10, setFlag: ["studied_wolf_pattern"] }, resultText: "你找了个隐蔽的位置，观察狼群的活动规律。你发现它们在傍晚时分最为活跃，而且有固定的狩猎路线。这些信息对狩猎非常有帮助。经验+10，掌握了魔狼的活动规律" },
+      { text: "设置陷阱伏击", effects: { exp: 15, addItem: { itemId: "wolf_pelt", count: 2 }, hp: -15 }, resultText: "你利用地形设置了一个简单的陷阱，然后引诱两只落单的魔狼进入陷阱。经过一番激战，你成功击杀了它们，获得了两张完整的狼皮。但你也受了不小的伤。经验+15，获得魔狼皮x2，HP-15" }
+    ]
+  },
+
+  event_rest_interrupted: {
+    id: "event_rest_interrupted",
+    name: "休息被打断",
+    description: "你正在山中休息，突然听到附近传来灌木丛的沙沙声。你警觉地站起来，看到一只妖魔正悄悄向你靠近。看来你的休息地点选得不够安全。",
+    weight: 30,
+    choices: [
+      { text: "立即进入战斗", effects: { exp: 10, hp: -12 }, resultText: "你迅速做出反应，与这只偷袭的妖魔展开战斗。虽然被打了个措手不及，但你还是凭借实力击败了它。经验+10，HP-12" },
+      { text: "快速撤离", effects: { hp: -5, stamina: -10 }, resultText: "你选择不与这只妖魔纠缠，快速收拾东西撤离。虽然有些狼狈，但至少避免了一场不必要的战斗。HP-5，体力-10" },
+      { text: "用威慑吓退妖魔", effects: { exp: 5, mp: -10 }, resultText: "你释放出强大的魔法气息，试图吓退这只妖魔。对方感受到你的力量后，犹豫了一下，最终选择了撤退。经验+5，MP-10" }
+    ]
+  },
+
+  event_peaceful_rest: {
+    id: "event_peaceful_rest",
+    name: "宁静的休息",
+    description: "你在山中找到了一个安全的地方休息。阳光透过树叶洒下，微风轻拂，周围一片宁静。在这样的环境中休息，你感到身心都得到了很好的恢复。",
+    weight: 35,
+    choices: [
+      { text: "好好睡一觉", effects: { hp: 40, mp: 30, exp: 3 }, resultText: "你找了个舒适的位置，好好地睡了一觉。醒来时感到精神饱满，体力和魔力都得到了充分恢复。HP+40，MP+30，经验+3" },
+      { text: "边休息边冥想", effects: { hp: 20, mp: 40, exp: 8 }, resultText: "你一边休息一边冥想，感受着山中的自然气息。星子在意识中缓缓流动，精神力得到了滋养。HP+20，MP+40，经验+8" },
+      { text: "欣赏山中风景", effects: { hp: 25, mp: 20, exp: 5, setFlag: ["enjoyed_mountain_view"] }, resultText: "你没有刻意休息，而是欣赏起了山中的风景。远处的山峰云雾缭绕，近处的溪流潺潺流淌，这样的景色让你心情愉悦。HP+25，MP+20，经验+5" }
+    ]
+  },
+
+  event_night_sounds: {
+    id: "event_night_sounds",
+    name: "夜山中的声音",
+    description: "夜幕降临，你在山中休息时，听到了各种奇怪的声音。远处传来妖魔的嚎叫，近处有不知名的生物在活动。夜晚的雪峰山比白天更加危险，但也隐藏着更多的秘密。",
+    weight: 25,
+    condition: { timeOfDay: "night" },
+    choices: [
+      { text: "保持警惕，继续休息", effects: { hp: 15, mp: 10, exp: 5 }, resultText: "你保持着警惕，在半梦半醒中度过了这个夜晚。虽然休息质量不高，但至少没有遇到危险。HP+15，MP+10，经验+5" },
+      { text: "循声探查", effects: { exp: 12, hp: -10, setFlag: ["investigated_night_sounds"] }, resultText: "你鼓起勇气，循着奇怪的声音前去探查。走了一段路后，你发现是一只罕见的夜行妖魔在觅食。你悄悄观察了一会儿，获得了宝贵的情报，然后返回休息。经验+12，HP-10" },
+      { text: "生火驱赶妖魔", effects: { hp: 20, mp: 15, exp: 3 }, resultText: "你生起一堆篝火，利用火光和热度驱赶附近的妖魔。大多数低阶妖魔都惧怕火光，你因此获得了一个相对安全的休息环境。HP+20，MP+15，经验+3" }
+    ]
   }
 };
