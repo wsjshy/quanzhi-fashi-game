@@ -3130,7 +3130,7 @@ const Game = {
                     <!-- 魔法系 -->
                     ${npc.elements && npc.elements.length > 0 ? `
                         <div style="font-size: 12px; color: #ffcc66; margin-bottom: 4px;">
-                            🔮 ${npc.elements.map(e => this._getElementName(e)).join(' / ')}
+                            🔮 ${npc.elements.map(e => SkillSystem.getElementName(e)).join(' / ')}
                         </div>
                     ` : ''}
                     <!-- 关系数值条（简化版） -->
