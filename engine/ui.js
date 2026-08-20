@@ -2825,6 +2825,32 @@ const UI = {
                             <div style="text-align:center; margin-bottom:15px; padding-bottom:12px; border-bottom:1px solid rgba(100,100,150,0.3);">
                                 <div style="font-size:22px; font-weight:bold; color:#ffd700; margin-bottom:4px;">🧙 ${typeof RealmSystem !== 'undefined' ? RealmSystem.getRealm(Player.realm || 'initial').name : '初阶'}魔法师</div>
                                 <div style="font-size:13px; color:#aabbdd;">等级 ${Player.level} · ${Player.elements.length}系法师</div>
+                                ${(() => {
+                                    // v2.9.0: 施法掌控信息
+                                    const playerLevel = Player.level || 1;
+                                    const playerTier = playerLevel >= 56 ? '超阶' : playerLevel >= 31 ? '高阶' : playerLevel >= 11 ? '中阶' : '初阶';
+                                    const tierColor = { '初阶': '#99cc99', '中阶': '#66ccff', '高阶': '#ff9966', '超阶': '#ff66ff' };
+                                    const canCast = { '初阶': true, '中阶': playerLevel >= 11, '高阶': playerLevel >= 31, '超阶': playerLevel >= 56 };
+                                    const reductionMap = {
+                                        "初阶": { "初阶": 0, "中阶": null, "高阶": null, "超阶": null },
+                                        "中阶": { "初阶": 0.15, "中阶": 0, "高阶": null, "超阶": null },
+                                        "高阶": { "初阶": 0.30, "中阶": 0.15, "高阶": 0, "超阶": null },
+                                        "超阶": { "初阶": 0.45, "中阶": 0.30, "高阶": 0.15, "超阶": 0 }
+                                    };
+                                    return `
+                                    <div style="margin-top:10px; padding:8px; background:rgba(60,60,100,0.3); border-radius:8px; border:1px solid ${tierColor[playerTier]}44;">
+                                        <div style="font-size:11px; color:${tierColor[playerTier]}; font-weight:bold; margin-bottom:5px;">🔮 施法掌控（${playerTier}）</div>
+                                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px; font-size:10px;">
+                                            ${['初阶','中阶','高阶','超阶'].map(tier => {
+                                                const can = canCast[tier];
+                                                const red = reductionMap[playerTier]?.[tier];
+                                                const redStr = red === null ? '—' : red === 0 ? '0%' : `-${(red*100).toFixed(0)}%`;
+                                                return `<div style="color:${can ? '#aaccff' : '#666'}; ${can ? '' : 'text-decoration:line-through;'}">${tier}${can ? '' : '(未解锁)'} <span style="color:${can ? '#88ff88' : '#666'};float:right;">${redStr}</span></div>`;
+                                            }).join('')}
+                                        </div>
+                                        <div style="font-size:9px; color:#8899bb; margin-top:4px;">境界越高，对低阶魔法掌控越强，打断概率越低</div>
+                                    </div>`;
+                                })()}
                             </div>
                             
                             <!-- 经验条 -->
