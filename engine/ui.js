@@ -1870,6 +1870,14 @@ const UI = {
             const interruptColor = skill.interruptChance >= 0.4 ? '#ff4444' : skill.interruptChance >= 0.2 ? '#ffaa44' : '#88ff88';
             statsHtml.push(`<span style="color:${interruptColor};">打断概率: ${(skill.interruptChance*100).toFixed(0)}%</span>`);
         }
+        // v2.9.0: 施法时间（引导回合数）
+        const castTimeMap = { '初阶': 2, '中阶': 3, '高阶': 4, '超阶': 5 };
+        const baseCastTime = castTimeMap[skill.tier] || 2;
+        if (baseCastTime > 1) {
+            statsHtml.push(`<span style="color:#cc88ff;">引导时间: ${baseCastTime}回合（精神力越高越快）</span>`);
+        } else {
+            statsHtml.push(`<span style="color:#88ff88;">瞬发（无需引导）</span>`);
+        }
         if (skill.unlockLevel) {
             const playerLv = typeof Player !== 'undefined' ? Player.getPlayerLevel() : 1;
             const locked = playerLv < skill.unlockLevel;
