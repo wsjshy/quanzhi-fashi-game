@@ -17,6 +17,9 @@
 - [x] 对话UI优化：对话框居中显示，NPC立绘缩小移到左上角，字体增大(文本17→19px，选项15→17px)，圆角边框+阴影，最大高度70vh可滚动
 - [x] 任务提示和反馈：可接任务选项添加"📜 可接任务"标识(绿色边框)，接任务后即时显示消息反馈，不再需要关闭对话才弹出
 - [x] NPC信息系统全面改进（5阶段）：修复P0数据Bug(艾图图嵌套/elements缺失)、P1数据一致性(罗宋等级/growth.base统一/修为不明确标记15个)、整合两套成长系统(统一Game.getNPCLevel入口)、扩展growth字段(10→38个NPC)、文档更新
+- [x] NPC多系别等级系统：新增getNPCElementLevels/getNPCElementLevel/getNPCMainElement方法，为6个多系别NPC添加elementLevels字段，UI显示每系等级/境界，与玩家elementLevels机制对齐
+- [x] 战斗逻辑对齐：系别等级加成(elementLevelBonus)从"仅玩家"改为对玩家和NPC法师都生效，NPC法师使用Game.getNPCElementLevel获取系别等级
+- [x] NPC天赋扩展：为15个战斗NPC法师添加天赋（9个明确战斗场景+1个原文明确实力描述+5个天澜高中学生），重要NPC必须有明确战斗表现或原文支持，不太重要的NPC可根据剧情合理推断
 
 ---
 
