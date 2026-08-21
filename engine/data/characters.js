@@ -5228,36 +5228,9 @@ const DataCharacters = {
     id: "xiao_principal",
     name: "萧院长",
     title: "天澜魔法高中院长",
-    description: "天澜魔法高中的院长，一位德高望重的老法师，火系修为深厚，培养了无数优秀的法师。",
-    elements: [
-      "fire",
-      "wind"
-    ],
-    level: 35,
-    levelDisplay: "???",
-    levelUnknown: true,
-    maxHp: 1200,
-    maxMp: 800,
-    attack: 120,
-    defense: 80,
-    speed: 35,
-    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst", "fire_fist", "fire_fist_nine", "wind_blade", "wind_speed", "wind_tornado", "sky_dive", "wind_wing"],
-    growth: {
-      base: {
-        level: 35,
-        elements: ["fire", "wind"],
-        skills: ["basic_attack", "fire_bolt", "fire_rain", "wind_blade", "wind_speed"],
-        title: "天澜魔法高中院长",
-        growthType: "mage",
-      },
-      events: [
-        {
-          after: "bocheng_disaster",
-          level: 38,
-          title: "火系高阶法师",
-        }
-      ]
-    },
+    description: "天澜魔法高中的院长，一位德高望重的老法师，修为深不可测，培养了无数优秀的法师。博城篇前期其实力未明确展现，故不设具体战斗数据。",
+    isCombatant: false,
+    combatUnknown: true,
     spriteColor: "#ff6633",
     location: "tianlan_school",
     dialogue: [

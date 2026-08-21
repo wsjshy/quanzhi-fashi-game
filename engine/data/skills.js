@@ -75,7 +75,7 @@ const DataSkills = {
   },
   ice_spike: {
     id: "ice_spike",
-    name: "冰蔓·冻结",
+    name: "冰蔓·冻迟",
     description: "初阶冰系魔法，发射冰刺，累积冻结值。冻结值满100时敌人被冻结1回合，冻结中受火系伤害×2",
     element: "ice",
     type: "damage",
@@ -101,6 +101,8 @@ const DataSkills = {
   ice_shield: {
     id: "ice_shield",
     name: "冰蔓·冰铠",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "初阶冰系防御魔法，用冰甲保护自己，生成40点护盾并提升防御",
     element: "ice",
     type: "buff",
@@ -181,6 +183,8 @@ const DataSkills = {
   earth_shield: {
     id: "earth_shield",
     name: "地波·岩盾",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "初阶土系防御魔法，召唤岩石护盾，吸收50点伤害。护盾存在时防御翻倍",
     element: "earth",
     type: "buff",
@@ -266,7 +270,7 @@ const DataSkills = {
   },
   wind_speed: {
     id: "wind_speed",
-    name: "风轨·飘影",
+    name: "风轨·闪步",
     description: "初阶风系辅助魔法，提升自身速度和闪避率，风系法师的核心生存技能",
     element: "wind",
     type: "buff",
@@ -487,6 +491,8 @@ const DataSkills = {
   light_shield: {
     id: "light_shield",
     name: "光耀·圣盾",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "初阶光系防御魔法，用圣光凝聚护盾，净化所有负面状态并提升防御。光系核心生存技能",
     element: "light",
     type: "buff",
@@ -651,7 +657,7 @@ const DataSkills = {
   },
   wind_tornado: {
     id: "wind_tornado",
-    name: "风轨·龙卷",
+    name: "风轨·飘影",
     description: "初阶风系三级魔法，召唤龙卷风，高命中多段伤害",
     element: "wind",
     type: "damage",
@@ -815,6 +821,8 @@ const DataSkills = {
   light_judgment: {
     id: "light_judgment",
     name: "光耀·裁决",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "初阶光系三级魔法，圣光裁决，对暗影和妖魔系有巨额伤害",
     element: "light",
     type: "damage",
@@ -870,6 +878,8 @@ const DataSkills = {
   fire_burn_bone: {
     id: "fire_burn_bone",
     name: "火滋·炎蚀",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "初阶火系特殊魔法，火焰侵入敌人体内燃烧骨骼，造成高额持续伤害，可穿透皮毛防御。",
     element: "fire",
     type: "damage",
@@ -974,6 +984,8 @@ const DataSkills = {
   thorn_shot: {
     id: "thorn_shot",
     name: "荆棘射击",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "妖藤发射尖锐荆棘，远程攻击敌人。",
     element: "plant",
     type: "damage",
@@ -989,6 +1001,8 @@ const DataSkills = {
   fire_soul: {
     id: "fire_soul",
     name: "火滋·烈阳",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "点燃内心的火焰，大幅提升攻击力，持续3回合",
     element: "fire",
     type: "buff",
@@ -1002,7 +1016,7 @@ const DataSkills = {
   },
   ice_frost: {
     id: "ice_frost",
-    name: "冰蔓·霜寒",
+    name: "冰蔓·凝结",
     description: "释放寒气侵蚀敌人，降低其攻击力和速度，持续3回合",
     element: "ice",
     type: "debuff",
@@ -1017,6 +1031,8 @@ const DataSkills = {
   thunder_drive: {
     id: "thunder_drive",
     name: "雷印·励行",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "雷电激发身体潜能，提升速度和命中率，持续3回合",
     element: "thunder",
     type: "buff",
@@ -1031,6 +1047,8 @@ const DataSkills = {
   earth_mud: {
     id: "earth_mud",
     name: "土系·泥泞",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "召唤泥泞困住敌人，大幅降低其速度和闪避，持续3回合",
     element: "earth",
     type: "debuff",
@@ -1045,6 +1063,8 @@ const DataSkills = {
   wind_barrier: {
     id: "wind_barrier",
     name: "风轨·风障",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "在敌人周围制造乱流，降低其命中率，持续3回合",
     element: "wind",
     type: "debuff",
@@ -1059,6 +1079,8 @@ const DataSkills = {
   water_moist: {
     id: "water_moist",
     name: "水系·水润",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "水元素包裹全身，提升防御并每回合恢复少量HP，持续3回合",
     element: "water",
     type: "buff",
@@ -1073,6 +1095,8 @@ const DataSkills = {
   light_blessing: {
     id: "light_blessing",
     name: "光耀·祝福",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "圣光加持，同时提升攻击力和防御力，持续3回合",
     element: "light",
     type: "buff",
@@ -1087,6 +1111,8 @@ const DataSkills = {
   dark_weakness: {
     id: "dark_weakness",
     name: "暗影·虚弱诅咒",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "暗影力量侵蚀敌人，同时降低其攻击力和防御力，持续3回合",
     element: "dark",
     type: "debuff",
@@ -1196,6 +1222,8 @@ const DataSkills = {
   summon_return: {
     id: "summon_return",
     name: "召唤·回收",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "提前收回召唤兽，恢复召唤兽剩余生命值50%的MP",
     element: "summon",
     type: "special",
@@ -1208,6 +1236,8 @@ const DataSkills = {
   thunder_whip: {
     id: "thunder_whip",
     name: "雷印·狂策",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "2级雷系技能。雷电化为长鞭疯狂抽打目标，电弧持续传导造成麻痹。对力量型妖魔有特效。",
     element: "thunder",
     type: "damage",
@@ -1224,6 +1254,8 @@ const DataSkills = {
   ice_freeze: {
     id: "ice_freeze",
     name: "冰蔓·凝结",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "2级冰系技能。飞霜凝结敌人脚下地面，蔓延至下肢冻结，大幅降低敌人移动速度。",
     element: "ice",
     type: "damage",
@@ -1240,6 +1272,8 @@ const DataSkills = {
   water_shield: {
     id: "water_shield",
     name: "水御·守护",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "水系防御技能。数条水绸带编织成水之衣甲，吸收伤害并提升防御。",
     element: "water",
     type: "buff",
@@ -1255,6 +1289,8 @@ const DataSkills = {
   earth_slow: {
     id: "earth_slow",
     name: "地波·迟缓",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "土系控制技能。拍打地面产生地下波纹，迫使敌人向反方向挪动，降低其速度。",
     element: "earth",
     type: "debuff",
@@ -1270,6 +1306,8 @@ const DataSkills = {
   ice_cover: {
     id: "ice_cover",
     name: "冰蔓·覆盖",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "3级冰系技能。狂雪降临，覆盖整个区域，将一切冻结成冰。范围极大，威力极强，是冰系初阶最强技能。",
     element: "ice",
     type: "damage",
@@ -1287,6 +1325,8 @@ const DataSkills = {
   fire_burn_bone_lv3: {
     id: "fire_burn_bone_lv3",
     name: "火滋·爆裂",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "3级火系技能。火焰爆裂，范围爆炸伤害，威力巨大。火滋的终极形态。",
     element: "fire",
     type: "damage",
@@ -1303,6 +1343,8 @@ const DataSkills = {
   thunder_wrath: {
     id: "thunder_wrath",
     name: "雷印·怒击",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
     description: "3级雷系技能。雷霆之怒，多道雷印同时轰击，威力霸道无比。雷系初阶最强技能，穿透力极强，无视大部分防御。",
     element: "thunder",
     type: "damage",

@@ -908,12 +908,7 @@ const DataEnemies = {
     attack: 45,
     defense: 20,
     speed: 18,
-    skills: [
-      "basic_attack",
-      "dark_bolt",
-      "ice_spike",
-      "ice_shield"
-    ],
+    skills: ["basic_attack", "dark_bolt", "ice_spike", "ice_frost"],
     spriteColor: "#000066",
     isEnemy: true,
     aiType: "tactical",
@@ -1016,7 +1011,7 @@ const DataEnemies = {
     attack: 12,
     defense: 10,
     speed: 6,
-    skills: ["basic_attack", "demon_vine_bind", "thorn_shot"],
+    skills: ["basic_attack", "demon_vine_bind", "plant_thorn"],
     enemyType: "demon",
     demonTier: "servant",
     spriteColor: "#228b22",
@@ -1108,7 +1103,7 @@ const DataEnemies = {
     attack: 28,
     defense: 14,
     speed: 18,
-    skills: ["basic_attack", "ice_spike", "ice_freeze", "ice_cover"],
+    skills: ["basic_attack", "ice_spike", "ice_frost", "ice_storm"],
     aiType: "controller",
     specialAbility: "地波履魔具：每3回合闪避一次攻击；冰蔓覆盖：3级冰系范围冻结",
     spriteColor: "#aaddff",
@@ -1354,11 +1349,7 @@ const DataEnemies = {
     defense: 10,
     speed: 14,
     spirit: 18,
-    skills: [
-      "basic_attack",
-      "ice_spike",
-      "ice_shield"
-    ],
+    skills: ["basic_attack", "ice_spike", "ice_frost"],
     talents: ["ice_talent_legendary"],
     aiType: "controller",
     enemyType: "mage",
@@ -1714,12 +1705,7 @@ const DataEnemies = {
     defense: 18,
     speed: 16,
     spirit: 20,
-    skills: [
-      "basic_attack",
-      "earth_shield",
-      "ice_lock",
-      "earth_wave"
-    ],
+    skills: ["basic_attack", "earth_spike", "ice_lock", "earth_wave"],
     aiType: "defensive",
     enemyType: "human",
     spriteColor: "#8B7355",
@@ -2125,11 +2111,7 @@ const DataEnemies = {
     defense: 35,
     speed: 18,
     spirit: 25,
-    skills: [
-      "light_blessing",
-      "light_sanctuary",
-      "light_purify"
-    ],
+    skills: ["light_purify", "light_sanctuary"],
     aiType: "defensive",
     enemyType: "human",
     spriteColor: "#FFD700",
@@ -2158,13 +2140,7 @@ const DataEnemies = {
     defense: 18,
     speed: 22,
     spirit: 20,
-    skills: [
-      "basic_attack",
-      "wind_blade",
-      "wind_tornado",
-      "earth_spike",
-      "earth_shield"
-    ],
+    skills: ["basic_attack", "wind_blade", "wind_tornado", "earth_spike"],
     aiType: "aggressive",
     enemyType: "human",
     spriteColor: "#87CEEB",
@@ -2259,13 +2235,7 @@ const DataEnemies = {
     defense: 60,
     speed: 35,
     spirit: 70,
-    skills: [
-      "basic_attack",
-      "wind_blade",
-      "wind_tornado",
-      "water_burst",
-      "water_shield"
-    ],
+    skills: ["basic_attack", "wind_blade", "wind_tornado", "water_burst", "water_chain"],
     aiType: "tactical",
     enemyType: "human",
     spriteColor: "#4169E1",
@@ -2355,13 +2325,7 @@ const DataEnemies = {
     defense: 20,
     speed: 25,
     spirit: 30,
-    skills: [
-      "basic_attack",
-      "ice_spike",
-      "ice_freeze",
-      "shadow_step",
-      "shadow_claw"
-    ],
+    skills: ["basic_attack", "ice_spike", "ice_frost", "shadow_step", "shadow_claw"],
     aiType: "tactical",
     enemyType: "human",
     spriteColor: "#4A0080",
@@ -2390,12 +2354,7 @@ const DataEnemies = {
     defense: 15,
     speed: 18,
     spirit: 20,
-    skills: [
-      "basic_attack",
-      "ice_spike",
-      "ice_freeze",
-      "shadow_claw"
-    ],
+    skills: ["basic_attack", "ice_spike", "ice_frost", "shadow_claw"],
     aiType: "aggressive",
     enemyType: "human",
     spriteColor: "#4A0080",
@@ -2556,12 +2515,7 @@ const DataEnemies = {
     defense: 15,
     speed: 18,
     spirit: 20,
-    skills: [
-      "basic_attack",
-      "ice_spike",
-      "ice_lock",
-      "ice_freeze"
-    ],
+    skills: ["basic_attack", "ice_spike", "ice_lock", "ice_frost"],
     aiType: "balanced",
     enemyType: "human",
     spriteColor: "#88CCEE",
