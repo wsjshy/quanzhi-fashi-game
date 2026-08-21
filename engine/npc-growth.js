@@ -77,6 +77,19 @@ const NPCGrowthService = {
             }
         }
 
+        // v2.9.3: 时间层成长（小幅度插值，在两个剧情锚点之间自然增长）
+        // growthRate: 每多少天等级+1，默认60天（2个月）
+        // 时间成长等级 = baseLevel + floor((当前天数 - 1) / growthRate)
+        // 最终等级 = max(时间成长等级, 剧情成长等级)
+        const growthRate = npc.growth.growthRate || 60;
+        const baseLevel = npc.growth.base.level || 1;
+        if (typeof Player !== 'undefined' && Player.day) {
+            const timeGrowthLevel = baseLevel + Math.floor((Player.day - 1) / growthRate);
+            if (timeGrowthLevel > state.level) {
+                state.level = timeGrowthLevel;
+            }
+        }
+
         // 计算属性
         state.stats = this._calculateStats(npc, state);
         state.npcId = npcId;
