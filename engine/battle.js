@@ -5813,6 +5813,24 @@ const BattleSystem = {
                     this.addLog(`❄️ 永冻！${this.enemy.name} 血量过低被冻结！`, 'element');
                 }
             }
+            // v2.9.5: 森林领域（forestField）- 每回合对敌人造成植物系伤害+中毒+减速
+            if (te.forestField && this.enemy.hp > 0) {
+                const fieldDmg = Math.floor(this.player.attack * (te.forestFieldDamage || 0.10));
+                if (fieldDmg > 0) {
+                    this.applyDamage(this.enemy, { amount: fieldDmg, element: 'plant', isMiss: false, isCrit: false }, this.player);
+                    this.addLog(`🌲 森林领域！${this.enemy.name} 受到 ${fieldDmg} 点自然伤害！`, 'element');
+                    this.showDamageNumber('enemy', fieldDmg, 'normal');
+                }
+                // 附加中毒
+                if (te.forestFieldPoison && te.forestFieldPoison > 0) {
+                    const poisonStacks = te.forestFieldPoison;
+                    this.addStatusEffect(this.enemy, { type: 'poison', name: '中毒', duration: 3, dotDamage: Math.floor(this.player.attack * 0.05), stacks: poisonStacks });
+                }
+                // 减速
+                if (te.forestFieldSlow && te.forestFieldSlow > 0) {
+                    this.addStatusEffect(this.enemy, { type: 'slow', name: '森林缠绕', duration: 2, speedMod: -te.forestFieldSlow });
+                }
+            }
         }
 
         // 光环/回合开始伤害可能击杀敌人

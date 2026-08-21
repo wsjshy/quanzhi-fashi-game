@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 天赋数据 - 进化式升级
  *
  * 每个成长型天赋有5个进化阶段：
@@ -2199,6 +2199,116 @@ const DataTalents = {
         effects: {
           plantDamageBonus: 0.50, allHealingBonus: 0.20,
           maxHpBonus: 0.20, thornArmor: 0.20
+        }
+      }
+    ]
+  },
+
+  // v2.9.5: 植物系rare天赋 - 共生（续航型）
+  plant_talent_symbiosis: {
+    id: "plant_talent_symbiosis",
+    name: "共生",
+    element: "plant",
+    rarity: "rare",
+    type: "growth",
+    description: "与植物建立共生关系，从自然中汲取生命力。越战越勇，生生不息。",
+    maxLevel: 10,
+    evolutions: [
+      {
+        level: 1, stage: "觉醒", name: "共生",
+        description: "植物系技能命中时恢复5%最大HP，HP低于50%时植物系伤害+15%。",
+        effects: { plantLifesteal: 0.05, plantLowHpBonus: 0.15, plantLowHpThreshold: 0.50 }
+      },
+      {
+        level: 3, stage: "特性", name: "生命汲取",
+        description: "植物系技能命中恢复提升至8%，击杀敌人时恢复20%最大HP。",
+        effects: { plantLifesteal: 0.08, plantKillHeal: 0.20 }
+      },
+      {
+        level: 5, stage: "进化", name: "分支选择",
+        description: "你的共生之力开始蜕变，选择进化方向：",
+        branchChoices: [
+          {
+            id: "nourish",
+            name: "滋养",
+            description: "滋养流：每回合开始恢复5%最大HP，所有治疗效果+30%。",
+            effects: { plantHpRegen: 0.05, allHealingBonus: 0.30 }
+          },
+          {
+            id: "thorn",
+            name: "荆棘共生",
+            description: "反伤流：受到攻击时反弹15%植物系伤害，反弹伤害时恢复2%最大HP。",
+            effects: { plantThornReflect: 0.15, plantThornHeal: 0.02 }
+          }
+        ]
+      },
+      {
+        level: 7, stage: "延伸",
+        branchEffects: {
+          nourish: { name: "生命之泉", description: "每回合恢复8%最大HP，治疗效果+50%，HP低于30%时恢复翻倍。", effects: { plantHpRegen: 0.08, allHealingBonus: 0.50, plantLowHpRegenDouble: true, plantLowHpThreshold: 0.30 } },
+          thorn: { name: "荆棘之噬", description: "反弹25%植物系伤害，反弹恢复4%HP，反弹有20%概率附加1层中毒。", effects: { plantThornReflect: 0.25, plantThornHeal: 0.04, plantThornPoisonChance: 0.20 } }
+        }
+      },
+      {
+        level: 10, stage: "终极",
+        branchEffects: {
+          nourish: { name: "万物复苏", description: "每回合恢复12%最大HP，治疗效果+80%，HP低于30%时植物系伤害+50%。", effects: { plantHpRegen: 0.12, allHealingBonus: 0.80, plantLowHpBonus: 0.50, plantLowHpThreshold: 0.30 } },
+          thorn: { name: "共生之刺", description: "反弹40%植物系伤害，反弹恢复6%HP，反弹必定附加1层中毒，受到致命伤害时保留1HP（每场战斗1次）。", effects: { plantThornReflect: 0.40, plantThornHeal: 0.06, plantThornPoisonChance: 1.0, plantSurviveLethal: true } }
+        }
+      }
+    ]
+  },
+
+  // v2.9.5: 植物系epic天赋 - 森林领主（场控型）
+  plant_talent_forest_lord: {
+    id: "plant_talent_forest_lord",
+    name: "森林领主",
+    element: "plant",
+    rarity: "epic",
+    type: "growth",
+    description: "被森林认可的领主，战斗时召唤森林领域，万物生长，敌人在自然之怒下颤抖。",
+    maxLevel: 10,
+    evolutions: [
+      {
+        level: 1, stage: "觉醒", name: "森林领域",
+        description: "战斗开始展开森林领域，敌人每回合受到10%攻击力植物系伤害+速度-10%，玩家植物系伤害+15%。",
+        effects: { forestField: true, forestFieldDamage: 0.10, forestFieldSlow: 0.10, damageBonus: 0.15 }
+      },
+      {
+        level: 3, stage: "特性", name: "领域加深",
+        description: "领域伤害提升至15%，减速-15%，每回合附加1层中毒，玩家植物系伤害+25%。",
+        effects: { forestFieldDamage: 0.15, forestFieldSlow: 0.15, forestFieldPoison: 1, damageBonus: 0.25 }
+      },
+      {
+        level: 5, stage: "进化", name: "分支选择",
+        description: "森林领域的力量开始蜕变，选择进化方向：",
+        branchChoices: [
+          {
+            id: "erosion",
+            name: "侵蚀领域",
+            description: "侵蚀流：领域内敌人防御-25%，受到所有伤害+15%。",
+            effects: { forestFieldDefenseDown: 0.25, forestFieldDamageTaken: 0.15 }
+          },
+          {
+            id: "life",
+            name: "生命领域",
+            description: "生命流：领域内玩家每回合恢复8%最大HP，植物系技能伤害+20%。",
+            effects: { forestFieldHpRegen: 0.08, damageBonus: 0.20 }
+          }
+        ]
+      },
+      {
+        level: 7, stage: "延伸",
+        branchEffects: {
+          erosion: { name: "腐朽之地", description: "领域内敌人防御-40%，受到所有伤害+25%，领域伤害提升至20%。", effects: { forestFieldDefenseDown: 0.40, forestFieldDamageTaken: 0.25, forestFieldDamage: 0.20 } },
+          life: { name: "生命之森", description: "领域内玩家每回合恢复12%最大HP，植物系技能伤害+35%，领域伤害提升至20%。", effects: { forestFieldHpRegen: 0.12, damageBonus: 0.35, forestFieldDamage: 0.20 } }
+        }
+      },
+      {
+        level: 10, stage: "终极",
+        branchEffects: {
+          erosion: { name: "万木枯荣", description: "领域内敌人防御-50%，受到所有伤害+35%，领域伤害30%，敌人进入领域时被束缚1回合（无法行动）。", effects: { forestFieldDefenseDown: 0.50, forestFieldDamageTaken: 0.35, forestFieldDamage: 0.30, forestFieldBindOnEnter: 1 } },
+          life: { name: "世界树领域", description: "领域内玩家每回合恢复15%最大HP，植物系技能伤害+50%，领域伤害30%，玩家在领域内受到伤害-20%。", effects: { forestFieldHpRegen: 0.15, damageBonus: 0.50, forestFieldDamage: 0.30, forestFieldDamageReduction: 0.20 } }
         }
       }
     ]
