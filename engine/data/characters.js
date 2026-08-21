@@ -3055,6 +3055,8 @@ const DataCharacters = {
       "fire"
     ],
     level: 14,
+    levelDisplay: "中阶???",
+    levelUnknown: true,
     maxHp: 400,
     maxMp: 250,
     attack: 45,
@@ -5153,6 +5155,8 @@ const DataCharacters = {
       "wind"
     ],
     level: 35,
+    levelDisplay: "???",
+    levelUnknown: true,
     maxHp: 1200,
     maxMp: 800,
     attack: 120,
@@ -5481,6 +5485,8 @@ const DataCharacters = {
       "fire"
     ],
     level: 12,
+    levelDisplay: "???",
+    levelUnknown: true,
     maxHp: 350,
     maxMp: 200,
     attack: 38,

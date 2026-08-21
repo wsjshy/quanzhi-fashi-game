@@ -2783,6 +2783,9 @@ const Game = {
         const hasCombat = duelData.level > 0 && (duelData.skills?.length > 0 || duelData.elements?.length > 0);
         const level = duelData.level || npc.level || 0;
         const realm = this._getRealmName(level);
+        // v2.9.3: 等级不明确时显示???
+        const levelDisplay = npc.levelDisplay || `Lv.${level}`;
+        const realmDisplay = npc.levelUnknown ? '境界不明' : realm;
 
         // 元素系显示
         const elementsHtml = (duelData.elements || []).map(el => {
@@ -2895,8 +2898,8 @@ const Game = {
                     
                     <div style="display: flex; gap: 15px; margin-bottom: 10px;">
                         <div style="text-align: center;">
-                            <div style="font-size: 24px; font-weight: bold; color: #ffd700;">Lv.${level}</div>
-                            <div style="font-size: 12px; color: #888;">${realm}</div>
+                            <div style="font-size: 24px; font-weight: bold; color: #ffd700;">${levelDisplay}</div>
+                            <div style="font-size: 12px; color: #888;">${realmDisplay}</div>
                         </div>
                         <div style="flex: 1;">
                             <div style="margin-bottom: 5px;">${elementsHtml || '<span style="color: #666; font-size: 13px;">未知系别</span>'}</div>
@@ -3032,6 +3035,8 @@ const Game = {
             }
             const hasCombat = npcLevel > 0 && npcElements.length > 0;
             const realmName = hasCombat ? Game._getRealmName(npcLevel) : '';
+            // v2.9.3: 等级不明确时显示???
+            const npcLevelDisplay = npc.levelDisplay || (hasCombat ? `Lv.${npcLevel} ${realmName}` : '');
             
             // 元素系图标
             const elementsIcons = npcElements.slice(0, 3).map(el => {
@@ -3058,7 +3063,7 @@ const Game = {
                                 <div style="font-weight: bold; font-size: 17px;">
                                     ${npc.name}
                                     ${hasQuest ? '<span style="color: #ffcc00; font-size: 20px; margin-left: 8px;">❗</span>' : ''}
-                                    ${hasCombat ? `<span style="color: #ffd700; font-size: 13px; margin-left: 10px; background: rgba(255,215,0,0.1); padding: 2px 8px; border-radius: 8px;">Lv.${npcLevel} ${realmName}</span>` : ''}
+                                    ${hasCombat ? `<span style="color: #ffd700; font-size: 13px; margin-left: 10px; background: rgba(255,215,0,0.1); padding: 2px 8px; border-radius: 8px;">${npcLevelDisplay}</span>` : ''}
                                 </div>
                                 <div style="font-size: 13px; color: #999; margin-top: 3px;">
                                     ${npc.title || ''}
@@ -3292,6 +3297,8 @@ const Game = {
             if (npcGrowthState) npcLevel = npcGrowthState.level || 0;
         }
         if (npcLevel === 0) npcLevel = NPCStateSystem.getNPCLevel(npc.id) || npc.level || 1;
+        // v2.9.3: 等级不明确时显示???
+        const npcLevelDisplay = npc.levelDisplay || `Lv.${npcLevel}`;
         const playerLevel = Player.level || 1;
         const levelDiff = playerLevel - npcLevel;
         let levelReaction = '';
@@ -3429,7 +3436,7 @@ const Game = {
                         ${relationLevel.name}
                     </div>
                     <!-- NPC等级 -->
-                    ${npcLevel > 0 ? `<div style="font-size: 12px; color: #aaddff; margin-bottom: 4px;">⚔️ 等级 Lv.${npcLevel}</div>` : ''}
+                    ${npcLevel > 0 ? `<div style="font-size: 12px; color: #aaddff; margin-bottom: 4px;">⚔️ 等级 ${npcLevelDisplay}</div>` : ''}
                     <!-- 魔法系 -->
                     ${npc.elements && npc.elements.length > 0 ? `
                         <div style="font-size: 12px; color: #ffcc66; margin-bottom: 4px;">
