@@ -720,6 +720,18 @@ const WorldState = {
             }
         }
 
+        // notHasFlag 条件（单个标记字符串或标记数组，同时检查 globalFlags 和 Player.flags）
+        if (conditions.notHasFlag) {
+            const flagsToCheck = Array.isArray(conditions.notHasFlag) ? conditions.notHasFlag : [conditions.notHasFlag];
+            for (const flag of flagsToCheck) {
+                const hasIt = (this.globalFlags && this.globalFlags[flag]) ||
+                              (typeof Player !== 'undefined' && Player.flags && Player.flags[flag]);
+                if (hasIt) {
+                    return false;
+                }
+            }
+        }
+
         // 没有标记
         if (conditions.notFlags) {
             for (const flag of conditions.notFlags) {

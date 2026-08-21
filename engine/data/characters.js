@@ -6895,6 +6895,15 @@ const DataCharacters = {
         title: "七班雷系学神",
         growthType: "mage",
       },
+      events: [
+        {
+          after: "bocheng_disaster",
+          level: 12,
+          addElements: ["wind"],
+          addSkills: ["wind_blade", "wind_track_phantom"],
+          title: "博城幸存者",
+        }
+      ],
     },dialogueTree: {
       npcId: "xu_zhaoting",
       nodes: {
@@ -6902,16 +6911,81 @@ const DataCharacters = {
           id: "default",
           texts: ["你是八班的？", "找我有什么事？"],
           choices: [
-            { text: "听说你雷系很强？", next: "about_thunder" },
-            { text: "来切磋一下？", next: "default", action: "start_quest", actionData: { questId: "quest_xuzhaoting_thunder_duel" } },
-            { text: "年度考核加油。", next: "default", action: "back" }
+            { id: "ask_thunder", text: "听说你雷系很强？", nextNode: "about_thunder", condition: { notHasFlag: "bocheng_disaster_happened" } },
+            { id: "duel", text: "来切磋一下？", nextNode: "default", action: "start_quest", actionData: { questId: "quest_xuzhaoting_thunder_duel" }, condition: { notHasFlag: "bocheng_disaster_happened" } },
+            { id: "exam_cheer", text: "年度考核加油。", nextNode: "default", action: "back", condition: { notHasFlag: "bocheng_disaster_happened" } },
+            { id: "greeting_survivor", text: "昭霆，好久不见。", nextNode: "default_survivor", condition: { hasFlag: "bocheng_disaster_happened" } },
+            { id: "leave", text: "告辞。", nextNode: null }
+          ]
+        },
+        default_survivor: {
+          id: "default_survivor",
+          texts: [
+            "你也来明珠了？太好了，博城出来的就我们几个了。",
+            "黑教廷……我绝不会放过他们。我全家都死在博城灾难里。",
+            "我现在是雷风双系，虽然比不了你那个变态双系，但杀黑教廷绰绰有余。"
+          ],
+          mood: "determined",
+          choices: [
+            { id: "ask_bocheng", text: "博城那天你也在？", nextNode: "about_bocheng" },
+            { id: "ask_lulu", text: "张璐璐是谁？", condition: { minOpinion: 20 }, nextNode: "about_lulu" },
+            { id: "ask_black_church", text: "你在追查黑教廷？", condition: { minOpinion: 30, minTrust: 20 }, nextNode: "about_black_church" },
+            { id: "train_together", text: "一起修炼？", condition: { minOpinion: 40 }, effects: { exp: 50 }, nextNode: "training_together" },
+            { id: "give_gift", text: "我有东西给你", action: "open_gift" },
+            { id: "leave", text: "保重", nextNode: null }
           ]
         },
         about_thunder: {
           id: "about_thunder",
           texts: ["雷系是初阶元素系之首，优势很大。", "不过修炼也很难，星子太活跃了。"],
           effects: { familiarity: 2 },
-          choices: [{ text: "受教了。", next: "default", action: "back" }]
+          choices: [{ id: "back", text: "受教了。", nextNode: "default", action: "back" }]
+        },
+        about_bocheng: {
+          id: "about_bocheng",
+          texts: [
+            "我怎么会忘……那天晚上，我亲眼看着我爸妈被妖魔撕碎。",
+            "我拼了命才逃出来。后来才知道，那场灾难不是天灾——是黑教廷搞的鬼。",
+            "他们用妖母引动了整个雪峰山的妖魔潮。博城……只是他们计划的一部分。"
+          ],
+          effects: { giveInfo: "bocheng_disaster_truth" },
+          choices: [
+            { id: "back", text: "……我会让他们付出代价", effects: { opinion: 5, trust: 5 }, nextNode: "default_survivor" }
+          ]
+        },
+        about_lulu: {
+          id: "about_lulu",
+          texts: [
+            "张璐璐……我女朋友。水系的，比我小一届。",
+            "她也是博城出来的，但她比我幸运——家人都还在。",
+            "我答应过她，等我杀够了黑教廷的人，就好好陪她。"
+          ],
+          mood: "soft",
+          choices: [
+            { id: "back", text: "祝你们好", effects: { opinion: 3 }, nextNode: "default_survivor" }
+          ]
+        },
+        about_black_church: {
+          id: "about_black_church",
+          texts: [
+            "我一直在暗中查。黑教廷在明珠有眼线，而且不止一个。",
+            "我发现有个灰衣人经常在学校附近出没，像是在联络什么人。",
+            "你也要小心。博城那场灾难的参与者，有些可能就混在明珠。"
+          ],
+          effects: { giveInfo: "black_church_in_mingzhu" },
+          choices: [
+            { id: "back", text: "你也是，别一个人冒险", effects: { trust: 10, opinion: 5 }, nextNode: "default_survivor" }
+          ]
+        },
+        training_together: {
+          id: "training_together",
+          texts: [
+            "好！雷系星图我已经摸到门道了，中阶魔法霹雳·轰顶威力确实大。",
+            "不过你的雷系比我强多了……有空教教我？"
+          ],
+          choices: [
+            { id: "back", text: "随时可以", effects: { opinion: 5 }, nextNode: "default_survivor" }
+          ]
         }
       }
     }
@@ -9964,132 +10038,6 @@ level: 18,
     }
   },
 
-  xu_zhaoting_survivor: {
-    id: "xu_zhaoting_survivor",
-    name: "许昭霆",
-    title: "博城幸存者",
-    description: "博城灾难中失去全家的幸存者，雷系+风系双系中阶法师。对黑教廷恨之入骨，性格刚烈勇敢。与张璐璐是情侣。在主校区考核中被宇昂抓住变成诅咒畜妖，最终求莫凡结束自己生命。",
-    elements: ["thunder", "wind"],
-    level: 12,
-    elementLevels: {
-      thunder: 12,
-      wind: 8
-    },
-    maxHp: 350,
-    maxMp: 180,
-    attack: 28,
-    defense: 12,
-    speed: 24,
-    spirit: 20,
-    skills: ["basic_attack", "thunder_bolt", "wind_blade", "wind_track_phantom"],
-    aiType: "aggressive",
-    growthType: "mage",
-    canDuel: true,
-    spriteColor: "#9966FF",
-    location: "mingzhu_qing_campus",
-    availableTimes: ["morning", "afternoon", "evening"],
-    dialogue: [
-      { trigger: "default", text: "黑教廷...我绝不会放过他们。" },
-      { trigger: "greeting", text: "你也是博城出来的吧。" }
-    ],
-    givesQuests: [],
-    personality: {
-      brave: 0.9, kind: 0.6, honest: 0.8, impulsive: 0.7,
-      loyal: 0.8, arrogant: 0.2, greedy: 0.1, curious: 0.5
-    },
-    giftPreferences: {
-      loved: ["thunder_basic", "rare_demon_core"],
-      liked: ["mana_potion", "magic_stone"],
-      disliked: [],
-      baseOpinionGain: 5, lovedMultiplier: 3, likedMultiplier: 1.5, dislikedMultiplier: 0.5, dailyGiftLimit: 1
-    },
-    relationshipCap: {
-      maxOpinion: 100, maxTrust: 100, canRomance: false, canBeMentor: false, canBeRival: false
-    },
-    relationships: {
-      mo_fan: { opinion: 60, trust: 50, type: "fellow_survivor", label: "博城战友" },
-      zhang_lulu: { opinion: 90, trust: 90, type: "lover", label: "恋人" }
-    },
-    isCanon: true,
-    canonSource: "第220章 误闯陷阱",
-    
-    growth: {
-      base: {
-        level: 12,
-        elements: ["thunder","wind"],
-        skills: ["basic_attack","thunder_bolt","wind_blade","wind_track_phantom"],
-        title: "博城幸存者",
-        growthType: "mage",
-      },
-    },dialogueTree: {
-      npcId: "xu_zhaoting",
-      nodes: {
-        default: {
-          id: "default",
-          texts: [
-            "你也来明珠了？太好了，博城出来的就我们几个了。",
-            "黑教廷……我绝不会放过他们。我全家都死在博城灾难里。",
-            "我现在是雷风双系，虽然比不了你那个变态双系，但杀黑教廷绰绰有余。"
-          ],
-          mood: "determined",
-          choices: [
-            { id: "ask_bocheng", text: "博城那天你也在？", nextNode: "about_bocheng" },
-            { id: "ask_lulu", text: "张璐璐是谁？", condition: { minOpinion: 20 }, nextNode: "about_lulu" },
-            { id: "ask_black_church", text: "你在追查黑教廷？", condition: { minOpinion: 30, minTrust: 20 }, nextNode: "about_black_church" },
-            { id: "train_together", text: "一起修炼？", condition: { minOpinion: 40 }, effects: { exp: 50 }, nextNode: "training_together" },
-            { id: "give_gift", text: "我有东西给你", action: "open_gift" },
-            { id: "leave", text: "保重", nextNode: null }
-          ]
-        },
-        about_bocheng: {
-          id: "about_bocheng",
-          texts: [
-            "我怎么会忘……那天晚上，我亲眼看着我爸妈被妖魔撕碎。",
-            "我拼了命才逃出来。后来才知道，那场灾难不是天灾——是黑教廷搞的鬼。",
-            "他们用妖母引动了整个雪峰山的妖魔潮。博城……只是他们计划的一部分。"
-          ],
-          effects: { giveInfo: "bocheng_disaster_truth" },
-          choices: [
-            { id: "back", text: "……我会让他们付出代价", effects: { opinion: 5, trust: 5 }, nextNode: "default" }
-          ]
-        },
-        about_lulu: {
-          id: "about_lulu",
-          texts: [
-            "张璐璐……我女朋友。水系的，比我小一届。",
-            "她也是博城出来的，但她比我幸运——家人都还在。",
-            "我答应过她，等我杀够了黑教廷的人，就好好陪她。"
-          ],
-          mood: "soft",
-          choices: [
-            { id: "back", text: "祝你们好", effects: { opinion: 3 }, nextNode: "default" }
-          ]
-        },
-        about_black_church: {
-          id: "about_black_church",
-          texts: [
-            "我一直在暗中查。黑教廷在明珠有眼线，而且不止一个。",
-            "我发现有个灰衣人经常在学校附近出没，像是在联络什么人。",
-            "你也要小心。博城那场灾难的参与者，有些可能就混在明珠。"
-          ],
-          effects: { giveInfo: "black_church_in_mingzhu" },
-          choices: [
-            { id: "back", text: "你也是，别一个人冒险", effects: { trust: 10, opinion: 5 }, nextNode: "default" }
-          ]
-        },
-        training_together: {
-          id: "training_together",
-          texts: [
-            "好！雷系星图我已经摸到门道了，中阶魔法霹雳·轰顶威力确实大。",
-            "不过你的雷系比我强多了……有空教教我？"
-          ],
-          choices: [
-            { id: "back", text: "随时可以", effects: { opinion: 5 }, nextNode: "default" }
-          ]
-        }
-      }
-    }
-  },
 
   bao_laotou: {
     id: "bao_laotou",
