@@ -1725,7 +1725,16 @@ const DataCharacters = {
         label: "朋友"
       }
     },
-    dialogueTree: {
+    
+    growth: {
+      base: {
+        level: 2,
+        elements: ["wind"],
+        skills: ["basic_attack","wind_blade"],
+        title: "穆白的跟班",
+        growthType: "mage",
+      },
+    },dialogueTree: {
       npcId: "zhang_xiaohou",
       nodes: {
         default: {
@@ -4248,7 +4257,16 @@ const DataCharacters = {
         label: "老朋友"
       }
     },
-    dialogueTree: {
+    
+    growth: {
+      base: {
+        level: 6,
+        elements: ["wind"],
+        skills: ["basic_attack","wind_blade","wind_speed"],
+        title: "资深猎人",
+        growthType: "mage",
+      },
+    },dialogueTree: {
       npcId: "hunter_li",
       nodes: {
         default: {
@@ -4502,7 +4520,16 @@ const DataCharacters = {
         label: "同行"
       }
     },
-    dialogueTree: {
+    
+    growth: {
+      base: {
+        level: 5,
+        elements: ["water"],
+        skills: ["basic_attack","water_heal"],
+        title: "书店老板",
+        growthType: "mage",
+      },
+    },dialogueTree: {
       npcId: "book_shop_owner",
       nodes: {
         default: {
@@ -4767,7 +4794,16 @@ const DataCharacters = {
         label: "穆家千金"
       }
     },
-    dialogueTree: {
+    
+    growth: {
+      base: {
+        level: 10,
+        elements: ["fire","earth"],
+        skills: ["basic_attack","fire_bolt","fire_rain","earth_shield","earth_spike"],
+        title: "魔法协会会长",
+        growthType: "mage",
+      },
+    },dialogueTree: {
       npcId: "magic_association_chairman",
       nodes: {
         default: {
@@ -4997,7 +5033,16 @@ const DataCharacters = {
       canBeRival: true
     },
     relationships: {},
-    dialogueTree: {
+    
+    growth: {
+      base: {
+        level: 8,
+        elements: ["dark"],
+        skills: ["basic_attack","dark_bolt"],
+        title: "流浪法师",
+        growthType: "mage",
+      },
+    },dialogueTree: {
       npcId: "mysterious_mage",
       nodes: {
         default: {
@@ -5842,7 +5887,16 @@ const DataCharacters = {
         label: "班主任"
       }
     },
-    dialogueTree: {
+    
+    growth: {
+      base: {
+        level: 2,
+        elements: ["water"],
+        skills: ["basic_attack","water_heal"],
+        title: "天澜魔法高中学生",
+        growthType: "mage",
+      },
+    },dialogueTree: {
       startNode: "default",
       nodes: {
         default: {
@@ -6044,7 +6098,16 @@ const DataCharacters = {
         label: "会长"
       }
     },
-    dialogueTree: {
+    
+    growth: {
+      base: {
+        level: 5,
+        elements: ["water"],
+        skills: ["basic_attack","water_heal"],
+        title: "猎魔者公会接待员",
+        growthType: "mage",
+      },
+    },dialogueTree: {
       startNode: "default",
       nodes: {
         default: {
@@ -6258,7 +6321,16 @@ const DataCharacters = {
         label: "大小姐"
       }
     },
-    dialogueTree: {
+    
+    growth: {
+      base: {
+        level: 10,
+        elements: ["ice"],
+        skills: ["basic_attack","ice_spike","ice_shield"],
+        title: "穆家管家",
+        growthType: "mage",
+      },
+    },dialogueTree: {
       startNode: "default",
       nodes: {
         default: {
@@ -6661,7 +6733,16 @@ const DataCharacters = {
       mo_fan: { opinion: -10, trust: 0, type: "rival", label: "看不起的同学" },
       mu_bai: { opinion: 30, trust: 20, type: "acquaintance", label: "同学" }
     },
-    dialogueTree: {
+    
+    growth: {
+      base: {
+        level: 2,
+        elements: ["fire"],
+        skills: ["basic_attack","fire_bolt"],
+        title: "火系尖子生",
+        growthType: "mage",
+      },
+    },dialogueTree: {
       npcId: "zhou_min",
       nodes: {
         default: {
@@ -6749,7 +6830,16 @@ const DataCharacters = {
       zhang_jianguo: { opinion: 80, trust: 70, type: "mentor", label: "班主任" },
       mu_bai: { opinion: 30, trust: 20, type: "rival", label: "竞争对手" }
     },
-    dialogueTree: {
+    
+    growth: {
+      base: {
+        level: 2,
+        elements: ["thunder"],
+        skills: ["basic_attack","thunder_bolt"],
+        title: "七班雷系学神",
+        growthType: "mage",
+      },
+    },dialogueTree: {
       npcId: "xu_zhaoting",
       nodes: {
         default: {
@@ -6957,6 +7047,15 @@ level: 18,
       mo_fan: { opinion: -30, trust: -20, type: "enemy", label: "拒绝招纳" },
       deng_kai: { opinion: 60, trust: 50, type: "acquaintance", label: "平辈" }
     },
+    growth: {
+      base: {
+        level: 18,
+        elements: ["ice"],
+        skills: ["ice_shield","ice_storm"],
+        title: "穆氏族长",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["ice_crystal", "demon_core"],
       liked: ["magic_stone", "super_mana_potion"],
@@ -7012,6 +7111,15 @@ level: 18,
       mu_zhuoyun: { opinion: 60, trust: 50, type: "acquaintance", label: "平辈" },
       tang_yue: { opinion: 70, trust: 65, type: "colleague", label: "同事" },
       hunter_li: { opinion: 80, trust: 75, type: "colleague", label: "下属" }
+    },
+    growth: {
+      base: {
+        level: 18,
+        elements: ["thunder","wind"],
+        skills: ["basic_attack","thunder_bolt","wind_blade"],
+        title: "猎者联盟大长老",
+        growthType: "mage",
+      },
     },
     giftPreferences: {
       loved: ["demon_core", "hunter_medal"],
@@ -7073,6 +7181,15 @@ level: 15,
       deng_kai: { opinion: 70, trust: 65, type: "friend", label: "老友" },
       luo_yunbo: { opinion: 80, trust: 75, type: "subordinate", label: "下属" },
       pan_lijun: { opinion: 75, trust: 70, type: "subordinate", label: "下属" }
+    },
+    growth: {
+      base: {
+        level: 15,
+        elements: ["fire"],
+        skills: ["basic_attack","fire_bolt","fire_rain","fire_burst"],
+        title: "雪峰山驿站总教官",
+        growthType: "mage",
+      },
     },
     giftPreferences: {
       loved: ["demon_core", "fire_essence"],
@@ -7347,6 +7464,15 @@ level: 9,
       zhan_kong: { opinion: 85, trust: 80, type: "superior", label: "上司" },
       pan_lijun: { opinion: 70, trust: 65, type: "colleague", label: "同事" }
     },
+    growth: {
+      base: {
+        level: 9,
+        elements: ["earth"],
+        skills: ["basic_attack","earth_shield","earth_spike"],
+        title: "猎者小队队长",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["earth_crystal", "demon_core"],
       liked: ["magic_stone", "health_potion"],
@@ -7406,6 +7532,15 @@ level: 8,
       zhan_kong: { opinion: 90, trust: 80, type: "idol", label: "崇拜的总教官" },
       luo_yunbo: { opinion: 65, trust: 60, type: "colleague", label: "同事" }
     },
+    growth: {
+      base: {
+        level: 8,
+        elements: ["wind"],
+        skills: ["basic_attack","wind_blade","wind_speed"],
+        title: "女副教官",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["wind_crystal", "demon_core"],
       liked: ["magic_stone", "stamina_potion"],
@@ -7460,6 +7595,15 @@ level: 2,
     baseStats: { hp: 80, mp: 55, attack: 8, defense: 8, speed: 6 },
     skills: ["basic_attack", "water_heal"],
     relationships: {},
+    growth: {
+      base: {
+        level: 2,
+        elements: ["water"],
+        skills: ["basic_attack","water_heal"],
+        title: "天澜高中学生",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["full_potion", "stamina_potion"],
       liked: ["health_potion", "mana_potion"],
@@ -7577,6 +7721,15 @@ level: 10,
       luo_yunbo: { type: "colleague", opinion: 50 },
       pan_lijun: { type: "colleague", opinion: 50 }
     },
+    growth: {
+      base: {
+        level: 10,
+        elements: ["summon"],
+        skills: ["basic_attack","summon_wolf_beast"],
+        title: "召唤系法师",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["soul_essence", "magic_stone"],
       liked: ["mana_potion", "demon_core"],
@@ -7646,6 +7799,15 @@ level: 12,
     faction: "city_hunters",
     factionRank: "队长",
     relationships: { mo_fan: 10, guo_caitang: 20, xiao_ke: 15, li_wenjie: 15, fei_shi: 20 },
+    growth: {
+      base: {
+        level: 12,
+        elements: ["fire"],
+        skills: ["fire_bolt","fire_burst","fire_burn_bone"],
+        title: "城市猎妖队队长",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["fire_crystal", "premium_ink"],
       liked: ["magic_herb", "health_potion"],
@@ -7798,6 +7960,15 @@ level: 10,
     faction: "city_hunters",
     factionRank: "副队长",
     relationships: { mo_fan: 5, xu_dahuang: 15, xiao_ke: 10, li_wenjie: 10, fei_shi: 10 },
+    growth: {
+      base: {
+        level: 10,
+        elements: ["ice"],
+        skills: ["ice_spike","ice_shield","ice_storm"],
+        title: "城市猎妖队副队长",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["ice_crystal", "beauty_products"],
       liked: ["magic_herb", "health_potion"],
@@ -7907,6 +8078,15 @@ level: 8,
     faction: "city_hunters",
     factionRank: "队员",
     relationships: { mo_fan: 8, xu_dahuang: 10, guo_caitang: 8, li_wenjie: 8, fei_shi: 10 },
+    growth: {
+      base: {
+        level: 8,
+        elements: ["water"],
+        skills: ["water_heal","water_chain","water_moist"],
+        title: "城市猎妖队成员",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["candy", "cute_accessories"],
       liked: ["magic_herb", "health_potion"],
@@ -8007,6 +8187,15 @@ level: 9,
     faction: "city_hunters",
     factionRank: "队员",
     relationships: { mo_fan: 5, xu_dahuang: 10, guo_caitang: 8, xiao_ke: 8, fei_shi: 10 },
+    growth: {
+      base: {
+        level: 9,
+        elements: ["wind"],
+        skills: ["wind_blade","wind_speed","wind_tornado"],
+        title: "城市猎妖队成员",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["wind_crystal", "fashion_clothes"],
       liked: ["magic_herb", "health_potion"],
@@ -8063,6 +8252,15 @@ level: 11,
     faction: "city_hunters",
     factionRank: "队员",
     relationships: { mo_fan: 10, xu_dahuang: 15, guo_caitang: 10, xiao_ke: 12, li_wenjie: 12 },
+    growth: {
+      base: {
+        level: 11,
+        elements: ["earth"],
+        skills: ["earth_shield","earth_spike","earth_quake","earth_shift"],
+        title: "城市猎妖队成员",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["earth_crystal", "good_food"],
       liked: ["magic_herb", "health_potion", "stamina_potion"],
@@ -8119,6 +8317,15 @@ level: 18,
     faction: "magic_association",
     factionRank: "中阶法师",
     relationships: { xu_dahuang: 30, mo_fan: 20 },
+    growth: {
+      base: {
+        level: 18,
+        elements: ["water","wind"],
+        skills: ["water_wave","water_chain","wind_tornado"],
+        title: "魔法协会中阶法师",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["magic_crystal"],
       liked: ["magic_herb", "demon_core"],
@@ -8173,6 +8380,15 @@ level: 7,
     faction: "mu_family",
     factionRank: "养子",
     relationships: { mu_zhuoyun: 50, mu_he: 30, mo_fan: -30, guo_caitang: 20 },
+    growth: {
+      base: {
+        level: 7,
+        elements: ["ice"],
+        skills: ["ice_spike","ice_frost","ice_shield"],
+        title: "穆氏养子 / 冰系修炼疯子",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["ice_crystal"],
       liked: ["magic_crystal", "magic_herb"],
@@ -8455,6 +8671,15 @@ level: 15,
     relationships: {
       lin_yuxin: { type: "subordinate", opinion: 80 }
     },
+    growth: {
+      base: {
+        level: 15,
+        elements: ["earth"],
+        skills: ["basic_attack","earth_shield","earth_slow"],
+        title: "地圣泉守卫长 / 中阶土系法师",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["demon_core", "magic_stone"],
       liked: ["health_potion", "mana_potion"],
@@ -8511,6 +8736,15 @@ level: 12,
     relationships: {
       liang_bin: { type: "superior", opinion: 75 }
     },
+    growth: {
+      base: {
+        level: 12,
+        elements: ["water"],
+        skills: ["basic_attack","water_chain","water_shield"],
+        title: "地圣泉副卫长 / 水系法师",
+        growthType: "mage",
+      },
+    },
     giftPreferences: {
       loved: ["magic_crystal", "star_map_scroll"],
       liked: ["mana_potion", "magic_herb"],
@@ -8566,6 +8800,15 @@ level: 18,
     skills: ["basic_attack", "earth_shield", "earth_slow"],
     relationships: {
       zhankong: { type: "superior", opinion: 90 }
+    },
+    growth: {
+      base: {
+        level: 18,
+        elements: ["earth"],
+        skills: ["basic_attack","earth_shield","earth_slow"],
+        title: "千人团军长 / 中阶土系法师",
+        growthType: "mage",
+      },
     },
     giftPreferences: {
       loved: ["demon_core", "elite_soul"],
@@ -8689,7 +8932,16 @@ level: 18,
         label: "老对头"
       }
     },
-    dialogueTree: {
+    
+    growth: {
+      base: {
+        level: 20,
+        elements: ["fire","water"],
+        skills: ["basic_attack","fire_bolt","water_shield"],
+        title: "天澜魔法高中校长",
+        growthType: "mage",
+      },
+    },dialogueTree: {
       npcId: "zhu_principal",
       nodes: {
         default: {
@@ -9439,7 +9691,16 @@ level: 18,
     relationships: {
       mo_fan: { opinion: -20, trust: 0, type: "rival", label: "白家" }
     },
-    dialogueTree: {
+    
+    growth: {
+      base: {
+        level: 18,
+        elements: ["light"],
+        skills: ["basic_attack","light_ray","light_blind"],
+        title: "白家子弟",
+        growthType: "mage",
+      },
+    },dialogueTree: {
       npcId: "bai_cangfeng",
       nodes: {
         default: {
@@ -9562,7 +9823,16 @@ level: 18,
     },
     isCanon: true,
     canonSource: "第220章 误闯陷阱",
-    dialogueTree: {
+    
+    growth: {
+      base: {
+        level: 12,
+        elements: ["thunder","wind"],
+        skills: ["basic_attack","thunder_bolt","wind_blade","wind_track_phantom"],
+        title: "博城幸存者",
+        growthType: "mage",
+      },
+    },dialogueTree: {
       npcId: "xu_zhaoting",
       nodes: {
         default: {
