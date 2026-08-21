@@ -5515,7 +5515,7 @@ const DataCharacters = {
     },
     spriteColor: "#ff6633",
     isNPC: true,
-    location: "school",
+    location: "tianlan_school",
     personality: {
       brave: 0.7,
       kind: 0.6,
@@ -5773,7 +5773,7 @@ const DataCharacters = {
     ],
     spriteColor: "#3399ff",
     isNPC: true,
-    location: "school",
+    location: "tianlan_school",
     personality: {
       brave: 0.4,
       kind: 0.95,
@@ -9478,8 +9478,8 @@ const DataCharacters = {
     }
   },
 
-  xu_zhaoting: {
-    id: "xu_zhaoting",
+  xu_zhaoting_survivor: {
+    id: "xu_zhaoting_survivor",
     name: "许昭霆",
     title: "博城幸存者",
     description: "博城灾难中失去全家的幸存者，雷系+风系双系中阶法师。对黑教廷恨之入骨，性格刚烈勇敢。与张璐璐是情侣。在主校区考核中被宇昂抓住变成诅咒畜妖，最终求莫凡结束自己生命。",
