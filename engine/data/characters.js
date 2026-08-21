@@ -1991,24 +1991,21 @@ const DataCharacters = {
   zhao_manyan: {
     id: "zhao_manyan",
     name: "赵满延",
-    title: "光系中阶法师",
-    description: "赵氏家族的少爷，光系中阶法师。看似花花公子，实则防御极强，光佑·圣盾能挡下统领级攻击。有点小贪财，但非常讲义气。",
+    title: "光系初阶法师",
+    description: "赵氏家族的少爷，光系法师。看似花花公子，实则防御极强，有点小贪财，但非常讲义气。博城篇时为天澜魔法高中学生，初阶法师。",
     elements: [
       "light"
     ],
-    level: 10,
-    maxHp: 500,
-    maxMp: 250,
-    attack: 20,
-    defense: 35,
-    speed: 18,
-    spirit: 25,
+    level: 4,
+    maxHp: 200,
+    maxMp: 120,
+    attack: 12,
+    defense: 20,
+    speed: 12,
+    spirit: 15,
     skills: [
       "basic_attack",
-      "light_ray",
-      "light_blessing",
-      "light_sanctuary",
-      "light_purify"
+      "light_ray"
     ],
     aiType: "defensive",
     growthType: "support",
@@ -3006,12 +3003,12 @@ const DataCharacters = {
     elements: [
       "fire"
     ],
-    level: 5,
-    maxHp: 180,
-    maxMp: 120,
-    attack: 22,
-    defense: 10,
-    speed: 13,
+    level: 14,
+    maxHp: 400,
+    maxMp: 250,
+    attack: 45,
+    defense: 20,
+    speed: 18,
     skills: [
       "basic_attack",
       "fire_bolt",
@@ -5087,12 +5084,12 @@ const DataCharacters = {
       "fire",
       "wind"
     ],
-    level: 15,
-    maxHp: 800,
-    maxMp: 500,
-    attack: 80,
-    defense: 50,
-    speed: 25,
+    level: 35,
+    maxHp: 1200,
+    maxMp: 800,
+    attack: 120,
+    defense: 80,
+    speed: 35,
     skills: [
       "basic_attack",
       "fire_bolt",
@@ -5399,12 +5396,12 @@ const DataCharacters = {
     elements: [
       "fire"
     ],
-    level: 8,
-    maxHp: 300,
-    maxMp: 150,
-    attack: 30,
-    defense: 15,
-    speed: 12,
+    level: 12,
+    maxHp: 350,
+    maxMp: 200,
+    attack: 38,
+    defense: 18,
+    speed: 15,
     skills: [
       "basic_attack",
       "fire_bolt"
