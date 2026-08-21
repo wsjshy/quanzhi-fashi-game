@@ -46,6 +46,15 @@ function loadBattleSystem() {
             getSkillDamageBonus: () => 1.0,
             getAllTalentEffects: () => ({}),
             recordKill: () => {},
+            // v2.9.4: 打断机制测试需要
+            getMagicTier: () => '中阶',
+            getInterruptReduction: (tier) => {
+                // 模拟中阶玩家：初阶-15%，中阶0，高阶null
+                if (tier === '初阶') return 0.15;
+                if (tier === '中阶') return 0;
+                return null;
+            },
+            canCastTier: (tier) => tier !== '高阶',
         },
         SkillSystem: {
             getSkill: (id) => ({ id, name: id, type: 'damage', element: 'fire', mpCost: 10, tier: '初阶', description: '' })
@@ -307,7 +316,77 @@ function runBattleLogicTests() {
     } else {
         result.fail('getStatusModifiers函数不存在');
     }
-    
+
+    // ===== 6. v2.9.4 统一打断概率计算测试 =====
+    console.log('\n6️⃣  统一打断概率计算（v2.9.4）');
+    console.log('─'.repeat(40));
+
+    if (typeof BattleSystem.calculateInterruptChance === 'function') {
+        // 设置BattleSystem.player用于境界减免判定
+        BattleSystem.player = { spirit: 30, hp: 100, mp: 100 };
+        const mockSkill = { id: 'test', name: '测试技能', tier: '中阶', interruptChance: 1.0, mpCost: 30 };
+
+        // 6.1 基础概率（castTime决定）
+        const t1 = BattleSystem.calculateInterruptChance(1, mockSkill, BattleSystem.player, null, false);
+        if (Math.abs(t1 - 0.08) < 0.001) result.pass(`castTime=1基础概率: ${(t1*100).toFixed(0)}%（应为8%）`);
+        else result.fail(`castTime=1应为8%，实际=${(t1*100).toFixed(1)}%`);
+
+        const t2 = BattleSystem.calculateInterruptChance(2, mockSkill, BattleSystem.player, null, false);
+        if (Math.abs(t2 - 0.15) < 0.001) result.pass(`castTime=2基础概率: ${(t2*100).toFixed(0)}%（应为15%）`);
+        else result.fail(`castTime=2应为15%，实际=${(t2*100).toFixed(1)}%`);
+
+        const t3 = BattleSystem.calculateInterruptChance(3, mockSkill, BattleSystem.player, null, false);
+        if (Math.abs(t3 - 0.22) < 0.001) result.pass(`castTime=3基础概率: ${(t3*100).toFixed(0)}%（应为22%）`);
+        else result.fail(`castTime=3应为22%，实际=${(t3*100).toFixed(1)}%`);
+
+        // 6.2 技能难度系数（interruptChance作为乘数）
+        const hardSkill = { ...mockSkill, interruptChance: 1.5 };
+        const tHard = BattleSystem.calculateInterruptChance(2, hardSkill, BattleSystem.player, null, false);
+        if (Math.abs(tHard - 0.225) < 0.001) result.pass(`难度系数1.5: ${(tHard*100).toFixed(1)}%（15%×1.5=22.5%）`);
+        else result.fail(`难度系数1.5应为22.5%，实际=${(tHard*100).toFixed(1)}%`);
+
+        // 6.3 精神力差修正（攻击者精神力高→打断概率增加）
+        const strongAttacker = { spirit: 50 };
+        const tSpirit = BattleSystem.calculateInterruptChance(2, mockSkill, BattleSystem.player, strongAttacker, false);
+        // 基础15% + (50-30)*0.003 = 15% + 6% = 21%
+        if (Math.abs(tSpirit - 0.21) < 0.001) result.pass(`精神力差(+20): ${(tSpirit*100).toFixed(0)}%（15%+6%=21%）`);
+        else result.fail(`精神力差+20应为21%，实际=${(tSpirit*100).toFixed(1)}%`);
+
+        // 6.4 精神力差修正上限（±10%）
+        const hugeAttacker = { spirit: 100 };
+        const tHuge = BattleSystem.calculateInterruptChance(2, mockSkill, BattleSystem.player, hugeAttacker, false);
+        // (100-30)*0.003=21%，但上限10%，所以15%+10%=25%
+        if (Math.abs(tHuge - 0.25) < 0.001) result.pass(`精神力差上限: ${(tHuge*100).toFixed(0)}%（封顶+10%→25%）`);
+        else result.fail(`精神力差上限应为25%，实际=${(tHuge*100).toFixed(1)}%`);
+
+        // 6.5 境界压制减免（中阶玩家放初阶魔法→-15%）
+        const lowSkill = { ...mockSkill, tier: '初阶' };
+        const tRealm = BattleSystem.calculateInterruptChance(1, lowSkill, BattleSystem.player, null, false);
+        // 基础8% - 境界减免15% = 0%（下限0）
+        if (tRealm === 0) result.pass(`境界压制(中阶放初阶): ${(tRealm*100).toFixed(0)}%（8%-15%→0%）`);
+        else result.fail(`境界压制应为0%，实际=${(tRealm*100).toFixed(1)}%`);
+
+        // 6.6 防御姿态抗打断（上回合防御→-20%）
+        const tDefend = BattleSystem.calculateInterruptChance(2, mockSkill, BattleSystem.player, null, true);
+        // 基础15% - 防御20% = 0%（下限0）
+        if (tDefend === 0) result.pass(`防御姿态抗打断: ${(tDefend*100).toFixed(0)}%（15%-20%→0%）`);
+        else result.fail(`防御姿态应为0%，实际=${(tDefend*100).toFixed(1)}%`);
+
+        // 6.7 范围上限（95%）
+        const superHardSkill = { ...mockSkill, interruptChance: 10.0, tier: '高阶' };
+        const tMax = BattleSystem.calculateInterruptChance(5, superHardSkill, BattleSystem.player, hugeAttacker, false);
+        if (tMax <= 0.95 && tMax > 0.9) result.pass(`概率上限: ${(tMax*100).toFixed(0)}%（封顶95%）`);
+        else result.fail(`概率上限应为95%，实际=${(tMax*100).toFixed(1)}%`);
+
+        // 6.8 自打断场景（attacker=null，无精神力差修正）
+        const tSelf = BattleSystem.calculateInterruptChance(1, mockSkill, BattleSystem.player, null, false);
+        if (Math.abs(tSelf - 0.08) < 0.001) result.pass(`自打断(无攻击者): ${(tSelf*100).toFixed(0)}%（仅基础8%）`);
+        else result.fail(`自打断应为8%，实际=${(tSelf*100).toFixed(1)}%`);
+
+    } else {
+        result.fail('calculateInterruptChance函数不存在');
+    }
+
     return result.report();
 }
 

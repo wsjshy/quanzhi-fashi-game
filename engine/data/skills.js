@@ -1479,7 +1479,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "中阶",
     magicLevel: 1,
-    interruptChance: 0.25,
+    interruptChance: 1.1,
     unlockLevel: 11,
     realmRequired: "middle",
     statusEffects: [
@@ -1510,7 +1510,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "中阶",
     magicLevel: 1,
-    interruptChance: 0.20,
+    interruptChance: 1,
     unlockLevel: 11,
     realmRequired: "middle",
     // 小说第133章：雷系中阶无明显起手式，速度极快
@@ -1543,7 +1543,7 @@ const DataSkills = {
     cooldown: 2,
     tier: "中阶",
     magicLevel: 2,
-    interruptChance: 0.25,
+    interruptChance: 1.1,
     unlockLevel: 18,
     skillLevel: 2,
     realmRequired: "middle",
@@ -1607,7 +1607,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "中阶",
     magicLevel: 1,
-    interruptChance: 0.20,
+    interruptChance: 1,
     unlockLevel: 11,
     realmRequired: "middle",
     statusEffects: [
@@ -1636,7 +1636,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "中阶",
     realmRequired: "middle",
-    interruptChance: 0.2,
+    interruptChance: 1,
     statusEffects: [
       {
         name: "地震减速",
@@ -1699,7 +1699,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "中阶",
     magicLevel: 1,
-    interruptChance: 0.25,
+    interruptChance: 1.1,
     unlockLevel: 15,
     realmRequired: "middle",
     statusEffects: [
@@ -1726,7 +1726,7 @@ const DataSkills = {
     cooldown: 4,
     tier: "中阶",
     magicLevel: 1,
-    interruptChance: 0.25,
+    interruptChance: 1.1,
     unlockLevel: 15,
     realmRequired: "middle",
     statusEffects: [
@@ -1764,7 +1764,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "中阶",
     realmRequired: "middle",
-    interruptChance: 0.25,
+    interruptChance: 1.1,
     statusEffects: [
       {
         name: "暗影诅咒",
@@ -1791,7 +1791,7 @@ const DataSkills = {
     cooldown: 3,
     tier: "中阶",
     magicLevel: 1,
-    interruptChance: 0.2,
+    interruptChance: 1,
     unlockLevel: 15,
     realmRequired: "middle",
     statusEffects: [
@@ -1865,7 +1865,7 @@ const DataSkills = {
     cooldown: 3,
     tier: "中阶",
     magicLevel: 3,
-    interruptChance: 0.35,
+    interruptChance: 1.3,
     unlockLevel: 25,
     realmRequired: "middle",
     skillLevelRequired: 3,
@@ -1900,7 +1900,7 @@ const DataSkills = {
     cooldown: 2,
     tier: "中阶",
     magicLevel: 1,
-    interruptChance: 0.2,
+    interruptChance: 1,
     unlockLevel: 15,
     realmRequired: "middle",
     isCanon: true,
@@ -4072,7 +4072,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 1,
-    interruptChance: 0.50,
+    interruptChance: 1.5,
     unlockLevel: 31,
     realmRequired: "high",
     statusEffects: [
@@ -4108,7 +4108,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 2,
-    interruptChance: 0.55,
+    interruptChance: 1.6,
     unlockLevel: 38,
     realmRequired: "high",
     statusEffects: [
@@ -4144,7 +4144,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 3,
-    interruptChance: 0.60,
+    interruptChance: 1.7,
     unlockLevel: 45,
     realmRequired: "high",
     statusEffects: [
@@ -4191,7 +4191,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 1,
-    interruptChance: 0.45,
+    interruptChance: 1.4,
     unlockLevel: 31,
     realmRequired: "high",
     statusEffects: [
@@ -4227,7 +4227,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 2,
-    interruptChance: 0.50,
+    interruptChance: 1.5,
     unlockLevel: 38,
     realmRequired: "high",
     statusEffects: [
@@ -4265,7 +4265,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 3,
-    interruptChance: 0.55,
+    interruptChance: 1.6,
     unlockLevel: 45,
     realmRequired: "high",
     statusEffects: [
@@ -4307,7 +4307,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 1,
-    interruptChance: 0.50,
+    interruptChance: 1.5,
     unlockLevel: 31,
     realmRequired: "high",
     statusEffects: [
@@ -4341,7 +4341,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 2,
-    interruptChance: 0.55,
+    interruptChance: 1.6,
     unlockLevel: 38,
     realmRequired: "high",
     statusEffects: [
@@ -4377,7 +4377,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 3,
-    interruptChance: 0.60,
+    interruptChance: 1.7,
     unlockLevel: 45,
     realmRequired: "high",
     statusEffects: [
@@ -4426,7 +4426,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 1,
-    interruptChance: 0.45,
+    interruptChance: 1.4,
     unlockLevel: 31,
     realmRequired: "high",
     statusEffects: [
@@ -4461,7 +4461,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 2,
-    interruptChance: 0.50,
+    interruptChance: 1.5,
     unlockLevel: 38,
     realmRequired: "high",
     statusEffects: [
@@ -4497,7 +4497,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 3,
-    interruptChance: 0.55,
+    interruptChance: 1.6,
     unlockLevel: 45,
     realmRequired: "high",
     statusEffects: [
@@ -4545,7 +4545,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 1,
-    interruptChance: 0.40,
+    interruptChance: 1.4,
     unlockLevel: 31,
     realmRequired: "high",
     specialEffects: {
@@ -4571,7 +4571,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 2,
-    interruptChance: 0.45,
+    interruptChance: 1.4,
     unlockLevel: 38,
     realmRequired: "high",
     specialEffects: {
@@ -4597,7 +4597,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 3,
-    interruptChance: 0.50,
+    interruptChance: 1.5,
     unlockLevel: 45,
     realmRequired: "high",
     specialEffects: {
@@ -4628,7 +4628,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 1,
-    interruptChance: 0.45,
+    interruptChance: 1.4,
     unlockLevel: 31,
     realmRequired: "high",
     statusEffects: [
@@ -4671,7 +4671,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 2,
-    interruptChance: 0.50,
+    interruptChance: 1.5,
     unlockLevel: 38,
     realmRequired: "high",
     statusEffects: [
@@ -4715,7 +4715,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 3,
-    interruptChance: 0.55,
+    interruptChance: 1.6,
     unlockLevel: 45,
     realmRequired: "high",
     statusEffects: [
@@ -4762,7 +4762,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 1,
-    interruptChance: 0.40,
+    interruptChance: 1.4,
     unlockLevel: 31,
     realmRequired: "high",
     statusEffects: [
@@ -4806,7 +4806,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 2,
-    interruptChance: 0.45,
+    interruptChance: 1.4,
     unlockLevel: 38,
     realmRequired: "high",
     statusEffects: [
@@ -4851,7 +4851,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 3,
-    interruptChance: 0.50,
+    interruptChance: 1.5,
     unlockLevel: 45,
     realmRequired: "high",
     statusEffects: [
@@ -4901,7 +4901,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 1,
-    interruptChance: 0.45,
+    interruptChance: 1.4,
     unlockLevel: 31,
     realmRequired: "high",
     statusEffects: [
@@ -4945,7 +4945,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 2,
-    interruptChance: 0.50,
+    interruptChance: 1.5,
     unlockLevel: 38,
     realmRequired: "high",
     statusEffects: [
@@ -4998,7 +4998,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 3,
-    interruptChance: 0.55,
+    interruptChance: 1.6,
     unlockLevel: 45,
     realmRequired: "high",
     statusEffects: [
@@ -5055,7 +5055,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 1,
-    interruptChance: 0.40,
+    interruptChance: 1.4,
     unlockLevel: 31,
     realmRequired: "high",
     statusEffects: [
@@ -5092,7 +5092,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 2,
-    interruptChance: 0.45,
+    interruptChance: 1.4,
     unlockLevel: 38,
     realmRequired: "high",
     statusEffects: [
@@ -5129,7 +5129,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 3,
-    interruptChance: 0.50,
+    interruptChance: 1.5,
     unlockLevel: 45,
     realmRequired: "high",
     statusEffects: [
@@ -5170,7 +5170,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 1,
-    interruptChance: 0.45,
+    interruptChance: 1.4,
     unlockLevel: 31,
     realmRequired: "high",
     statusEffects: [
@@ -5215,7 +5215,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 2,
-    interruptChance: 0.50,
+    interruptChance: 1.5,
     unlockLevel: 38,
     realmRequired: "high",
     statusEffects: [
@@ -5262,7 +5262,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 3,
-    interruptChance: 0.55,
+    interruptChance: 1.6,
     unlockLevel: 45,
     realmRequired: "high",
     statusEffects: [
@@ -5321,7 +5321,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 1,
-    interruptChance: 0.40,
+    interruptChance: 1.4,
     unlockLevel: 31,
     realmRequired: "high",
     specialEffects: {
@@ -5347,7 +5347,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 2,
-    interruptChance: 0.45,
+    interruptChance: 1.4,
     unlockLevel: 38,
     realmRequired: "high",
     specialEffects: {
@@ -5375,7 +5375,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "高阶",
     magicLevel: 3,
-    interruptChance: 0.50,
+    interruptChance: 1.5,
     unlockLevel: 45,
     realmRequired: "high",
     specialEffects: {

@@ -2164,17 +2164,17 @@ const BattleSystem = {
             this.showDamageNumber('enemy', 0, 'dodge');
         }
 
-        // 检查是否打断敌人引导（精神力对抗）- v2.9.0: 仅魔法师敌人可被打断，妖魔不存在打断
+        // v2.9.4: 统一打断判定（引导期间被攻击命中）- 仅魔法师敌人可被打断，妖魔不存在打断
         const isMageEnemy = this.enemy.isMage === true || this.enemy.enemyType === 'mage';
         if (this.enemyCasting && !damage.isMiss && isMageEnemy) {
-            // 基础打断概率20%，精神力差每1点增减0.5%，最低10%，最高60%
-            const playerSpirit = this.player.spirit || 30;
-            const enemySpirit = this.enemy.spirit || 20;
-            let interruptChance = 0.2 + (playerSpirit - enemySpirit) * 0.005;
-            interruptChance = Math.max(0.1, Math.min(0.6, interruptChance));
-            
+            const skill = this.enemyCasting.skill;
+            const castTime = this.enemyCasting.totalTime;
+            const enemyDefended = this.enemyDefendedLastTurn || false;
+            // 统一公式：基础概率(castTime) × 难度系数 + 精神力差 - 境界减免 - 防御姿态
+            const interruptChance = this.calculateInterruptChance(castTime, skill, this.enemy, this.player, enemyDefended);
+
             if (Math.random() < interruptChance) {
-                const interruptedSkill = this.enemyCasting.skill?.name || '魔法';
+                const interruptedSkill = skill?.name || '魔法';
                 this.addLog(`💥 攻击打断了 ${this.enemy.name} 的 ${interruptedSkill} 引导！（打断概率 ${(interruptChance*100).toFixed(0)}%）`, 'interrupt-success');
                 this.enemyCasting = null;
                 // v2.9.1: 打断成功视觉反馈（青色闪光+震屏）
@@ -2185,7 +2185,7 @@ const BattleSystem = {
                     setTimeout(() => flash.remove(), 600);
                 }
                 this.interruptCount = (this.interruptCount || 0) + 1;
-                
+
                 // 发布打断事件
                 if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
                     BattleEventBus.emit(BattleEvents.INTERRUPT, {
@@ -2303,8 +2303,13 @@ const BattleSystem = {
         if (this.player.talentEffects && this.player.talentEffects.comboMpReduction && (this.player.comboCount || 0) > 0) {
             channelMpCost = Math.max(0, Math.floor(channelMpCost * (1 - this.player.talentEffects.comboMpReduction)));
         }
-        this.player.mp -= channelMpCost;
-        this.addLog(`你开始引导 ${skill.name}...（${castTime} 回合后释放）`, 'magic');
+        // v2.9.4: 引导开始时只扣50%预付款，引导完成时扣剩余50%
+        // 被打断时预付款不退还（净损失50%，与瞬发自打断统一）
+        const prepayMp = Math.floor(channelMpCost * 0.5);
+        this.player.mp -= prepayMp;
+        this.playerCasting.prepayMp = prepayMp;
+        this.playerCasting.fullMpCost = channelMpCost;
+        this.addLog(`你开始引导 ${skill.name}...（${castTime} 回合后释放，已预付 ${prepayMp} MP）`, 'magic');
         
         // 发布技能引导事件
         if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
@@ -2322,62 +2327,62 @@ const BattleSystem = {
     /**
      * 瞬发技能（直接生效）
      */
-    castSkillImmediate(skill, caster, skipTurnEnd = false) {
+    castSkillImmediate(skill, caster, skipTurnEnd = false, skipInterruptCheck = false, mpCostRatio = 1.0) {
         const isPlayer = caster === 'player';
         const casterData = isPlayer ? this.player : this.enemy;
         const targetData = isPlayer ? this.enemy : this.player;
 
-        // v2.9.0: 打断概率系统（施法速度体现在被打断概率上）
-        if (isPlayer && skill.interruptChance && skill.interruptChance > 0) {
+        // v2.9.4: 统一自打断判定（瞬发技能释放时的施法难度check）
+        // 适用：玩家瞬发魔法 + 敌方法师瞬发魔法；引导完成后调用时skipInterruptCheck=true跳过
+        const isMageEnemy = !isPlayer && (this.enemy.isMage === true || this.enemy.enemyType === 'mage');
+        const shouldSelfInterrupt = !skipInterruptCheck && skill.interruptChance && skill.interruptChance > 0
+            && (isPlayer || isMageEnemy);
+
+        if (shouldSelfInterrupt) {
             const skillTier = skill.tier || '初阶';
-            // 检查玩家是否能释放该阶级魔法
-            if (typeof Player !== 'undefined' && !Player.canCastTier(skillTier)) {
+            // 境界检查（仅玩家）
+            if (isPlayer && typeof Player !== 'undefined' && !Player.canCastTier(skillTier)) {
                 this.addLog(`❌ 境界不足，无法释放${skillTier}魔法！`, 'error');
                 return { success: false, interrupted: false, reason: '境界不足' };
             }
-            // 计算实际打断概率 = 基础打断概率 - 境界压制减免 - 抗打断加成
-            let actualInterruptChance = skill.interruptChance;
-            if (typeof Player !== 'undefined') {
-                const reduction = Player.getInterruptReduction(skillTier);
-                if (reduction !== null) {
-                    actualInterruptChance = Math.max(0, actualInterruptChance - reduction);
-                }
-            }
-            // v2.9.0: 防御姿态抗打断（上回合防御，本回合打断概率-20%）
-            if (this.playerDefendedLastTurn) {
-                actualInterruptChance = Math.max(0, actualInterruptChance - 0.20);
-            }
-            // 防御姿态抗打断（后续实现）
-            // 天赋/装备抗打断（后续实现）
-            
+            // 施法者上回合是否防御（抗打断）
+            const casterDefended = isPlayer ? this.playerDefendedLastTurn : (this.enemyDefendedLastTurn || false);
+            // 统一公式计算打断概率（castTime=1因为是瞬发）
+            const interruptChance = this.calculateInterruptChance(1, skill, casterData, null, casterDefended);
+
             // 打断判定
-            if (Math.random() < actualInterruptChance) {
+            if (Math.random() < interruptChance) {
                 const lostMp = Math.floor(skill.mpCost * 0.5);
                 casterData.mp = Math.max(0, casterData.mp - lostMp);
-                this.addLog(`💥 施法被打断！${skill.name} 释放失败，损失 ${lostMp} MP（打断概率 ${(actualInterruptChance*100).toFixed(0)}%）`, 'interrupt');
-                // v2.9.0: 屏幕红色闪烁效果
-                const battleScreen = document.getElementById('battle-screen');
-                if (battleScreen) {
-                    const flash = document.createElement('div');
-                    flash.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,50,50,0.4);z-index:9999;pointer-events:none;animation:flashRed 0.5s ease-out;';
-                    battleScreen.appendChild(flash);
-                    setTimeout(() => flash.remove(), 500);
+                if (isPlayer) {
+                    this.addLog(`💥 施法被打断！${skill.name} 释放失败，损失 ${lostMp} MP（打断概率 ${(interruptChance*100).toFixed(0)}%）`, 'interrupt');
+                    // 红色闪烁反馈
+                    const battleScreen = document.getElementById('battle-screen');
+                    if (battleScreen) {
+                        const flash = document.createElement('div');
+                        flash.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,50,50,0.4);z-index:9999;pointer-events:none;animation:flashRed 0.5s ease-out;';
+                        battleScreen.appendChild(flash);
+                        setTimeout(() => flash.remove(), 500);
+                    }
+                } else {
+                    this.addLog(`💥 ${this.enemy.name} 的 ${skill.name} 施法失败！（打断概率 ${(interruptChance*100).toFixed(0)}%）`, 'interrupt');
                 }
-                return { success: false, interrupted: true, reason: '被打断', interruptChance: actualInterruptChance };
-            } else if (actualInterruptChance > 0.1) {
-                this.addLog(`✨ 施法成功！${skill.name}（打断概率 ${(actualInterruptChance*100).toFixed(0)}%）`, 'cast');
+                return { success: false, interrupted: true, reason: '自打断', interruptChance: interruptChance };
+            } else if (interruptChance > 0.1 && isPlayer) {
+                this.addLog(`✨ 施法成功！${skill.name}（打断概率 ${(interruptChance*100).toFixed(0)}%）`, 'cast');
             }
-            // v2.9.0: 释放技能后重置防御状态（本回合没有防御）
-            this.playerDefendedLastTurn = false;
+            // 释放后重置防御状态
+            if (isPlayer) this.playerDefendedLastTurn = false;
+            else this.enemyDefendedLastTurn = false;
 
-            // v2.9.1: 高阶魔法释放全屏特效
+            // 高阶魔法全屏特效
             if (skill.tier === '高阶' || skill.tier === '超阶') {
                 this.triggerHighTierEffect(skill);
             }
         }
 
         // 消耗MP
-        // 消耗MP（天赋可减少消耗）
+        // 消耗MP（天赋可减少消耗；引导完成时mpCostRatio=0.5，只扣剩余部分）
         let actualMpCost = skill.mpCost;
         if (isPlayer && this.player.mpCostReduction) {
             actualMpCost = Math.max(0, Math.floor(skill.mpCost * (1 - this.player.mpCostReduction)));
@@ -2389,6 +2394,8 @@ const BattleSystem = {
                 actualMpCost = Math.max(0, Math.floor(actualMpCost * (1 - comboReduction)));
             }
         }
+        // v2.9.4: 引导完成时只扣剩余50%（预付款已在引导开始时扣除）
+        actualMpCost = Math.floor(actualMpCost * mpCostRatio);
         casterData.mp -= actualMpCost;
 
         // v0.86.0: 元素能量系统
@@ -3583,7 +3590,7 @@ const BattleSystem = {
                         });
                     }
                     
-                    this.castSkillImmediate(skill, 'player', true);
+                    this.castSkillImmediate(skill, 'player', true, true, 0.5);
                     // 引导技能可能直接击杀敌人
                     if (this.checkBattleEnd()) return;
                     // 引导完成后继续执行后续逻辑（召唤兽攻击、敌人回合）
@@ -4638,7 +4645,7 @@ const BattleSystem = {
                     });
                 }
                 
-                this.castSkillImmediate(skill, 'enemy', true);
+                this.castSkillImmediate(skill, 'enemy', true, true, 0.5);
                 // 引导完成后继续执行后续逻辑
                 this.endEnemyTurn();
                 return;
@@ -4844,24 +4851,31 @@ const BattleSystem = {
                 this.showDamageNumber('player', 0, 'dodge');
             }
 
-            // 检查是否打断玩家引导（精神力对抗）
+            // v2.9.4: 统一打断判定（玩家引导期间被敌人攻击命中）
             if (this.playerCasting && !damage.isMiss) {
-                // 基础打断概率20%，精神力差每1点增减0.5%，最低10%，最高60%
-                const enemySpirit = this.enemy.spirit || 20;
-                const playerSpirit = this.player.spirit || 30;
-                let interruptChance = 0.2 + (enemySpirit - playerSpirit) * 0.005;
-                interruptChance = Math.max(0.1, Math.min(0.6, interruptChance));
-                
+                const skill = this.playerCasting.skill;
+                const castTime = this.playerCasting.totalTime;
+                // 统一公式：基础概率(castTime) × 难度系数 + 精神力差 - 境界减免 - 防御姿态
+                const interruptChance = this.calculateInterruptChance(castTime, skill, this.player, this.enemy, this.playerDefendedLastTurn);
+
                 if (Math.random() < interruptChance) {
-                    this.addLog(`你的魔法引导被打断了！`, 'system');
+                    this.addLog(`💥 你的 ${skill.name} 引导被打断了！（打断概率 ${(interruptChance*100).toFixed(0)}%）`, 'interrupt');
+                    // 红色闪烁反馈
+                    const battleScreen = document.getElementById('battle-screen');
+                    if (battleScreen) {
+                        const flash = document.createElement('div');
+                        flash.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,50,50,0.4);z-index:9999;pointer-events:none;animation:flashRed 0.5s ease-out;';
+                        battleScreen.appendChild(flash);
+                        setTimeout(() => flash.remove(), 500);
+                    }
                     this.playerCasting = null;
-                    
+
                     // 发布打断事件
                     if (typeof BattleEventBus !== 'undefined' && typeof BattleEvents !== 'undefined') {
                         BattleEventBus.emit(BattleEvents.INTERRUPT, {
                             attacker: 'enemy',
                             target: 'player',
-                            skill: this.playerCasting?.skill
+                            skill: skill
                         });
                     }
                 }
@@ -4940,7 +4954,11 @@ const BattleSystem = {
                         progress: 1,
                         totalTime: castTime
                     };
-                    this.enemy.mp -= skill.mpCost;
+                    // v2.9.4: 引导开始时只扣50%预付款，引导完成时扣剩余50%
+                    const enemyPrepayMp = Math.floor(skill.mpCost * 0.5);
+                    this.enemy.mp -= enemyPrepayMp;
+                    this.enemyCasting.prepayMp = enemyPrepayMp;
+                    this.enemyCasting.fullMpCost = skill.mpCost;
                     this.addLog(`${this.enemy.name} 开始引导 ${skill.name}...`, 'magic');
                     
                     // 发布技能引导事件
@@ -7202,6 +7220,55 @@ const BattleSystem = {
             '超阶': 5
         };
         return castTimes[tier] || 2;
+    },
+
+    /**
+     * v2.9.4: 统一打断概率计算
+     * 适用于两种场景：
+     *   1. 自打断：瞬发技能（castTime<=1）释放时自动判定施法是否失败
+     *   2. 被攻击打断：引导技能（castTime>1）引导期间被攻击命中时判定
+     * 统一公式：基础概率(castTime) × 技能难度系数(interruptChance)
+     *           + 精神力差修正(仅被攻击打断) - 境界压制减免 - 防御姿态抗打断
+     * @param {number} castTime - 施法时间（回合数）
+     * @param {object} skill - 技能对象（含interruptChance难度系数、tier阶级）
+     * @param {object} caster - 施法者（被打断目标）
+     * @param {object|null} attacker - 攻击者（自打断时为null）
+     * @param {boolean} casterDefendedLastTurn - 施法者上回合是否防御
+     * @returns {number} 打断概率 0-0.95
+     */
+    calculateInterruptChance(castTime, skill, caster, attacker = null, casterDefendedLastTurn = false) {
+        // 1. 基础概率（由castTime决定）：施法越久，每回合被打断风险越高
+        const baseProbabilities = { 1: 0.08, 2: 0.15, 3: 0.22, 4: 0.30, 5: 0.38 };
+        let chance = baseProbabilities[castTime] || 0.08;
+
+        // 2. 技能难度系数（interruptChance字段，默认1.0；范围约1.0-1.7）
+        const coefficient = skill.interruptChance || 1.0;
+        chance *= coefficient;
+
+        // 3. 精神力差修正（仅被攻击打断时，自打断无攻击者）
+        if (attacker) {
+            const attackerSpirit = attacker.spirit || 20;
+            const casterSpirit = caster.spirit || 20;
+            let spiritMod = (attackerSpirit - casterSpirit) * 0.003;
+            spiritMod = Math.max(-0.10, Math.min(0.10, spiritMod));
+            chance += spiritMod;
+        }
+
+        // 4. 境界压制减免（仅玩家施法时，高境界放低阶魔法更稳定）
+        if (typeof Player !== 'undefined' && caster === this.player) {
+            const reduction = Player.getInterruptReduction(skill.tier);
+            if (reduction !== null && reduction > 0) {
+                chance -= reduction;
+            }
+        }
+
+        // 5. 防御姿态抗打断（上回合防御，本回合打断概率-20%）
+        if (casterDefendedLastTurn) {
+            chance -= 0.20;
+        }
+
+        // 6. 限制范围 0%-95%
+        return Math.max(0, Math.min(0.95, chance));
     },
 
     /**
