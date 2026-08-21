@@ -3078,24 +3078,25 @@ const Game = {
             let npcLevel = 0;
             let npcElements = [];
             if (typeof NPCGrowthService !== 'undefined') {
-                const npcState = NPCGrowthService.getNpcState(npc.id);
-                if (npcState) {
-                    npcLevel = npcState.level || 0;
-                    npcElements = npcState.elements || [];
+                // v2.9.3: 使用统一方法获取NPC等级和元素系
+                npcLevel = this.getNPCLevel(npc.id);
+                npcElements = npc.elements || [];
+                // 尝试从NPCGrowthService获取成长后的元素系
+                if (typeof NPCGrowthService !== 'undefined') {
+                    const npcState = NPCGrowthService.getNpcState(npc.id);
+                    if (npcState && npcState.elements && npcState.elements.length > 0) {
+                        npcElements = npcState.elements;
+                    }
                 }
             }
-            if (npcLevel === 0) {
-                npcLevel = npc.level || 0;
-                npcElements = npc.elements || [];
-            }
             const hasCombat = npcLevel > 0 && npcElements.length > 0;
-            const realmName = hasCombat ? Game._getRealmName(npcLevel) : '';
+            const realmName = hasCombat ? this._getRealmName(npcLevel) : '';
             // v2.9.3: 等级不明确时显示???
             const npcLevelDisplay = npc.levelDisplay || (hasCombat ? `Lv.${npcLevel} ${realmName}` : '');
             
             // 元素系图标
             const elementsIcons = npcElements.slice(0, 3).map(el => {
-                const info = Game._getElementInfo(el);
+                const info = this._getElementInfo(el);
                 return `<span style="color: ${info.color}; font-size: 14px;" title="${info.name}">${info.icon}</span>`;
             }).join('');
             
@@ -3345,13 +3346,9 @@ const Game = {
         const dialogueTone = NPCStateSystem.getDialogueTone(npc.id);
 
         // v0.29.0: NPC等级反应 - 根据双方等级差生成开场白
-        // v2.9.3: 使用NPCGrowthService获取当前剧情阶段的修为状态
-        let npcLevel = 0;
-        if (typeof NPCGrowthService !== 'undefined') {
-            const npcGrowthState = NPCGrowthService.getNpcState(npc.id);
-            if (npcGrowthState) npcLevel = npcGrowthState.level || 0;
-        }
-        if (npcLevel === 0) npcLevel = NPCStateSystem.getNPCLevel(npc.id) || npc.level || 1;
+        // v2.9.3: 使用统一方法获取NPC等级
+        let npcLevel = this.getNPCLevel(npc.id);
+        if (npcLevel === 0) npcLevel = npc.level || 1;
         // v2.9.3: 等级不明确时显示???
         const npcLevelDisplay = npc.levelDisplay || `Lv.${npcLevel}`;
         const playerLevel = Player.level || 1;
