@@ -7157,73 +7157,6 @@ level: 18,
       }
     }
   },
-  deng_kai_xiaodong: {
-    id: "deng_kai_xiaodong",
-    name: "邓凯",
-    title: "猎者联盟高层 / 校董",
-    description: "猎者联盟中的高层，同时也是天澜魔法高中的校董，算是所有校董之中修为最高、实力最强的人。正义感强，在穆卓云暴怒时站出来挡在学生面前，保护没有防御能力的学生。为人稳重，说话有分量。",
-    avatar: "assets/images/characters/deng_kai.jpg",
-    location: "hunter_guild",
-    element: "???",
-    level: 16,
-    personality: ["正义", "稳重", "有实力", "护短"],
-    baseStats: { hp: 700, mp: 400, attack: 100, defense: 90, speed: 70 },
-    skills: ["basic_attack", "mid_mage_skill_1", "mid_mage_skill_2"],
-    faction: "hunter_alliance",
-    factionRank: "高层",
-    relationships: {
-      mu_zhuoyun: { opinion: 60, trust: 50, type: "acquaintance", label: "平辈" },
-      tang_yue: { opinion: 70, trust: 65, type: "colleague", label: "同事" },
-      hunter_li: { opinion: 80, trust: 75, type: "colleague", label: "下属" }
-    },
-    growth: {
-      base: {
-        level: 18,
-        elements: ["???"],
-        skills: ["basic_attack","mid_mage_skill_1","mid_mage_skill_2"],
-        title: "猎者联盟大长老",
-        growthType: "mage",
-      },
-    },
-    giftPreferences: {
-      loved: ["demon_core", "hunter_medal"],
-      liked: ["magic_stone", "stamina_potion"],
-      disliked: [],
-      baseOpinionGain: 3,
-      lovedMultiplier: 2.5,
-      likedMultiplier: 1.5,
-      dislikedMultiplier: 0.5,
-      dailyGiftLimit: 2
-    },
-    dialogueTree: {
-      npcId: "deng_kai_xiaodong",
-      nodes: {
-        default: {
-          id: "default",
-          texts: ["年轻人，找我有什么事？", "猎者联盟的事，或者学校的事，都可以说。"],
-          choices: [
-            { text: "我想加入猎者联盟。", next: "about_hunter" },
-            { text: "您认识穆卓云族长吗？", next: "about_mu" },
-            { text: "告辞。", next: "default", action: "back" }
-          ]
-        },
-        about_hunter: {
-          id: "about_hunter",
-          texts: ["想加入猎者联盟？好志气！", "不过猎魔不是儿戏，城市之外的妖魔可不是学校里的实践课。", "先提升实力，多猎杀几只奴仆级妖魔，再来找我。"],
-          effects: { opinion: 3, faction: { hunter_alliance: 5 } },
-          choices: [
-            { text: "有猎魔考核吗？我想试试", next: "default", action: "start_quest", actionData: { questId: "quest_dengkai_hunter_test" } },
-            { text: "我会努力的！", next: "default", action: "back" }
-          ]
-        },
-        about_mu: {
-          id: "about_mu",
-          texts: ["卓云啊，老相识了。实力确实强，冰系高阶在博城没几个对手。", "就是脾气大了点，有时候控制不住情绪。上次在学校差点出事，还是我挡下来的。", "年轻人，在博城混，最好不要得罪穆氏世家。"],
-          choices: [{ text: "多谢提醒。", next: "default", action: "back" }]
-        }
-      }
-    }
-  },
   zhan_kong: {
     id: "zhan_kong",
     name: "斩空",
@@ -9172,8 +9105,8 @@ level: 18,
   deng_kai: {
     id: "deng_kai",
     name: "邓凯",
-    title: "猎者联盟大长老",
-    description: "博城猎者联盟的大长老，地位超然，实力还在那位叫做杨作河的中阶魔法师之上。邓凯完全站在学生这一边，很看重有潜力的年轻魔法师，尤其是莫凡这样的天才。",
+    title: "猎者联盟大长老 / 校董",
+    description: "博城猎者联盟的大长老，同时也是天澜魔法高中的校董，算是所有校董之中修为最高、实力最强的人。地位超然，实力还在那位叫做杨作河的中阶魔法师之上。正义感强，在穆卓云暴怒时站出来挡在学生面前，保护没有防御能力的学生。完全站在学生这一边，很看重有潜力的年轻魔法师。",
     elements: [
       "thunder",
       "wind"
@@ -9265,6 +9198,24 @@ level: 18,
         trust: 50,
         type: "colleague",
         label: "同僚"
+      },
+      mu_zhuoyun: {
+        opinion: 60,
+        trust: 50,
+        type: "acquaintance",
+        label: "平辈"
+      },
+      tang_yue: {
+        opinion: 70,
+        trust: 65,
+        type: "colleague",
+        label: "同事"
+      },
+      hunter_li: {
+        opinion: 80,
+        trust: 75,
+        type: "colleague",
+        label: "下属"
       }
     },
     dialogueTree: {
@@ -9276,6 +9227,7 @@ level: 18,
           choices: [
             { text: "问问猎者联盟的情况", next: "about_guild", action: "talk" },
             { text: "请教猎妖经验", next: "about_hunting", action: "talk" },
+            { text: "您认识穆卓云族长吗？", next: "about_mu", action: "talk" },
             { text: "告辞", next: "default", action: "back" }
           ]
         },
@@ -9290,6 +9242,11 @@ level: 18,
           texts: ["猎妖可不是闹着玩的，随时都可能丢性命。", "光有实力不够，还要有经验和智慧。", "记住，活着回来才是最重要的。"],
           effects: { intelligence: 8, familiarity: 5 },
           choices: [{ text: "受教了", next: "default", action: "back" }]
+        },
+        about_mu: {
+          id: "about_mu",
+          texts: ["卓云啊，老相识了。实力确实强，冰系高阶在博城没几个对手。", "就是脾气大了点，有时候控制不住情绪。上次在学校差点出事，还是我挡下来的。", "年轻人，在博城混，最好不要得罪穆氏世家。"],
+          choices: [{ text: "多谢提醒。", next: "default", action: "back" }]
         }
       }
     }
