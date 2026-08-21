@@ -227,6 +227,78 @@ levelUnknown: true         // 标记修为不明确
 
 ---
 
+## 七.五、多系别等级系统（v2.9.3新增）
+
+### 设计背景
+
+中级以上法师有多个系别，每个系别有独立的修为等级。之前NPC只有综合`level`，无法反映每系真实修为，与玩家`elementLevels`机制不对齐。
+
+### 数据格式
+
+```javascript
+// 每系独立等级，与玩家elementLevels机制对齐
+elementLevels: {
+    thunder: 3,    // 雷系等级
+    fire: 3        // 火系等级
+}
+```
+
+### 主系定义
+
+- `elements`数组的第一个元素为主系
+- UI显示时主系有金色"主系"标记
+- 主系通常是NPC最先觉醒、修为最高的系别
+
+### 统一获取入口
+
+```javascript
+// 获取所有系别等级
+Game.getNPCElementLevels(npcId)  // 返回 {thunder: 3, fire: 3}
+
+// 获取指定系别等级
+Game.getNPCElementLevel(npcId, "fire")  // 返回 3
+
+// 获取主系
+Game.getNPCMainElement(npcId)  // 返回 "thunder"
+```
+
+### 优先级
+
+1. NPCGrowthService成长状态（`state.elementLevels`）
+2. NPC原始数据（`npc.elementLevels`）
+3. 向后兼容（用`npc.level`初始化所有系别）
+
+### UI显示
+
+NPC详情面板中，每个系别显示：
+- 元素系图标
+- 系别名称
+- Lv.等级
+- 境界名称（初阶/中阶/高阶/超阶）
+- 主系标记（金色"主系"徽章）
+
+### 当前覆盖情况
+
+| NPC | elementLevels | 说明 |
+|-----|--------------|------|
+| 莫凡 | {thunder:3, fire:3} | 天生双系，博城篇初期 |
+| 罗宋 | {earth:12, ice:10} | 土冰双系中阶，土系主系 |
+| 杨作河 | {water:18, wind:15} | 水风双系，水系主系 |
+| 邓凯 | {thunder:18, wind:15} | 雷风双系，雷系主系 |
+| 牧奴娇 | {wind:10, plant:8} | 风植双系，风系主系 |
+| 许昭霆(幸存者) | {thunder:12, wind:8} | 博城灾难后觉醒风系 |
+
+修为不明确的NPC（萧院长、朱校长、包老头、周会长）不设置`elementLevels`，用`level`初始化所有系别，保持`???`标记。
+
+### 架构优势
+
+- **数据驱动**：新增NPC只需添加`elementLevels`字段
+- **可扩展**：后续新篇章新增中高阶法师时直接设置每系等级
+- **原著对齐**：修为不明确的保持`???`标记，不编造数据
+- **向后兼容**：没有`elementLevels`的NPC用`level`初始化，不影响现有功能
+
+---
+
 ## 八、当前覆盖情况
 
 ### 8.1 有growth字段的NPC（38个）
@@ -283,6 +355,9 @@ levelUnknown: true         // 标记修为不明确
 4. **修为不明确**：小说中修为不明确的NPC使用`levelDisplay`标记，不猜测具体等级
 5. **双系统协作**：剧情成长系统主导，自主成长系统辅助，不要混淆两者职责
 6. **统一入口**：获取NPC等级/状态必须使用`Game.getNPCLevel()`/`NPCGrowthService.getNpcState()`，不要直接访问`npc.level`
+7. **多系别等级**：中阶以上法师使用`elementLevels`字段记录每系独立等级，与玩家机制对齐
+8. **主系定义**：`elements`数组第一个元素为主系，UI显示"主系"标记
+9. **获取系别等级**：使用`Game.getNPCElementLevels(npcId)`/`Game.getNPCElementLevel(npcId, element)`，不要直接访问`npc.elementLevels`
 
 ---
 
