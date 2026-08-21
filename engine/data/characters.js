@@ -5234,6 +5234,15 @@ const DataCharacters = {
       "wind_blade",
       "wind_speed"
     ],
+    talents: [
+      {
+        id: "fire_profound_cultivation",
+        name: "火系修为深厚",
+        type: "acquired",
+        description: "德高望重的老法师，天澜魔法高中院长，火系修为深厚，培养了无数优秀法师。",
+        effects: { fireDamageBonus: 0.2 }
+      }
+    ],
     growth: {
       base: {
         level: 35,
@@ -5560,6 +5569,15 @@ const DataCharacters = {
     skills: [
       "basic_attack",
       "fire_bolt"
+    ],
+    talents: [
+      {
+        id: "fire_teaching_experience",
+        name: "火系教学经验",
+        type: "acquired",
+        description: "天澜魔法高中班主任，长期教学，火系魔法基础扎实，教学相长。",
+        effects: { fireDamageBonus: 0.1 }
+      }
     ],
     growth: {
       base: {
@@ -8943,6 +8961,15 @@ level: 18,
     personality: ["威严", "沉稳", "防守大师", "忠心耿耿"],
     baseStats: { hp: 400, mp: 200, attack: 40, defense: 55, speed: 10 },
     skills: ["basic_attack", "earth_shield", "earth_slow"],
+    talents: [
+      {
+        id: "earth_defense_master",
+        name: "土系防守大师",
+        type: "acquired",
+        description: "博城军部千人团军长，论防守整个博城没人比他更出色，长期驻守北方关卡。",
+        effects: { earthDefenseBonus: 0.25 }
+      }
+    ],
     relationships: {
       zhankong: { type: "superior", opinion: 90 }
     },
@@ -9014,6 +9041,15 @@ level: 18,
       "basic_attack",
       "fire_bolt",
       "water_shield"
+    ],
+    talents: [
+      {
+        id: "fire_water_balance",
+        name: "火水双系平衡",
+        type: "acquired",
+        description: "天澜魔法高中大校长，同时修炼火系和水系，两系相辅相成，攻防兼备。",
+        effects: { fireDamageBonus: 0.1, waterDefenseBonus: 0.1 }
+      }
     ],
     spriteColor: "#8B4513",
     location: "tianlan_school",
