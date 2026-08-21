@@ -257,19 +257,23 @@ const Game = {
         
         // v0.16.0: 移除逃课惩罚，课程变为可选成长手段
         // 有课时状态栏会提示，但不强制，逃课不扣声望
-        if (currentClass && action && !action.isClassAction && actionId !== 'sleep' && actionId !== 'rest') {
-            if (!Player.flags['skipped_class_' + Player.day + '_' + TimeSystem.getCurrentPeriod()]) {
-                Player.flags['skipped_class_' + Player.day + '_' + TimeSystem.getCurrentPeriod()] = true;
-                // 仅提示，不惩罚
-                UI.showMessage(`💡 现在有${currentClass.name}（老师${DataManager.getCharacter(currentClass.teacher)?.name || '未知'}），不过你可以自由安排时间。`);
-            }
-        }
+        // v2.9.3优化：课程提示移到行动执行成功后，避免与对话/商店等弹窗同时显示导致遮挡
+        // 利用UI.showMessage的消息队列机制，弹窗打开时消息会排队，等弹窗关闭后再显示
 
         const result = MapSystem.performAction(actionId);
         
         if (!result.success) {
             UI.showMessage(result.message);
             return;
+        }
+
+        // 行动成功后显示课程提示（如果有）
+        if (currentClass && action && !action.isClassAction && actionId !== 'sleep' && actionId !== 'rest') {
+            if (!Player.flags['skipped_class_' + Player.day + '_' + TimeSystem.getCurrentPeriod()]) {
+                Player.flags['skipped_class_' + Player.day + '_' + TimeSystem.getCurrentPeriod()] = true;
+                // 仅提示，不惩罚
+                UI.showMessage(`💡 现在有${currentClass.name}（老师${DataManager.getCharacter(currentClass.teacher)?.name || '未知'}），不过你可以自由安排时间。`);
+            }
         }
 
         // v0.9.9: 记录行动探索（排除休息/等待类重复行动）
