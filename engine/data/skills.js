@@ -1594,6 +1594,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "中阶",
     realmRequired: "middle",
+    interruptChance: 0.2,
     statusEffects: [
       {
         name: "地震减速",
@@ -1721,6 +1722,7 @@ const DataSkills = {
     cooldown: 0,
     tier: "中阶",
     realmRequired: "middle",
+    interruptChance: 0.25,
     statusEffects: [
       {
         name: "暗影诅咒",
