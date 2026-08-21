@@ -1263,11 +1263,7 @@ const DataCharacters = {
     attack: 14,
     defense: 8,
     speed: 10,
-    skills: [
-      "basic_attack",
-      "ice_spike",
-      "ice_shield"
-    ],
+    skills: ["basic_attack", "ice_spike"],
     growth: {
       growthRate: 50,
       base: {
@@ -2089,10 +2085,7 @@ const DataCharacters = {
     defense: 20,
     speed: 12,
     spirit: 15,
-    skills: [
-      "basic_attack",
-      "light_ray"
-    ],
+    skills: ["basic_attack", "light_ray", "light_blind"],
     talents: [
           {
                 "name": "天生防御强化",
@@ -2485,11 +2478,7 @@ const DataCharacters = {
     attack: 15,
     defense: 8,
     speed: 12,
-    skills: [
-      "basic_attack",
-      "ice_spike",
-      "ice_shield"
-    ],
+    skills: ["basic_attack", "ice_spike", "ice_frost"],
     growth: {
       growthRate: 40,
       base: {
@@ -3124,7 +3113,7 @@ const DataCharacters = {
     attack: 45,
     defense: 20,
     speed: 18,
-    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst", "fire_burn_bone"],
+    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst", "fire_fist", "fire_fist_nine"],
     talents: [
           {
                 "name": "暗影系亲和",
@@ -4528,10 +4517,7 @@ const DataCharacters = {
     attack: 8,
     defense: 8,
     speed: 8,
-    skills: [
-      "basic_attack",
-      "water_heal"
-    ],
+    skills: ["basic_attack", "water_heal", "water_chain"],
     spriteColor: "#66aaff",
     location: "city_street",
     availableTimes: [
@@ -4800,13 +4786,7 @@ const DataCharacters = {
     attack: 50,
     defense: 30,
     speed: 15,
-    skills: [
-      "basic_attack",
-      "fire_bolt",
-      "fire_rain",
-      "earth_shield",
-      "earth_spike"
-    ],
+    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst", "earth_shield", "earth_quake", "earth_shift"],
     spriteColor: "#ff9933",
     location: "city_street",
     dialogue: [
@@ -5051,10 +5031,7 @@ const DataCharacters = {
     attack: 35,
     defense: 15,
     speed: 20,
-    skills: [
-      "basic_attack",
-      "dark_bolt"
-    ],
+    skills: ["basic_attack", "dark_bolt", "dark_cloak", "dark_curse"],
     spriteColor: "#993399",
     location: "city_street",
     availableTimes: [
@@ -5264,13 +5241,7 @@ const DataCharacters = {
     attack: 120,
     defense: 80,
     speed: 35,
-    skills: [
-      "basic_attack",
-      "fire_bolt",
-      "fire_rain",
-      "wind_blade",
-      "wind_speed"
-    ],
+    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst", "fire_fist", "fire_fist_nine", "wind_blade", "wind_speed", "wind_tornado", "sky_dive", "wind_wing"],
     growth: {
       base: {
         level: 35,
@@ -5594,7 +5565,7 @@ const DataCharacters = {
     attack: 38,
     defense: 18,
     speed: 15,
-    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst"],
+    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst", "fire_fist"],
     growth: {
       base: {
         level: 12,
@@ -6131,10 +6102,7 @@ const DataCharacters = {
     attack: 8,
     defense: 8,
     speed: 10,
-    skills: [
-      "basic_attack",
-      "water_heal"
-    ],
+    skills: ["basic_attack", "water_heal", "water_chain"],
     spriteColor: "#88ddff",
     isNPC: true,
     location: "city_street",
@@ -6344,11 +6312,7 @@ const DataCharacters = {
     attack: 25,
     defense: 20,
     speed: 10,
-    skills: [
-      "basic_attack",
-      "ice_spike",
-      "ice_shield"
-    ],
+    skills: ["basic_attack", "ice_spike", "ice_frost", "ice_storm"],
     spriteColor: "#aaddff",
     isNPC: true,
     location: "mu_manor",
@@ -7204,7 +7168,7 @@ level: 18,
     levelUnknown: true,
     personality: ["威严", "势利", "爱才", "控制欲强"],
     baseStats: { hp: 800, mp: 500, attack: 120, defense: 80, speed: 60 },
-    skills: ["basic_attack", "ice_spike", "ice_shield", "ice_storm", "ice_frost", "ice_lock"],
+    skills: ["basic_attack", "ice_spike", "ice_frost", "ice_storm", "ice_lock"],
     talents: [
           {
                 "name": "冰系修为深厚",
@@ -7283,7 +7247,7 @@ level: 15,
     levelUnknown: true,
     personality: ["严厉", "散漫", "实战派", "护短", "毒舌"],
     baseStats: { hp: 600, mp: 350, attack: 90, defense: 60, speed: 50 },
-    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst"],
+    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst", "fire_fist", "fire_fist_nine"],
     talents: [
           {
                 "name": "火系军法师",
@@ -7574,7 +7538,7 @@ level: 15,
 level: 9,
     personality: ["稳重", "经验丰富", "负责", "黝黑英俊"],
     baseStats: { hp: 350, mp: 200, attack: 45, defense: 40, speed: 20 },
-    skills: ["basic_attack", "earth_shield", "earth_spike"],
+    skills: ["basic_attack", "earth_shield", "earth_quake", "earth_shift"],
     talents: [
       {
         id: "earth_wilderness_experience",
@@ -7651,7 +7615,7 @@ level: 9,
 level: 8,
     personality: ["干练", "严格", "精悍", "崇拜强者"],
     baseStats: { hp: 280, mp: 180, attack: 38, defense: 25, speed: 35 },
-    skills: ["basic_attack", "wind_blade", "wind_speed"],
+    skills: ["basic_attack", "wind_blade", "wind_speed", "wind_tornado"],
     talents: [
       {
         id: "wind_strict_training",
@@ -7728,7 +7692,7 @@ level: 8,
 level: 2,
     personality: ["口无遮拦", "胆小", "爱抱怨", "体型偏胖"],
     baseStats: { hp: 80, mp: 55, attack: 8, defense: 8, speed: 6 },
-    skills: ["basic_attack", "earth_shift"],
+    skills: ["basic_attack", "earth_shield"],
     talents: [
       {
         id: "earth_displacement_talent",
@@ -7876,7 +7840,7 @@ level: 2,
 level: 10,
     personality: ["沉稳", "专业", "责任心强", "召唤系"],
     baseStats: { hp: 200, mp: 150, attack: 25, defense: 15, speed: 12 },
-    skills: ["basic_attack", "summon_wolf_beast"],
+    skills: ["basic_attack", "summon_beast", "summon_strengthen", "summon_rage"],
     talents: [
       {
         id: "summon_contract_mastery",
@@ -7968,7 +7932,7 @@ level: 12,
     levelUnknown: true,
     personality: ["豪爽", "严格", "负责任", "战斗经验丰富"],
     baseStats: { hp: 200, mp: 80, attack: 35, defense: 15, speed: 12 },
-    skills: ["basic_attack", "fire_bolt", "fire_burst", "fire_burn_bone"],
+    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst", "fire_fist"],
     talents: [
           {
                 "name": "火系猎妖经验",
@@ -8137,7 +8101,7 @@ level: 10,
     levelUnknown: true,
     personality: ["傲娇", "高冷", "实力强", "穆氏亲戚"],
     baseStats: { hp: 160, mp: 90, attack: 28, defense: 12, speed: 11 },
-    skills: ["ice_spike", "ice_shield", "ice_storm"],
+    skills: ["basic_attack", "ice_spike", "ice_frost", "ice_storm"],
     talents: [
       {
         id: "ice_hunter_experience",
@@ -8264,7 +8228,7 @@ level: 10,
 level: 8,
     personality: ["温柔", "可爱", "努力", "容易紧张"],
     baseStats: { hp: 140, mp: 100, attack: 18, defense: 18, speed: 10 },
-    skills: ["water_heal", "water_chain", "water_moist"],
+    skills: ["basic_attack", "water_heal", "water_chain", "water_wave"],
     talents: [
       {
         id: "water_defense_mastery",
@@ -8382,7 +8346,7 @@ level: 8,
 level: 9,
     personality: ["潇洒", "自信", "飘逸", "实力强"],
     baseStats: { hp: 150, mp: 85, attack: 25, defense: 10, speed: 20 },
-    skills: ["wind_blade", "wind_speed", "wind_tornado"],
+    skills: ["basic_attack", "wind_blade", "wind_speed", "wind_tornado"],
     talents: [
       {
         id: "wind_mobility_mastery",
@@ -8456,7 +8420,7 @@ level: 11,
     levelUnknown: true,
     personality: ["随和", "爱笑", "经验老道", "老大哥"],
     baseStats: { hp: 220, mp: 70, attack: 22, defense: 25, speed: 8 },
-    skills: ["earth_shield", "earth_spike", "earth_quake", "earth_shift"],
+    skills: ["basic_attack", "earth_shield", "earth_quake", "earth_shift", "bone_spike"],
     talents: [
       {
         id: "earth_defense_mastery",
@@ -8534,7 +8498,7 @@ level: 18,
     levelUnknown: true,
     personality: ["沉稳", "威严", "公正", "经验丰富"],
     baseStats: { hp: 300, mp: 200, attack: 50, defense: 30, speed: 25 },
-    skills: ["water_wave", "water_chain", "wind_tornado"],
+    skills: ["basic_attack", "water_heal", "water_chain", "water_wave", "water_tide", "water_arc_shield", "wind_blade", "wind_speed", "wind_tornado", "sky_dive", "wind_wing"],
     talents: [
           {
                 "name": "水风双系修为",
@@ -8605,7 +8569,7 @@ level: 18,
 level: 7,
     personality: ["阴沉", "冷漠", "修炼疯子", "唯命是从", "勤奋到变态"],
     baseStats: { hp: 120, mp: 80, attack: 22, defense: 12, speed: 14 },
-    skills: ["ice_spike", "ice_frost", "ice_shield"],
+    skills: ["basic_attack", "ice_spike", "ice_frost", "ice_storm"],
     talents: [
       {
         id: "ice_crazy_training",
@@ -8905,7 +8869,7 @@ level: 15,
     levelUnknown: true,
     personality: ["沉稳", "可靠", "尽职尽责", "见多识广"],
     baseStats: { hp: 300, mp: 150, attack: 35, defense: 40, speed: 12 },
-    skills: ["basic_attack", "earth_shield", "earth_spike", "earth_quake", "earth_shift"],
+    skills: ["basic_attack", "earth_shield", "earth_quake", "earth_shift", "bone_spike", "earth_wave"],
     talents: [
           {
                 "name": "土系防御修为",
@@ -8978,7 +8942,7 @@ level: 12,
     levelUnknown: true,
     personality: ["敏锐", "细心", "坚韧", "外冷内热"],
     baseStats: { hp: 220, mp: 180, attack: 28, defense: 20, speed: 22 },
-    skills: ["basic_attack", "water_heal", "water_chain", "water_shield", "water_wave"],
+    skills: ["basic_attack", "water_heal", "water_chain", "water_wave", "water_tide"],
     talents: [
       {
         id: "water_earth_spring_guardian",
@@ -9052,7 +9016,7 @@ level: 18,
     levelUnknown: true,
     personality: ["威严", "沉稳", "防守大师", "忠心耿耿"],
     baseStats: { hp: 400, mp: 200, attack: 40, defense: 55, speed: 10 },
-    skills: ["basic_attack", "earth_shield", "earth_slow"],
+    skills: ["basic_attack", "earth_shield", "earth_quake", "earth_shift", "bone_spike", "earth_wave"],
     talents: [
       {
         id: "earth_defense_master",
@@ -9129,7 +9093,7 @@ level: 18,
     attack: 80,
     defense: 50,
     speed: 40,
-    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst", "water_shield", "water_chain"],
+    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst", "fire_fist", "fire_fist_nine", "water_heal", "water_chain", "water_wave", "water_tide", "water_arc_shield"],
     spriteColor: "#8B4513",
     location: "tianlan_school",
     availableTimes: [
@@ -9250,11 +9214,7 @@ level: 18,
     attack: 90,
     defense: 40,
     speed: 60,
-    skills: [
-      "basic_attack",
-      "thunder_bolt",
-      "wind_blade"
-    ],
+    skills: ["basic_attack", "thunder_bolt", "thunder_chain", "thunder_strike", "thunder_praise", "thunder_praise_yecha", "wind_blade", "wind_speed", "wind_tornado", "sky_dive", "wind_wing"],
     talents: [
       {
         name: "雷风双系修为",
@@ -9398,7 +9358,7 @@ level: 18,
     defense: 20,
     speed: 28,
     spirit: 30,
-    skills: ["basic_attack", "wind_track_phantom", "wind_tornado", "plant_vine_bind", "plant_forest_prison"],
+    skills: ["basic_attack", "wind_blade", "wind_speed", "wind_tornado", "plant_vine_bind", "plant_thorn", "plant_forest"],
     aiType: "tactical",
     growthType: "mage",
     canDuel: true,
@@ -9560,7 +9520,7 @@ level: 18,
     defense: 8,
     speed: 15,
     spirit: 18,
-    skills: ["basic_attack", "light_ray", "light_shield"],
+    skills: ["basic_attack", "light_ray", "light_blind"],
     aiType: "support",
     growthType: "mage",
     canDuel: false,
@@ -9909,7 +9869,7 @@ level: 18,
     defense: 30,
     speed: 15,
     spirit: 20,
-    skills: ["basic_attack", "ice_vine", "ice_lock", "earth_sink"],
+    skills: ["basic_attack", "earth_shield", "earth_quake", "earth_shift", "bone_spike", "ice_spike", "ice_frost", "ice_storm", "ice_lock"],
     aiType: "aggressive",
     growthType: "mage",
     canDuel: true,
@@ -9970,7 +9930,7 @@ level: 18,
     defense: 18,
     speed: 32,
     spirit: 28,
-    skills: ["basic_attack", "light_ray", "light_blind", "light_purify", "light_shield"],
+    skills: ["basic_attack", "light_ray", "light_blind", "light_purify", "light_sanctuary"],
     talents: [
           {
                 "name": "光系天赋出众",
@@ -10109,7 +10069,7 @@ level: 18,
     defense: 40,
     speed: 35,
     spirit: 80,
-    skills: ["basic_attack"],
+    skills: ["basic_attack", "light_ray", "light_blind", "light_purify", "light_sanctuary"],
     aiType: "defensive",
     growthType: "mage",
     canDuel: false,
