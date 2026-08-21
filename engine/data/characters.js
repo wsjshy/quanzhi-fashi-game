@@ -7494,6 +7494,15 @@ level: 9,
     personality: ["稳重", "经验丰富", "负责", "黝黑英俊"],
     baseStats: { hp: 350, mp: 200, attack: 45, defense: 40, speed: 20 },
     skills: ["basic_attack", "earth_shield", "earth_spike"],
+    talents: [
+      {
+        id: "earth_wilderness_experience",
+        name: "土系野外生存经验",
+        type: "acquired",
+        description: "长期在雪峰山野外带领学生历练，土系魔法在野外环境中运用更加熟练。",
+        effects: { earthDamageBonus: 0.1 }
+      }
+    ],
     faction: "hunter_alliance",
     factionRank: "小队长",
     relationships: {
@@ -7562,6 +7571,15 @@ level: 8,
     personality: ["干练", "严格", "精悍", "崇拜强者"],
     baseStats: { hp: 280, mp: 180, attack: 38, defense: 25, speed: 35 },
     skills: ["basic_attack", "wind_blade", "wind_speed"],
+    talents: [
+      {
+        id: "wind_strict_training",
+        name: "风系严格训练",
+        type: "acquired",
+        description: "对学生要求严格，自身风系魔法训练也一丝不苟，风系攻击技能威力提升。",
+        effects: { windDamageBonus: 0.1 }
+      }
+    ],
     faction: "hunter_alliance",
     factionRank: "副教官",
     relationships: {
@@ -8001,6 +8019,15 @@ level: 10,
     personality: ["傲娇", "高冷", "实力强", "穆氏亲戚"],
     baseStats: { hp: 160, mp: 90, attack: 28, defense: 12, speed: 11 },
     skills: ["ice_spike", "ice_shield", "ice_storm"],
+    talents: [
+      {
+        id: "ice_hunter_experience",
+        name: "冰系猎妖经验",
+        type: "acquired",
+        description: "长期在城市猎妖队与妖魔战斗，冰系魔法运用更加熟练，对妖魔的冰系伤害提升。",
+        effects: { iceDamageBonus: 0.1 }
+      }
+    ],
     faction: "city_hunters",
     factionRank: "副队长",
     relationships: { mo_fan: 5, xu_dahuang: 15, xiao_ke: 10, li_wenjie: 10, fei_shi: 10 },
@@ -8119,6 +8146,15 @@ level: 8,
     personality: ["温柔", "可爱", "努力", "容易紧张"],
     baseStats: { hp: 140, mp: 100, attack: 18, defense: 18, speed: 10 },
     skills: ["water_heal", "water_chain", "water_moist"],
+    talents: [
+      {
+        id: "water_defense_mastery",
+        name: "水系防御精通",
+        type: "acquired",
+        description: "队伍中唯一的防御型法师，长期修炼水系防御魔法，水御技能效果提升。",
+        effects: { waterDefenseBonus: 0.15 }
+      }
+    ],
     faction: "city_hunters",
     factionRank: "队员",
     relationships: { mo_fan: 8, xu_dahuang: 10, guo_caitang: 8, li_wenjie: 8, fei_shi: 10 },
@@ -8228,6 +8264,15 @@ level: 9,
     personality: ["潇洒", "自信", "飘逸", "实力强"],
     baseStats: { hp: 150, mp: 85, attack: 25, defense: 10, speed: 20 },
     skills: ["wind_blade", "wind_speed", "wind_tornado"],
+    talents: [
+      {
+        id: "wind_mobility_mastery",
+        name: "风系机动精通",
+        type: "acquired",
+        description: "队伍中的机动输出，长期修炼风轨·闪步，风系速度技能效果提升。",
+        effects: { windSpeedBonus: 0.15 }
+      }
+    ],
     faction: "city_hunters",
     factionRank: "队员",
     relationships: { mo_fan: 5, xu_dahuang: 10, guo_caitang: 8, xiao_ke: 8, fei_shi: 10 },
@@ -8293,6 +8338,15 @@ level: 11,
     personality: ["随和", "爱笑", "经验老道", "老大哥"],
     baseStats: { hp: 220, mp: 70, attack: 22, defense: 25, speed: 8 },
     skills: ["earth_shield", "earth_spike", "earth_quake", "earth_shift"],
+    talents: [
+      {
+        id: "earth_defense_mastery",
+        name: "土系防御精通",
+        type: "acquired",
+        description: "队伍中的老大哥，经验老道，土系防御魔法运用熟练，土系防御技能效果提升。",
+        effects: { earthDefenseBonus: 0.15 }
+      }
+    ],
     faction: "city_hunters",
     factionRank: "队员",
     relationships: { mo_fan: 10, xu_dahuang: 15, guo_caitang: 10, xiao_ke: 12, li_wenjie: 12 },
@@ -8797,6 +8851,15 @@ level: 12,
     personality: ["敏锐", "细心", "坚韧", "外冷内热"],
     baseStats: { hp: 220, mp: 180, attack: 28, defense: 20, speed: 22 },
     skills: ["basic_attack", "water_chain", "water_shield"],
+    talents: [
+      {
+        id: "water_earth_spring_guardian",
+        name: "水系地圣泉守护",
+        type: "acquired",
+        description: "长期守护地圣泉，与地圣泉的水元素产生共鸣，水系魔法在水源附近威力提升。",
+        effects: { waterDamageBonus: 0.1 }
+      }
+    ],
     relationships: {
       liang_bin: { type: "superior", opinion: 75 }
     },
