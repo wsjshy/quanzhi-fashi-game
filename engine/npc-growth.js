@@ -68,10 +68,12 @@ const NPCGrowthService = {
         const stage = storyStage || this._getCurrentStoryStage();
         let state = this._cloneBase(npc.growth.base);
 
-        // 依次apply所有已触发的成长事件
-        for (const event of npc.growth.events) {
-            if (this._isStageReached(event.after, stage)) {
-                state = this._applyGrowthEvent(state, event);
+        // 依次apply所有已触发的成长事件（events可能不存在，需空值检查）
+        if (npc.growth.events && Array.isArray(npc.growth.events)) {
+            for (const event of npc.growth.events) {
+                if (this._isStageReached(event.after, stage)) {
+                    state = this._applyGrowthEvent(state, event);
+                }
             }
         }
 
@@ -149,12 +151,14 @@ const NPCGrowthService = {
             level: npc.growth.base.level,
         }];
 
-        for (const event of npc.growth.events) {
-            stages.push({
-                stage: event.after,
-                label: event.title || event.after,
-                level: event.level || "?",
-            });
+        if (npc.growth.events && Array.isArray(npc.growth.events)) {
+            for (const event of npc.growth.events) {
+                stages.push({
+                    stage: event.after,
+                    label: event.title || event.after,
+                    level: event.level || "?",
+                });
+            }
         }
 
         return stages;
@@ -171,6 +175,7 @@ const NPCGrowthService = {
         const npc = DataCharacters[npcId] || DataEnemies[npcId];
         if (!npc || !npc.growth) return battleState;
 
+        if (!npc.growth.events || !Array.isArray(npc.growth.events)) return battleState;
         const event = npc.growth.events.find(e => e.after === eventId);
         if (!event) {
             console.warn(`[NPC成长] 找不到战斗进化事件: ${eventId}`);
