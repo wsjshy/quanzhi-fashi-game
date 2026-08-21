@@ -1293,6 +1293,7 @@ const DataEnemies = {
       "basic_attack",
       "fire_bolt"
     ],
+    talents: ["fire_talent_basic"],
     aiType: "aggressive",
     enemyType: "mage",
     spriteColor: "#ff6633",
@@ -1324,6 +1325,7 @@ const DataEnemies = {
       "ice_spike",
       "ice_chain"
     ],
+    talents: ["ice_talent_basic"],
     aiType: "controller",
     enemyType: "mage",
     spriteColor: "#66ccff",
@@ -1391,6 +1393,7 @@ const DataEnemies = {
       "earth_spike",
       "demon_earth_shield"
     ],
+    talents: ["earth_talent_basic"],
     aiType: "defensive",
     enemyType: "mage",
     spriteColor: "#cc9966",
@@ -1422,6 +1425,7 @@ const DataEnemies = {
       "wind_blade",
       "wind_speed"
     ],
+    talents: ["wind_talent_basic"],
     aiType: "agile",
     enemyType: "mage",
     spriteColor: "#99ff99",
@@ -1454,6 +1458,7 @@ const DataEnemies = {
       "dark_claw",
       "dark_curse"
     ],
+    talents: ["dark_talent_basic"],
     aiType: "controller",
     enemyType: "mage",
     spriteColor: "#330033",
