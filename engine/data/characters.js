@@ -1575,6 +1575,15 @@ const DataCharacters = {
       "basic_attack",
       "wind_blade"
     ],
+    talents: [
+      {
+        id: "wind_speed_advantage",
+        name: "风系速度优势",
+        type: "acquired",
+        description: "风系法师，速度较快，擅长快速出击和躲避。",
+        effects: { windSpeedBonus: 0.1 }
+      }
+    ],
     spriteColor: "#bbffbb",
     location: "tianlan_school",
     availableTimes: [
