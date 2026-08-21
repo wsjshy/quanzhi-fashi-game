@@ -3095,22 +3095,21 @@ const Game = {
 
         // v2.9.3: 根据成长系统的location字段过滤NPC（NPC位置动态变化）
         const currentLocation = Player.currentLocation;
-        console.log('[NPC过滤] 开始过滤。currentLocation:', currentLocation, 'DataCharacters是否存在:', typeof DataCharacters, 'NPC数量:', npcs.length);
-        const filteredNpcs = npcs.filter(npcId => {
-            const npc = DataCharacters[npcId];
+        const filteredNpcs = npcs.filter(npcItem => {
+            // 兼容两种格式：npcItem可能是ID字符串，也可能是完整的NPC对象
+            const npc = typeof npcItem === 'string' ? DataCharacters[npcItem] : npcItem;
             if (!npc) {
-                console.log('[NPC过滤] npcId:', npcId, '对应的NPC不存在');
+                console.log('[NPC过滤] npcItem:', typeof npcItem === 'string' ? npcItem : npcItem.id, '对应的NPC不存在');
                 return false;
             }
-            console.log('[NPC过滤] NPC:', npc.name, '(' + npcId + ')', 'location字段:', npc.location, '类型:', typeof npc.location, '是否匹配:', npc.location === currentLocation);
             // 如果NPC有location字段且不为空，则只显示location匹配的NPC
             if (npc.location) {
-                return npc.location === currentLocation;
+                const match = npc.location === currentLocation;
+                return match;
             }
             // 没有location字段，默认显示
             return true;
         });
-        console.log('[NPC过滤] 过滤完成。原始数量:', npcs.length, '过滤后数量:', filteredNpcs.length);
         npcs = filteredNpcs;
 
         // 如果过滤后没有NPC，显示提示
