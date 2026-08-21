@@ -41,7 +41,36 @@
 - **修复选项列表不更新**：`_updateDialogueScreen`中`choicesEl.innerHTML`未被正确赋值
 - **修复重复变量声明**：移除重复的`const isRead`声明
 
-## v2.9.2 - 博城篇内容完善（已完成）
+### NPC信息系统全面改进（5阶段）
+
+#### 阶段一：修复P0严重Bug
+- **修复艾图图数据嵌套错误（最严重）**：艾图图的数据缺少`ai_tutu: {`独立key，直接嵌套在牧奴娇对象里面，导致艾图图的字段覆盖牧奴娇的字段（id/name/title/elements等）。修复后牧奴娇和艾图图都独立正确，总NPC数从49→50
+- **为16个战力NPC补充elements字段**：根据skills推断元素系（穆卓云冰、斩空火、城市猎妖队5人、雪峰山驿站3人、地圣泉2人等），之前缺失会导致元素系显示为空、战斗元素克制失效
+
+#### 阶段二：修复P1数据一致性
+- **罗宋等级与称号不匹配**：level从10(初阶巅峰)改为12(中阶)，与title"土冰双系中阶"一致
+- **growth.base与原始数据不一致**：莫凡(base level 1→3)、穆白(title统一)、牧奴娇(level 7→10, title统一)、罗宋(统一)
+- **修为不明确标记不全**：从4个增加到15个，新增穆卓云、斩空、包老头、邓凯、万断风等用"???"标记，城市猎妖队等用"中阶???"标记
+
+#### 阶段三：整合两套成长系统
+- **新增Game.getNPCLevel(npcId)统一方法**：优先级NPCGrowthService(剧情成长) > 原始数据 > NPCStateSystem(自主成长)
+- **新增Game.getNPCDisplayLevel(npcId)方法**：统一获取显示等级文本，含levelDisplay不明确标记
+- **修复升级里程碑反应**：从NPCStateSystem.getNPCLevel改为this.getNPCLevel，现在会考虑剧情成长等级
+- **明确两套系统职责分工**：NPCGrowthService主导(剧情阶段计算)，NPCStateSystem辅助(互动经验积累)
+
+#### 阶段四：扩展growth字段
+- **为30个战力NPC添加growth字段**：从10个增加到38个，包括穆卓云、斩空、邓凯、白藏锋、城市猎妖队、雪峰山驿站、地圣泉守卫等
+- **每个NPC的growth.base与原始数据一致**：level/elements/skills/title完全对应
+- **修复批量插入导致的语法错误**：17处缺少逗号、17处多余逗号
+
+#### 阶段五：文档和优化
+- 更新CHANGELOG.md记录5阶段改进
+- 待后续：UI显示逻辑重构、NPC description校准、数据格式规范更新、NPC成长系统设计文档
+
+### 修改文件
+- `engine/data/characters.js`：NPC数据修复、growth字段扩展、elements补充、levelDisplay标记
+- `engine/game.js`：统一等级获取方法、升级里程碑反应修复
+- `engine/dialogue-tree.js`：已读记录、goBack方法、修复back逻辑
 
 ### 内容完善
 - **博城北门**：新增2个地点动作和3个随机事件
