@@ -2550,10 +2550,18 @@ const BattleSystem = {
                 skillLevelBonus = Player.getSkillDamageBonus(skill.id);
             }
 
-            // 各系等级加成（仅玩家）：魔法威力 = 基础 × (1 + 该系等级×0.05)
+            // 各系等级加成（玩家和NPC法师）：魔法威力 = 基础 × (1 + 该系等级×0.05)
+            // v2.9.3: 对齐玩家与NPC法师的战斗逻辑，NPC法师也享受系别等级加成
             let elementLevelBonus = 1.0;
-            if (isPlayer && skill.element && typeof Player !== 'undefined') {
-                const elLevel = Player.getElementLevel(skill.element);
+            if (skill.element) {
+                let elLevel = 0;
+                if (isPlayer && typeof Player !== 'undefined') {
+                    // 玩家：使用Player.getElementLevel
+                    elLevel = Player.getElementLevel(skill.element);
+                } else if (casterData.id && typeof Game !== 'undefined' && typeof Game.getNPCElementLevel === 'function') {
+                    // NPC法师/敌人法师：使用Game.getNPCElementLevel
+                    elLevel = Game.getNPCElementLevel(casterData.id, skill.element);
+                }
                 if (elLevel > 0) {
                     elementLevelBonus = 1 + elLevel * 0.05;
                 }
