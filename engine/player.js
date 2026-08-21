@@ -11,51 +11,43 @@ const SAVE_VERSION = '0.8.7';
 const SKILL_UNLOCK_TABLE = {
     fire: {
         1: ['fire_bolt'],
-        3: ['fire_soul'],
-        5: ['fire_rain'],
-        8: ['fire_burst']
+        3: ['fire_rain'],
+        5: ['fire_burst']
     },
     ice: {
         1: ['ice_spike'],
         3: ['ice_frost'],
-        5: ['ice_shield'],
-        8: ['ice_storm']
+        5: ['ice_storm']
     },
     thunder: {
         1: ['thunder_bolt'],
-        3: ['thunder_drive'],
-        5: ['thunder_chain'],
-        8: ['thunder_strike']
+        3: ['thunder_chain'],
+        5: ['thunder_strike']
     },
     earth: {
-        1: ['earth_shield'],
-        3: ['earth_mud'],
-        5: ['earth_spike'],
-        8: ['earth_quake']
+        1: ['earth_spike'],
+        3: ['earth_quake'],
+        5: ['earth_shift']
     },
     wind: {
         1: ['wind_blade'],
-        3: ['wind_barrier'],
-        5: ['wind_speed'],
-        8: ['wind_tornado']
+        3: ['wind_speed'],
+        5: ['wind_tornado']
     },
     water: {
         1: ['water_heal'],
-        3: ['water_moist'],
-        5: ['water_chain'],
-        8: ['water_wave']
+        3: ['water_chain'],
+        5: ['water_wave']
     },
     light: {
         1: ['light_ray'],
-        3: ['light_blessing'],
-        5: ['light_shield'],
-        8: ['light_judgment']
+        3: ['light_blind'],
+        5: ['light_purify']
     },
     dark: {
         1: ['dark_bolt'],
-        3: ['dark_weakness'],
-        5: ['dark_cloak'],
-        8: ['dark_curse']
+        3: ['dark_cloak'],
+        5: ['dark_curse']
     },
     heal: {
         1: ['heal_light'],
@@ -259,7 +251,7 @@ const Player = {
                 fire: 'fire_bolt',
                 ice: 'ice_spike',
                 thunder: 'thunder_bolt',
-                earth: 'earth_shield',
+                earth: 'earth_spike',
                 wind: 'wind_blade',
                 water: 'water_heal',
                 light: 'light_ray',
@@ -2274,7 +2266,7 @@ const Player = {
             this.elements.forEach(elem => {
                 const starterSkills = {
                     fire: 'fire_bolt', ice: 'ice_spike', thunder: 'thunder_bolt',
-                    earth: 'earth_shield', wind: 'wind_blade', water: 'water_heal',
+                    earth: 'earth_spike', wind: 'wind_blade', water: 'water_heal',
                     light: 'light_ray', dark: 'dark_bolt', heal: 'heal_light',
                     summon: 'summon_beast'
                 };
