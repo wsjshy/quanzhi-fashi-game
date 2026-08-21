@@ -2050,6 +2050,14 @@ const DataCharacters = {
       "basic_attack",
       "light_ray"
     ],
+    talents: [
+          {
+                "name": "天生防御强化",
+                "type": "innate",
+                "element": "light",
+                "description": "光系+水系+岩系三系防御法师，防御魔法比拥有等同灵种的法师更加牢固，天生适合防御战。"
+          }
+    ],
     aiType: "defensive",
     growthType: "support",
     canDuel: true,
@@ -3075,6 +3083,14 @@ const DataCharacters = {
       "basic_attack",
       "fire_bolt",
       "fire_rain"
+    ],
+    talents: [
+          {
+                "name": "暗影系亲和",
+                "type": "innate",
+                "element": "dark",
+                "description": "审判会特工，天生拥有暗影系亲和，火系+暗影系双系法师，擅长隐匿和暗杀。"
+          }
     ],
     growth: {
       base: {
@@ -7037,6 +7053,14 @@ level: 18,
     personality: ["威严", "势利", "爱才", "控制欲强"],
     baseStats: { hp: 800, mp: 500, attack: 120, defense: 80, speed: 60 },
     skills: ["ice_shield", "ice_storm"],
+    talents: [
+          {
+                "name": "冰系修为深厚",
+                "type": "acquired",
+                "element": "ice",
+                "description": "穆氏族长，多年修炼冰系魔法，修为深厚，掌握冰系高阶魔法冰风暴。"
+          }
+    ],
     faction: "mu_family",
     factionRank: "族长",
     relationships: {
@@ -7105,6 +7129,14 @@ level: 18,
     personality: ["正义", "稳重", "有实力", "护短"],
     baseStats: { hp: 700, mp: 400, attack: 100, defense: 90, speed: 70 },
     skills: ["basic_attack"],
+    talents: [
+          {
+                "name": "雷风双系修为",
+                "type": "acquired",
+                "element": "thunder",
+                "description": "猎者联盟大长老，雷系+风系双系中阶法师，猎妖经验丰富，擅长快速追击和范围打击。"
+          }
+    ],
     faction: "hunter_alliance",
     factionRank: "高层",
     relationships: {
@@ -7175,6 +7207,14 @@ level: 15,
     personality: ["严厉", "散漫", "实战派", "护短", "毒舌"],
     baseStats: { hp: 600, mp: 350, attack: 90, defense: 60, speed: 50 },
     skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst"],
+    talents: [
+          {
+                "name": "火系军法师",
+                "type": "acquired",
+                "element": "fire",
+                "description": "雪峰山驿站总教官，军方高层，火系魔法经过战场淬炼，威力强大，实战经验丰富。"
+          }
+    ],
     faction: "military",
     factionRank: "总教官",
     relationships: {
@@ -7796,6 +7836,14 @@ level: 12,
     personality: ["豪爽", "严格", "负责任", "战斗经验丰富"],
     baseStats: { hp: 200, mp: 80, attack: 35, defense: 15, speed: 12 },
     skills: ["fire_bolt", "fire_burst", "fire_burn_bone"],
+    talents: [
+          {
+                "name": "火系猎妖经验",
+                "type": "acquired",
+                "element": "fire",
+                "description": "城市猎妖队队长，多年猎妖经验，火系魔法实战运用纯熟，擅长对付妖魔。"
+          }
+    ],
     faction: "city_hunters",
     factionRank: "队长",
     relationships: { mo_fan: 10, guo_caitang: 20, xiao_ke: 15, li_wenjie: 15, fei_shi: 20 },
@@ -8314,6 +8362,14 @@ level: 18,
     personality: ["沉稳", "威严", "公正", "经验丰富"],
     baseStats: { hp: 300, mp: 200, attack: 50, defense: 30, speed: 25 },
     skills: ["water_wave", "water_chain", "wind_tornado"],
+    talents: [
+          {
+                "name": "水风双系修为",
+                "type": "acquired",
+                "element": "water",
+                "description": "魔法协会中阶法师，水系+风系双系，魔法控制力强，擅长组合魔法和辅助。"
+          }
+    ],
     faction: "magic_association",
     factionRank: "中阶法师",
     relationships: { xu_dahuang: 30, mo_fan: 20 },
@@ -8668,6 +8724,14 @@ level: 15,
     personality: ["沉稳", "可靠", "尽职尽责", "见多识广"],
     baseStats: { hp: 300, mp: 150, attack: 35, defense: 40, speed: 12 },
     skills: ["basic_attack", "earth_shield", "earth_slow"],
+    talents: [
+          {
+                "name": "土系防御修为",
+                "type": "acquired",
+                "element": "earth",
+                "description": "地圣泉守卫长，土系魔法修为深厚，擅长防御和阵地战，守护地圣泉多年。"
+          }
+    ],
     relationships: {
       lin_yuxin: { type: "subordinate", opinion: 80 }
     },
@@ -8990,6 +9054,14 @@ level: 18,
       "basic_attack",
       "thunder_bolt",
       "wind_blade"
+    ],
+    talents: [
+      {
+        name: "雷风双系修为",
+        type: "acquired",
+        element: "thunder",
+        description: "猎者联盟大长老，雷系+风系双系中阶法师，猎妖经验丰富，擅长快速追击和范围打击。"
+      }
     ],
     spriteColor: "#4169E1",
     location: "hunter_guild",
@@ -9665,6 +9737,14 @@ level: 18,
     speed: 32,
     spirit: 28,
     skills: ["basic_attack", "light_ray", "light_blind"],
+    talents: [
+          {
+                "name": "光系天赋出众",
+                "type": "innate",
+                "element": "light",
+                "description": "白家天才，光系天赋出众，魔法控制力极强，是年轻一代中的佼佼者。"
+          }
+    ],
     aiType: "aggressive",
     growthType: "mage",
     canDuel: true,
