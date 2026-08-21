@@ -14,6 +14,14 @@ const DataCharacters = {
       "fire"
     ],
     level: 3,
+    talents: [
+      {
+        name: "天生双系",
+        type: "innate",
+        element: "special",
+        description: "觉醒时同时觉醒雷系与火系。天生双系极为罕见，比千分之一的雷霆系觉醒概率还小上万倍，起步就比别人高一个阶梯。"
+      }
+    ],
     maxHp: 150,
     maxMp: 80,
     attack: 18,
@@ -1237,6 +1245,14 @@ const DataCharacters = {
       "ice"
     ],
     level: 3,
+    talents: [
+      {
+        name: "寒冰系天赋出众",
+        type: "innate",
+        element: "ice",
+        description: "觉醒时寒冰系能量极强，直接冻结了觉醒石，在同阶学生中冰系魔法威力突出。穆氏世家旁系子弟，家族资源丰富。"
+      }
+    ],
     maxHp: 90,
     maxMp: 70,
     attack: 14,
@@ -1597,6 +1613,14 @@ const DataCharacters = {
       "wind"
     ],
     level: 2,
+    talents: [
+      {
+        name: "风系天赋出众",
+        type: "innate",
+        element: "wind",
+        description: "风系天赋出众，速度极快，学期末已是班级少数掌握七颗星子的人。身法灵活，擅长高速移动和突袭。"
+      }
+    ],
     maxHp: 80,
     maxMp: 50,
     attack: 10,
@@ -2350,6 +2374,20 @@ const DataCharacters = {
       "ice"
     ],
     level: 4,
+    talents: [
+      {
+        name: "天生冰系灵种",
+        type: "innate",
+        element: "ice",
+        description: "觉醒时便拥有冰系灵种，天生灵种极为罕见，天赋榜排名第九。整个博城找不出第二个，冰系魔法威力远超同阶法师。"
+      },
+      {
+        name: "冰晶刹弓",
+        type: "acquired",
+        element: "ice",
+        description: "魂级冰种凝聚而成的魔弓，彻底爆发时威力不逊色于高阶魔法。使用后会抽空全身魔能甚至生命力，是穆宁雪的终极杀招。（博城灾难后觉醒）"
+      }
+    ],
     maxHp: 130,
     maxMp: 100,
     attack: 15,

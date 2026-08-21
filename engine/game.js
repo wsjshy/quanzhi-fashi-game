@@ -2828,6 +2828,32 @@ const Game = {
             </div>
         `;
 
+        // v2.9.3: 天赋列表（从NPC原始数据或成长数据中获取）
+        let npcTalents = npc.talents || [];
+        if (typeof NPCGrowthService !== 'undefined') {
+            const growthState = NPCGrowthService.getNpcState(npcId);
+            if (growthState && growthState.talents && growthState.talents.length > 0) {
+                npcTalents = growthState.talents;
+            }
+        }
+        const talentsHtml = npcTalents.length > 0 ? npcTalents.map(talent => {
+            const isInnate = talent.type === 'innate';
+            const typeLabel = isInnate ? '天生' : '后天';
+            const typeColor = isInnate ? '#ffd700' : '#88ccff';
+            const elementInfo = talent.element ? this._getElementInfo(talent.element) : null;
+            return `
+                <div style="padding: 10px 12px; background: rgba(80, 60, 30, 0.4); border: 1px solid ${typeColor}44; border-radius: 8px; margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                        <span style="font-weight: bold; color: #ffe0aa; font-size: 14px;">
+                            ${elementInfo ? `<span style="color: ${elementInfo.color};">${elementInfo.icon}</span> ` : ''}${talent.name}
+                        </span>
+                        <span style="font-size: 11px; color: ${typeColor}; background: ${typeColor}22; padding: 2px 8px; border-radius: 8px;">${typeLabel}</span>
+                    </div>
+                    <div style="color: #bbb; font-size: 12px; line-height: 1.5;">${talent.description || ''}</div>
+                </div>
+            `;
+        }).join('') : '';
+
         // 创建遮罩
         const overlay = document.createElement('div');
         overlay.id = 'npc-detail-overlay';
@@ -2904,6 +2930,12 @@ const Game = {
                             <span style="color: #fff; font-size: 14px; font-weight: bold; float: right;">${duelData.spirit}</span>
                         </div>
                     </div>
+
+                    ${talentsHtml ? `
+                    <!-- 天赋列表 -->
+                    <div style="font-size: 13px; color: #ffcc66; margin-bottom: 5px; margin-top: 10px;">🌟 天赋</div>
+                    ${talentsHtml}
+                    ` : ''}
 
                     <!-- 技能列表 -->
                     <div style="font-size: 13px; color: #aaa; margin-bottom: 5px;">📜 技能列表</div>
@@ -3415,6 +3447,27 @@ const Game = {
                         <div style="height: 3px; background: #333; border-radius: 2px;">
                             <div style="height: 100%; width: ${Math.max(0, Math.min(100, npcState.familiarity))}%; background: linear-gradient(90deg, #6666cc, #9999ff); border-radius: 2px;"></div>
                         </div>
+                        ${(() => {
+                            // v2.9.3: 有战力的NPC显示详情按钮
+                            const npcLevel = NPCStateSystem.getNPCLevel(npc.id);
+                            if (npcLevel > 0 && (npc.skills?.length > 0 || npc.elements?.length > 0)) {
+                                return `<div onclick="Game.showNPCDetail('${npc.id}')" style="
+                                    margin-top: 10px;
+                                    padding: 5px 12px;
+                                    background: rgba(80, 100, 150, 0.5);
+                                    border: 1px solid #6688bb;
+                                    border-radius: 6px;
+                                    color: #aaccff;
+                                    cursor: pointer;
+                                    font-size: 12px;
+                                    text-align: center;
+                                    transition: all 0.2s;
+                                " onmouseover="this.style.background='rgba(100, 120, 180, 0.7)'" onmouseout="this.style.background='rgba(80, 100, 150, 0.5)'">
+                                    📊 查看详情
+                                </div>`;
+                            }
+                            return '';
+                        })()}
                     </div>
                 </div>
             </div>
