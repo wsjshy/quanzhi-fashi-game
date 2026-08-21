@@ -1122,6 +1122,7 @@ const DataCharacters = {
       }
     },
     growth: {
+      growthRate: 30,
       base: {
         level: 3,
         elements: ["thunder", "fire"],
@@ -1268,6 +1269,7 @@ const DataCharacters = {
       "ice_shield"
     ],
     growth: {
+      growthRate: 50,
       base: {
         level: 3,
         elements: ["ice"],
@@ -1634,6 +1636,7 @@ const DataCharacters = {
       }
     },
     growth: {
+      growthRate: 75,
       base: {
         level: 2,
         elements: ["wind"],
@@ -1678,6 +1681,7 @@ const DataCharacters = {
       "wind_blade"
     ],
     growth: {
+      growthRate: 55,
       base: {
         level: 2,
         elements: ["wind"],
@@ -2432,6 +2436,7 @@ const DataCharacters = {
       }
     },
     growth: {
+      growthRate: 50,
       base: {
         level: 4,
         elements: ["light"],
@@ -2486,6 +2491,7 @@ const DataCharacters = {
       "ice_shield"
     ],
     growth: {
+      growthRate: 40,
       base: {
         level: 4,
         elements: ["ice"],
@@ -5953,6 +5959,7 @@ const DataCharacters = {
     },
     
     growth: {
+      growthRate: 70,
       base: {
         level: 2,
         elements: ["water"],
@@ -6816,6 +6823,7 @@ const DataCharacters = {
     },
     
     growth: {
+      growthRate: 65,
       base: {
         level: 2,
         elements: ["fire"],
@@ -6922,6 +6930,7 @@ const DataCharacters = {
     },
     
     growth: {
+      growthRate: 55,
       base: {
         level: 2,
         elements: ["thunder"],
@@ -7738,6 +7747,7 @@ level: 2,
     ],
     relationships: {},
     growth: {
+      growthRate: 80,
       base: {
         level: 2,
         elements: ["earth"],
@@ -7891,6 +7901,7 @@ level: 10,
       pan_lijun: { type: "colleague", opinion: 50 }
     },
     growth: {
+      growthRate: 65,
       base: {
         level: 10,
         elements: ["summon"],
@@ -9426,6 +9437,7 @@ level: 18,
       mo_fan: { opinion: 25, trust: 10, type: "rival", label: "斗兽大赛对手" }
     },
     growth: {
+      growthRate: 50,
       base: {
         level: 10,
         elements: ["wind", "plant"],
@@ -9936,6 +9948,7 @@ level: 18,
       mo_fan: { opinion: -30, trust: 0, type: "rival", label: "竞争对手" }
     },
     growth: {
+      growthRate: 50,
       base: {
         level: 12,
         elements: ["earth", "ice"],
