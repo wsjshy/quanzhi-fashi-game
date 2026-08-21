@@ -1632,6 +1632,23 @@ const DataCharacters = {
         type: "hostile",
         label: "欺负对象"
       }
+    },
+    growth: {
+      base: {
+        level: 2,
+        elements: ["wind"],
+        skills: ["basic_attack","wind_blade"],
+        title: "穆白的跟班",
+        growthType: "mage",
+      },
+      events: [
+        {
+          after: "bocheng_disaster",
+          level: 10,
+          addSkills: ["wind_speed"],
+          title: "风系法师",
+        }
+      ],
     }
   },
   zhang_xiaohou: {
@@ -5943,6 +5960,14 @@ const DataCharacters = {
         title: "天澜魔法高中学生",
         growthType: "mage",
       },
+      events: [
+        {
+          after: "bocheng_disaster",
+          level: 10,
+          addSkills: ["water_shield"],
+          title: "水系法师",
+        }
+      ],
     },dialogueTree: {
       startNode: "default",
       nodes: {
@@ -7763,6 +7788,23 @@ level: 2,
           choices: [{ text: "还是去吧。", next: "default", action: "back" }]
         }
       }
+    },
+    growth: {
+      base: {
+        level: 2,
+        elements: ["earth"],
+        skills: ["basic_attack","earth_shift"],
+        title: "天澜高中学生",
+        growthType: "mage",
+      },
+      events: [
+        {
+          after: "bocheng_disaster",
+          level: 10,
+          addSkills: ["earth_shield"],
+          title: "土系法师",
+        }
+      ],
     }
   },
   er_tuzi: {
