@@ -2808,6 +2808,62 @@ const Game = {
     },
 
     /**
+     * 获取NPC所有系别的等级（与玩家elementLevels机制对齐）
+     * 优先级：NPCGrowthService成长状态 > npc.elementLevels > npc.level（所有系别统一）
+     * @param {string} npcId - NPC ID
+     * @returns {Object} {elementId: level}，如 {fire: 35, wind: 25}
+     */
+    getNPCElementLevels(npcId) {
+        const npc = DataManager.getCharacter(npcId);
+        if (!npc) return {};
+
+        // 1. 尝试从NPCGrowthService获取成长后的系别等级
+        if (typeof NPCGrowthService !== 'undefined') {
+            const state = NPCGrowthService.getNpcState(npcId);
+            if (state && state.elementLevels) {
+                return { ...state.elementLevels };
+            }
+        }
+
+        // 2. 使用npc.elementLevels字段
+        if (npc.elementLevels && typeof npc.elementLevels === 'object') {
+            return { ...npc.elementLevels };
+        }
+
+        // 3. 向后兼容：没有elementLevels时，用level初始化所有系别
+        const elements = npc.elements || (npc.element ? [npc.element] : []);
+        const level = this.getNPCLevel(npcId) || npc.level || 1;
+        const result = {};
+        elements.forEach(el => {
+            result[el] = level;
+        });
+        return result;
+    },
+
+    /**
+     * 获取NPC指定系别的等级
+     * @param {string} npcId - NPC ID
+     * @param {string} element - 系别ID，如"fire"
+     * @returns {number} 系别等级，不存在返回0
+     */
+    getNPCElementLevel(npcId, element) {
+        const levels = this.getNPCElementLevels(npcId);
+        return levels[element] || 0;
+    },
+
+    /**
+     * 获取NPC主系（第一个系别）
+     * @param {string} npcId - NPC ID
+     * @returns {string} 主系ID，如"fire"
+     */
+    getNPCMainElement(npcId) {
+        const npc = DataManager.getCharacter(npcId);
+        if (!npc) return '';
+        const elements = npc.elements || (npc.element ? [npc.element] : []);
+        return elements[0] || '';
+    },
+
+    /**
      * 显示NPC详细信息面板（等级、属性、技能、关系等）
      * 使用NPCGrowthService获取成长后的当前状态数据
      */
@@ -2842,10 +2898,16 @@ const Game = {
         const levelDisplay = npc.levelDisplay || `Lv.${level}`;
         const realmDisplay = npc.levelUnknown ? '境界不明' : realm;
 
-        // 元素系显示
-        const elementsHtml = (duelData.elements || []).map(el => {
+        // 元素系显示（含每系等级/境界，与玩家elementLevels机制对齐）
+        const npcElementLevels = this.getNPCElementLevels(npcId);
+        const elementsHtml = (duelData.elements || []).map((el, index) => {
             const info = this._getElementInfo(el);
-            return `<span style="display: inline-block; padding: 3px 10px; background: ${info.color}33; border: 1px solid ${info.color}; border-radius: 12px; color: ${info.color}; font-size: 13px; margin-right: 6px;">${info.icon} ${info.name}</span>`;
+            const elLevel = npcElementLevels[el] || 0;
+            const elRealm = elLevel > 0 ? this._getRealmName(elLevel) : '';
+            const isMain = index === 0; // 第一个系别为主系
+            const levelDisplay = elLevel > 0 ? ` Lv.${elLevel}${elRealm ? ' ' + elRealm : ''}` : '';
+            const mainBadge = isMain ? '<span style="font-size:10px;background:#ffd700;color:#333;padding:1px 5px;border-radius:6px;margin-left:4px;">主系</span>' : '';
+            return `<span style="display: inline-block; padding: 4px 12px; background: ${info.color}33; border: 1px solid ${info.color}; border-radius: 12px; color: ${info.color}; font-size: 13px; margin-right: 6px; margin-bottom: 4px;">${info.icon} ${info.name}${levelDisplay}${mainBadge}</span>`;
         }).join('');
 
         // 技能列表

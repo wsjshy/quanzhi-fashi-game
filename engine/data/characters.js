@@ -14,6 +14,10 @@ const DataCharacters = {
       "fire"
     ],
     level: 3,
+    elementLevels: {
+      thunder: 3,
+      fire: 3
+    },
     talents: [
       {
         name: "天生双系",
@@ -8349,6 +8353,10 @@ level: 11,
     element: "water",
         elements: ["water","wind"],
 level: 18,
+    elementLevels: {
+      water: 18,
+      wind: 15
+    },
     levelDisplay: "中阶???",
     levelUnknown: true,
     personality: ["沉稳", "威严", "公正", "经验丰富"],
@@ -9035,6 +9043,10 @@ level: 18,
       "wind"
     ],
     level: 18,
+    elementLevels: {
+      thunder: 18,
+      wind: 15
+    },
     levelDisplay: "???",
     levelUnknown: true,
     maxHp: 700,
@@ -9156,6 +9168,10 @@ level: 18,
     description: "牧家大小姐，全校公认的女神。天仙之姿，却嗜战如魔。风系+植物系双系中阶法师，战斗经验丰富。",
     elements: ["wind", "plant"],
     level: 10,
+    elementLevels: {
+      wind: 10,
+      plant: 8
+    },
     maxHp: 600,
     maxMp: 200,
     attack: 35,
@@ -9662,6 +9678,10 @@ level: 18,
     description: "富家子弟，土系+冰系双系中阶法师。为人傲慢，与莫凡有竞争关系。",
     elements: ["earth", "ice"],
     level: 12,
+    elementLevels: {
+      earth: 12,
+      ice: 10
+    },
     maxHp: 550,
     maxMp: 180,
     attack: 28,
@@ -9858,6 +9878,10 @@ level: 18,
     description: "博城灾难中失去全家的幸存者，雷系+风系双系中阶法师。对黑教廷恨之入骨，性格刚烈勇敢。与张璐璐是情侣。在主校区考核中被宇昂抓住变成诅咒畜妖，最终求莫凡结束自己生命。",
     elements: ["thunder", "wind"],
     level: 12,
+    elementLevels: {
+      thunder: 12,
+      wind: 8
+    },
     maxHp: 350,
     maxMp: 180,
     attack: 28,
