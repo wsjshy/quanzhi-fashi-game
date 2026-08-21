@@ -2716,6 +2716,226 @@ const Game = {
     },
 
     // ========== NPC 对话 ==========
+
+    // 元素系映射（名称、图标、颜色）
+    _elementMap: {
+        fire: { name: '火系', icon: '🔥', color: '#ff4444' },
+        ice: { name: '冰系', icon: '❄️', color: '#44aaff' },
+        thunder: { name: '雷系', icon: '⚡', color: '#ffcc00' },
+        water: { name: '水系', icon: '💧', color: '#3399ff' },
+        wind: { name: '风系', icon: '🌪️', color: '#88ddaa' },
+        earth: { name: '土系', icon: '🪨', color: '#aa8855' },
+        light: { name: '光系', icon: '✨', color: '#ffee88' },
+        dark: { name: '暗系', icon: '🌑', color: '#8866aa' },
+        healing: { name: '治愈系', icon: '💚', color: '#66cc66' },
+        plant: { name: '植物系', icon: '🌿', color: '#55aa55' },
+        summoning: { name: '召唤系', icon: '🐾', color: '#cc8844' },
+        space: { name: '空间系', icon: '🌀', color: '#aa66cc' },
+        curse: { name: '诅咒系', icon: '💀', color: '#996699' },
+        chaos: { name: '混沌系', icon: '🌌', color: '#7766aa' },
+    },
+
+    /**
+     * 获取元素系显示信息
+     */
+    _getElementInfo(element) {
+        return this._elementMap[element] || { name: element, icon: '❓', color: '#999' };
+    },
+
+    /**
+     * 根据等级推断境界名称
+     */
+    _getRealmName(level) {
+        if (level >= 56) return '超阶';
+        if (level >= 31) return '高阶';
+        if (level >= 11) return '中阶';
+        return '初阶';
+    },
+
+    /**
+     * 显示NPC详细信息面板（等级、属性、技能、关系等）
+     * 使用NPCGrowthService获取成长后的当前状态数据
+     */
+    showNPCDetail(npcId) {
+        const npc = DataManager.getCharacter(npcId);
+        if (!npc) return;
+
+        // 获取NPC当前战斗数据（含成长）
+        let duelData = null;
+        if (typeof NPCGrowthService !== 'undefined') {
+            duelData = NPCGrowthService.getDuelData(npcId);
+        }
+        // 没有成长服务时用原始数据
+        if (!duelData) {
+            duelData = {
+                level: npc.level || 0,
+                elements: npc.elements || [],
+                skills: npc.skills || [],
+                maxHp: npc.maxHp || 0,
+                maxMp: npc.maxMp || 0,
+                attack: npc.attack || 0,
+                defense: npc.defense || 0,
+                speed: npc.speed || 0,
+                spirit: npc.spirit || 0,
+            };
+        }
+
+        const hasCombat = duelData.level > 0 && (duelData.skills?.length > 0 || duelData.elements?.length > 0);
+        const level = duelData.level || npc.level || 0;
+        const realm = this._getRealmName(level);
+
+        // 元素系显示
+        const elementsHtml = (duelData.elements || []).map(el => {
+            const info = this._getElementInfo(el);
+            return `<span style="display: inline-block; padding: 3px 10px; background: ${info.color}33; border: 1px solid ${info.color}; border-radius: 12px; color: ${info.color}; font-size: 13px; margin-right: 6px;">${info.icon} ${info.name}</span>`;
+        }).join('');
+
+        // 技能列表
+        const skillsHtml = (duelData.skills || []).map(skillId => {
+            const skill = typeof DataManager !== 'undefined' ? DataManager.getSkill(skillId) : null;
+            const name = skill?.name || skillId;
+            const desc = skill?.description || '';
+            const element = skill?.element ? this._getElementInfo(skill.element) : null;
+            return `
+                <div style="padding: 8px 12px; background: rgba(40, 40, 80, 0.5); border-radius: 8px; margin-bottom: 6px;">
+                    <div style="font-weight: bold; color: #e0e0ff; font-size: 14px;">
+                        ${element ? `<span style="color: ${element.color};">${element.icon}</span> ` : ''}${name}
+                        ${skill?.level ? `<span style="color: #ffcc00; font-size: 12px; margin-left: 8px;">Lv.${skill.level}</span>` : ''}
+                    </div>
+                    ${desc ? `<div style="color: #999; font-size: 12px; margin-top: 3px;">${desc}</div>` : ''}
+                </div>
+            `;
+        }).join('') || '<div style="color: #666; font-size: 13px;">暂无技能数据</div>';
+
+        // 关系信息
+        const npcState = typeof NPCStateSystem !== 'undefined' ? NPCStateSystem.getNPCState(npcId) : null;
+        const rel = npcState ? {
+            opinion: npcState.opinion || 0,
+            trust: npcState.trust || 0,
+            familiarity: npcState.familiarity || 0,
+        } : { opinion: 0, trust: 0, familiarity: 0 };
+        const relState = typeof NPCStateSystem !== 'undefined' ? NPCStateSystem.getRelationshipState('player', npcId) : { label: '陌生人' };
+
+        // 关系条
+        const relBar = (label, value, color) => `
+            <div style="margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; color: #aaa; margin-bottom: 3px;">
+                    <span>${label}</span><span>${value > 0 ? '+' : ''}${value}</span>
+                </div>
+                <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+                    <div style="height: 100%; width: ${Math.min(100, Math.abs(value))}%; background: ${color};"></div>
+                </div>
+            </div>
+        `;
+
+        // 创建遮罩
+        const overlay = document.createElement('div');
+        overlay.id = 'npc-detail-overlay';
+        overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100000; cursor: pointer;';
+        const closeDetail = () => { overlay.remove(); dialog.remove(); };
+        overlay.addEventListener('click', closeDetail);
+
+        // 创建详情面板
+        const dialog = document.createElement('div');
+        dialog.id = 'npc-detail-dialog';
+        dialog.style.cssText = `
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(10, 10, 30, 0.98); border: 2px solid #6666aa; border-radius: 15px;
+            padding: 25px; min-width: 420px; max-width: 560px; max-height: 85vh; overflow-y: auto;
+            z-index: 100001; box-shadow: 0 0 40px rgba(100, 100, 255, 0.3);
+        `;
+        dialog.addEventListener('click', e => e.stopPropagation());
+
+        dialog.innerHTML = `
+            <!-- 头部：名字、称号、关闭按钮 -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                <div>
+                    <div style="font-size: 22px; font-weight: bold; color: #ffd700;">${npc.name}</div>
+                    ${npc.title ? `<div style="font-size: 13px; color: #999; margin-top: 3px;">${npc.title}</div>` : ''}
+                </div>
+                <div id="npc-detail-close-btn" style="cursor: pointer; color: #888; font-size: 20px; padding: 0 8px;">✕</div>
+            </div>
+
+            ${npc.description ? `
+                <div style="font-size: 13px; color: #aaa; line-height: 1.6; margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                    ${npc.description}
+                </div>
+            ` : ''}
+
+            ${hasCombat ? `
+                <!-- 战斗信息 -->
+                <div style="margin-bottom: 15px;">
+                    <div style="font-size: 15px; font-weight: bold; color: #88aaff; margin-bottom: 10px; border-bottom: 1px solid #444466; padding-bottom: 5px;">⚔️ 战斗信息</div>
+                    
+                    <div style="display: flex; gap: 15px; margin-bottom: 10px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; color: #ffd700;">Lv.${level}</div>
+                            <div style="font-size: 12px; color: #888;">${realm}</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="margin-bottom: 5px;">${elementsHtml || '<span style="color: #666; font-size: 13px;">未知系别</span>'}</div>
+                        </div>
+                    </div>
+
+                    <!-- 属性 -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                        <div style="padding: 6px 10px; background: rgba(200,50,50,0.15); border-radius: 6px;">
+                            <span style="color: #ff8888; font-size: 12px;">❤️ 生命</span>
+                            <span style="color: #fff; font-size: 14px; font-weight: bold; float: right;">${duelData.maxHp}</span>
+                        </div>
+                        <div style="padding: 6px 10px; background: rgba(50,100,200,0.15); border-radius: 6px;">
+                            <span style="color: #88aaff; font-size: 12px;">💧 法力</span>
+                            <span style="color: #fff; font-size: 14px; font-weight: bold; float: right;">${duelData.maxMp}</span>
+                        </div>
+                        <div style="padding: 6px 10px; background: rgba(200,100,50,0.15); border-radius: 6px;">
+                            <span style="color: #ffaa66; font-size: 12px;">⚔️ 攻击</span>
+                            <span style="color: #fff; font-size: 14px; font-weight: bold; float: right;">${duelData.attack}</span>
+                        </div>
+                        <div style="padding: 6px 10px; background: rgba(100,150,100,0.15); border-radius: 6px;">
+                            <span style="color: #88cc88; font-size: 12px;">🛡️ 防御</span>
+                            <span style="color: #fff; font-size: 14px; font-weight: bold; float: right;">${duelData.defense}</span>
+                        </div>
+                        <div style="padding: 6px 10px; background: rgba(100,200,200,0.15); border-radius: 6px;">
+                            <span style="color: #88dddd; font-size: 12px;">💨 速度</span>
+                            <span style="color: #fff; font-size: 14px; font-weight: bold; float: right;">${duelData.speed}</span>
+                        </div>
+                        <div style="padding: 6px 10px; background: rgba(150,100,200,0.15); border-radius: 6px;">
+                            <span style="color: #bb99ee; font-size: 12px;">🧠 精神</span>
+                            <span style="color: #fff; font-size: 14px; font-weight: bold; float: right;">${duelData.spirit}</span>
+                        </div>
+                    </div>
+
+                    <!-- 技能列表 -->
+                    <div style="font-size: 13px; color: #aaa; margin-bottom: 5px;">📜 技能列表</div>
+                    ${skillsHtml}
+                </div>
+            ` : ''}
+
+            <!-- 关系信息 -->
+            <div style="margin-bottom: 10px;">
+                <div style="font-size: 15px; font-weight: bold; color: #ff99aa; margin-bottom: 10px; border-bottom: 1px solid #444466; padding-bottom: 5px;">
+                    💗 关系状态：<span style="color: #ffcc88;">${relState.label}</span>
+                </div>
+                ${relBar('好感度', rel.opinion, '#ff88aa')}
+                ${relBar('信任度', rel.trust, '#88aaff')}
+                ${relBar('熟悉度', rel.familiarity, '#88ddaa')}
+            </div>
+
+            <div style="text-align: center; margin-top: 15px;">
+                <div id="npc-detail-close-btn2" style="display: inline-block; padding: 8px 30px; background: rgba(100,100,150,0.5); border: 1px solid #666699; border-radius: 8px; color: #ccc; cursor: pointer; font-size: 14px;">关闭</div>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+        document.body.appendChild(dialog);
+
+        // 绑定关闭按钮事件
+        const closeBtn = document.getElementById('npc-detail-close-btn');
+        if (closeBtn) closeBtn.addEventListener('click', closeDetail);
+        const closeBtn2 = document.getElementById('npc-detail-close-btn2');
+        if (closeBtn2) closeBtn2.addEventListener('click', closeDetail);
+    },
+
     showNPCList(npcs, unavailableNpcs = []) {
         // 参数校验
         if (!npcs) npcs = [];
@@ -2764,6 +2984,29 @@ const Game = {
             const availableQuests = QuestSystem.getAvailableQuestsForNPC(npc.id);
             const hasQuest = availableQuests.length > 0;
             
+            // v2.9.3: 获取NPC当前等级和元素系（含成长）
+            let npcLevel = 0;
+            let npcElements = [];
+            if (typeof NPCGrowthService !== 'undefined') {
+                const npcState = NPCGrowthService.getNpcState(npc.id);
+                if (npcState) {
+                    npcLevel = npcState.level || 0;
+                    npcElements = npcState.elements || [];
+                }
+            }
+            if (npcLevel === 0) {
+                npcLevel = npc.level || 0;
+                npcElements = npc.elements || [];
+            }
+            const hasCombat = npcLevel > 0 && npcElements.length > 0;
+            const realmName = hasCombat ? Game._getRealmName(npcLevel) : '';
+            
+            // 元素系图标
+            const elementsIcons = npcElements.slice(0, 3).map(el => {
+                const info = Game._getElementInfo(el);
+                return `<span style="color: ${info.color}; font-size: 14px;" title="${info.name}">${info.icon}</span>`;
+            }).join('');
+            
             if (canTalk) {
                 return `
                     <div onclick="talkToNPC('${npc.id}')" style="
@@ -2778,13 +3021,34 @@ const Game = {
                         font-size: 16px;
                         position: relative;
                     " onmouseover="this.style.borderColor='${hasQuest ? '#ffdd44' : '#7777bb'}'; this.style.background='rgba(60, 60, 120, 0.8)'" onmouseout="this.style.borderColor='${hasQuest ? '#ffcc00' : '#444477'}'; this.style.background='rgba(40, 40, 80, 0.8)'">
-                        <div style="font-weight: bold; font-size: 17px;">
-                            ${npc.name}
-                            ${hasQuest ? '<span style="color: #ffcc00; font-size: 20px; margin-left: 8px;">❗</span>' : ''}
-                        </div>
-                        <div style="font-size: 13px; color: #999; margin-top: 3px;">
-                            ${npc.title || ''}
-                            ${hasQuest ? '<span style="color: #ffcc00; margin-left: 8px;">有任务可接</span>' : ''}
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div style="flex: 1;">
+                                <div style="font-weight: bold; font-size: 17px;">
+                                    ${npc.name}
+                                    ${hasQuest ? '<span style="color: #ffcc00; font-size: 20px; margin-left: 8px;">❗</span>' : ''}
+                                    ${hasCombat ? `<span style="color: #ffd700; font-size: 13px; margin-left: 10px; background: rgba(255,215,0,0.1); padding: 2px 8px; border-radius: 8px;">Lv.${npcLevel} ${realmName}</span>` : ''}
+                                </div>
+                                <div style="font-size: 13px; color: #999; margin-top: 3px;">
+                                    ${npc.title || ''}
+                                    ${hasCombat && elementsIcons ? `<span style="margin-left: 10px;">${elementsIcons}</span>` : ''}
+                                    ${hasQuest ? '<span style="color: #ffcc00; margin-left: 8px;">有任务可接</span>' : ''}
+                                </div>
+                            </div>
+                            ${hasCombat ? `
+                                <div onclick="event.stopPropagation(); Game.showNPCDetail('${npc.id}')" style="
+                                    padding: 6px 10px;
+                                    background: rgba(80, 100, 150, 0.4);
+                                    border: 1px solid #6688bb;
+                                    border-radius: 6px;
+                                    color: #aaccff;
+                                    cursor: pointer;
+                                    font-size: 12px;
+                                    white-space: nowrap;
+                                    margin-left: 10px;
+                                " onmouseover="this.style.background='rgba(100, 120, 180, 0.6)'" onmouseout="this.style.background='rgba(80, 100, 150, 0.4)'">
+                                    📊 详情
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 `;
