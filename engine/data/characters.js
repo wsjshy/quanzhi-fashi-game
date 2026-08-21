@@ -1744,9 +1744,18 @@ const DataCharacters = {
         level: 2,
         elements: ["wind"],
         skills: ["basic_attack","wind_blade"],
-        title: "穆白的跟班",
+        title: "风系学生",
         growthType: "mage",
       },
+      events: [
+        {
+          after: "bocheng_disaster",
+          level: 12,
+          addElements: ["earth"],
+          addSkills: ["earth_shift", "earth_shield", "wind_speed"],
+          title: "风系中阶法师",
+        }
+      ],
     },dialogueTree: {
       npcId: "zhang_xiaohou",
       nodes: {
