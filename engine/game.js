@@ -450,7 +450,7 @@ const Game = {
                 const npcId = reactionNPCs[Math.floor(Math.random() * reactionNPCs.length)];
                 const npcData = DataManager.getCharacter(npcId);
                 if (npcData) {
-                    const npcLevel = NPCStateSystem.getNPCLevel(npcId);
+                    const npcLevel = this.getNPCLevel(npcId);
                     const diff = milestoneLv - npcLevel;
                     let reaction = '';
                     if (diff >= 3) {
@@ -2750,6 +2750,61 @@ const Game = {
         if (level >= 31) return '高阶';
         if (level >= 11) return '中阶';
         return '初阶';
+    },
+
+    /**
+     * v2.9.3: 统一获取NPC当前等级（整合NPCGrowthService和NPCStateSystem）
+     * 优先级：NPCGrowthService(剧情成长) > 原始数据 > NPCStateSystem(自主成长)
+     * @param {string} npcId - NPC ID
+     * @returns {number} NPC当前等级
+     */
+    getNPCLevel(npcId) {
+        const npc = DataManager.getCharacter(npcId);
+        if (!npc) return 0;
+
+        // 1. 优先使用NPCGrowthService（剧情成长）
+        if (typeof NPCGrowthService !== 'undefined') {
+            const growthState = NPCGrowthService.getNpcState(npcId);
+            if (growthState && growthState.level > 0) {
+                return growthState.level;
+            }
+        }
+
+        // 2. 使用原始数据
+        if (npc.level > 0) {
+            return npc.level;
+        }
+
+        // 3. fallback到NPCStateSystem（自主成长）
+        if (typeof NPCStateSystem !== 'undefined') {
+            const stateLevel = NPCStateSystem.getNPCLevel(npcId);
+            if (stateLevel > 0) {
+                return stateLevel;
+            }
+        }
+
+        return npc.level || 0;
+    },
+
+    /**
+     * v2.9.3: 获取NPC显示等级文本（含levelDisplay不明确标记）
+     * @param {string} npcId - NPC ID
+     * @returns {string} 显示文本，如"Lv.12 中阶"或"???"
+     */
+    getNPCDisplayLevel(npcId) {
+        const npc = DataManager.getCharacter(npcId);
+        if (!npc) return '';
+
+        // 有levelDisplay字段时直接返回（修为不明确）
+        if (npc.levelDisplay) {
+            return npc.levelDisplay;
+        }
+
+        const level = this.getNPCLevel(npcId);
+        if (level <= 0) return '';
+
+        const realm = this._getRealmName(level);
+        return `Lv.${level} ${realm}`;
     },
 
     /**
