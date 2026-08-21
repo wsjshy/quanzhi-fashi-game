@@ -3108,7 +3108,21 @@ const Game = {
             // 没有成长系统或location为null，默认显示
             return true;
         });
-        npcs = filteredNpcs;
+
+        // 安全修复：如果位置过滤后没有NPC，回退到显示所有NPC（避免"这里现在没有人"的bug）
+        if (filteredNpcs.length === 0 && npcs.length > 0) {
+            console.warn('[NPC列表] 位置过滤后无NPC，回退显示全部。currentLocation:', currentLocation, '原始NPC数量:', npcs.length);
+            // 输出每个NPC的location用于调试
+            npcs.forEach(npcId => {
+                const npc = DataCharacters[npcId];
+                if (npc && typeof NPCGrowthService !== 'undefined') {
+                    const gs = NPCGrowthService.getNpcState(npcId);
+                    console.warn('  -', npc.name, 'location:', gs?.location, 'npc.location:', npc.location);
+                }
+            });
+        } else {
+            npcs = filteredNpcs;
+        }
 
         // 如果过滤后没有NPC，显示提示
         if (npcs.length === 0 && (!unavailableNpcs || unavailableNpcs.length === 0)) {
