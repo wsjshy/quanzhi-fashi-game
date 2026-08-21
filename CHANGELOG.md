@@ -35,6 +35,12 @@
 - `engine/dialogue-tree.js`：添加已读记录、goBack方法、修复back逻辑
 - `engine/game.js`：对话UI重写、选项渲染优化、任务提示、返回按钮
 
+### Bug修复
+- **修复"Uncaught SyntaxError: Unexpected token '<'"错误**：`_updateDialogueScreen`方法中`onmouseout`属性缺少结束引号`"`，导致HTML结构混乱，浏览器尝试解析后续HTML内容为JavaScript代码。该bug只在第二次点击选项时触发（第一次使用`_showDialogueScreen`，第二次使用`_updateDialogueScreen`）
+- **修复已读标记不生效**：`_updateDialogueScreen`中`isChoiceRead`调用缺少`nodeId`参数，导致已读标记检查失败
+- **修复选项列表不更新**：`_updateDialogueScreen`中`choicesEl.innerHTML`未被正确赋值
+- **修复重复变量声明**：移除重复的`const isRead`声明
+
 ## v2.9.2 - 博城篇内容完善（已完成）
 
 ### 内容完善
