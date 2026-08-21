@@ -4506,6 +4506,9 @@ const DataCharacters = {
   book_shop_owner: {
     id: "book_shop_owner",
     name: "陈老板",
+    isCombatant: false,
+    combatUnknown: true,
+    combatNote: "博城篇前期战力未明确展现，待剧情推进后补充",
     title: "书店老板",
     description: "博城书店的老板，知识渊博，知道很多秘闻和传说。性格温和，喜欢看书。",
     elements: [
@@ -5020,6 +5023,9 @@ const DataCharacters = {
   mysterious_mage: {
     id: "mysterious_mage",
     name: "神秘人",
+    isCombatant: false,
+    combatUnknown: true,
+    combatNote: "博城篇前期战力未明确展现，待剧情推进后补充",
     title: "流浪法师",
     description: "一个神秘的流浪法师，不知道从哪里来，也不知道要到哪里去。似乎知道很多秘密。",
     elements: [
@@ -6064,6 +6070,9 @@ const DataCharacters = {
   hunter_receptionist: {
     id: "hunter_receptionist",
     name: "小雨",
+    isCombatant: false,
+    combatUnknown: true,
+    combatNote: "博城篇前期战力未明确展现，待剧情推进后补充",
     title: "猎魔者公会接待员",
     description: "猎魔者公会的接待员，负责登记任务和管理会员。性格温柔，做事认真。",
     elements: [
@@ -6274,6 +6283,9 @@ const DataCharacters = {
   mu_butler: {
     id: "mu_butler",
     name: "福伯",
+    isCombatant: false,
+    combatUnknown: true,
+    combatNote: "博城篇前期战力未明确展现，待剧情推进后补充",
     title: "穆家管家",
     description: "穆家的老管家，在穆家工作了几十年，忠心耿耿，做事一丝不苟。",
     elements: [
@@ -9483,6 +9495,9 @@ level: 18,
   ai_tutu: {
     id: "ai_tutu",
     name: "艾图图",
+    isCombatant: false,
+    combatUnknown: true,
+    combatNote: "博城篇前期战力未明确展现，待剧情推进后补充",
     title: "白兔少女",
     description: "牧奴娇的闺蜜，出身豪门。娇小活泼，性格大大咧咧，有很多追求者。与莫凡、牧奴娇合租金源公寓。",
     elements: ["light"],
