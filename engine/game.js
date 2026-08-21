@@ -3095,28 +3095,14 @@ const Game = {
 
         // v2.9.3: 根据成长系统的location字段过滤NPC（NPC位置动态变化）
         const currentLocation = Player.currentLocation;
+        // v2.9.3: 位置过滤功能暂时禁用（有bug导致过滤掉所有NPC），直接显示所有NPC
+        // 待后续修复后再启用
         const filteredNpcs = npcs.filter(npcId => {
             const npc = DataCharacters[npcId];
             if (!npc) return false;
-            // 使用NPC对象的静态location字段（更可靠，避免growthState.location异常）
-            // 如果NPC有location字段且不为空，则只显示location匹配的NPC
-            if (npc.location) {
-                const match = npc.location === currentLocation;
-                console.log('[NPC过滤]', npc.name, 'location:', npc.location, 'current:', currentLocation, '匹配:', match);
-                return match;
-            }
-            // 没有location字段，默认显示
-            console.log('[NPC过滤]', npc.name, '无location，默认显示');
             return true;
         });
-
-        // 安全修复：如果位置过滤后没有NPC，回退到显示所有NPC（避免"这里现在没有人"的bug）
-        if (filteredNpcs.length === 0 && npcs.length > 0) {
-            console.warn('[NPC列表] 位置过滤后无NPC，回退显示全部。currentLocation:', currentLocation, '原始NPC数量:', npcs.length);
-            npcs = npcs;
-        } else {
-            npcs = filteredNpcs;
-        }
+        npcs = filteredNpcs;
 
         // 如果过滤后没有NPC，显示提示
         if (npcs.length === 0 && (!unavailableNpcs || unavailableNpcs.length === 0)) {
