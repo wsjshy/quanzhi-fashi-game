@@ -3285,7 +3285,13 @@ const Game = {
         const dialogueTone = NPCStateSystem.getDialogueTone(npc.id);
 
         // v0.29.0: NPC等级反应 - 根据双方等级差生成开场白
-        const npcLevel = NPCStateSystem.getNPCLevel(npc.id);
+        // v2.9.3: 使用NPCGrowthService获取当前剧情阶段的修为状态
+        let npcLevel = 0;
+        if (typeof NPCGrowthService !== 'undefined') {
+            const npcGrowthState = NPCGrowthService.getNpcState(npc.id);
+            if (npcGrowthState) npcLevel = npcGrowthState.level || 0;
+        }
+        if (npcLevel === 0) npcLevel = NPCStateSystem.getNPCLevel(npc.id) || npc.level || 1;
         const playerLevel = Player.level || 1;
         const levelDiff = playerLevel - npcLevel;
         let levelReaction = '';
@@ -3423,10 +3429,7 @@ const Game = {
                         ${relationLevel.name}
                     </div>
                     <!-- NPC等级 -->
-                    ${(() => {
-                        const npcLevel = NPCStateSystem.getNPCLevel(npc.id);
-                        return `<div style="font-size: 12px; color: #aaddff; margin-bottom: 4px;">⚔️ 等级 Lv.${npcLevel}</div>`;
-                    })()}
+                    ${npcLevel > 0 ? `<div style="font-size: 12px; color: #aaddff; margin-bottom: 4px;">⚔️ 等级 Lv.${npcLevel}</div>` : ''}
                     <!-- 魔法系 -->
                     ${npc.elements && npc.elements.length > 0 ? `
                         <div style="font-size: 12px; color: #ffcc66; margin-bottom: 4px;">
@@ -3448,8 +3451,7 @@ const Game = {
                             <div style="height: 100%; width: ${Math.max(0, Math.min(100, npcState.familiarity))}%; background: linear-gradient(90deg, #6666cc, #9999ff); border-radius: 2px;"></div>
                         </div>
                         ${(() => {
-                            // v2.9.3: 有战力的NPC显示详情按钮
-                            const npcLevel = NPCStateSystem.getNPCLevel(npc.id);
+                            // v2.9.3: 有战力的NPC显示详情按钮（使用NPCGrowthService的当前等级）
                             if (npcLevel > 0 && (npc.skills?.length > 0 || npc.elements?.length > 0)) {
                                 return `<div onclick="Game.showNPCDetail('${npc.id}')" style="
                                     margin-top: 10px;

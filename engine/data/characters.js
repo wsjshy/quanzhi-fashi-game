@@ -1263,6 +1263,23 @@ const DataCharacters = {
       "ice_spike",
       "ice_shield"
     ],
+    growth: {
+      base: {
+        level: 3,
+        elements: ["ice"],
+        skills: ["basic_attack", "ice_spike", "ice_shield"],
+        title: "穆家旁系",
+        growthType: "mage",
+      },
+      events: [
+        {
+          after: "bocheng_disaster",
+          level: 14,
+          addSkills: ["ice_lock"],
+          title: "冰系中阶法师",
+        }
+      ]
+    },
     spriteColor: "#aaddff",
     location: "tianlan_school",
     availableTimes: [
@@ -1630,6 +1647,23 @@ const DataCharacters = {
       "basic_attack",
       "wind_blade"
     ],
+    growth: {
+      base: {
+        level: 2,
+        elements: ["wind"],
+        skills: ["basic_attack", "wind_blade"],
+        title: "风系学生",
+        growthType: "mage",
+      },
+      events: [
+        {
+          after: "bocheng_disaster",
+          level: 13,
+          addSkills: ["wind_track_phantom"],
+          title: "风系中阶法师",
+        }
+      ]
+    },
     spriteColor: "#99ff99",
     location: "tianlan_school",
     availableTimes: [
@@ -2395,6 +2429,23 @@ const DataCharacters = {
       "ice_spike",
       "ice_shield"
     ],
+    growth: {
+      base: {
+        level: 4,
+        elements: ["ice"],
+        skills: ["basic_attack", "ice_spike", "ice_shield"],
+        title: "冰系天才",
+        growthType: "mage",
+      },
+      events: [
+        {
+          after: "bocheng_disaster",
+          level: 16,
+          addSkills: ["ice_lock", "ice_storm"],
+          title: "冰系中阶法师",
+        }
+      ]
+    },
     spriteColor: "#66ccff",
     image: "assets/images/characters/mu_ningxue.jpg",
     location: "tianlan_school",
@@ -3014,6 +3065,23 @@ const DataCharacters = {
       "fire_bolt",
       "fire_rain"
     ],
+    growth: {
+      base: {
+        level: 14,
+        elements: ["fire"],
+        skills: ["basic_attack", "fire_bolt", "fire_rain"],
+        title: "魔法实践课老师",
+        growthType: "mage",
+      },
+      events: [
+        {
+          after: "bocheng_disaster",
+          level: 22,
+          addSkills: ["fire_fist"],
+          title: "审判会审判员",
+        }
+      ]
+    },
     spriteColor: "#ff6633",
     image: "assets/images/characters/tang_yue.jpg",
     location: "tianlan_school",
@@ -5097,6 +5165,22 @@ const DataCharacters = {
       "wind_blade",
       "wind_speed"
     ],
+    growth: {
+      base: {
+        level: 35,
+        elements: ["fire", "wind"],
+        skills: ["basic_attack", "fire_bolt", "fire_rain", "wind_blade", "wind_speed"],
+        title: "天澜魔法高中院长",
+        growthType: "mage",
+      },
+      events: [
+        {
+          after: "bocheng_disaster",
+          level: 38,
+          title: "火系高阶法师",
+        }
+      ]
+    },
     spriteColor: "#ff6633",
     location: "tianlan_school",
     dialogue: [
@@ -5406,6 +5490,23 @@ const DataCharacters = {
       "basic_attack",
       "fire_bolt"
     ],
+    growth: {
+      base: {
+        level: 12,
+        elements: ["fire"],
+        skills: ["basic_attack", "fire_bolt"],
+        title: "天澜魔法高中班主任",
+        growthType: "mage",
+      },
+      events: [
+        {
+          after: "bocheng_disaster",
+          level: 18,
+          addSkills: ["fire_rain"],
+          title: "火系中阶法师",
+        }
+      ]
+    },
     spriteColor: "#ff6633",
     isNPC: true,
     location: "school",
