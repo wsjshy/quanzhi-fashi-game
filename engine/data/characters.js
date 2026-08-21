@@ -3124,11 +3124,7 @@ const DataCharacters = {
     attack: 45,
     defense: 20,
     speed: 18,
-    skills: [
-      "basic_attack",
-      "fire_bolt",
-      "fire_rain"
-    ],
+    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst", "fire_burn_bone"],
     talents: [
           {
                 "name": "暗影系亲和",
@@ -5598,10 +5594,7 @@ const DataCharacters = {
     attack: 38,
     defense: 18,
     speed: 15,
-    skills: [
-      "basic_attack",
-      "fire_bolt"
-    ],
+    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst"],
     growth: {
       base: {
         level: 12,
@@ -7211,7 +7204,7 @@ level: 18,
     levelUnknown: true,
     personality: ["威严", "势利", "爱才", "控制欲强"],
     baseStats: { hp: 800, mp: 500, attack: 120, defense: 80, speed: 60 },
-    skills: ["ice_shield", "ice_storm"],
+    skills: ["basic_attack", "ice_spike", "ice_shield", "ice_storm", "ice_frost", "ice_lock"],
     talents: [
           {
                 "name": "冰系修为深厚",
@@ -7975,7 +7968,7 @@ level: 12,
     levelUnknown: true,
     personality: ["豪爽", "严格", "负责任", "战斗经验丰富"],
     baseStats: { hp: 200, mp: 80, attack: 35, defense: 15, speed: 12 },
-    skills: ["fire_bolt", "fire_burst", "fire_burn_bone"],
+    skills: ["basic_attack", "fire_bolt", "fire_burst", "fire_burn_bone"],
     talents: [
           {
                 "name": "火系猎妖经验",
@@ -8912,7 +8905,7 @@ level: 15,
     levelUnknown: true,
     personality: ["沉稳", "可靠", "尽职尽责", "见多识广"],
     baseStats: { hp: 300, mp: 150, attack: 35, defense: 40, speed: 12 },
-    skills: ["basic_attack", "earth_shield", "earth_slow"],
+    skills: ["basic_attack", "earth_shield", "earth_spike", "earth_quake", "earth_shift"],
     talents: [
           {
                 "name": "土系防御修为",
@@ -8985,7 +8978,7 @@ level: 12,
     levelUnknown: true,
     personality: ["敏锐", "细心", "坚韧", "外冷内热"],
     baseStats: { hp: 220, mp: 180, attack: 28, defense: 20, speed: 22 },
-    skills: ["basic_attack", "water_chain", "water_shield"],
+    skills: ["basic_attack", "water_heal", "water_chain", "water_shield", "water_wave"],
     talents: [
       {
         id: "water_earth_spring_guardian",
@@ -9136,11 +9129,7 @@ level: 18,
     attack: 80,
     defense: 50,
     speed: 40,
-    skills: [
-      "basic_attack",
-      "fire_bolt",
-      "water_shield"
-    ],
+    skills: ["basic_attack", "fire_bolt", "fire_rain", "fire_burst", "water_shield", "water_chain"],
     spriteColor: "#8B4513",
     location: "tianlan_school",
     availableTimes: [
@@ -9571,7 +9560,7 @@ level: 18,
     defense: 8,
     speed: 15,
     spirit: 18,
-    skills: ["basic_attack"],
+    skills: ["basic_attack", "light_ray", "light_shield"],
     aiType: "support",
     growthType: "mage",
     canDuel: false,
@@ -9981,7 +9970,7 @@ level: 18,
     defense: 18,
     speed: 32,
     spirit: 28,
-    skills: ["basic_attack", "light_ray", "light_blind"],
+    skills: ["basic_attack", "light_ray", "light_blind", "light_purify", "light_shield"],
     talents: [
           {
                 "name": "光系天赋出众",
