@@ -82,6 +82,9 @@ const NPCGrowthService = {
         state.npcId = npcId;
         state.name = npc.name;
         state.realm = state.realm || this._inferRealm(state.level);
+        // location和description默认从npc对象获取，成长事件可以覆盖
+        state.location = state.location || npc.location || null;
+        state.description = state.description || npc.description || "";
 
         return state;
     },
@@ -291,6 +294,8 @@ const NPCGrowthService = {
             growthType: base.growthType || "balanced",
             overrideStats: base.overrideStats ? { ...base.overrideStats } : null,
             realm: base.realm || null,
+            location: base.location || null,
+            description: base.description || null,
         };
     },
 
@@ -310,6 +315,8 @@ const NPCGrowthService = {
         if (event.form) newState.form = event.form;
         if (event.spriteColor) newState.spriteColor = event.spriteColor;
         if (event.growthType) newState.growthType = event.growthType;
+        if (event.location) newState.location = event.location;
+        if (event.description) newState.description = event.description;
 
         if (event.addElements) {
             for (const el of event.addElements) {

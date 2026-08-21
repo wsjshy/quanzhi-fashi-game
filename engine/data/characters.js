@@ -6911,6 +6911,8 @@ const DataCharacters = {
           addElements: ["wind"],
           addSkills: ["wind_blade", "wind_track_phantom"],
           title: "博城幸存者",
+          location: "mingzhu_qing_campus",
+          description: "博城灾难中失去全家的幸存者，雷系+风系双系中阶法师。对黑教廷恨之入骨，性格刚烈勇敢。与张璐璐是情侣。",
         }
       ],
     },dialogueTree: {

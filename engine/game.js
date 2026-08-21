@@ -3002,9 +3002,9 @@ const Game = {
                 <div id="npc-detail-close-btn" style="cursor: pointer; color: #888; font-size: 20px; padding: 0 8px;">✕</div>
             </div>
 
-            ${npc.description ? `
+            ${(npc.description || (growthState && growthState.description)) ? `
                 <div style="font-size: 13px; color: #aaa; line-height: 1.6; margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                    ${npc.description}
+                    ${growthState && growthState.description ? growthState.description : npc.description}
                 </div>
             ` : ''}
 
