@@ -1357,6 +1357,7 @@ const DataEnemies = {
       "ice_spike",
       "ice_shield"
     ],
+    talents: ["ice_talent_legendary"],
     aiType: "controller",
     enemyType: "mage",
     spriteColor: "#66ccff",
