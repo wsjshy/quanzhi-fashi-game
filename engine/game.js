@@ -3092,7 +3092,30 @@ const Game = {
         // 参数校验
         if (!npcs) npcs = [];
         if (!Array.isArray(npcs)) npcs = [];
-        
+
+        // v2.9.3: 根据成长系统的location字段过滤NPC（NPC位置动态变化）
+        const currentLocation = Player.currentLocation;
+        const filteredNpcs = npcs.filter(npcId => {
+            const npc = DataCharacters[npcId];
+            if (!npc) return false;
+            // 如果有成长系统，使用growthState.location
+            if (typeof NPCGrowthService !== 'undefined') {
+                const growthState = NPCGrowthService.getNpcState(npcId);
+                if (growthState && growthState.location) {
+                    return growthState.location === currentLocation;
+                }
+            }
+            // 没有成长系统或location为null，默认显示
+            return true;
+        });
+        npcs = filteredNpcs;
+
+        // 如果过滤后没有NPC，显示提示
+        if (npcs.length === 0 && (!unavailableNpcs || unavailableNpcs.length === 0)) {
+            UI.showMessage('这里现在没有人...');
+            return;
+        }
+
         // 创建 NPC 选择弹窗的遮罩层
         const overlay = document.createElement('div');
         overlay.style.cssText = `
