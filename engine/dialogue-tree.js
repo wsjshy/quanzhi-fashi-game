@@ -64,17 +64,91 @@ const DialogueTree = {
     },
 
     /**
-     * 检查某个NPC的某个节点的某个选项是否已读
+     * 检查某个NPC的某个节点的某个选项是否已读（分支完成度判断）
+     * v2.9.3改进：不是简单判断是否点击过，而是判断该选项指向的整个分支是否完全探索完毕
      * 使用"节点id:选项id"作为唯一标识，避免不同节点相同选项id导致误标记
+     * 
+     * 递归逻辑：
+     * - 选项已读 = 选项被点击过 + 选项指向的节点完全探索
+     * - 节点完全探索 = 该节点所有需要探索的子选项都已读（递归）
+     * - 叶子节点（无探索性子选项）的选项，点击后即已读
+     * - 条件不满足的选项视为已探索（玩家无法触发，不阻碍分支完成）
+     * - 结束对话/返回默认节点的选项不算探索分支
      */
     isChoiceRead(npcId, nodeId, choiceId) {
+        // 首先检查该选项是否被点击过
         if (!this._readChoices[npcId]) return false;
         const key = nodeId + ':' + choiceId;
-        return this._readChoices[npcId].has(key);
+        if (!this._readChoices[npcId].has(key)) return false;
+        
+        // 获取选项对象，判断指向的节点
+        const dialogueData = this.getDialogueData(npcId);
+        const node = dialogueData.nodes[nodeId];
+        if (!node) return true; // 节点不存在，视为已读
+        
+        const choices = node.choices || [];
+        const choice = choices.find(c => (c.id || `choice_${choices.indexOf(c)}`) === choiceId);
+        if (!choice) return true; // 选项不存在，视为已读
+        
+        const nextNodeId = choice.next || choice.nextNode;
+        
+        // 结束对话或返回默认节点，视为已读（叶子选项）
+        if (nextNodeId == null || nextNodeId === 'default') return true;
+        
+        // 关闭对话动作，视为已读
+        if (choice.action === 'close' || choice.action === 'close_dialogue') return true;
+        
+        // 递归判断目标节点是否完全探索
+        return this._isNodeFullyExplored(npcId, nextNodeId, new Set());
     },
 
     /**
-     * 标记某个节点的某个选项为已读
+     * 递归判断某个节点是否完全探索（所有需要探索的子分支都已读）
+     * @param {string} npcId - NPC ID
+     * @param {string} nodeId - 节点ID
+     * @param {Set} visiting - 正在访问的节点集合，用于防止循环引用
+     * @returns {boolean} 是否完全探索
+     */
+    _isNodeFullyExplored(npcId, nodeId, visiting) {
+        // 防止循环引用：循环节点视为已探索
+        if (visiting.has(nodeId)) return true;
+        visiting.add(nodeId);
+        
+        const dialogueData = this.getDialogueData(npcId);
+        const node = dialogueData.nodes[nodeId];
+        if (!node) return true; // 节点不存在，视为已探索
+        
+        const choices = node.choices || [];
+        const savedNPC = this.currentNPC;
+        this.currentNPC = npcId; // 临时设置，确保_checkCondition使用正确的NPC
+        
+        try {
+            for (let i = 0; i < choices.length; i++) {
+                const choice = choices[i];
+                const choiceId = choice.id || `choice_${i}`;
+                const nextNodeId = choice.next || choice.nextNode;
+                
+                // 跳过结束对话、返回默认节点、关闭对话的选项（不算探索分支）
+                if (nextNodeId == null || nextNodeId === 'default') continue;
+                if (choice.action === 'close' || choice.action === 'close_dialogue') continue;
+                
+                // 条件不满足的选项视为已探索（玩家无法触发，不阻碍分支完成）
+                if (choice.condition && !this._checkCondition(choice.condition)) continue;
+                
+                // 递归判断该选项是否已读（分支完成）
+                if (!this.isChoiceRead(npcId, nodeId, choiceId)) {
+                    return false;
+                }
+            }
+        } finally {
+            this.currentNPC = savedNPC; // 恢复
+        }
+        
+        return true;
+    },
+
+    /**
+     * 标记某个节点的某个选项为已点击过（分支完成度的基础数据）
      */
     markChoiceRead(npcId, nodeId, choiceId) {
         if (!this._readChoices[npcId]) {
