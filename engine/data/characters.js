@@ -7159,7 +7159,7 @@ level: 18,
   },
   deng_kai_xiaodong: {
     id: "deng_kai_xiaodong",
-    name: "邓铠",
+    name: "邓凯",
     title: "猎者联盟高层 / 校董",
     description: "猎者联盟中的高层，同时也是天澜魔法高中的校董，算是所有校董之中修为最高、实力最强的人。正义感强，在穆卓云暴怒时站出来挡在学生面前，保护没有防御能力的学生。为人稳重，说话有分量。",
     avatar: "assets/images/characters/deng_kai.jpg",
