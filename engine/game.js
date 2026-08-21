@@ -3098,28 +3098,19 @@ const Game = {
         const filteredNpcs = npcs.filter(npcId => {
             const npc = DataCharacters[npcId];
             if (!npc) return false;
-            // 如果有成长系统，使用growthState.location
-            if (typeof NPCGrowthService !== 'undefined') {
-                const growthState = NPCGrowthService.getNpcState(npcId);
-                if (growthState && growthState.location) {
-                    return growthState.location === currentLocation;
-                }
+            // 使用NPC对象的静态location字段（更可靠，避免growthState.location异常）
+            // 如果NPC有location字段且不为空，则只显示location匹配的NPC
+            if (npc.location) {
+                return npc.location === currentLocation;
             }
-            // 没有成长系统或location为null，默认显示
+            // 没有location字段，默认显示
             return true;
         });
 
         // 安全修复：如果位置过滤后没有NPC，回退到显示所有NPC（避免"这里现在没有人"的bug）
         if (filteredNpcs.length === 0 && npcs.length > 0) {
             console.warn('[NPC列表] 位置过滤后无NPC，回退显示全部。currentLocation:', currentLocation, '原始NPC数量:', npcs.length);
-            // 输出每个NPC的location用于调试
-            npcs.forEach(npcId => {
-                const npc = DataCharacters[npcId];
-                if (npc && typeof NPCGrowthService !== 'undefined') {
-                    const gs = NPCGrowthService.getNpcState(npcId);
-                    console.warn('  -', npc.name, 'location:', gs?.location, 'npc.location:', npc.location);
-                }
-            });
+            npcs = npcs;
         } else {
             npcs = filteredNpcs;
         }
