@@ -3197,7 +3197,9 @@ const Game = {
                             font-size: 17px;
                             ${readStyle}
                             ${questBorder}
-                        " onmouseover="this.style.borderColor='${hasQuest ? '#77cc77' : '#7777bb'}'; this.style.background='${hasQuest ? 'rgba(70, 100, 70, 0.7)' : 'rgba(60, 60, 120, 0.8)'}'" onmouseout="this.style.borderColor='${hasQuest ? '#55aa55' : '#444477'}'; this.style.background='${hasQuest ? 'rgba(50, 80, 50, 0.6)' : 'rgba(40, 40, 80, 0.8)'}'>
+                        " onmouseover="this.style.borderColor='${hasQuest ? '#77cc77' : '#7777bb'}'; this.style.background='${hasQuest ? 'rgba(70, 100, 70, 0.7)' : 'rgba(60, 60, 120, 0.8)'}'
+                        " onmouseout="this.style.borderColor='${hasQuest ? '#55aa55' : '#444477'}'; this.style.background='${hasQuest ? 'rgba(50, 80, 50, 0.6)' : 'rgba(40, 40, 80, 0.8)'}'
+                        ">
                             <span style="color: #ffd700; margin-right: 12px; font-weight: bold;">${index + 1}.</span>
                             ${choice.text}
                             ${hasQuest ? '<span style="color: #88ff88; margin-left: 10px; font-size: 14px;">📜 可接任务</span>' : ''}
