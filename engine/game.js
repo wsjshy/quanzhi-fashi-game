@@ -3002,9 +3002,9 @@ const Game = {
                 <div id="npc-detail-close-btn" style="cursor: pointer; color: #888; font-size: 20px; padding: 0 8px;">✕</div>
             </div>
 
-            ${(npc.description || (growthState && growthState.description)) ? `
+            ${(npc.description || (duelData && duelData.description)) ? `
                 <div style="font-size: 13px; color: #aaa; line-height: 1.6; margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                    ${growthState && growthState.description ? growthState.description : npc.description}
+                    ${duelData && duelData.description ? duelData.description : npc.description}
                 </div>
             ` : ''}
 
@@ -3101,9 +3101,12 @@ const Game = {
             // 使用NPC对象的静态location字段（更可靠，避免growthState.location异常）
             // 如果NPC有location字段且不为空，则只显示location匹配的NPC
             if (npc.location) {
-                return npc.location === currentLocation;
+                const match = npc.location === currentLocation;
+                console.log('[NPC过滤]', npc.name, 'location:', npc.location, 'current:', currentLocation, '匹配:', match);
+                return match;
             }
             // 没有location字段，默认显示
+            console.log('[NPC过滤]', npc.name, '无location，默认显示');
             return true;
         });
 
