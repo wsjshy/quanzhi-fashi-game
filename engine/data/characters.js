@@ -8581,6 +8581,8 @@ const DataCharacters = {
       "water"
     ],
     level: 20,
+    levelDisplay: "???",
+    levelUnknown: true,
     maxHp: 800,
     maxMp: 500,
     attack: 80,
