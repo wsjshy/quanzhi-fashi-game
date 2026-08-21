@@ -5845,6 +5845,15 @@ const DataCharacters = {
       "basic_attack",
       "water_heal"
     ],
+    talents: [
+      {
+        id: "water_healing_talent",
+        name: "水系治疗天赋",
+        type: "innate",
+        description: "性格温柔善良，乐于助人，水系治疗魔法很有天赋，治疗效果提升。",
+        effects: { waterHealBonus: 0.15 }
+      }
+    ],
     spriteColor: "#3399ff",
     isNPC: true,
     location: "tianlan_school",
@@ -6721,6 +6730,15 @@ const DataCharacters = {
     defense: 5,
     speed: 10,
     skills: ["basic_attack", "fire_bolt"],
+    talents: [
+      {
+        id: "fire_talent_outstanding",
+        name: "火系天赋出众",
+        type: "innate",
+        description: "火系天赋很好的女孩，性格好强不服输，火系魔法威力提升。",
+        effects: { fireDamageBonus: 0.1 }
+      }
+    ],
     spriteColor: "#ff6633",
     image: "",
     location: "tianlan_school",
@@ -6820,6 +6838,15 @@ const DataCharacters = {
     defense: 5,
     speed: 11,
     skills: ["basic_attack", "thunder_bolt"],
+    talents: [
+      {
+        id: "thunder_talent_outstanding",
+        name: "雷系天赋出众",
+        type: "innate",
+        description: "雷系天赋很高，被张建国老师炫耀为得意门生，雷系魔法威力提升。",
+        effects: { thunderDamageBonus: 0.1 }
+      }
+    ],
     spriteColor: "#9933ff",
     image: "",
     location: "tianlan_school",
@@ -7657,6 +7684,15 @@ level: 2,
     personality: ["口无遮拦", "胆小", "爱抱怨", "体型偏胖"],
     baseStats: { hp: 80, mp: 55, attack: 8, defense: 8, speed: 6 },
     skills: ["basic_attack", "earth_shift"],
+    talents: [
+      {
+        id: "earth_displacement_talent",
+        name: "土系位移天赋",
+        type: "acquired",
+        description: "雪峰山历练时用地波·挪移救下许昭霆，土系位移魔法运用熟练。",
+        effects: { earthSpeedBonus: 0.1 }
+      }
+    ],
     relationships: {},
     growth: {
       base: {
