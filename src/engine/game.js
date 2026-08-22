@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 游戏主控制器
  * 管理游戏状态、界面切换、主循环
  */
@@ -1256,6 +1256,16 @@ export const Game = {
     battleShowItems() {
         if (!BattleSystem.isPlayerTurn) return;
         UI.showBattleItems();
+    },
+
+    // v3.1.0: 使用环境互动（洞窟钟乳石）
+    battleUseEnvironment() {
+        if (!BattleSystem.isPlayerTurn) return;
+        BattleSystem.useEnvironment();
+        UI.updateBattleScreen();
+        if (!BattleSystem.active) {
+            this.endBattle();
+        }
     },
 
     // 玩家逃跑

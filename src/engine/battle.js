@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 战斗系统
  * 贴近原著设计：星子引导、元素克制、精神力、打断机制
  */
@@ -565,6 +565,64 @@ export const BattleSystem = {
     },
 
     /**
+     * v3.1.0: 使用环境互动（洞窟钟乳石砸落）
+     */
+    useEnvironment() {
+        if (!this.active || !this.isPlayerTurn) return;
+        if (!this.environment || !this.environmentState) {
+            this.addLog('当前环境无法互动！', 'system');
+            return;
+        }
+
+        if (this.environment === 'cave') {
+            const state = this.environmentState;
+            // 检查钟乳石数量和冷却
+            if (state.stalactites <= 0) {
+                this.addLog('洞窟中已经没有可利用的钟乳石了！', 'system');
+                return;
+            }
+            if (state.stalactiteCooldown > 0) {
+                this.addLog(`钟乳石还需 ${state.stalactiteCooldown} 回合才能再次利用！`, 'system');
+                return;
+            }
+
+            // 触发钟乳石砸落
+            state.stalactites--;
+            state.stalactiteCooldown = 2;
+
+            // 计算伤害：敌人最大HP的25%，上限150
+            const damage = Math.min(150, Math.floor(this.enemy.maxHp * 0.25));
+            this.enemy.hp = Math.max(0, this.enemy.hp - damage);
+            this.stats.totalDamageDealt += damage;
+
+            this.addLog(`🪨 你点燃了钟乳石的支撑，巨大的岩石砸落！造成 ${damage} 点伤害！`, 'environment');
+
+            // 更新UI
+            this.updateUI();
+
+            // 检查敌人是否死亡
+            if (this.enemy.hp <= 0) {
+                this.endBattle('win');
+                return;
+            }
+
+            // 结束玩家回合
+            this.endPlayerTurn();
+        }
+    },
+
+    /**
+     * v3.1.0: 检查是否可以使用环境互动
+     */
+    canUseEnvironment() {
+        if (!this.environment || !this.environmentState) return false;
+        if (this.environment === 'cave') {
+            return this.environmentState.stalactites > 0 && this.environmentState.stalactiteCooldown <= 0;
+        }
+        return false;
+    },
+
+    /**
      * 玩家行动：释放魔法
      */
     playerCastSkill(skillId) {
@@ -779,6 +837,11 @@ export const BattleSystem = {
             if (this.skillCooldowns[skillId] > 0) {
                 this.skillCooldowns[skillId]--;
             }
+        }
+        
+        // v3.1.0: 减少环境互动冷却
+        if (this.environmentState && this.environmentState.stalactiteCooldown > 0) {
+            this.environmentState.stalactiteCooldown--;
         }
         
         // 处理玩家引导中的魔法
@@ -1812,7 +1875,9 @@ export const BattleSystem = {
             speed: this.speed, // 战斗速度
             autoBattle: this.autoBattle, // 自动战斗
             options: this.battleOptions, // 战斗模式选项
-            magicTools: this.magicTools // 魔具技能
+            magicTools: this.magicTools, // 魔具技能
+            environment: this.environment, // v3.1.0: 战斗环境
+            environmentState: this.environmentState // v3.1.0: 环境互动状态
         };
     },
 

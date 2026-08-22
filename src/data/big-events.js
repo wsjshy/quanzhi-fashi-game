@@ -798,17 +798,30 @@ export const DataBigEvents = {
         }
       },
 
-      // 第五阶段A：洞窟BOSS战（环境互动）
+      // 第五阶段A：洞窟BOSS战（环境互动+NPC队友）
       {
         id: "phase_5_cave",
         name: "洞窟决战",
-        description: "你跟着莫凡把幽狼兽引入了洞窟深处。这里布满了巨大的钟乳石。\n\n\"看到那些钟乳石了吗？\"莫凡眼中闪过一丝精光，\"用火系魔法烧断它们，让石头砸下来！\"\n\n这是一场智慧与勇气的较量。",
+        description: "你跟着莫凡把幽狼兽引入了洞窟深处。这里布满了巨大的钟乳石。\n\n\"看到那些钟乳石了吗？\"莫凡眼中闪过一丝精光，\"用火系魔法烧断它们，让石头砸下来！\"\n\n这是一场智慧与勇气的较量。莫凡将与你并肩作战！",
         type: "battle",
         enemyId: "demon_wolf_advanced",
         battleOptions: {
           fearLevel: 2,
           canFlee: false,
-          environment: "cave" // 洞窟环境，支持环境互动
+          environment: "cave",
+          allies: [
+            {
+              id: "mo_fan",
+              name: "莫凡",
+              element: "fire",
+              hp: 250,
+              maxHp: 250,
+              attack: 30,
+              defense: 12,
+              speed: 14,
+              style: "aggressive"
+            }
+          ]
         },
         winPhase: "phase_6_victory",
         losePhase: "phase_6_rescued"

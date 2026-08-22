@@ -31,6 +31,14 @@ export function startBattle(enemyData, options = {}) {
         this.allies.forEach(a => { if (!a.style) a.style = 'balanced'; });
         this.allyCommands = {};  // v1.8.0: 队友指令（集火/防御/技能/自由）
         this.investigationBonus = options.investigationBonus || 0;  // v1.8.0: 调查加成（0-0.3）
+        this.environment = options.environment || null;  // v3.1.0: 战斗环境（cave等）
+        this.environmentState = null;  // v3.1.0: 环境互动状态
+        if (this.environment === 'cave') {
+            this.environmentState = {
+                stalactites: 3,  // 可触发的钟乳石数量
+                stalactiteCooldown: 0  // 冷却回合
+            };
+        }
 
         // v2.2.0: 初始化天赋战斗状态系统
         if (typeof TalentCombatSystem !== 'undefined') {

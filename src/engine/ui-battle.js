@@ -545,6 +545,18 @@ export function renderBattleScreen() {
                         <div style="font-size:15px; font-weight:bold; margin-bottom:4px;">🎒 道具</div>
                         <div style="font-size:12px; color:#aaa;">使用物品</div>
                     </button>
+                    ${state.environment === 'cave' ? (() => {
+                        const canUseEnv = state.isPlayerTurn && state.environmentState && state.environmentState.stalactites > 0 && state.environmentState.stalactiteCooldown <= 0;
+                        const remaining = state.environmentState ? state.environmentState.stalactites : 0;
+                        const cd = state.environmentState ? state.environmentState.stalactiteCooldown : 0;
+                        return `<button onclick="Game.battleUseEnvironment()" ${!canUseEnv ? 'disabled' : ''}
+                            title="利用洞窟钟乳石砸落敌人（剩余${remaining}次${cd > 0 ? '，冷却' + cd + '回合' : ''}）"
+                            style="padding:14px 10px; background:linear-gradient(135deg,#55443322,#66554444); border:2px solid #aa8855; border-radius:10px; color:#ffddaa; cursor:${canUseEnv?'pointer':'not-allowed'}; text-align:center; opacity:${canUseEnv?1:0.4}; transition:all 0.2s;"
+                            ${canUseEnv?'onmouseover="this.style.boxShadow=\'0 0 12px #aa885580\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'"':''}>
+                            <div style="font-size:15px; font-weight:bold; margin-bottom:4px;">🪨 钟乳石</div>
+                            <div style="font-size:12px; color:${cd > 0 ? '#ff9966' : '#aaffaa'};">${cd > 0 ? '冷却' + cd + '回合' : '剩余' + remaining + '次'}</div>
+                        </button>`;
+                    })() : ''}
                     ${(BattleSystem.lastSkillId && SkillSystem.getSkill(BattleSystem.lastSkillId)) ? (() => {
                         const lastSkill = SkillSystem.getSkill(BattleSystem.lastSkillId);
                         const canRepeat = state.isPlayerTurn && Player.mp >= lastSkill.mpCost;
