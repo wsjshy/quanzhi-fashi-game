@@ -3310,6 +3310,22 @@ const UI = {
         const skillCols = isPortrait ? 3 : 5;
         const spriteW = isPortrait ? 70 : 100;
         const spriteH = isPortrait ? 100 : 140;
+        // v2.9.6.3: 战斗背景动态切换 - 根据妖魔元素选择对应系别背景
+        const elemBgMap = {
+            fire: 'assets/images/effects/fire_magic.jpg',
+            thunder: 'assets/images/effects/thunder_magic.jpg',
+            ice: 'assets/images/effects/ice_magic.jpg',
+            dark: 'assets/images/effects/dark_magic.jpg',
+            earth: 'assets/images/effects/earth_magic.jpg',
+            wind: 'assets/images/effects/wind_magic.jpg',
+            water: 'assets/images/effects/ice_magic.jpg',
+            light: 'assets/images/effects/thunder_magic.jpg',
+            plant: 'assets/images/effects/dark_magic.jpg',
+            heal: 'assets/images/effects/wind_magic.jpg',
+            summon: 'assets/images/effects/earth_magic.jpg'
+        };
+        const enemyElem = state.enemy?.elements?.[0] || 'dark';
+        const battleBg = elemBgMap[enemyElem] || 'assets/images/effects/fire_magic.jpg';
         // v1.2.2: 技能展开时横版面板高度增加，避免滚动
         const skillsExpanded = !!this._expandedBattleElement;
         const panelH = isPortrait ? 'auto' : (skillsExpanded ? '300px' : '220px');
@@ -3329,7 +3345,7 @@ const UI = {
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
-                    background: url('assets/images/effects/fire_magic.jpg') center/cover;
+                    background: url('${battleBg}') center/cover;
                     opacity: 0.35;
                     filter: blur(2px) saturate(1.1);
                     z-index: 0;
