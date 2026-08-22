@@ -3335,16 +3335,6 @@ const UI = {
                     z-index: 0;
                     pointer-events: none;
                 "></div>
-                <!-- 战斗背景渐变遮罩：增强氛围，底部加深突出角色 -->
-                <div style="
-                    position: absolute;
-                    top: 0; left: 0;
-                    width: 100%; height: 100%;
-                    background: linear-gradient(180deg, rgba(10,10,30,0.3) 0%, rgba(20,20,50,0.5) 50%, rgba(10,10,30,0.8) 100%);
-                    z-index: 1;
-                    pointer-events: none;
-                "></div>
-                
                 <!-- 战斗特效层（预留接口：技能特效、受击特效等在此层播放） -->
                 <div id="battle-effect-layer" style="
                     position: absolute;
@@ -3356,6 +3346,15 @@ const UI = {
                 
                 <!-- 战斗场地 -->
                 <div style="flex: 1; position: relative; overflow: ${isPortrait ? 'auto' : 'hidden'}; z-index: 2; ${arenaFlex}">
+                    <!-- 战斗场地渐变遮罩：增强氛围，底部加深突出角色（仅覆盖战斗场地，不影响技能面板） -->
+                    <div style="
+                        position: absolute;
+                        top: 0; left: 0;
+                        width: 100%; height: 100%;
+                        background: linear-gradient(180deg, rgba(10,10,30,0.2) 0%, rgba(20,20,50,0.3) 50%, rgba(10,10,30,0.6) 100%);
+                        z-index: 0;
+                        pointer-events: none;
+                    "></div>
                     
                     <!-- v1.8.1: 队友状态条（组队战斗时显示） -->
                     ${state.allies && state.allies.length > 0 ? `
