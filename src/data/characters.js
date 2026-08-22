@@ -2557,12 +2557,6 @@ export const DataCharacters = {
         type: "innate",
         element: "ice",
         description: "觉醒时便拥有冰系灵种，天生灵种极为罕见，天赋榜排名第九。整个博城找不出第二个，冰系魔法威力远超同阶法师。"
-      },
-      {
-        name: "冰晶刹弓",
-        type: "acquired",
-        element: "ice",
-        description: "魂级冰种凝聚而成的魔弓，彻底爆发时威力不逊色于高阶魔法。使用后会抽空全身魔能甚至生命力，是穆宁雪的终极杀招。（博城灾难后觉醒）"
       }
     ],
     maxHp: 130,
@@ -2597,6 +2591,14 @@ export const DataCharacters = {
           after: "bocheng_disaster",
           level: 16,
           addSkills: ["ice_lock", "ice_storm"],
+          addTalents: [
+            {
+              name: "冰晶刹弓",
+              type: "acquired",
+              element: "ice",
+              description: "魂级冰种凝聚而成的魔弓，彻底爆发时威力不逊色于高阶魔法。使用后会抽空全身魔能甚至生命力，是穆宁雪的终极杀招。"
+            }
+          ],
           title: "冰系中阶法师",
         }
       ]
@@ -7910,15 +7912,7 @@ level: 2,
     personality: ["口无遮拦", "胆小", "爱抱怨", "体型偏胖"],
     baseStats: { hp: 80, mp: 55, attack: 8, defense: 8, speed: 6 },
     skills: ["basic_attack", "earth_shield"],
-    talents: [
-      {
-        id: "earth_displacement_talent",
-        name: "土系位移天赋",
-        type: "acquired",
-        description: "雪峰山历练时用地波·挪移救下许昭霆，土系位移魔法运用熟练。",
-        effects: { earthSpeedBonus: 0.1 }
-      }
-    ],
+    talents: [],
     relationships: {},
     growth: {
       growthRate: 80,
@@ -8028,6 +8022,15 @@ level: 2,
           after: "xuefeng_training",
           level: 5,
           addSkills: ["earth_shield"],
+          addTalents: [
+            {
+              id: "earth_displacement_talent",
+              name: "土系位移天赋",
+              type: "acquired",
+              description: "土系位移魔法天赋，对地波·挪移等位移类魔法有天生的亲和力，施法速度和精确度提升，位移距离增加。",
+              effects: { earthSpeedBonus: 0.1 }
+            }
+          ],
           title: "土系法师（历练后）",
         },
         {
