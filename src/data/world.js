@@ -1222,6 +1222,69 @@ export const DataWorld = {
           black_market: true
         }
       }
+    },
+    grassroots: {
+      id: "grassroots",
+      name: "草根阶层",
+      description: "出身平凡的法师和普通民众，崇尚努力与自立，对世家垄断资源不满。",
+      color: "#88cc88",
+      icon: "🌱",
+      reputationEffects: {
+        friendly: {
+          questRewardBonus: 1.05
+        },
+        respected: {
+          questRewardBonus: 1.1,
+          shopDiscount: 0.95
+        },
+        worship: {
+          questRewardBonus: 1.2,
+          shopDiscount: 0.9,
+          npcBonus: true
+        }
+      }
+    },
+    military: {
+      id: "military",
+      name: "军方",
+      description: "博城守军，以斩空总教官为首，负责城市防御和妖魔作战。",
+      color: "#6688aa",
+      icon: "🛡️",
+      reputationEffects: {
+        friendly: {
+          questRewardBonus: 1.05
+        },
+        respected: {
+          questRewardBonus: 1.15,
+          militarySupport: true
+        },
+        worship: {
+          questRewardBonus: 1.25,
+          militarySupport: true,
+          exclusiveGear: true
+        }
+      }
+    },
+    inquisition: {
+      id: "inquisition",
+      name: "审判会",
+      description: "魔法协会的最高执法机构，专门缉拿触犯公约的法师和黑教廷成员。",
+      color: "#aaaacc",
+      icon: "⚖️",
+      reputationEffects: {
+        friendly: {
+          examBonus: 1.05
+        },
+        respected: {
+          examBonus: 1.1,
+          intelAccess: true
+        },
+        worship: {
+          examBonus: 1.15,
+          intelAccess: true,
+          inquisitionSupport: true
+        }
+      }
     }
   }
 };
