@@ -161,6 +161,7 @@ export const DataQuests = {
     ],
     nextQuest: null,
     isMainQuest: false,
+    isPublic: true,
     dialogueStart: "最近雪峰山的幽狼兽越来越多了，已经威胁到学校的安全了。你能帮忙清理一下吗？",
     dialogueInProgress: "狼群清理得怎么样了？一定要注意安全。",
     dialogueComplete: "太感谢你了！学校的安全有保障了。你在学校的声望也提高了。"
@@ -234,6 +235,7 @@ export const DataQuests = {
     ],
     nextQuest: null,
     isMainQuest: false,
+    isPublic: true,
     dialogueStart: "我的实验还需要更多的魔法草药，你能再帮我采集一些吗？",
     dialogueInProgress: "草药采得怎么样了？慢慢来，不用着急。",
     dialogueComplete: "太好了，这些草药足够我做实验了。谢谢你的帮助！"
@@ -270,6 +272,7 @@ export const DataQuests = {
     ],
     nextQuest: null,
     isMainQuest: false,
+    isPublic: true,
     dialogueStart: "听说猎魔者公会最近在悬赏暗影怪，那东西很狡猾，你敢去试试吗？",
     dialogueInProgress: "暗影怪解决了吗？那家伙藏在阴影里，很难对付。",
     dialogueComplete: "厉害啊！暗影怪都被你干掉了，猎魔者公会那边应该会给你记一功。"
@@ -306,6 +309,7 @@ export const DataQuests = {
     ],
     nextQuest: null,
     isMainQuest: false,
+    isPublic: true,
     dialogueStart: "雪峰山的石怪最近很嚣张，很多采药人都不敢上山了。你能去清理一下吗？",
     dialogueInProgress: "石怪清理得怎么样了？那家伙皮糙肉厚，很难对付。",
     dialogueComplete: "可以啊！石怪都被你干掉了，采药人们又能上山了。猎魔者公会的声望又涨了！"
@@ -342,6 +346,7 @@ export const DataQuests = {
     ],
     nextQuest: null,
     isMainQuest: false,
+    isPublic: true,
     dialogueStart: "学校想了解一下雪峰山的情况，你能去探索一下吗？注意安全。",
     dialogueInProgress: "雪峰山探索得怎么样了？有没有发现什么异常？",
     dialogueComplete: "辛苦了！你带回来的信息很有价值。学校会记住你的贡献的。"
@@ -382,6 +387,7 @@ export const DataQuests = {
     ],
     nextQuest: null,
     isMainQuest: false,
+    isPublic: true,
     dialogueStart: "最近山里出现了雷兽，那家伙厉害得很，好几个猎人都受伤了。你敢去试试吗？",
     dialogueInProgress: "雷兽解决了吗？那家伙的雷电魔法很厉害，小心被麻痹了。",
     dialogueComplete: "厉害啊！雷兽都被你干掉了，你在猎魔者公会的声望可是大涨啊！"
@@ -742,6 +748,7 @@ export const DataQuests = {
     ],
     nextQuest: null,
     isMainQuest: false,
+    isPublic: true,
     repeatable: true,
     dialogueStart: "这是今天的日常任务，去雪峰山清剿几只幽狼兽吧。",
     dialogueInProgress: "加油哦，注意安全！",
@@ -1414,6 +1421,7 @@ export const DataQuests = {
     prerequisites: ["quest_mingwen_investigation"],
     nextQuest: null,
     isMainQuest: false,
+    isPublic: true,
     autoStart: false,
     dialogueStart: "巨眼猩鼠是奴仆级妖魔，生活在地下，眼睛能释放腥红穿透光束。它饥饿时会吃人，这只已经吃了两个女生，必须消灭！",
     dialogueInProgress: "巨眼猩鼠速度很快，攻击频率高。注意躲避它的腥红光束，找机会反击。雷系的麻痹效果对它很有效。",
@@ -3998,6 +4006,8 @@ export const DataQuests = {
     prerequisites: [{ flag: "stay_in_bo_city" }],
     nextQuest: "quest_rebuild_rescue_survivors",
     isMainQuest: false,
+    isPublic: true,
+    isPublic: true,
     difficulty: "easy",
     recommendedLevel: 8,
     dialogueStart: "博城的主街道还被废墟堵着，工程队缺人手。你能去帮帮忙吗？",

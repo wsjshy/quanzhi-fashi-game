@@ -415,6 +415,9 @@ export const QuestSystem = {
             const quest = allQuests[questId];
             if (!quest) continue;
 
+            // 只显示公开任务（公告板/委托类），私人任务需通过NPC对话接取
+            if (!quest.isPublic) continue;
+
             // 已接取或已完成的跳过
             if (Player.getActiveQuest(questId)) continue;
             if (Player.isQuestComplete(questId)) continue;
