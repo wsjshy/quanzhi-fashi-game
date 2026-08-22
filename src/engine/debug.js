@@ -313,9 +313,41 @@ export const DebugPanel = {
                             <button onclick="DebugPanel.clearStarDustAssign()" style="background: #aa4444; color: #fff; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">清除分配</button>
                         </div>
                     </div>
+
+                    <!-- v3.1.0: 技能进阶测试 -->
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ffd700; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">⬆️ 技能进阶测试</div>
+                        <div style="font-size: 11px; color: #888; margin-bottom: 8px;">快速学习初阶技能或直接进阶为中阶</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                            <button onclick="DebugPanel.learnSkill('fire_bolt')" style="background: #ff4444; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🔥 学火滋</button>
+                            <button onclick="DebugPanel.advanceSkill('fire_bolt')" style="background: #ff8800; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🔥 火滋→烈拳</button>
+                            <button onclick="DebugPanel.learnSkill('ice_spike')" style="background: #44aaff; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">❄️ 学冰蔓</button>
+                            <button onclick="DebugPanel.advanceSkill('ice_spike')" style="background: #88ccff; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">❄️ 冰蔓→冰锁</button>
+                            <button onclick="DebugPanel.learnSkill('thunder_bolt')" style="background: #ffcc00; color: #333; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">⚡ 学雷印</button>
+                            <button onclick="DebugPanel.advanceSkill('thunder_bolt')" style="background: #ffee44; color: #333; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">⚡ 雷印→霹雳</button>
+                        </div>
+                        <div style="display: flex; gap: 4px; margin-top: 6px;">
+                            <button onclick="DebugPanel.addSkillPoints(10)" style="flex: 1; background: #228844; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">+10技能点</button>
+                            <button onclick="DebugPanel.addSkillPoints(50)" style="flex: 1; background: #228844; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">+50技能点</button>
+                        </div>
+                    </div>
+
+                    <!-- v3.1.0: 声望调整 -->
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #88ff88; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">⭐ 势力声望调整</div>
+                        <div style="font-size: 11px; color: #888; margin-bottom: 8px;">快速调整各势力声望（+20/-20）</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                            <button onclick="DebugPanel.changeReputation('mu_family', 20)" style="background: #aaccff; color: #333; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">🏛️ 穆氏+20</button>
+                            <button onclick="DebugPanel.changeReputation('mu_family', -20)" style="background: #aa6666; color: #fff; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">🏛️ 穆氏-20</button>
+                            <button onclick="DebugPanel.changeReputation('grassroots', 20)" style="background: #88cc88; color: #333; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">🌱 草根+20</button>
+                            <button onclick="DebugPanel.changeReputation('grassroots', -20)" style="background: #668866; color: #fff; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">🌱 草根-20</button>
+                            <button onclick="DebugPanel.changeReputation('military', 20)" style="background: #6688aa; color: #fff; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">🛡️ 军方+20</button>
+                            <button onclick="DebugPanel.changeReputation('hunter_guild', 20)" style="background: #ffaa66; color: #333; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">⚔️ 猎魔+20</button>
+                            <button onclick="DebugPanel.changeReputation('magic_association', 20)" style="background: #ffdd66; color: #333; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">🏛️ 协会+20</button>
+                            <button onclick="DebugPanel.changeReputation('inquisition', 20)" style="background: #aaaacc; color: #333; border: none; padding: 4px; border-radius: 3px; cursor: pointer; font-size: 10px;">⚖️ 审判+20</button>
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- 天赋标签页 -->
                 <div id="debug-tab-talent" class="debug-tab-content" style="display: none;">
                     <div style="margin-bottom: 15px;">
                         <div style="font-weight: bold; color: #ffd700; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">天生天赋快速设置</div>
@@ -2297,6 +2329,64 @@ export const DebugPanel = {
             location.reload();
         } catch (e) {
             console.error('[Debug] disable错误:', e);
+        }
+    },
+
+    // v3.1.0: 学习技能
+    learnSkill(skillId) {
+        try {
+            if (typeof Player !== 'undefined' && typeof Player.learnSkill === 'function') {
+                Player.learnSkill(skillId);
+                this.refreshUI();
+                console.log(`[Debug] 已学习技能: ${skillId}`);
+            }
+        } catch (e) {
+            console.error('[Debug] learnSkill错误:', e);
+        }
+    },
+
+    // v3.1.0: 技能进阶
+    advanceSkill(skillId) {
+        try {
+            if (typeof Game !== 'undefined' && typeof Game.advanceSkill === 'function') {
+                Game.advanceSkill(skillId);
+                this.refreshUI();
+            }
+        } catch (e) {
+            console.error('[Debug] advanceSkill错误:', e);
+        }
+    },
+
+    // v3.1.0: 增加技能点
+    addSkillPoints(amount) {
+        try {
+            if (typeof Player !== 'undefined') {
+                Player.skillPoints = (Player.skillPoints || 0) + amount;
+                if (typeof Player.save === 'function') Player.save();
+                this.refreshUI();
+                console.log(`[Debug] 技能点+${amount}, 当前: ${Player.skillPoints}`);
+            }
+        } catch (e) {
+            console.error('[Debug] addSkillPoints错误:', e);
+        }
+    },
+
+    // v3.1.0: 调整声望
+    changeReputation(factionId, amount) {
+        try {
+            if (typeof WorldState !== 'undefined' && typeof WorldState.changeReputation === 'function') {
+                WorldState.changeReputation(factionId, amount);
+                this.refreshUI();
+                console.log(`[Debug] ${factionId}声望${amount > 0 ? '+' : ''}${amount}`);
+            } else if (typeof Player !== 'undefined') {
+                if (!Player.reputations) Player.reputations = {};
+                Player.reputations[factionId] = (Player.reputations[factionId] || 0) + amount;
+                if (typeof Player.save === 'function') Player.save();
+                this.refreshUI();
+                console.log(`[Debug] ${factionId}声望${amount > 0 ? '+' : ''}${amount}`);
+            }
+        } catch (e) {
+            console.error('[Debug] changeReputation错误:', e);
         }
     }
 };
