@@ -166,14 +166,14 @@
 |------|------|
 | src/engine/game.js | 游戏主流程（已拆分13个子模块，约3100行） |
 | src/engine/battle.js | 战斗核心（已拆分23个子模块，约1850行） |
-| src/engine/ui.js | UI渲染（已拆分18个子模块，约1900行） |
+| src/engine/ui.js | UI渲染（已拆分25个子模块，约1400行） |
 | src/engine/player.js | 玩家数据/成长 |
 | src/engine/npc-state.js | NPC状态/记忆/关系网络 |
 | src/engine/dialogue-tree.js | 对话树引擎 |
-| **UI子模块** | ui-title/ui-help/ui-bestiary/ui-daily/ui-dialogue/ui-event/ui-achievement/ui-character/ui-map/ui-battle/ui-shop/ui-talent-detail/ui-inventory/ui-message/ui-intel/ui-skill-detail/ui-quest/ui-enemy-detail |
+| **UI子模块** | ui-title/ui-help/ui-bestiary/ui-daily/ui-dialogue/ui-event/ui-achievement/ui-character/ui-map/ui-battle/ui-shop/ui-talent-detail/ui-inventory/ui-message/ui-intel/ui-skill-detail/ui-quest/ui-enemy-detail/ui-scheduled-event/ui-damage-number/ui-element-selection/ui-reputation/ui-character-create/ui-primary-secondary/ui-daily-summary |
 | **战斗子模块** | battle-utils/battle-start/battle-skill/battle-enemy-turn/battle-player-attack/battle-damage/battle-end-enemy-turn/battle-summon/battle-status/battle-rewards/battle-help/battle-magic-tool/battle-status-modifiers/battle-traits/battle-add-status/battle-check-end/battle-apply-status/battle-spirit-seed/battle-talent-active/battle-ai-burst/battle-end/battle-ai-tactical/battle-player-item |
 | **游戏子模块** | game-end-battle/game-dialogue/game-npc-list/game-npc-detail/game-travel/game-awaken/game-breakthrough/game-cultivate/game-talent-select/game-quick-heal/game-artifact-upgrade/game-perform-cultivate/game-perform-action |
-| src/main.js | 模块化入口（import 90个模块） |
+| src/main.js | 模块化入口（import 97个模块） |
 
 > 📖 详细架构见 [docs/架构说明.md](docs/架构说明.md)，拆分设计见 [docs/version-design/v3.0.1_核心文件拆分设计.md](docs/version-design/v3.0.1_核心文件拆分设计.md)
 
