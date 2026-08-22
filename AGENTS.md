@@ -3,7 +3,7 @@
 > **这是唯一入口。** 读这一份就知道：项目是什么、方向在哪、怎么做、遇到问题看哪个文档。
 > 具体任务看 [TODO.md](TODO.md)，版本历史看 [CHANGELOG.md](CHANGELOG.md)，详细设计看 [docs/](docs/)。
 >
-> 当前版本：**v3.0.0** | 最后更新：2026-08-22
+> 当前版本：**v3.0.1** | 最后更新：2026-08-22
 
 ---
 
@@ -161,19 +161,21 @@
 | src/data/skills.js / enemies.js / items.js | 技能/妖魔/物品 |
 | src/data/index.js | 数据统一出口（GameData + 27个全局变量） |
 
-### 引擎文件（v3.0.0起迁移到src/engine/）
+### 引擎文件（v3.0.0起迁移到src/engine/，v3.0.1核心文件拆分）
 | 文件 | 作用 |
 |------|------|
-| src/engine/npc-state.js | NPC状态/记忆/关系网络/综合评分 |
-| src/engine/dialogue-tree.js | 对话树引擎（memoryTags条件/效果） |
-| src/engine/story-chapter.js | 章节管理 |
-| src/engine/game.js | 游戏主流程 |
-| src/engine/battle.js | 战斗 |
-| src/engine/battle-utils.js | 战斗纯函数工具（元素克制/名称/倍率） |
+| src/engine/game.js | 游戏主流程（已拆分13个子模块，约3100行） |
+| src/engine/battle.js | 战斗核心（已拆分12个子模块，约3000行） |
+| src/engine/ui.js | UI渲染（已拆分18个子模块，约1900行） |
 | src/engine/player.js | 玩家数据/成长 |
-| src/engine/ui.js | UI渲染 |
-| src/engine/ui-title.js | 标题/角色创建界面 |
-| src/main.js | 模块化入口（按依赖顺序import 56个模块） |
+| src/engine/npc-state.js | NPC状态/记忆/关系网络 |
+| src/engine/dialogue-tree.js | 对话树引擎 |
+| **UI子模块** | ui-title/ui-help/ui-bestiary/ui-daily/ui-dialogue/ui-event/ui-achievement/ui-character/ui-map/ui-battle/ui-shop/ui-talent-detail/ui-inventory/ui-message/ui-intel/ui-skill-detail/ui-quest/ui-enemy-detail |
+| **战斗子模块** | battle-utils/battle-start/battle-skill/battle-enemy-turn/battle-player-attack/battle-damage/battle-end-enemy-turn/battle-summon/battle-status/battle-rewards/battle-help/battle-magic-tool |
+| **游戏子模块** | game-end-battle/game-dialogue/game-npc-list/game-npc-detail/game-travel/game-awaken/game-breakthrough/game-cultivate/game-talent-select/game-quick-heal/game-artifact-upgrade/game-perform-cultivate/game-perform-action |
+| src/main.js | 模块化入口（import 79个模块） |
+
+> 📖 详细架构见 [docs/架构说明.md](docs/架构说明.md)，拆分设计见 [docs/version-design/v3.0.1_核心文件拆分设计.md](docs/version-design/v3.0.1_核心文件拆分设计.md)
 
 ### 测试文件
 | 文件 | 作用 |
