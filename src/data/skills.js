@@ -1495,6 +1495,43 @@ export const DataSkills = {
       }
     ]
   },
+  ice_lock: {
+    id: "ice_lock",
+    name: "冰锁",
+    description: "中阶冰系魔法。脚下浮现雪花霜图，地面冻结蔓延，裂缝中窜出粗壮寒冰锁链，交错封锁敌人行动。冰冻大地中锁链威力倍增。",
+    element: "ice",
+    type: "damage",
+    mpCost: 35,
+    baseDamage: 70,
+    damageMultiplier: 1.6,
+    hitRate: 0.88,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 1.1,
+    unlockLevel: 11,
+    realmRequired: "middle",
+    isCanon: true,
+    canonSource: "第8369章 冰系中阶魔法冰锁",
+    statusEffects: [
+      {
+        name: "冰冻",
+        type: "freeze",
+        element: "ice",
+        value: 50,
+        duration: 3,
+        chance: 1.0
+      },
+      {
+        name: "束缚",
+        type: "bind",
+        duration: 2,
+        chance: 0.7
+      }
+    ]
+  },
   thunder_praise: {
     id: "thunder_praise",
     name: "霹雳·轰顶",
@@ -5416,6 +5453,15 @@ export const SkillAdvancements = {
     requiredSkillPoints: 3,
     requiredUsage: 50,
     description: "雷印·蟒痕 → 霹雳·轰顶（中阶雷系魔法，紫色霹雳落下，高几率麻痹）"
+  },
+  ice_spike: {
+    advancedSkillId: "ice_lock",
+    element: "ice",
+    requiredLevel: 10,
+    requiredElementLevel: 3,
+    requiredSkillPoints: 3,
+    requiredUsage: 50,
+    description: "冰蔓·冻迟 → 冰锁（中阶冰系魔法，寒冰锁链窜出，冰冻+束缚敌人）"
   }
 };
 
