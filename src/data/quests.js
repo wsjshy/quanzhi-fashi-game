@@ -4292,6 +4292,106 @@ export const DataQuests = {
     isPublic: false
   },
 
+  quest_irritable_spring_trace: {
+    id: "quest_irritable_spring_trace",
+    name: "暴躁之泉踪迹",
+    description: "唐月老师说最近雪峰山的妖魔异动很不正常，让你去调查一下。你在雪峰山发现了一种诡异的液体痕迹，散发着令人不安的气息，与地圣泉的灵气相似但性质截然相反。",
+    giver: "tang_yue",
+    type: "story",
+    isPublic: false,
+    objectives: [
+      { type: "explore", locationId: "xuefeng_mountain", count: 3, description: "在雪峰山调查3次，发现暴躁之泉踪迹" }
+    ],
+    rewards: {
+      exp: 150,
+      gold: 100,
+      clues: ["irritable_spring_trace"]
+    },
+    dialogueStart: "最近我收到一些报告，说雪峰山附近的妖魔异动很不正常。你能帮我去调查一下吗？一定要小心。",
+    dialogueInProgress: "调查得怎么样了？有没有发现什么异常？",
+    dialogueComplete: "你发现了诡异的液体痕迹？这很不寻常...让我仔细看看。这种气息...与地圣泉相似但性质截然相反。这可能是某种禁品药剂。你继续调查，看看能不能找到更多线索。",
+    nextQuest: "quest_black_church_hideout",
+    conditions: {
+      requiredFlags: ["xuefeng_training_completed"],
+      minLevel: 6
+    }
+  },
+  quest_black_church_hideout: {
+    id: "quest_black_church_hideout",
+    name: "黑教廷据点",
+    description: "根据暴躁之泉的线索，你找到了黑教廷的一个秘密据点。据点中有几名黑教廷成员在看守，你需要击败他们并搜索据点，找到更多关于暴躁之泉的线索。",
+    giver: "tang_yue",
+    type: "story",
+    isPublic: false,
+    objectives: [
+      { type: "battle", enemyId: "black_church_member", count: 1, description: "击败黑教廷成员，搜索据点" }
+    ],
+    rewards: {
+      exp: 200,
+      gold: 150,
+      items: [{ itemId: "irritable_spring_sample", count: 1 }],
+      clues: ["black_church_hideout_found"]
+    },
+    dialogueStart: "你找到了暴躁之泉的线索？太好了！根据你的描述，我怀疑这是黑教廷的据点。你能去调查一下吗？击败看守的黑教廷成员，搜索据点，找到更多线索。",
+    dialogueInProgress: "据点调查得怎么样了？一定要小心，黑教廷成员很危险。",
+    dialogueComplete: "你找到了暴躁之泉的样本！这太重要了...这种药剂几乎可以和地圣泉以假乱真，但效果截然相反——它会激化妖魔的野性。如果黑教廷大量使用这种药剂，后果不堪设想。你应该向魔法协会的林雨欣预警。",
+    nextQuest: "quest_warn_lin_yuxin",
+    conditions: {
+      requiredFlags: ["irritable_spring_trace"],
+      minLevel: 7
+    }
+  },
+  quest_warn_lin_yuxin: {
+    id: "quest_warn_lin_yuxin",
+    name: "向林雨欣预警",
+    description: "你找到了暴躁之泉的样本，意识到这可能是黑教廷的阴谋。你决定向魔法协会的林雨欣预警，告诉她暴躁之泉的危险性。",
+    giver: "tang_yue",
+    type: "story",
+    isPublic: false,
+    objectives: [
+      { type: "talk", npcId: "lin_yuxin", count: 1, description: "与林雨欣对话，提交暴躁之泉样本" }
+    ],
+    rewards: {
+      exp: 300,
+      gold: 200,
+      reputation: { "magic_association": 20 },
+      clues: ["irritable_spring_warning"]
+    },
+    dialogueStart: "你应该把暴躁之泉的样本交给魔法协会的林雨欣。她是这方面的专家，应该能判断这种药剂的危险性。",
+    dialogueInProgress: "你找到林雨欣了吗？她应该在魔法协会。",
+    dialogueComplete: "你说这是暴躁之泉？！我之前确实发现过类似的痕迹，但没有意识到它的危险性...谢谢你的预警，这可能会挽救很多人的生命。我会立即开始研究解药，减轻暴躁之泉的影响。你能帮我采集一些净化草吗？这是制作解药的关键材料。",
+    nextQuest: "quest_find_antidote",
+    conditions: {
+      requiredFlags: ["black_church_hideout_found"],
+      minLevel: 8,
+      requiredItems: [{ itemId: "irritable_spring_sample", count: 1 }]
+    }
+  },
+  quest_find_antidote: {
+    id: "quest_find_antidote",
+    name: "寻找解药",
+    description: "林雨欣告诉你，暴躁之泉的解药需要净化草等材料。她让你去采集5株净化草，她会尝试制作解药，减轻博城灾难的影响。",
+    giver: "lin_yuxin",
+    type: "story",
+    isPublic: false,
+    objectives: [
+      { type: "collect", itemId: "purification_grass", count: 5, description: "采集5株净化草" }
+    ],
+    rewards: {
+      exp: 250,
+      gold: 150,
+      items: [{ itemId: "irritable_spring_antidote", count: 2 }],
+      reputation: { "magic_association": 15 }
+    },
+    dialogueStart: "暴躁之泉的解药需要净化草等材料。你能帮我去采集5株净化草吗？这种草药生长在清澈水源旁，在博城郊外应该可以找到。",
+    dialogueInProgress: "净化草采集得怎么样了？一定要找生长在清澈水源旁的，那种净化效果最好。",
+    dialogueComplete: "太好了，你采集到了5株净化草！我会立即开始制作解药。这是2瓶暴躁之泉解药，你在战斗中使用可以暂时压制暴躁之泉的效果，让妖魔恢复理智。希望这些解药能在博城灾难中派上用场。",
+    conditions: {
+      requiredFlags: ["irritable_spring_warning"],
+      minLevel: 9
+    }
+  },
+
 };
 
 export default DataQuests;

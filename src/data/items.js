@@ -2753,5 +2753,43 @@ export const DataItems = {
     lore: "博城地圣泉每届只为一名学生开启，获胜者将获得这张修炼凭证。地圣泉的修炼速度是外面的数十倍，是冲击中阶法师的最佳机会。"
   },
 
+  irritable_spring_sample: {
+    id: "irritable_spring_sample",
+    name: "暴躁之泉样本",
+    type: "quest",
+    description: "从黑教廷据点搜到的暴躁之泉样本，散发着令人不安的气息。这种药剂几乎可以和地圣泉以假乱真，但效果截然相反——它会激化妖魔的野性，让它们失去理智。",
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "rare",
+    sellPrice: 0,
+    lore: "黑教廷炼制的禁品药剂，是博城灾难的关键催化剂。"
+  },
+  irritable_spring_antidote: {
+    id: "irritable_spring_antidote",
+    name: "暴躁之泉解药",
+    type: "consumable",
+    description: "林雨欣用净化草等材料制作的暴躁之泉解药，可以暂时压制暴躁之泉的效果，让妖魔恢复理智。战斗中使用可降低妖魔攻击力。",
+    maxStack: 5,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    rarity: "rare",
+    sellPrice: 50,
+    effect: { type: "debuff_enemy", stat: "attack", value: -15, duration: 3 },
+    lore: "魔法协会特制的解药，专门针对暴躁之泉的效果。"
+  },
+  purification_grass: {
+    id: "purification_grass",
+    name: "净化草",
+    type: "material",
+    description: "一种生长在清澈水源旁的草药，具有净化毒素和邪恶能量的效果。是制作暴躁之泉解药的关键材料。",
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "common",
+    sellPrice: 10,
+    lore: "常见的净化草药，在博城郊外的清澈水源旁可以采集到。"
+  },
+
 };
 export default DataItems;
