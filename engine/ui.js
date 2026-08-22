@@ -2397,10 +2397,24 @@ const UI = {
                         ${TimeSystem.isNight() ? `<div style="color: #ff9966; font-size: 12px; background: rgba(100,50,50,0.5); padding: 3px 10px; border-radius: 8px;">🌙 夜晚敌人更强 +30%</div>` : ''}
                     </div>
                     <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                        <span style="color: #ffd700; font-size: 15px;">💰 ${Player.gold}</span>
-                        <span style="color: #ff8888; font-size: 14px;">❤️ ${Player.hp}/${Player.maxHp}</span>
-                        <span style="color: #88aaff; font-size: 14px;">💧 ${Player.mp}/${Player.maxMp}</span>
-                        <span style="color: #888; font-size: 11px; opacity: 0.6;" title="全职法师网页游戏 当前版本">v2.9.1</span>
+                        <span style="color: #ffd700; font-size: 15px; font-weight: bold;">💰 ${Player.gold}</span>
+                        <!-- HP可视化进度条 -->
+                        <div style="display: flex; align-items: center; gap: 5px;" title="HP: ${Player.hp}/${Player.maxHp}">
+                            <span style="font-size: 14px;">❤️</span>
+                            <div style="width: 80px; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,100,100,0.3);">
+                                <div style="height: 100%; width: ${(Player.hp / Player.maxHp * 100).toFixed(0)}%; background: ${Player.hp / Player.maxHp > 0.5 ? 'linear-gradient(90deg, #ff4444, #ff6666)' : Player.hp / Player.maxHp > 0.25 ? 'linear-gradient(90deg, #ff8800, #ffaa44)' : 'linear-gradient(90deg, #ff0000, #ff2222); animation: pulse 1s infinite;'}; transition: width 0.3s;"></div>
+                            </div>
+                            <span style="color: #ff8888; font-size: 12px; min-width: 50px;">${Player.hp}/${Player.maxHp}</span>
+                        </div>
+                        <!-- MP可视化进度条 -->
+                        <div style="display: flex; align-items: center; gap: 5px;" title="MP: ${Player.mp}/${Player.maxMp}">
+                            <span style="font-size: 14px;">💧</span>
+                            <div style="width: 80px; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden; border: 1px solid rgba(100,150,255,0.3);">
+                                <div style="height: 100%; width: ${(Player.mp / Player.maxMp * 100).toFixed(0)}%; background: ${Player.mp / Player.maxMp > 0.3 ? 'linear-gradient(90deg, #4466ff, #6688ff)' : 'linear-gradient(90deg, #ff8800, #ffaa44)'}; transition: width 0.3s;"></div>
+                            </div>
+                            <span style="color: #88aaff; font-size: 12px; min-width: 50px;">${Player.mp}/${Player.maxMp}</span>
+                        </div>
+                        <span style="color: #888; font-size: 11px; opacity: 0.6;" title="全职法师网页游戏 当前版本">v2.9.5</span>
                         <!-- v2.8.4: 每日行动收益率提示，修炼/学习/猎魔有每日效率递减，探索完全自由不限制 -->
                         ${(() => {
                             const da = Player.dailyActions || { cultivate: 0, study: 0, hunt: 0 };
@@ -3316,9 +3330,18 @@ const UI = {
                     top: 0; left: 0;
                     width: 100%; height: 100%;
                     background: url('assets/images/effects/fire_magic.jpg') center/cover;
-                    opacity: 0.12;
-                    filter: blur(2px);
+                    opacity: 0.25;
+                    filter: blur(3px) saturate(1.2);
                     z-index: 0;
+                    pointer-events: none;
+                "></div>
+                <!-- 战斗背景渐变遮罩：增强氛围，底部加深突出角色 -->
+                <div style="
+                    position: absolute;
+                    top: 0; left: 0;
+                    width: 100%; height: 100%;
+                    background: linear-gradient(180deg, rgba(10,10,30,0.3) 0%, rgba(20,20,50,0.5) 50%, rgba(10,10,30,0.8) 100%);
+                    z-index: 1;
                     pointer-events: none;
                 "></div>
                 
@@ -3332,7 +3355,7 @@ const UI = {
                 "></div>
                 
                 <!-- 战斗场地 -->
-                <div style="flex: 1; position: relative; overflow: ${isPortrait ? 'auto' : 'hidden'}; z-index: 1; ${arenaFlex}">
+                <div style="flex: 1; position: relative; overflow: ${isPortrait ? 'auto' : 'hidden'}; z-index: 2; ${arenaFlex}">
                     
                     <!-- v1.8.1: 队友状态条（组队战斗时显示） -->
                     ${state.allies && state.allies.length > 0 ? `
@@ -3388,12 +3411,17 @@ const UI = {
                         <div style="
                             width: ${spriteW}px;
                             height: ${spriteH}px;
-                            background: linear-gradient(180deg, #6666cc, #4444aa);
+                            background: radial-gradient(ellipse at 50% 30%, #8888ff 0%, #5555bb 40%, #333388 100%);
                             border-radius: 50px 50px 10px 10px;
                             margin-bottom: 10px;
-                            box-shadow: 0 0 30px rgba(100, 100, 255, 0.4);
+                            box-shadow: 0 0 40px rgba(100, 100, 255, 0.5), inset 0 0 20px rgba(150, 150, 255, 0.3);
                             transition: all 0.3s;
-                        " id="player-sprite" class="battle-sprite"></div>
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: ${isPortrait ? 42 : 56}px;
+                            animation: float 3s ease-in-out infinite;
+                        " id="player-sprite" class="battle-sprite">🧙</div>
                         <div style="font-size: 18px; font-weight: bold; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
                             ${state.player.name}
                             <span style="font-size: 14px; color: #66ccff;">Lv.${state.player.level}</span>
@@ -3534,11 +3562,17 @@ const UI = {
                         <div style="
                             width: ${isPortrait ? 80 : 110}px;
                             height: ${isPortrait ? 110 : 150}px;
-                            background: linear-gradient(180deg, ${state.enemy.spriteColor || '#663399'}, ${state.enemy.spriteColor || '#442266'}dd);
+                            background: radial-gradient(ellipse at 50% 30%, ${state.enemy.spriteColor || '#663399'} 0%, ${state.enemy.spriteColor || '#442266'}aa 50%, ${state.enemy.spriteColor || '#221133'} 100%);
                             border-radius: 55px 55px 10px 10px;
                             margin-bottom: 10px;
-                            box-shadow: 0 0 30px ${state.enemy.spriteColor || '#663399'}60;
-                        " id="enemy-sprite" class="battle-sprite"></div>
+                            box-shadow: 0 0 40px ${state.enemy.spriteColor || '#663399'}80, inset 0 0 20px ${state.enemy.spriteColor || '#663399'}40;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: ${isPortrait ? 42 : 56}px;
+                            animation: float 3s ease-in-out infinite;
+                            animation-delay: 0.5s;
+                        " id="enemy-sprite" class="battle-sprite">${state.enemy.icon || '👹'}</div>
                         <div style="font-size: 18px; font-weight: bold; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); cursor:pointer;" onclick="UI.showEnemyDetail('${state.enemy.id || ''}')" title="点击查看敌人详情">
                             ${state.enemy.name}
                             <span style="font-size: 14px; color: #ffcc66;">Lv.${state.enemy.level}</span>

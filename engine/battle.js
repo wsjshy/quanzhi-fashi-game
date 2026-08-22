@@ -2379,6 +2379,20 @@ const BattleSystem = {
             if (skill.tier === '高阶' || skill.tier === '超阶') {
                 this.triggerHighTierEffect(skill);
             }
+            // v2.9.6: 中阶魔法元素色闪光（轻量级，不震屏）
+            else if (skill.tier === '中阶' && typeof document !== 'undefined') {
+                const elemColors = {
+                    fire: '#ff6644', ice: '#66aaff', thunder: '#ffdd44',
+                    wind: '#88ffcc', earth: '#aa8844', water: '#66bbff',
+                    light: '#ffffcc', dark: '#aa66ff', heal: '#66ffaa',
+                    plant: '#66dd44', summon: '#cc9966'
+                };
+                const color = elemColors[skill.element] || '#ffffff';
+                const flash = document.createElement('div');
+                flash.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at center, ${color}40 0%, ${color}15 40%, transparent 70%);z-index:9997;pointer-events:none;animation:highTierFlash 0.6s ease-out forwards;`;
+                document.body.appendChild(flash);
+                setTimeout(() => flash.remove(), 700);
+            }
         }
 
         // 消耗MP
