@@ -42,6 +42,7 @@ function loadBattleSystem() {
         'battle-talent-active.js',
         'battle-ai-burst.js',
         'battle-end.js',
+        'battle-ai-tactical.js',
     ];
     
     let depCode = '';
@@ -93,6 +94,7 @@ function loadBattleSystem() {
         var useTalentActiveSkillImpl = useTalentActiveSkill;
         var enemyAIBurstImpl = enemyAIBurst;
         var endBattleImpl = endBattle;
+        var enemyAITacticalImpl = enemyAITactical;
     `;
     const fullCode = depCode + '\n' + aliasCode + '\n' + code;
     
