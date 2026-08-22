@@ -616,6 +616,116 @@ export const GameState = {
     },
 
     /**
+     * 校验存档完整性
+     * @returns {object} { valid, errors, warnings }
+     */
+    validateSave() {
+        const saveStr = localStorage.getItem(SAVE_KEY);
+        if (!saveStr) {
+            return { valid: false, errors: ['无存档'], warnings: [] };
+        }
+        const errors = [];
+        const warnings = [];
+        try {
+            const data = JSON.parse(saveStr);
+            // 检查必填字段
+            const requiredFields = ['name', 'level', 'day', 'currentLocation'];
+            for (const field of requiredFields) {
+                if (data[field] === undefined || data[field] === null) {
+                    errors.push(`缺少必填字段: ${field}`);
+                }
+            }
+            // 检查版本号
+            if (!data.saveVersion) {
+                warnings.push('存档无版本号，将按0.1.0处理');
+            }
+            // 检查数值合理性
+            if (typeof data.level === 'number' && (data.level < 1 || data.level > 200)) {
+                errors.push(`等级异常: ${data.level}`);
+            }
+            if (typeof data.gold === 'number' && data.gold < 0) {
+                errors.push(`金币异常: ${data.gold}`);
+            }
+            if (typeof data.hp === 'number' && typeof data.maxHp === 'number' && data.hp > data.maxHp) {
+                warnings.push(`HP超过上限: ${data.hp}/${data.maxHp}`);
+            }
+            // 检查elements是否为数组
+            if (data.elements && !Array.isArray(data.elements)) {
+                errors.push('elements不是数组');
+            }
+            return { valid: errors.length === 0, errors, warnings };
+        } catch (e) {
+            return { valid: false, errors: [`JSON解析失败: ${e.message}`], warnings: [] };
+        }
+    },
+
+    /**
+     * 导出存档为字符串（用于备份/分享）
+     * @returns {string|null} base64编码的存档数据
+     */
+    exportSave() {
+        const saveStr = localStorage.getItem(SAVE_KEY);
+        if (!saveStr) return null;
+        try {
+            // 添加导出标记
+            const data = JSON.parse(saveStr);
+            data._exportedAt = new Date().toISOString();
+            data._exportedBy = 'quanzhi-fashi-game';
+            return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+        } catch (e) {
+            console.error('[存档] 导出失败:', e);
+            return null;
+        }
+    },
+
+    /**
+     * 从字符串导入存档
+     * @param {string} encoded - base64编码的存档数据
+     * @returns {object} { success, message }
+     */
+    importSave(encoded) {
+        try {
+            const jsonStr = decodeURIComponent(escape(atob(encoded)));
+            const data = JSON.parse(jsonStr);
+            // 验证导入标记
+            if (data._exportedBy !== 'quanzhi-fashi-game') {
+                return { success: false, message: '无效的存档文件格式' };
+            }
+            // 移除导出标记
+            delete data._exportedAt;
+            delete data._exportedBy;
+            // 备份当前存档
+            const current = localStorage.getItem(SAVE_KEY);
+            if (current) {
+                this._backupSave(current, data.saveVersion || 'unknown');
+            }
+            // 写入导入的存档
+            localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+            return { success: true, message: '存档导入成功，请刷新页面' };
+        } catch (e) {
+            console.error('[存档] 导入失败:', e);
+            return { success: false, message: `导入失败: ${e.message}` };
+        }
+    },
+
+    /**
+     * 获取存档统计信息
+     * @returns {object|null}
+     */
+    getSaveStats() {
+        const info = this.getSaveInfo();
+        if (!info) return null;
+        const validation = this.validateSave();
+        return {
+            ...info,
+            valid: validation.valid,
+            errors: validation.errors,
+            warnings: validation.warnings,
+            size: (localStorage.getItem(SAVE_KEY) || '').length,
+        };
+    },
+
+    /**
      * 检查是否有存档
      */
     hasSave() {

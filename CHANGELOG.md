@@ -2,7 +2,43 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
-## v3.0.0 - 架构改造：Vite + ES Modules（进行中）
+## v3.0.2 - 状态管理与存档升级（已完成）
+
+### 集中式状态管理（GameState）
+- **新建 `src/engine/game-state.js`**：集中式状态管理容器，统一管理存档序列化/反序列化/版本迁移
+- **声明式schema**：70+字段声明一次，自动参与save/load/默认值填充，新增字段只需在schema中声明
+- **版本化迁移链**：6个历史迁移函数（0.1.0→0.2.0→0.3.0→0.3.1→0.8.6→0.8.7→3.0.2），支持版本跳跃，按版本号链式执行
+- **Player.save()/load()委托**：Player.save()/load()内部委托给GameState，保留fallback兼容，外部接口完全不变
+- **子系统统一注册**：Inventory/WorldState/NPCStateSystem通过registerSubsystem注册序列化回调，统一存档
+- **存档校验**：validateSave()检查必填字段、数值合理性、JSON格式，返回errors/warnings
+- **存档导出/导入**：exportSave()/importSave()支持base64编码的存档备份和分享，导入前自动备份当前存档
+- **存档统计**：getSaveStats()返回存档元信息+校验结果+大小
+- **向后兼容**：v0.1.0~v3.0.1旧存档均可正常加载和迁移，所有Player.xxx访问方式不变
+
+### 测试
+- 128自动化测试全部通过（L1数据35 + L2战斗31 + L2.5天赋35 + L2.6双天赋14 + L3成长13）
+- 语法检查通过
+
+## v3.0.1 - 核心文件拆分（已完成）
+
+### UI模块拆分（25个）
+- ui.js从7702行缩减到1233行（缩减84%）
+- 拆分模块：ui-title/ui-help/ui-bestiary/ui-daily/ui-dialogue/ui-event/ui-achievement/ui-character/ui-map/ui-battle/ui-shop/ui-talent-detail/ui-inventory/ui-message/ui-intel/ui-skill-detail/ui-quest/ui-enemy-detail/ui-scheduled-event/ui-damage-number/ui-element-selection/ui-reputation/ui-character-create/ui-primary-secondary/ui-daily-summary
+
+### 战斗模块拆分（23个）
+- battle.js从8851行缩减到1908行（缩减78%）
+- 拆分模块：battle-utils/battle-start/battle-skill/battle-enemy-turn/battle-player-attack/battle-damage/battle-end-enemy-turn/battle-summon/battle-status/battle-rewards/battle-help/battle-magic-tool/battle-status-modifiers/battle-traits/battle-add-status/battle-check-end/battle-apply-status/battle-spirit-seed/battle-talent-active/battle-ai-burst/battle-end/battle-ai-tactical/battle-player-item
+
+### 游戏模块拆分（13个）
+- game.js从5656行缩减到3133行（缩减45%）
+- 拆分模块：game-end-battle/game-dialogue/game-npc-list/game-npc-detail/game-travel/game-awaken/game-breakthrough/game-cultivate/game-talent-select/game-quick-heal/game-artifact-upgrade/game-perform-cultivate/game-perform-action
+
+### 向后兼容
+- 所有拆分采用委托模式：原对象方法保留，内部调用新模块export function，用.call(this)绑定上下文
+- 原有功能完整继承，不失效不裁剪
+- 128自动化测试全部通过
+
+## v3.0.0 - 架构改造：Vite + ES Modules（已完成）
 
 ### 阶段一：Vite + ES Modules 模块化（已完成）
 - **引入Vite构建工具**：创建`package.json`（type:module）和`vite.config.js`，支持HMR热更新和生产构建

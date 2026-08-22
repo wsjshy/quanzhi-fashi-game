@@ -3,7 +3,7 @@
 > **这是唯一入口。** 读这一份就知道：项目是什么、方向在哪、怎么做、遇到问题看哪个文档。
 > 具体任务看 [TODO.md](TODO.md)，版本历史看 [CHANGELOG.md](CHANGELOG.md)，详细设计看 [docs/](docs/)。
 >
-> 当前版本：**v3.0.1** | 最后更新：2026-08-22
+> 当前版本：**v3.0.2** | 最后更新：2026-08-22
 
 ---
 
@@ -168,6 +168,7 @@
 | src/engine/battle.js | 战斗核心（已拆分23个子模块，约1850行） |
 | src/engine/ui.js | UI渲染（已拆分25个子模块，约1400行） |
 | src/engine/player.js | 玩家数据/成长 |
+| src/engine/game-state.js | 集中式状态管理与存档（v3.0.2，声明式schema+版本迁移链） |
 | src/engine/npc-state.js | NPC状态/记忆/关系网络 |
 | src/engine/dialogue-tree.js | 对话树引擎 |
 | **UI子模块** | ui-title/ui-help/ui-bestiary/ui-daily/ui-dialogue/ui-event/ui-achievement/ui-character/ui-map/ui-battle/ui-shop/ui-talent-detail/ui-inventory/ui-message/ui-intel/ui-skill-detail/ui-quest/ui-enemy-detail/ui-scheduled-event/ui-damage-number/ui-element-selection/ui-reputation/ui-character-create/ui-primary-secondary/ui-daily-summary |
