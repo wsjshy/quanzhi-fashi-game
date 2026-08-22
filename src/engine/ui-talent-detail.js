@@ -4,7 +4,7 @@
  * 从ui.js拆分出的独立天赋详情弹窗模块
  * 包含：天赋详情弹窗（showTalentDetail）
  */
-    showTalentDetail(elem) {
+export function showTalentDetail(elem) {
         const talentData = Player.talents[elem];
         if (!talentData || typeof TalentSystem === 'undefined') return;
         const talent = TalentSystem.getTalent(talentData.talentId);

@@ -4,7 +4,7 @@
  * 从ui.js拆分出的独立背包界面渲染模块
  * 包含：背包界面（renderInventoryScreen）
  */
-    renderInventoryScreen() {
+export function renderInventoryScreen() {
         const items = Inventory.getAllItems();
         const equipment = Inventory.getEquipment();
         const isMobileInv = window.innerWidth < 600;
@@ -355,7 +355,7 @@
                 </div>
             </div>
         `;
-    },
+    }
 
 // 导出模块集合
 export const UIInventory = {
