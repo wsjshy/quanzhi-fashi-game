@@ -1,4 +1,4 @@
-﻿/**
+/**
  * UI渲染 - 任务界面模块
  * 
  * 从ui.js拆分出的独立任务界面模块
@@ -81,49 +81,13 @@ export function renderQuestScreen() {
                         }).join('') || '<p style="color: #8877aa;">暂无进行中的任务</p>'}
                     </div>
                     
-                    <h3 style="color: #ffcc66; margin-bottom: 15px;">📋 可接取 (${availableQuests.length})</h3>
-                    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px;">
-                        ${availableQuests.map(quest => {
-                            return `
-                                <div style="
-                                    padding: 15px 20px;
-                                    background: rgba(60, 45, 30, 0.7);
-                                    border: 2px solid #886633;
-                                    border-radius: 10px;
-                                ">
-                                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                        <div style="flex: 1;">
-                                            <div style="font-size: 17px; font-weight: bold; color: #ffdd99; margin-bottom: 5px;">
-                                                ${quest.isMainQuest ? '⭐ ' : ''}${quest.name}
-                                            </div>
-                                            <div style="font-size: 13px; color: #aa9977; margin-bottom: 8px;">${quest.description || ''}</div>
-                                            <div style="font-size: 12px; color: #888;">
-                                                ${quest.giver ? '委托人: ' + (DataManager.getCharacter(quest.giver)?.name || quest.giver) : ''}
-                                                ${quest.difficulty ? ' | 难度: ' + quest.difficulty : ''}
-                                                ${quest.recommendedLevel ? ' | 推荐等级: Lv.' + quest.recommendedLevel : ''}
-                                            </div>
-                                            <div style="margin-top: 6px; font-size: 12px; color: #ffd700;">
-                                                奖励: ${quest.rewards?.exp ? quest.rewards.exp + ' 经验 ' : ''}${quest.rewards?.gold ? quest.rewards.gold + ' 金币' : ''}
-                                            </div>
-                                        </div>
-                                        <div onclick="Game.acceptQuest('${quest.id}')" style="
-                                            padding: 8px 16px;
-                                            background: linear-gradient(135deg, #665522, #887733);
-                                            border: 1px solid #aa9944;
-                                            border-radius: 8px;
-                                            color: #ffeeaa;
-                                            cursor: pointer;
-                                            font-size: 13px;
-                                            font-weight: bold;
-                                            white-space: nowrap;
-                                            margin-left: 15px;
-                                        " onmouseover="this.style.background='linear-gradient(135deg, #776633, #998844)'" onmouseout="this.style.background='linear-gradient(135deg, #665522, #887733)'">
-                                            接取
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('') || '<p style="color: #887766;">暂无可接取的任务（完成更多任务或提升等级后解锁）</p>'}
+                    <h3 style="color: #ffcc66; margin-bottom: 15px;">📋 任务提示</h3>
+                    <div style="padding: 15px 20px; background: rgba(60, 45, 30, 0.5); border: 1px solid #665533; border-radius: 8px; margin-bottom: 40px;">
+                        <p style="color: #ccbbaa; font-size: 14px; line-height: 1.8; margin: 0;">
+                            💡 任务需要通过与NPC对话或在特定地点探索时触发接取。<br>
+                            多与学校老师、同学交流，或在城市中探索，发现新的任务线索。<br>
+                            <span style="color: #887766; font-size: 12px;">（已触发但未接取的任务会在对应NPC处显示接取选项）</span>
+                        </p>
                     </div>
                     
                     <h3 style="color: #888; margin-bottom: 15px;">✅ 已完成 (${completedQuests.length})</h3>
