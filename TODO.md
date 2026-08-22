@@ -433,7 +433,7 @@
 - [x] 决斗事件（年度考核phase_5_duel + 地圣泉决斗big_event_earth_spring_duel）
 - [x] 地圣泉名额（地圣泉决斗奖励，玩家可挑战宇昂争取资格）
 - [x] 鸿门宴事件（big_event_mu_banquet：6阶段多分支，与穆白切磋）
-- [ ] 世家vs草根声望系统完善
+- [x] 世家vs草根声望系统完善（v3.1.0：新增grassroots/military/inquisition势力定义）
 
 **后续待执行**：
 - [ ] NPC成长弧线：莫凡、穆白、唐月、穆宁雪等核心NPC

@@ -2707,6 +2707,21 @@ export const DataItems = {
     usableOutOfBattle: false,
     rarity: "rare",
     lore: "唐月，审判员，也是你的老师。"
+  },
+  wolf_pelt: {
+    id: "wolf_pelt",
+    name: "独眼魔狼皮",
+    description: "从独眼魔狼身上剥下的完整皮毛，坚韧且带有微弱的黑暗能量，是制作防具的优质材料。",
+    type: "material",
+    icon: "🐺",
+    price: 80,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "uncommon",
+    sellPrice: 80,
+    lore: "独眼魔狼的皮毛，猎魔者公会收购价不低。"
   }
 };
 

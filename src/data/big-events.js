@@ -1527,6 +1527,135 @@ export const DataBigEvents = {
     ]
   },
 
+  // v3.1.0: 城市猎妖任务——独眼魔狼
+  big_event_city_hunt_one_eye_wolf: {
+    id: "big_event_city_hunt_one_eye_wolf",
+    name: "城市猎妖：独眼魔狼",
+    description: "博城近郊废弃工地出现妖魔踪迹，城市猎妖队发布紧急任务...",
+    type: "narrative",
+    triggerConditions: {
+      minLevel: 5,
+      minDay: 10,
+      flags: { not: "city_hunt_one_eye_completed" }
+    },
+    phases: [
+      // 第一阶段：接到任务
+      {
+        id: "phase_1_accept",
+        name: "猎妖任务",
+        description: "你在猎魔者公会看到一则紧急任务：\n\n「博城东郊废弃工地附近连续有人失踪，疑似有妖魔出没。城市猎妖队人手不足，征召有能力的法师协助调查。」\n\n任务奖励：经验300、金币150、猎魔者公会声望+10\n\n你是否接下这个任务？",
+        type: "choice",
+        choices: [
+          {
+            text: "接下任务，前往调查",
+            nextPhase: "phase_2_investigate",
+            effects: { flags: { "city_hunt_accepted": true } }
+          },
+          {
+            text: "暂时不接，实力还不够",
+            nextPhase: "phase_decline",
+            effects: {}
+          }
+        ]
+      },
+      // 拒绝
+      {
+        id: "phase_decline",
+        name: "暂缓",
+        description: "你决定先提升实力再来。\n\n（任务保留，可在猎魔者公会重新接取）",
+        type: "auto",
+        effects: {}
+      },
+      // 第二阶段：调查工地
+      {
+        id: "phase_2_investigate",
+        name: "废弃工地",
+        description: "你来到博城东郊的废弃工地。这里原本是一座在建商场，停工已有两个月，到处是水泥袋和建筑垃圾。\n\n空气中弥漫着一股淡淡的血腥味，寻妖粉显示的足迹延伸到工地深处...\n\n你小心翼翼地穿过砖墙，眼前的一幕让你瞳孔骤缩——\n\n一只半直立的巨狼正在咀嚼，它的脑袋上只有一只眼睛，在昏暗中发出幽绿的光。那是...独眼魔狼！\n\n更可怕的是，它嘴边有一截人类的手臂。它在吃人！",
+        type: "choice",
+        choices: [
+          {
+            text: "悄悄撤退，去通知城市猎妖队",
+            nextPhase: "phase_3_retreat",
+            effects: {}
+          },
+          {
+            text: "拿出手机发求救短信",
+            nextPhase: "phase_3_phone_alert",
+            effects: {}
+          },
+          {
+            text: "直接发起攻击！",
+            nextPhase: "phase_3_direct_battle",
+            effects: {}
+          }
+        ]
+      },
+      // 第三阶段A：悄悄撤退
+      {
+        id: "phase_3_retreat",
+        name: "冷静撤退",
+        description: "你屏住呼吸，缓缓后退。独眼魔狼似乎没有发现你，继续进食。\n\n你成功撤出工地，立刻赶往最近的猎妖队联络点。\n\n半小时后，城市猎妖队的三名法师赶到现场。经过一番激战，独眼魔狼被击杀，但其中一名猎妖队员受了重伤。\n\n「多亏你及时报信，不然这畜生还不知道要吃多少人。」猎妖队长拍了拍你的肩膀，「不过下次遇到这种情况，不要自己硬扛，通知专业人士才是正确选择。」",
+        type: "auto",
+        effects: {
+          exp: 200,
+          gold: 100,
+          reputation: { "hunter_guild": 15, "military": 5 },
+          flags: { "city_hunt_one_eye_completed": true, "city_hunt_smart": true }
+        }
+      },
+      // 第三阶段B：手机求救被发现
+      {
+        id: "phase_3_phone_alert",
+        name: "信号暴露",
+        description: "你掏出手机，快速编辑求救短信发送给猎妖队。\n\n然而——独眼魔狼的独目猛然转向你！\n\n这个世界的妖魔拥有感知魔法科技设备信号的能力，你调静音发短信无异于给它发了一个GPS定位！\n\n「呃呜~~~~~~~~~~~！！！！」\n\n独眼魔狼发出一声咆哮，身体弓起，化为一道黑影朝你狂奔而来！",
+        type: "battle",
+        enemyId: "one_eye_wolf",
+        battleContext: "独眼魔狼（被手机信号激怒，速度提升）",
+        nextPhaseOnWin: "phase_4_win_battle",
+        nextPhaseOnLose: "phase_4_lose_battle"
+      },
+      // 第三阶段C：直接战斗
+      {
+        id: "phase_3_direct_battle",
+        name: "正面交锋",
+        description: "你决定先发制人！星轨在指尖飞速连接，魔法能量汇聚——\n\n独眼魔狼察觉到你的攻击意图，独目中闪过凶残的光芒，它丢下食物，朝你扑来！",
+        type: "battle",
+        enemyId: "one_eye_wolf",
+        battleContext: "独眼魔狼（正面遭遇战）",
+        nextPhaseOnWin: "phase_4_win_battle",
+        nextPhaseOnLose: "phase_4_lose_battle"
+      },
+      // 第四阶段：战斗胜利
+      {
+        id: "phase_4_win_battle",
+        name: "击杀妖魔",
+        description: "经过一番激战，独眼魔狼倒在你的脚下，独目中的光芒渐渐消散。\n\n你喘着粗气，检查了一下伤势。虽然受了些伤，但成功击杀了一只奴仆级妖魔，这在学生中已经相当了不起了。\n\n城市猎妖队随后赶到，看到地上的独眼魔狼尸体，队长惊讶地看着你：「你一个人击杀的？了不起！这畜生已经害了三条人命了。」\n\n猎妖队清理了现场，你获得了丰厚的奖励。",
+        type: "auto",
+        effects: {
+          exp: 400,
+          gold: 200,
+          reputation: { "hunter_guild": 20, "grassroots": 10, "military": 10 },
+          items: [{ itemId: "wolf_pelt", count: 1 }],
+          flags: { "city_hunt_one_eye_completed": true, "city_hunt_brave": true }
+        }
+      },
+      // 第四阶段：战斗失败
+      {
+        id: "phase_4_lose_battle",
+        name: "险象环生",
+        description: "独眼魔狼的力量远超你的想象，你被它的冲撞击飞，重重摔在水泥堆上，眼前一黑...\n\n就在独眼魔狼准备给你最后一击时，一道雷光从天而降，将它逼退。\n\n「小子，撑住！」\n\n是城市猎妖队！他们追踪信号赶到，及时救下了你。\n\n经过一番苦战，猎妖队击杀了独眼魔狼。你虽然受了重伤，但好歹保住了性命。\n\n「下次别这么冲动。」猎妖队长皱着眉说，「遇到奴仆级以上的妖魔，第一时间通知专业人士。」",
+        type: "auto",
+        effects: {
+          exp: 100,
+          gold: 50,
+          hp: -50,
+          reputation: { "hunter_guild": 5 },
+          flags: { "city_hunt_one_eye_completed": true, "city_hunt_injured": true }
+        }
+      }
+    ]
+  },
+
   // v2.0.0: 灾后审判与去留
   big_event_post_disaster: {
     id: "big_event_post_disaster",
