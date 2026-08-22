@@ -486,20 +486,20 @@ export const DataInnateTalents = {
         canonNote: '原著中心灵系稀有，精神力强者专属'
     },
 
-    // 成长型天赋：元素亲和（弱初始，高成长）
-    element_affinity_v2: {
-        id: 'element_affinity_v2',
-        name: '元素亲和',
+    // 成长型天赋：元素共鸣（弱初始，高成长）
+    element_resonance: {
+        id: 'element_resonance',
+        name: '元素共鸣',
         rarity: 'epic',
         weight: 3,
-        icon: '🔮',
-        description: '你与元素有着天然的亲和力，虽然初始效果不明显，但随着成长会越来越强。',
+        icon: '🌊',
+        description: '你与元素有着深层的共鸣，虽然初始效果不明显，但随着成长会越来越强，最终超越常人。',
         effectDesc: '所有元素伤害+5%（成长型，最终+25%+穿透）',
         type: 'growth', // 成长型：弱初始，4次进化
         evolutions: [
-            { level: 1, stage: '觉醒', name: '元素亲和', effectDesc: '所有元素伤害+5%', effects: { allElementDamage: 0.05 } },
+            { level: 1, stage: '觉醒', name: '元素共鸣', effectDesc: '所有元素伤害+5%', effects: { allElementDamage: 0.05 } },
             { level: 3, stage: '特性', name: '元素抗性', effectDesc: '所有元素伤害+10%，元素抗性+5%', effects: { allElementDamage: 0.10, allElementResistance: 0.05 } },
-            { level: 5, stage: '进化', name: '元素共鸣', effectDesc: '所有元素伤害+15%，双系技能伤害+10%', effects: { allElementDamage: 0.15, dualElementBonus: 0.10 } },
+            { level: 5, stage: '进化', name: '元素交融', effectDesc: '所有元素伤害+15%，双系技能伤害+10%', effects: { allElementDamage: 0.15, dualElementBonus: 0.10 } },
             { level: 7, stage: '延伸', name: '元素掌控', effectDesc: '所有元素伤害+20%，元素反应伤害+30%', effects: { allElementDamage: 0.20, elementReactionBonus: 0.30 } },
             { level: 10, stage: '终极', name: '元素领主', effectDesc: '所有元素伤害+25%，无视20%元素抗性', effects: { allElementDamage: 0.25, elementPenetration: 0.20 } }
         ],
@@ -507,18 +507,18 @@ export const DataInnateTalents = {
         canonNote: '游戏性设计，大器晚成型天赋'
     },
 
-    // 成长型天赋：修炼天才
-    cultivation_genius_v2: {
-        id: 'cultivation_genius_v2',
-        name: '修炼天才',
+    // 成长型天赋：悟道之心
+    enlightenment: {
+        id: 'enlightenment',
+        name: '悟道之心',
         rarity: 'epic',
         weight: 3,
-        icon: '📚',
-        description: '你对修炼有着超乎常人的悟性，成长速度极快。',
+        icon: '🧘',
+        description: '你对修炼有着超乎常人的悟性，成长速度极快，终将领悟大道。',
         effectDesc: '经验获取+15%（成长型，最终+60%+必定突破）',
         type: 'growth',
         evolutions: [
-            { level: 1, stage: '觉醒', name: '修炼天才', effectDesc: '经验获取+15%', effects: { expBonus: 0.15 } },
+            { level: 1, stage: '觉醒', name: '悟道之心', effectDesc: '经验获取+15%', effects: { expBonus: 0.15 } },
             { level: 3, stage: '特性', name: '勤学', effectDesc: '经验获取+25%，修炼速度+20%', effects: { expBonus: 0.25, cultivationBonus: 0.20 } },
             { level: 5, stage: '进化', name: '悟道', effectDesc: '经验获取+35%，突破成功率+10%', effects: { expBonus: 0.35, breakthroughBonus: 0.10 } },
             { level: 7, stage: '延伸', name: '顿悟', effectDesc: '经验获取+45%，每日修炼次数+1', effects: { expBonus: 0.45, extraTrainCount: 1 } },
@@ -528,18 +528,18 @@ export const DataInnateTalents = {
         canonNote: '游戏性设计，成长型天赋代表'
     },
 
-    // 波动型天赋：战斗直觉
-    battle_instinct_v2: {
-        id: 'battle_instinct_v2',
-        name: '战斗直觉',
+    // 波动型天赋：战斗狂热
+    battle_frenzy: {
+        id: 'battle_frenzy',
+        name: '战斗狂热',
         rarity: 'epic',
         weight: 3,
-        icon: '⚔️',
-        description: '你天生就是为战斗而生的，对战斗有着本能的直觉。',
+        icon: '🔥',
+        description: '你天生就是为战斗而生的，对战斗有着本能的狂热，在战斗中不断突破自我。',
         effectDesc: '暴击率+5%（波动型，中期崛起）',
         type: 'volatile', // 波动型：B初始，3次进化，S-最终
         evolutions: [
-            { level: 1, stage: '觉醒', name: '战斗直觉', effectDesc: '暴击率+5%', effects: { critBonus: 0.05 } },
+            { level: 1, stage: '觉醒', name: '战斗狂热', effectDesc: '暴击率+5%', effects: { critBonus: 0.05 } },
             { level: 3, stage: '特性', name: '致命', effectDesc: '暴击率+10%，暴击伤害+15%', effects: { critBonus: 0.10, critDamageBonus: 0.15 } },
             { level: 5, stage: '进化', name: '连击', effectDesc: '暴击率+15%，连续暴击叠加伤害（每层+5%，最多5层）', effects: { critBonus: 0.15, comboCrit: true } },
             { level: 7, stage: '延伸', name: '迅捷', effectDesc: '暴击率+20%，暴击后速度+10%（2回合）', effects: { critBonus: 0.20, critSpeedBuff: 0.10 } },
