@@ -273,10 +273,23 @@ export const QuestSystem = {
         // 声望奖励
         if (rewards.reputation) {
             for (const [factionId, amount] of Object.entries(rewards.reputation)) {
-                WorldState.changeReputation(factionId, amount);
+                let finalAmount = amount;
+                let bonusApplied = false;
+                // 应用声望等级的任务奖励加成（只影响正向奖励）
+                if (amount > 0 && typeof DataWorld !== 'undefined' && DataWorld.factions && DataWorld.factions[factionId]) {
+                    const faction = DataWorld.factions[factionId];
+                    const repLevel = WorldState.getReputationLevel(factionId);
+                    if (faction.reputationEffects && faction.reputationEffects[repLevel.level] && faction.reputationEffects[repLevel.level].questRewardBonus) {
+                        const bonus = faction.reputationEffects[repLevel.level].questRewardBonus;
+                        finalAmount = Math.round(amount * bonus);
+                        bonusApplied = true;
+                    }
+                }
+                WorldState.changeReputation(factionId, finalAmount);
                 const faction = DataManager.getFaction(factionId);
                 const repLevel = WorldState.getReputationLevel(factionId);
-                rewardMessages.push(`${faction ? faction.name : factionId} 声望 ${amount >= 0 ? '+' : ''}${amount}（${repLevel.name}）`);
+                const bonusMsg = bonusApplied ? `（声望加成）` : '';
+                rewardMessages.push(`${faction ? faction.name : factionId} 声望 ${finalAmount >= 0 ? '+' : ''}${finalAmount}（${repLevel.name}）${bonusMsg}`);
             }
         }
 
