@@ -1532,6 +1532,114 @@ export const DataSkills = {
       }
     ]
   },
+  water_wave: {
+    id: "water_wave",
+    name: "暴浪",
+    description: "中阶水系魔法。脚下浮现水系星图，召唤滔天巨浪席卷敌人，灌满整条街道的冲击力。水系范围攻击，可击退敌人。",
+    element: "water",
+    type: "damage",
+    mpCost: 38,
+    baseDamage: 75,
+    damageMultiplier: 1.7,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 1.1,
+    unlockLevel: 11,
+    realmRequired: "middle",
+    isCanon: true,
+    canonSource: "第4410章 中阶水系魔法暴浪",
+    statusEffects: [
+      {
+        name: "击退",
+        type: "knockback",
+        duration: 1,
+        chance: 0.6
+      },
+      {
+        name: "减速",
+        type: "slow",
+        value: 30,
+        duration: 2,
+        chance: 0.5
+      }
+    ]
+  },
+  wind_tornado: {
+    id: "wind_tornado",
+    name: "风盘·龙卷",
+    description: "中阶风系魔法。脚下浮现风系星图，召唤巨型龙卷风将敌人盘卷到十几米高空，持续造成风刃伤害。",
+    element: "wind",
+    type: "damage",
+    mpCost: 36,
+    baseDamage: 72,
+    damageMultiplier: 1.65,
+    hitRate: 0.87,
+    critRate: 0.12,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 1.2,
+    unlockLevel: 11,
+    realmRequired: "middle",
+    isCanon: true,
+    canonSource: "第7420章 中阶风系魔法风盘·龙卷",
+    statusEffects: [
+      {
+        name: "浮空",
+        type: "airborne",
+        duration: 2,
+        chance: 0.7
+      },
+      {
+        name: "风刃",
+        type: "bleed",
+        value: 10,
+        duration: 3,
+        chance: 0.5
+      }
+    ]
+  },
+  earth_barrier: {
+    id: "earth_barrier",
+    name: "岩障·嶙石",
+    description: "中阶土系魔法。双掌推出，凭空形成嶙峋硕大弧面岩石屏障，中阶以前最强防御类魔法。可抵挡烈拳级攻击。",
+    element: "earth",
+    type: "buff",
+    mpCost: 40,
+    baseDamage: 0,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 3,
+    tier: "中阶",
+    magicLevel: 1,
+    unlockLevel: 11,
+    realmRequired: "middle",
+    isCanon: true,
+    canonSource: "第7408章 中阶岩系技能岩障·嶙石",
+    statusEffects: [
+      {
+        name: "岩障",
+        type: "shield",
+        element: "earth",
+        value: 200,
+        duration: 99,
+        chance: 1
+      },
+      {
+        name: "防御强化",
+        type: "defense_up",
+        value: 50,
+        duration: 3,
+        chance: 1
+      }
+    ]
+  },
   thunder_praise: {
     id: "thunder_praise",
     name: "霹雳·轰顶",
@@ -5462,6 +5570,33 @@ export const SkillAdvancements = {
     requiredSkillPoints: 3,
     requiredUsage: 50,
     description: "冰蔓·冻迟 → 冰锁（中阶冰系魔法，寒冰锁链窜出，冰冻+束缚敌人）"
+  },
+  water_heal: {
+    advancedSkillId: "water_wave",
+    element: "water",
+    requiredLevel: 10,
+    requiredElementLevel: 3,
+    requiredSkillPoints: 3,
+    requiredUsage: 50,
+    description: "水御·化解 → 暴浪（中阶水系魔法，滔天巨浪席卷，击退+减速）"
+  },
+  wind_blade: {
+    advancedSkillId: "wind_tornado",
+    element: "wind",
+    requiredLevel: 10,
+    requiredElementLevel: 3,
+    requiredSkillPoints: 3,
+    requiredUsage: 50,
+    description: "风轨·疾行 → 风盘·龙卷（中阶风系魔法，龙卷风浮空+风刃持续伤害）"
+  },
+  earth_shield: {
+    advancedSkillId: "earth_barrier",
+    element: "earth",
+    requiredLevel: 10,
+    requiredElementLevel: 3,
+    requiredSkillPoints: 3,
+    requiredUsage: 50,
+    description: "地波·岩盾 → 岩障·嶙石（中阶土系魔法，最强防御屏障+防御强化）"
   }
 };
 
