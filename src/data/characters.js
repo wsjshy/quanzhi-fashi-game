@@ -6034,6 +6034,22 @@ export const DataCharacters = {
               actionData: { questId: "quest_heyu_mutual_help" }
             },
             {
+              id: "after_training_heyu",
+              text: "雪峰山历练辛苦了",
+              condition: {
+                hasFlag: "xuefeng_training_completed"
+              },
+              next: "after_training"
+            },
+            {
+              id: "after_disaster_heyu",
+              text: "你还好吗？博城灾难...",
+              condition: {
+                hasFlag: "bocheng_disaster_happened"
+              },
+              next: "after_disaster"
+            },
+            {
               text: "再见",
               next: null,
               action: "close"
@@ -6134,6 +6150,66 @@ export const DataCharacters = {
           choices: [
             {
               text: "谢谢你，何雨！",
+              next: "default"
+            }
+          ]
+        },
+        after_training: {
+          id: "after_training",
+          texts: [
+            "雪峰山历练... 现在想起来还有点后怕呢。",
+            "洞窟里那么黑，妖魔突然冲出来的时候，我吓得手都在抖。",
+            "不过我没有哭哦！我用治疗魔法帮了好几个受伤的同学，唐月老师还夸我了呢！",
+            "虽然我攻击力不强，但能保护大家，我觉得很开心。",
+            "说起来，你在历练中表现得好勇敢啊，我都看到了。"
+          ],
+          mood: "gentle",
+          effects: {
+            opinion: 5,
+            trust: 3,
+            familiarity: 5,
+            exp: 20
+          },
+          choices: [
+            {
+              text: "你也很勇敢",
+              effects: { opinion: 3 },
+              next: "default"
+            },
+            {
+              text: "以后一起修炼",
+              effects: { opinion: 2, trust: 2 },
+              next: "default"
+            }
+          ]
+        },
+        after_disaster: {
+          id: "after_disaster",
+          texts: [
+            "（何雨的眼睛红红的，手上还缠着绷带，但她努力笑着。）",
+            "博城灾难... 我这辈子都忘不了。那天到处都是伤员，我根本停不下来。",
+            "我的魔力耗尽了好几次，但一想到还有人在等着我治疗，我就咬着牙继续。",
+            "（她低下头，声音有点哽咽。）",
+            "有些人... 我没能救回来。但我知道，我已经尽力了。",
+            "（她抬起头，眼神很坚定。）",
+            "我要变得更强，强到下次再遇到这种事，我能救更多的人。治疗师的力量，也是可以保护大家的。"
+          ],
+          mood: "emotional",
+          effects: {
+            opinion: 10,
+            trust: 8,
+            familiarity: 10,
+            exp: 50
+          },
+          choices: [
+            {
+              text: "你已经救了很多人了",
+              effects: { opinion: 5, trust: 3 },
+              next: "default"
+            },
+            {
+              text: "我们一起变强",
+              effects: { opinion: 5, trust: 5 },
               next: "default"
             }
           ]
