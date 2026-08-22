@@ -1817,6 +1817,22 @@ export const DataCharacters = {
               next: "xiaohou_farewell"
             },
             {
+              id: "after_training_xiaohou",
+              text: "雪峰山历练怎么样？",
+              condition: {
+                hasFlag: "xuefeng_training_completed"
+              },
+              next: "after_training"
+            },
+            {
+              id: "after_disaster_xiaohou",
+              text: "你还好吗？博城灾难...",
+              condition: {
+                hasFlag: "bocheng_disaster_happened"
+              },
+              next: "after_disaster"
+            },
+            {
               text: "再见",
               next: null,
               action: "close"
@@ -2036,6 +2052,64 @@ export const DataCharacters = {
           choices: [
             {
               text: "加油，我相信你",
+              next: "default"
+            }
+          ]
+        },
+        after_training: {
+          id: "after_training",
+          texts: [
+            "雪峰山历练？太刺激了！你是没看到，那些妖魔冲出来的时候，我腿都软了！",
+            "不过我没跑！真的！我虽然害怕，但我还是站在前面保护大家了。莫凡哥说我进步很大呢！",
+            "说起来，洞窟里那个钟乳石砸妖魔的战术太帅了！我当时就躲在岩障后面，看着妖魔被砸得嗷嗷叫！",
+            "虽然最后受了点伤，但我觉得值！经过这次历练，我感觉自己变强了，也变勇敢了！"
+          ],
+          mood: "excited",
+          effects: {
+            opinion: 5,
+            trust: 3,
+            familiarity: 5,
+            exp: 20
+          },
+          choices: [
+            {
+              text: "你真的很勇敢",
+              effects: { opinion: 3 },
+              next: "default"
+            },
+            {
+              text: "以后一起修炼",
+              effects: { opinion: 2, trust: 2 },
+              next: "default"
+            }
+          ]
+        },
+        after_disaster: {
+          id: "after_disaster",
+          texts: [
+            "（张小侯沉默了一会儿，平时活泼的脸上难得露出沉重的表情。）",
+            "博城灾难... 我这辈子都忘不了。那天妖魔冲进来的时候，到处都是尖叫声，我... 我吓得腿都软了。",
+            "但我没有跑！我带着几个低年级的同学躲在地下室，用风系魔法帮他们转移。虽然我能做的不多，但至少我保护了一些人。",
+            "（他抬起头，眼睛红红的，但语气很坚定。）",
+            "很多人都不在了... 但我们这些活下来的人，要替他们好好活下去。我要变得更强，强到下次再遇到这种事，我能保护更多的人。",
+            "莫凡哥也是这么说的。他说，真正的强者不是不会害怕，而是害怕的时候依然选择站出来。"
+          ],
+          mood: "emotional",
+          effects: {
+            opinion: 10,
+            trust: 8,
+            familiarity: 10,
+            exp: 50
+          },
+          choices: [
+            {
+              text: "你已经很勇敢了",
+              effects: { opinion: 5, trust: 3 },
+              next: "default"
+            },
+            {
+              text: "我们一起变强",
+              effects: { opinion: 5, trust: 5 },
               next: "default"
             }
           ]
