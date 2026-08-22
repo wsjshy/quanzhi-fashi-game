@@ -2678,6 +2678,20 @@ const BattleSystem = {
                 }
             }
 
+            // v2.9.5: 植物系天赋吸血（plantLifesteal）- 仅植物系技能命中触发
+            if (isPlayer && totalDamage > 0 && skill.element === 'plant' && this.player.talentEffects && this.player.talentEffects.plantLifesteal) {
+                const lsRate = this.player.talentEffects.plantLifesteal;
+                if (lsRate > 0) {
+                    let healAmount = Math.floor(totalDamage * lsRate);
+                    const healMultiplier = this.getHealingMultiplier(casterData);
+                    healAmount = Math.floor(healAmount * healMultiplier);
+                    if (healAmount > 0 && casterData.hp < casterData.maxHp) {
+                        casterData.hp = Math.min(casterData.maxHp, casterData.hp + healAmount);
+                        this.addLog(`🌿 共生汲取！恢复 ${healAmount} 点生命！`, 'heal');
+                    }
+                }
+            }
+
             // 自身负面效果（如狂暴冲锋后防御降低）
             if (skill.selfStatusEffects && totalMissCount < hitCount) {
                 this.applyStatusEffects(casterData, skill.selfStatusEffects, isPlayer);
@@ -5830,6 +5844,18 @@ const BattleSystem = {
                 if (te.forestFieldSlow && te.forestFieldSlow > 0) {
                     this.addStatusEffect(this.enemy, { type: 'slow', name: '森林缠绕', duration: 2, speedMod: -te.forestFieldSlow });
                 }
+                // 侵蚀领域：敌人防御降低
+                if (te.forestFieldDefenseDown && te.forestFieldDefenseDown > 0) {
+                    this.addStatusEffect(this.enemy, { type: 'curse', name: '侵蚀', duration: 2, defMod: -te.forestFieldDefenseDown });
+                }
+                // 生命领域：玩家每回合回血
+                if (te.forestFieldHpRegen && te.forestFieldHpRegen > 0 && this.player.hp < this.player.maxHp) {
+                    const regenAmount = Math.floor(this.player.maxHp * te.forestFieldHpRegen);
+                    if (regenAmount > 0) {
+                        this.player.hp = Math.min(this.player.maxHp, this.player.hp + regenAmount);
+                        this.addLog(`🌲 生命领域！恢复 ${regenAmount} 点生命！`, 'heal');
+                    }
+                }
             }
         }
 
@@ -6757,6 +6783,27 @@ const BattleSystem = {
                         if (Math.random() < paraChance) {
                             this.addStatusEffect(attacker, { type: 'paralyze', name: '麻痹', duration: 1 });
                             this.addLog(`⚡ ${attacker.name || '敌人'} 被麻痹了！`, 'element');
+                        }
+                    }
+                }
+            }
+            // v2.9.5: 荆棘共生反伤（plantThornReflect）- 受击反弹植物系伤害，概率附毒
+            if (te.plantThornReflect && te.plantThornReflect > 0) {
+                const reflectDmg = Math.floor(amount * te.plantThornReflect);
+                if (reflectDmg > 0) {
+                    this.applyDamage(attacker, { amount: reflectDmg, element: 'plant', isCrit: false, isMiss: false }, this.player);
+                    this.addLog(`🌿 荆棘共生！反弹 ${reflectDmg} 点自然伤害！`, 'counter');
+                    // 反伤概率附毒
+                    if (te.plantThornPoisonChance && Math.random() < te.plantThornPoisonChance) {
+                        this.addStatusEffect(attacker, { type: 'poison', name: '中毒', duration: 3, dotDamage: Math.floor(this.player.attack * 0.05) });
+                        this.addLog(`☠️ ${attacker.name || '敌人'} 被荆棘毒素感染！`, 'element');
+                    }
+                    // 反伤回血（plantThornHeal）
+                    if (te.plantThornHeal && te.plantThornHeal > 0) {
+                        const thornHeal = Math.floor(reflectDmg * te.plantThornHeal);
+                        if (thornHeal > 0 && this.player.hp < this.player.maxHp) {
+                            this.player.hp = Math.min(this.player.maxHp, this.player.hp + thornHeal);
+                            this.addLog(`🌿 荆棘反哺！恢复 ${thornHeal} 点生命！`, 'heal');
                         }
                     }
                 }

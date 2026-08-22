@@ -2099,7 +2099,7 @@ const DataTalents = {
       {
         level: 1, stage: "觉醒", name: "草木亲和",
         description: "植物系技能伤害+15%，攻击附加1层中毒（最多3层，每层5%攻击力伤害/回合），控制命中率+10%。",
-        effects: { plantDamageBonus: 0.15, poisonStack: true, poisonMax: 3, poisonDamage: 0.05, plantControlHitRate: 0.10 }
+        effects: { damageBonus: 0.15, poisonStack: true, poisonMax: 3, poisonDamage: 0.05, plantControlHitRate: 0.10 }
       },
       {
         level: 3, stage: "特性", name: "藤蔓缠绕",
@@ -2114,21 +2114,21 @@ const DataTalents = {
             id: "poison",
             name: "毒伤",
             description: "毒伤流：中毒满3层时触发「毒爆」，造成目标已损失HP20%的植物系伤害，毒爆后刷新中毒。",
-            effects: { plantDamageBonus: 0.10, poisonBurstOnMax: true, poisonBurstDamage: 0.20, poisonBurstRefresh: true }
+            effects: { damageBonus: 0.10, poisonBurstOnMax: true, poisonBurstDamage: 0.20, poisonBurstRefresh: true }
           },
           {
             id: "control",
             name: "控制",
             description: "控制流：中毒满3层时触发「藤蔓束缚」，束缚目标2回合（无法行动），束缚期间目标防御-30%。",
-            effects: { plantDamageBonus: 0.10, poisonBindOnMax: true, bindDuration: 2, bindDefenseDown: 0.30 }
+            effects: { damageBonus: 0.10, poisonBindOnMax: true, bindDuration: 2, bindDefenseDown: 0.30 }
           }
         ]
       },
       {
         level: 7, stage: "延伸",
         branchEffects: {
-          poison: { name: "致命毒素", description: "中毒伤害每回合递增15%（最多+75%），毒爆伤害提升至已损失HP35%，中毒目标防御-20%。", effects: { plantDamageBonus: 0.10, poisonEscalation: 0.15, poisonEscalationMax: 0.75, poisonBurstDamage: 0.15, poisonDefenseDown: 0.20 } },
-          control: { name: "荆棘领域", description: "束缚时间+1回合，束缚结束时触发荆棘爆发（对周围敌人造成20%最大HP伤害），每回合开始有25%概率束缚最低HP敌人。", effects: { plantDamageBonus: 0.10, bindDuration: 1, bindExplosion: 0.20, autoBindChance: 0.25 } }
+          poison: { name: "致命毒素", description: "中毒伤害每回合递增15%（最多+75%），毒爆伤害提升至已损失HP35%，中毒目标防御-20%。", effects: { damageBonus: 0.10, poisonEscalation: 0.15, poisonEscalationMax: 0.75, poisonBurstDamage: 0.15, poisonDefenseDown: 0.20 } },
+          control: { name: "荆棘领域", description: "束缚时间+1回合，束缚结束时触发荆棘爆发（对周围敌人造成20%最大HP伤害），每回合开始有25%概率束缚最低HP敌人。", effects: { damageBonus: 0.10, bindDuration: 1, bindExplosion: 0.20, autoBindChance: 0.25 } }
         }
       },
       {
@@ -2187,7 +2187,7 @@ const DataTalents = {
     description: "体内蕴含世界树的种子，与自然万物相连。出生即达他人修炼一生的境界。",
     maxLevel: 1,
     effects: {
-      plantDamageBonus: 0.50,
+      damageBonus: 0.50,
       allHealingBonus: 0.20,
       maxHpBonus: 0.20,
       thornArmor: 0.20
@@ -2197,7 +2197,7 @@ const DataTalents = {
         level: 1, stage: "终极", name: "世界树·生机",
         description: "植物系技能伤害+50%，所有治疗效果+20%，最大HP+20%，受到近战攻击反弹20%伤害。",
         effects: {
-          plantDamageBonus: 0.50, allHealingBonus: 0.20,
+          damageBonus: 0.50, allHealingBonus: 0.20,
           maxHpBonus: 0.20, thornArmor: 0.20
         }
       }

@@ -18,15 +18,18 @@
 - [x] 新增植物系rare天赋「共生」（续航型，Lv5分支：滋养/荆棘共生）
 - [x] 新增植物系epic天赋「森林领主」（场控型，森林领域每回合伤害+中毒+减速）
 - [x] battle.js新增森林领域场地效果（玩家回合开始触发）
+- [x] battle.js新增植物系天赋吸血（plantLifesteal，仅植物系技能命中触发）
+- [x] battle.js新增荆棘共生反伤（plantThornReflect，受击反弹+概率附毒+反伤回血）
+- [x] 森林领域分支效果实现（侵蚀领域防御降低/生命领域回血）
+- [x] 修复已有bug：植物系天赋plantDamageBonus字段未被处理，全部改为通用damageBonus（7处）
 - [x] 新天赋使用通用damageBonus字段确保生效
 - [x] 128测试全部通过/0失败
 - [x] 设计文档：docs/version-design/v2.9.5_天赋系统审视与植物系补全设计.md
 - [x] 审视报告（修订版）：docs/test-reports/天赋系统数值平衡分析报告_v2.9.4.md
 
-### 发现的待修复bug
-- [ ] 已有植物系天赋使用plantDamageBonus字段，但battle.js未处理该字段（伤害加成未生效），需统一改为damageBonus或添加处理逻辑
-- [ ] 共生天赋的plantLifesteal/plantThornReflect等效果尚未实现引擎层逻辑
-- [ ] 森林领主的侵蚀领域/生命领域分支效果（防御降低/回血/减伤）尚未完全实现
+### 后续可优化（非阻塞）
+- [ ] 共生天赋的plantLowHpBonus/plantKillHeal/plantHpRegen/plantSurviveLethal等效果可后续迭代实现
+- [ ] 森林领主的万木枯荣（束缚）/世界树领域（减伤）终极效果可后续迭代实现
 
 ---
 
