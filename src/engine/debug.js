@@ -518,6 +518,7 @@ export const DebugPanel = {
                             <button onclick="DebugPanel.triggerBigEvent('big_event_xuefeng_training')" style="background: #44aa66; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🏔️ 雪峰山历练</button>
                             <button onclick="DebugPanel.triggerBigEvent('big_event_annual_exam')" style="background: #4466aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">📝 年度考核</button>
                             <button onclick="DebugPanel.triggerBigEvent('big_event_earth_spring_duel')" style="background: #aa6644; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 地圣泉决斗</button>
+                            <button onclick="DebugPanel.triggerBigEvent('big_event_mu_banquet')" style="background: #8844aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🍷 穆氏鸿门宴</button>
                             <button onclick="DebugPanel.triggerBigEvent('big_event_post_disaster')" style="background: #6644aa; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚖️ 灾后审判</button>
                             <button onclick="DebugPanel.completeRebuildQuests()" style="background: #44aa66; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🏗️ 完成重建任务</button>
                             <button onclick="WorldState.setFlag('hunter_team_member', true); WorldState.setFlag('hunter_rank', 'apprentice'); alert('已加入猎妖队');" style="background: #66aa44; color: #fff; border: none; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">🏹 加入猎妖队</button>
@@ -1882,6 +1883,23 @@ export const DebugPanel = {
                                 console.log(`[Debug] 自动完成前置任务: ${questId}`);
                             }
                         }
+                    }
+                    // v3.1.0: 自动满足requiredFlags
+                    if (event.conditions.requiredFlags) {
+                        for (const flag of event.conditions.requiredFlags) {
+                            if (typeof WorldState !== 'undefined' && WorldState.setFlag) {
+                                WorldState.setFlag(flag, true);
+                            } else if (Player.flags) {
+                                Player.flags[flag] = true;
+                            }
+                            console.log(`[Debug] 自动设置前置flag: ${flag}`);
+                        }
+                    }
+                    // v3.1.0: 特殊事件前置状态
+                    if (eventId === 'big_event_mu_banquet') {
+                        // 鸿门宴需要拒绝招揽的前置状态
+                        Player.flags['exam_result'] = 'refuse_angry';
+                        console.log('[Debug] 鸿门宴：自动设置拒绝招揽状态');
                     }
                 }
                 BigEventSystem.triggerBigEvent(eventId);
