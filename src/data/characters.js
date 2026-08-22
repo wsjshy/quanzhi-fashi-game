@@ -1275,6 +1275,18 @@ export const DataCharacters = {
       },
       events: [
         {
+          after: "annual_exam",
+          level: 7,
+          addSkills: ["ice_spike"],
+          title: "天澜魔法高中学生",
+        },
+        {
+          after: "xuefeng_training",
+          level: 10,
+          addSkills: ["ice_lock"],
+          title: "天澜魔法高中学生",
+        },
+        {
           after: "bocheng_disaster",
           level: 14,
           addSkills: ["ice_lock"],
