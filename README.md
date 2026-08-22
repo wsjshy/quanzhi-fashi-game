@@ -8,19 +8,36 @@
 
 ## 快速开始
 
+### 方式1：直接打开（推荐，无需任何工具）
+```
+双击根目录 index.html
+```
+- 根目录已包含构建后的 `assets/` 目录，可直接用浏览器打开运行
+- 适合普通玩家，不需要安装Node.js或任何开发工具
+- 调试模式：`index.html?debug=1`
+
+### 方式2：开发模式（需要Node.js，支持热更新）
 ```bash
 # 安装依赖
 npm install
 
-# 开发模式（启动Vite开发服务器，http://localhost:5173）
+# 启动Vite开发服务器，访问 http://localhost:5173
 npm run dev
-
-# 生产构建（输出到dist/目录）
-npm run build
-
-# 预览构建产物
-npm run preview
 ```
+
+### 方式3：重新构建后打开（修改代码后需要重新构建）
+```bash
+# 构建并复制到根目录，然后双击index.html
+npm run build:copy
+
+# 或一键构建并自动打开浏览器
+npm run play
+
+# 或Windows一键脚本
+双击 build-and-play.bat
+```
+
+> **重要**：修改 `src/` 目录下的代码后，必须重新运行 `npm run build:copy` 才能在直接打开index.html时看到改动。开发模式（npm run dev）则会自动更新。
 
 ## 数据统计
 

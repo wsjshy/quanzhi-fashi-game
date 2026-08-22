@@ -75,7 +75,11 @@
 - 详见 [测试方法论](docs/测试方法论.md) 和 [测试工具文档](docs/测试存档体系与最小单元化测试指南.md)
 
 **Git路径**：`D:\Git\cmd\git.exe`（不在PATH，必须完整路径）
-**启动游戏**：双击 `index.html`，调试模式 `index.html?debug=1`
+**启动游戏**：
+- **直接打开**：双击根目录 `index.html` 即可运行（已包含构建产物，无需服务器）
+- **开发模式**：`npm run dev`，访问 http://localhost:5173（支持热更新，修改代码后自动刷新）
+- **重新构建**：修改代码后运行 `npm run build:copy`，会自动构建并复制到根目录，然后双击index.html即可运行
+- **一键构建并运行**：`npm run play` 或双击 `build-and-play.bat`
 
 ---
 

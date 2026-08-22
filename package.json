@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:copy": "vite build && node scripts/copy-dist.js",
+    "play": "vite build && node scripts/copy-dist.js && start index.html",
     "preview": "vite preview",
     "test": "node tests/run.js"
   },
