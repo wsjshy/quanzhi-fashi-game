@@ -43,6 +43,7 @@ function loadBattleSystem() {
         'battle-ai-burst.js',
         'battle-end.js',
         'battle-ai-tactical.js',
+        'battle-player-item.js',
     ];
     
     let depCode = '';
@@ -95,6 +96,7 @@ function loadBattleSystem() {
         var enemyAIBurstImpl = enemyAIBurst;
         var endBattleImpl = endBattle;
         var enemyAITacticalImpl = enemyAITactical;
+        var playerUseItemImpl = playerUseItem;
     `;
     const fullCode = depCode + '\n' + aliasCode + '\n' + code;
     
