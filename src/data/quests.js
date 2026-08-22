@@ -4236,7 +4236,62 @@ export const DataQuests = {
     dialogueStart: "重建工作告一段落了，来我办公室一趟，我们聊聊你的未来。",
     dialogueInProgress: "你来了？坐吧，我有些话想跟你说。",
     dialogueComplete: "博城的重建有你一份功劳。但你的路还很长，是时候去更广阔的世界了。"
-  }
+  },
+  quest_he_yu_healing_practice: {
+    id: "quest_he_yu_healing_practice",
+    name: "治疗修炼",
+    description: "何雨想提升治疗魔法，她需要一些魔法草药来练习。帮她采集3株魔法草药，她会教你一些水系治疗的技巧。",
+    giver: "he_yu",
+    type: "collect",
+    objectives: [
+      {
+        type: "collect",
+        itemId: "magic_herb",
+        count: 3,
+        description: "采集 3 株魔法草药"
+      }
+    ],
+    rewards: {
+      exp: 120,
+      gold: 80,
+      items: [
+        {
+          itemId: "mana_potion",
+          count: 2
+        }
+      ],
+      reputation: { "school": 10 }
+    },
+    isPublic: false
+  },
+  quest_wang_sanpang_earth_training: {
+    id: "quest_wang_sanpang_earth_training",
+    name: "土系修炼",
+    description: "王三胖想提升土系魔法，他需要一些魔法石来练习。帮他收集2块魔法石，他会教你一些土系防御的技巧。",
+    giver: "wang_sanpang",
+    type: "collect",
+    objectives: [
+      {
+        type: "collect",
+        itemId: "magic_stone",
+        count: 2,
+        description: "收集 2 块魔法石"
+      }
+    ],
+    rewards: {
+      exp: 100,
+      gold: 60,
+      items: [
+        {
+          itemId: "health_potion",
+          count: 2
+        }
+      ],
+      reputation: { "school": 8 }
+    },
+    isPublic: false
+  },
+
 };
 
 export default DataQuests;

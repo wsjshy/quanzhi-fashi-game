@@ -1411,6 +1411,15 @@ export const DataCharacters = {
               nextNode: "provoked"
             },
             {
+              id: "accept_challenge",
+              text: "听说你向我发起了挑战？",
+              condition: { minLevel: 3, notHasQuest: "quest_mu_bai_challenge" },
+              effects: { opinion: 2 },
+              nextNode: "default",
+              action: "start_quest",
+              actionData: { questId: "quest_mu_bai_challenge" }
+            },
+            {
               id: "about_ningxue",
               text: "你和穆宁雪很熟？",
               condition: { minOpinion: 25, notNpcFlags: ["asked_about_ningxue"] },
@@ -6101,6 +6110,13 @@ export const DataCharacters = {
               next: "class_news"
             },
             {
+              text: "需要我帮忙采集草药吗？",
+              next: "default",
+              action: "start_quest",
+              actionData: { questId: "quest_he_yu_healing_practice" },
+              condition: { notHasQuest: "quest_he_yu_healing_practice" }
+            },
+            {
               text: "能帮我治疗一下吗？",
               next: "heal_player",
               condition: {
@@ -8038,6 +8054,13 @@ level: 2,
               text: "博城灾难那天你还好吗？",
               next: "after_disaster",
               condition: { hasFlags: ["bocheng_disaster_happened"] }
+            },
+            {
+              text: "需要我帮忙收集魔法石吗？",
+              next: "default",
+              action: "start_quest",
+              actionData: { questId: "quest_wang_sanpang_earth_training" },
+              condition: { notHasQuest: "quest_wang_sanpang_earth_training" }
             },
             { text: "告辞。", next: "default", action: "back" }
           ]
