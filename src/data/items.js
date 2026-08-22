@@ -2727,10 +2727,11 @@ export const DataItems = {
     id: "earth_holy_spring",
     name: "地圣泉",
     type: "quest",
-    description: "博城地圣泉的泉水，蕴含强大的土元素能量。可加速修炼，也可引来妖魔。",
+    description: "博城地圣泉的泉水，蕴含强大的土元素能量。可被小泥鳅坠吸收，获得大量经验。",
     maxStack: 1,
     usableInBattle: false,
-    usableOutOfBattle: false,
+    usableOutOfBattle: true,
+    specialEffect: "earth_spring_absorb",
     rarity: "legendary",
     sellPrice: 0,
     lore: "博城的地圣泉，据说可以让魔法师的修炼速度大幅提升。但也正因如此，黑教廷想要利用它引来更多统领级妖魔。"
