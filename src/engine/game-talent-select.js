@@ -28,6 +28,7 @@ export function showTalentSelection(element) {
             const talent = TalentSystem.getTalent(talentId);
             if (!talent) return '';
             const rarityConfig = TalentSystem.getRarityConfig(talent.rarity);
+            const rarityName = rarityConfig.name || '普通';
             
             // v3.1.0: 天赋类型标签和机制标签
             const typeConfig = (typeof TALENT_TYPE_CONFIG !== 'undefined') ? TALENT_TYPE_CONFIG[talent.type] : null;
@@ -42,58 +43,66 @@ export function showTalentSelection(element) {
             
             // 有无主动技能
             const hasActiveSkill = talent.activeSkill ? true : false;
+            
+            // v3.1.0: 检查是否有Lv5分支选择
+            const hasBranchChoice = talent.evolutions && talent.evolutions.some(e => e.level === 5 && e.branchChoices);
+            
+            // v3.1.0: 获取Lv1基础效果
+            const lv1Effect = talent.evolutions && talent.evolutions[0] ? talent.evolutions[0].description : '';
+            
+            // v3.1.0: 获取终极阶段名称（如果有）
+            const ultimateStage = talent.evolutions ? talent.evolutions.find(e => e.stage === '终极') : null;
+            const ultimateName = ultimateStage ? ultimateStage.name : (talent.type === 'innate' ? '天生强化' : '');
 
-            // 构建进化路线预览（模糊化：告知有进化潜力，但隐藏具体分支和高等级效果）
+            // 构建进化路线预览（v3.1.0优化：显示更多有用信息）
             let evolutionPreview = '';
             if (talent.evolutions && talent.evolutions.length > 0) {
                 const stageColors = { '觉醒': '#88ccff', '特性': '#44ff88', '进化': '#ffaa44', '延伸': '#cc88ff', '终极': '#ff66ff' };
-                evolutionPreview = '<div style="margin-top:8px;font-size:11px;color:#888;">';
-                if (talent.type === 'innate') {
-                    // 先天型：显示终极阶段名称，效果模糊
-                    const evo = talent.evolutions[0];
-                    evolutionPreview += `<div style="color:${stageColors['终极']||'#ff66ff'};margin-bottom:2px;">★ ${evo.name}：<span style="color:#999;">开局即高等级，升级收益减半</span></div>`;
-                } else {
-                    // 成长型：只显示Lv1基础阶段，高等级模糊化
-                    evolutionPreview += '<div style="color:#666;margin-bottom:3px;">进化潜力：</div>';
-                    let shownBase = false;
-                    for (const evo of talent.evolutions) {
-                        const color = stageColors[evo.stage] || '#aaa';
-                        if (evo.level <= 3 && !shownBase) {
-                            // Lv1-3基础阶段：显示名称和描述
-                            evolutionPreview += `<div style="color:${color};margin-bottom:2px;">&nbsp;Lv${evo.level}【${evo.stage}】${evo.name}：<span style="color:#999;font-size:10px;">${evo.description}</span></div>`;
-                            shownBase = true;
-                        } else if (evo.level === 5 && evo.branchChoices) {
-                            // Lv5分支选择：模糊化，不显示具体分支
-                            evolutionPreview += `<div style="color:#ffaa44;margin-bottom:2px;">&nbsp;Lv5【进化抉择】<span style="color:#999;font-size:10px;">天赋将出现分化，路线需自行探索</span></div>`;
-                        } else if (evo.level >= 7) {
-                            // Lv7+：模糊化，只提示有高阶进化
-                            evolutionPreview += `<div style="color:#cc88ff;margin-bottom:2px;">&nbsp;Lv${evo.level}+【高阶进化】<span style="color:#999;font-size:10px;">能力大幅提升，具体效果待解锁</span></div>`;
-                            break; // 只显示一个高阶提示即可
-                        }
-                    }
+                evolutionPreview = '<div style="margin-top:8px;font-size:11px;color:#888;border-top:1px solid #333;padding-top:6px;">';
+                
+                // 显示Lv1基础效果（具体数值）
+                if (lv1Effect) {
+                    evolutionPreview += `<div style="color:#aaa;margin-bottom:4px;"><span style="color:#88ccff;">Lv1效果：</span>${lv1Effect}</div>`;
                 }
+                
+                // 显示是否有分支选择
+                if (hasBranchChoice) {
+                    evolutionPreview += `<div style="color:#ffaa44;margin-bottom:4px;">✦ Lv5有进化抉择（多分支选择）</div>`;
+                } else if (talent.type !== 'innate') {
+                    evolutionPreview += `<div style="color:#666;margin-bottom:4px;">✧ Lv5无分支，线性成长</div>`;
+                }
+                
+                // 显示终极阶段
+                if (ultimateName) {
+                    evolutionPreview += `<div style="color:#ff66ff;margin-bottom:4px;">★ 终极：${ultimateName}</div>`;
+                }
+                
+                // 先天型特殊说明
+                if (talent.type === 'innate') {
+                    evolutionPreview += `<div style="color:#fbbf24;margin-bottom:2px;">⚡ 先天型：开局即高等级，升级收益减半</div>`;
+                }
+                
                 evolutionPreview += '</div>';
             }
 
             return `
                 <div onclick="Game.confirmTalent('${element}', '${talentId}')" style="
-                    padding: 15px;
+                    padding: 12px;
                     background: ${rarityConfig.color}15;
                     border: 2px solid ${rarityConfig.color};
                     border-radius: 10px;
                     cursor: pointer;
-                    margin-bottom: 10px;
+                    margin-bottom: 8px;
                     transition: all 0.3s;
-                " onmouseover="this.style.background='${rarityConfig.color}30'; this.style.transform='scale(1.02)'" onmouseout="this.style.background='${rarityConfig.color}15'; this.style.transform='scale(1)'">
-                    <div style="font-size: 18px; font-weight: bold; color: ${rarityConfig.color}; margin-bottom: 5px;">
+                " onmouseover="this.style.background='${rarityConfig.color}30'; this.style.transform='scale(1.01)'" onmouseout="this.style.background='${rarityConfig.color}15'; this.style.transform='scale(1)'">
+                    <div style="font-size: 16px; font-weight: bold; color: ${rarityConfig.color}; margin-bottom: 4px;">
                         ${talent.name}
-                        <span style="font-size: 11px; color: ${typeColor}; background: ${typeColor}22; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">${typeName}</span>
-                        ${mechanismName ? `<span style="font-size: 11px; color: ${mechanismColor}; background: ${mechanismColor}22; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">${mechanismName}</span>` : ''}
-                        ${hasActiveSkill ? '<span style="font-size: 11px; color: #ff9933; background: #ff993322; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">主动技能</span>' : '<span style="font-size: 11px; color: #888; background: #88822; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">纯被动</span>'}
+                        <span style="font-size: 10px; color: ${rarityConfig.color}; background: ${rarityConfig.color}22; padding: 2px 5px; border-radius: 3px; margin-left: 6px;">${rarityName}</span>
+                        <span style="font-size: 10px; color: ${typeColor}; background: ${typeColor}22; padding: 2px 5px; border-radius: 3px; margin-left: 4px;">${typeName}</span>
+                        ${mechanismName ? `<span style="font-size: 10px; color: ${mechanismColor}; background: ${mechanismColor}22; padding: 2px 5px; border-radius: 3px; margin-left: 4px;">${mechanismName}</span>` : ''}
+                        ${hasActiveSkill ? '<span style="font-size: 10px; color: #ff9933; background: #ff993322; padding: 2px 5px; border-radius: 3px; margin-left: 4px;">主动技能</span>' : '<span style="font-size: 10px; color: #888; background: #88822; padding: 2px 5px; border-radius: 3px; margin-left: 4px;">纯被动</span>'}
                     </div>
-                    <div style="font-size: 13px; color: #bbb; margin-bottom: 5px;">${talent.description}</div>
-                    ${typeDesc ? `<div style="font-size: 11px; color: ${typeColor}; margin-bottom: 3px;">${typeDesc}</div>` : ''}
-                    ${mechanismDesc ? `<div style="font-size: 11px; color: ${mechanismColor}; margin-bottom: 3px;">${mechanismDesc}</div>` : ''}
+                    <div style="font-size: 12px; color: #bbb; margin-bottom: 4px;">${talent.description}</div>
                     ${evolutionPreview}
                 </div>
             `;
@@ -103,7 +112,8 @@ export function showTalentSelection(element) {
         dialog.style.cssText = `
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(10, 10, 30, 0.98); border: 2px solid ${elementColor};
-            border-radius: 15px; padding: 30px; min-width: 450px; max-width: 600px;
+            border-radius: 15px; padding: 20px 25px; min-width: 450px; max-width: 600px;
+            max-height: 85vh; overflow-y: auto;
             z-index: 50000; box-shadow: 0 0 30px ${elementColor}44;
         `;
         dialog.id = 'talent-selection-dialog';

@@ -30,39 +30,20 @@ export const EVOLUTION_STAGES = [
 export const TalentSystem = {
 
     /**
-     * 获取觉醒时的天赋候选（3个）
+     * 获取觉醒时的天赋候选（显示该系别所有天赋，让玩家有更多选择）
+     * v3.1.0优化：从随机3个改为显示所有5个天赋，避免玩家感觉选择太少
      */
     getTalentChoices(element) {
         const elementTalents = this.getElementTalents(element);
         if (elementTalents.length === 0) return [];
 
-        const choices = [];
-        const pool = [...elementTalents];
+        // 按稀有度排序：common → uncommon → rare → epic → legendary
+        const rarityOrder = { common: 0, uncommon: 1, rare: 2, epic: 3, legendary: 4 };
+        const sorted = [...elementTalents].sort((a, b) => {
+            return (rarityOrder[a.rarity] || 0) - (rarityOrder[b.rarity] || 0);
+        });
 
-        for (let i = 0; i < 3 && pool.length > 0; i++) {
-            let totalWeight = 0;
-            pool.forEach(t => {
-                const rc = TALENT_RARITY_CONFIG[t.rarity];
-                totalWeight += rc ? rc.weight : 10;
-            });
-
-            let random = Math.random() * totalWeight;
-            let selectedIndex = 0;
-            for (let j = 0; j < pool.length; j++) {
-                const rc = TALENT_RARITY_CONFIG[pool[j].rarity];
-                const weight = rc ? rc.weight : 10;
-                random -= weight;
-                if (random <= 0) {
-                    selectedIndex = j;
-                    break;
-                }
-            }
-
-            choices.push(pool[selectedIndex].id);
-            pool.splice(selectedIndex, 1);
-        }
-
-        return choices;
+        return sorted.map(t => t.id);
     },
 
     /**
