@@ -35,6 +35,7 @@ function loadBattleSystem() {
         'battle-magic-tool.js',
         'battle-status-modifiers.js',
         'battle-traits.js',
+        'battle-add-status.js',
     ];
     
     let depCode = '';
@@ -79,6 +80,7 @@ function loadBattleSystem() {
         var applyMagicToolEffectImpl = applyMagicToolEffect;
         var getStatusModifiersImpl = getStatusModifiers;
         var processTraitsOnHitImpl = processTraitsOnHit;
+        var addStatusEffectImpl = addStatusEffect;
     `;
     const fullCode = depCode + '\n' + aliasCode + '\n' + code;
     
