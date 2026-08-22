@@ -2719,7 +2719,52 @@ export const DataEnemies = {
     expReward: 20,
     goldReward: 10,
     dropItems: []
-  }
-};
+  },
+  bai_yang_duel: {
+    id: "bai_yang_duel",
+    name: "白阳（黑教廷奸细）",
+    level: 12,
+    tier: "warrior",
+    element: "summon",
+    maxHp: 300,
+    maxMp: 150,
+    attack: 35,
+    defense: 20,
+    speed: 25,
+    skills: ["basic_attack", "summon_beast"],
+    enemyType: "human",
+    weakness: ["light"],
+    spriteColor: "#444444",
+    isEnemy: true,
+    expReward: 300,
+    goldReward: 150,
+    dropItems: [],
+    description: "雪峰山历练的召唤系教官，真实身份是黑教廷奸细。擅长召唤黑畜妖，智谋深沉。"
+  },
+  black_beast: {
+    id: "black_beast",
+    name: "黑畜妖",
+    level: 8,
+    tier: "servant",
+    element: "dark",
+    maxHp: 120,
+    maxMp: 50,
+    attack: 28,
+    defense: 10,
+    speed: 35,
+    skills: ["basic_attack", "dark_claw"],
+    enemyType: "demon",
+    weakness: ["light"],
+    spriteColor: "#222222",
+    isEnemy: true,
+    expReward: 80,
+    goldReward: 30,
+    dropItems: [],
+    description: "黑教廷最喜欢驱使的妖魔，速度极快，前肢如镰刀般锋利。"
+  },
 
+
+
+
+};
 export default DataEnemies;

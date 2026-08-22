@@ -1873,7 +1873,129 @@ export const DataBigEvents = {
         }
       }
     }
-  }
-};
+  },
+  big_event_bai_yang_spy: {
+    id: "big_event_bai_yang_spy",
+    name: "黑教廷奸细·白阳",
+    description: "博城灾难中，雪峰山历练的召唤系教官白阳出现，试图从你手中骗取地圣泉。他的真实身份是黑教廷奸细！",
+    type: "narrative",
+    autoTrigger: false,
+    conditions: {
+      requiredFlags: ["bocheng_disaster_happened"],
+      minLevel: 5,
+    },
+    stages: [
+      {
+        id: "encounter",
+        title: "遭遇白阳",
+        narrative: "暴雨中，你和同学们在撤离途中艰难前行。突然，一只幽狼兽从废墟中跃出，上面骑着的人正是雪峰山历练的召唤系教官——白阳。他摘下军帽，露出温和的笑容：'你们怎么会在这，没有第一时间撤离吗？'",
+        choices: [
+          {
+            text: "信任白阳教官，交出地圣泉",
+            nextStage: "bad_ending",
+            effects: { flags: { earth_spring_lost: true } }
+          },
+          {
+            text: "保持警惕，询问白阳更多细节",
+            nextStage: "temptation"
+          },
+          {
+            text: "直接质疑白阳的身份（需要雪峰山线索）",
+            nextStage: "exposed",
+            conditions: { requiredFlags: ["xuefeng_spring_clue"] }
+          }
+        ]
+      },
+      {
+        id: "temptation",
+        title: "白阳的试探",
+        narrative: "白阳上下打量着你，想知道地圣泉是否还在。'这次灾难是黑教廷做的，他们不仅引来了翼苍狼，更想要利用地圣泉将更多统领级妖魔引到这里。林雨欣副卫长应该将地圣泉交到你手上了吧？把地圣泉交给我吧，我得马上送回到斩空老大那里。'薛木生老师也劝说：'把地圣泉交给白阳教官，我们赶紧到安全结界内。'白阳激动地上前一步，几乎要从你手上抢过地圣泉。",
+        choices: [
+          {
+            text: "交出地圣泉",
+            nextStage: "bad_ending",
+            effects: { flags: { earth_spring_lost: true } }
+          },
+          {
+            text: "拒绝交出，质疑白阳",
+            nextStage: "exposed"
+          }
+        ]
+      },
+      {
+        id: "exposed",
+        title: "白阳暴露",
+        narrative: "你拒绝交出地圣泉。白阳愣了一下，随即狂然大笑起来：'哈哈哈哈，真是没有想到啊，我都不禁有些好奇你是怎么怀疑上我的，我可是你们的教官啊！'刚才还一脸和煦俊俏的模样，在此刻整个就是一个思想扭曲的疯子。你急忙警示同伴：'小心，这家伙的召唤兽不止一只！'",
+        choices: [
+          {
+            text: "准备战斗",
+            nextStage: "black_beast_attack"
+          }
+        ]
+      },
+      {
+        id: "black_beast_attack",
+        title: "黑畜妖袭击",
+        narrative: "白阳脸色一沉，瞳孔凶光一闪。霎时，桥梁侧面扶栏处两只正缓慢蠕动的黑影无比灵敏地飞窜了出来，格外狭长和锋利的前肢就像两柄镰刀分别朝着离那里最近的张小侯和何雨斩去！何雨释放水域保护张小侯，自己却被重伤。张小侯抱着何雨，何雨脸颊苍白发紫。白阳丧心病狂地说：'看来你们这些小鬼也是有一点进步的嘛...不过本教官今天又给你们上了一课，让你们明白不要轻易相信任何人。'",
+        choices: [
+          {
+            text: "保护何雨和张小侯撤退",
+            nextStage: "battle",
+            effects: { flags: { protect_he_yu: true } }
+          },
+          {
+            text: "直接攻击白阳",
+            nextStage: "battle",
+            effects: { flags: { attack_bai_yang: true } }
+          }
+        ]
+      },
+      {
+        id: "battle",
+        title: "激战白阳",
+        narrative: "白阳召唤更多黑畜妖，战斗一触即发。薛木生老师挡在前面，张小侯扶着重伤的何雨，许昭霆和王三胖准备战斗。你必须做出选择。",
+        battle: {
+          enemies: ["bai_yang_duel", "black_beast", "black_beast"],
+          allies: ["xue_musheng", "zhang_xiaohou", "xu_zhaoting", "wang_sanpang"],
+          onVictory: "good_ending",
+          onDefeat: "normal_ending"
+        }
+      },
+      {
+        id: "good_ending",
+        title: "保住地圣泉",
+        narrative: "经过激战，你成功击退了白阳和黑畜妖，保住了地圣泉。何雨虽然重伤但存活下来。你们成功撤退到安全结界。斩空得知白阳是奸细后相当意外：'连我们军部都一直没有察觉到白阳这位军法师的险恶用心，为何你会对他心生怀疑？'你解释了雪峰山历练时的疑点。斩空询问地圣泉下落，你说：'口渴，顺手喝了。'斩空差点脚一滑摔死。",
+        effects: {
+          exp: 500,
+          gold: 200,
+          reputation: { military: 20 },
+          flags: { bai_yang_exposed: true, earth_spring_kept: true },
+          items: ["earth_holy_spring"]
+        }
+      },
+      {
+        id: "normal_ending",
+        title: "地圣泉被抢",
+        narrative: "战斗中你被迫撤退，地圣泉被白阳抢走。何雨重伤，你们艰难撤退到安全结界。斩空得知后震怒：'地圣泉落入黑教廷手中，博城将面临更多统领级妖魔！'他下令全力追击白阳。",
+        effects: {
+          exp: 200,
+          gold: 50,
+          flags: { bai_yang_exposed: true, earth_spring_lost: true }
+        }
+      },
+      {
+        id: "bad_ending",
+        title: "白阳得逞",
+        narrative: "你将地圣泉交给了白阳。白阳拿到地圣泉后，笑容变得扭曲：'真是个听话的好孩子。'他召唤黑畜妖袭击你们，自己带着地圣泉消失在暴雨中。你们损失惨重，何雨重伤。斩空得知后震怒，博城将面临更大的灾难。",
+        effects: {
+          flags: { earth_spring_lost: true, bai_yang_escaped: true }
+        }
+      }
+    ]
+  },
 
+
+
+
+};
 export default DataBigEvents;

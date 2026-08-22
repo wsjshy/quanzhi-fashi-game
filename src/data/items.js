@@ -2722,7 +2722,22 @@ export const DataItems = {
     rarity: "uncommon",
     sellPrice: 80,
     lore: "独眼魔狼的皮毛，猎魔者公会收购价不低。"
-  }
-};
+  },
+  earth_holy_spring: {
+    id: "earth_holy_spring",
+    name: "地圣泉",
+    type: "quest",
+    description: "博城地圣泉的泉水，蕴含强大的土元素能量。可加速修炼，也可引来妖魔。",
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "legendary",
+    sellPrice: 0,
+    lore: "博城的地圣泉，据说可以让魔法师的修炼速度大幅提升。但也正因如此，黑教廷想要利用它引来更多统领级妖魔。"
+  },
 
+
+
+
+};
 export default DataItems;
