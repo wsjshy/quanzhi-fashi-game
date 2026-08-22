@@ -1866,17 +1866,17 @@ export const DataTalents = {
   // 召唤系天赋
   // ================================================================
 
-  // v2.2.0更新：资源积累型 - 契约
+  // v3.1.0更新：召唤协同型 - 围绕召唤兽设计，无独立主动技能，召唤兽本身就是核心
   summon_talent_basic: {
     id: "summon_talent_basic",
     name: "契约之心",
     element: "summon",
     rarity: "common",
     type: "growth",
-    mechanism: "resource",
+    mechanism: "summon",
     resourceType: "summon",
     resourceMax: 5,
-    description: "与召唤兽建立契约，召唤兽攻击积累契约层，满层触发兽潮。与召唤兽协同作战。Lv5解锁主动技能「召唤号令」，可选择强攻流/防御流。",
+    description: "与召唤兽建立契约，召唤兽攻击积累契约层，满层触发兽潮或守护。与召唤兽协同作战，召唤兽本身就是你的核心战斗力。Lv5分支：强攻流（兽潮爆发）/防御流（守护替伤）/协同流（同时攻击加成）。",
     maxLevel: 10,
     activeSkill: {
       id: "summon_active_command",
@@ -1938,6 +1938,7 @@ export const DataTalents = {
     element: "summon",
     rarity: "uncommon",
     type: "growth",
+    mechanism: "summon",
     description: "与召唤兽灵魂相连，共享力量，共享生命。",
     maxLevel: 10,
     evolutions: [
@@ -1975,6 +1976,7 @@ export const DataTalents = {
     element: "summon",
     rarity: "rare",
     type: "growth",
+    mechanism: "summon",
     description: "天赋异禀，可同时召唤多只召唤兽。",
     maxLevel: 10,
     evolutions: [
@@ -2012,6 +2014,7 @@ export const DataTalents = {
     element: "summon",
     rarity: "epic",
     type: "growth",
+    mechanism: "summon",
     description: "天生的兽王，万兽臣服。",
     maxLevel: 10,
     evolutions: [
@@ -2049,7 +2052,8 @@ export const DataTalents = {
     element: "summon",
     rarity: "legendary",
     type: "innate",
-    description: "万中无一的召唤系天生天赋，天生拥有契约之力，可与强大生灵建立契约。出生即达他人修炼一生的境界。",
+    mechanism: "summon",
+    description: "万中无一的召唤系天生天赋，天生拥有契约之力，可与强大生灵建立契约。开局即达到较高等级，升级收益减半，但召唤兽协同能力极强。",
     maxLevel: 1,
     effects: {
       summonDamageBonus: 0.60,
