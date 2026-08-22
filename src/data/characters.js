@@ -6940,6 +6940,28 @@ export const DataCharacters = {
         effects: { fireDamageBonus: 0.1 }
       }
     ],
+    growth: {
+      events: [
+        {
+          after: "annual_exam",
+          level: 6,
+          addSkills: ["fire_burst"],
+          title: "火系尖子生",
+        },
+        {
+          after: "xuefeng_training",
+          level: 8,
+          addSkills: ["fire_fist"],
+          title: "火系尖子生",
+        },
+        {
+          after: "bocheng_disaster",
+          level: 11,
+          addSkills: ["fire_fist"],
+          title: "火系中阶法师",
+        }
+      ]
+    },
     spriteColor: "#ff6633",
     image: "",
     location: "tianlan_school",
@@ -8066,6 +8088,12 @@ level: 2,
         growthType: "mage",
       },
       events: [
+        {
+          after: "annual_exam",
+          level: 4,
+          addSkills: ["earth_shield"],
+          title: "天澜高中学生",
+        },
         {
           after: "xuefeng_training",
           level: 5,
