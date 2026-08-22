@@ -36,6 +36,7 @@ function loadBattleSystem() {
         'battle-status-modifiers.js',
         'battle-traits.js',
         'battle-add-status.js',
+        'battle-check-end.js',
     ];
     
     let depCode = '';
@@ -81,6 +82,7 @@ function loadBattleSystem() {
         var getStatusModifiersImpl = getStatusModifiers;
         var processTraitsOnHitImpl = processTraitsOnHit;
         var addStatusEffectImpl = addStatusEffect;
+        var checkBattleEndImpl = checkBattleEnd;
     `;
     const fullCode = depCode + '\n' + aliasCode + '\n' + code;
     
