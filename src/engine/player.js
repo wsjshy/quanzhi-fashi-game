@@ -1680,6 +1680,99 @@ export const Player = {
     },
 
     /**
+     * 技能进阶（初阶→中阶）
+     * @param {string} skillId - 初阶技能ID
+     * @returns {object} { success, message, advancedSkillId }
+     */
+    advanceSkill(skillId) {
+        // 检查进阶映射
+        if (typeof SkillAdvancements === 'undefined' || !SkillAdvancements[skillId]) {
+            return { success: false, message: '该技能暂无进阶路线' };
+        }
+
+        const adv = SkillAdvancements[skillId];
+
+        // 检查是否已学会初阶技能
+        if (!this.skills.includes(skillId)) {
+            return { success: false, message: '你还未学会该技能' };
+        }
+
+        // 检查是否已进阶
+        if (this.skills.includes(adv.advancedSkillId)) {
+            return { success: false, message: '你已经学会进阶技能了' };
+        }
+
+        // 检查玩家等级
+        const playerLevel = this.getPlayerLevel ? this.getPlayerLevel() : this.level;
+        if (playerLevel < adv.requiredLevel) {
+            return { success: false, message: `需要等级 ${adv.requiredLevel}，当前 ${playerLevel}` };
+        }
+
+        // 检查元素等级
+        const elemLevel = this.elementLevels?.[adv.element] || 0;
+        if (elemLevel < adv.requiredElementLevel) {
+            return { success: false, message: `需要${adv.element}系等级 ${adv.requiredElementLevel}，当前 ${elemLevel}` };
+        }
+
+        // 检查技能点
+        const skillPoints = this.skillPoints || 0;
+        if (skillPoints < adv.requiredSkillPoints) {
+            return { success: false, message: `需要技能点 ${adv.requiredSkillPoints}，当前 ${skillPoints}` };
+        }
+
+        // 执行进阶
+        this.skillPoints = skillPoints - adv.requiredSkillPoints;
+        this.skills = this.skills.filter(s => s !== skillId); // 移除初阶技能
+        this.skills.push(adv.advancedSkillId); // 添加中阶技能
+
+        if (this.save) this.save();
+
+        return {
+            success: true,
+            message: `技能进阶成功！${DataSkills[skillId]?.name || skillId} → ${DataSkills[adv.advancedSkillId]?.name || adv.advancedSkillId}`,
+            advancedSkillId: adv.advancedSkillId
+        };
+    },
+
+    /**
+     * 检查技能是否可进阶
+     * @param {string} skillId - 技能ID
+     * @returns {object} { canAdvance, reason, advancement }
+     */
+    canAdvanceSkill(skillId) {
+        if (typeof SkillAdvancements === 'undefined' || !SkillAdvancements[skillId]) {
+            return { canAdvance: false, reason: '无进阶路线', advancement: null };
+        }
+
+        const adv = SkillAdvancements[skillId];
+
+        if (!this.skills.includes(skillId)) {
+            return { canAdvance: false, reason: '未学会该技能', advancement: adv };
+        }
+
+        if (this.skills.includes(adv.advancedSkillId)) {
+            return { canAdvance: false, reason: '已进阶', advancement: adv };
+        }
+
+        const playerLevel = this.getPlayerLevel ? this.getPlayerLevel() : this.level;
+        if (playerLevel < adv.requiredLevel) {
+            return { canAdvance: false, reason: `需等级${adv.requiredLevel}`, advancement: adv };
+        }
+
+        const elemLevel = this.elementLevels?.[adv.element] || 0;
+        if (elemLevel < adv.requiredElementLevel) {
+            return { canAdvance: false, reason: `需${adv.element}系${adv.requiredElementLevel}级`, advancement: adv };
+        }
+
+        const skillPoints = this.skillPoints || 0;
+        if (skillPoints < adv.requiredSkillPoints) {
+            return { canAdvance: false, reason: `需技能点${adv.requiredSkillPoints}`, advancement: adv };
+        }
+
+        return { canAdvance: true, reason: '可进阶', advancement: adv };
+    },
+
+    /**
      * 恢复生命
      */
     heal(amount) {

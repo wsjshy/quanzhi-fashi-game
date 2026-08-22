@@ -1,4 +1,4 @@
-﻿/**
+/**
  * UI渲染 - 技能详情模块
  * 
  * 从ui.js拆分出的独立技能详情模块
@@ -160,6 +160,34 @@ export function showSkillDetail(skillId) {
                         ${termsHtml}
                     </div>
                     ` : ''}
+
+                    <!-- v3.1.0: 技能进阶按钮 -->
+                    ${(() => {
+                        if (typeof Player === 'undefined' || typeof Player.canAdvanceSkill !== 'function') return '';
+                        const check = Player.canAdvanceSkill(skillId);
+                        if (!check.advancement) return '';
+                        const adv = check.advancement;
+                        const advSkill = DataSkills[adv.advancedSkillId];
+                        const btnColor = check.canAdvance ? '#ffd700' : '#666';
+                        const btnBg = check.canAdvance ? 'linear-gradient(135deg,#ffd700,#ffaa00)' : '#333';
+                        return `
+                            <div style="margin-bottom:15px;padding:12px;background:rgba(255,215,0,0.08);border:1px solid ${btnColor}44;border-radius:8px;">
+                                <div style="color:${btnColor};font-size:13px;font-weight:bold;margin-bottom:6px;">⬆️ 可进阶：${advSkill?.name || adv.advancedSkillId}</div>
+                                <div style="color:#aaa;font-size:11px;margin-bottom:8px;line-height:1.5;">${adv.description}</div>
+                                <div style="color:#888;font-size:10px;margin-bottom:8px;">
+                                    需求：等级${adv.requiredLevel} / ${adv.element}系${adv.requiredElementLevel}级 / 技能点${adv.requiredSkillPoints}
+                                </div>
+                                <button onclick="Game.advanceSkill('${skillId}')" style="
+                                    width:100%;padding:8px;background:${btnBg};
+                                    color:${check.canAdvance ? '#000' : '#888'};border:none;border-radius:6px;
+                                    font-size:12px;font-weight:bold;cursor:${check.canAdvance ? 'pointer' : 'not-allowed'};
+                                    ${check.canAdvance ? '' : 'opacity:0.6;'}
+                                " ${check.canAdvance ? '' : 'disabled'}>
+                                    ${check.canAdvance ? '进阶技能（消耗' + adv.requiredSkillPoints + '技能点）' : check.reason}
+                                </button>
+                            </div>
+                        `;
+                    })()}
 
                     <!-- 关闭按钮 -->
                     <div style="text-align:center;margin-top:15px;">

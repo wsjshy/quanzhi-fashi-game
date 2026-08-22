@@ -2836,6 +2836,26 @@ export const Game = {
     },
 
     /**
+     * v3.1.0: 技能进阶（初阶→中阶）
+     */
+    advanceSkill(skillId) {
+        if (typeof Player.advanceSkill !== 'function') {
+            UI.showMessage('技能进阶功能暂不可用');
+            return;
+        }
+        const result = Player.advanceSkill(skillId);
+        UI.showMessage(result.message);
+        if (result.success) {
+            // 关闭技能详情弹窗
+            document.getElementById('skill-detail-overlay')?.remove();
+            // 如果在角色面板，刷新显示
+            if (this.state === 'character') {
+                this.openCharacterPanel();
+            }
+        }
+    },
+
+    /**
      * 简要描述天赋效果（用于分支预览）
      */
     _summarizeEffects(effects) {

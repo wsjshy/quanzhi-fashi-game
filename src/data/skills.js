@@ -5394,3 +5394,32 @@ export const DataSkills = {
 };
 
 export default DataSkills;
+
+// ========== 技能进阶映射表（v3.1.0） ==========
+// 初阶技能 → 中阶技能的进阶关系
+// 进阶条件：玩家等级≥10 + 元素等级≥3 + 技能点×3 + 初阶技能使用≥50次
+export const SkillAdvancements = {
+  fire_bolt: {
+    advancedSkillId: "fire_fist",
+    element: "fire",
+    requiredLevel: 10,
+    requiredElementLevel: 3,
+    requiredSkillPoints: 3,
+    requiredUsage: 50,
+    description: "火滋·灼烧 → 烈拳（中阶火系魔法，凝聚火焰于拳上，爆发毁灭性一击）"
+  },
+  thunder_bolt: {
+    advancedSkillId: "thunder_praise",
+    element: "thunder",
+    requiredLevel: 10,
+    requiredElementLevel: 3,
+    requiredSkillPoints: 3,
+    requiredUsage: 50,
+    description: "雷印·蟒痕 → 霹雳·轰顶（中阶雷系魔法，紫色霹雳落下，高几率麻痹）"
+  }
+};
+
+// 向后兼容：挂载到window
+if (typeof window !== 'undefined') {
+  window.SkillAdvancements = SkillAdvancements;
+}
