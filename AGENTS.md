@@ -183,7 +183,15 @@
 | tests/unit/data-integrity.js | L1数据完整性测试 |
 | tests/unit/battle-logic.js | L2战斗逻辑单元测试 |
 | tests/unit/progression.js | L3成长流程测试 |
-| engine/test-utils.js | 浏览器端控制台测试工具（F12中用Test对象） |
+
+### 归档与备份（archive/）
+| 目录/文件 | 内容 | 说明 |
+|-----------|------|------|
+| archive/engine-legacy/ | v3.0.0前的旧引擎文件（58个） | 旧版58个script标签架构的完整备份，用于回滚参考 |
+| archive/index.legacy.html | 旧版入口HTML | 旧版58个script标签入口，需配合archive/engine-legacy/使用 |
+| archive/tools-legacy/ | 已完成使命的工具脚本 | split-game-data.js、verify-split.js等一次性迁移工具 |
+
+> ⚠️ archive/下的文件仅作备份参考，**不要在生产代码中引用**。当前活跃代码全部在src/下。
 
 ---
 
