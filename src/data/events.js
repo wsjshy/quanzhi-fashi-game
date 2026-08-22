@@ -917,8 +917,100 @@ export const DataEvents = {
       }
     ]
   },
-  event_mysterious_chest: {
-    id: "event_mysterious_chest",
+
+  // ========== v3.1.0 黑教廷铺垫线索补充 ==========
+
+  event_violent_spring_trace: {
+    id: "event_violent_spring_trace",
+    name: "暴躁之泉痕迹",
+    description: "你在雪峰山的岩壁上发现了一片暗红色的结晶，散发着令人不安的狂暴气息。附近的妖魔表现得异常狂躁，甚至有同类相残的迹象。这片结晶似乎在影响它们的心智。",
+    trigger: "exploring",
+    chance: 0.12,
+    conditions: [
+      { type: "minDay", value: 25 },
+      { type: "minLevel", value: 4 }
+    ],
+    once: true,
+    choices: [
+      {
+        text: "小心采集结晶样本",
+        effects: { exp: 25, hp: -10, giveInfo: "violent_spring_sample" },
+        resultText: "你小心翼翼地刮下一些结晶样本。刚碰到它，一股狂暴的意念就冲击你的精神，你勉强稳住心神。这些结晶绝不是自然形成的...（获得线索：暴躁之泉样本，经验+25，HP-10）"
+      },
+      {
+        text: "观察妖魔的异常行为",
+        effects: { exp: 15, giveInfo: "demon_mania_observed" },
+        resultText: "你躲在暗处观察了许久。这些妖魔的瞳孔都泛着诡异的红光，攻击欲望极强，甚至会攻击同类。这种异常...绝对有问题。（获得情报：妖魔异常狂躁，经验+15）"
+      },
+      {
+        text: "远离此处，不做停留",
+        effects: {},
+        resultText: "你感到一阵不安，决定尽快离开。那片暗红色结晶的景象，却在脑海中挥之不去。"
+      }
+    ]
+  },
+
+  event_yu_ang_secret: {
+    id: "event_yu_ang_secret",
+    name: "宇昂的秘密",
+    description: "深夜，你路过穆氏庄园侧门时，看到宇昂正与一个全身裹在黑袍中的人低声交谈。黑衣人递给他一个精致的小瓶，宇昂神色凝重地点了点头。两人似乎都没有注意到你的存在。",
+    trigger: "exploring",
+    chance: 0.10,
+    conditions: [
+      { type: "minDay", value: 35 },
+      { type: "minLevel", value: 5 }
+    ],
+    once: true,
+    choices: [
+      {
+        text: "屏住呼吸，继续偷听",
+        effects: { exp: 30, hp: -20, giveInfo: "yu_ang_black_church" },
+        resultText: "你屏住呼吸靠近了一些。\"...暴躁之泉已经准备好了，只等那场大雨。\"黑衣人沙哑的声音传来。宇昂冷冷道：\"我知道了，穆卓云那边我会应付。\"突然，黑衣人似乎察觉到了什么，一道暗影朝你袭来！你勉强躲开，但还是被擦伤了。（获得情报：宇昂与黑教廷，经验+30，HP-20）"
+      },
+      {
+        text: "悄悄离开，当作没看见",
+        effects: { exp: 10, giveInfo: "yu_ang_suspicious" },
+        resultText: "你小心翼翼地退了回去。宇昂...穆氏的养子，为什么会和黑衣人深夜密会？那个小瓶里装的又是什么？你心中充满了疑问。（获得线索：宇昂可疑，经验+10）"
+      },
+      {
+        text: "直接走出去质问",
+        effects: { startBattle: "yu_ang_duel", giveInfo: "yu_ang_confronted" },
+        resultText: "你深吸一口气，走了出去：\"宇昂，你在和谁说话？\"两人同时转头。宇昂的眼中闪过一丝杀机，黑衣人则悄然隐入黑暗。\"既然你看到了...\"宇昂凝聚起冰系魔法，\"那就别怪我不客气了。\""
+      }
+    ]
+  },
+
+  event_boundary_warning: {
+    id: "event_boundary_warning",
+    name: "安界警戒",
+    description: "学校的公告栏上贴出了军方的紧急通告——安界外近日发现大量魔狼聚集，数量远超往年同期。斩空总教官已加强边境巡逻，但官方通告仍称\"一切在掌控之中\"。你注意到唐月老师看着通告时，神色格外凝重。",
+    trigger: "exploring",
+    chance: 0.15,
+    conditions: [
+      { type: "minDay", value: 40 },
+      { type: "minLevel", value: 5 }
+    ],
+    once: true,
+    choices: [
+      {
+        text: "向唐月老师询问详情",
+        effects: { exp: 20, giveInfo: "boundary_warning_detail", npcRelation: { tang_yue: 5 } },
+        resultText: "唐月老师把你拉到一旁，低声说：\"这件事不简单。魔狼不会无缘无故聚集，有人在引它们来。你...要小心。\"她的语气中带着一丝忧虑，似乎知道更多却不能说。（获得情报：安界警戒详情，经验+20，唐月好感+5）"
+      },
+      {
+        text: "独自去安界附近查看",
+        effects: { exp: 15, hp: -15, giveInfo: "wolf_gathering_evidence" },
+        resultText: "你悄悄来到安界附近。远处的山林中，无数绿色的幽光在闪烁——那是魔狼的眼睛。数量之多，让你脊背发凉。突然，一只魔狼发现了你，你只能狼狈撤退。（获得线索：魔狼聚集证据，经验+15，HP-15）"
+      },
+      {
+        text: "不放在心上，继续日常",
+        effects: {},
+        resultText: "你看了一眼通告，觉得军方应该能处理好。但不知为何，心中总有一丝不安。"
+      }
+    ]
+  },
+
+  event_mysterious_chest: {    id: "event_mysterious_chest",
     name: "神秘的宝箱",
     description: "你在一个隐蔽的角落发现了一个古老的宝箱",
     trigger: "exploring",
