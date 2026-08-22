@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 战斗数值平衡分析脚本
  * 基于玩家成长公式和妖魔数据，估算各等级段战斗体验
  * 运行方式: node tests/stress/battle-balance.js
@@ -29,12 +29,12 @@ global.window.console = console;
 
 // ========== 加载数据脚本 ==========
 const dataScripts = [
-    'engine/data/skills.js', 'engine/data/characters.js', 'engine/data/locations.js',
-    'engine/data/items.js', 'engine/data/quests.js', 'engine/data/events.js',
-    'engine/data/shops.js', 'engine/data/enemies.js', 'engine/data/demon-traits.js',
-    'engine/data/world.js', 'engine/data/big-events.js', 'engine/data/chapters.js',
-    'engine/data/talents.js', 'engine/data/spirit-seeds.js', 'engine/data/achievements.js',
-    'engine/data/star-dust-artifacts.js', 'engine/data/index.js', 'engine/data.js',
+    'src/data/skills.js', 'src/data/characters.js', 'src/data/locations.js',
+    'src/data/items.js', 'src/data/quests.js', 'src/data/events.js',
+    'src/data/shops.js', 'src/data/enemies.js', 'src/data/demon-traits.js',
+    'src/data/world.js', 'src/data/big-events.js', 'src/data/chapters.js',
+    'src/data/talents.js', 'src/data/spirit-seeds.js', 'src/data/achievements.js',
+    'src/data/star-dust-artifacts.js', 'src/data/index.js',
 ];
 
 for (const script of dataScripts) {

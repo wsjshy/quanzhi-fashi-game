@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 战斗系统压力测试 - 快速复现卡死bug
  * 运行方式: node tests/stress/battle-stress.js
  */
@@ -240,7 +240,7 @@ global.DataManager = {
 import fs from 'fs';
 import path from 'path';
 const gameDir = path.join(__dirname, '..', '..');
-let battleCode = fs.readFileSync(path.join(gameDir, 'engine', 'battle.js'), 'utf8');
+let battleCode = fs.readFileSync(path.join(gameDir, 'src', 'engine', 'battle.js'), 'utf8');
 
 // 在文件末尾添加导出语句，让BattleSystem可以被外部访问
 battleCode += '\n;export default BattleSystem;';

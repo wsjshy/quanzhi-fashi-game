@@ -323,7 +323,7 @@ export const QuestSystem = {
         let nextQuestAvailable = null;
         if (quest.nextQuest) {
             const nextQuest = this.getQuest(quest.nextQuest);
-            if (nextQuest && !this.isQuestAccepted(quest.nextQuest) && !this.isQuestComplete(quest.nextQuest)) {
+            if (nextQuest && !Player.getActiveQuest(quest.nextQuest) && !Player.isQuestComplete(quest.nextQuest)) {
                 nextQuestAvailable = nextQuest;
                 rewardMessages.push(`📜 新任务可接取：${nextQuest.name}（在任务面板中查看）`);
             }

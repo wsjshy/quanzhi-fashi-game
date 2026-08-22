@@ -1,4 +1,4 @@
-﻿/**
+/**
  * L2.5 天赋战斗状态系统单元测试
  *
  * 测试：资源积累/消耗、形态切换、触发状态、主动技能冷却
@@ -15,7 +15,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 function loadTalentCombatSystem() {
-    const code = fs.readFileSync(path.join(__dirname, '..', '..', 'engine', 'talent-combat.js'), 'utf-8');
+    let code = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'engine', 'talent-combat.js'), 'utf-8');
+    // 处理ES Modules语法
+    code = code.replace(/^import\s+.*$/gm, '');
+    code = code.replace(/^export\s+default\s+.*$/gm, '');
+    code = code.replace(/^export\s+const\s+(\w+)\s*=/gm, 'var $1 =');
+    code = code.replace(/^export\s+function\s+(\w+)/gm, 'function $1');
+    code = code.replace(/^const\s+(\w+)\s*=/gm, 'var $1 =');
+    code = code.replace(/if\s*\(typeof\s+window\s*!==\s*'undefined'\)[\s\S]*?\}/g, '');
     const sandbox = {
         console: console,
         Math: Math,
