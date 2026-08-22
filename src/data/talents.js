@@ -99,6 +99,7 @@ export const DataTalents = {
     element: "fire",
     rarity: "uncommon",
     type: "growth",
+    mechanism: "state",
     description: "掌握火焰的燃烧之力，让敌人在烈焰中痛苦消亡。",
     maxLevel: 10,
     evolutions: [
@@ -137,6 +138,7 @@ export const DataTalents = {
     element: "fire",
     rarity: "rare",
     type: "growth",
+    mechanism: "trigger",
     description: "追求火焰的爆发力，每一次暴击都是毁灭。",
     maxLevel: 10,
     evolutions: [
@@ -175,6 +177,7 @@ export const DataTalents = {
     element: "fire",
     rarity: "epic",
     type: "growth",
+    mechanism: "resource",
     description: "掌控火焰的范围毁灭之力，一人成军，焚尽苍穹。",
     maxLevel: 10,
     evolutions: [
@@ -213,6 +216,7 @@ export const DataTalents = {
     element: "fire",
     rarity: "legendary",
     type: "innate",
+    mechanism: "passive",
     description: "万中无一的火系天生天赋，灵魂深处燃烧着不灭之火。出生即达他人修炼一生的境界。",
     maxLevel: 1,
     effects: {
@@ -312,6 +316,7 @@ export const DataTalents = {
     element: "ice",
     rarity: "uncommon",
     type: "growth",
+    mechanism: "state",
     description: "掌握冰冻的奥义，让敌人在永恒的冰封中安息。",
     maxLevel: 10,
     evolutions: [
@@ -349,6 +354,7 @@ export const DataTalents = {
     element: "ice",
     rarity: "rare",
     type: "growth",
+    mechanism: "trigger",
     description: "将寒冰之力融入速度操控，掌控战场节奏。",
     maxLevel: 10,
     evolutions: [
@@ -423,6 +429,7 @@ export const DataTalents = {
     element: "ice",
     rarity: "legendary",
     type: "innate",
+    mechanism: "passive",
     description: "万中无一的冰系天生天赋，灵魂如万年寒冰般纯净。出生即达他人修炼一生的境界。",
     maxLevel: 1,
     effects: {
@@ -559,6 +566,7 @@ export const DataTalents = {
     element: "thunder",
     rarity: "rare",
     type: "growth",
+    mechanism: "resource",
     description: "掌控雷电的连锁之力，一道雷，万道殇。",
     maxLevel: 10,
     evolutions: [
@@ -633,6 +641,7 @@ export const DataTalents = {
     element: "thunder",
     rarity: "legendary",
     type: "innate",
+    mechanism: "passive",
     description: "万中无一的雷系天生天赋，身体就是雷霆的容器。出生即达他人修炼一生的境界。",
     maxLevel: 1,
     effects: {
@@ -832,6 +841,7 @@ export const DataTalents = {
     element: "earth",
     rarity: "legendary",
     type: "innate",
+    mechanism: "passive",
     description: "万中无一的土系天生天赋，肉身即是大地。出生即达他人修炼一生的境界。",
     maxLevel: 1,
     effects: {
@@ -1031,6 +1041,7 @@ export const DataTalents = {
     element: "wind",
     rarity: "legendary",
     type: "innate",
+    mechanism: "passive",
     description: "万中无一的风系天生天赋，身即是风。出生即达他人修炼一生的境界。",
     maxLevel: 1,
     effects: {
@@ -1119,6 +1130,7 @@ export const DataTalents = {
     element: "water",
     rarity: "uncommon",
     type: "growth",
+    mechanism: "state",
     description: "心有甘泉，治愈万物。",
     maxLevel: 10,
     evolutions: [
@@ -1230,6 +1242,7 @@ export const DataTalents = {
     element: "water",
     rarity: "legendary",
     type: "innate",
+    mechanism: "passive",
     description: "万中无一的水系天生天赋，上善若水，水利万物。出生即达他人修炼一生的境界。",
     maxLevel: 1,
     effects: {
@@ -1363,6 +1376,7 @@ export const DataTalents = {
     element: "light",
     rarity: "rare",
     type: "growth",
+    mechanism: "resource",
     description: "以圣光净化一切污秽与邪恶。",
     maxLevel: 10,
     evolutions: [
@@ -1437,6 +1451,7 @@ export const DataTalents = {
     element: "light",
     rarity: "legendary",
     type: "innate",
+    mechanism: "passive",
     description: "万中无一的光系天生天赋，灵魂即是光明。出生即达他人修炼一生的境界。",
     maxLevel: 1,
     effects: {
@@ -1607,6 +1622,7 @@ export const DataTalents = {
     element: "dark",
     rarity: "epic",
     type: "growth",
+    mechanism: "trigger",
     description: "以暗影为媒，降下无尽诅咒。",
     maxLevel: 10,
     evolutions: [
@@ -1644,6 +1660,7 @@ export const DataTalents = {
     element: "dark",
     rarity: "legendary",
     type: "innate",
+    mechanism: "passive",
     description: "万中无一的暗影系天生天赋，与黑暗共生。出生即达他人修炼一生的境界。",
     maxLevel: 1,
     effects: {
@@ -1768,6 +1785,7 @@ export const DataTalents = {
     element: "heal",
     rarity: "rare",
     type: "growth",
+    mechanism: "trigger",
     description: "以圣光治愈，同时净化邪恶。",
     maxLevel: 10,
     evolutions: [
@@ -1842,6 +1860,7 @@ export const DataTalents = {
     element: "heal",
     rarity: "legendary",
     type: "innate",
+    mechanism: "passive",
     description: "万中无一的治愈系天生天赋，生而知之，掌握生命法则。出生即达他人修炼一生的境界。",
     maxLevel: 1,
     effects: {
@@ -2151,6 +2170,7 @@ export const DataTalents = {
     element: "plant",
     rarity: "uncommon",
     type: "growth",
+    mechanism: "state",
     description: "精通植物毒素，让敌人在痛苦中慢慢死去。",
     maxLevel: 10,
     evolutions: [
@@ -2188,6 +2208,7 @@ export const DataTalents = {
     element: "plant",
     rarity: "legendary",
     type: "innate",
+    mechanism: "passive",
     description: "体内蕴含世界树的种子，与自然万物相连。出生即达他人修炼一生的境界。",
     maxLevel: 1,
     effects: {
