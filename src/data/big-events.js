@@ -1884,7 +1884,7 @@ export const DataBigEvents = {
       requiredFlags: ["bocheng_disaster_happened"],
       minLevel: 5,
     },
-    stages: [
+    phases: [
       {
         id: "encounter",
         title: "遭遇白阳",
@@ -1892,16 +1892,16 @@ export const DataBigEvents = {
         choices: [
           {
             text: "信任白阳教官，交出地圣泉",
-            nextStage: "bad_ending",
+            nextPhase: "bad_ending",
             effects: { flags: { earth_spring_lost: true } }
           },
           {
             text: "保持警惕，询问白阳更多细节",
-            nextStage: "temptation"
+            nextPhase: "temptation"
           },
           {
             text: "直接质疑白阳的身份（需要雪峰山线索）",
-            nextStage: "exposed",
+            nextPhase: "exposed",
             conditions: { requiredFlags: ["xuefeng_spring_clue"] }
           }
         ]
@@ -1913,12 +1913,12 @@ export const DataBigEvents = {
         choices: [
           {
             text: "交出地圣泉",
-            nextStage: "bad_ending",
+            nextPhase: "bad_ending",
             effects: { flags: { earth_spring_lost: true } }
           },
           {
             text: "拒绝交出，质疑白阳",
-            nextStage: "exposed"
+            nextPhase: "exposed"
           }
         ]
       },
@@ -1929,7 +1929,7 @@ export const DataBigEvents = {
         choices: [
           {
             text: "准备战斗",
-            nextStage: "black_beast_attack"
+            nextPhase: "black_beast_attack"
           }
         ]
       },
@@ -1940,12 +1940,12 @@ export const DataBigEvents = {
         choices: [
           {
             text: "保护何雨和张小侯撤退",
-            nextStage: "battle",
+            nextPhase: "battle",
             effects: { flags: { protect_he_yu: true } }
           },
           {
             text: "直接攻击白阳",
-            nextStage: "battle",
+            nextPhase: "battle",
             effects: { flags: { attack_bai_yang: true } }
           }
         ]
@@ -1954,12 +1954,9 @@ export const DataBigEvents = {
         id: "battle",
         title: "激战白阳",
         narrative: "白阳召唤更多黑畜妖，战斗一触即发。薛木生老师挡在前面，张小侯扶着重伤的何雨，许昭霆和王三胖准备战斗。你必须做出选择。",
-        battle: {
-          enemies: ["bai_yang_duel", "black_beast", "black_beast"],
-          allies: ["xue_musheng", "zhang_xiaohou", "xu_zhaoting", "wang_sanpang"],
-          onVictory: "good_ending",
-          onDefeat: "normal_ending"
-        }
+        enemyId: "bai_yang_duel",
+        winPhase: "good_ending",
+        losePhase: "normal_ending"
       },
       {
         id: "good_ending",
@@ -2008,7 +2005,7 @@ export const DataBigEvents = {
       minLevel: 8,
       notHasFlags: ["earth_spring_obtained", "earth_spring_lost"]
     },
-    stages: [
+    phases: [
       {
         id: "announcement",
         title: "地圣泉争夺战",
@@ -2021,12 +2018,12 @@ export const DataBigEvents = {
         choices: [
           {
             text: "我要参加地圣泉争夺战！",
-            nextStage: "final_duel",
+            nextPhase: "final_duel",
             effects: { exp: 50 }
           },
           {
             text: "放弃这次机会",
-            nextStage: "give_up",
+            nextPhase: "give_up",
             effects: { opinion: -5 }
           }
         ]
@@ -2039,11 +2036,9 @@ export const DataBigEvents = {
           "宇昂冷冷地看着你：「就凭你也想和我争地圣泉？穆氏的资源不是你能想象的。」",
           "你握紧拳头，这场决斗你必须赢！地圣泉的修炼机会对你来说太重要了。"
         ],
-        battle: {
-          enemyId: "yu_ang_duel",
-          victoryStage: "earth_spring_training",
-          defeatStage: "defeat"
-        }
+        enemyId: "yu_ang_duel",
+        winPhase: "earth_spring_training",
+        losePhase: "defeat"
       },
       {
         id: "earth_spring_training",
@@ -2063,7 +2058,7 @@ export const DataBigEvents = {
         choices: [
           {
             text: "继续探索地圣泉周围",
-            nextStage: "black_church_ambush"
+            nextPhase: "black_church_ambush"
           }
         ]
       },
@@ -2079,12 +2074,12 @@ export const DataBigEvents = {
         choices: [
           {
             text: "战斗！保护地圣泉！",
-            nextStage: "fight_black_church",
+            nextPhase: "fight_black_church",
             effects: { opinion: 10 }
           },
           {
             text: "撤退，保存实力",
-            nextStage: "retreat",
+            nextPhase: "retreat",
             effects: { flags: { earth_spring_lost: true } }
           }
         ]
@@ -2097,11 +2092,9 @@ export const DataBigEvents = {
           "黑教廷成员使用暗系魔法，攻势凶猛。但你在地圣泉中修炼后实力大增，应对自如。",
           "经过一番激战，你终于击败了黑教廷成员！他们狼狈逃窜，留下了一些线索。"
         ],
-        battle: {
-          enemyId: "black_church_member",
-          victoryStage: "victory_ending",
-          defeatStage: "retreat"
-        }
+        enemyId: "black_church_member",
+        winPhase: "victory_ending",
+        losePhase: "retreat"
       },
       {
         id: "victory_ending",
