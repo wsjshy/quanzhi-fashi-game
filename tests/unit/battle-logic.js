@@ -40,6 +40,7 @@ function loadBattleSystem() {
         'battle-apply-status.js',
         'battle-spirit-seed.js',
         'battle-talent-active.js',
+        'battle-ai-burst.js',
     ];
     
     let depCode = '';
@@ -89,6 +90,7 @@ function loadBattleSystem() {
         var applyStatusEffectsImpl = applyStatusEffects;
         var applySpiritSeedEffectsImpl = applySpiritSeedEffects;
         var useTalentActiveSkillImpl = useTalentActiveSkill;
+        var enemyAIBurstImpl = enemyAIBurst;
     `;
     const fullCode = depCode + '\n' + aliasCode + '\n' + code;
     
