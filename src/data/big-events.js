@@ -1017,33 +1017,35 @@ export const DataBigEvents = {
         }
       },
 
-      // 第三阶段：魔法释放考核
+      // 第三阶段：魔法释放考核（v3.1.0改为自动评分，无需战斗）
       {
         id: "phase_3_release",
         name: "魔法释放考核",
-        description: "接下来是魔法释放考核。你需要在考官面前完整释放你的初阶魔法。\n\n许昭霆的雷印获得了S级评价，威力惊人。穆白的冰蔓是B级，稳定而成熟。周敏的火滋也是B级。\n\n轮到你了。",
-        type: "battle",
-        enemyId: "training_dummy",
-        battleOptions: {
-          canFlee: false,
-          canUseItems: false,
-          winHpPercent: 0,
-          isFriendly: true
-        },
-        winPhase: "phase_4_result",
-        losePhase: "phase_4_result"
+        description: "接下来是魔法释放考核。你需要在考官面前完整释放你的初阶魔法。\n\n许昭霆的雷印获得了S级评价，威力惊人。穆白的冰蔓是B级，稳定而成熟。周敏的火滋也是B级。\n\n轮到你了。你深吸一口气，集中精神，完整释放了你的魔法...\n\n（系统根据你的等级、技能数量、心境和元素等级自动评分）",
+        type: "auto",
+        nextPhase: "phase_4_result",
+        effects: {
+          flags: { "exam_release_done": true }
+        }
       },
 
       // 第四阶段：成绩公布
       {
         id: "phase_4_result",
         name: "成绩公布",
-        description: "考核结束，成绩公布了！\n\n（综合评分 = 星感石60% + 释放考核40%，根据你的表现计算）\n\n薛木生老师看着成绩单，脸上露出了笑容。",
+        description: "考核结束，成绩公布了！",
         type: "choice",
         choices: [
           {
             text: "查看我的评级和奖励",
             nextPhase: "phase_5_recruit",
+            conditions: { flagAny: ["exam_rank_S", "exam_rank_A"] },
+            effects: {}
+          },
+          {
+            text: "查看我的评级和奖励",
+            nextPhase: "phase_6_end",
+            conditions: { flagAny: ["exam_rank_B", "exam_rank_C", "exam_rank_D"] },
             effects: {}
           }
         ]
@@ -1110,6 +1112,7 @@ export const DataBigEvents = {
         type: "auto",
         effects: {
           flags: { "annual_exam_completed": true },
+          examRewards: true,
           starDustAssignByRank: {
             rank: "auto",
             modifiers: {}

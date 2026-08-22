@@ -102,6 +102,21 @@ export const BigEventSystem = {
             }
         }
         
+        // v3.1.0: 单个标记条件
+        if (conditions.flag && !Player.flags[conditions.flag]) return false;
+        
+        // v3.1.0: 任意标记满足（数组中任意一个flag为真）
+        if (conditions.flagAny && Array.isArray(conditions.flagAny)) {
+            let anyMatch = false;
+            for (const flag of conditions.flagAny) {
+                if (Player.flags[flag]) {
+                    anyMatch = true;
+                    break;
+                }
+            }
+            if (!anyMatch) return false;
+        }
+        
         // 声望条件
         if (conditions.requiredReputation) {
             for (const [faction, minValue] of Object.entries(conditions.requiredReputation)) {
@@ -148,6 +163,20 @@ export const BigEventSystem = {
         if (!phase) {
             console.error('[大事件] 当前阶段不存在');
             return;
+        }
+        
+        // v3.1.0: 特殊阶段动态处理
+        if (phase.id === 'phase_4_result') {
+            // 年度考核成绩公布：动态计算评分并修改description
+            const score = this.calculateExamScore();
+            const comment = this.getExamRankComment(score.rank);
+            phase.description = `考核结束，成绩公布了！\n\n` +
+                `【星感石测试】${score.stoneScore}分\n` +
+                `  基础${score.details.stone.base} + 精神力${score.details.stone.spirit} + 心境${score.details.stone.composure} + 准备${score.details.stone.prepare}${score.details.stone.retake > 0 ? ' + 重考' + score.details.stone.retake : ''}\n\n` +
+                `【释放考核】${score.releaseScore}分\n` +
+                `  基础${score.details.release.base} + 技能${score.details.release.skills} + 心境${score.details.release.composure} + 元素等级${score.details.release.element}\n\n` +
+                `【综合评分】${score.totalScore}分 → 评级：${score.rank}\n\n` +
+                comment;
         }
         
         // 根据阶段类型处理
@@ -436,6 +465,93 @@ export const BigEventSystem = {
     },
     
     /**
+     * v3.1.0: 计算年度考核评分
+     * 综合星感石测试（60%）+ 释放考核（40%）
+     * @returns {object} { stoneScore, releaseScore, totalScore, rank, details }
+     */
+    calculateExamScore() {
+        const level = Player.level || 1;
+        const spirit = Player.spirit || 10;
+        const composure = Player.composure || 50;
+        const skills = Player.skills || [];
+        const elementLevels = Player.elementLevels || {};
+        
+        // === 星感石测试评分（0-100，权重60%）===
+        const stoneBase = Math.min(100, level * 5);
+        const stoneSpirit = Math.min(30, spirit * 2);
+        const stoneComposure = Math.min(20, Math.floor(composure * 0.3));
+        
+        // 准备加成
+        let stonePrepare = 0;
+        const prepareType = Player.flags['exam_prepare'];
+        if (prepareType === 'serious') stonePrepare = 10;
+        else if (prepareType === 'chat_mofan' || prepareType === 'chat_mubai') stonePrepare = 5;
+        else if (prepareType === 'observe') stonePrepare = 5;
+        
+        // 暗石重考加成
+        const stoneRetake = Player.flags['exam_retake'] ? 15 : 0;
+        
+        const stoneScore = Math.min(100, stoneBase + stoneSpirit + stoneComposure + stonePrepare + stoneRetake);
+        
+        // === 释放考核评分（0-100，权重40%）===
+        const releaseBase = Math.min(80, level * 4);
+        const releaseSkills = Math.min(20, skills.length * 3);
+        const releaseComposure = Math.min(15, Math.floor(composure * 0.2));
+        
+        // 最高元素等级加成
+        let maxElementLevel = 0;
+        for (const el of Object.keys(elementLevels)) {
+            if (elementLevels[el] > maxElementLevel) maxElementLevel = elementLevels[el];
+        }
+        const releaseElement = Math.min(15, maxElementLevel * 2);
+        
+        const releaseScore = Math.min(100, releaseBase + releaseSkills + releaseComposure + releaseElement);
+        
+        // === 综合评分 ===
+        const totalScore = Math.round(stoneScore * 0.6 + releaseScore * 0.4);
+        
+        // === 评级 ===
+        let rank = 'D';
+        if (totalScore >= 90) rank = 'S';
+        else if (totalScore >= 80) rank = 'A';
+        else if (totalScore >= 70) rank = 'B';
+        else if (totalScore >= 60) rank = 'C';
+        
+        // 保存评分到flags
+        Player.flags['exam_stone_score'] = stoneScore;
+        Player.flags['exam_release_score'] = releaseScore;
+        Player.flags['exam_total_score'] = totalScore;
+        Player.flags['exam_rank'] = rank;
+        
+        return {
+            stoneScore,
+            releaseScore,
+            totalScore,
+            rank,
+            details: {
+                stone: { base: stoneBase, spirit: stoneSpirit, composure: stoneComposure, prepare: stonePrepare, retake: stoneRetake },
+                release: { base: releaseBase, skills: releaseSkills, composure: releaseComposure, element: releaseElement }
+            }
+        };
+    },
+    
+    /**
+     * v3.1.0: 获取年度考核评级评语
+     * @param {string} rank - 评级 S/A/B/C/D
+     * @returns {string} 评语
+     */
+    getExamRankComment(rank) {
+        const comments = {
+            'S': '薛木生老师眼中闪过一丝惊讶："难得一见的天才！你的星尘光辉远超同龄人，未来不可限量。"',
+            'A': '薛木生老师点点头："非常优秀！你的修炼成果令人满意，继续保持。"',
+            'B': '薛木生老师露出微笑："不错的成绩，达到了优秀法师的标准。"',
+            'C': '薛木生老师平静地说："及格了，但还有很大提升空间，不要懈怠。"',
+            'D': '薛木生老师皱眉："成绩不太理想，你需要更加努力修炼。"'
+        };
+        return comments[rank] || comments['C'];
+    },
+    
+    /**
      * 应用效果
      * @param {Object} effects - 效果对象
      */
@@ -495,17 +611,33 @@ export const BigEventSystem = {
             }
         }
 
+        // v3.1.0: 年度考核按评级发放奖励
+        if (effects.examRewards) {
+            const rank = Player.flags['exam_rank'] || 'C';
+            const rewardTable = {
+                'S': { exp: 200, gold: 300, items: [{ itemId: 'star_sense_stone_fragment', count: 1 }] },
+                'A': { exp: 150, gold: 200, items: [] },
+                'B': { exp: 100, gold: 100, items: [] },
+                'C': { exp: 50, gold: 50, items: [] },
+                'D': { exp: 20, gold: 20, items: [] }
+            };
+            const reward = rewardTable[rank] || rewardTable['C'];
+            if (reward.exp) Player.gainExp(reward.exp);
+            if (reward.gold) Player.gold += reward.gold;
+            if (reward.items && typeof Inventory !== 'undefined') {
+                for (const item of reward.items) {
+                    Inventory.addItem(item.itemId, item.count || 1);
+                }
+            }
+            console.log(`[年度考核] ${rank}级奖励：经验${reward.exp}，金币${reward.gold}`);
+        }
+        
         // v1.8.2: 星尘魔器分配（按评级）
         if (effects.starDustAssignByRank && typeof StarDustArtifactSystem !== 'undefined') {
             let rank = effects.starDustAssignByRank.rank || 'B';
-            // 自动评级：根据玩家等级计算
+            // v3.1.0: 自动评级使用计算出的评级
             if (rank === 'auto') {
-                const level = Player.level || 1;
-                if (level >= 15) rank = 'S';
-                else if (level >= 12) rank = 'A';
-                else if (level >= 9) rank = 'B';
-                else if (level >= 6) rank = 'C';
-                else rank = 'D';
+                rank = Player.flags['exam_rank'] || 'B';
             }
             const modifiers = effects.starDustAssignByRank.modifiers || {};
             const result = StarDustArtifactSystem.assignByRank(Player, rank, modifiers);
