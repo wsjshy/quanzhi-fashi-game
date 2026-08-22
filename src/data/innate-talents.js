@@ -558,6 +558,89 @@ export const InnateTalentRarity = {
     legendary: { name: '传说', color: '#ffaa00', weight: 5 }
 };
 
+// 天赋分类配置（v3.1.0：替代稀有度标签，用类型区分天赋）
+export const InnateTalentCategory = {
+    battle: {
+        name: '战斗型',
+        color: '#f87171',
+        description: '直接提升战斗能力，适合喜欢战斗的玩家',
+        icon: '⚔️'
+    },
+    cultivation: {
+        name: '修炼型',
+        color: '#60a5fa',
+        description: '提升修炼速度和经验获取，适合长线养成玩家',
+        icon: '📚'
+    },
+    support: {
+        name: '辅助型',
+        color: '#4ade80',
+        description: '提升生存能力和回复，适合稳健型玩家',
+        icon: '🛡️'
+    },
+    exploration: {
+        name: '探索型',
+        color: '#c084fc',
+        description: '提升掉落和运气，适合喜欢探索的玩家',
+        icon: '🔮'
+    },
+    special: {
+        name: '特殊型',
+        color: '#fbbf24',
+        description: '独特效果，改变游戏玩法，适合追求独特体验的玩家',
+        icon: '✨'
+    }
+};
+
+/**
+ * 根据天赋效果自动判断分类
+ * @param {Object} talent - 天赋数据
+ * @returns {string} 分类ID
+ */
+export function getInnateTalentCategory(talent) {
+    if (!talent || !talent.effects) return 'support';
+    const e = talent.effects;
+
+    // 特殊型：独特效果
+    if (e.extraElement || e.dualElement || e.boundElement) return 'special';
+
+    // 战斗型：直接提升战斗能力
+    const battleEffects = [
+        'skillLevelBonus', 'firstStrikeBonus', 'cooldownReduction',
+        'allElementDamage', 'critRate', 'critDamage', 'critBonus',
+        'critDamageBonus', 'dodgeBonus', 'lifesteal', 'killHeal',
+        'atkBonus', 'attackBonus', 'speedBonus', 'comboCrit',
+        'deathBlow', 'critSpeedBuff', 'elementPenetration',
+        'dualElementBonus', 'elementReactionBonus', 'mpCostReduction',
+        'freeCastChance', 'debuffResistance', 'controlDurationReduction'
+    ];
+    for (const key of battleEffects) {
+        if (e[key] !== undefined) return 'battle';
+    }
+
+    // 修炼型：提升修炼速度和经验获取
+    const cultivationEffects = [
+        'expBonus', 'cultivationBonus', 'breakthroughBonus',
+        'breakthroughGuaranteed', 'extraTrainCount', 'spiritSeedBonus',
+        'seedAbsorbBonus'
+    ];
+    for (const key of cultivationEffects) {
+        if (e[key] !== undefined) return 'cultivation';
+    }
+
+    // 探索型：提升掉落和运气
+    const explorationEffects = [
+        'dropBonus', 'luckBonus', 'lucky', 'treasureBonus',
+        'encounterBonus'
+    ];
+    for (const key of explorationEffects) {
+        if (e[key] !== undefined) return 'exploration';
+    }
+
+    // 辅助型：提升生存能力和回复（默认）
+    return 'support';
+}
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { DataInnateTalents, InnateTalentRarity };
 }

@@ -16,6 +16,7 @@ import { quickHeal as quickHealImpl } from './game-quick-heal.js';
 import { showArtifactUpgradePanel as showArtifactUpgradePanelImpl } from './game-artifact-upgrade.js';
 import { performCultivate as performCultivateImpl } from './game-perform-cultivate.js';
 import { performAction as performActionImpl } from './game-perform-action.js';
+import { getInnateTalentCategory, InnateTalentCategory } from '../data/innate-talents.js';
 
 export const Game = {
     // 游戏状态
@@ -2559,61 +2560,92 @@ export const Game = {
     },
 
     // ========== 自身天赋选择 ==========
+    _innateRefreshCount: 0,
+    _maxInnateRefresh: 3,
+
     showInnateTalentSelection() {
         InnateTalentSystem.init();
+        this._innateRefreshCount = 0;
+        this._renderInnateTalentSelection();
+    },
+
+    _renderInnateTalentSelection() {
         const choices = InnateTalentSystem.rollTalents(3);
+        const refreshLeft = this._maxInnateRefresh - this._innateRefreshCount;
 
         let choicesHtml = choices.map((talentId, idx) => {
             const talent = InnateTalentSystem.getTalent(talentId);
             if (!talent) return '';
-            const rarity = InnateTalentSystem.getRarityConfig(talent.rarity);
+            const categoryId = getInnateTalentCategory(talent);
+            const category = InnateTalentCategory[categoryId] || InnateTalentCategory.support;
             const growthHint = this._getInnateTalentGrowthHint(talent);
+            const hasEvolutions = talent.evolutions && talent.evolutions.length > 1;
+            const evolutionCount = talent.evolutions ? talent.evolutions.length : 1;
 
             return `
                 <div onclick="Game.confirmInnateTalent('${talentId}')" style="
-                    padding: 18px;
-                    background: ${rarity.color}15;
-                    border: 2px solid ${rarity.color};
+                    padding: 16px;
+                    background: ${category.color}15;
+                    border: 2px solid ${category.color};
                     border-radius: 12px;
                     cursor: pointer;
                     margin-bottom: 12px;
                     transition: all 0.3s;
-                " onmouseover="this.style.background='${rarity.color}30'; this.style.transform='scale(1.02)'" onmouseout="this.style.background='${rarity.color}15'; this.style.transform='scale(1)'">
+                " onmouseover="this.style.background='${category.color}30'; this.style.transform='scale(1.02)'" onmouseout="this.style.background='${category.color}15'; this.style.transform='scale(1)'">
                     <div style="display: flex; align-items: center; margin-bottom: 8px;">
                         <span style="font-size: 28px; margin-right: 10px;">${talent.icon}</span>
-                        <div>
-                            <div style="font-size: 20px; font-weight: bold; color: ${rarity.color};">
+                        <div style="flex: 1;">
+                            <div style="font-size: 18px; font-weight: bold; color: ${category.color}; margin-bottom: 2px;">
                                 ${talent.name}
+                                <span style="font-size: 10px; color: ${category.color}; background: ${category.color}22; padding: 2px 6px; border-radius: 3px; margin-left: 6px;">${category.icon} ${category.name}</span>
                             </div>
-                            <div style="font-size: 12px; color: ${rarity.color};">【${rarity.name}】</div>
+                            <div style="font-size: 11px; color: #888;">${category.description}</div>
                         </div>
                     </div>
-                    <div style="font-size: 14px; color: #ccc; margin-bottom: 6px;">${talent.description}</div>
-                    <div style="font-size: 13px; color: #66ff99; font-weight: bold;">效果：${talent.effectDesc}</div>
-                    ${growthHint ? `<div style="font-size: 12px; color: #aa88ff; margin-top: 8px; font-style: italic; border-top: 1px dashed #444; padding-top: 6px;">${growthHint}</div>` : ''}
+                    <div style="font-size: 13px; color: #ccc; margin-bottom: 6px;">${talent.description}</div>
+                    <div style="font-size: 12px; color: #66ff99; font-weight: bold; margin-bottom: 4px;">效果：${talent.effectDesc}</div>
+                    <div style="font-size: 11px; color: #888; margin-bottom: 4px;">
+                        ${hasEvolutions ? `成长阶段：${evolutionCount}个（${talent.evolutions[0].name} → ${talent.evolutions[talent.evolutions.length-1].name}）` : '固定效果，无成长阶段'}
+                    </div>
+                    ${growthHint ? `<div style="font-size: 11px; color: #aa88ff; margin-top: 6px; font-style: italic; border-top: 1px dashed #333; padding-top: 6px;">${growthHint}</div>` : ''}
                 </div>
             `;
         }).join('');
 
         UI.elements.gameContainer.innerHTML = `
-            <div style="max-width: 600px; margin: 0 auto; padding: 30px 20px;">
-                <div style="text-align: center; margin-bottom: 25px;">
-                    <div style="font-size: 30px; font-weight: bold; color: #ffd700; margin-bottom: 10px;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 25px 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 28px; font-weight: bold; color: #ffd700; margin-bottom: 8px;">
                         ✦ 天生天赋 ✦
                     </div>
-                    <div style="color: #aaa; font-size: 15px; line-height: 1.6;">
+                    <div style="color: #aaa; font-size: 14px; line-height: 1.6;">
                         每个人在觉醒时都可能获得独特的天生天赋<br>
                         <span style="color: #ff88ff;">这是决定你法师之路的重要选择</span>
                     </div>
                 </div>
-                <div style="margin-bottom: 20px;">
+                <div style="margin-bottom: 15px;">
                     ${choicesHtml}
                 </div>
-                <div style="text-align: center; color: #666; font-size: 12px;">
-                    请选择一个天赋（无法更改）
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <button onclick="Game.refreshInnateTalents()" 
+                        ${refreshLeft <= 0 ? 'disabled style="padding: 8px 20px; background: #333; color: #666; border: 1px solid #444; border-radius: 6px; cursor: not-allowed; font-size: 13px;"' : 
+                        'style="padding: 8px 20px; background: #4444aa; color: white; border: 1px solid #6666ff; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background=\'#5555bb\'" onmouseout="this.style.background=\'#4444aa\'"'}>
+                        🔄 重新抽取（剩余 ${refreshLeft} 次）
+                    </button>
+                </div>
+                <div style="text-align: center; color: #666; font-size: 11px;">
+                    请选择一个天赋（无法更改）| 天赋按类型区分：⚔️战斗型 📚修炼型 🛡️辅助型 🔮探索型 ✨特殊型
                 </div>
             </div>
         `;
+    },
+
+    refreshInnateTalents() {
+        if (this._innateRefreshCount >= this._maxInnateRefresh) {
+            return;
+        }
+        this._innateRefreshCount++;
+        this._renderInnateTalentSelection();
     },
 
     confirmInnateTalent(talentId) {
