@@ -88,17 +88,16 @@ export function showTalentSelection(element) {
             return `
                 <div onclick="Game.confirmTalent('${element}', '${talentId}')" style="
                     padding: 12px;
-                    background: ${rarityConfig.color}15;
-                    border: 2px solid ${rarityConfig.color};
+                    background: ${typeColor}15;
+                    border: 2px solid ${typeColor};
                     border-radius: 10px;
                     cursor: pointer;
                     margin-bottom: 8px;
                     transition: all 0.3s;
-                " onmouseover="this.style.background='${rarityConfig.color}30'; this.style.transform='scale(1.01)'" onmouseout="this.style.background='${rarityConfig.color}15'; this.style.transform='scale(1)'">
-                    <div style="font-size: 16px; font-weight: bold; color: ${rarityConfig.color}; margin-bottom: 4px;">
+                " onmouseover="this.style.background='${typeColor}30'; this.style.transform='scale(1.01)'" onmouseout="this.style.background='${typeColor}15'; this.style.transform='scale(1)'">
+                    <div style="font-size: 16px; font-weight: bold; color: ${typeColor}; margin-bottom: 4px;">
                         ${talent.name}
-                        <span style="font-size: 10px; color: ${rarityConfig.color}; background: ${rarityConfig.color}22; padding: 2px 5px; border-radius: 3px; margin-left: 6px;">${rarityName}</span>
-                        <span style="font-size: 10px; color: ${typeColor}; background: ${typeColor}22; padding: 2px 5px; border-radius: 3px; margin-left: 4px;">${typeName}</span>
+                        <span style="font-size: 10px; color: ${typeColor}; background: ${typeColor}22; padding: 2px 5px; border-radius: 3px; margin-left: 6px;">${typeName}</span>
                         ${mechanismName ? `<span style="font-size: 10px; color: ${mechanismColor}; background: ${mechanismColor}22; padding: 2px 5px; border-radius: 3px; margin-left: 4px;">${mechanismName}</span>` : ''}
                         ${hasActiveSkill ? '<span style="font-size: 10px; color: #ff9933; background: #ff993322; padding: 2px 5px; border-radius: 3px; margin-left: 4px;">主动技能</span>' : '<span style="font-size: 10px; color: #888; background: #88822; padding: 2px 5px; border-radius: 3px; margin-left: 4px;">纯被动</span>'}
                     </div>
