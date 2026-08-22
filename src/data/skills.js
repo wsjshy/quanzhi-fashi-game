@@ -1640,6 +1640,83 @@ export const DataSkills = {
       }
     ]
   },
+  light_shield: {
+    id: "light_shield",
+    name: "光之圣盾",
+    description: "中阶光系魔法。脚下浮现光系星图，召唤神圣光盾笼罩全身，可抵挡中阶以下魔法攻击。光系最强防御魔法，对暗影系有额外抗性。",
+    element: "light",
+    type: "buff",
+    mpCost: 40,
+    baseDamage: 0,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 3,
+    tier: "中阶",
+    magicLevel: 1,
+    unlockLevel: 11,
+    realmRequired: "middle",
+    isCanon: true,
+    canonSource: "第10941章 光系中阶魔法光之圣盾",
+    statusEffects: [
+      {
+        name: "光之圣盾",
+        type: "shield",
+        element: "light",
+        value: 250,
+        duration: 99,
+        chance: 1
+      },
+      {
+        name: "神圣抗性",
+        type: "dark_resist",
+        value: 50,
+        duration: 3,
+        chance: 1
+      }
+    ]
+  },
+  dark_nail: {
+    id: "dark_nail",
+    name: "巨影钉",
+    description: "中阶暗影系魔法。三柄暗影巨钉凭空浮现，依次扎向敌人。第一钉禁锢身躯，第二钉封止行动，第三钉精神打击。极强禁锢效果，战将级也难以挣脱。",
+    element: "dark",
+    type: "damage",
+    mpCost: 42,
+    baseDamage: 65,
+    damageMultiplier: 1.5,
+    hitRate: 0.85,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 1.3,
+    unlockLevel: 11,
+    realmRequired: "middle",
+    isCanon: true,
+    canonSource: "第30556章 暗影系中阶魔法巨影钉",
+    statusEffects: [
+      {
+        name: "禁锢",
+        type: "bind",
+        duration: 3,
+        chance: 1.0
+      },
+      {
+        name: "沉默",
+        type: "silence",
+        duration: 2,
+        chance: 0.7
+      },
+      {
+        name: "精神打击",
+        type: "stun",
+        duration: 1,
+        chance: 0.5
+      }
+    ]
+  },
   thunder_praise: {
     id: "thunder_praise",
     name: "霹雳·轰顶",
@@ -5597,6 +5674,24 @@ export const SkillAdvancements = {
     requiredSkillPoints: 3,
     requiredUsage: 50,
     description: "地波·岩盾 → 岩障·嶙石（中阶土系魔法，最强防御屏障+防御强化）"
+  },
+  light_ray: {
+    advancedSkillId: "light_shield",
+    element: "light",
+    requiredLevel: 10,
+    requiredElementLevel: 3,
+    requiredSkillPoints: 3,
+    requiredUsage: 50,
+    description: "光耀·圣光 → 光之圣盾（中阶光系魔法，神圣光盾+暗影抗性）"
+  },
+  dark_bolt: {
+    advancedSkillId: "dark_nail",
+    element: "dark",
+    requiredLevel: 10,
+    requiredElementLevel: 3,
+    requiredSkillPoints: 3,
+    requiredUsage: 50,
+    description: "遁影·穿梭 → 巨影钉（中阶暗影系魔法，三钉禁锢+沉默+精神打击）"
   }
 };
 
