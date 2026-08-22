@@ -31,6 +31,7 @@ function loadBattleSystem() {
         'battle-summon.js',
         'battle-status.js',
         'battle-rewards.js',
+        'battle-help.js',
     ];
     
     let depCode = '';
@@ -71,6 +72,7 @@ function loadBattleSystem() {
         var summonAttackImpl = summonAttack;
         var tickStatusEffectsImpl = tickStatusEffects;
         var calculateRewardsImpl = calculateRewards;
+        var showHelpImpl = showHelp;
     `;
     const fullCode = depCode + '\n' + aliasCode + '\n' + code;
     
