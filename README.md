@@ -1,10 +1,26 @@
 # 全职法师 - 魔法觉醒 · 开放世界版
 
-基于小说《全职法师》改编的同人网页游戏。纯HTML5，双击即玩，数据驱动，可扩展。
+基于小说《全职法师》改编的同人网页游戏。数据驱动，可扩展。v3.0.0起采用Vite + ES Modules模块化架构。
 
-> **当前版本：v2.9.3** | **最后更新：2026-08-22**
+> **当前版本：v3.0.0** | **最后更新：2026-08-22**
 
 > **开发者请注意**：本项目的开发主入口文档是 [`AGENTS.md`](./AGENTS.md)，所有开发工作请先阅读该文档。
+
+## 快速开始
+
+```bash
+# 安装依赖
+npm install
+
+# 开发模式（启动Vite开发服务器，http://localhost:5173）
+npm run dev
+
+# 生产构建（输出到dist/目录）
+npm run build
+
+# 预览构建产物
+npm run preview
+```
 
 ## 数据统计
 
@@ -31,7 +47,8 @@
 ## 在线试玩
 
 - GitHub Pages：https://wsjshy.github.io/quanzhi-fashi-game/
-- 或直接下载后双击 `index.html` 运行
+- 本地开发：`npm install && npm run dev`，访问 http://localhost:5173
+- 本地运行构建产物：`npm run build && npm run preview`
 
 ## 游戏特色
 

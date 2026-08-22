@@ -149,27 +149,31 @@
 |------|------|
 | 全职法师.txt | **小说原文**（项目根目录，22.85MB），涉及小说内容必须先Grep搜索验证，不凭记忆编造 |
 
-### 数据文件
+### 数据文件（v3.0.0起迁移到src/data/）
 | 文件 | 作用 |
 |------|------|
-| engine/data/chapters.js | 章节数据 |
-| engine/data/characters.js | NPC对话/关系 |
-| engine/data/quests.js | 任务 |
-| engine/data/locations.js | 地点/动作 |
-| engine/data/events.js | 随机事件 |
-| engine/data/big-events.js | 大事件 |
-| engine/data/skills.js / enemies.js / items.js | 技能/妖魔/物品 |
+| src/data/chapters.js | 章节数据 |
+| src/data/characters.js | NPC对话/关系 |
+| src/data/quests.js | 任务 |
+| src/data/locations.js | 地点/动作 |
+| src/data/events.js | 随机事件 |
+| src/data/big-events.js | 大事件 |
+| src/data/skills.js / enemies.js / items.js | 技能/妖魔/物品 |
+| src/data/index.js | 数据统一出口（GameData + 27个全局变量） |
 
-### 引擎文件
+### 引擎文件（v3.0.0起迁移到src/engine/）
 | 文件 | 作用 |
 |------|------|
-| engine/npc-state.js | NPC状态/记忆/关系网络/综合评分 |
-| engine/dialogue-tree.js | 对话树引擎（memoryTags条件/效果） |
-| engine/story-chapter.js | 章节管理 |
-| engine/game.js | 游戏主流程 |
-| engine/battle.js | 战斗 |
-| engine/player.js | 玩家数据/成长 |
-| engine/ui.js | UI渲染 |
+| src/engine/npc-state.js | NPC状态/记忆/关系网络/综合评分 |
+| src/engine/dialogue-tree.js | 对话树引擎（memoryTags条件/效果） |
+| src/engine/story-chapter.js | 章节管理 |
+| src/engine/game.js | 游戏主流程 |
+| src/engine/battle.js | 战斗 |
+| src/engine/battle-utils.js | 战斗纯函数工具（元素克制/名称/倍率） |
+| src/engine/player.js | 玩家数据/成长 |
+| src/engine/ui.js | UI渲染 |
+| src/engine/ui-title.js | 标题/角色创建界面 |
+| src/main.js | 模块化入口（按依赖顺序import 56个模块） |
 
 ### 测试文件
 | 文件 | 作用 |
