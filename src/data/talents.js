@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 天赋数据 - 进化式升级
  *
  * 每个成长型天赋有5个进化阶段：
@@ -2341,6 +2341,64 @@ export const TALENT_RARITY_CONFIG = {
     name: "传说",
     color: "#fbbf24",
     weight: 1
+  }
+};
+
+// 机制类型配置（v3.1.0天赋差异化）
+export const TALENT_MECHANISM_CONFIG = {
+  resource: {
+    name: "资源积累",
+    color: "#ff6b6b",
+    description: "积累资源层数，满层爆发或主动消耗强化"
+  },
+  state: {
+    name: "状态叠加",
+    color: "#4ecdc4",
+    description: "叠加状态层数，层数越高效果越强"
+  },
+  form: {
+    name: "形态切换",
+    color: "#ffe66d",
+    description: "手动或自动切换形态，不同形态不同效果"
+  },
+  trigger: {
+    name: "条件触发",
+    color: "#a8e6cf",
+    description: "满足特定条件时触发特殊效果"
+  },
+  passive: {
+    name: "纯被动",
+    color: "#dfe6e9",
+    description: "常驻光环或被动效果，无需主动操作"
+  },
+  summon: {
+    name: "召唤协同",
+    color: "#fd79a8",
+    description: "效果主要作用于召唤兽，与召唤兽协同作战"
+  }
+};
+
+// 天赋类型配置（v3.1.0天赋差异化）
+export const TALENT_TYPE_CONFIG = {
+  innate: {
+    name: "先天型",
+    color: "#fbbf24",
+    description: "开局即达到较高等级，升级收益减半，适合不想刷等级的玩家"
+  },
+  growth: {
+    name: "成长型",
+    color: "#60a5fa",
+    description: "开局较弱，升级收益高，后期强度上限高，适合长线养成玩家"
+  },
+  mature: {
+    name: "成熟型",
+    color: "#4ade80",
+    description: "开局中等，成长平稳，各阶段都有不错表现，适合大多数玩家"
+  },
+  burst: {
+    name: "爆发型",
+    color: "#ff6b6b",
+    description: "前期成长快，后期成长放缓，适合节奏快、前期压制的玩法"
   }
 };
 

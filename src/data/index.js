@@ -13,7 +13,7 @@ import { DataShops } from './shops.js';
 import { DataEnemies } from './enemies.js';
 import { DataBigEvents } from './big-events.js';
 import { DataWorld } from './world.js';
-import { DataTalents, TALENT_RARITY_CONFIG } from './talents.js';
+import { DataTalents, TALENT_RARITY_CONFIG, TALENT_MECHANISM_CONFIG, TALENT_TYPE_CONFIG } from './talents.js';
 import { DataInnateTalents, InnateTalentRarity } from './innate-talents.js';
 import { DataSpiritSeeds, SPIRIT_SEED_GRADES } from './spirit-seeds.js';
 import { DataStarDustArtifacts, StarDustGrades } from './star-dust-artifacts.js';
@@ -73,6 +73,8 @@ export {
     DemonTraits,
     // 额外配置常量
     TALENT_RARITY_CONFIG,
+    TALENT_MECHANISM_CONFIG,
+    TALENT_TYPE_CONFIG,
     InnateTalentRarity,
     SPIRIT_SEED_GRADES,
     StarDustGrades,
@@ -106,6 +108,8 @@ if (typeof window !== 'undefined') {
     window.GameData = GameData;
     // 额外配置常量
     window.TALENT_RARITY_CONFIG = TALENT_RARITY_CONFIG;
+    window.TALENT_MECHANISM_CONFIG = TALENT_MECHANISM_CONFIG;
+    window.TALENT_TYPE_CONFIG = TALENT_TYPE_CONFIG;
     window.InnateTalentRarity = InnateTalentRarity;
     window.SPIRIT_SEED_GRADES = SPIRIT_SEED_GRADES;
     window.StarDustGrades = StarDustGrades;

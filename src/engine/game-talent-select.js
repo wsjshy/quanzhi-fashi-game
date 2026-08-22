@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 游戏主流程 - 天赋选择模块
  * 
  * 从game.js拆分出的独立天赋选择模块
@@ -28,7 +28,20 @@ export function showTalentSelection(element) {
             const talent = TalentSystem.getTalent(talentId);
             if (!talent) return '';
             const rarityConfig = TalentSystem.getRarityConfig(talent.rarity);
-            const typeName = talent.type === 'innate' ? '【先天·出生即终极】' : '【成长·可进化】';
+            
+            // v3.1.0: 天赋类型标签和机制标签
+            const typeConfig = (typeof TALENT_TYPE_CONFIG !== 'undefined') ? TALENT_TYPE_CONFIG[talent.type] : null;
+            const typeName = typeConfig ? typeConfig.name : (talent.type === 'innate' ? '先天型' : '成长型');
+            const typeColor = typeConfig ? typeConfig.color : (talent.type === 'innate' ? '#fbbf24' : '#60a5fa');
+            const typeDesc = typeConfig ? typeConfig.description : '';
+            
+            const mechanismConfig = (typeof TALENT_MECHANISM_CONFIG !== 'undefined') ? TALENT_MECHANISM_CONFIG[talent.mechanism] : null;
+            const mechanismName = mechanismConfig ? mechanismConfig.name : '';
+            const mechanismColor = mechanismConfig ? mechanismConfig.color : '#888';
+            const mechanismDesc = mechanismConfig ? mechanismConfig.description : '';
+            
+            // 有无主动技能
+            const hasActiveSkill = talent.activeSkill ? true : false;
 
             // 构建进化路线预览（模糊化：告知有进化潜力，但隐藏具体分支和高等级效果）
             let evolutionPreview = '';
@@ -38,7 +51,7 @@ export function showTalentSelection(element) {
                 if (talent.type === 'innate') {
                     // 先天型：显示终极阶段名称，效果模糊
                     const evo = talent.evolutions[0];
-                    evolutionPreview += `<div style="color:${stageColors['终极']||'#ff66ff'};margin-bottom:2px;">★ ${evo.name}：<span style="color:#999;">出生即巅峰，效果随等级成长</span></div>`;
+                    evolutionPreview += `<div style="color:${stageColors['终极']||'#ff66ff'};margin-bottom:2px;">★ ${evo.name}：<span style="color:#999;">开局即高等级，升级收益减半</span></div>`;
                 } else {
                     // 成长型：只显示Lv1基础阶段，高等级模糊化
                     evolutionPreview += '<div style="color:#666;margin-bottom:3px;">进化潜力：</div>';
@@ -73,9 +86,14 @@ export function showTalentSelection(element) {
                     transition: all 0.3s;
                 " onmouseover="this.style.background='${rarityConfig.color}30'; this.style.transform='scale(1.02)'" onmouseout="this.style.background='${rarityConfig.color}15'; this.style.transform='scale(1)'">
                     <div style="font-size: 18px; font-weight: bold; color: ${rarityConfig.color}; margin-bottom: 5px;">
-                        ${talent.name} <span style="font-size: 12px; color: #999;">${typeName}</span>
+                        ${talent.name}
+                        <span style="font-size: 11px; color: ${typeColor}; background: ${typeColor}22; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">${typeName}</span>
+                        ${mechanismName ? `<span style="font-size: 11px; color: ${mechanismColor}; background: ${mechanismColor}22; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">${mechanismName}</span>` : ''}
+                        ${hasActiveSkill ? '<span style="font-size: 11px; color: #ff9933; background: #ff993322; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">主动技能</span>' : '<span style="font-size: 11px; color: #888; background: #88822; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">纯被动</span>'}
                     </div>
                     <div style="font-size: 13px; color: #bbb; margin-bottom: 5px;">${talent.description}</div>
+                    ${typeDesc ? `<div style="font-size: 11px; color: ${typeColor}; margin-bottom: 3px;">${typeDesc}</div>` : ''}
+                    ${mechanismDesc ? `<div style="font-size: 11px; color: ${mechanismColor}; margin-bottom: 3px;">${mechanismDesc}</div>` : ''}
                     ${evolutionPreview}
                 </div>
             `;
