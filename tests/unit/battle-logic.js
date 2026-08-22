@@ -32,6 +32,7 @@ function loadBattleSystem() {
         'battle-status.js',
         'battle-rewards.js',
         'battle-help.js',
+        'battle-magic-tool.js',
     ];
     
     let depCode = '';
@@ -73,6 +74,7 @@ function loadBattleSystem() {
         var tickStatusEffectsImpl = tickStatusEffects;
         var calculateRewardsImpl = calculateRewards;
         var showHelpImpl = showHelp;
+        var applyMagicToolEffectImpl = applyMagicToolEffect;
     `;
     const fullCode = depCode + '\n' + aliasCode + '\n' + code;
     
