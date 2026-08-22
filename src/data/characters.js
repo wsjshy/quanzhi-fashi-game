@@ -7773,6 +7773,16 @@ level: 2,
           choices: [
             { text: "不怕，正好历练。", next: "brave" },
             { text: "有点担心...", next: "scared" },
+            {
+              text: "雪峰山历练怎么样？",
+              next: "after_training",
+              condition: { hasFlags: ["xuefeng_training_completed"] }
+            },
+            {
+              text: "博城灾难那天你还好吗？",
+              next: "after_disaster",
+              condition: { hasFlags: ["bocheng_disaster_happened"] }
+            },
             { text: "告辞。", next: "default", action: "back" }
           ]
         },
@@ -7790,10 +7800,42 @@ level: 2,
           texts: ["我也怕啊...", "要不咱们跟教官说别去了？"],
           effects: { opinion: 2 },
           choices: [{ text: "还是去吧。", next: "default", action: "back" }]
+        },
+        after_training: {
+          id: "after_training",
+          texts: [
+            "雪峰山历练？别提了，差点吓死我！",
+            "那洞窟里的妖魔太吓人了，要不是莫凡和你，我估计就交代在那儿了。",
+            "不过...我好像也没那么没用？我用地波·挪移救了许昭霆一命！",
+            "（王三胖挺起胸膛，虽然还在发抖，但眼神里多了一丝自豪）"
+          ],
+          effects: { opinion: 5, familiarity: 5 },
+          choices: [
+            { text: "你确实很勇敢。", next: "default", effects: { opinion: 5 } },
+            { text: "下次别那么胆小了。", next: "default", effects: { opinion: -2 } },
+            { text: "走，吃顿好的压压惊。", next: "default", effects: { opinion: 8, gold: -50 } }
+          ]
+        },
+        after_disaster: {
+          id: "after_disaster",
+          texts: [
+            "博城灾难...我不想提...",
+            "那天晚上太可怕了，到处都是妖魔，到处都是惨叫声...",
+            "我爸妈...他们没逃出来...",
+            "（王三胖的声音哽咽了，这个平时嘻嘻哈哈的胖子，此刻像个无助的孩子）",
+            "但我活下来了。我得好好活着，不能让他们白死。"
+          ],
+          effects: { opinion: 10, trust: 10, familiarity: 10 },
+          choices: [
+            { text: "节哀...我会陪你一起走下去。", next: "default", effects: { opinion: 5, trust: 5 } },
+            { text: "黑教廷必须付出代价。", next: "default", effects: { opinion: 3, trust: 3 } },
+            { text: "好好活着，就是对他们最好的告慰。", next: "default", effects: { opinion: 8, trust: 5 } }
+          ]
         }
       }
     },
     growth: {
+      growthRate: 80,
       base: {
         level: 2,
         elements: ["earth"],
@@ -7803,12 +7845,18 @@ level: 2,
       },
       events: [
         {
+          after: "xuefeng_training",
+          level: 5,
+          addSkills: ["earth_shield"],
+          title: "土系法师（历练后）",
+        },
+        {
           after: "bocheng_disaster",
           level: 10,
           addSkills: ["earth_shield"],
-          title: "土系法师",
+          title: "博城幸存者",
         }
-      ],
+      ]
     }
   },
   er_tuzi: {
