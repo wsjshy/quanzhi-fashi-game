@@ -3,6 +3,8 @@
  * 贴近原著设计：星子引导、元素克制、精神力、打断机制
  */
 
+import { BattleUtils } from './battle-utils.js';
+
 export const BattleSystem = {
     // 战斗状态
     active: false,
@@ -321,34 +323,14 @@ export const BattleSystem = {
      * 元素克制判断 - 攻击方是否克制防守方
      */
     isElementStrong(attackElement, defendElement) {
-        const strongAgainst = {
-            fire: 'ice',      // 火克冰
-            ice: 'wind',      // 冰克风
-            wind: 'earth',    // 风克土
-            earth: 'thunder', // 土克雷
-            thunder: 'water', // 雷克水
-            water: 'fire',    // 水克火
-            light: 'dark',    // 光克暗
-            dark: 'light'     // 暗克光
-        };
-        return strongAgainst[attackElement] === defendElement;
+        return BattleUtils.isElementStrong(attackElement, defendElement);
     },
     
     /**
      * 元素被克判断 - 攻击方是否被防守方克制
      */
     isElementWeak(attackElement, defendElement) {
-        const weakAgainst = {
-            fire: 'water',
-            ice: 'fire',
-            wind: 'ice',
-            earth: 'wind',
-            thunder: 'earth',
-            water: 'thunder',
-            light: 'dark',
-            dark: 'light'
-        };
-        return weakAgainst[attackElement] === defendElement;
+        return BattleUtils.isElementWeak(attackElement, defendElement);
     },
     
     /**
@@ -4028,12 +4010,7 @@ export const BattleSystem = {
 
     // v1.8.0: 获取元素中文名
     getElementName(element) {
-        const names = {
-            fire: '火系', ice: '冰系', thunder: '雷系', earth: '土系',
-            wind: '风系', water: '水系', light: '光系', dark: '暗影系',
-            heal: '治愈系', plant: '植物系', summon: '召唤系'
-        };
-        return names[element] || element;
+        return BattleUtils.getElementName(element);
     },
 
     enemyTurn() {
