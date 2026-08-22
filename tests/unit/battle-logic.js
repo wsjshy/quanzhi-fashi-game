@@ -38,6 +38,7 @@ function loadBattleSystem() {
         'battle-add-status.js',
         'battle-check-end.js',
         'battle-apply-status.js',
+        'battle-spirit-seed.js',
     ];
     
     let depCode = '';
@@ -85,6 +86,7 @@ function loadBattleSystem() {
         var addStatusEffectImpl = addStatusEffect;
         var checkBattleEndImpl = checkBattleEnd;
         var applyStatusEffectsImpl = applyStatusEffects;
+        var applySpiritSeedEffectsImpl = applySpiritSeedEffects;
     `;
     const fullCode = depCode + '\n' + aliasCode + '\n' + code;
     
