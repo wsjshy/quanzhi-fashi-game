@@ -24,8 +24,13 @@ if (!fs.existsSync(distDir)) {
 const distIndex = path.join(distDir, 'index.html');
 const rootIndex = path.join(rootDir, 'index.html');
 if (fs.existsSync(distIndex)) {
-  fs.copyFileSync(distIndex, rootIndex);
-  console.log('✓ 已复制 index.html');
+  let indexContent = fs.readFileSync(distIndex, 'utf8');
+  // 移除type="module"和crossorigin属性，使index.html可以在file://协议下直接打开
+  // Vite构建后默认使用ES Modules，在file://协议下Chrome会因CORS策略阻止加载
+  indexContent = indexContent.replace(/<script type="module" crossorigin src="\.\/assets\//g, '<script src="./assets/');
+  indexContent = indexContent.replace(/<script type="module" crossorigin src="\/assets\//g, '<script src="./assets/');
+  fs.writeFileSync(rootIndex, indexContent, 'utf8');
+  console.log('✓ 已复制 index.html（已移除ES Modules限制，可直接双击打开）');
 }
 
 // 复制assets目录

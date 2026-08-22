@@ -7,7 +7,14 @@ export default defineConfig({
         outDir: 'dist',
         emptyOutDir: true,
         rollupOptions: {
-            input: 'index.html'
+            input: 'index.html',
+            output: {
+                // 构建为IIFE格式，不使用ES Modules，使index.html可以在file://协议下直接双击打开
+                format: 'iife',
+                entryFileNames: 'assets/[name]-[hash].js',
+                chunkFileNames: 'assets/[name]-[hash].js',
+                assetFileNames: 'assets/[name]-[hash].[ext]'
+            }
         }
     },
     server: {
