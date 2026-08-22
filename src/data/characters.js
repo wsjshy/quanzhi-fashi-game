@@ -3238,6 +3238,18 @@ export const DataCharacters = {
       },
       events: [
         {
+          after: "annual_exam",
+          level: 14,
+          addSkills: ["fire_burst"],
+          title: "天澜魔法高中实习老师",
+        },
+        {
+          after: "xuefeng_training",
+          level: 18,
+          addSkills: ["fire_fist"],
+          title: "天澜魔法高中实习老师",
+        },
+        {
           after: "bocheng_disaster",
           level: 22,
           addSkills: ["fire_fist"],
@@ -7115,6 +7127,18 @@ export const DataCharacters = {
         growthType: "mage",
       },
       events: [
+        {
+          after: "annual_exam",
+          level: 7,
+          addSkills: ["thunder_burst"],
+          title: "天澜魔法高中学生",
+        },
+        {
+          after: "xuefeng_training",
+          level: 9,
+          addSkills: ["thunder_bolt"],
+          title: "天澜魔法高中学生",
+        },
         {
           after: "bocheng_disaster",
           level: 12,
