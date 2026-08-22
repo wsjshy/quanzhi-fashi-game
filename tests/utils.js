@@ -5,11 +5,15 @@
  * 零外部依赖，纯Node.js运行
  */
 
-const fs = require('fs');
-const path = require('path');
-const vm = require('vm');
+import fs from 'fs';
+import path from 'path';
+import vm from 'vm';
+import { fileURLToPath } from 'url';
 
-const DATA_DIR = path.join(__dirname, '..', 'engine', 'data');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const DATA_DIR = path.join(__dirname, '..', 'src', 'data');
 
 /**
  * 加载数据文件，返回全局变量对象
@@ -21,8 +25,14 @@ function loadDataFile(filename) {
         throw new Error(`数据文件不存在: ${filename}`);
     }
     let code = fs.readFileSync(filePath, 'utf-8');
-    // const声明的变量不会成为vm context属性，替换为var
+    // ES模块：移除import语句和export default
+    code = code.replace(/^import\s+.*$/gm, '');
+    code = code.replace(/^export\s+default\s+.*$/gm, '');
+    // export const / const声明的变量不会成为vm context属性，替换为var
+    code = code.replace(/^export\s+const\s+(\w+)\s*=/gm, 'var $1 =');
     code = code.replace(/^const\s+(\w+)\s*=/gm, 'var $1 =');
+    // 移除window挂载代码
+    code = code.replace(/if\s*\(typeof\s+window\s*!==\s*'undefined'\)[\s\S]*?\}/g, '');
     const sandbox = {};
     vm.createContext(sandbox);
     vm.runInContext(code, sandbox);
@@ -184,7 +194,7 @@ class TestResult {
     }
 }
 
-module.exports = {
+export {
     loadDataFile,
     loadAllData,
     TestResult,

@@ -1,11 +1,39 @@
 # TODO - 全职法师游戏
 
-> 当前版本：v2.9.6（UI视觉升级） | 下一版本：**v2.9.7 待规划** | 最后更新：2026-08-22
+> 当前版本：v3.0.0（架构改造） | 下一版本：**v3.0.1 核心文件拆分** | 最后更新：2026-08-22
 > 状态说明：[ ]待做 [~]进行中 [x]完成 [❌]已废弃
 > 唯一入口：[AGENTS.md](AGENTS.md)
 > 小说原文：全职法师.txt（项目根目录，涉及小说内容必须先Grep验证）
 
 ---
+
+## v3.0.0 架构改造：Vite + ES Modules（进行中）
+
+**目标**：解决无模块化、核心文件过大、逻辑UI耦合等扩展性瓶颈，支撑后续大规模内容扩展
+
+### 阶段一：Vite + ES Modules 模块化（已完成）
+- [x] 创建设计文档 `docs/version-design/v3.0.0_架构改造设计.md`
+- [x] 创建package.json（type:module）和vite.config.js
+- [x] 迁移20个数据文件到src/data/（const→export const）
+- [x] 迁移36个引擎文件到src/engine/（export const + window兼容挂载）
+- [x] 创建src/main.js入口（按依赖顺序import，UI.init→Game.init）
+- [x] 创建新index.html（单入口module script + 加载屏）
+- [x] 备份旧版index.legacy.html
+- [x] 修复运行时错误：UI.init未调用、数据变量未挂window、额外const未export
+- [x] 适配全部测试文件为ES Modules（require→import，__dirname定义）
+- [x] L1-L3自动化测试全部通过（128通过，0失败）
+- [x] vite build构建成功（59模块，1.7MB JS）
+- [ ] 提交代码到gitee+github
+
+### 阶段二：核心文件拆分（待开始）
+- [ ] battle.js拆分（8471行→战斗逻辑/UI渲染/AI/效果/事件）
+- [ ] ui.js拆分（7485行→各界面渲染模块）
+- [ ] game.js拆分（5211行→主流程/状态管理/事件分发）
+- [ ] 删除engine/旧目录
+
+### 阶段三：状态管理与存档升级（待开始）
+- [ ] 引入集中式状态管理（替代Player.save()手动序列化60+字段）
+- [ ] 存档格式版本化与迁移机制
 
 ## v2.9.6 UI视觉升级（已完成）
 
@@ -21,11 +49,13 @@
 - [x] 已推送到gitee+github
 
 ### 后续可优化（非阻塞）
-- [ ] 生图生成战斗背景图（按地点/妖魔类型）
-- [ ] 角色立绘图片替代emoji
+- [x] 生图生成战斗背景图（按地点/妖魔类型）— v2.9.6.3完成，6张系别背景+动态切换
+- [x] 角色立绘图片替代emoji — v2.9.6.4完成，3张NPC立绘替换
 - [ ] 技能特效粒子动画
 - [ ] 界面切换过渡动画
 - [ ] 抽离CSS设计系统（CSS变量+类名）
+- [ ] 玩家角色立绘（当前战斗用emoji，可生图替换）
+- [ ] 妖魔立绘（当前战斗用emoji，可生图替换）
 
 ---
 

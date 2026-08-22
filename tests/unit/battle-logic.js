@@ -7,15 +7,24 @@
  * 运行：node tests/battle-logic.js
  */
 
-const fs = require('fs');
-const path = require('path');
-const vm = require('vm');
-const { TestResult } = require('../utils');
+import fs from 'fs';
+import path from 'path';
+import vm from 'vm';
+import { fileURLToPath } from 'url';
+import { TestResult } from '../utils.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function loadBattleSystem() {
-    const battleCode = fs.readFileSync(path.join(__dirname, '..', '..', 'engine', 'battle.js'), 'utf-8');
-    // 替换const为var，使其在沙箱中可访问
-    const code = battleCode.replace(/^const\s+BattleSystem\s*=/m, 'var BattleSystem =');
+    const battleCode = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'engine', 'battle.js'), 'utf-8');
+    // ES模块：移除import和export，替换const为var，使其在沙箱中可访问
+    let code = battleCode.replace(/^import\s+.*$/gm, '');
+    code = code.replace(/^export\s+default\s+.*$/gm, '');
+    code = code.replace(/^export\s+const\s+(\w+)\s*=/gm, 'var $1 =');
+    code = code.replace(/^const\s+(\w+)\s*=/gm, 'var $1 =');
+    // 移除window挂载代码
+    code = code.replace(/if\s*\(typeof\s+window\s*!==\s*'undefined'\)[\s\S]*?\}/g, '');
     
     const sandbox = {
         console: console,
@@ -390,9 +399,4 @@ function runBattleLogicTests() {
     return result.report();
 }
 
-if (require.main === module) {
-    const report = runBattleLogicTests();
-    process.exit(report.failed > 0 ? 1 : 0);
-}
-
-module.exports = { runBattleLogicTests };
+export { runBattleLogicTests };

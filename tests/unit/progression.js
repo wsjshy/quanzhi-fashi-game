@@ -1,4 +1,4 @@
-/**
+﻿/**
  * L3 成长流程测试
  * 
  * 轻量状态机测试，不依赖jsdom
@@ -7,10 +7,13 @@
  * 运行：node tests/progression.js
  */
 
-const fs = require('fs');
-const path = require('path');
-const vm = require('vm');
-const { TestResult } = require('../utils');
+import fs from 'fs';
+import path from 'path';
+import vm from 'vm';
+import { TestResult } from '../utils.js';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function loadPlayerSystem() {
     const playerCode = fs.readFileSync(path.join(__dirname, '..', '..', 'engine', 'player.js'), 'utf-8');
@@ -217,9 +220,4 @@ function runProgressionTests() {
     return result.report();
 }
 
-if (require.main === module) {
-    const report = runProgressionTests();
-    process.exit(report.failed > 0 ? 1 : 0);
-}
-
-module.exports = { runProgressionTests };
+export { runProgressionTests };

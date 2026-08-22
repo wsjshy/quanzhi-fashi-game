@@ -34,3 +34,7 @@ engine/story.js
 .netlify
 
 .vercel
+
+# Vite / Node
+node_modules/
+dist/

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * L2.5 天赋战斗状态系统单元测试
  *
  * 测试：资源积累/消耗、形态切换、触发状态、主动技能冷却
@@ -6,10 +6,13 @@
  * 运行：node tests/unit/talent-combat.js
  */
 
-const fs = require('fs');
-const path = require('path');
-const vm = require('vm');
-const { TestResult } = require('../utils');
+import fs from 'fs';
+import path from 'path';
+import vm from 'vm';
+import { TestResult } from '../utils.js';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function loadTalentCombatSystem() {
     const code = fs.readFileSync(path.join(__dirname, '..', '..', 'engine', 'talent-combat.js'), 'utf-8');
@@ -182,8 +185,4 @@ function runTests() {
     return result.report();
 }
 
-if (require.main === module) {
-    runTests();
-}
-
-module.exports = { runTests };
+export { runTests };

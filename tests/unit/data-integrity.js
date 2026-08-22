@@ -1,4 +1,4 @@
-/**
+﻿/**
  * L1 数据完整性测试
  * 
  * 零依赖，纯Node.js运行
@@ -7,7 +7,7 @@
  * 运行：node tests/data-integrity.js
  */
 
-const { loadAllData, TestResult } = require('../utils');
+import { loadAllData, TestResult } from '../utils.js';
 
 function runDataIntegrityTests() {
     console.log('\n📦 L1 数据完整性测试');
@@ -319,10 +319,4 @@ function runDataIntegrityTests() {
     return result.report();
 }
 
-// 如果直接运行此文件，执行测试
-if (require.main === module) {
-    const report = runDataIntegrityTests();
-    process.exit(report.failed > 0 ? 1 : 0);
-}
-
-module.exports = { runDataIntegrityTests };
+export { runDataIntegrityTests };

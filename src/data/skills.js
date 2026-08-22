@@ -1,0 +1,5396 @@
+/**
+ * 技能数据
+ * 从 game-data.js 拆分而来
+ */
+
+export const DataSkills = {
+  basic_attack: {
+    id: "basic_attack",
+    name: "普通攻击",
+    description: "基础的物理攻击",
+    element: "neutral",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 0,
+    damageMultiplier: 1,
+    hitRate: 0.95,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶"
+  },
+  fire_bolt: {
+    id: "fire_bolt",
+    name: "火滋·灼烧",
+    description: "初阶火系魔法，发射一枚火球，造成燃烧效果（可叠加3层，层数越高持续伤害越高）",
+    element: "fire",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 15,
+    damageMultiplier: 1.2,
+    hitRate: 0.9,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "燃烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 6,
+        duration: 3,
+        chance: 0.8,
+        stacks: 1,
+        maxStacks: 3
+      }
+    ]
+  },
+  fire_rain: {
+    id: "fire_rain",
+    name: "火滋·焚骨",
+    description: "初阶火系二级魔法，火焰灼烧骨骼，造成持续燃烧伤害",
+    element: "fire",
+    type: "damage",
+    mpCost: 15,
+    baseDamage: 30,
+    damageMultiplier: 1.3,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "燃烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 6,
+        duration: 3,
+        chance: 0.7,
+        stacks: 1,
+        maxStacks: 3
+      }
+    ]
+  },
+  ice_spike: {
+    id: "ice_spike",
+    name: "冰蔓·冻迟",
+    description: "初阶冰系魔法，发射冰刺，累积冻结值。冻结值满100时敌人被冻结1回合，冻结中受火系伤害×2",
+    element: "ice",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 12,
+    damageMultiplier: 1.1,
+    hitRate: 0.92,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "冰冻",
+        type: "freeze",
+        element: "ice",
+        value: 35,
+        duration: 3,
+        chance: 1.0
+      }
+    ]
+  },
+  ice_shield: {
+    id: "ice_shield",
+    name: "冰蔓·冰铠",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "初阶冰系防御魔法，用冰甲保护自己，生成40点护盾并提升防御",
+    element: "ice",
+    type: "buff",
+    mpCost: 10,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "冰铠护盾",
+        type: "shield",
+        element: "ice",
+        value: 40,
+        duration: 99,
+        chance: 1
+      },
+      {
+        name: "冰甲",
+        type: "defense_up",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          defense: 8
+        }
+      }
+    ]
+  },
+  thunder_bolt: {
+    id: "thunder_bolt",
+    name: "雷印·蟒痕",
+    description: "初阶雷系魔法，释放雷电，高暴击，有几率麻痹敌人使其跳过回合。对湿润目标伤害×2（感电）",
+    element: "thunder",
+    type: "damage",
+    mpCost: 10,
+    baseDamage: 18,
+    damageMultiplier: 1.15,
+    hitRate: 0.88,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "麻痹",
+        type: "stun",
+        element: "thunder",
+        duration: 1,
+        chance: 0.3
+      }
+    ]
+  },
+  thunder_chain: {
+    id: "thunder_chain",
+    name: "雷印·狂策",
+    description: "初阶雷系二级魔法，雷电化为长鞭抽打敌人，伤害更高",
+    element: "thunder",
+    type: "damage",
+    mpCost: 18,
+    baseDamage: 35,
+    damageMultiplier: 1.2,
+    hitRate: 0.85,
+    critRate: 0.2,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "麻痹",
+        type: "stun",
+        element: "thunder",
+        duration: 1,
+        chance: 0.4
+      }
+    ]
+  },
+  earth_shield: {
+    id: "earth_shield",
+    name: "地波·岩盾",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "初阶土系防御魔法，召唤岩石护盾，吸收50点伤害。护盾存在时防御翻倍",
+    element: "earth",
+    type: "buff",
+    mpCost: 8,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 2,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "岩盾",
+        type: "shield",
+        element: "earth",
+        value: 50,
+        duration: 99,
+        chance: 1
+      },
+      {
+        name: "岩盾防御",
+        type: "defense_up",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          defense: 10
+        }
+      }
+    ]
+  },
+  earth_spike: {
+    id: "earth_spike",
+    name: "地波·陷落",
+    description: "初阶土系攻击魔法，从地下升起尖刺",
+    element: "earth",
+    type: "damage",
+    mpCost: 9,
+    baseDamage: 14,
+    damageMultiplier: 1.1,
+    hitRate: 0.9,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "地刺减速",
+        type: "slow",
+        element: "earth",
+        duration: 2,
+        chance: 0.5,
+        statModifiers: {
+          speed: -6
+        }
+      }
+    ]
+  },
+  wind_blade: {
+    id: "wind_blade",
+    name: "风轨·疾行",
+    description: "初阶风系魔法，发射风刃，高命中",
+    element: "wind",
+    type: "damage",
+    mpCost: 7,
+    baseDamage: 10,
+    damageMultiplier: 1.05,
+    hitRate: 0.98,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "风刃减速",
+        type: "slow",
+        element: "wind",
+        duration: 2,
+        chance: 0.4,
+        statModifiers: {
+          speed: -4
+        }
+      }
+    ]
+  },
+  wind_speed: {
+    id: "wind_speed",
+    name: "风轨·闪步",
+    description: "初阶风系辅助魔法，提升自身速度和闪避率，风系法师的核心生存技能",
+    element: "wind",
+    type: "buff",
+    mpCost: 8,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "风之加速",
+        type: "speed_up",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          speed: 8
+        }
+      },
+      {
+        name: "风之闪避",
+        type: "evasion_up",
+        duration: 3,
+        chance: 1,
+        evasionMod: 0.25
+      }
+    ]
+  },
+  water_heal: {
+    id: "water_heal",
+    name: "水御·化解",
+    description: "初阶水系魔法，恢复生命值",
+    element: "water",
+    type: "heal",
+    mpCost: 10,
+    baseHeal: 30,
+    healMultiplier: 1,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 0,
+    tier: "初阶"
+  },
+  water_chain: {
+    id: "water_chain",
+    name: "水御·守护",
+    description: "初阶水系控制魔法，用水链束缚敌人并使其湿润。湿润目标受雷系伤害×2（感电）",
+    element: "water",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 8,
+    damageMultiplier: 1,
+    hitRate: 0.85,
+    critRate: 0.03,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "湿润",
+        type: "wet",
+        element: "water",
+        duration: 3,
+        chance: 1.0
+      },
+      {
+        name: "束缚",
+        type: "slow",
+        duration: 2,
+        chance: 0.6,
+        statModifiers: {
+          speed: -5
+        }
+      }
+    ]
+  },
+  light_ray: {
+    id: "light_ray",
+    name: "光耀·圣光",
+    description: "初阶光系魔法，释放圣光，对暗影系有额外伤害",
+    element: "light",
+    type: "damage",
+    mpCost: 9,
+    baseDamage: 14,
+    damageMultiplier: 1.1,
+    hitRate: 0.95,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "致盲",
+        type: "slow",
+        element: "light",
+        duration: 2,
+        chance: 0.3,
+        hitRateMod: -0.2
+      }
+    ]
+  },
+  light_blind: {
+    id: "light_blind",
+    name: "光耀·失明",
+    description: "光系初阶魔法，近距离爆发强光，高概率使目标失明。对视觉依赖型敌人效果显著，对虫族等视觉弱的敌人效果减半。",
+    element: "light",
+    type: "debuff",
+    mpCost: 12,
+    baseDamage: 0,
+    damageMultiplier: 0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "光耀失明",
+        type: "blind",
+        element: "light",
+        duration: 3,
+        chance: 0.85,
+        hitRateMod: -0.5
+      }
+    ],
+    isCanon: true,
+    source: "第152章 谢文峰使用光耀·失明"
+  },
+
+  light_purify: {
+    id: "light_purify",
+    name: "光耀·净化",
+    description: "光系初阶一级魔法，弹丸状净化之光。对黑暗生物、寄生妖魔有奇效，命中后造成圣灼伤害并净化寄生状态。",
+    element: "light",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 15,
+    damageMultiplier: 1.0,
+    hitRate: 0.9,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 1,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "圣灼",
+        type: "holy_burn",
+        element: "light",
+        duration: 2,
+        chance: 0.8,
+        dotDamage: 8,
+        vsDarkBonus: 3.0
+      }
+    ],
+    isCanon: true,
+    source: "第188章 赵满延使用光耀·净化秒杀鳞皮妖兵"
+  },
+
+  dark_bolt: {
+    id: "dark_bolt",
+    name: "遁影·穿梭",
+    description: "初阶暗影系魔法，暗影弹，施加诅咒效果（可叠加2层，每层降低攻击和防御）",
+    element: "dark",
+    type: "damage",
+    mpCost: 9,
+    baseDamage: 16,
+    damageMultiplier: 1.1,
+    hitRate: 0.88,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "诅咒",
+        type: "curse",
+        element: "dark",
+        duration: 3,
+        chance: 0.7,
+        stacks: 1,
+        maxStacks: 2,
+        statModifiers: {
+          attack: -5,
+          defense: -5
+        }
+      }
+    ]
+  },
+
+  shadow_spike: {
+    id: "shadow_spike",
+    name: "巨影钉",
+    description: "暗影系中阶魔法，凝聚暗影尖钉刺向敌人，造成暗影伤害并束缚目标。在阴影环境中威力提升。",
+    element: "dark",
+    type: "damage",
+    mpCost: 25,
+    baseDamage: 45,
+    damageMultiplier: 1.4,
+    hitRate: 0.9,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "中阶",
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "影钉束缚",
+        type: "bind",
+        element: "dark",
+        duration: 2,
+        chance: 0.6
+      }
+    ],
+    isCanon: true,
+    source: "第181章 暗影系中阶技能巨影钉"
+  },
+
+  light_shield: {
+    id: "light_shield",
+    name: "光耀·圣盾",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "初阶光系防御魔法，用圣光凝聚护盾，净化所有负面状态并提升防御。光系核心生存技能",
+    element: "light",
+    type: "buff",
+    mpCost: 12,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "净化",
+        type: "cleanse",
+        element: "light",
+        chance: 1.0
+      },
+      {
+        name: "圣盾",
+        type: "defense_up",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          defense: 12
+        }
+      }
+    ]
+  },
+  dark_cloak: {
+    id: "dark_cloak",
+    name: "遁影·潜伏",
+    description: "初阶暗影系辅助魔法，用暗影包裹自身，提升闪避和暴击",
+    element: "dark",
+    type: "buff",
+    mpCost: 10,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "暗影潜行",
+        type: "evasion_up",
+        element: "dark",
+        duration: 3,
+        chance: 1,
+        evasionMod: 0.3
+      },
+      {
+        name: "暗影暴击",
+        type: "speed_up",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          speed: 5
+        }
+      }
+    ]
+  },
+  fire_burst: {
+    id: "fire_burst",
+    name: "火滋·爆裂",
+    description: "初阶火系三级魔法，火球爆炸造成大范围伤害，高灼烧概率",
+    element: "fire",
+    type: "damage",
+    mpCost: 22,
+    baseDamage: 45,
+    damageMultiplier: 1.4,
+    hitRate: 0.85,
+    critRate: 0.12,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "燃烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 8,
+        duration: 3,
+        chance: 0.8,
+        stacks: 2,
+        maxStacks: 3
+      }
+    ]
+  },
+  ice_storm: {
+    id: "ice_storm",
+    name: "冰蔓·覆盖",
+    description: "初阶冰系三级魔法，召唤冰风暴，高伤害并有几率冻结",
+    element: "ice",
+    type: "damage",
+    mpCost: 20,
+    baseDamage: 38,
+    damageMultiplier: 1.3,
+    hitRate: 0.88,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "冰冻",
+        type: "freeze",
+        element: "ice",
+        value: 60,
+        duration: 3,
+        chance: 1.0
+      }
+    ]
+  },
+  thunder_strike: {
+    id: "thunder_strike",
+    name: "雷印·怒击",
+    description: "初阶雷系三级魔法，强力雷击，极高暴击率",
+    element: "thunder",
+    type: "damage",
+    mpCost: 25,
+    baseDamage: 50,
+    damageMultiplier: 1.35,
+    hitRate: 0.85,
+    critRate: 0.25,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "麻痹",
+        type: "stun",
+        element: "thunder",
+        duration: 1,
+        chance: 0.5
+      }
+    ]
+  },
+  earth_quake: {
+    id: "earth_quake",
+    name: "地波·迟缓",
+    description: "初阶土系三级魔法，引发地震，造成伤害并降低敌人速度",
+    element: "earth",
+    type: "damage",
+    mpCost: 18,
+    baseDamage: 35,
+    damageMultiplier: 1.25,
+    hitRate: 0.9,
+    critRate: 0.06,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "震荡",
+        type: "slow",
+        element: "earth",
+        duration: 3,
+        chance: 0.7,
+        statModifiers: {
+          speed: -8
+        }
+      }
+    ]
+  },
+  wind_tornado: {
+    id: "wind_tornado",
+    name: "风轨·飘影",
+    description: "初阶风系三级魔法，召唤龙卷风，高命中多段伤害",
+    element: "wind",
+    type: "damage",
+    mpCost: 20,
+    baseDamage: 40,
+    damageMultiplier: 1.25,
+    hitRate: 0.95,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "龙卷减速",
+        type: "slow",
+        element: "wind",
+        duration: 3,
+        chance: 0.8,
+        statModifiers: {
+          speed: -10
+        }
+      }
+    ]
+  },
+
+  // ===== 植物系技能 =====
+  plant_vine_bind: {
+    id: "plant_vine_bind",
+    name: "藤变·缠绕",
+    description: "植物系初阶魔法，从地面催生藤蔓束缚敌人，使其无法行动。对力量型敌人可被挣脱。",
+    element: "plant",
+    type: "control",
+    mpCost: 10,
+    baseDamage: 5,
+    damageMultiplier: 0.5,
+    hitRate: 0.85,
+    critRate: 0,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "藤蔓束缚",
+        type: "bind",
+        element: "plant",
+        duration: 2,
+        chance: 0.75,
+        canBeBrokenByStrength: true
+      }
+    ],
+    isCanon: true,
+    source: "第161章 庄离风使用藤变·缠绕"
+  },
+  plant_thorn: {
+    id: "plant_thorn",
+    name: "藤变·荆棘",
+    description: "植物系初阶二级魔法，藤蔓长满尖刺，对敌人造成伤害并附加中毒效果。攻击被束缚的目标时伤害提升50%。",
+    element: "plant",
+    type: "damage",
+    mpCost: 12,
+    baseDamage: 18,
+    damageMultiplier: 1.1,
+    hitRate: 0.88,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "中毒",
+        type: "poison",
+        element: "plant",
+        dotDamage: 5,
+        duration: 3,
+        chance: 0.7
+      }
+    ]
+  },
+  plant_forest: {
+    id: "plant_forest",
+    name: "藤变·根须",
+    description: "植物系初阶三级魔法，地面涌出大量根须缠绕范围内所有敌人，造成伤害并大幅降低其速度。",
+    element: "plant",
+    type: "damage",
+    mpCost: 18,
+    baseDamage: 25,
+    damageMultiplier: 1.2,
+    hitRate: 0.85,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "根须缠绕",
+        type: "slow",
+        element: "plant",
+        duration: 3,
+        chance: 0.8,
+        statModifiers: {
+          speed: -8
+        }
+      }
+    ]
+  },
+
+  plant_forest_prison: {
+    id: "plant_forest_prison",
+    name: "坤之森·囚牢",
+    description: "植物系中阶魔法，投下种子催生大片怪树怪藤形成森林囚牢，追踪生命封锁一切位移。暗影系可借阴影穿行。",
+    element: "plant",
+    type: "control",
+    mpCost: 30,
+    baseDamage: 10,
+    damageMultiplier: 0.3,
+    hitRate: 0.95,
+    critRate: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "中阶",
+    statusEffects: [
+      {
+        name: "森之囚牢",
+        type: "bind",
+        element: "plant",
+        duration: 4,
+        chance: 0.9,
+        blocksMovement: true,
+        blocksDodge: true,
+        shadowCanPass: true
+      }
+    ],
+    isCanon: true,
+    source: "第167章 牧奴娇使用坤之森·囚牢"
+  },
+
+  water_wave: {
+    id: "water_wave",
+    name: "水御·循环",
+    description: "初阶水系三级魔法，巨浪冲击造成伤害并恢复自身生命",
+    element: "water",
+    type: "damage",
+    mpCost: 18,
+    baseDamage: 30,
+    damageMultiplier: 1.2,
+    hitRate: 0.9,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "湿润",
+        type: "wet",
+        element: "water",
+        duration: 3,
+        chance: 1.0
+      }
+    ]
+  },
+  light_judgment: {
+    id: "light_judgment",
+    name: "光耀·裁决",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "初阶光系三级魔法，圣光裁决，对暗影和妖魔系有巨额伤害",
+    element: "light",
+    type: "damage",
+    mpCost: 22,
+    baseDamage: 42,
+    damageMultiplier: 1.35,
+    hitRate: 0.92,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "裁决致盲",
+        type: "slow",
+        element: "light",
+        duration: 2,
+        chance: 0.5,
+        hitRateMod: -0.3
+      }
+    ]
+  },
+  dark_curse: {
+    id: "dark_curse",
+    name: "遁影·巨影钉",
+    description: "初阶暗影系三级魔法，暗影诅咒，持续削弱敌人",
+    element: "dark",
+    type: "damage",
+    mpCost: 20,
+    baseDamage: 35,
+    damageMultiplier: 1.2,
+    hitRate: 0.88,
+    critRate: 0.12,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "诅咒",
+        type: "curse",
+        element: "dark",
+        duration: 4,
+        chance: 0.9,
+        stacks: 2,
+        maxStacks: 3,
+        statModifiers: {
+          attack: -6,
+          defense: -6
+        }
+      }
+    ]
+  },
+  fire_burn_bone: {
+    id: "fire_burn_bone",
+    name: "火滋·炎蚀",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "初阶火系特殊魔法，火焰侵入敌人体内燃烧骨骼，造成高额持续伤害，可穿透皮毛防御。",
+    element: "fire",
+    type: "damage",
+    mpCost: 18,
+    baseDamage: 45,
+    damageMultiplier: 1.5,
+    hitRate: 0.9,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    ignoreDefense: 0.3,
+    statusEffects: [
+      {
+        name: "燃烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 8,
+        duration: 3,
+        chance: 0.9,
+        stacks: 2,
+        maxStacks: 3
+      }
+    ]
+  },
+  earth_shift: {
+    id: "earth_shift",
+    name: "地波·挪移",
+    description: "初阶土系魔法，地面产生涟漪，使用者可短距离瞬移，躲避攻击。",
+    element: "earth",
+    type: "buff",
+    mpCost: 15,
+    targetType: "self",
+    cooldown: 2,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "挪移闪避",
+        type: "evasion_up",
+        element: "earth",
+        duration: 2,
+        chance: 1,
+        evasionMod: 0.4
+      },
+      {
+        name: "挪移加速",
+        type: "speed_up",
+        duration: 2,
+        chance: 1,
+        statModifiers: {
+          speed: 10
+        }
+      }
+    ]
+  },
+  wild_charge: {
+    id: "wild_charge",
+    name: "狂野冲撞",
+    description: "幽狼兽的狂暴冲撞技能，高速冲向敌人造成重创，有几率击晕。",
+    element: "neutral",
+    type: "damage",
+    mpCost: 10,
+    baseDamage: 30,
+    damageMultiplier: 1.3,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "击晕",
+        type: "stun",
+        duration: 1,
+        chance: 0.3
+      }
+    ]
+  },
+  vine_bind: {
+    id: "vine_bind",
+    name: "藤蔓缠绕",
+    description: "妖藤的藤蔓捆绑技能，束缚敌人使其无法行动，持续造成伤害。",
+    element: "plant",
+    type: "damage",
+    mpCost: 12,
+    baseDamage: 15,
+    damageMultiplier: 1.0,
+    hitRate: 0.8,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "初阶",
+    statusEffects: [
+      {
+        name: "缠绕",
+        type: "stun",
+        duration: 2,
+        chance: 0.6
+      }
+    ]
+  },
+  thorn_shot: {
+    id: "thorn_shot",
+    name: "荆棘射击",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "妖藤发射尖锐荆棘，远程攻击敌人。",
+    element: "plant",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 18,
+    damageMultiplier: 1.1,
+    hitRate: 0.9,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 1,
+    tier: "初阶"
+  },
+  fire_soul: {
+    id: "fire_soul",
+    name: "火滋·烈阳",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "点燃内心的火焰，大幅提升攻击力，持续3回合",
+    element: "fire",
+    type: "buff",
+    mpCost: 12,
+    targetType: "self",
+    cooldown: 4,
+    tier: "初阶",
+    statusEffects: [
+      { name: "烈阳", type: "attack_up", element: "fire", duration: 3, chance: 1.0, statModifiers: { attack: 20 } }
+    ]
+  },
+  ice_frost: {
+    id: "ice_frost",
+    name: "冰蔓·凝结",
+    description: "释放寒气侵蚀敌人，降低其攻击力和速度，持续3回合",
+    element: "ice",
+    type: "debuff",
+    mpCost: 10,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "霜寒", type: "attack_down", element: "ice", duration: 3, chance: 0.9, statModifiers: { attack: -12, speed: -5 } }
+    ]
+  },
+  thunder_drive: {
+    id: "thunder_drive",
+    name: "雷印·励行",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "雷电激发身体潜能，提升速度和命中率，持续3回合",
+    element: "thunder",
+    type: "buff",
+    mpCost: 10,
+    targetType: "self",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "雷励", type: "speed_up", element: "thunder", duration: 3, chance: 1.0, statModifiers: { speed: 15 }, hitRateMod: 0.15 }
+    ]
+  },
+  earth_mud: {
+    id: "earth_mud",
+    name: "土系·泥泞",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "召唤泥泞困住敌人，大幅降低其速度和闪避，持续3回合",
+    element: "earth",
+    type: "debuff",
+    mpCost: 10,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "泥泞", type: "slow", element: "earth", duration: 3, chance: 0.9, statModifiers: { speed: -15 }, evasionMod: -0.2 }
+    ]
+  },
+  wind_barrier: {
+    id: "wind_barrier",
+    name: "风轨·风障",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "在敌人周围制造乱流，降低其命中率，持续3回合",
+    element: "wind",
+    type: "debuff",
+    mpCost: 8,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "风障", type: "accuracy_down", element: "wind", duration: 3, chance: 0.85, hitRateMod: -0.25 }
+    ]
+  },
+  water_moist: {
+    id: "water_moist",
+    name: "水系·水润",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "水元素包裹全身，提升防御并每回合恢复少量HP，持续3回合",
+    element: "water",
+    type: "buff",
+    mpCost: 12,
+    targetType: "self",
+    cooldown: 4,
+    tier: "初阶",
+    statusEffects: [
+      { name: "水润", type: "defense_up", element: "water", duration: 3, chance: 1.0, statModifiers: { defense: 15 }, regen: 8 }
+    ]
+  },
+  light_blessing: {
+    id: "light_blessing",
+    name: "光耀·祝福",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "圣光加持，同时提升攻击力和防御力，持续3回合",
+    element: "light",
+    type: "buff",
+    mpCost: 15,
+    targetType: "self",
+    cooldown: 4,
+    tier: "初阶",
+    statusEffects: [
+      { name: "圣光祝福", type: "attack_up", element: "light", duration: 3, chance: 1.0, statModifiers: { attack: 12, defense: 12 } }
+    ]
+  },
+  dark_weakness: {
+    id: "dark_weakness",
+    name: "暗影·虚弱诅咒",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "暗影力量侵蚀敌人，同时降低其攻击力和防御力，持续3回合",
+    element: "dark",
+    type: "debuff",
+    mpCost: 12,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "初阶",
+    statusEffects: [
+      { name: "虚弱诅咒", type: "curse", element: "dark", duration: 3, chance: 0.85, stacks: 1, maxStacks: 2, statModifiers: { attack: -10, defense: -10 } }
+    ]
+  },
+  heal_light: {
+    id: "heal_light",
+    name: "治愈·微光",
+    description: "温和的治愈之光，恢复30点生命值",
+    element: "heal",
+    type: "heal",
+    mpCost: 8,
+    baseHeal: 30,
+    targetType: "self",
+    cooldown: 0,
+    tier: "初阶"
+  },
+  heal_holy: {
+    id: "heal_holy",
+    name: "治愈·圣光",
+    description: "神圣的治愈之光，恢复60点生命值",
+    element: "heal",
+    type: "heal",
+    mpCost: 15,
+    baseHeal: 60,
+    targetType: "self",
+    cooldown: 2,
+    tier: "初阶"
+  },
+  heal_cleanse: {
+    id: "heal_cleanse",
+    name: "治愈·净化",
+    description: "清除所有负面状态，并恢复20点生命值",
+    element: "heal",
+    type: "heal",
+    mpCost: 12,
+    baseHeal: 20,
+    targetType: "self",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "净化", type: "cleanse", element: "heal", chance: 1.0 }
+    ]
+  },
+  heal_revive: {
+    id: "heal_revive",
+    name: "治愈·复苏",
+    description: "恢复40点生命值，并在接下来3回合每回合恢复15点",
+    element: "heal",
+    type: "heal",
+    mpCost: 20,
+    baseHeal: 40,
+    targetType: "self",
+    cooldown: 4,
+    tier: "初阶",
+    statusEffects: [
+      { name: "复苏", type: "regen", element: "heal", duration: 3, chance: 1.0, regen: 15 }
+    ]
+  },
+  summon_beast: {
+    id: "summon_beast",
+    name: "召唤·契约",
+    description: "初阶召唤系魔法，从召唤位面契约一只召唤兽协助战斗。首次使用时随机契约一种召唤兽，之后召唤同一只。",
+    element: "summon",
+    type: "summon",
+    mpCost: 15,
+    targetType: "self",
+    cooldown: 3,
+    tier: "初阶"
+  },
+  summon_strengthen: {
+    id: "summon_strengthen",
+    name: "召唤·强化",
+    description: "用星子之力强化召唤兽，提升其攻击和防御50%，持续3回合",
+    element: "summon",
+    type: "buff",
+    mpCost: 10,
+    targetType: "self",
+    cooldown: 4,
+    tier: "初阶",
+    requiresSummon: true,
+    statusEffects: [
+      { name: "召唤强化", type: "summon_buff", duration: 3, chance: 1.0, attackBonus: 0.5, defenseBonus: 0.5 }
+    ]
+  },
+  summon_rage: {
+    id: "summon_rage",
+    name: "召唤·狂暴",
+    description: "刺激召唤兽进入狂暴状态，攻击翻倍，速度提升，但防御降低50%，持续2回合",
+    element: "summon",
+    type: "buff",
+    mpCost: 12,
+    targetType: "self",
+    cooldown: 5,
+    tier: "初阶",
+    requiresSummon: true,
+    statusEffects: [
+      { name: "召唤狂暴", type: "summon_rage", duration: 2, chance: 1.0, attackBonus: 1.0, speedBonus: 0.5, defenseMalus: 0.5 }
+    ]
+  },
+  summon_return: {
+    id: "summon_return",
+    name: "召唤·回收",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "提前收回召唤兽，恢复召唤兽剩余生命值50%的MP",
+    element: "summon",
+    type: "special",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 2,
+    tier: "初阶",
+    requiresSummon: true
+  },
+  thunder_whip: {
+    id: "thunder_whip",
+    name: "雷印·狂策",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "2级雷系技能。雷电化为长鞭疯狂抽打目标，电弧持续传导造成麻痹。对力量型妖魔有特效。",
+    element: "thunder",
+    type: "damage",
+    damage: 45,
+    mpCost: 20,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "雷电麻痹", type: "stun", duration: 1, chance: 0.5 },
+      { name: "感电", type: "electrified", duration: 3, chance: 1.0, defenseMalus: 0.2 }
+    ]
+  },
+  ice_freeze: {
+    id: "ice_freeze",
+    name: "冰蔓·凝结",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "2级冰系技能。飞霜凝结敌人脚下地面，蔓延至下肢冻结，大幅降低敌人移动速度。",
+    element: "ice",
+    type: "damage",
+    damage: 25,
+    mpCost: 18,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "冻结", type: "frozen", duration: 1, chance: 0.4, freezeValue: 35 },
+      { name: "减速", type: "slow", duration: 3, chance: 1.0, speedMalus: 0.4 }
+    ]
+  },
+  water_shield: {
+    id: "water_shield",
+    name: "水御·守护",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "水系防御技能。数条水绸带编织成水之衣甲，吸收伤害并提升防御。",
+    element: "water",
+    type: "buff",
+    mpCost: 15,
+    targetType: "self",
+    cooldown: 4,
+    tier: "初阶",
+    statusEffects: [
+      { name: "水之守护", type: "shield", duration: 3, chance: 1.0, value: 40 },
+      { name: "水之甲", type: "defense_up", duration: 3, chance: 1.0, statModifiers: { defense: 8 } }
+    ]
+  },
+  earth_slow: {
+    id: "earth_slow",
+    name: "地波·迟缓",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "土系控制技能。拍打地面产生地下波纹，迫使敌人向反方向挪动，降低其速度。",
+    element: "earth",
+    type: "debuff",
+    mpCost: 12,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "初阶",
+    statusEffects: [
+      { name: "地波迟缓", type: "slow", duration: 2, chance: 1.0, speedMalus: 0.5 },
+      { name: "泥泞", type: "mud", duration: 2, chance: 0.6, accuracyMalus: 0.2 }
+    ]
+  },
+  ice_cover: {
+    id: "ice_cover",
+    name: "冰蔓·覆盖",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "3级冰系技能。狂雪降临，覆盖整个区域，将一切冻结成冰。范围极大，威力极强，是冰系初阶最强技能。",
+    element: "ice",
+    type: "damage",
+    damage: 60,
+    mpCost: 30,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "初阶",
+    statusEffects: [
+      { name: "冰封", type: "frozen", duration: 2, chance: 0.7, freezeValue: 70 },
+      { name: "极寒", type: "slow", duration: 4, chance: 1.0, speedMalus: 0.6 },
+      { name: "冰伤", type: "attack_down", duration: 3, chance: 0.8, statModifiers: { attack: -8 } }
+    ]
+  },
+  fire_burn_bone_lv3: {
+    id: "fire_burn_bone_lv3",
+    name: "火滋·爆裂",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "3级火系技能。火焰爆裂，范围爆炸伤害，威力巨大。火滋的终极形态。",
+    element: "fire",
+    type: "damage",
+    damage: 70,
+    mpCost: 28,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "初阶",
+    statusEffects: [
+      { name: "烈焰灼烧", type: "burn", duration: 4, chance: 1.0, stacks: 3, dotDamage: 10 },
+      { name: "爆裂冲击", type: "stun", duration: 1, chance: 0.3 }
+    ]
+  },
+  thunder_wrath: {
+    id: "thunder_wrath",
+    name: "雷印·怒击",
+    isCanon: false,
+    canonNote: "非原著标准技能，已标记待清理",
+    description: "3级雷系技能。雷霆之怒，多道雷印同时轰击，威力霸道无比。雷系初阶最强技能，穿透力极强，无视大部分防御。",
+    element: "thunder",
+    type: "damage",
+    damage: 75,
+    mpCost: 32,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "初阶",
+    statusEffects: [
+      { name: "雷霆麻痹", type: "stun", duration: 2, chance: 0.5 },
+      { name: "感电", type: "electrified", duration: 3, chance: 1.0, damageBonus: 0.3 },
+      { name: "雷霆穿透", type: "defense_down", duration: 3, chance: 0.7, statModifiers: { defense: -10 } }
+    ]
+  },
+
+  // ========== 敌人专用技能 ==========
+  wolf_howl: {
+    id: "wolf_howl",
+    name: "狼嚎",
+    description: "魔狼发出嚎叫，提升自身攻击力，并可能召唤同伴。",
+    element: "dark",
+    type: "buff",
+    mpCost: 15,
+    targetType: "self",
+    tier: "初阶",
+    statusEffects: [
+      { name: "嗜血", type: "attack_up", duration: 3, chance: 1.0, statModifiers: { attack: 8 } }
+    ]
+  },
+  sky_dive: {
+    id: "sky_dive",
+    name: "俯冲攻击",
+    description: "翼苍狼从高空俯冲而下，造成毁灭性的伤害，有几率眩晕。",
+    element: "wind",
+    type: "damage",
+    baseDamage: 80,
+    damageMultiplier: 1.8,
+    mpCost: 40,
+    targetType: "enemy",
+    tier: "中阶",
+    statusEffects: [
+      { name: "眩晕", type: "stun", duration: 1, chance: 0.4 }
+    ]
+  },
+  dark_claw: {
+    id: "dark_claw",
+    name: "暗爪",
+    description: "进阶魔狼的利爪攻击，附带暗影能量，造成高额伤害。",
+    element: "dark",
+    type: "damage",
+    baseDamage: 25,
+    damageMultiplier: 1.2,
+    mpCost: 12,
+    targetType: "enemy",
+    tier: "初阶",
+    statusEffects: [
+      { name: "撕裂", type: "bleed", duration: 3, chance: 0.5, dotDamage: 8 }
+    ]
+  },
+  wolf_bite: {
+    id: "wolf_bite",
+    name: "撕咬",
+    description: "三眼魔狼的强力撕咬，有概率造成眩晕。",
+    element: "dark",
+    type: "damage",
+    baseDamage: 30,
+    damageMultiplier: 1.3,
+    mpCost: 15,
+    targetType: "enemy",
+    tier: "中阶",
+    statusEffects: [
+      { name: "眩晕", type: "stun", duration: 1, chance: 0.3 }
+    ]
+  },
+  rat_bite: {
+    id: "rat_bite",
+    name: "巨鼠撕咬",
+    description: "血纹巨魔鼠的凶猛撕咬，附带瘟疫效果。",
+    element: "neutral",
+    type: "damage",
+    baseDamage: 35,
+    damageMultiplier: 1.2,
+    mpCost: 10,
+    targetType: "enemy",
+    tier: "中阶",
+    statusEffects: [
+      { name: "瘟疫", type: "poison", duration: 4, chance: 0.6, dotDamage: 10 }
+    ]
+  },
+  blood_rage: {
+    id: "blood_rage",
+    name: "血纹狂暴",
+    description: "血纹巨魔鼠进入狂暴状态，攻击力和速度大幅提升，但降低防御。",
+    element: "neutral",
+    type: "buff",
+    mpCost: 20,
+    targetType: "self",
+    tier: "中阶",
+    statusEffects: [
+      { name: "狂暴", type: "rage", duration: 5, chance: 1.0, statModifiers: { attack: 25, speed: 10, defense: -8 } }
+    ]
+  },
+  bone_spike: {
+    id: "bone_spike",
+    name: "骨刺射击",
+    description: "骨刺狰狼射出背上的骨刺，远程攻击敌人。",
+    element: "earth",
+    type: "damage",
+    baseDamage: 28,
+    damageMultiplier: 1.1,
+    mpCost: 14,
+    targetType: "enemy",
+    tier: "中阶",
+    statusEffects: [
+      { name: "穿刺", type: "defense_down", duration: 2, chance: 0.4, statModifiers: { defense: -5 } }
+    ]
+  },
+
+  // ========== 中阶魔法（玩家） ==========
+  fire_fist: {
+    id: "fire_fist",
+    name: "烈拳",
+    description: "中阶火系魔法，凝聚火焰于拳上，爆发出毁灭性的一击。威力巨大，附带强烈灼烧效果。",
+    element: "fire",
+    type: "damage",
+    mpCost: 35,
+    baseDamage: 80,
+    damageMultiplier: 1.8,
+    hitRate: 0.85,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 1.1,
+    unlockLevel: 11,
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "烈炎灼烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 15,
+        duration: 4,
+        chance: 0.9,
+        stacks: 2,
+        maxStacks: 5
+      }
+    ]
+  },
+  thunder_praise: {
+    id: "thunder_praise",
+    name: "霹雳·轰顶",
+    description: "中阶雷系魔法。手指向天，紫色霹雳毫无征兆落下，简单粗暴。雷可穿水，水系防御对其无效。高几率麻痹敌人。",
+    element: "thunder",
+    type: "damage",
+    mpCost: 40,
+    baseDamage: 95,
+    damageMultiplier: 1.8,
+    hitRate: 0.9,
+    critRate: 0.2,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 1,
+    unlockLevel: 11,
+    realmRequired: "middle",
+    // 小说第133章：雷系中阶无明显起手式，速度极快
+    castSpeed: "fast",
+    // 小说第133章：雷可穿水，水盾无效
+    pierceWaterShield: true,
+    statusEffects: [
+      {
+        name: "雷麻",
+        type: "stun",
+        element: "thunder",
+        duration: 2,
+        chance: 0.5
+      }
+    ]
+  },
+  thunder_praise_yecha: {
+    id: "thunder_praise_yecha",
+    name: "霹雳·夜叉",
+    description: "中阶雷系第二级。粗壮紫色惊雷下落途中分裂为五道叉状闪电，同时轰击五个目标。配合灵种千钧时附带空气震荡，覆盖区域内敌人受到碾压伤害。",
+    element: "thunder",
+    type: "damage",
+    mpCost: 60,
+    baseDamage: 80,
+    damageMultiplier: 1.6,
+    hitRate: 0.95,
+    critRate: 0.25,
+    targetType: "all_enemies",
+    maxTargets: 5,
+    cooldown: 2,
+    tier: "中阶",
+    magicLevel: 2,
+    interruptChance: 1.1,
+    unlockLevel: 18,
+    skillLevel: 2,
+    realmRequired: "middle",
+    castSpeed: "fast",
+    pierceWaterShield: true,
+    shockwave: true,
+    shockwaveDamage: 0.3,
+    statusEffects: [
+      {
+        name: "雷麻",
+        type: "stun",
+        element: "thunder",
+        duration: 1,
+        chance: 0.4
+      }
+    ],
+    isCanon: true,
+    canonSource: "第222章 千钧·霹雳·夜叉！"
+  },
+  thunder_qianjun_yinji: {
+    id: "thunder_qianjun_yinji",
+    name: "千钧·雷印·怒击",
+    description: "灵级雷种千钧强化的初阶雷印。雷电呈紫黑色，带动空气剧烈震荡形成碾压之力，单体攻击可将奴仆级妖魔直接打成肉酱。",
+    element: "thunder",
+    type: "damage",
+    mpCost: 25,
+    baseDamage: 70,
+    damageMultiplier: 2.2,
+    hitRate: 0.95,
+    critRate: 0.3,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "初阶",
+    realmRequired: "initial",
+    castSpeed: "instant",
+    requiresSpiritSeed: "thunder_qianjun",
+    statusEffects: [
+      {
+        name: "震荡",
+        type: "stun",
+        element: "thunder",
+        duration: 1,
+        chance: 0.6
+      }
+    ],
+    isCanon: true,
+    canonSource: "第222章 千钧·雷印·怒击！"
+  },
+  ice_lock: {
+    id: "ice_lock",
+    name: "冰锁",
+    description: "中阶冰系魔法，用冰链锁住敌人，造成伤害并大概率冻结。",
+    element: "ice",
+    type: "damage",
+    mpCost: 32,
+    baseDamage: 65,
+    damageMultiplier: 1.6,
+    hitRate: 0.88,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 1,
+    unlockLevel: 11,
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "冰封",
+        type: "freeze",
+        element: "ice",
+        value: 70,
+        duration: 4,
+        chance: 0.7
+      }
+    ]
+  },
+  earth_wave: {
+    id: "earth_wave",
+    name: "地波",
+    description: "中阶土系魔法，引发地震波，造成范围伤害并减速敌人。",
+    element: "earth",
+    type: "damage",
+    mpCost: 30,
+    baseDamage: 60,
+    damageMultiplier: 1.5,
+    hitRate: 0.9,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "中阶",
+    realmRequired: "middle",
+    interruptChance: 1,
+    statusEffects: [
+      {
+        name: "地震减速",
+        type: "slow",
+        element: "earth",
+        duration: 3,
+        chance: 0.8,
+        statModifiers: {
+          speed: -10
+        }
+      }
+    ]
+  },
+  wind_wing: {
+    id: "wind_wing",
+    name: "风之翼",
+    description: "中阶风系魔法，在背后形成风之翼，大幅提升速度和闪避。",
+    element: "wind",
+    type: "buff",
+    mpCost: 30,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "中阶",
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "风之翼",
+        type: "speed_up",
+        duration: 5,
+        chance: 1,
+        statModifiers: {
+          speed: 20
+        }
+      },
+      {
+        name: "风之闪避",
+        type: "dodge_up",
+        duration: 5,
+        chance: 1,
+        statModifiers: {
+          dodge: 0.2
+        }
+      }
+    ]
+  },
+  water_tide: {
+    id: "water_tide",
+    name: "潮汐",
+    description: "中阶水系魔法，召唤潮汐冲击敌人，造成伤害并恢复自身。",
+    element: "water",
+    type: "damage",
+    mpCost: 28,
+    baseDamage: 55,
+    damageMultiplier: 1.5,
+    hitRate: 0.9,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 1.1,
+    unlockLevel: 15,
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "潮汐回复",
+        type: "regen",
+        element: "water",
+        duration: 3,
+        chance: 1,
+        regenAmount: 15
+      }
+    ]
+  },
+  light_sanctuary: {
+    id: "light_sanctuary",
+    name: "圣佑",
+    description: "中阶光系魔法，神圣之光护体，大幅提升防御并净化负面状态。",
+    element: "light",
+    type: "buff",
+    mpCost: 35,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 1.1,
+    unlockLevel: 15,
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "神圣护盾",
+        type: "shield",
+        element: "light",
+        value: 100,
+        duration: 99,
+        chance: 1
+      },
+      {
+        name: "圣佑防御",
+        type: "defense_up",
+        duration: 5,
+        chance: 1,
+        statModifiers: {
+          defense: 20
+        }
+      }
+    ]
+  },
+  dark_spike: {
+    id: "dark_spike",
+    name: "暗影之刺",
+    description: "中阶暗影系魔法，从暗影中凝聚尖刺，无视部分防御，高暴击。",
+    element: "dark",
+    type: "damage",
+    mpCost: 32,
+    baseDamage: 70,
+    damageMultiplier: 1.6,
+    hitRate: 0.85,
+    critRate: 0.25,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "中阶",
+    realmRequired: "middle",
+    interruptChance: 1.1,
+    statusEffects: [
+      {
+        name: "暗影诅咒",
+        type: "attack_down",
+        duration: 3,
+        chance: 0.6,
+        statModifiers: {
+          attack: -10
+        }
+      }
+    ]
+  },
+  heal_holy_light: {
+    id: "heal_holy_light",
+    name: "圣光治愈",
+    description: "中阶治愈系魔法，神圣之光普照，大幅恢复生命值并净化负面状态。",
+    element: "heal",
+    type: "heal",
+    mpCost: 40,
+    baseHeal: 80,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 3,
+    tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 1,
+    unlockLevel: 15,
+    realmRequired: "middle",
+    statusEffects: [
+      {
+        name: "圣光净化",
+        type: "cleanse",
+        chance: 1
+      }
+    ]
+  },
+  summon_beast_empower: {
+    id: "summon_beast_empower",
+    name: "兽潮",
+    description: "中阶召唤系魔法，召唤兽进入狂暴状态，全属性大幅提升。",
+    element: "summon",
+    type: "buff",
+    mpCost: 35,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "中阶",
+    realmRequired: "middle",
+    requiresSummon: true,
+    statusEffects: [
+      {
+        name: "兽潮狂暴",
+        type: "attack_up",
+        duration: 5,
+        chance: 1,
+        statModifiers: {
+          attack: 25
+        }
+      },
+      {
+        name: "兽潮坚韧",
+        type: "defense_up",
+        duration: 5,
+        chance: 1,
+        statModifiers: {
+          defense: 15
+        }
+      },
+      {
+        name: "兽潮迅捷",
+        type: "speed_up",
+        duration: 5,
+        chance: 1,
+        statModifiers: {
+          speed: 10
+        }
+      }
+    ]
+  },
+
+  // ========== 小说原著中阶技能（第131-140章） ==========
+
+  // 第131章 唐月使用，火系中阶3级
+  fire_fist_nine: {
+    id: "fire_fist_nine",
+    name: "烈拳·九宫",
+    description: "火系中阶3级魔法。一拳轰地，九道地烈火柱同时喷发，范围百米，火浪翻腾如凶兽。小说第131章唐月使用。",
+    element: "fire",
+    type: "damage",
+    mpCost: 50,
+    baseDamage: 60,
+    damageMultiplier: 2.2,
+    hitRate: 0.95,
+    critRate: 0.2,
+    targetType: "all_enemies", // 范围攻击
+    cooldown: 3,
+    tier: "中阶",
+    magicLevel: 3,
+    interruptChance: 1.3,
+    unlockLevel: 25,
+    realmRequired: "middle",
+    skillLevelRequired: 3,
+    isCanon: true,
+    canonSource: "第131章 暴火唐月",
+    statusEffects: [
+      {
+        name: "九宫灼烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 20,
+        duration: 4,
+        chance: 0.8,
+        stacks: 2,
+        maxStacks: 5
+      }
+    ]
+  },
+
+  // 第132章 朝赫使用，水系防御
+  water_arc_shield: {
+    id: "water_arc_shield",
+    name: "水饶之盾",
+    description: "水系中阶防御魔法。蓝色水凝聚成半弧形盾牌，可抵御中阶火系魔法，但雷系可穿透水盾。小说第132章朝赫使用。",
+    element: "water",
+    type: "defense",
+    mpCost: 30,
+    defenseValue: 80,
+    hitRate: 1,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 2,
+    tier: "中阶",
+    magicLevel: 1,
+    interruptChance: 1,
+    unlockLevel: 15,
+    realmRequired: "middle",
+    isCanon: true,
+    canonSource: "第132章 激战",
+    // 小说第133章：雷可穿水，水盾对雷无效
+    weakness: ["thunder"],
+    statusEffects: [
+      {
+        name: "水盾守护",
+        type: "shield",
+        value: 80,
+        duration: 3,
+        chance: 1
+      }
+    ]
+  },
+
+  // 第132章 朝赫使用，诅咒系
+  curse_spider_trap: {
+    id: "curse_spider_trap",
+    name: "邪蛛之阱",
+    description: "诅咒系中阶魔法。黑色无形蛛丝缠绕敌人，持续吸取生命力，可束缚行动。光系和心灵系可克制。小说第132章朝赫使用。",
+    element: "curse",
+    type: "damage",
+    mpCost: 35,
+    baseDamage: 25,
+    damageMultiplier: 1.2,
+    hitRate: 0.85,
+    critRate: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "中阶",
+    realmRequired: "middle",
+    isCanon: true,
+    canonSource: "第132章 激战",
+    // 小说：光系/心灵系克制诅咒
+    counteredBy: ["light", "mind"],
+    statusEffects: [
+      {
+        name: "蛛丝束缚",
+        type: "bind",
+        duration: 2,
+        chance: 0.6
+      },
+      {
+        name: "生命汲取",
+        type: "drain",
+        dotDamage: 12,
+        healPercent: 0.5, // 吸取50%伤害为自身回复
+        duration: 4,
+        chance: 0.9
+      }
+    ]
+  },
+
+  // ========== 妖魔种族技能 ==========
+  // 妖魔使用种族天赋能力，不是人类魔法
+  
+  // 通用妖魔技能
+  claw_slash: {
+    id: "claw_slash",
+    name: "利爪撕咬",
+    description: "妖魔用锋利的爪子撕咬敌人，造成物理伤害，有几率造成流血",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 10,
+    damageMultiplier: 1.2,
+    hitRate: 0.9,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "流血",
+        type: "bleed",
+        dotDamage: 4,
+        duration: 3,
+        chance: 0.4,
+        stacks: 1,
+        maxStacks: 5
+      }
+    ]
+  },
+  
+  demon_wild_charge: {
+    id: "demon_wild_charge",
+    name: "狂暴冲撞",
+    description: "妖魔全力冲撞敌人，造成高额物理伤害，有几率击退敌人",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 20,
+    damageMultiplier: 1.5,
+    hitRate: 0.8,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true
+  },
+  
+  demon_sand_breath: {
+    id: "demon_sand_breath",
+    name: "飞沙走石",
+    description: "幽狼兽吐出土属性沙石吐息，造成土系伤害并降低目标命中",
+    element: "earth",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 18,
+    damageMultiplier: 1.2,
+    hitRate: 0.95,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 2,
+    statusEffects: [
+      { type: "blind", chance: 0.4, duration: 2, power: 0.3 }
+    ],
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第144章 幽狼兽使用飞沙走石吐息攻击"
+  },
+
+  demon_axe_slam: {
+    id: "demon_axe_slam",
+    name: "斧钺劈斩",
+    description: "白铠战蛰用巨大斧钺前肢劈下，造成高额物理伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 5,
+    baseDamage: 25,
+    damageMultiplier: 1.6,
+    hitRate: 0.85,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第152章 白铠战蛰斧钺前肢"
+  },
+
+  demon_bone_sickle: {
+    id: "demon_bone_sickle",
+    name: "骨镰横扫",
+    description: "白铠战蛰用后肢骨镰横扫，可攻击后方目标",
+    element: "physical",
+    type: "damage",
+    mpCost: 4,
+    baseDamage: 18,
+    damageMultiplier: 1.3,
+    hitRate: 0.9,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第152章 白铠战蛰后肢骨镰"
+  },
+
+  demon_rock_fist: {
+    id: "demon_rock_fist",
+    name: "岩石重拳",
+    description: "岩魔士重拳轰击，造成高额土系伤害",
+    element: "earth",
+    type: "damage",
+    mpCost: 6,
+    baseDamage: 28,
+    damageMultiplier: 1.5,
+    hitRate: 0.75,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第153章 岩魔士"
+  },
+
+  demon_earth_spike: {
+    id: "demon_earth_spike",
+    name: "地刺",
+    description: "岩魔士操控地面升起岩刺攻击敌人",
+    element: "earth",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 20,
+    damageMultiplier: 1.2,
+    hitRate: 0.9,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第153章 岩魔士操控土"
+  },
+
+  demon_dive_strike: {
+    id: "demon_dive_strike",
+    name: "俯冲猎杀",
+    description: "食骨妖从高空俯冲攻击，优先攻击施法中的目标",
+    element: "physical",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 22,
+    damageMultiplier: 1.4,
+    hitRate: 0.95,
+    critRate: 0.2,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第153章 食骨妖俯冲"
+  },
+
+  demon_wing_slash: {
+    id: "demon_wing_slash",
+    name: "翼刃斩",
+    description: "食骨妖用肉翼边缘斩击，速度极快",
+    element: "wind",
+    type: "damage",
+    mpCost: 5,
+    baseDamage: 15,
+    damageMultiplier: 1.2,
+    hitRate: 0.95,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 1,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第153章 食骨妖"
+  },
+
+  demon_triple_burst: {
+    id: "demon_triple_burst",
+    name: "三段爆发",
+    description: "进阶期幽狼兽特有能力，连续三次爆发冲刺，每次伤害递增",
+    element: "physical",
+    type: "damage",
+    mpCost: 15,
+    baseDamage: 15,
+    damageMultiplier: 1.0,
+    hitCount: 3,
+    hitRate: 0.9,
+    critRate: 0.2,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第157-158章 进阶期幽狼兽三段爆发"
+  },
+
+  demon_claw_strike: {
+    id: "demon_claw_strike",
+    name: "利爪撕裂",
+    description: "蜕皮女妖用利爪撕裂敌人",
+    element: "physical",
+    type: "damage",
+    mpCost: 4,
+    baseDamage: 22,
+    damageMultiplier: 1.3,
+    hitRate: 0.9,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 1,
+    tier: "战将级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第178章 蜕皮女妖"
+  },
+
+  demon_tongue_whip: {
+    id: "demon_tongue_whip",
+    name: "长舌鞭击",
+    description: "蜕皮女妖伸长舌头鞭打，有概率缠绕",
+    element: "physical",
+    type: "damage",
+    mpCost: 6,
+    baseDamage: 18,
+    damageMultiplier: 1.1,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "舌缚", type: "bind", duration: 1, chance: 0.3 }
+    ],
+    isCanon: true,
+    source: "第178章 蜕皮女妖长舌"
+  },
+
+  demon_wall_climb: {
+    id: "demon_wall_climb",
+    name: "壁虎游墙",
+    description: "蜕皮女妖在墙面攀爬跳跃，大幅提升闪避",
+    element: "physical",
+    type: "buff",
+    mpCost: 5,
+    baseDamage: 0,
+    damageMultiplier: 0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "攀爬", type: "evasion_up", duration: 2, chance: 1.0, evasionBonus: 0.4 }
+    ],
+    isCanon: true,
+    source: "第178章 蜕皮女妖两楼间攀爬"
+  },
+
+  demon_ball_fist: {
+    id: "demon_ball_fist",
+    name: "铁球摆拳",
+    description: "蜕皮男妖膨胀手臂如铁球横扫，范围伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 35,
+    damageMultiplier: 1.5,
+    hitRate: 0.8,
+    critRate: 0.1,
+    targetType: "all_enemies",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第179章 蜕皮男妖铁球摆拳"
+  },
+
+  demon_extend_arm: {
+    id: "demon_extend_arm",
+    name: "伸缩长臂",
+    description: "蜕皮男妖伸长手臂攻击远处目标",
+    element: "physical",
+    type: "damage",
+    mpCost: 6,
+    baseDamage: 28,
+    damageMultiplier: 1.3,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "战将级",
+    isDemonSkill: true,
+    isCanon: true,
+    source: "第179章 蜕皮男妖手臂伸长"
+  },
+
+  demon_parasite_bite: {
+    id: "demon_parasite_bite",
+    name: "寄生撕咬",
+    description: "鳞皮妖母撕咬目标，注入寄生妖血。被寄生者夜晚会变妖。",
+    element: "dark",
+    type: "damage",
+    mpCost: 10,
+    baseDamage: 25,
+    damageMultiplier: 1.2,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "寄生", type: "parasite", duration: 99, chance: 0.3 }
+    ],
+    isCanon: true,
+    source: "第189章 鳞皮妖母寄生"
+  },
+
+  demon_hive_suicide: {
+    id: "demon_hive_suicide",
+    name: "巢群自杀令",
+    description: "鳞皮妖母命令所有妖兵自杀，将生命能量输送给母体。被寄生者也会被抽干生命。",
+    element: "dark",
+    type: "special",
+    mpCost: 30,
+    baseDamage: 0,
+    damageMultiplier: 0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "all_allies",
+    cooldown: 99,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "巢群献祭", type: "hive_sacrifice", duration: 1, chance: 1.0 }
+    ],
+    isCanon: true,
+    source: "第189章 鳞皮妖母集体自杀指令"
+  },
+
+  fierce_roar: {
+    id: "fierce_roar",
+    name: "凶猛咆哮",
+    description: "妖魔发出震慑人心的咆哮，降低敌人的攻击力",
+    element: "physical",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "威慑",
+        type: "attack_down",
+        duration: 3,
+        chance: 0.8,
+        statModifiers: {
+          attack: -15
+        }
+      }
+    ]
+  },
+  
+  // 暗影系妖魔技能
+  shadow_assault: {
+    id: "shadow_assault",
+    name: "暗影突袭",
+    description: "暗影系妖魔融入阴影中突然袭击，造成暗影伤害，有几率致盲",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 15,
+    damageMultiplier: 1.3,
+    hitRate: 0.95,
+    critRate: 0.2,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "致盲",
+        type: "hit_rate_down",
+        duration: 2,
+        chance: 0.3,
+        statModifiers: {
+          hitRate: -30
+        }
+      }
+    ]
+  },
+  
+  // 风系妖魔技能
+  wind_slash: {
+    id: "wind_slash",
+    name: "风刃斩击",
+    description: "速度型妖魔高速移动产生的风刃，造成伤害并降低敌人速度",
+    element: "wind",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 12,
+    damageMultiplier: 1.2,
+    hitRate: 0.95,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 1,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "风刃减速",
+        type: "speed_down",
+        duration: 2,
+        chance: 0.6,
+        statModifiers: {
+          speed: -20
+        }
+      }
+    ]
+  },
+  
+  // 战将级妖魔技能
+  bone_spike_shot: {
+    id: "bone_spike_shot",
+    name: "骨刺射击",
+    description: "骨刺类妖魔射出锋利的骨刺，远程物理攻击",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 25,
+    damageMultiplier: 1.3,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 1,
+    tier: "战将级",
+    isDemonSkill: true
+  },
+  
+  demon_regeneration: {
+    id: "demon_regeneration",
+    name: "妖魔再生",
+    description: "强大妖魔的再生能力，恢复一定生命值",
+    element: "physical",
+    type: "heal",
+    mpCost: 0,
+    healAmount: 30,
+    targetType: "self",
+    cooldown: 4,
+    tier: "战将级",
+    isDemonSkill: true
+  },
+  
+  berserk_mode: {
+    id: "berserk_mode",
+    name: "狂暴模式",
+    description: "妖魔进入狂暴状态，攻击力大幅提升，但防御力下降",
+    element: "physical",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "狂暴",
+        type: "attack_up",
+        duration: 4,
+        chance: 1,
+        statModifiers: {
+          attack: 30
+        }
+      },
+      {
+        name: "狂暴防御下降",
+        type: "defense_down",
+        duration: 4,
+        chance: 1,
+        statModifiers: {
+          defense: -15
+        }
+      }
+    ]
+  },
+  
+  // 统领级妖魔技能
+  demonic_aura: {
+    id: "demonic_aura",
+    name: "妖魔领域",
+    description: "统领级以上妖魔释放的恐怖领域，压制敌人同时增强自身",
+    element: "dark",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 6,
+    tier: "统领级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "领域威压",
+        type: "all_down",
+        duration: 4,
+        chance: 1,
+        statModifiers: {
+          attack: -10,
+          defense: -10,
+          speed: -10
+        }
+      },
+      {
+        name: "领域增强",
+        type: "all_up",
+        duration: 4,
+        chance: 1,
+        statModifiers: {
+          attack: 15,
+          defense: 15,
+          speed: 10
+        }
+      }
+    ]
+  },
+  
+  rock_throw: {
+    id: "rock_throw",
+    name: "巨石投掷",
+    description: "土系/岩石妖魔投掷巨大岩石，造成高额伤害并有几率眩晕",
+    element: "earth",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 25,
+    damageMultiplier: 1.4,
+    hitRate: 0.75,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "眩晕",
+        type: "stun",
+        duration: 1,
+        chance: 0.3
+      }
+    ]
+  },
+  
+  // ===== 战将级妖魔新技能 =====
+  blood_bite: {
+    id: "blood_bite",
+    name: "嗜血撕咬",
+    description: "妖魔疯狂撕咬敌人，造成伤害的同时吸取生命值",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 20,
+    damageMultiplier: 1.3,
+    hitRate: 0.9,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "战将级",
+    isDemonSkill: true,
+    lifesteal: 0.3  // 30%吸血
+  },
+  
+  war_stomp: {
+    id: "war_stomp",
+    name: "战争践踏",
+    description: "妖魔用力践踏地面，造成范围伤害并降低敌人速度和攻击力",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 18,
+    damageMultiplier: 1.2,
+    hitRate: 0.95,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "震伤减速",
+        type: "speed_down",
+        duration: 2,
+        chance: 0.8,
+        statModifiers: {
+          speed: -25
+        }
+      },
+      {
+        name: "震伤无力",
+        type: "attack_down",
+        duration: 2,
+        chance: 0.6,
+        statModifiers: {
+          attack: -15
+        }
+      }
+    ]
+  },
+  
+  // ===== 统领级妖魔新技能 =====
+  fear_roar: {
+    id: "fear_roar",
+    name: "恐惧咆哮",
+    description: "统领级妖魔发出震慑灵魂的咆哮，大幅降低敌人全属性",
+    element: "physical",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "统领级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "恐惧",
+        type: "attack_down",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          attack: -25
+        }
+      },
+      {
+        name: "战栗",
+        type: "defense_down",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          defense: -20
+        }
+      },
+      {
+        name: "胆怯",
+        type: "speed_down",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          speed: -20
+        }
+      }
+    ]
+  },
+  
+  demon_rage: {
+    id: "demon_rage",
+    name: "妖魔之怒",
+    description: "统领级妖魔进入狂暴状态，攻击力和速度大幅提升，但防御降低",
+    element: "physical",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "统领级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "妖魔狂暴",
+        type: "attack_up",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          attack: 40
+        }
+      },
+      {
+        name: "狂暴加速",
+        type: "speed_up",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          speed: 30
+        }
+      },
+      {
+        name: "狂暴防御降低",
+        type: "defense_down",
+        duration: 3,
+        chance: 1,
+        statModifiers: {
+          defense: -20
+        }
+      }
+    ]
+  },
+  
+  thorn_armor: {
+    id: "thorn_armor",
+    name: "荆棘护甲",
+    description: "战将级妖魔体表长出尖刺，反弹受到的物理伤害",
+    element: "physical",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "荆棘护甲",
+        type: "damage_reflect",
+        duration: 3,
+        chance: 1,
+        reflectPercent: 0.3
+      }
+    ]
+  },
+  
+  // ========== 奴仆级妖魔特色技能 ==========
+  
+  wind_step: {
+    id: "wind_step",
+    name: "疾风步",
+    description: "风系妖魔高速移动，速度和闪避大幅提升",
+    element: "wind",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "疾风步",
+        type: "speed_up",
+        duration: 3,
+        chance: 1,
+        value: 0.3
+      },
+      {
+        name: "疾风步",
+        type: "evasion_up",
+        duration: 3,
+        chance: 1,
+        value: 0.2
+      }
+    ]
+  },
+  
+  demon_fire_burst: {
+    id: "demon_fire_burst",
+    name: "火焰爆发",
+    description: "火系妖魔爆发火焰，造成大量伤害并有几率灼烧",
+    element: "fire",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.5,
+    statusEffects: [
+      {
+        name: "灼烧",
+        type: "burn",
+        duration: 2,
+        chance: 0.4,
+        damagePerTurn: 8
+      }
+    ]
+  },
+  
+  thunder_charge: {
+    id: "thunder_charge",
+    name: "雷电充能",
+    description: "雷系妖魔积蓄雷电力量，攻击力大幅提升",
+    element: "thunder",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "雷电充能",
+        type: "attack_up",
+        duration: 3,
+        chance: 1,
+        value: 0.35
+      }
+    ]
+  },
+  
+  frost_breath: {
+    id: "frost_breath",
+    name: "冰冻吐息",
+    description: "冰系妖魔吐出寒气，伤害不高但有很大几率冻结目标",
+    element: "ice",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.8,
+    statusEffects: [
+      {
+        name: "冻结",
+        type: "frozen",
+        duration: 1,
+        chance: 0.5
+      }
+    ]
+  },
+  
+  poison_fang: {
+    id: "poison_fang",
+    name: "毒牙",
+    description: "毒蛇类妖魔咬击，注入剧毒造成持续伤害",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.9,
+    statusEffects: [
+      {
+        name: "中毒",
+        type: "poison",
+        duration: 3,
+        chance: 0.6,
+        dotDamage: 6
+      }
+    ]
+  },
+  
+  web_bind: {
+    id: "web_bind",
+    name: "蛛网束缚",
+    description: "蜘蛛类妖魔吐出蛛网，束缚目标并降低速度",
+    element: "water",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.6,
+    statusEffects: [
+      {
+        name: "减速",
+        type: "slow",
+        duration: 2,
+        chance: 0.7,
+        value: 0.3
+      },
+      {
+        name: "束缚",
+        type: "bind",
+        duration: 1,
+        chance: 0.3
+      }
+    ]
+  },
+  
+  hard_shell: {
+    id: "hard_shell",
+    name: "坚硬外壳",
+    description: "甲壳类妖魔收缩身体，防御力大幅提升",
+    element: "earth",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "坚硬外壳",
+        type: "defense_up",
+        duration: 3,
+        chance: 1,
+        value: 0.5
+      }
+    ]
+  },
+  
+  blind_dust: {
+    id: "blind_dust",
+    name: "致盲粉尘",
+    description: "飞蛾类妖魔散播磷粉，降低目标命中率",
+    element: "light",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      {
+        name: "致盲",
+        type: "accuracy_down",
+        duration: 3,
+        chance: 0.7,
+        value: 0.3
+      }
+    ]
+  },
+  evil_eye_gaze: {
+    id: "evil_eye_gaze",
+    name: "邪眼凝视",
+    description: "邪眼沼妖用邪眼凝视目标，有几率使目标眩晕",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.8,
+    statusEffects: [
+      { name: "眩晕", type: "stun", duration: 1, chance: 0.35 }
+    ]
+  },
+  life_drain: {
+    id: "life_drain",
+    name: "生命汲取",
+    description: "暗系妖魔汲取目标生命，造成伤害并回复自身HP",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.0,
+    lifesteal: 0.5
+  },
+  curse_weakness: {
+    id: "curse_weakness",
+    name: "虚弱诅咒",
+    description: "黑教廷法师施加诅咒，降低目标攻击力",
+    element: "dark",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "虚弱", type: "attack_down", duration: 3, chance: 0.8, statModifiers: { attack: -8 } }
+    ]
+  },
+  terror_screech: {
+    id: "terror_screech",
+    name: "恐惧尖叫",
+    description: "妖魔发出刺耳尖叫，降低目标防御和速度",
+    element: "dark",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "恐惧", type: "defense_down", duration: 2, chance: 0.7, statModifiers: { defense: -6 } },
+      { name: "迟缓", type: "slow", duration: 2, chance: 0.7, speedMod: -5 }
+    ]
+  },
+  venom_spit: {
+    id: "venom_spit",
+    name: "毒液喷射",
+    description: "喷射毒液，造成伤害并使目标中毒减速",
+    element: "water",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.7,
+    statusEffects: [
+      { name: "中毒", type: "poison", duration: 3, chance: 0.5, dotDamage: 5 },
+      { name: "减速", type: "slow", duration: 2, chance: 0.4, value: 0.2 }
+    ]
+  },
+
+  // ===== 第三批奴仆级妖魔特色技能 =====
+  wolf_pack_attack: {
+    id: "wolf_pack_attack",
+    name: "狼群围攻",
+    description: "群狼一拥而上撕咬目标，造成高额伤害并有几率撕裂伤口",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.4,
+    statusEffects: [
+      { name: "撕裂", type: "bleed", duration: 2, chance: 0.5, dotDamage: 4 }
+    ]
+  },
+
+  shadow_dodge: {
+    id: "shadow_dodge",
+    name: "暗影闪避",
+    description: "融入阴影中，2回合内闪避率大幅提升",
+    element: "dark",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "暗影闪避", type: "dodge_up", duration: 2, chance: 1, dodgeMod: 0.4 }
+    ]
+  },
+
+  stone_skin: {
+    id: "stone_skin",
+    name: "石肤术",
+    description: "皮肤化为岩石，大幅提升防御力3回合",
+    element: "earth",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "石肤", type: "defense_up", duration: 3, chance: 1, statModifiers: { defense: 12 } }
+    ]
+  },
+
+  berserk_charge: {
+    id: "berserk_charge",
+    name: "狂暴冲锋",
+    description: "疯狂冲向目标，造成高额伤害但自身防御降低2回合",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.6,
+    selfStatusEffects: [
+      { name: "冲锋后摇", type: "defense_down", duration: 2, chance: 1, statModifiers: { defense: -5 } }
+    ]
+  },
+
+  lightning_fur: {
+    id: "lightning_fur",
+    name: "雷电皮毛",
+    description: "毛发竖起带电，3回合内攻击力提升",
+    element: "thunder",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "雷电附体", type: "attack_up", duration: 3, chance: 1, statModifiers: { attack: 6 } }
+    ]
+  },
+
+  // ===== 第四批妖魔特色技能 =====
+  demon_wind_barrier: {
+    id: "demon_wind_barrier",
+    name: "风之屏障",
+    description: "在身边形成风之屏障，2回合内闪避率大幅提升",
+    element: "wind",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "风之屏障", type: "dodge_up", duration: 2, chance: 1, dodgeMod: 0.5 }
+    ]
+  },
+
+  flame_cloak: {
+    id: "flame_cloak",
+    name: "火焰披风",
+    description: "全身笼罩火焰，3回合内攻击带灼烧效果",
+    element: "fire",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "火焰披风", type: "attack_up", duration: 3, chance: 1, statModifiers: { attack: 4 } }
+    ]
+  },
+
+  water_recovery: {
+    id: "water_recovery",
+    name: "水之恢复",
+    description: "利用水元素恢复自身生命",
+    element: "water",
+    type: "heal",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    healPercent: 0.25
+  },
+
+  armor_break: {
+    id: "armor_break",
+    name: "破甲一击",
+    description: "精准打击目标护甲，造成伤害并降低其防御",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.0,
+    statusEffects: [
+      { name: "破甲", type: "defense_down", duration: 3, chance: 0.8, statModifiers: { defense: -8 } }
+    ]
+  },
+
+  battle_howl: {
+    id: "battle_howl",
+    name: "战斗嚎叫",
+    description: "发出战斗嚎叫，提升自身攻击力3回合",
+    element: "physical",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "战斗嚎叫", type: "attack_up", duration: 3, chance: 1, statModifiers: { attack: 8 } }
+    ]
+  },
+
+  // ===== 战将级妖魔新技能 =====
+  terror_howl: {
+    id: "terror_howl",
+    name: "恐惧咆哮",
+    description: "发出令人恐惧的咆哮，降低目标攻击力并使其有几率无法行动",
+    element: "dark",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "恐惧", type: "attack_down", duration: 3, chance: 0.8, statModifiers: { attack: -10 } },
+      { name: "恐惧", type: "stun", duration: 1, chance: 0.3 }
+    ]
+  },
+
+  // ===== 第五批妖魔技能（带新机制）=====
+  charge_attack: {
+    id: "charge_attack",
+    name: "蓄力冲撞",
+    description: "蓄力一回合，下回合造成2.5倍伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 2.5,
+    chargeTurns: 1,
+    statusEffects: [
+      { name: "冲撞", type: "stun", duration: 1, chance: 0.3 }
+    ]
+  },
+
+  ice_armor: {
+    id: "ice_armor",
+    name: "冰甲术",
+    description: "凝结冰霜护甲，3回合内防御提升，近战攻击者有几率被冰冻",
+    element: "ice",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "冰甲", type: "defense_up", duration: 3, chance: 1, statModifiers: { defense: 10 } },
+      { name: "冰甲", type: "ice_thorns", duration: 3, chance: 1 }
+    ]
+  },
+
+  demon_thunder_strike: {
+    id: "demon_thunder_strike",
+    name: "雷霆一击",
+    description: "召唤雷电劈向目标，造成高额雷系伤害并有几率麻痹",
+    element: "thunder",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.8,
+    statusEffects: [
+      { name: "麻痹", type: "paralyze", duration: 1, chance: 0.4 }
+    ]
+  },
+
+  shadow_step_strike: {
+    id: "shadow_step_strike",
+    name: "暗影步",
+    description: "融入阴影瞬移到目标身后攻击，必定命中且暴击率提升",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.3,
+    guaranteedHit: true,
+    critBonus: 0.3
+  },
+
+  poison_cloud: {
+    id: "poison_cloud",
+    name: "毒雾",
+    description: "喷出毒雾笼罩目标，造成持续毒素伤害并降低其命中",
+    element: "dark",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.5,
+    statusEffects: [
+      { name: "中毒", type: "poison", duration: 3, chance: 0.8, dotDamage: 6 },
+      { name: "致盲", type: "accuracy_down", duration: 2, chance: 0.6 }
+    ]
+  },
+
+  // 战将级技能
+  dark_dragon_breath: {
+    id: "dark_dragon_breath",
+    name: "暗龙息",
+    description: "喷出黑暗龙息，造成大量暗系伤害并降低目标全属性",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 2.0,
+    statusEffects: [
+      { name: "虚弱", type: "curse", duration: 2, chance: 0.5 }
+    ]
+  },
+
+  // ===== 第六批妖魔技能（护盾/反伤/连击）=====
+  flame_shield: {
+    id: "flame_shield",
+    name: "火焰护盾",
+    description: "凝结火焰护盾，吸收伤害并对近战攻击者造成火焰反伤",
+    element: "fire",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 6,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    shieldValue: 0.15,
+    shieldType: "fire",
+    reflectDamage: 8,
+    statusEffects: [
+      { name: "火焰护盾", type: "shield", duration: 3, chance: 1 }
+    ]
+  },
+
+  water_barrier: {
+    id: "water_barrier",
+    name: "水之屏障",
+    description: "召唤水之屏障，吸收大量伤害",
+    element: "water",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    shieldValue: 0.25,
+    shieldType: "water",
+    statusEffects: [
+      { name: "水之屏障", type: "shield", duration: 3, chance: 1 }
+    ]
+  },
+
+  demon_earth_shield: {
+    id: "demon_earth_shield",
+    name: "大地之盾",
+    description: "召唤岩石护盾，吸收伤害并提升防御",
+    element: "earth",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 6,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    shieldValue: 0.2,
+    shieldType: "earth",
+    statusEffects: [
+      { name: "大地之盾", type: "shield", duration: 3, chance: 1 },
+      { name: "岩石护体", type: "defense_up", duration: 3, chance: 1, statModifiers: { defense: 8 } }
+    ]
+  },
+
+  double_strike: {
+    id: "double_strike",
+    name: "连击",
+    description: "快速攻击两次，每次造成0.7倍伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.7,
+    hitCount: 2
+  },
+
+  triple_slash: {
+    id: "triple_slash",
+    name: "三连斩",
+    description: "快速斩击三次，每次造成0.5倍伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 0.5,
+    hitCount: 3
+  },
+
+  life_steal_bite: {
+    id: "life_steal_bite",
+    name: "吸血撕咬",
+    description: "撕咬目标造成1.2倍伤害，回复造成伤害50%的生命",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.2,
+    lifesteal: 0.5
+  },
+
+  speed_burst: {
+    id: "speed_burst",
+    name: "极速爆发",
+    description: "短时间内速度大幅提升，闪避率提高",
+    element: "wind",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "极速", type: "speed_up", duration: 2, chance: 1, statModifiers: { speed: 15 } },
+      { name: "极速", type: "dodge_up", duration: 2, chance: 1, statModifiers: { evasion: 0.3 } }
+    ]
+  },
+
+  // 统领级技能
+  demon_domain: {
+    id: "demon_domain",
+    name: "妖魔领域",
+    description: "释放妖魔领域，降低目标全属性并提升自身攻击",
+    element: "dark",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 8,
+    tier: "统领级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "领域压制", type: "curse", duration: 3, chance: 0.8 },
+      { name: "领域压制", type: "defense_down", duration: 3, chance: 0.8, statModifiers: { defense: -10 } },
+      { name: "领域压制", type: "slow", duration: 3, chance: 0.8, statModifiers: { speed: -10 } }
+    ],
+    selfBuff: [
+      { name: "领域加持", type: "attack_up", duration: 3, chance: 1, statModifiers: { attack: 10 } }
+    ]
+  },
+
+  // ========== 新妖魔特色技能 ==========
+
+  // 噬骨虫技能
+  acid_spray: {
+    id: "acid_spray",
+    name: "酸液喷射",
+    description: "喷射腐蚀性酸液，造成土系伤害并大幅降低目标防御，持续腐蚀",
+    element: "earth",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.1,
+    statusEffects: [
+      { name: "腐蚀", type: "defense_down", duration: 3, chance: 0.9, value: -10 },
+      { name: "酸蚀", type: "poison", duration: 3, chance: 0.7, dotDamage: 5 }
+    ]
+  },
+
+  burrow_attack: {
+    id: "burrow_attack",
+    name: "掘地突袭",
+    description: "钻入地下后突然从下方袭击，造成高额伤害并有几率眩晕目标",
+    element: "earth",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.8,
+    guaranteedHit: true,
+    statusEffects: [
+      { name: "眩晕", type: "stun", duration: 1, chance: 0.35 }
+    ]
+  },
+
+  // 血纹巨魔鼠技能
+  blood_frenzy: {
+    id: "blood_frenzy",
+    name: "血纹狂暴",
+    description: "激活血纹力量进入狂暴状态，攻击力大幅提升，但持续损失生命值",
+    element: "dark",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 6,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statModifiers: { attack: 12, speed: 8 },
+    duration: 3,
+    selfStatusEffects: [
+      { name: "反噬", type: "burn", duration: 3, dotDamage: 8 }
+    ]
+  },
+
+  gnaw_bite: {
+    id: "gnaw_bite",
+    name: "撕咬啃噬",
+    description: "疯狂撕咬目标，造成暗系伤害并吸取生命值",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.3,
+    lifesteal: 0.3,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 2, chance: 0.5, dotDamage: 4 }
+    ]
+  },
+
+  // 翼苍狼技能
+  wind_blade_barrage: {
+    id: "wind_blade_barrage",
+    name: "风刃连斩",
+    description: "快速挥动翅膀发射多道风刃，连续攻击目标三次",
+    element: "wind",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 0.7,
+    hitCount: 3,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 2, chance: 0.4, dotDamage: 6 }
+    ]
+  },
+
+  aerial_dive: {
+    id: "aerial_dive",
+    name: "俯冲突袭",
+    description: "从高空俯冲攻击，造成巨额风系伤害并击退目标（降低速度）",
+    element: "wind",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 2.2,
+    statusEffects: [
+      { name: "迟缓", type: "slow", duration: 2, chance: 0.8, speedMod: -10 }
+    ]
+  },
+
+  feather_dance: {
+    id: "feather_dance",
+    name: "羽盾护体",
+    description: "用风元素凝聚羽毛护盾，大幅提升闪避率和防御力",
+    element: "wind",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 6,
+    tier: "战将级",
+    isDemonSkill: true,
+    statModifiers: { defense: 8, dodge: 0.3 },
+    duration: 3
+  },
+
+  // ===== 第七批妖魔技能（部分非原著）=====
+  bone_slash: {
+    id: "bone_slash",
+    name: "骨刃斩",
+    description: "用骨剑挥出锋利的斩击，造成物理伤害并有几率流血",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: false,
+    canonNote: "非原著技能，游戏设计（骷髅战士）",
+    power: 1.3,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 2, chance: 0.4, dotDamage: 5 }
+    ]
+  },
+
+  demon_lightning_arrow: {
+    id: "demon_lightning_arrow",
+    name: "雷电箭",
+    description: "召唤雷电箭矢攻击敌人，有几率麻痹",
+    element: "thunder",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: false,
+    canonNote: "非原著技能，游戏设计（雷兽）",
+    power: 1.0,
+    statusEffects: [
+      { name: "麻痹", type: "paralyze", duration: 1, chance: 0.25 }
+    ]
+  },
+
+  phase_strike: {
+    id: "phase_strike",
+    name: "虚体打击",
+    description: "穿过防御直接攻击灵魂，无视50%防御",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: false,
+    canonNote: "非原著技能，游戏设计（幽灵）",
+    power: 1.1,
+    ignoreDefense: 0.5
+  },
+
+  iron_defense: {
+    id: "iron_defense",
+    name: "铁甲防御",
+    description: "蜷缩身体进入防御姿态，防御大幅提升但速度降低",
+    element: "earth",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: false,
+    canonNote: "非原著技能，游戏设计（铁甲蝎）",
+    statusEffects: [
+      { name: "铁甲防御", type: "defense_up", duration: 3, chance: 1, statModifiers: { defense: 15 } },
+      { name: "蜷缩", type: "slow", duration: 3, chance: 1, statModifiers: { speed: -5 } }
+    ]
+  },
+
+  thunder_dive: {
+    id: "thunder_dive",
+    name: "雷霆俯冲",
+    description: "带着雷电俯冲攻击，造成大量雷系伤害",
+    element: "thunder",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    isCanon: false,
+    canonNote: "非原著技能，游戏设计（雷鹰）",
+    power: 1.8,
+    guaranteedHit: true,
+    statusEffects: [
+      { name: "麻痹", type: "paralyze", duration: 1, chance: 0.4 }
+    ]
+  },
+
+  // ===== 小说原著技能 =====
+  // 巨眼猩鼠：眼睛释放腥红暗光束
+  crimson_beam: {
+    id: "crimson_beam",
+    name: "腥红光束",
+    description: "从巨大的眼睛中释放腥红色暗光束，远程攻击目标",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    baseDamage: 25,
+    guaranteedHit: true,
+    statusEffects: [
+      { name: "暗蚀", type: "curse", duration: 2, chance: 0.3 }
+    ]
+  },
+
+  // 黑畜妖：阴影中潜行，速度极快
+  shadow_lurk: {
+    id: "shadow_lurk",
+    name: "暗影潜行",
+    description: "潜入阴影中，大幅提升闪避率，下次攻击必定暴击",
+    element: "dark",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "潜行", type: "dodge_up", duration: 2, chance: 1, statModifiers: { evasion: 0.5 } },
+      { name: "伏击", type: "crit_up", duration: 2, chance: 1, statModifiers: { critRate: 1.0 } }
+    ]
+  },
+
+  // 黑畜妖：协同攻击
+  coordinated_assault: {
+    id: "coordinated_assault",
+    name: "协同扑杀",
+    description: "与同伴配合从两侧同时攻击，造成1.5倍伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.5,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 2, chance: 0.5, dotDamage: 4 }
+    ]
+  },
+
+  // 翼苍狼：兽王咆哮，号令群妖
+  beast_king_roar: {
+    id: "beast_king_roar",
+    name: "兽王咆哮",
+    description: "发出震慑百兽的咆哮，降低目标攻击力并造成恐惧",
+    element: "wind",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 6,
+    tier: "统领级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "恐惧", type: "attack_down", duration: 3, chance: 0.8, statModifiers: { attack: -12 } },
+      { name: "震慑", type: "stun", duration: 1, chance: 0.3 }
+    ]
+  },
+
+  // 翼苍狼：坏血爪，附带坏血效果
+  blood_decay_claw: {
+    id: "blood_decay_claw",
+    name: "坏血利爪",
+    description: "附带坏血效果的利爪攻击，造成伤害并使目标持续流血，治疗效果降低",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "统领级",
+    isDemonSkill: true,
+    power: 1.4,
+    statusEffects: [
+      { name: "坏血", type: "bleed", duration: 3, chance: 0.7, dotDamage: 8 },
+      { name: "坏血", type: "healing_reduction", duration: 3, chance: 0.7, value: 0.5 }
+    ]
+  },
+
+  // 翼苍狼：风刃连斩（已有wind_blade_barrage），补充兽风
+  beast_wind: {
+    id: "beast_wind",
+    name: "兽风",
+    description: "喷吐血色兽风，造成风系伤害并击退目标",
+    element: "wind",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "统领级",
+    isDemonSkill: true,
+    power: 1.2,
+    statusEffects: [
+      { name: "击退", type: "slow", duration: 2, chance: 0.6, statModifiers: { speed: -8 } }
+    ]
+  },
+
+  // 邪眼沼妖：精神迷惑
+  mind_confuse: {
+    id: "mind_confuse",
+    name: "邪眼迷惑",
+    description: "用邪眼迷惑目标心智，使其混乱，可能攻击友方或无法行动",
+    element: "dark",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 5,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "迷惑", type: "confuse", duration: 2, chance: 0.5 }
+    ]
+  },
+
+  // 妖藤：缠绕束缚
+  demon_vine_bind: {
+    id: "demon_vine_bind",
+    name: "藤蔓缠绕",
+    description: "用藤蔓缠绕目标，使其无法行动并持续受到伤害",
+    element: "earth",
+    type: "debuff",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "缠绕", type: "bind", duration: 2, chance: 0.6 },
+      { name: "藤刺", type: "bleed", duration: 2, chance: 0.5, dotDamage: 3 }
+    ]
+  },
+
+  // 进阶期独眼魔狼：棘骨横扫（骨骼生长后从背部和肩部伸出的棘骨攻击）
+  spine_sweep: {
+    id: "spine_sweep",
+    name: "棘骨横扫",
+    description: "用肩部和背部生长出的锋利棘骨横扫敌人，造成大量物理伤害",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 1.6,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 2, chance: 0.5, dotDamage: 6 }
+    ]
+  },
+
+  // 进阶期独眼魔狼：魔狼吐息（小说提到独眼魔狼有吐息）
+  wolf_breath: {
+    id: "wolf_breath",
+    name: "魔狼吐息",
+    description: "喷出带有腐臭气息的黑暗吐息，造成暗系伤害",
+    element: "dark",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    power: 1.0,
+    statusEffects: [
+      { name: "腐蚀", type: "defense_down", duration: 2, chance: 0.4, statModifiers: { defense: -5 } }
+    ]
+  },
+
+  // 骨刺狰狼/三眼魔狼：骨刺投掷（小说提到会扔东西）
+  bone_throw: {
+    id: "bone_throw",
+    name: "骨刺投掷",
+    description: "拔下身上的骨刺用力投向敌人，远程物理攻击",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 1.3
+  },
+
+  // 三眼魔狼：三眼视界（270度视角，免疫偷袭和暴击）
+  third_eye_sight: {
+    id: "third_eye_sight",
+    name: "三眼视界",
+    description: "三只眼睛拥有270度视角，能洞察敌人动向，大幅提升闪避和暴击抵抗",
+    element: "neutral",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "视界", type: "dodge_up", duration: 3, chance: 1, statModifiers: { evasion: 0.3 } }
+    ]
+  },
+
+  // 三眼魔狼：钢铁之躯（小说描述钢铁般结实的身躯）
+  iron_body: {
+    id: "iron_body",
+    name: "钢铁之躯",
+    description: "钢铁般结实的身躯，大幅提升防御力",
+    element: "neutral",
+    type: "buff",
+    mpCost: 0,
+    targetType: "self",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "钢躯", type: "defense_up", duration: 3, chance: 1, statModifiers: { defense: 15 } }
+    ]
+  },
+
+  // 血纹巨魔鼠：利爪撕裂（小说描述爪子锋利，轻松没入石砖）
+  claw_tear: {
+    id: "claw_tear",
+    name: "利爪撕裂",
+    description: "用锋利的爪子撕裂敌人，造成大量物理伤害并降低防御",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 1.5,
+    statusEffects: [
+      { name: "撕裂", type: "defense_down", duration: 2, chance: 0.5, statModifiers: { defense: -8 } },
+      { name: "流血", type: "bleed", duration: 2, chance: 0.4, dotDamage: 8 }
+    ]
+  },
+
+  // 血纹巨魔鼠：高速冲撞（小说描述三四十米一眨眼就到）
+  speed_charge: {
+    id: "speed_charge",
+    name: "高速冲撞",
+    description: "以极快的速度冲撞敌人，必定命中且有几率眩晕",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "战将级",
+    isDemonSkill: true,
+    power: 1.8,
+    guaranteedHit: true,
+    statusEffects: [
+      { name: "眩晕", type: "stun", duration: 1, chance: 0.3 }
+    ]
+  },
+  demon_bone_spike: {
+    id: "demon_bone_spike",
+    name: "骨刺穿刺",
+    description: "从地面召唤尖锐的骨刺穿刺敌人，造成物理伤害并有几率造成流血",
+    element: "physical",
+    type: "damage",
+    mpCost: 5,
+    baseDamage: 20,
+    damageMultiplier: 1.3,
+    hitRate: 0.9,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 3, chance: 0.4, damagePerTurn: 5 }
+    ]
+  },
+  ice_chain: {
+    id: "ice_chain",
+    name: "冰链束缚",
+    description: "召唤冰冷的锁链缠绕敌人，造成冰系伤害并束缚目标",
+    element: "ice",
+    type: "damage",
+    mpCost: 10,
+    baseDamage: 15,
+    damageMultiplier: 1.1,
+    hitRate: 0.85,
+    critRate: 0.05,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "束缚", type: "bind", duration: 1, chance: 0.6 },
+      { name: "湿润", type: "wet", duration: 2, chance: 1 }
+    ]
+  },
+  wind_track_phantom: {
+    id: "wind_track_phantom",
+    name: "风轨幻影",
+    description: "以风系魔法加速，制造幻影迷惑敌人，提升自身闪避并进行快速攻击",
+    element: "wind",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 12,
+    damageMultiplier: 1.2,
+    hitRate: 0.95,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    selfEffects: [
+      { name: "风之迅捷", type: "speed_up", duration: 2, statModifiers: { speed: 10, evasion: 0.2 } }
+    ]
+  },
+  demon_claw_slash: {
+    id: "demon_claw_slash",
+    name: "利爪撕裂",
+    description: "用锋利的爪子撕裂敌人，造成高额物理伤害并有几率造成流血",
+    element: "physical",
+    type: "damage",
+    mpCost: 0,
+    baseDamage: 25,
+    damageMultiplier: 1.4,
+    hitRate: 0.9,
+    critRate: 0.2,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "流血", type: "bleed", duration: 2, chance: 0.5, damagePerTurn: 8 }
+    ]
+  },
+  water_burst: {
+    id: "water_burst",
+    name: "水爆",
+    description: "凝聚水元素在敌人身上爆发，造成水系伤害并使目标湿润",
+    element: "water",
+    type: "damage",
+    mpCost: 10,
+    baseDamage: 18,
+    damageMultiplier: 1.2,
+    hitRate: 0.9,
+    critRate: 0.08,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "湿润", type: "wet", duration: 3, chance: 1 }
+    ]
+  },
+  shadow_step: {
+    id: "shadow_step",
+    name: "暗影步",
+    description: "融入暗影中瞬间移动到敌人身后，提升下次攻击的暴击率",
+    element: "shadow",
+    type: "buff",
+    mpCost: 6,
+    targetType: "self",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    selfEffects: [
+      { name: "暗影潜行", type: "crit_up", duration: 2, statModifiers: { critRate: 0.3 } }
+    ]
+  },
+  shadow_claw: {
+    id: "shadow_claw",
+    name: "暗影爪",
+    description: "用暗影能量强化爪子进行攻击，造成暗影伤害并降低目标防御",
+    element: "shadow",
+    type: "damage",
+    mpCost: 8,
+    baseDamage: 16,
+    damageMultiplier: 1.3,
+    hitRate: 0.9,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 2,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    statusEffects: [
+      { name: "防御降低", type: "defense_down", duration: 2, chance: 0.5, statModifiers: { defense: -10 } }
+    ]
+  },
+  cursed_claw_barrage: {
+    id: "cursed_claw_barrage",
+    name: "诅咒爪连击",
+    description: "被诅咒之力强化的连续爪击，造成多次伤害并施加诅咒",
+    element: "curse",
+    type: "damage",
+    mpCost: 12,
+    baseDamage: 10,
+    damageMultiplier: 1.0,
+    hitRate: 0.85,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 4,
+    tier: "战将级",
+    isDemonSkill: true,
+    hits: 3,
+    statusEffects: [
+      { name: "诅咒", type: "curse", duration: 3, chance: 0.7, statModifiers: { attack: -10, defense: -10 } }
+    ]
+  },
+  summon_bone_eating_demon: {
+    id: "summon_bone_eating_demon",
+    name: "召唤噬骨妖魔",
+    description: "召唤一只噬骨妖魔协助战斗，召唤物会在接下来的回合中攻击敌人",
+    element: "dark",
+    type: "summon",
+    mpCost: 15,
+    targetType: "self",
+    cooldown: 5,
+    tier: "战将级",
+    isDemonSkill: true,
+    summon: {
+      id: "bone_eating_demon_summon",
+      name: "噬骨妖魔",
+      duration: 3,
+      attack: 20,
+      maxHp: 50
+    }
+  },
+  feather_barrage: {
+    id: "feather_barrage",
+    name: "羽箭齐射",
+    description: "将羽毛硬化如箭，向敌人射出密集的羽箭，造成多次风系伤害",
+    element: "wind",
+    type: "damage",
+    mpCost: 10,
+    baseDamage: 8,
+    damageMultiplier: 1.0,
+    hitRate: 0.9,
+    critRate: 0.1,
+    targetType: "enemy",
+    cooldown: 3,
+    tier: "奴仆级",
+    isDemonSkill: true,
+    hits: 4
+  },
+
+  // ========== v2.9.0 高阶魔法（打断概率系统） ==========
+  // 🔥 火系高阶魔法
+  fire_heaven_flame: {
+    id: "fire_heaven_flame",
+    name: "天焰葬礼",
+    description: "高阶火系魔法。召唤漫天火焰如葬礼般降临，火雨持续3回合，每回合对全体敌人造成灼烧伤害。威力巨大，施法需专注，易被打断。",
+    element: "fire",
+    type: "damage",
+    mpCost: 80,
+    baseDamage: 120,
+    damageMultiplier: 2.5,
+    hitRate: 0.85,
+    critRate: 0.15,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 1.5,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "天焰灼烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 25,
+        duration: 3,
+        chance: 1.0,
+        stacks: 1,
+        maxStacks: 5
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      perTurnDamage: true,
+      description: "火雨持续3回合，每回合全体灼烧"
+    }
+  },
+  fire_heaven_flame_rain: {
+    id: "fire_heaven_flame_rain",
+    name: "天焰葬礼·火雨",
+    description: "高阶火系第二级。火雨更加密集，伤害提升50%，灼烧效果更强。",
+    element: "fire",
+    type: "damage",
+    mpCost: 100,
+    baseDamage: 180,
+    damageMultiplier: 2.8,
+    hitRate: 0.85,
+    critRate: 0.18,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 1.6,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "烈焰灼烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 40,
+        duration: 3,
+        chance: 1.0,
+        stacks: 2,
+        maxStacks: 5
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      perTurnDamage: true,
+      description: "火雨持续3回合，每回合全体灼烧（伤害+50%）"
+    }
+  },
+  fire_heaven_flame_sea: {
+    id: "fire_heaven_flame_sea",
+    name: "天焰葬礼·火海",
+    description: "高阶火系第三级。火海覆盖全场，敌人每回合受到灼烧+移动减速，火焰领域内火系伤害+30%。终极火焰魔法，毁天灭地。",
+    element: "fire",
+    type: "damage",
+    mpCost: 120,
+    baseDamage: 250,
+    damageMultiplier: 3.2,
+    hitRate: 0.85,
+    critRate: 0.20,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 1.7,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "火海灼烧",
+        type: "burn",
+        element: "fire",
+        dotDamage: 60,
+        duration: 3,
+        chance: 1.0,
+        stacks: 3,
+        maxStacks: 5
+      },
+      {
+        name: "火海减速",
+        type: "slow",
+        element: "fire",
+        slowAmount: 0.3,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      perTurnDamage: true,
+      fireDamageBonus: 0.30,
+      description: "火海持续3回合，每回合全体灼烧+减速，火系伤害+30%"
+    }
+  },
+
+  // ❄️ 冰系高阶魔法
+  ice_coffin: {
+    id: "ice_coffin",
+    name: "冰棺",
+    description: "高阶冰系魔法。将目标冻结在冰棺中3回合，无法行动。3回合后冰棺碎裂，造成大量冰系伤害，冰冻状态的敌人受到双倍伤害。",
+    element: "ice",
+    type: "damage",
+    mpCost: 80,
+    baseDamage: 100,
+    damageMultiplier: 2.2,
+    hitRate: 0.80,
+    critRate: 0.12,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 1.4,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "冰棺冻结",
+        type: "freeze",
+        element: "ice",
+        duration: 3,
+        chance: 1.0,
+        breakDamage: 150,
+        frozenDoubleDamage: true
+      }
+    ],
+    specialEffects: {
+      freezeDuration: 3,
+      breakDamage: 150,
+      frozenDoubleDamage: true,
+      description: "冻结3回合，冰碎时大量伤害，冰冻目标双倍"
+    }
+  },
+  ice_coffin_crystal: {
+    id: "ice_coffin_crystal",
+    name: "冰棺·冰晶",
+    description: "高阶冰系第二级。冰棺更加坚固，冰碎伤害提升50%，范围扩大至相邻敌人。",
+    element: "ice",
+    type: "damage",
+    mpCost: 100,
+    baseDamage: 150,
+    damageMultiplier: 2.5,
+    hitRate: 0.80,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 1.5,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "冰晶冻结",
+        type: "freeze",
+        element: "ice",
+        duration: 3,
+        chance: 1.0,
+        breakDamage: 225,
+        frozenDoubleDamage: true,
+        splashDamage: true
+      }
+    ],
+    specialEffects: {
+      freezeDuration: 3,
+      breakDamage: 225,
+      frozenDoubleDamage: true,
+      splashDamage: true,
+      description: "冻结3回合，冰碎伤害+50%，波及相邻敌人"
+    }
+  },
+  ice_coffin_eternal: {
+    id: "ice_coffin_eternal",
+    name: "冰棺·永冻",
+    description: "高阶冰系第三级。永恒冰封，冰碎伤害提升100%，普通敌人被永久冰冻（BOSS免疫）。终极冰系魔法，冰封一切。",
+    element: "ice",
+    type: "damage",
+    mpCost: 120,
+    baseDamage: 200,
+    damageMultiplier: 2.8,
+    hitRate: 0.80,
+    critRate: 0.18,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 1.6,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "永冻冰封",
+        type: "freeze",
+        element: "ice",
+        duration: 99,
+        chance: 1.0,
+        breakDamage: 300,
+        frozenDoubleDamage: true,
+        bossImmune: true,
+        eternalFreeze: true
+      }
+    ],
+    specialEffects: {
+      freezeDuration: 99,
+      breakDamage: 300,
+      frozenDoubleDamage: true,
+      bossImmune: true,
+      eternalFreeze: true,
+      description: "永久冰冻（BOSS免疫），冰碎伤害+100%"
+    }
+  },
+
+  // ⚡ 雷系高阶魔法
+  thunder_storm: {
+    id: "thunder_storm",
+    name: "雷暴",
+    description: "高阶雷系魔法。召唤雷暴云笼罩战场，持续3回合，每回合随机劈雷攻击敌人。雷电威力巨大，施法需专注，易被打断。",
+    element: "thunder",
+    type: "damage",
+    mpCost: 80,
+    baseDamage: 110,
+    damageMultiplier: 2.3,
+    hitRate: 0.90,
+    critRate: 0.18,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 1.5,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "雷暴麻痹",
+        type: "stun",
+        element: "thunder",
+        duration: 1,
+        chance: 0.3
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      randomStrikes: true,
+      strikesPerTurn: 2,
+      description: "雷暴持续3回合，每回合随机劈雷2次"
+    }
+  },
+  thunder_storm_heaven: {
+    id: "thunder_storm_heaven",
+    name: "雷暴·天劫",
+    description: "高阶雷系第二级。天雷降临，必中且无视防御，雷暴伤害提升50%，麻痹概率提升。",
+    element: "thunder",
+    type: "damage",
+    mpCost: 100,
+    baseDamage: 165,
+    damageMultiplier: 2.6,
+    hitRate: 1.0,
+    critRate: 0.22,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 1.6,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "天劫麻痹",
+        type: "stun",
+        element: "thunder",
+        duration: 1,
+        chance: 0.5
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      randomStrikes: true,
+      strikesPerTurn: 2,
+      guaranteedHit: true,
+      ignoreDefense: true,
+      description: "雷暴持续3回合，天雷必中+无视防御，伤害+50%"
+    }
+  },
+  thunder_storm_destruction: {
+    id: "thunder_storm_destruction",
+    name: "雷暴·毁灭",
+    description: "高阶雷系第三级。毁灭雷电，对麻痹状态的敌人造成三倍伤害。雷暴领域内雷系伤害+30%，敌人速度-30%。终极雷系魔法，毁灭一切。",
+    element: "thunder",
+    type: "damage",
+    mpCost: 120,
+    baseDamage: 220,
+    damageMultiplier: 3.0,
+    hitRate: 1.0,
+    critRate: 0.25,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 1.7,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "毁灭麻痹",
+        type: "stun",
+        element: "thunder",
+        duration: 2,
+        chance: 0.6
+      },
+      {
+        name: "雷暴减速",
+        type: "slow",
+        element: "thunder",
+        slowAmount: 0.3,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      randomStrikes: true,
+      strikesPerTurn: 3,
+      guaranteedHit: true,
+      ignoreDefense: true,
+      stunnedTripleDamage: true,
+      thunderDamageBonus: 0.30,
+      description: "雷暴持续3回合，每回合3次劈雷，麻痹目标三倍伤害，雷系+30%"
+    }
+  },
+
+  // ========== v2.9.0 P1: 剩余8系高阶魔法 ==========
+  // 🌪️ 风系高阶魔法
+  wind_devour: {
+    id: "wind_devour",
+    name: "风噬",
+    description: "高阶风系魔法。形成黑洞将所有敌人吸入中心，无法移动，持续2回合。风系终极控制魔法。",
+    element: "wind",
+    type: "damage",
+    mpCost: 80,
+    baseDamage: 90,
+    damageMultiplier: 2.0,
+    hitRate: 0.90,
+    critRate: 0.15,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 1.4,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "风噬吸入",
+        type: "stun",
+        element: "wind",
+        duration: 2,
+        chance: 1.0,
+        noMove: true
+      }
+    ],
+    specialEffects: {
+      duration: 2,
+      pullToCenter: true,
+      noMove: true,
+      description: "黑洞吸入2回合，无法移动"
+    }
+  },
+  wind_devour_black: {
+    id: "wind_devour_black",
+    name: "风噬·黑风",
+    description: "高阶风系第二级。黑洞更加猛烈，每回合受到高伤害，持续时间+1回合。",
+    element: "wind",
+    type: "damage",
+    mpCost: 100,
+    baseDamage: 135,
+    damageMultiplier: 2.3,
+    hitRate: 0.90,
+    critRate: 0.18,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 1.5,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "黑风吸入",
+        type: "stun",
+        element: "wind",
+        duration: 3,
+        chance: 1.0,
+        noMove: true
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      pullToCenter: true,
+      noMove: true,
+      perTurnDamage: true,
+      description: "黑洞吸入3回合，无法移动，每回合高伤害"
+    }
+  },
+  wind_devour_storm: {
+    id: "wind_devour_storm",
+    name: "风噬·风暴",
+    description: "高阶风系第三级。黑洞+风暴领域，风系技能伤害+50%，敌人命中率-30%。终极风系魔法，风暴吞噬一切。",
+    element: "wind",
+    type: "damage",
+    mpCost: 120,
+    baseDamage: 180,
+    damageMultiplier: 2.6,
+    hitRate: 0.90,
+    critRate: 0.20,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 1.6,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "风暴吸入",
+        type: "stun",
+        element: "wind",
+        duration: 3,
+        chance: 1.0,
+        noMove: true
+      },
+      {
+        name: "风暴致盲",
+        type: "blind",
+        element: "wind",
+        hitRateDown: 0.30,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      pullToCenter: true,
+      noMove: true,
+      perTurnDamage: true,
+      windDamageBonus: 0.50,
+      enemyHitRateDown: 0.30,
+      description: "风暴领域3回合，风系+50%，敌人命中-30%"
+    }
+  },
+
+  // 🪨 土系高阶魔法
+  earth_giant: {
+    id: "earth_giant",
+    name: "巨岩降临",
+    description: "高阶土系魔法。召唤岩石巨人替玩家承受伤害并攻击，持续3回合。巨人HP=玩家最大HP×2，攻击=玩家攻击×1.5。",
+    element: "earth",
+    type: "summon",
+    mpCost: 80,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0.1,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 1.4,
+    unlockLevel: 31,
+    realmRequired: "high",
+    specialEffects: {
+      summonGolem: true,
+      golemHpMultiplier: 2.0,
+      golemAtkMultiplier: 1.5,
+      duration: 3,
+      description: "召唤岩石巨人3回合，替玩家承受伤害并攻击"
+    }
+  },
+  earth_giant_mountain: {
+    id: "earth_giant_mountain",
+    name: "巨岩降临·山岳",
+    description: "高阶土系第二级。岩石巨人更加强大，HP×3，攻击×2，持续时间+1回合。",
+    element: "earth",
+    type: "summon",
+    mpCost: 100,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0.1,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 1.4,
+    unlockLevel: 38,
+    realmRequired: "high",
+    specialEffects: {
+      summonGolem: true,
+      golemHpMultiplier: 3.0,
+      golemAtkMultiplier: 2.0,
+      duration: 4,
+      description: "召唤山岳巨人4回合，HP×3，攻击×2"
+    }
+  },
+  earth_giant_avalanche: {
+    id: "earth_giant_avalanche",
+    name: "巨岩降临·山崩",
+    description: "高阶土系第三级。岩石巨人+死亡时触发山崩，全体敌人受到大量伤害+眩晕。终极土系魔法，山崩地裂。",
+    element: "earth",
+    type: "summon",
+    mpCost: 120,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0.1,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 1.5,
+    unlockLevel: 45,
+    realmRequired: "high",
+    specialEffects: {
+      summonGolem: true,
+      golemHpMultiplier: 3.5,
+      golemAtkMultiplier: 2.5,
+      duration: 4,
+      avalancheOnDeath: true,
+      avalancheDamage: 200,
+      avalancheStun: 1,
+      description: "召唤山崩巨人4回合，死亡时山崩全体伤害+眩晕"
+    }
+  },
+
+  // 🌊 水系高阶魔法
+  water_tornado: {
+    id: "water_tornado",
+    name: "水龙卷",
+    description: "高阶水系魔法。召唤水龙卷将敌人卷入空中2回合，无法行动，落下时受到伤害+眩晕。",
+    element: "water",
+    type: "damage",
+    mpCost: 80,
+    baseDamage: 95,
+    damageMultiplier: 2.1,
+    hitRate: 0.85,
+    critRate: 0.12,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 1.4,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "水龙卷卷入",
+        type: "stun",
+        element: "water",
+        duration: 2,
+        chance: 1.0,
+        noAction: true
+      },
+      {
+        name: "落下眩晕",
+        type: "stun",
+        element: "water",
+        duration: 1,
+        chance: 1.0,
+        delayed: 2
+      }
+    ],
+    specialEffects: {
+      airDuration: 2,
+      landingDamage: true,
+      landingStun: 1,
+      description: "卷入空中2回合，落下时伤害+眩晕"
+    }
+  },
+  water_tornado_vortex: {
+    id: "water_tornado_vortex",
+    name: "水龙卷·漩涡",
+    description: "高阶水系第二级。水龙卷更加强力，持续时间+1回合，落下伤害提升50%。",
+    element: "water",
+    type: "damage",
+    mpCost: 100,
+    baseDamage: 140,
+    damageMultiplier: 2.4,
+    hitRate: 0.85,
+    critRate: 0.15,
+    targetType: "enemy",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 1.5,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "漩涡卷入",
+        type: "stun",
+        element: "water",
+        duration: 3,
+        chance: 1.0,
+        noAction: true
+      },
+      {
+        name: "落下眩晕",
+        type: "stun",
+        element: "water",
+        duration: 1,
+        chance: 1.0,
+        delayed: 3
+      }
+    ],
+    specialEffects: {
+      airDuration: 3,
+      landingDamage: true,
+      landingDamageBonus: 0.50,
+      landingStun: 1,
+      description: "卷入空中3回合，落下伤害+50%+眩晕"
+    }
+  },
+  water_tornado_deep: {
+    id: "water_tornado_deep",
+    name: "水龙卷·深海",
+    description: "高阶水系第三级。水龙卷+深海领域，水系技能+50%，敌人速度-30%。终极水系魔法，深海吞噬一切。",
+    element: "water",
+    type: "damage",
+    mpCost: 120,
+    baseDamage: 190,
+    damageMultiplier: 2.7,
+    hitRate: 0.85,
+    critRate: 0.18,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 1.6,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "深海卷入",
+        type: "stun",
+        element: "water",
+        duration: 3,
+        chance: 1.0,
+        noAction: true
+      },
+      {
+        name: "深海减速",
+        type: "slow",
+        element: "water",
+        slowAmount: 0.30,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      airDuration: 3,
+      landingDamage: true,
+      landingStun: 1,
+      waterDamageBonus: 0.50,
+      enemySpeedDown: 0.30,
+      description: "深海领域3回合，水系+50%，敌人速度-30%"
+    }
+  },
+
+  // ✨ 光系高阶魔法
+  light_holy_domain: {
+    id: "light_holy_domain",
+    name: "圣光领域",
+    description: "高阶光系魔法。召唤圣光领域持续3回合，友方每回合恢复HP+净化debuff，敌方暗系伤害-50%。",
+    element: "light",
+    type: "buff",
+    mpCost: 80,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "all_allies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 1.4,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "圣光恢复",
+        type: "heal",
+        element: "light",
+        healAmount: 0.15,
+        duration: 3,
+        chance: 1.0
+      },
+      {
+        name: "圣光净化",
+        type: "purify",
+        element: "light",
+        duration: 3,
+        chance: 1.0,
+        purifyPerTurn: 1
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      healPerTurn: 0.15,
+      purifyPerTurn: 1,
+      darkDamageDown: 0.50,
+      description: "圣光领域3回合，友方每回合恢复15%HP+净化，暗系伤害-50%"
+    }
+  },
+  light_holy_domain_sacred: {
+    id: "light_holy_domain_sacred",
+    name: "圣光领域·神圣",
+    description: "高阶光系第二级。圣光领域更加强力，恢复量+50%，光系伤害+30%，持续时间+1回合。",
+    element: "light",
+    type: "buff",
+    mpCost: 100,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "all_allies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 1.4,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "神圣恢复",
+        type: "heal",
+        element: "light",
+        healAmount: 0.22,
+        duration: 4,
+        chance: 1.0
+      },
+      {
+        name: "神圣净化",
+        type: "purify",
+        element: "light",
+        duration: 4,
+        chance: 1.0,
+        purifyPerTurn: 2
+      }
+    ],
+    specialEffects: {
+      duration: 4,
+      healPerTurn: 0.22,
+      purifyPerTurn: 2,
+      darkDamageDown: 0.50,
+      lightDamageBonus: 0.30,
+      description: "神圣领域4回合，恢复22%HP+净化2个，光系+30%"
+    }
+  },
+  light_holy_domain_judgment: {
+    id: "light_holy_domain_judgment",
+    name: "圣光领域·神罚",
+    description: "高阶光系第三级。圣光领域+每回合天降神罚，对敌方造成神圣伤害（无视防御）。终极光系魔法，神罚降临。",
+    element: "light",
+    type: "buff",
+    mpCost: 120,
+    baseDamage: 100,
+    damageMultiplier: 2.0,
+    hitRate: 1.0,
+    critRate: 0.15,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 1.5,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "神罚恢复",
+        type: "heal",
+        element: "light",
+        healAmount: 0.20,
+        duration: 4,
+        chance: 1.0
+      },
+      {
+        name: "神罚净化",
+        type: "purify",
+        element: "light",
+        duration: 4,
+        chance: 1.0,
+        purifyPerTurn: 2
+      }
+    ],
+    specialEffects: {
+      duration: 4,
+      healPerTurn: 0.20,
+      purifyPerTurn: 2,
+      darkDamageDown: 0.50,
+      lightDamageBonus: 0.30,
+      judgmentPerTurn: true,
+      judgmentDamage: 100,
+      judgmentIgnoreDefense: true,
+      description: "神罚领域4回合，每回合天降神罚（无视防御），友方恢复+净化"
+    }
+  },
+
+  // 🌑 暗系高阶魔法
+  dark_shadow_domain: {
+    id: "dark_shadow_domain",
+    name: "暗影领域",
+    description: "高阶暗系魔法。召唤暗影领域持续3回合，玩家自动进入潜行，每次攻击附带最大HP10%的真实伤害，治疗效果-50%。",
+    element: "dark",
+    type: "buff",
+    mpCost: 80,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 1.4,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "暗影潜行",
+        type: "stealth",
+        element: "dark",
+        duration: 3,
+        chance: 1.0,
+        enemyHitRateDown: 0.40
+      },
+      {
+        name: "暗影真实伤害",
+        type: "trueDamage",
+        element: "dark",
+        trueDamagePercent: 0.10,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      autoStealth: true,
+      trueDamagePerHit: 0.10,
+      healReduction: 0.50,
+      description: "暗影领域3回合，自动潜行，攻击附10%真伤，治疗-50%"
+    }
+  },
+  dark_shadow_domain_devour: {
+    id: "dark_shadow_domain_devour",
+    name: "暗影领域·吞噬",
+    description: "高阶暗系第二级。暗影领域更加强力，真实伤害提升至15%，敌人攻击力-20%，持续时间+1回合。",
+    element: "dark",
+    type: "buff",
+    mpCost: 100,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 1.5,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "吞噬潜行",
+        type: "stealth",
+        element: "dark",
+        duration: 4,
+        chance: 1.0,
+        enemyHitRateDown: 0.40
+      },
+      {
+        name: "吞噬真伤",
+        type: "trueDamage",
+        element: "dark",
+        trueDamagePercent: 0.15,
+        duration: 4,
+        chance: 1.0
+      },
+      {
+        name: "吞噬削弱",
+        type: "debuff",
+        element: "dark",
+        atkDown: 0.20,
+        duration: 4,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 4,
+      autoStealth: true,
+      trueDamagePerHit: 0.15,
+      healReduction: 0.50,
+      enemyAtkDown: 0.20,
+      description: "吞噬领域4回合，真伤15%，敌人攻击-20%"
+    }
+  },
+  dark_shadow_domain_eternal: {
+    id: "dark_shadow_domain_eternal",
+    name: "暗影领域·永夜",
+    description: "高阶暗系第三级。永夜降临，持续时间+2回合，敌人无法使用任何道具/恢复技能。终极暗系魔法，永夜吞噬一切光明。",
+    element: "dark",
+    type: "buff",
+    mpCost: 120,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 1.6,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "永夜潜行",
+        type: "stealth",
+        element: "dark",
+        duration: 5,
+        chance: 1.0,
+        enemyHitRateDown: 0.50
+      },
+      {
+        name: "永夜真伤",
+        type: "trueDamage",
+        element: "dark",
+        trueDamagePercent: 0.15,
+        duration: 5,
+        chance: 1.0
+      },
+      {
+        name: "永夜禁疗",
+        type: "debuff",
+        element: "dark",
+        noHeal: true,
+        noItem: true,
+        duration: 5,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 5,
+      autoStealth: true,
+      trueDamagePerHit: 0.15,
+      healReduction: 1.0,
+      enemyAtkDown: 0.20,
+      noItemUse: true,
+      description: "永夜领域5回合，禁疗禁道具，潜行命中-50%"
+    }
+  },
+
+  // 💚 治愈系高阶魔法
+  heal_life_tree: {
+    id: "heal_life_tree",
+    name: "生命领域",
+    description: "高阶治愈系魔法。召唤生命之树持续5回合，每回合全体恢复20%HP，友方死亡时自动复活1次（恢复30%HP）。",
+    element: "heal",
+    type: "buff",
+    mpCost: 80,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "all_allies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 1.4,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "生命恢复",
+        type: "heal",
+        element: "heal",
+        healAmount: 0.20,
+        duration: 5,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 5,
+      healPerTurn: 0.20,
+      autoRevive: true,
+      reviveCount: 1,
+      reviveHpPercent: 0.30,
+      description: "生命之树5回合，每回合恢复20%HP，死亡自动复活1次"
+    }
+  },
+  heal_life_tree_revival: {
+    id: "heal_life_tree_revival",
+    name: "生命领域·复苏",
+    description: "高阶治愈系第二级。生命之树更加强力，恢复量+50%，复活次数+1，持续时间不变。",
+    element: "heal",
+    type: "buff",
+    mpCost: 100,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "all_allies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 1.4,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "复苏恢复",
+        type: "heal",
+        element: "heal",
+        healAmount: 0.30,
+        duration: 5,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 5,
+      healPerTurn: 0.30,
+      autoRevive: true,
+      reviveCount: 2,
+      reviveHpPercent: 0.30,
+      description: "复苏之树5回合，每回合恢复30%HP，死亡自动复活2次"
+    }
+  },
+  heal_life_tree_eternal: {
+    id: "heal_life_tree_eternal",
+    name: "生命领域·永生",
+    description: "高阶治愈系第三级。永生之树，每回合恢复30%HP，复活后满血，树可以被攻击（HP=玩家最大HP×3）。终极治愈系魔法，永生不灭。",
+    element: "heal",
+    type: "buff",
+    mpCost: 120,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0,
+    targetType: "all_allies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 1.5,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "永生恢复",
+        type: "heal",
+        element: "heal",
+        healAmount: 0.30,
+        duration: 5,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 5,
+      healPerTurn: 0.30,
+      autoRevive: true,
+      reviveCount: 2,
+      reviveHpPercent: 1.0,
+      treeHp: 3.0,
+      treeTargetable: true,
+      description: "永生之树5回合，每回合恢复30%HP，复活满血，树可被攻击"
+    }
+  },
+
+  // 🌿 植物系高阶魔法
+  plant_thorn_domain: {
+    id: "plant_thorn_domain",
+    name: "荆棘领域",
+    description: "高阶植物系魔法。召唤荆棘牢笼困住全体敌人3回合，每回合受到伤害，敌人攻击时反伤50%，牢笼可以被打破（HP=玩家最大HP×2）。",
+    element: "plant",
+    type: "damage",
+    mpCost: 80,
+    baseDamage: 80,
+    damageMultiplier: 1.8,
+    hitRate: 0.90,
+    critRate: 0.10,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 1.4,
+    unlockLevel: 31,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "荆棘束缚",
+        type: "stun",
+        element: "plant",
+        duration: 3,
+        chance: 1.0,
+        noMove: true
+      },
+      {
+        name: "荆棘反伤",
+        type: "thorns",
+        element: "plant",
+        reflectPercent: 0.50,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      perTurnDamage: true,
+      reflectPercent: 0.50,
+      cageHp: 2.0,
+      cageBreakable: true,
+      description: "荆棘牢笼3回合，每回合伤害，攻击反伤50%，牢笼可打破"
+    }
+  },
+  plant_thorn_domain_man_eater: {
+    id: "plant_thorn_domain_man_eater",
+    name: "荆棘领域·食人花",
+    description: "高阶植物系第二级。荆棘牢笼+召唤食人花，每回合吞噬一个敌人（造成大量伤害），反伤提升至70%。",
+    element: "plant",
+    type: "damage",
+    mpCost: 100,
+    baseDamage: 120,
+    damageMultiplier: 2.1,
+    hitRate: 0.90,
+    critRate: 0.12,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 1.5,
+    unlockLevel: 38,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "食人花束缚",
+        type: "stun",
+        element: "plant",
+        duration: 3,
+        chance: 1.0,
+        noMove: true
+      },
+      {
+        name: "食人花反伤",
+        type: "thorns",
+        element: "plant",
+        reflectPercent: 0.70,
+        duration: 3,
+        chance: 1.0
+      }
+    ],
+    specialEffects: {
+      duration: 3,
+      perTurnDamage: true,
+      reflectPercent: 0.70,
+      cageHp: 2.5,
+      cageBreakable: true,
+      manEater: true,
+      manEaterDamage: 150,
+      description: "食人花牢笼3回合，每回合吞噬1人，反伤70%"
+    }
+  },
+  plant_thorn_domain_forest: {
+    id: "plant_thorn_domain_forest",
+    name: "荆棘领域·森林",
+    description: "高阶植物系第三级。森林降临，持续时间+2回合，中毒不可驱散，反伤提升至100%。终极植物系魔法，森林吞噬一切。",
+    element: "plant",
+    type: "damage",
+    mpCost: 120,
+    baseDamage: 160,
+    damageMultiplier: 2.4,
+    hitRate: 0.90,
+    critRate: 0.15,
+    targetType: "all_enemies",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 1.6,
+    unlockLevel: 45,
+    realmRequired: "high",
+    statusEffects: [
+      {
+        name: "森林束缚",
+        type: "stun",
+        element: "plant",
+        duration: 5,
+        chance: 1.0,
+        noMove: true
+      },
+      {
+        name: "森林反伤",
+        type: "thorns",
+        element: "plant",
+        reflectPercent: 1.0,
+        duration: 5,
+        chance: 1.0
+      },
+      {
+        name: "森林剧毒",
+        type: "poison",
+        element: "plant",
+        dotDamage: 30,
+        duration: 5,
+        chance: 1.0,
+        unpurgeable: true
+      }
+    ],
+    specialEffects: {
+      duration: 5,
+      perTurnDamage: true,
+      reflectPercent: 1.0,
+      cageHp: 3.0,
+      cageBreakable: true,
+      manEater: true,
+      manEaterDamage: 200,
+      unpurgeablePoison: true,
+      description: "森林领域5回合，反伤100%，中毒不可驱散，每回合吞噬"
+    }
+  },
+
+  // 🐺 召唤系高阶魔法
+  summon_monarch: {
+    id: "summon_monarch",
+    name: "君临",
+    description: "高阶召唤系魔法。召唤统领级召唤兽（比战将级强3倍）持续5回合，兽王有独立HP/攻击/技能，会自动战斗。",
+    element: "summon",
+    type: "summon",
+    mpCost: 80,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0.1,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 1,
+    interruptChance: 1.4,
+    unlockLevel: 31,
+    realmRequired: "high",
+    specialEffects: {
+      summonMonarch: true,
+      monarchTier: "统领级",
+      monarchMultiplier: 3.0,
+      duration: 5,
+      description: "召唤统领级召唤兽5回合，强度3倍，自动战斗"
+    }
+  },
+  summon_monarch_beast_king: {
+    id: "summon_monarch_beast_king",
+    name: "君临·兽王",
+    description: "高阶召唤系第二级。兽王光环，所有召唤兽伤害+50%，统领级召唤兽更加强力（强度4倍）。",
+    element: "summon",
+    type: "summon",
+    mpCost: 100,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0.1,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 2,
+    interruptChance: 1.4,
+    unlockLevel: 38,
+    realmRequired: "high",
+    specialEffects: {
+      summonMonarch: true,
+      monarchTier: "统领级",
+      monarchMultiplier: 4.0,
+      duration: 5,
+      beastKingAura: true,
+      allSummonDamageBonus: 0.50,
+      description: "召唤兽王5回合，强度4倍，所有召唤兽伤害+50%"
+    }
+  },
+  summon_monarch_beast_tide: {
+    id: "summon_monarch_beast_tide",
+    name: "君临·兽潮",
+    description: "高阶召唤系第三级。统领级召唤兽+死亡时触发兽潮，召唤5只奴仆级召唤兽。终极召唤系魔法，万兽奔腾。",
+    element: "summon",
+    type: "summon",
+    mpCost: 120,
+    baseDamage: 0,
+    damageMultiplier: 1.0,
+    hitRate: 1.0,
+    critRate: 0.1,
+    targetType: "self",
+    cooldown: 0,
+    tier: "高阶",
+    magicLevel: 3,
+    interruptChance: 1.5,
+    unlockLevel: 45,
+    realmRequired: "high",
+    specialEffects: {
+      summonMonarch: true,
+      monarchTier: "统领级",
+      monarchMultiplier: 4.5,
+      duration: 5,
+      beastKingAura: true,
+      allSummonDamageBonus: 0.50,
+      beastTideOnDeath: true,
+      beastTideCount: 5,
+      beastTideTier: "奴仆级",
+      description: "召唤兽潮5回合，强度4.5倍，死亡时召唤5只奴仆级"
+    }
+  }
+};
+
+export default DataSkills;

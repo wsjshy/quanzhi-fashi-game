@@ -1,4 +1,4 @@
-/**
+﻿/**
  * L2.6 双天赋装备系统测试
  *
  * 覆盖：主修系/副修系设置、效果比例、跨系组合检测
@@ -6,10 +6,13 @@
  * 运行：node tests/run.js
  */
 
-const fs = require('fs');
-const path = require('path');
-const vm = require('vm');
-const { TestResult } = require('../utils');
+import fs from 'fs';
+import path from 'path';
+import vm from 'vm';
+import { TestResult } from '../utils.js';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function loadPlayerSystem() {
     const playerCode = fs.readFileSync(path.join(__dirname, '..', '..', 'engine', 'player.js'), 'utf-8');
@@ -157,4 +160,4 @@ function runTests() {
     return result.report();
 }
 
-module.exports = { runTests };
+export { runTests };

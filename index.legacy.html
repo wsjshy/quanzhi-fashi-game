@@ -167,43 +167,70 @@
                 grid-template-columns: repeat(2, 1fr) !important;
             }
         }
-
-        /* 加载提示 */
-        #loading-screen {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #0a0a1a;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 100000;
-            color: #aaccff;
-            font-size: 18px;
-        }
-        #loading-screen .spinner {
-            width: 40px; height: 40px;
-            border: 3px solid #333366;
-            border-top-color: #6688cc;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
     </style>
 </head>
 <body>
-    <div id="loading-screen">
-        <div class="spinner"></div>
-        <div>正在加载魔法世界...</div>
-    </div>
     <div id="game-container"></div>
 
-    <!-- 模块化入口 -->
-    <script type="module" src="/src/main.js"></script>
+    <!-- 游戏数据（已拆分为多个模块） -->
+    <script src="engine/data/skills.js"></script>
+    <script src="engine/data/characters.js"></script>
+    <script src="engine/data/maps.js"></script>
+    <script src="engine/data/locations.js"></script>
+    <script src="engine/data/items.js"></script>
+    <script src="engine/data/quests.js"></script>
+    <script src="engine/data/events.js"></script>
+    <script src="engine/data/shops.js"></script>
+    <script src="engine/data/enemies.js"></script>
+    <script src="engine/data/demon-traits.js"></script>
+    <script src="engine/data/world.js"></script>
+    <script src="engine/data/big-events.js"></script>
+    <script src="engine/data/chapters.js"></script>
+    <script src="engine/data/talents.js"></script>
+    <script src="engine/data/innate-talents.js"></script>
+    <script src="engine/data/spirit-seeds.js"></script>
+    <script src="engine/data/achievements.js"></script>
+    <script src="engine/data/star-dust-artifacts.js"></script>
+    <script src="engine/data/summon-beasts.js"></script>
+    <script src="engine/data/clues.js"></script>
+    <script src="engine/data/index.js"></script>
+
+    <!-- 游戏引擎 -->
+    <script src="engine/data.js"></script>
+    <script src="engine/skill.js"></script>
+    <script src="engine/skill-level.js"></script>
+    <script src="engine/realm.js"></script>
+    <script src="engine/inventory.js"></script>
+    <script src="engine/talent.js"></script>
+    <script src="engine/talent-combat.js"></script>
+    <script src="engine/innate-talent.js"></script>
+    <script src="engine/spirit-seed.js"></script>
+    <script src="engine/star-dust-artifact.js"></script>
+    <script src="engine/soul-system.js"></script>
+    <script src="engine/player.js"></script>
+    <script src="engine/time.js"></script>
+    <script src="engine/quest.js"></script>
+    <script src="engine/investigation.js"></script>
+    <script src="engine/daily.js"></script>
+    <script src="engine/event.js"></script>
+    <script src="engine/big-event.js"></script>
+    <script src="engine/story-chapter.js"></script>
+    <script src="engine/shop.js"></script>
+    <script src="engine/map.js"></script>
+    <script src="engine/battle-ai.js"></script>
+    <script src="engine/battle-effect.js"></script>
+    <script src="engine/battle-event.js"></script>
+    <script src="engine/battle.js"></script>
+    <script src="engine/achievement-handler.js"></script>
+    <script src="engine/world-state.js"></script>
+    <script src="engine/npc-state.js"></script>
+    <script src="engine/npc-growth.js"></script>
+    <script src="engine/dialogue-tree.js"></script>
+    <script src="engine/encounter.js"></script>
+    <script src="engine/ui.js"></script>
+    <script src="engine/game.js"></script>
+    <script src="engine/debug.js"></script>
+    <script src="engine/test-utils.js"></script>
 
     <!-- 全局错误捕获 -->
     <div id="debug-error" style="
@@ -235,8 +262,8 @@
         window.addEventListener('unhandledrejection', function(event) {
             const debugDiv = document.getElementById('debug-error');
             if (debugDiv) {
-                debugDiv.textContent += '\nPromise错误: ' + (event.reason && event.reason.message ? event.reason.message : event.reason);
                 debugDiv.style.display = 'block';
+                debugDiv.textContent += '\nPromise错误: ' + (event.reason && event.reason.message ? event.reason.message : event.reason);
             }
             console.error('未处理的Promise拒绝:', event.reason);
         });

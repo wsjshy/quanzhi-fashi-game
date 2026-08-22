@@ -2,6 +2,27 @@
 
 所有重要的版本更新都会记录在这个文件里。
 
+## v3.0.0 - 架构改造：Vite + ES Modules（进行中）
+
+### 阶段一：Vite + ES Modules 模块化（已完成）
+- **引入Vite构建工具**：创建`package.json`（type:module）和`vite.config.js`，支持HMR热更新和生产构建
+- **ES Modules模块化**：迁移56个模块（20个数据文件+36个引擎文件），`const`→`export const`，统一出口`src/data/index.js`
+- **向后兼容策略**：每个模块export变量同时挂载到window，保持HTML onclick和模块间全局调用兼容
+- **新入口文件**：`src/main.js`按依赖顺序import所有模块，DOM就绪后调用UI.init()→Game.init()
+- **新index.html**：单入口`<script type="module" src="/src/main.js">`，含加载屏
+- **旧版备份**：`index.legacy.html`保留58个script标签的原版入口
+- **测试文件适配**：全部测试文件改为ES Modules（require→import，__dirname定义，路径engine→src/engine）
+- **自动化测试全部通过**：L1数据完整性35通过、L2战斗逻辑31通过、L3成长流程13通过，总计128通过0失败
+
+### 构建产物
+- `npx vite build`成功：59模块转换，dist/assets/index-*.js 1705.86kB（gzip 536.41kB）
+- 开发服务器：`npm run dev` → http://localhost:5173
+
+### 遗留事项（阶段二处理）
+- `engine/`旧目录保留未删除（迁移验证完成后清理）
+- 压力测试文件（battle-stress.js/battle-balance.js）未完全适配
+- 核心文件拆分（battle.js 8471行/ui.js 7485行/game.js 5211行）
+
 ## v2.9.6 - UI视觉升级（已完成）
 
 ### 角色立绘优化（v2.9.6.4）

@@ -1,11 +1,11 @@
-/**
+﻿/**
  * 战斗数值平衡分析脚本
  * 基于玩家成长公式和妖魔数据，估算各等级段战斗体验
  * 运行方式: node tests/stress/battle-balance.js
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 const gameDir = path.join(__dirname, '..', '..');
 

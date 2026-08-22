@@ -10,11 +10,11 @@
  *   node tests/run.js l3       # 只运行L3 UI渲染测试
  */
 
-const { runDataIntegrityTests } = require('./unit/data-integrity');
-const { runBattleLogicTests } = require('./unit/battle-logic');
-const { runProgressionTests } = require('./unit/progression');
-const { runTests: runTalentCombatTests } = require('./unit/talent-combat');
-const { runTests: runDualTalentTests } = require('./unit/dual-talent');
+import { runDataIntegrityTests } from './unit/data-integrity.js';
+import { runBattleLogicTests } from './unit/battle-logic.js';
+import { runProgressionTests } from './unit/progression.js';
+import { runTests as runTalentCombatTests } from './unit/talent-combat.js';
+import { runTests as runDualTalentTests } from './unit/dual-talent.js';
 
 const TESTS = {
     l1: {
