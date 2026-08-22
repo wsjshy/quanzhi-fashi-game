@@ -179,6 +179,20 @@ export const BigEventSystem = {
                 comment;
         }
         
+        // v3.1.0: 雪峰山历练结束：动态计算评分
+        if (phase.id === 'phase_6_end' && this.currentEvent === 'big_event_xuefeng_training') {
+            const score = this.calculateTrainingScore();
+            const rankNames = { 'S': 'S级·英雄', 'A': 'A级·优秀', 'B': 'B级·合格', 'C': 'C级·及格' };
+            phase.description = `雪峰山历练结束了。你们带着收获和回忆回到了学校。\n\n` +
+                `【历练评分】\n` +
+                `  战斗表现：${score.battleScore}分\n` +
+                `  勇气表现：${score.courageScore}分\n` +
+                `  团队贡献：${score.teamScore}分\n` +
+                `  受伤情况：${score.injuryScore}分\n\n` +
+                `【综合评分】${score.totalScore}分 → 评级：${rankNames[score.rank] || score.rank}\n\n` +
+                `这次经历让每个人都成长了不少。莫凡因为击杀幽狼兽名声大噪，穆白也展现了勇气。而你，也有了属于自己的历练故事。`;
+        }
+        
         // 根据阶段类型处理
         switch (phase.type) {
             case 'narrative':
@@ -549,6 +563,73 @@ export const BigEventSystem = {
             'D': '薛木生老师皱眉："成绩不太理想，你需要更加努力修炼。"'
         };
         return comments[rank] || comments['C'];
+    },
+    
+    /**
+     * v3.1.0: 计算雪峰山历练评分
+     * @returns {Object} 评分结果
+     */
+    calculateTrainingScore() {
+        const flags = Player.flags || {};
+        
+        // === 战斗表现（0-40）===
+        let battleScore = 0;
+        const result = flags['training_result'];
+        if (result === 'hero') battleScore = 40;      // 击杀幽狼兽
+        else if (result === 'rescuer') battleScore = 25; // 掩护撤退
+        else if (result === 'rescued') battleScore = 20; // 被救
+        else if (result === 'fled') battleScore = 5;    // 逃跑
+        else if (result === 'injured') battleScore = 10; // 受伤撤退
+        
+        // === 勇气表现（0-20）===
+        let courageScore = 0;
+        const wolfChoice = flags['training_wolf'];
+        if (wolfChoice === 'follow_mofan') courageScore = 20; // 跟随莫凡进洞窟
+        else if (wolfChoice === 'help_retreat') courageScore = 15; // 帮助撤退
+        else if (wolfChoice === 'injured') courageScore = 10; // 受伤坚持
+        else if (wolfChoice === 'flee') courageScore = 0; // 逃跑
+        
+        // === 团队贡献（0-20）===
+        let teamScore = 0;
+        const cliffChoice = flags['training_cliff'];
+        if (cliffChoice === 'wind_jump') teamScore = 15; // 风系跳跃
+        else if (cliffChoice === 'help') teamScore = 15; // 帮助同学
+        else if (cliffChoice === 'climb') teamScore = 5; // 普通攀爬
+        
+        // 妖藤战斗表现（简单加分）
+        if (flags['training_vine_win']) teamScore += 5;
+        
+        // === 受伤情况（0-10）===
+        let injuryScore = 10;
+        if (flags['training_wolf'] === 'injured' || result === 'rescued') {
+            injuryScore = 0;
+        }
+        
+        // === 综合评分 ===
+        const totalScore = battleScore + courageScore + teamScore + injuryScore;
+        
+        // === 评级 ===
+        let rank = 'C';
+        if (totalScore >= 80) rank = 'S';
+        else if (totalScore >= 60) rank = 'A';
+        else if (totalScore >= 40) rank = 'B';
+        
+        // 保存评分到flags
+        Player.flags['training_battle_score'] = battleScore;
+        Player.flags['training_courage_score'] = courageScore;
+        Player.flags['training_team_score'] = teamScore;
+        Player.flags['training_injury_score'] = injuryScore;
+        Player.flags['training_total_score'] = totalScore;
+        Player.flags['training_rating'] = rank;
+        
+        return {
+            battleScore,
+            courageScore,
+            teamScore,
+            injuryScore,
+            totalScore,
+            rank
+        };
     },
     
     /**
