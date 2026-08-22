@@ -1687,6 +1687,18 @@ export const DataCharacters = {
       },
       events: [
         {
+          after: "annual_exam",
+          level: 6,
+          addSkills: ["wind_blade"],
+          title: "天澜魔法高中学生",
+        },
+        {
+          after: "xuefeng_training",
+          level: 9,
+          addSkills: ["wind_track"],
+          title: "天澜魔法高中学生",
+        },
+        {
           after: "bocheng_disaster",
           level: 13,
           addSkills: ["wind_track_phantom"],
@@ -6029,6 +6041,18 @@ export const DataCharacters = {
         growthType: "mage",
       },
       events: [
+        {
+          after: "annual_exam",
+          level: 5,
+          addSkills: ["water_heal"],
+          title: "天澜魔法高中学生",
+        },
+        {
+          after: "xuefeng_training",
+          level: 8,
+          addSkills: ["water_wave"],
+          title: "天澜魔法高中学生",
+        },
         {
           after: "bocheng_disaster",
           level: 10,
