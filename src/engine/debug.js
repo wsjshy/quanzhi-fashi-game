@@ -325,6 +325,16 @@ export const DebugPanel = {
                             <button onclick="DebugPanel.advanceSkill('ice_spike')" style="background: #88ccff; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">❄️ 冰蔓→冰锁</button>
                             <button onclick="DebugPanel.learnSkill('thunder_bolt')" style="background: #ffcc00; color: #333; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">⚡ 学雷印</button>
                             <button onclick="DebugPanel.advanceSkill('thunder_bolt')" style="background: #ffee44; color: #333; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">⚡ 雷印→霹雳</button>
+                            <button onclick="DebugPanel.learnSkill('water_heal')" style="background: #4488dd; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">💧 学水御</button>
+                            <button onclick="DebugPanel.advanceSkill('water_heal')" style="background: #66aaff; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">💧 水御→暴浪</button>
+                            <button onclick="DebugPanel.learnSkill('wind_blade')" style="background: #88ddaa; color: #333; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">💨 学风轨</button>
+                            <button onclick="DebugPanel.advanceSkill('wind_blade')" style="background: #aaeebb; color: #333; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">💨 风轨→风盘</button>
+                            <button onclick="DebugPanel.learnSkill('earth_shield')" style="background: #aa8844; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🪨 学地波</button>
+                            <button onclick="DebugPanel.advanceSkill('earth_shield')" style="background: #ccaa66; color: #333; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🪨 地波→岩障</button>
+                            <button onclick="DebugPanel.learnSkill('light_ray')" style="background: #ffdd44; color: #333; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">✨ 学光耀</button>
+                            <button onclick="DebugPanel.advanceSkill('light_ray')" style="background: #ffee88; color: #333; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">✨ 光耀→圣盾</button>
+                            <button onclick="DebugPanel.learnSkill('dark_bolt')" style="background: #6644aa; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🌑 学遁影</button>
+                            <button onclick="DebugPanel.advanceSkill('dark_bolt')" style="background: #8866cc; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">🌑 遁影→巨影钉</button>
                         </div>
                         <div style="display: flex; gap: 4px; margin-top: 6px;">
                             <button onclick="DebugPanel.addSkillPoints(10)" style="flex: 1; background: #228844; color: #fff; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px;">+10技能点</button>
