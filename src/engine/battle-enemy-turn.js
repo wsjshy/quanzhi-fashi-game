@@ -4,7 +4,7 @@
  * 从battle.js拆分出的独立敌人回合模块
  * 包含：敌人回合（enemyTurn）
  */
-    enemyTurn() {
+export function enemyTurn() {
         try {
         if (!this.active || this.result) return;
 
@@ -989,7 +989,7 @@
             // 确保回合能结束
             this.endEnemyTurn();
         }
-    },
+    }
 
 // 导出模块集合
 export const BattleEnemyTurn = {

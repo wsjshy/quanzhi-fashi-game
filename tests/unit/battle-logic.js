@@ -17,7 +17,35 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 function loadBattleSystem() {
-    const battleCode = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'engine', 'battle.js'), 'utf-8');
+    const engineDir = path.join(__dirname, '..', '..', 'src', 'engine');
+    
+    // 加载所有battle.js依赖的拆分模块（按依赖顺序）
+    const depFiles = [
+        'battle-utils.js',
+        'battle-start.js',
+        'battle-skill.js',
+        'battle-enemy-turn.js',
+        'battle-player-attack.js',
+        'battle-damage.js',
+    ];
+    
+    let depCode = '';
+    for (const f of depFiles) {
+        const filePath = path.join(engineDir, f);
+        if (fs.existsSync(filePath)) {
+            let code = fs.readFileSync(filePath, 'utf-8');
+            // 转换ES模块为沙箱可执行代码
+            code = code.replace(/^import\s+.*$/gm, '');
+            code = code.replace(/^export\s+default\s+.*$/gm, '');
+            code = code.replace(/^export\s+function\s+(\w+)/gm, 'function $1');
+            code = code.replace(/^export\s+const\s+(\w+)\s*=/gm, 'var $1 =');
+            code = code.replace(/^const\s+(\w+)\s*=/gm, 'var $1 =');
+            code = code.replace(/if\s*\(typeof\s+window\s*!==\s*'undefined'\)[\s\S]*?\}/g, '');
+            depCode += '\n' + code + '\n';
+        }
+    }
+    
+    const battleCode = fs.readFileSync(path.join(engineDir, 'battle.js'), 'utf-8');
     // ES模块：移除import和export，替换const为var，使其在沙箱中可访问
     let code = battleCode.replace(/^import\s+.*$/gm, '');
     code = code.replace(/^export\s+default\s+.*$/gm, '');
@@ -25,6 +53,18 @@ function loadBattleSystem() {
     code = code.replace(/^const\s+(\w+)\s*=/gm, 'var $1 =');
     // 移除window挂载代码
     code = code.replace(/if\s*\(typeof\s+window\s*!==\s*'undefined'\)[\s\S]*?\}/g, '');
+    
+    // 合并依赖模块代码和battle.js代码
+    // 添加import别名定义（因为battle.js中用了as别名）
+    const aliasCode = `
+        var startBattleImpl = startBattle;
+        var castSkillImmediateImpl = castSkillImmediate;
+        var enemyTurnImpl = enemyTurn;
+        var playerAttackImpl = playerAttack;
+        var calculateDamageImpl = calculateDamage;
+        var applyDamageImpl = applyDamage;
+    `;
+    const fullCode = depCode + '\n' + aliasCode + '\n' + code;
     
     const sandbox = {
         console: console,
@@ -80,7 +120,7 @@ function loadBattleSystem() {
     };
     
     vm.createContext(sandbox);
-    vm.runInContext(code, sandbox);
+    vm.runInContext(fullCode, sandbox);
     return sandbox.BattleSystem;
 }
 

@@ -7,7 +7,7 @@
     /**
      * 玩家行动：普通攻击
      */
-    playerAttack() {
+export function playerAttack() {
         if (!this.active || !this.isPlayerTurn) return null;
 
         this.player.isDefending = false;
@@ -780,7 +780,7 @@
 
         this.endPlayerTurn();
         return damage;
-    },
+    }
 
 // 导出模块集合
 export const BattlePlayerAttack = {

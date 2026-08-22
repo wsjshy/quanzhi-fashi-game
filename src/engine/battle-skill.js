@@ -7,7 +7,7 @@
     /**
      * 瞬发技能（直接生效）
      */
-    castSkillImmediate(skill, caster, skipTurnEnd = false, skipInterruptCheck = false, mpCostRatio = 1.0) {
+export function castSkillImmediate(skill, caster, skipTurnEnd = false, skipInterruptCheck = false, mpCostRatio = 1.0) {
         const isPlayer = caster === 'player';
         const casterData = isPlayer ? this.player : this.enemy;
         const targetData = isPlayer ? this.enemy : this.player;
@@ -1068,7 +1068,7 @@
         }
 
         return { success: true };
-    },
+    }
 
 // 导出模块集合
 export const BattleSkill = {

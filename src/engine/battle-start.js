@@ -1,10 +1,10 @@
-﻿/**
+/**
  * 战斗系统 - 战斗启动模块
  * 
  * 从battle.js拆分出的独立战斗启动模块
  * 包含：开始战斗（startBattle）
  */
-    startBattle(enemyData, options = {}) {
+export function startBattle(enemyData, options = {}) {
         this.active = true;
         this.turn = 1;
         this.log = [];
@@ -459,7 +459,7 @@
             enemy: this.enemy,
             isPlayerTurn: this.isPlayerTurn
         };
-    },
+    }
 
 // 导出模块集合
 export const BattleStart = {
