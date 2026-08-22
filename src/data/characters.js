@@ -2515,6 +2515,24 @@ export const DataCharacters = {
       },
       events: [
         {
+          after: "annual_exam",
+          level: 7,
+          addSkills: ["light_shield"],
+          title: "光系初阶巅峰",
+        },
+        {
+          after: "xuefeng_training",
+          level: 11,
+          addSkills: ["light_blessing"],
+          title: "光系中阶法师",
+        },
+        {
+          after: "bocheng_disaster",
+          level: 15,
+          addSkills: ["light_sanctuary"],
+          title: "光系中阶法师",
+        },
+        {
           after: "mingzhu_entrance",
           level: 18,
           addSkills: ["light_blessing", "light_sanctuary", "light_purify"],
@@ -2563,6 +2581,18 @@ export const DataCharacters = {
         growthType: "mage",
       },
       events: [
+        {
+          after: "annual_exam",
+          level: 7,
+          addSkills: ["ice_shield"],
+          title: "冰系天才·初阶巅峰",
+        },
+        {
+          after: "xuefeng_training",
+          level: 11,
+          addSkills: ["ice_lock"],
+          title: "冰系中阶法师",
+        },
         {
           after: "bocheng_disaster",
           level: 16,
