@@ -27,6 +27,7 @@ function loadBattleSystem() {
         'battle-enemy-turn.js',
         'battle-player-attack.js',
         'battle-damage.js',
+        'battle-end-enemy-turn.js',
     ];
     
     let depCode = '';
@@ -63,6 +64,7 @@ function loadBattleSystem() {
         var playerAttackImpl = playerAttack;
         var calculateDamageImpl = calculateDamage;
         var applyDamageImpl = applyDamage;
+        var endEnemyTurnImpl = endEnemyTurn;
     `;
     const fullCode = depCode + '\n' + aliasCode + '\n' + code;
     
