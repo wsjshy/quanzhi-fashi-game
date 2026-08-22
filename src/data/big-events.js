@@ -1997,5 +1997,175 @@ export const DataBigEvents = {
 
 
 
+  big_event_earth_spring_contest: {
+    id: "big_event_earth_spring_contest",
+    name: "地圣泉争夺战",
+    description: "博城地圣泉每届只为一名学生开启，魔法家族、世家子弟也要进入竞争争夺。你将与穆氏养子宇昂争夺这一辈子只有一次的绝佳修炼机会！",
+    type: "narrative",
+    autoTrigger: false,
+    conditions: {
+      requiredFlags: ["annual_exam_completed"],
+      minLevel: 8,
+      notHasFlags: ["earth_spring_obtained", "earth_spring_lost"]
+    },
+    stages: [
+      {
+        id: "announcement",
+        title: "地圣泉争夺战",
+        texts: [
+          "朱校长站在主席台上，神情严肃地宣布：「同学们，一年一度的地圣泉争夺战即将开始！」",
+          "「地圣泉是博城的修炼圣地，相当于加强了不知多少倍的星尘魔器。每届只为一名学生开启，这是一辈子只有一次的绝佳修炼机会！」",
+          "「今年的竞争者包括穆氏养子宇昂，以及通过预选赛的优秀学生。获胜者将获得在地圣泉中修炼整整一个星期的机会！」",
+          "你心中一动，地圣泉的修炼机会对你来说至关重要。你决定参加这场争夺战。"
+        ],
+        choices: [
+          {
+            text: "我要参加地圣泉争夺战！",
+            nextStage: "final_duel",
+            effects: { exp: 50 }
+          },
+          {
+            text: "放弃这次机会",
+            nextStage: "give_up",
+            effects: { opinion: -5 }
+          }
+        ]
+      },
+      {
+        id: "final_duel",
+        title: "决赛：VS宇昂",
+        texts: [
+          "决赛开始了！你的对手是穆氏养子宇昂，一名冰系法师，实力强劲。",
+          "宇昂冷冷地看着你：「就凭你也想和我争地圣泉？穆氏的资源不是你能想象的。」",
+          "你握紧拳头，这场决斗你必须赢！地圣泉的修炼机会对你来说太重要了。"
+        ],
+        battle: {
+          enemyId: "yu_ang_duel",
+          victoryStage: "earth_spring_training",
+          defeatStage: "defeat"
+        }
+      },
+      {
+        id: "earth_spring_training",
+        title: "地圣泉修炼",
+        texts: [
+          "你击败了宇昂，获得了地圣泉的修炼机会！朱校长亲自为你开启地圣泉。",
+          "进入地圣泉的那一刻，你感受到了前所未有的能量涌入体内。这里的修炼速度是外面的数十倍！",
+          "七天七夜，你全神贯注地修炼，实力突飞猛进。你甚至感觉到自己可能觉醒新的元素系！",
+          "修炼结束后，你走出地圣泉，感觉自己焕然一新。但你注意到，地圣泉的能量似乎引来了一些不速之客..."
+        ],
+        effects: {
+          exp: 500,
+          skillPoints: 3,
+          flags: { earth_spring_obtained: true },
+          items: [{ itemId: "earth_spring_pass", count: 1 }]
+        },
+        choices: [
+          {
+            text: "继续探索地圣泉周围",
+            nextStage: "black_church_ambush"
+          }
+        ]
+      },
+      {
+        id: "black_church_ambush",
+        title: "黑教廷觊觎",
+        texts: [
+          "你刚走出地圣泉，就看到几个身穿黑袍的人出现在周围。他们的眼神贪婪地盯着地圣泉。",
+          "「地圣泉的能量果然名不虚传...」为首的黑袍人冷笑道，「把地圣泉交出来，我们可以饶你不死。」",
+          "你认出了他们的标志——黑教廷！他们竟然觊觎地圣泉的能量！",
+          "你握紧拳头，地圣泉是博城的宝贵资源，绝不能落入黑教廷手中！"
+        ],
+        choices: [
+          {
+            text: "战斗！保护地圣泉！",
+            nextStage: "fight_black_church",
+            effects: { opinion: 10 }
+          },
+          {
+            text: "撤退，保存实力",
+            nextStage: "retreat",
+            effects: { flags: { earth_spring_lost: true } }
+          }
+        ]
+      },
+      {
+        id: "fight_black_church",
+        title: "激战黑教廷",
+        texts: [
+          "你冲向黑教廷成员，一场激战开始了！",
+          "黑教廷成员使用暗系魔法，攻势凶猛。但你在地圣泉中修炼后实力大增，应对自如。",
+          "经过一番激战，你终于击败了黑教廷成员！他们狼狈逃窜，留下了一些线索。"
+        ],
+        battle: {
+          enemyId: "black_church_member",
+          victoryStage: "victory_ending",
+          defeatStage: "retreat"
+        }
+      },
+      {
+        id: "victory_ending",
+        title: "胜利结局",
+        texts: [
+          "你击败了黑教廷成员，保护了地圣泉！朱校长和其他老师赶到，对你赞不绝口。",
+          "「你做得很好！」朱校长欣慰地说，「地圣泉是博城的宝贵资源，绝不能落入黑教廷手中。」",
+          "你获得了黑教廷的线索，这将帮助你在博城灾难中更好地应对黑教廷的阴谋。",
+          "地圣泉争夺战圆满结束，你获得了修炼机会，也保护了博城的宝贵资源。你的名字将被铭记在博城的历史中！"
+        ],
+        effects: {
+          exp: 200,
+          gold: 200,
+          reputation: { "school": 30, "bo_city": 20 },
+          flags: { black_church_clue_found: true, earth_spring_contest_completed: true }
+        },
+        isEnding: true
+      },
+      {
+        id: "defeat",
+        title: "失败结局",
+        texts: [
+          "你输给了宇昂，地圣泉的修炼机会被他获得。",
+          "宇昂得意地看着你：「我说过，穆氏的资源不是你能想象的。地圣泉的修炼机会是我的了！」",
+          "你心中不甘，但也无可奈何。这次失败让你明白了实力的重要性。",
+          "虽然失去了地圣泉的修炼机会，但你并没有放弃。你决定更加努力地修炼，争取在未来获得更好的机会。"
+        ],
+        effects: {
+          exp: 100,
+          flags: { earth_spring_lost: true, earth_spring_contest_completed: true }
+        },
+        isEnding: true
+      },
+      {
+        id: "give_up",
+        title: "放弃",
+        texts: [
+          "你决定放弃地圣泉的修炼机会。",
+          "朱校长有些失望，但也尊重你的选择。",
+          "宇昂不战而胜，获得了地圣泉的修炼机会。",
+          "你心中有些遗憾，但也明白有些机会不是必须争取的。你决定走自己的路。"
+        ],
+        effects: {
+          flags: { earth_spring_lost: true, earth_spring_contest_completed: true }
+        },
+        isEnding: true
+      },
+      {
+        id: "retreat",
+        title: "撤退结局",
+        texts: [
+          "你选择撤退，保存实力。黑教廷成员抢走了地圣泉的部分能量。",
+          "你心中有些不甘，但也明白现在不是硬拼的时候。你决定把这个消息告诉朱校长和其他老师。",
+          "朱校长得知后非常愤怒，但也肯定了你的谨慎。地圣泉的能量被抢，将影响博城灾难中的局势。",
+          "虽然地圣泉的能量被抢，但你获得了重要的情报，这将帮助你在博城灾难中更好地应对黑教廷的阴谋。"
+        ],
+        effects: {
+          exp: 100,
+          flags: { earth_spring_lost: true, earth_spring_contest_completed: true, black_church_clue_found: true }
+        },
+        isEnding: true
+      }
+    ]
+  },
+
 };
 export default DataBigEvents;

@@ -2766,5 +2766,46 @@ export const DataEnemies = {
 
 
 
+  yu_ang_duel: {
+    id: "yu_ang_duel",
+    name: "宇昂",
+    level: 10,
+    tier: "warrior",
+    element: "ice",
+    maxHp: 280,
+    maxMp: 150,
+    attack: 45,
+    defense: 30,
+    speed: 25,
+    skills: ["basic_attack", "ice_spike", "ice_lock"],
+    weakness: "fire",
+    expReward: 300,
+    goldReward: 150,
+    dropItems: [{ itemId: "mana_potion", chance: 0.3 }],
+    description: "穆氏养子，冰系法师，修炼疯子。为了获得地圣泉的修炼机会，不惜一切代价。",
+    isCanon: true,
+    canonSource: "原著第62-73章"
+  },
+  black_church_member: {
+    id: "black_church_member",
+    name: "黑教廷成员",
+    level: 9,
+    tier: "warrior",
+    element: "dark",
+    maxHp: 250,
+    maxMp: 120,
+    attack: 40,
+    defense: 25,
+    speed: 30,
+    skills: ["basic_attack", "dark_bolt", "dark_claw"],
+    weakness: "light",
+    expReward: 250,
+    goldReward: 120,
+    dropItems: [{ itemId: "health_potion", chance: 0.2 }],
+    description: "黑教廷的底层成员，身穿黑袍，使用暗系魔法。觊觎地圣泉的能量，试图抢夺。",
+    isCanon: true,
+    canonSource: "原著博城篇"
+  },
+
 };
 export default DataEnemies;

@@ -2740,5 +2740,18 @@ export const DataItems = {
 
 
 
+  earth_spring_pass: {
+    id: "earth_spring_pass",
+    name: "地圣泉修炼凭证",
+    type: "quest",
+    description: "博城地圣泉的修炼凭证，持有者可以在地圣泉中修炼整整一个星期。这是一辈子只有一次的绝佳修炼机会！",
+    maxStack: 1,
+    usableInBattle: false,
+    usableOutOfBattle: false,
+    rarity: "legendary",
+    sellPrice: 0,
+    lore: "博城地圣泉每届只为一名学生开启，获胜者将获得这张修炼凭证。地圣泉的修炼速度是外面的数十倍，是冲击中阶法师的最佳机会。"
+  },
+
 };
 export default DataItems;
