@@ -1119,6 +1119,32 @@ export const DataEnemies = {
     ],
     locations: ["mu_manor"]
   },
+  mu_bai_duel: {
+    id: "mu_bai_duel",
+    name: "穆白",
+    title: "穆氏少爷 / 冰系法师",
+    description: "穆氏世家的少爷，冰系法师，性格高傲但实力不俗。宴会上与你切磋。",
+    elements: ["ice"],
+    level: 10,
+    maxHp: 180,
+    maxMp: 100,
+    attack: 22,
+    defense: 12,
+    speed: 14,
+    skills: ["basic_attack", "ice_spike", "ice_frost"],
+    aiType: "controller",
+    specialAbility: "冰系减速：攻击有概率降低目标速度",
+    spriteColor: "#aaddff",
+    isEnemy: true,
+    isBoss: false,
+    expReward: 120,
+    goldReward: 150,
+    dropItems: [
+      { itemId: "ice_crystal", chance: 0.3, min: 1, max: 1 },
+      { itemId: "magic_crystal", chance: 0.2, min: 1, max: 1 }
+    ],
+    locations: ["mu_manor"]
+  },
   three_eye_demon_wolf: {
     id: "three_eye_demon_wolf",
     name: "三眼魔狼（骨刺狰狼）",

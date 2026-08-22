@@ -1291,6 +1291,242 @@ export const DataBigEvents = {
     ]
   },
 
+  // v3.1.0: 穆氏鸿门宴 - 招揽失败后的施压与拉拢
+  big_event_mu_banquet: {
+    id: "big_event_mu_banquet",
+    name: "穆氏鸿门宴",
+    description: "年度考核后，穆氏世家邀请你赴宴。这是一场试探，也是最后通牒...",
+    type: "narrative",
+    autoTrigger: false,
+    conditions: {
+      minLevel: 5,
+      requiredFlags: ["annual_exam_completed"],
+      excludeFlags: ["earth_spring_duel_completed"]
+    },
+    phases: [
+      // 第一阶段：邀请
+      {
+        id: "phase_1_invitation",
+        name: "穆氏请柬",
+        description: "考核结束后的第三天，一个穿着穆氏制服的管家找到了你。\n\n\"我家主人穆卓云先生有请，希望你能光临今晚的宴会。\"管家的态度恭敬，但语气中带着一丝不容拒绝的意味，\"这是个好机会，很多人求都求不来。\"\n\n你接过烫金的请柬，心中明白——这不是简单的宴会。穆氏在招揽被拒后，不会轻易放弃。",
+        type: "choice",
+        choices: [
+          {
+            text: "接受邀请，独自赴宴",
+            nextPhase: "phase_2_banquet",
+            effects: {
+              flags: { "banquet_choice": "accept_alone" }
+            }
+          },
+          {
+            text: "接受邀请，叫上莫凡一起去",
+            nextPhase: "phase_2_banquet",
+            conditions: { npcRelation: { mo_fan: 10 } },
+            effects: {
+              npcRelation: { "mo_fan": 5 },
+              flags: { "banquet_choice": "accept_with_mofan" }
+            }
+          },
+          {
+            text: "婉拒邀请，称身体不适",
+            nextPhase: "phase_4_refuse",
+            effects: {
+              reputation: { "mu_family": -5, "grassroots": 5 },
+              flags: { "banquet_choice": "refuse" }
+            }
+          }
+        ]
+      },
+
+      // 第二阶段：宴会
+      {
+        id: "phase_2_banquet",
+        name: "穆氏庄园",
+        description: "傍晚，你来到穆氏庄园。金碧辉煌的大厅里，博城有头有脸的人物几乎都到了。\n\n穆卓云亲自迎了上来：\"年轻人，你来了就好。\"他的笑容热情，但眼神锐利，\"年度考核的表现我都听说了，不错，很不错。\"\n\n宴席间，穆卓云不断展示穆氏的实力——星尘魔器库、专属修炼室、中阶法师导师团。\n\n\"加入穆氏，这些资源你都能用。\"穆卓云放下酒杯，\"之前的事，我可以当作没发生过。年轻人有脾气是好事，但也要认清现实。\"\n\n全场的目光都集中在你身上。",
+        type: "choice",
+        choices: [
+          {
+            text: "（隐忍）感谢穆家主厚爱，我会认真考虑",
+            nextPhase: "phase_3_test",
+            effects: {
+              reputation: { "mu_family": 10 },
+              flags: { "banquet_attitude": "patient" }
+            }
+          },
+          {
+            text: "（反击）穆家主的好意我心领了，但我习惯靠自己",
+            nextPhase: "phase_3_test",
+            effects: {
+              reputation: { "mu_family": -10, "grassroots": 10, "brave": 5 },
+              flags: { "banquet_attitude": "resist" }
+            }
+          },
+          {
+            text: "（离席）抱歉，我还有事，先走了",
+            nextPhase: "phase_4_leave",
+            effects: {
+              reputation: { "mu_family": -20, "grassroots": 15, "brave": 10 },
+              npcRelation: { "mo_fan": 10, "mu_bai": -10 },
+              flags: { "banquet_attitude": "leave" }
+            }
+          }
+        ]
+      },
+
+      // 第三阶段：试探
+      {
+        id: "phase_3_test",
+        name: "刀光剑影",
+        description: "你的回答让穆卓云脸色微变。\n\n这时，穆白站了起来：\"既然这位同学这么有自信，不如和我切磋一下？让大家看看，拒绝穆氏的资本是什么。\"\n\n宇昂也在一旁冷冷地看着你，手指间寒气凝聚。\n\n穆卓云没有阻止，只是端起酒杯，似笑非笑地看着你。",
+        type: "choice",
+        choices: [
+          {
+            text: "接受穆白的切磋挑战",
+            nextPhase: "phase_4_duel",
+            effects: {
+              reputation: { "brave": 10 },
+              flags: { "banquet_test": "accept_duel" }
+            }
+          },
+          {
+            text: "拒绝切磋，称今天是宴会不是比武场",
+            nextPhase: "phase_4_end",
+            effects: {
+              composure: 5,
+              reputation: { "mu_family": 5 },
+              flags: { "banquet_test": "refuse_duel" }
+            }
+          },
+          {
+            text: "（如果莫凡在场）让莫凡代我应战",
+            nextPhase: "phase_4_mofan_duel",
+            conditions: { flag: "banquet_choice", value: "accept_with_mofan" },
+            effects: {
+              npcRelation: { "mo_fan": 10 },
+              flags: { "banquet_test": "mofan_duel" }
+            }
+          }
+        ]
+      },
+
+      // 第四阶段A：与穆白切磋
+      {
+        id: "phase_4_duel",
+        name: "宴会上的切磋",
+        description: "你和穆白来到庄园的训练场。围观的人越来越多。\n\n穆白释放冰系魔法，寒气逼人。你知道，这不仅仅是切磋——穆氏在试探你的底线。",
+        type: "battle",
+        enemyId: "mu_bai_duel",
+        battleOptions: {
+          mode: "duel",
+          canFlee: false,
+          canUseItems: false,
+          fearLevel: 0
+        },
+        winPhase: "phase_4_duel_win",
+        losePhase: "phase_4_duel_lose"
+      },
+
+      // 切磋胜利
+      {
+        id: "phase_4_duel_win",
+        name: "技惊四座",
+        description: "你击败了穆白！全场哗然。\n\n穆卓云的脸色彻底沉了下来。穆白咬着牙，眼中满是不甘。\n\n\"好，好得很。\"穆卓云冷笑，\"年轻人，你会为今天的选择后悔的。\"\n\n你知道，从今天起，穆氏将视你为眼中钉。但你也赢得了在场不少人的尊重——尤其是那些同样出身草根的法师。",
+        type: "narrative",
+        nextPhase: "phase_5_end",
+        effects: {
+          exp: 100,
+          gold: 100,
+          reputation: { "grassroots": 20, "brave": 15, "mu_family": -15 },
+          npcRelation: { "mu_bai": -20, "mo_fan": 10 },
+          flags: { "banquet_result": "defeated_mubai", "mu_family_hostile": true }
+        }
+      },
+
+      // 切磋失败
+      {
+        id: "phase_4_duel_lose",
+        name: "虽败犹荣",
+        description: "你输给了穆白。他的冰系魔法确实精湛，还有穆氏资源的加持。\n\n但你虽败犹荣——能在穆氏庄园和穆白战到这个地步，已经让不少人刮目相看。\n\n穆卓云淡淡道：\"年轻人，实力不够的时候，态度最好放低一些。\"\n\n你握紧了拳头，心中暗下决心——总有一天，你会让穆氏刮目相看。",
+        type: "narrative",
+        nextPhase: "phase_5_end",
+        effects: {
+          exp: 50,
+          hp: -30,
+          reputation: { "brave": 5, "mu_family": -5 },
+          npcRelation: { "mu_bai": -5 },
+          flags: { "banquet_result": "lost_to_mubai" }
+        }
+      },
+
+      // 第四阶段B：莫凡代战
+      {
+        id: "phase_4_mofan_duel",
+        name: "莫凡出手",
+        description: "莫凡站了出来：\"我来陪你玩玩。\"\n\n他的语气轻松，但眼中闪过一丝精光。穆白脸色一变——他知道莫凡的实力。\n\n果然，莫凡用雷印破冰，再用火滋灼烧，几招之内就压制了穆白。\n\n全场震惊。穆卓云的脸色难看到了极点。\n\n\"司机的儿子，也敢在穆氏庄园撒野？\"穆卓云怒道。\n\n莫凡耸耸肩：\"是你们要切磋的，怎么，输不起？\"",
+        type: "narrative",
+        nextPhase: "phase_5_end",
+        effects: {
+          exp: 80,
+          reputation: { "grassroots": 15, "mu_family": -20 },
+          npcRelation: { "mo_fan": 15, "mu_bai": -15 },
+          flags: { "banquet_result": "mofan_won", "mu_family_hostile": true }
+        }
+      },
+
+      // 第四阶段C：婉拒邀请
+      {
+        id: "phase_4_refuse",
+        name: "不欢而散",
+        description: "你婉拒了邀请。管家的脸色有些难看，但还是礼貌地离开了。\n\n后来你听说，穆卓云对你的拒绝很不满，在多个场合表示\"不识抬举\"。\n\n但你并不在意——靠自己的实力，比依附世家更踏实。",
+        type: "narrative",
+        nextPhase: "phase_5_end",
+        effects: {
+          exp: 20,
+          flags: { "banquet_result": "refused_invitation" }
+        }
+      },
+
+      // 第四阶段D：直接离席
+      {
+        id: "phase_4_leave",
+        name: "拂袖而去",
+        description: "你直接起身离席，全场一片寂静。\n\n穆卓云的脸色铁青：\"好，好一个有骨气的年轻人。\"\n\n你走出穆氏庄园，夜风拂面。你知道，从今天起，穆氏不会再给你好脸色看了。\n\n但你也知道，莫凡会因为你的选择而更加认可你。",
+        type: "narrative",
+        nextPhase: "phase_5_end",
+        effects: {
+          exp: 30,
+          flags: { "banquet_result": "left_early", "mu_family_hostile": true }
+        }
+      },
+
+      // 第四阶段E：拒绝切磋
+      {
+        id: "phase_4_end",
+        name: "全身而退",
+        description: "你拒绝了切磋，称今天是宴会不是比武场。\n\n穆卓云愣了一下，随即笑了：\"说得对，是我教子无方。小白，还不道歉？\"\n\n穆白不情不愿地道了歉。宴会在表面的和谐中结束了。\n\n你知道，穆氏不会善罢甘休，但至少今天，你没有给他们任何把柄。",
+        type: "narrative",
+        nextPhase: "phase_5_end",
+        effects: {
+          exp: 40,
+          gold: 50,
+          reputation: { "mu_family": 5 },
+          flags: { "banquet_result": "peaceful_end" }
+        }
+      },
+
+      // 第五阶段：结束
+      {
+        id: "phase_5_end",
+        name: "宴会之后",
+        description: "鸿门宴结束了。\n\n无论结果如何，你都更加清楚地认识到这个世界的规则——世家的力量根深蒂固，草根的崛起注定艰难。\n\n但你并不后悔自己的选择。地圣泉决斗即将到来，那将是你证明自己的舞台。\n\n（你的选择将影响地圣泉决斗中的立场和关系）",
+        type: "auto",
+        effects: {
+          flags: { "mu_banquet_completed": true }
+        }
+      }
+    ]
+  },
+
   // v2.0.0: 灾后审判与去留
   big_event_post_disaster: {
     id: "big_event_post_disaster",
