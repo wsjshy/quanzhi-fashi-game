@@ -3330,8 +3330,8 @@ const UI = {
                     top: 0; left: 0;
                     width: 100%; height: 100%;
                     background: url('assets/images/effects/fire_magic.jpg') center/cover;
-                    opacity: 0.25;
-                    filter: blur(3px) saturate(1.2);
+                    opacity: 0.35;
+                    filter: blur(2px) saturate(1.1);
                     z-index: 0;
                     pointer-events: none;
                 "></div>
