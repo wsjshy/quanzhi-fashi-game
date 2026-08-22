@@ -33,6 +33,7 @@ function loadBattleSystem() {
         'battle-rewards.js',
         'battle-help.js',
         'battle-magic-tool.js',
+        'battle-status-modifiers.js',
     ];
     
     let depCode = '';
@@ -75,6 +76,7 @@ function loadBattleSystem() {
         var calculateRewardsImpl = calculateRewards;
         var showHelpImpl = showHelp;
         var applyMagicToolEffectImpl = applyMagicToolEffect;
+        var getStatusModifiersImpl = getStatusModifiers;
     `;
     const fullCode = depCode + '\n' + aliasCode + '\n' + code;
     
