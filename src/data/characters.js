@@ -6782,7 +6782,17 @@ export const DataCharacters = {
           choices: [
             { text: "唐月老师的课讲得真好。", next: "about_tangyue" },
             { text: "年度考核你准备得怎么样？", next: "about_exam" },
-            { text: "我会证明给你看的。", next: "prove" }
+            { text: "我会证明给你看的。", next: "prove" },
+            {
+              text: "听说东郊废弃工地有妖魔出没？",
+              next: "about_city_hunt",
+              condition: { minLevel: 5, notFlags: ["city_hunt_one_eye_completed"] }
+            },
+            {
+              text: "东郊那只独眼魔狼，是你发现的？",
+              next: "after_city_hunt",
+              condition: { hasFlags: ["city_hunt_one_eye_completed"] }
+            }
           ]
         },
         about_tangyue: {
@@ -6804,6 +6814,48 @@ export const DataCharacters = {
           choices: [
             { text: "不如现在就比修炼？", next: "default", action: "start_quest", actionData: { questId: "quest_zhoumin_contest" } },
             { text: "一定。", next: "default", action: "back" }
+          ]
+        },
+        about_city_hunt: {
+          id: "about_city_hunt",
+          texts: [
+            "你也听说了？最近东郊那边不太太平，有好几个流浪汉失踪了。",
+            "我总觉得那里有什么东西...但猎魔者公会说只是普通的人口失踪。",
+            "如果你要去调查，小心点。那种地方，谁知道藏着什么。"
+          ],
+          effects: { opinion: 2, familiarity: 3 },
+          choices: [
+            { text: "我会去看看的。", next: "default", action: "back" },
+            { text: "要不要一起去？", next: "city_hunt_invite" }
+          ]
+        },
+        city_hunt_invite: {
+          id: "city_hunt_invite",
+          texts: [
+            "一起去？...你认真的？",
+            "哼，本小姐可是火系尖子生，有我在你安全多了。",
+            "不过...那种地方真的有点吓人。你确定要去？",
+            "（周敏虽然嘴上强硬，但手不自觉地攥紧了衣角）"
+          ],
+          effects: { opinion: 3, familiarity: 5 },
+          choices: [
+            { text: "放心，我会保护你的。", next: "default", effects: { opinion: 5 } },
+            { text: "那算了，我自己去。", next: "default", effects: { opinion: -2 } }
+          ]
+        },
+        after_city_hunt: {
+          id: "after_city_hunt",
+          texts: [
+            "你...你真的去了东郊工地？",
+            "独眼魔狼...那种凶残的妖魔，你一个人就解决了？",
+            "（周敏看你的眼神变了，不再是之前的轻蔑，而是...惊讶和一丝佩服）",
+            "看来我之前确实小看你了。对不起。"
+          ],
+          effects: { opinion: 10, trust: 5, familiarity: 10 },
+          choices: [
+            { text: "没什么，只是运气好。", next: "default", effects: { opinion: 3 } },
+            { text: "现在你知道我不是废物了吧？", next: "default", effects: { opinion: 1 } },
+            { text: "下次遇到这种事，记得先通知猎妖队。", next: "default", effects: { opinion: 2, trust: 3 } }
           ]
         }
       }
