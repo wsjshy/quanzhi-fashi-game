@@ -41,6 +41,7 @@ import './engine/spirit-seed.js';    // SpiritSeedSystem
 import './engine/star-dust-artifact.js'; // StarDustArtifactSystem
 import './engine/soul-system.js';    // SoulSystem
 import './engine/player.js';         // Player（依赖很多系统）
+import './engine/game-state.js';     // GameState（集中式状态管理，依赖Player）
 import './engine/time.js';           // TimeSystem
 import './engine/quest.js';          // QuestSystem
 import './engine/investigation.js';  // InvestigationSystem
@@ -71,6 +72,28 @@ function startGame() {
     // 移除加载屏
     const loading = document.getElementById('loading-screen');
     if (loading) loading.remove();
+    
+    // 注册子系统序列化回调到GameState（必须在存档加载前）
+    if (typeof GameState !== 'undefined') {
+        if (typeof Inventory !== 'undefined') {
+            GameState.registerSubsystem('inventory',
+                () => Inventory.getSaveData(),
+                (data) => Inventory.loadSaveData(data)
+            );
+        }
+        if (typeof WorldState !== 'undefined') {
+            GameState.registerSubsystem('worldState',
+                () => WorldState.getSaveData(),
+                (data) => WorldState.loadSaveData(data)
+            );
+        }
+        if (typeof NPCStateSystem !== 'undefined') {
+            GameState.registerSubsystem('npcStates',
+                () => NPCStateSystem.getSaveData(),
+                (data) => NPCStateSystem.loadSaveData(data)
+            );
+        }
+    }
     
     // 初始化UI（必须在Game.init之前，因为Game.init会调用UI渲染）
     if (typeof UI !== 'undefined' && UI.init) {

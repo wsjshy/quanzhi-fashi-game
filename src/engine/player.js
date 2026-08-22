@@ -2046,8 +2046,13 @@ export const Player = {
 
     /**
      * 保存游戏
+     * v3.0.2: 委托给GameState集中式状态管理
      */
     save() {
+        if (typeof GameState !== 'undefined') {
+            return GameState.save(this);
+        }
+        // fallback: 旧版保存逻辑
         const saveData = {
             name: this.name,
             level: this.level,
@@ -2107,50 +2112,41 @@ export const Player = {
             consecutiveExplores: this.consecutiveExplores || 0,
             exploredActions: this.exploredActions || {},
             dailyStats: this.dailyStats || { day: 1, expGained: 0, goldGained: 0, battlesWon: 0, locationsExplored: 0, npcsTalked: 0 },
-            inventory: Inventory.getSaveData(),
+            inventory: typeof Inventory !== 'undefined' ? Inventory.getSaveData() : {},
             worldState: typeof WorldState !== 'undefined' ? WorldState.getSaveData() : null,
             npcStates: typeof NPCStateSystem !== 'undefined' ? NPCStateSystem.getSaveData() : null,
             gameVersion: GAME_VERSION,
             saveVersion: SAVE_VERSION,
             saveTime: new Date().toISOString()
         };
-        
         localStorage.setItem('quanzhi_fashi_save', JSON.stringify(saveData));
         return true;
     },
 
     /**
      * 读取存档
+     * v3.0.2: 委托给GameState集中式状态管理
      */
     load() {
+        if (typeof GameState !== 'undefined') {
+            return GameState.load(this);
+        }
+        // fallback: 旧版加载逻辑
         const saveStr = localStorage.getItem('quanzhi_fashi_save');
         if (!saveStr) return false;
-        
         try {
             let data = JSON.parse(saveStr);
-            
-            // 存档版本检测与迁移
             const saveVersion = data.saveVersion || data.version || '0.1.0';
             console.log(`[存档] 读取存档，版本: ${saveVersion}，当前版本: ${SAVE_VERSION}`);
-            
-            // 如果版本不同，尝试迁移
             if (saveVersion !== SAVE_VERSION) {
                 console.log(`[存档] 版本不同，尝试迁移...`);
-                
-                // 备份旧存档
                 this._backupSave(saveStr, saveVersion);
-                
-                // 执行迁移
                 data = this._migrateSave(data, saveVersion);
-                
                 console.log(`[存档] 迁移完成！`);
             }
-            
-            // 加载玩家数据（所有字段都有默认值，确保兼容性）
             this.name = data.name || '冒险者';
             this.level = data.level ?? 1;
             this.exp = data.exp ?? 0;
-            // 强制重新计算升级所需经验，确保新旧存档都用最新的经验曲线
             this.expToNext = this._calcExpToNext(this.level);
             this.attributePoints = data.attributePoints ?? 0;
             this.maxHp = data.maxHp ?? 120;
@@ -2163,12 +2159,10 @@ export const Player = {
             this.spirit = data.spirit ?? 12;
             this.maxStamina = data.maxStamina ?? 100;
             this.stamina = data.stamina ?? this.maxStamina;
-            // v0.99.0: 每日行动次数（替代体力系统）
             this.dailyActions = data.dailyActions || { cultivate: 0, study: 0, hunt: 0, explore: 0 };
             this.elements = data.elements ?? [];
             this.elementLevels = data.elementLevels ?? {};
             this.elementExp = data.elementExp ?? {};
-            // 兼容旧存档：如果没有elementLevels，用level初始化
             if (Object.keys(this.elementLevels).length === 0 && this.elements.length > 0) {
                 this.elements.forEach(el => {
                     this.elementLevels[el] = this.level;
@@ -2198,7 +2192,7 @@ export const Player = {
             this.completedQuests = data.completedQuests ?? [];
             this.currentLocation = data.currentLocation ?? 'tianlan_school';
             this.day = data.day ?? 1;
-            this.hour = data.hour ?? 8;  // 默认早上8点
+            this.hour = data.hour ?? 8;
             this.timeOfDay = data.timeOfDay ?? 'morning';
             this.flags = data.flags ?? {};
             this.investigation = data.investigation ?? { demon: 0, black_church: 0, yu_ang: 0, earth_spring: 0, discoveredClues: [], yuAngSuspicion: 0 };
@@ -2208,113 +2202,41 @@ export const Player = {
             this.battleBuffs = data.battleBuffs ?? [];
             this.tempShopDiscount = data.tempShopDiscount ?? 1.0;
             this.tempShopDiscountExpireDay = data.tempShopDiscountExpireDay ?? 0;
-
-            // 加载召唤兽数据
             this.summonBeasts = data.summonBeasts || [];
             this.activeSummonIndex = data.activeSummonIndex || 0;
-            // 兼容旧存档：如果有summonData但没有summonBeasts
             if (data.summonData && (!this.summonBeasts || this.summonBeasts.length === 0)) {
                 this.summonBeasts = [data.summonData];
                 this.activeSummonIndex = 0;
             }
             this.migrateSummonData();
-
-            // v0.9.0: 加载探索记录（兼容旧存档）
             this.exploredLocations = data.exploredLocations || [];
             this.exploredNPCs = data.exploredNPCs || [];
-            // v0.9.1: 加载疲劳等级和探索完成记录
             this.fatigueLevel = data.fatigueLevel || 0;
             this.explorationComplete = data.explorationComplete || [];
             this.consecutiveExplores = data.consecutiveExplores || 0;
             this.exploredActions = data.exploredActions || {};
             this.dailyStats = data.dailyStats || { day: 1, expGained: 0, goldGained: 0, battlesWon: 0, locationsExplored: 0, npcsTalked: 0 };
-            
-            // 加载背包
             if (data.inventory) {
-                try {
-                    Inventory.loadSaveData(data.inventory);
-                } catch (e) {
-                    console.warn('[存档] 背包数据加载失败，使用空背包:', e);
-                }
+                try { Inventory.loadSaveData(data.inventory); } catch (e) { console.warn('[存档] 背包数据加载失败:', e); }
             }
-            
-            // 加载世界状态
             if (data.worldState && typeof WorldState !== 'undefined') {
-                try {
-                    WorldState.loadSaveData(data.worldState);
-                } catch (e) {
-                    console.warn('[存档] 世界状态加载失败:', e);
-                }
+                try { WorldState.loadSaveData(data.worldState); } catch (e) { console.warn('[存档] 世界状态加载失败:', e); }
             }
-            
-            // 加载NPC状态
             if (data.npcStates && typeof NPCStateSystem !== 'undefined') {
-                try {
-                    NPCStateSystem.loadSaveData(data.npcStates);
-                } catch (e) {
-                    console.warn('[存档] NPC状态加载失败:', e);
-                }
+                try { NPCStateSystem.loadSaveData(data.npcStates); } catch (e) { console.warn('[存档] NPC状态加载失败:', e); }
             }
-            
-            // v2.4.0 存档兼容：如果没有主修系但有觉醒系，自动设置第一个觉醒系为主修系
             if (!this.primaryElement && this.elements && this.elements.length > 0) {
                 this.primaryElement = this.elements[0];
-                console.log(`[存档] 自动设置主修系为: ${this.primaryElement}`);
             }
-
-            // 存档迁移：补全缺失的初始技能（旧存档可能只有basic_attack）
             this.elements.forEach(elem => {
-                const starterSkills = {
-                    fire: 'fire_bolt', ice: 'ice_spike', thunder: 'thunder_bolt',
-                    earth: 'earth_spike', wind: 'wind_blade', water: 'water_heal',
-                    light: 'light_ray', dark: 'dark_bolt', heal: 'heal_light',
-                    summon: 'summon_beast'
-                };
+                const starterSkills = { fire: 'fire_bolt', ice: 'ice_spike', thunder: 'thunder_bolt', earth: 'earth_spike', wind: 'wind_blade', water: 'water_heal', light: 'light_ray', dark: 'dark_bolt', heal: 'heal_light', summon: 'summon_beast' };
                 const starter = starterSkills[elem];
-                if (starter && !this.skills.includes(starter)) {
-                    this.skills.push(starter);
-                }
-                // 补全当前等级应解锁的技能
-                const unlockTable = SKILL_UNLOCK_TABLE[elem];
-                if (unlockTable) {
-                    Object.keys(unlockTable).forEach(levelStr => {
-                        const unlockLevel = parseInt(levelStr);
-                        if (unlockLevel <= this.level) {
-                            unlockTable[unlockLevel].forEach(skillId => {
-                                if (!this.skills.includes(skillId)) {
-                                    this.skills.push(skillId);
-                                }
-                            });
-                        }
-                    });
-                }
+                if (starter && !this.skills.includes(starter)) this.skills.push(starter);
             });
-            
-            // 存档迁移：为旧存档补全天赋（v0.5.3及以前没有天赋系统）
-            if (typeof TalentSystem !== 'undefined' && TalentSystem.initTalentForElement) {
-                this.elements.forEach(elem => {
-                    if (!this.talents || !this.talents[elem]) {
-                        this.talents[elem] = TalentSystem.initTalentForElement(elem);
-                        console.log(`[存档迁移] 为 ${elem} 初始化天赋: ${this.talents[elem].talentId}`);
-                    }
-                });
-            }
-
-            // v2.4.0: 旧存档兼容 - 自动设置主修系为第一个觉醒的系别
-            if (!this.primaryElement && this.elements && this.elements.length > 0) {
-                this.primaryElement = this.elements[0];
-                console.log(`[存档迁移] 自动设置主修系: ${this.primaryElement}`);
-            }
-            
-            // 测试用：保留存档天数
-            
-            // 自动保存一次，更新为新版本格式
             this.save();
-            
             return true;
         } catch (e) {
             console.error('读取存档失败:', e);
-            // 尝试恢复备份
             return this._restoreBackup();
         }
     },
