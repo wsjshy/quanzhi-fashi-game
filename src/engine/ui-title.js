@@ -101,7 +101,7 @@ export function renderTitleScreen(hasSave) {
                 right: 20px;
                 font-size: 14px;
                 color: #555;
-            ">v3.1.0 · 博城篇内容深化</div>
+            ">v3.2.0 · 博城篇完美扎实化</div>
         </div>
     `;
 

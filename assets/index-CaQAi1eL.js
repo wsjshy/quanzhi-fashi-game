@@ -1376,7 +1376,7 @@ ${n}
                 right: 20px;
                 font-size: 14px;
                 color: #555;
-            ">v3.1.0 · 博城篇内容深化</div>
+            ">v3.2.0 · 博城篇完美扎实化</div>
         </div>
     `,this.createParticles()}function Dt(){const e=document.getElementById("particles");if(e){for(let t=0;t<30;t++){const n=document.createElement("div"),a=Math.random()*6+2,i=Math.random()*100,s=Math.random()*100,r=Math.random()*10+5,o=Math.random()*5,l=["#ffd700","#ff6b35","#66ccff","#9966ff","#66ff99"],c=l[Math.floor(Math.random()*l.length)];n.style.cssText=`
             position: absolute;
