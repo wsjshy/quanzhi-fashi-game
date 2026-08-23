@@ -7072,6 +7072,7 @@ export const DataCharacters = {
         },
         about_tangyue: {
           id: "about_tangyue",
+          oneTime: true,
           texts: ["唐月老师真的很厉害，无论是气场还是准度。", "我妈妈也是导师，但根本做不到唐月老师那样。"],
           effects: { opinion: 2, familiarity: 3 },
           choices: [{ text: "确实很强。", next: "default", action: "back" }]
@@ -7093,6 +7094,7 @@ export const DataCharacters = {
         },
         about_city_hunt: {
           id: "about_city_hunt",
+          oneTime: true,
           texts: [
             "你也听说了？最近东郊那边不太太平，有好几个流浪汉失踪了。",
             "我总觉得那里有什么东西...但猎魔者公会说只是普通的人口失踪。",
@@ -7106,6 +7108,7 @@ export const DataCharacters = {
         },
         city_hunt_invite: {
           id: "city_hunt_invite",
+          oneTime: true,
           texts: [
             "一起去？...你认真的？",
             "哼，本小姐可是火系尖子生，有我在你安全多了。",
@@ -7120,6 +7123,7 @@ export const DataCharacters = {
         },
         after_city_hunt: {
           id: "after_city_hunt",
+          oneTime: true,
           texts: [
             "你...你真的去了东郊工地？",
             "独眼魔狼...那种凶残的妖魔，你一个人就解决了？",
@@ -7269,6 +7273,7 @@ export const DataCharacters = {
         },
         about_bocheng: {
           id: "about_bocheng",
+          oneTime: true,
           texts: [
             "我怎么会忘……那天晚上，我亲眼看着我爸妈被妖魔撕碎。",
             "我拼了命才逃出来。后来才知道，那场灾难不是天灾——是黑教廷搞的鬼。",
@@ -7281,6 +7286,7 @@ export const DataCharacters = {
         },
         about_lulu: {
           id: "about_lulu",
+          oneTime: true,
           texts: [
             "张璐璐……我女朋友。水系的，比我小一届。",
             "她也是博城出来的，但她比我幸运——家人都还在。",
@@ -7293,6 +7299,7 @@ export const DataCharacters = {
         },
         about_black_church: {
           id: "about_black_church",
+          oneTime: true,
           texts: [
             "我一直在暗中查。黑教廷在明珠有眼线，而且不止一个。",
             "我发现有个灰衣人经常在学校附近出没，像是在联络什么人。",
