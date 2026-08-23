@@ -10835,6 +10835,7 @@ level: 18,
         },
         about_family: {
           id: "about_family",
+          oneTime: true,
           texts: [
             "白家？你连白家都没听过？魔都四大家族白、赵、穆、东方，我白家以光系闻名。",
             "我叔叔是光系系主任白眉，中阶法师在他面前连光都放不出来。",
@@ -10846,6 +10847,7 @@ level: 18,
         },
         about_light: {
           id: "about_light",
+          oneTime: true,
           texts: [
             "光系？光系是所有系中最神圣的。光耀·失明可以让敌人瞬间失去战斗力，光佑·圣盾可以抵挡任何攻击。",
             "而且光系对黑暗生物有天生克制。黑教廷那些东西，最怕的就是光系法师。",
@@ -10857,6 +10859,7 @@ level: 18,
         },
         challenge_response: {
           id: "challenge_response",
+          oneTime: true,
           texts: [
             "切磋？就凭你？好，我给你这个机会。别到时候输了哭鼻子。",
             "我可是中阶光系法师，你一个召唤系的……算了，让你三招。"
@@ -10868,6 +10871,7 @@ level: 18,
         },
         fight_ready: {
           id: "fight_ready",
+          oneTime: true,
           texts: [
             "任务已接取：白家的挑衅。",
             "（白藏锋冷笑一声，摆出战斗姿态。）",
@@ -10880,6 +10884,7 @@ level: 18,
         },
         threaten_response: {
           id: "threaten_response",
+          oneTime: true,
           texts: [
             "你威胁我？哼，主校区考核上见真章。到时候可别求饶。",
             "白家的人，不是你能惹的。好自为之吧。"
