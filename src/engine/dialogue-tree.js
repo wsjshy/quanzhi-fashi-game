@@ -292,13 +292,28 @@ export const DialogueTree = {
 
     /**
      * 过滤选项（根据条件）
+     * v3.1.0: 添加一次性对话过滤，已访问的oneTime节点不再显示
      */
     _filterChoices(choices) {
         return choices.filter(choice => {
             // 检查条件
             if (choice.condition) {
-                return this._checkCondition(choice.condition);
+                if (!this._checkCondition(choice.condition)) return false;
             }
+
+            // v3.1.0: 过滤已访问的一次性对话节点
+            const nextNodeId = choice.next || choice.nextNode;
+            if (nextNodeId && nextNodeId !== 'default') {
+                const dialogueData = this.getDialogueData(this.currentNPC);
+                const nextNode = dialogueData.nodes[nextNodeId];
+                if (nextNode && nextNode.oneTime) {
+                    // 一次性对话，检查是否已访问
+                    if (NPCStateSystem.isDialogueNodeVisited(this.currentNPC, nextNodeId)) {
+                        return false; // 已访问，过滤掉
+                    }
+                }
+            }
+
             return true;
         });
     },

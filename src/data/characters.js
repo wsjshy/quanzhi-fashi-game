@@ -9944,6 +9944,7 @@ level: 18,
         },
         about_guild_vs_hunters: {
           id: "about_guild_vs_hunters",
+          oneTime: true,
           texts: ["城市猎妖队是官方组织，负责城市内的妖魔事件。", "猎者联盟更自由，可以接野外任务，报酬也更高。", "但风险也更大，没有官方保障，全靠自己。"],
           effects: { familiarity: 3, intelligence: 5 },
           choices: [{ text: "原来如此", next: "default", action: "back" }]
@@ -9974,6 +9975,7 @@ level: 18,
         },
         about_join_accept: {
           id: "about_join_accept",
+          oneTime: true,
           texts: ["好！有胆量。", "这样，你先去东郊击败一只独眼魔狼，把魔狼皮带回来给我。", "完成后，你就是猎者联盟的见习猎者了。"],
           effects: { familiarity: 5, opinion: 3 },
           choices: [{ text: "我这就去", next: "default", action: "back" }]
@@ -9989,6 +9991,7 @@ level: 18,
         },
         about_thunder_advanced: {
           id: "about_thunder_advanced",
+          oneTime: true,
           texts: ["雷系中阶有霹雳，范围大，威力强。", "但最厉害的是雷系的灵种，比如'夜叉'，可以召唤雷兽。", "不过灵种可遇不可求，要看机缘。"],
           effects: { intelligence: 5, familiarity: 3 },
           choices: [{ text: "原来如此", next: "default", action: "back" }]
@@ -10003,6 +10006,7 @@ level: 18,
         },
         about_mu_power: {
           id: "about_mu_power",
+          oneTime: true,
           texts: ["穆氏是博城的老牌世家，传承了几百年。", "他们家的冰系魔法，在整个南方都有名。", "不过穆卓云虽然护短，但也不是不讲理的人。你有实力，他也会高看你一眼。"],
           effects: { familiarity: 3, intelligence: 3 },
           choices: [{ text: "我明白了", next: "default", action: "back" }]
@@ -10018,12 +10022,14 @@ level: 18,
         },
         about_disaster: {
           id: "about_disaster",
+          oneTime: true,
           texts: ["希望不会。但博城三面环山，历史上多次遭遇妖魔潮。", "猎者联盟已经做好了准备，真到那时候，我们会顶在前面。", "这件事不要到处说，免得引起恐慌。"],
           effects: { familiarity: 3, trust: 5 },
           choices: [{ text: "我明白", next: "default", action: "back" }]
         },
         about_zhu: {
           id: "about_zhu",
+          oneTime: true,
           texts: ["朱校长？我的老战友了。", "我们当年一起猎妖，他救过我的命，我也救过他的。", "他这个人，看似温和，实则刚硬。为了保护学生，可以和穆氏翻脸。"],
           effects: { familiarity: 5, opinion: 3 },
           choices: [{ text: "原来如此", next: "default", action: "back" }]
