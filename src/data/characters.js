@@ -9547,6 +9547,10 @@ level: 18,
           choices: [
             { text: "北面情况怎么样？", next: "about_north", action: "talk" },
             { text: "蓝色警戒是什么？", next: "about_alert", action: "talk" },
+            { text: "雪峰山的妖魔多吗？", next: "about_demons", action: "talk" },
+            { text: "斩空教官是谁？", next: "about_zhankong", condition: { minOpinion: 5 }, action: "talk" },
+            { text: "土系防守魔法怎么练？", next: "about_earth_defense", condition: { element: "earth", minOpinion: 10 }, action: "talk" },
+            { text: "最近有什么异常吗？", next: "about_anomaly", condition: { minOpinion: 15 }, action: "talk" },
             { text: "需要我帮忙巡逻吗？", next: "default", action: "start_quest", actionData: { questId: "quest_wanduanfeng_north_patrol" } },
             { text: "告辞", next: "default", action: "back" }
           ]
@@ -9555,13 +9559,64 @@ level: 18,
           id: "about_north",
           texts: ["北面是雪峰山深处，妖魔众多。", "我们守着关卡，防止妖魔南下。", "最近橙雾有点重，不太对劲。"],
           effects: { familiarity: 5, intelligence: 3 },
-          choices: [{ text: "辛苦了", next: "default", action: "back" }]
+          choices: [
+            { text: "橙雾是什么？", next: "about_orange_fog" },
+            { text: "辛苦了", next: "default", action: "back" }
+          ]
+        },
+        about_orange_fog: {
+          id: "about_orange_fog",
+          texts: ["雪峰山深处偶尔会出现橙色的雾气。", "雾气里的妖魔会变得异常狂暴，连统领级都会失控。", "我们军部称之为'狂雾'，每次出现都要提高警戒。"],
+          effects: { familiarity: 3, intelligence: 5 },
+          choices: [{ text: "原来如此", next: "default", action: "back" }]
         },
         about_alert: {
           id: "about_alert",
           texts: ["警戒分四级：蓝、黄、橙、红。", "蓝色是最低级，发现异常就拉蓝色警戒。", "黄色是妖魔群出现，橙色是大规模入侵，红色是灾难级。"],
           effects: { familiarity: 5, intelligence: 5 },
           choices: [{ text: "明白了", next: "default", action: "back" }]
+        },
+        about_demons: {
+          id: "about_demons",
+          texts: ["雪峰山的妖魔种类很多。", "奴仆级的有独眼魔狼、巨眼猩鼠，战将级的有幽狼兽、翼苍狼。", "再深处还有统领级的，不过一般不会南下。"],
+          effects: { familiarity: 3, intelligence: 5 },
+          choices: [
+            { text: "统领级的妖魔有多强？", next: "about_commander" },
+            { text: "我记住了", next: "default", action: "back" }
+          ]
+        },
+        about_commander: {
+          id: "about_commander",
+          texts: ["统领级妖魔，一个就能灭一个小队。", "它们有智慧，会战术，不是靠蛮力。", "博城历史上几次大灾难，都是统领级妖魔带头的。"],
+          effects: { familiarity: 3, intelligence: 5 },
+          choices: [{ text: "真可怕", next: "default", action: "back" }]
+        },
+        about_zhankong: {
+          id: "about_zhankong",
+          texts: ["斩空？那是我的老长官，博城军部的总教官。", "他是翼苍狼的克星，一人一剑守了雪峰山十年。", "这次历练就是他设计的，表面上没老师保护，实际上我们都在暗中跟着。"],
+          effects: { familiarity: 5, intelligence: 3 },
+          choices: [{ text: "原来如此", next: "default", action: "back" }]
+        },
+        about_earth_defense: {
+          id: "about_earth_defense",
+          texts: ["土系防守，关键在于'稳'。", "地波·挪移用来闪避，岩障·嶙石用来防御。", "记住，最好的防守不是硬抗，而是让敌人打不到你。"],
+          effects: { familiarity: 5, intelligence: 10 },
+          choices: [{ text: "受教了", next: "default", action: "back" }]
+        },
+        about_anomaly: {
+          id: "about_anomaly",
+          texts: ["...你也察觉到了？", "最近北面的妖魔活动异常频繁，像是被什么东西驱赶着南下。", "军部已经加强了巡逻，但我总觉得要出大事。"],
+          effects: { familiarity: 5, opinion: 3 },
+          choices: [
+            { text: "是什么在驱赶妖魔？", next: "about_anomaly_cause" },
+            { text: "我会警惕的", next: "default", action: "back" }
+          ]
+        },
+        about_anomaly_cause: {
+          id: "about_anomaly_cause",
+          texts: ["不清楚。可能是深处的统领级在移动，也可能是人为的。", "我派人去查过，但都没回来...", "这件事你知道就行，不要到处说，免得引起恐慌。"],
+          effects: { familiarity: 3, trust: 5 },
+          choices: [{ text: "我明白", next: "default", action: "back" }]
         }
       }
     }
