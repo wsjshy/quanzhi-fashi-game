@@ -263,14 +263,22 @@ export const DialogueTree = {
 
         const text = texts[Math.floor(Math.random() * texts.length)];
 
-        // 过滤可用的选项
-        const availableChoices = this._filterChoices(node.choices || []);
-        
-        // 给选项加上 id（如果没有的话就用索引），并统一 next/nextNode
-        const processedChoices = availableChoices.map((choice, index) => {
+        // 先给所有选项加上 id（基于原始索引，避免过滤后索引错位导致已读标记错乱）
+        const allChoicesWithId = (node.choices || []).map((choice, index) => {
             return {
                 ...choice,
                 id: choice.id || `choice_${index}`,
+                next: choice.next || choice.nextNode
+            };
+        });
+
+        // 过滤可用的选项（保留原始id）
+        const availableChoices = this._filterChoices(allChoicesWithId);
+        
+        // 统一 next/nextNode（id已经在上面生成了）
+        const processedChoices = availableChoices.map(choice => {
+            return {
+                ...choice,
                 next: choice.next || choice.nextNode
             };
         });
@@ -442,27 +450,29 @@ export const DialogueTree = {
         const node = dialogueData.nodes[this.currentNode];
         if (!node) return null;
 
-        // 先过滤可用选项
-        const availableChoices = this._filterChoices(node.choices || []);
+        // 先生成所有选项的id（基于原始索引，避免过滤后索引错位）
+        const allChoicesWithId = (node.choices || []).map((choice, index) => {
+            return {
+                ...choice,
+                id: choice.id || `choice_${index}`,
+                next: choice.next || choice.nextNode
+            };
+        });
+
+        // 过滤可用选项（保留原始id）
+        const availableChoices = this._filterChoices(allChoicesWithId);
         
-        // 查找选项：先按 id 找，找不到就按索引找
+        // 查找选项：按 id 找
         let choice = availableChoices.find(c => c.id === choiceId);
-        if (!choice && typeof choiceId === 'number') {
-            choice = availableChoices[choiceId];
-        }
-        if (!choice && choiceId?.startsWith?.('choice_')) {
-            const index = parseInt(choiceId.replace('choice_', ''));
-            choice = availableChoices[index];
-        }
         if (!choice) return null;
 
-        // v2.9.3: 记录已读选项（使用节点id+选项id作为唯一标识）
-        this.markChoiceRead(this.currentNPC, this.currentNode, choiceId);
+        // v2.9.3: 记录已读选项（使用选项实际的id作为唯一标识）
+        this.markChoiceRead(this.currentNPC, this.currentNode, choice.id);
 
         // 记录历史
         this.dialogueHistory.push({
             nodeId: this.currentNode,
-            choiceId: choiceId,
+            choiceId: choice.id,
             timestamp: Date.now()
         });
 
