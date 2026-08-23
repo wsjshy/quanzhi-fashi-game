@@ -8950,6 +8950,7 @@ level: 18,
         },
         about_join_requirement: {
           id: "about_join_requirement",
+          oneTime: true,
           texts: ["至少中阶修为，通过协会的考核。", "还要有良好的品行和责任心。", "魔法师不是只会战斗，还要保护普通人。"],
           effects: { familiarity: 3 },
           choices: [{ text: "我记住了", next: "default", action: "back" }]
@@ -8965,18 +8966,21 @@ level: 18,
         },
         about_demon_activity: {
           id: "about_demon_activity",
+          oneTime: true,
           texts: ["主要是独眼魔狼和巨眼猩鼠。", "但最近发现一些异常，妖魔的行为变得很狂躁。", "像是被什么东西刺激了...我们正在调查。"],
           effects: { familiarity: 3, discoverClue: "clue_demon_mania" },
           choices: [{ text: "需要我帮忙吗？", next: "default", action: "back" }]
         },
         about_hunters: {
           id: "about_hunters",
+          oneTime: true,
           texts: ["城市猎妖队由徐大荒队长带领，都是经验丰富的法师。", "他们负责处理城市内的妖魔事件，我们协会提供支援。", "最近他们在调查东郊的魔狼聚集事件。"],
           effects: { familiarity: 3 },
           choices: [{ text: "原来如此", next: "default", action: "back" }]
         },
         about_black_church: {
           id: "about_black_church",
+          oneTime: true,
           texts: ["...你也听说了？", "博城确实有一些可疑的人在活动，穿着黑色长袍。", "协会已经在秘密调查了，但还没有确凿证据。你要小心，不要单独行动。"],
           effects: { familiarity: 5, opinion: 3 },
           choices: [{ text: "我会警惕的", next: "default", action: "back" }]
@@ -9428,6 +9432,7 @@ level: 12,
         },
         about_water_location: {
           id: "about_water_location",
+          oneTime: true,
           texts: ["在地圣泉北侧的地下通道，靠近旧排水系统。", "那里平时很少有人去，我是巡逻时发现的。", "水样已经送去化验了，但结果还没出来。"],
           effects: { familiarity: 3, discoverClue: "clue_irritable_spring_location" },
           choices: [{ text: "我去那里看看", next: "default", action: "back" }]
@@ -9443,6 +9448,7 @@ level: 12,
         },
         about_sister_clue: {
           id: "about_sister_clue",
+          oneTime: true,
           texts: ["她失踪前一直在调查地圣泉的异常。", "她说发现了一些不该发现的东西，有人在监视她。", "然后...她就消失了。我怀疑和那些黑衣人有关。"],
           effects: { opinion: 3, familiarity: 5, discoverClue: "clue_sister_investigation" },
           choices: [{ text: "黑衣人？", next: "about_black_church" }]
@@ -9458,12 +9464,14 @@ level: 12,
         },
         about_potion_maker: {
           id: "about_potion_maker",
+          oneTime: true,
           texts: ["我查过，这种药剂的配方非常复杂。", "博城只有少数几个药剂师能炼制，但都没有嫌疑。", "除非...是外部势力带来的。我怀疑是黑教廷。"],
           effects: { familiarity: 3, discoverClue: "clue_black_church_potion" },
           choices: [{ text: "黑教廷...", next: "about_black_church" }]
         },
         about_sister_connection: {
           id: "about_sister_connection",
+          oneTime: true,
           texts: ["我妹妹失踪前，也在调查类似的东西。", "她的笔记里提到过'狂暴药剂'和'地下交易'。", "我怀疑她就是因为发现了这个才失踪的。"],
           effects: { opinion: 5, familiarity: 5 },
           choices: [{ text: "我会帮你查清真相", next: "default", action: "back" }]
@@ -9479,6 +9487,7 @@ level: 12,
         },
         about_pollution_purpose: {
           id: "about_pollution_purpose",
+          oneTime: true,
           texts: ["地圣泉是博城的根基，污染它可以削弱博城的整体实力。", "如果地圣泉失效，博城的法师修炼速度会大幅下降。", "这可能是黑教廷入侵博城的前奏...我很担心。"],
           effects: { familiarity: 3, intelligence: 5 },
           choices: [{ text: "我会警惕的", next: "default", action: "back" }]
@@ -9566,12 +9575,14 @@ level: 18,
         },
         about_orange_fog: {
           id: "about_orange_fog",
+          oneTime: true,
           texts: ["雪峰山深处偶尔会出现橙色的雾气。", "雾气里的妖魔会变得异常狂暴，连统领级都会失控。", "我们军部称之为'狂雾'，每次出现都要提高警戒。"],
           effects: { familiarity: 3, intelligence: 5 },
           choices: [{ text: "原来如此", next: "default", action: "back" }]
         },
         about_alert: {
           id: "about_alert",
+          oneTime: true,
           texts: ["警戒分四级：蓝、黄、橙、红。", "蓝色是最低级，发现异常就拉蓝色警戒。", "黄色是妖魔群出现，橙色是大规模入侵，红色是灾难级。"],
           effects: { familiarity: 5, intelligence: 5 },
           choices: [{ text: "明白了", next: "default", action: "back" }]
@@ -9587,12 +9598,14 @@ level: 18,
         },
         about_commander: {
           id: "about_commander",
+          oneTime: true,
           texts: ["统领级妖魔，一个就能灭一个小队。", "它们有智慧，会战术，不是靠蛮力。", "博城历史上几次大灾难，都是统领级妖魔带头的。"],
           effects: { familiarity: 3, intelligence: 5 },
           choices: [{ text: "真可怕", next: "default", action: "back" }]
         },
         about_zhankong: {
           id: "about_zhankong",
+          oneTime: true,
           texts: ["斩空？那是我的老长官，博城军部的总教官。", "他是翼苍狼的克星，一人一剑守了雪峰山十年。", "这次历练就是他设计的，表面上没老师保护，实际上我们都在暗中跟着。"],
           effects: { familiarity: 5, intelligence: 3 },
           choices: [{ text: "原来如此", next: "default", action: "back" }]
@@ -9614,6 +9627,7 @@ level: 18,
         },
         about_anomaly_cause: {
           id: "about_anomaly_cause",
+          oneTime: true,
           texts: ["不清楚。可能是深处的统领级在移动，也可能是人为的。", "我派人去查过，但都没回来...", "这件事你知道就行，不要到处说，免得引起恐慌。"],
           effects: { familiarity: 3, trust: 5 },
           choices: [{ text: "我明白", next: "default", action: "back" }]
@@ -9737,6 +9751,7 @@ level: 18,
         },
         about_fast_training: {
           id: "about_fast_training",
+          oneTime: true,
           texts: ["快速提升？没有捷径。", "但地圣泉那种灵泉，可以让修炼速度翻倍。", "还有星尘魔器，辅助修炼效果也不错。不过这些都需要机缘。"],
           effects: { intelligence: 5, familiarity: 3 },
           choices: [{ text: "我明白了", next: "default", action: "back" }]
@@ -9752,6 +9767,7 @@ level: 18,
         },
         about_school_mu_conflict: {
           id: "about_school_mu_conflict",
+          oneTime: true,
           texts: ["穆氏世家是博城的老牌势力，资源丰富。", "他们总想控制学校，把好资源都给自家子弟。", "但我朱某人还在一天，就不会让他们乱来。普通学生的机会，一个都不能少。"],
           effects: { familiarity: 5, opinion: 3 },
           choices: [{ text: "校长真有担当", next: "default", action: "back" }]
@@ -9782,6 +9798,7 @@ level: 18,
         },
         about_mu_zhuoyun: {
           id: "about_mu_zhuoyun",
+          oneTime: true,
           texts: ["穆卓云？穆氏的家主，性格暴躁，护短得很。", "他为了自家子弟，可以不择手段。", "但他也不是完全不讲理，只要你有实力，他也会高看你一眼。"],
           effects: { familiarity: 3, intelligence: 3 },
           choices: [{ text: "原来如此", next: "default", action: "back" }]
@@ -9797,6 +9814,7 @@ level: 18,
         },
         about_disaster: {
           id: "about_disaster",
+          oneTime: true,
           texts: ["希望不会。但博城三面环山，历史上多次遭遇妖魔潮。", "学校已经做好了应急预案，真到那时候，会保护学生的。", "这件事不要到处说，免得引起恐慌。"],
           effects: { familiarity: 3, trust: 5 },
           choices: [{ text: "我明白", next: "default", action: "back" }]
