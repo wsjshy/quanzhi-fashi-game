@@ -5506,6 +5506,7 @@ export const DataCharacters = {
         },
         training_advice: {
           id: "training_advice",
+          oneTime: true,
           texts: [
             "修炼一途，贵在坚持。",
             "魔法的本质，是对元素的理解和掌控。",
@@ -5526,6 +5527,7 @@ export const DataCharacters = {
         },
         school_news: {
           id: "school_news",
+          oneTime: true,
           texts: [
             "学校最近一切都好，学生们都很努力。",
             "不过啊，最近雪峰山那边有点不太平，你们要小心点。",
@@ -5553,6 +5555,7 @@ export const DataCharacters = {
         },
         final_exam: {
           id: "final_exam",
+          oneTime: true,
           texts: [
             "期末考核啊，那可是对你们这一学期学习成果的检验。",
             "考核分为理论和实战两部分，都很重要。",
@@ -5571,6 +5574,7 @@ export const DataCharacters = {
         },
         special_resources: {
           id: "special_resources",
+          oneTime: true,
           texts: [
             "特殊资源？... 你想要什么？",
             "学校的资源都是有限的，要留给真正有天赋的学生。",
@@ -5593,6 +5597,7 @@ export const DataCharacters = {
         },
         special_test: {
           id: "special_test",
+          oneTime: true,
           texts: [
             "好！有志向！",
             "（萧院长打量了你几秒，目光中带着一丝赞许。）",
@@ -5620,6 +5625,7 @@ export const DataCharacters = {
         },
         demon_warning: {
           id: "demon_warning",
+          oneTime: true,
           texts: [
             "雪峰山的事... 你也听说了？",
             "确实，最近山里的妖魔有点异常，活动越来越频繁了。",
@@ -5643,6 +5649,7 @@ export const DataCharacters = {
         },
         about_tang_yue: {
           id: "about_tang_yue",
+          oneTime: true,
           texts: [
             "唐月？",
             "（萧院长的表情柔和了一些。）",
@@ -5666,6 +5673,7 @@ export const DataCharacters = {
         },
         farewell: {
           id: "farewell",
+          oneTime: true,
           texts: [
             "要走了？明珠学府？",
             "（萧院长沉默了一会儿，从书架上取下一本旧书递给你。）",
