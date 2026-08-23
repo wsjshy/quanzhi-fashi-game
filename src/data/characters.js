@@ -9362,6 +9362,9 @@ level: 12,
           choices: [
             { text: "你在调查什么？", next: "about_investigation", action: "talk" },
             { text: "听说你妹妹失踪了", next: "about_sister", action: "talk" },
+            { text: "暴躁之泉的事...", next: "about_irritable_spring", condition: { hasFlag: "irritable_spring_clue" }, action: "talk" },
+            { text: "地圣泉最近有异常吗？", next: "about_spring_anomaly", condition: { minOpinion: 10 }, action: "talk" },
+            { text: "黑教廷和你妹妹有关？", next: "about_black_church", condition: { hasFlag: "black_church_clue", minOpinion: 20 }, action: "talk" },
             { text: "我可以帮忙调查", next: "default", action: "start_quest", actionData: { questId: "quest_linyuxin_sister_missing" } },
             { text: "告辞", next: "default", action: "back" }
           ]
@@ -9370,13 +9373,73 @@ level: 12,
           id: "about_investigation",
           texts: ["我在地下通道发现了一些奇怪的水。", "和地圣泉很像，但又不太一样...像是被污染了。", "药剂师说那水会让生物变得疯狂，我担心有问题。"],
           effects: { familiarity: 5, intelligence: 5 },
-          choices: [{ text: "需要帮忙吗？", next: "default", action: "back" }]
+          choices: [
+            { text: "这种水在哪里发现的？", next: "about_water_location" },
+            { text: "需要帮忙吗？", next: "default", action: "back" }
+          ]
+        },
+        about_water_location: {
+          id: "about_water_location",
+          texts: ["在地圣泉北侧的地下通道，靠近旧排水系统。", "那里平时很少有人去，我是巡逻时发现的。", "水样已经送去化验了，但结果还没出来。"],
+          effects: { familiarity: 3, discoverClue: "clue_irritable_spring_location" },
+          choices: [{ text: "我去那里看看", next: "default", action: "back" }]
         },
         about_sister: {
           id: "about_sister",
           texts: ["...一年前，她失踪了。", "大家都说是巨眼猩鼠干的，但我不相信。", "没有找到尸体，她一定还在某个地方。"],
           effects: { opinion: 5, familiarity: 8 },
-          choices: [{ text: "我会帮你找的", next: "default", action: "back" }]
+          choices: [
+            { text: "她失踪前有什么异常吗？", next: "about_sister_clue" },
+            { text: "我会帮你找的", next: "default", action: "back" }
+          ]
+        },
+        about_sister_clue: {
+          id: "about_sister_clue",
+          texts: ["她失踪前一直在调查地圣泉的异常。", "她说发现了一些不该发现的东西，有人在监视她。", "然后...她就消失了。我怀疑和那些黑衣人有关。"],
+          effects: { opinion: 3, familiarity: 5, discoverClue: "clue_sister_investigation" },
+          choices: [{ text: "黑衣人？", next: "about_black_church" }]
+        },
+        about_irritable_spring: {
+          id: "about_irritable_spring",
+          texts: ["你也发现了？那种暗红色的泉水...", "我化验过，里面含有一种未知的药剂成分。", "这种药剂会激化生物的野性，妖魔喝了会变得异常狂暴。"],
+          effects: { familiarity: 5, intelligence: 5 },
+          choices: [
+            { text: "是谁炼制的这种药剂？", next: "about_potion_maker" },
+            { text: "这和你妹妹有关吗？", next: "about_sister_connection" }
+          ]
+        },
+        about_potion_maker: {
+          id: "about_potion_maker",
+          texts: ["我查过，这种药剂的配方非常复杂。", "博城只有少数几个药剂师能炼制，但都没有嫌疑。", "除非...是外部势力带来的。我怀疑是黑教廷。"],
+          effects: { familiarity: 3, discoverClue: "clue_black_church_potion" },
+          choices: [{ text: "黑教廷...", next: "about_black_church" }]
+        },
+        about_sister_connection: {
+          id: "about_sister_connection",
+          texts: ["我妹妹失踪前，也在调查类似的东西。", "她的笔记里提到过'狂暴药剂'和'地下交易'。", "我怀疑她就是因为发现了这个才失踪的。"],
+          effects: { opinion: 5, familiarity: 5 },
+          choices: [{ text: "我会帮你查清真相", next: "default", action: "back" }]
+        },
+        about_spring_anomaly: {
+          id: "about_spring_anomaly",
+          texts: ["地圣泉的水最近有些变化。", "灵气浓度下降了约5%，而且偶尔会有暗红色的杂质。", "我怀疑有人在暗中污染地圣泉，但还没有证据。"],
+          effects: { familiarity: 5, intelligence: 3 },
+          choices: [
+            { text: "污染地圣泉有什么目的？", next: "about_pollution_purpose" },
+            { text: "需要我帮忙监视吗？", next: "default", action: "back" }
+          ]
+        },
+        about_pollution_purpose: {
+          id: "about_pollution_purpose",
+          texts: ["地圣泉是博城的根基，污染它可以削弱博城的整体实力。", "如果地圣泉失效，博城的法师修炼速度会大幅下降。", "这可能是黑教廷入侵博城的前奏...我很担心。"],
+          effects: { familiarity: 3, intelligence: 5 },
+          choices: [{ text: "我会警惕的", next: "default", action: "back" }]
+        },
+        about_black_church: {
+          id: "about_black_church",
+          texts: ["黑教廷...一个邪恶的组织。", "他们在博城活动了很久，我妹妹的失踪可能和他们有关。", "如果你发现任何黑教廷的线索，请告诉我。"],
+          effects: { opinion: 3, familiarity: 5 },
+          choices: [{ text: "我会留意的", next: "default", action: "back" }]
         }
       }
     }
