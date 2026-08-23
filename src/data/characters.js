@@ -1900,6 +1900,7 @@ export const DataCharacters = {
         },
         mo_fan_power: {
           id: "mo_fan_power",
+          oneTime: true,
           texts: [
             "那当然！莫凡可是我们班最强的之一，雷系魔法用得特别溜。",
             "虽然他才刚觉醒没多久，但进步速度快得吓人！",
@@ -1918,6 +1919,7 @@ export const DataCharacters = {
         },
         mo_fan_history: {
           id: "mo_fan_history",
+          oneTime: true,
           texts: [
             "我们从小就是邻居，一起长大的。小时候他经常保护我，虽然他自己也总闯祸。",
             "说起来，莫凡以前好像不是这样的... 好像从某个时候开始，他就变得特别不一样了。",
@@ -1981,6 +1983,7 @@ export const DataCharacters = {
         },
         quiz_news: {
           id: "quiz_news",
+          oneTime: true,
           texts: [
             "对啊，听说过几天有个小测验，考魔法理论基础。我都快愁死了，理论什么的最头疼了！",
             "你可要好好复习啊，听说考不好会被唐月老师罚站的。"
@@ -1997,6 +2000,7 @@ export const DataCharacters = {
         },
         ningxue_news: {
           id: "ningxue_news",
+          oneTime: true,
           texts: [
             "穆宁雪啊，她最近又突破了！不愧是冰系天才，真的太厉害了。",
             "我听说她已经快要达到中阶了，我们这些普通人跟她比起来，真是差太远了...",
@@ -2014,6 +2018,7 @@ export const DataCharacters = {
         },
         mountain_news: {
           id: "mountain_news",
+          oneTime: true,
           texts: [
             "我也是听别人说的，好像最近山里的妖魔变多了，好多猎人都不敢去了。",
             "具体我也不太清楚，你可以去问问王老板，他消息灵通得很。",
@@ -2032,6 +2037,7 @@ export const DataCharacters = {
         },
         about_mu_ningxue: {
           id: "about_mu_ningxue",
+          oneTime: true,
           texts: [
             "穆宁雪你都不知道？她可是我们学校的风云人物啊！穆氏家族的千金，冰系天才。",
             "长得又漂亮，实力又强，好多男生都暗恋她呢。不过她性格太高冷了，一般人都接近不了。",
