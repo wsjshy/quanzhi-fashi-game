@@ -6161,6 +6161,7 @@ export const DataCharacters = {
         },
         intro: {
           id: "intro",
+          oneTime: true,
           texts: [
             "新来的？欢迎你！我叫何雨，水系的。",
             "有什么不懂的可以问我哦，我会尽力帮你的！",
@@ -6199,6 +6200,7 @@ export const DataCharacters = {
         },
         heal_magic: {
           id: "heal_magic",
+          oneTime: true,
           texts: [
             "治疗魔法吗？我会一点点...",
             "水系魔法天生就适合治疗，只要把水元素引导到伤口处，就能加速恢复。",
@@ -6218,6 +6220,7 @@ export const DataCharacters = {
         },
         class_news: {
           id: "class_news",
+          oneTime: true,
           texts: [
             "班里吗... 大家都挺好的。",
             "周敏最近修炼很努力，我们经常一起去图书馆。",
@@ -6259,6 +6262,7 @@ export const DataCharacters = {
         },
         after_training: {
           id: "after_training",
+          oneTime: true,
           texts: [
             "雪峰山历练... 现在想起来还有点后怕呢。",
             "洞窟里那么黑，妖魔突然冲出来的时候，我吓得手都在抖。",
@@ -6288,6 +6292,7 @@ export const DataCharacters = {
         },
         after_disaster: {
           id: "after_disaster",
+          oneTime: true,
           texts: [
             "（何雨的眼睛红红的，手上还缠着绷带，但她努力笑着。）",
             "博城灾难... 我这辈子都忘不了。那天到处都是伤员，我根本停不下来。",
@@ -8096,6 +8101,7 @@ level: 2,
         },
         after_training: {
           id: "after_training",
+          oneTime: true,
           texts: [
             "雪峰山历练？别提了，差点吓死我！",
             "那洞窟里的妖魔太吓人了，要不是莫凡和你，我估计就交代在那儿了。",
@@ -8111,6 +8117,7 @@ level: 2,
         },
         after_disaster: {
           id: "after_disaster",
+          oneTime: true,
           texts: [
             "博城灾难...我不想提...",
             "那天晚上太可怕了，到处都是妖魔，到处都是惨叫声...",
