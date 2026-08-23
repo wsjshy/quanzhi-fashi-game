@@ -8567,18 +8567,21 @@ level: 10,
         },
         about_ice: {
           id: "about_ice",
+          oneTime: true,
           texts: ["冰系不仅是伤害，更是控制。", "冻结敌人，让队友有输出空间。", "菜鸟，好好学。"],
           effects: { familiarity: 3, intelligence: 5 },
           choices: [{ text: "明白了", next: "default", action: "back" }]
         },
         about_mu: {
           id: "about_mu",
+          oneTime: true,
           texts: ["……是有些亲戚关系。", "但我是我，穆氏是穆氏。", "别再问这个了。"],
           effects: { familiarity: -2 },
           choices: [{ text: "抱歉", next: "default", action: "back" }]
         },
         about_rescue: {
           id: "about_rescue",
+          oneTime: true,
           texts: ["（郭彩棠的脸微微红了一下，随即恢复冷淡）", "那次...是我大意了。要不是你，我可能已经...", "总之，谢了。但别以为这样我就会对你客气。"],
           effects: { opinion: 5, trust: 3 },
           choices: [
@@ -8588,6 +8591,7 @@ level: 10,
         },
         about_rescue_teammate: {
           id: "about_rescue_teammate",
+          oneTime: true,
           texts: ["（郭彩棠愣了一下，眼神柔和了几分）", "队友...吗。", "哼，算你会说话。"],
           effects: { opinion: 3, trust: 2 },
           choices: [
@@ -8597,12 +8601,14 @@ level: 10,
         },
         about_rescue_tease: {
           id: "about_rescue_tease",
+          oneTime: true,
           texts: ["（郭彩棠瞪了你一眼）你！", "……想得美。", "等你什么时候能独当一面了再说吧，菜鸟。"],
           effects: { opinion: -1, trust: 1 },
           choices: [{ text: "哈哈，开个玩笑", next: "default", action: "back" }]
         },
         about_xu: {
           id: "about_xu",
+          oneTime: true,
           texts: ["徐大荒？那个莽夫。", "打仗是一把好手，但脑子不太好使。", "不过...他是个好队长。这点我承认。"],
           effects: { familiarity: 2 },
           choices: [
@@ -8612,12 +8618,14 @@ level: 10,
         },
         about_xu_history: {
           id: "about_xu_history",
+          oneTime: true,
           texts: ["五年了。我刚进猎妖队的时候，他还是个队员。", "那家伙拼起命来不要命，好几次都是我给他收尾。", "后来老队长走了，他就接了班。虽然莽，但值得信任。"],
           effects: { opinion: 2, trust: 2 },
           choices: [{ text: "真是对好搭档", next: "default", action: "back" }]
         },
         about_personality: {
           id: "about_personality",
+          oneTime: true,
           texts: ["（郭彩棠皱了皱眉）高冷？", "我只是不喜欢废话。", "在猎妖队，话多的人死得快。"],
           choices: [
             { text: "但这样会让人觉得难以接近", next: "about_personality_open" },
@@ -8626,6 +8634,7 @@ level: 10,
         },
         about_personality_open: {
           id: "about_personality_open",
+          oneTime: true,
           texts: ["（郭彩棠沉默了一会儿）", "……接近我有什么好处？穆氏的人，都只会利用别人。", "我不想被利用，也不想利用别人。保持距离，对大家都好。"],
           effects: { opinion: 3, trust: 5 },
           choices: [{ text: "我不是穆氏的人", next: "default", action: "back" }]
@@ -8694,6 +8703,7 @@ level: 8,
         },
         about_water: {
           id: "about_water",
+          oneTime: true,
           texts: ["水御·化解可以分解魔法攻击。", "但需要提前准备星轨，反应要快。", "我总是慢半拍，队长骂过我好多次。"],
           effects: { familiarity: 5, intelligence: 8 },
           choices: [
@@ -8703,18 +8713,21 @@ level: 8,
         },
         encourage: {
           id: "encourage",
+          oneTime: true,
           texts: ["真、真的吗？", "谢谢你，梵墨哥哥！", "我会更加努力的！"],
           effects: { familiarity: 8, happiness: 10 },
           choices: [{ text: "加油", next: "default", action: "back" }]
         },
         about_why_join: {
           id: "about_why_join",
+          oneTime: true,
           texts: ["我...我小时候被妖魔袭击过，是猎妖队救了我。", "从那以后，我就想成为能保护别人的人。", "虽然我很弱，但我想努力变强。"],
           effects: { opinion: 5, trust: 3 },
           choices: [{ text: "你很勇敢", next: "default", action: "back" }]
         },
         about_nervous: {
           id: "about_nervous",
+          oneTime: true,
           texts: ["（小可低下头）每次遇到妖魔，我的手都会抖。", "队长说我不适合当猎妖师，但我不想放弃。", "彩棠姐说，紧张说明你在乎，不在乎的人才不会紧张。"],
           choices: [
             { text: "紧张是正常的", next: "about_nervous_response" },
@@ -8723,24 +8736,28 @@ level: 8,
         },
         about_nervous_response: {
           id: "about_nervous_response",
+          oneTime: true,
           texts: ["（小可抬起头，眼睛亮亮的）真、真的吗？", "梵墨哥哥也会紧张吗？", "那我就放心了...我以为只有我这样。"],
           effects: { opinion: 5, trust: 5, happiness: 10 },
           choices: [{ text: "当然，每个人都会紧张", next: "default", action: "back" }]
         },
         about_why_persist: {
           id: "about_why_persist",
+          oneTime: true,
           texts: ["因为...因为我想保护大家。", "队长、彩棠姐、肥石哥、文杰哥，他们都是我的家人。", "我不想再看到有人因为我不够强而受伤。"],
           effects: { opinion: 3, trust: 5 },
           choices: [{ text: "你一定可以的", next: "default", action: "back" }]
         },
         about_team: {
           id: "about_team",
+          oneTime: true,
           texts: ["队长虽然凶，但人很好。", "彩棠姐看起来高冷，其实很关心我们。", "肥石哥憨憨的，但是很可靠。文杰哥很帅！"],
           effects: { familiarity: 3 },
           choices: [{ text: "你们关系真好", next: "default", action: "back" }]
         },
         about_practice: {
           id: "about_practice",
+          oneTime: true,
           texts: ["（小可的脸红红的）真、真的吗？", "那...那我们什么时候练习？", "谢谢你，梵墨哥哥！你是第一个愿意陪我练习的人。"],
           effects: { opinion: 8, trust: 5, happiness: 15 },
           choices: [
