@@ -426,7 +426,7 @@ function showDialogueHistory(npcId) {
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 20000;
+        z-index: 100000;
     `;
     dialog.innerHTML = `
         <div style="

@@ -2689,6 +2689,24 @@ export const Game = {
         Player.elements = [element];
         Player.elementLevels[element] = 1;
         Player.elementExp[element] = 0;
+        
+        // v3.1.0修复：清除临时火系技能，添加所选系的初始技能
+        // 保留basic_attack，移除其他元素系技能，添加新系初始技能
+        const starterTable = typeof SKILL_UNLOCK_TABLE !== 'undefined' ? SKILL_UNLOCK_TABLE : null;
+        if (starterTable && starterTable[element] && starterTable[element][1]) {
+            // 移除所有元素系技能（保留basic_attack）
+            Player.skills = Player.skills.filter(skillId => {
+                const skill = typeof DataSkills !== 'undefined' ? DataSkills[skillId] : null;
+                return skillId === 'basic_attack' || !skill || skill.element === 'neutral' || skill.element === element;
+            });
+            // 添加新系初始技能
+            starterTable[element][1].forEach(skillId => {
+                if (!Player.skills.includes(skillId)) {
+                    Player.skills.push(skillId);
+                }
+            });
+        }
+        
         // 不显示消息弹窗，直接进入系天赋选择，避免弹窗遮挡
         if (Player.innateEffects && Player.innateEffects.extraElement) {
             this._pendingElements = [this._pendingElement, Player.innateEffects.extraElement];

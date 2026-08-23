@@ -615,8 +615,8 @@ export function renderMapScreen() {
                                 <div style="font-size:12px; color:#ccc;"><span style="color:#ff9966;">⚔️</span> 攻击 <b style="color:#fff; float:right;">${s.attack}</b></div>
                                 <div style="font-size:12px; color:#ccc;"><span style="color:#6699ff;">🛡️</span> 防御 <b style="color:#fff; float:right;">${s.defense}</b></div>
                                 <div style="font-size:12px; color:#ccc;"><span style="color:#aaffaa;">💨</span> 速度 <b style="color:#fff; float:right;">${s.speed}</b></div>
-                                <div style="font-size:12px; color:#ccc;"><span style="color:#ffff66;">🎯</span> 命中 <b style="color:#fff; float:right;">${s.hitRate}%</b></div>
-                                <div style="font-size:12px; color:#ccc;"><span style="color:#ff66ff;">💥</span> 暴击 <b style="color:#fff; float:right;">${s.critRate}%</b></div>
+                                <div style="font-size:12px; color:#ccc;"><span style="color:#ffff66;">🎯</span> 命中 <b style="color:#fff; float:right;">${(s.hitRate*100).toFixed(0)}%</b></div>
+                                <div style="font-size:12px; color:#ccc;"><span style="color:#ff66ff;">💥</span> 暴击 <b style="color:#fff; float:right;">${(s.critRate*100).toFixed(0)}%</b></div>
                                 <div style="font-size:12px; color:#ccc;"><span style="color:#66ffff;">🔮</span> 魔攻 <b style="color:#fff; float:right;">${s.magicAttack || s.attack}</b></div>
                             </div>
                             
