@@ -60,6 +60,11 @@ export const BigEventSystem = {
         this.currentPhase = event.phases[0]?.id || null;
         this.choiceHistory = [];
         
+        // 设置游戏状态为大事件
+        if (typeof Game !== 'undefined') {
+            Game.state = 'big_event';
+        }
+        
         // 标记为已开始
         Player.flags['big_event_' + eventId + '_started'] = true;
         

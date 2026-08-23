@@ -170,6 +170,11 @@ export const Game = {
         UI.renderMapScreen();
     },
 
+    // 回到地图界面（大事件/战斗结束后调用）
+    returnToMap() {
+        this.showMapScreen();
+    },
+
     // 行动冷却：弹窗关闭后短暂禁止行动，防止点击穿透/延迟触发
     _actionCooldown: false,
     
