@@ -10958,6 +10958,7 @@ level: 18,
         },
         hunter_info: {
           id: "hunter_info",
+          oneTime: true,
           texts: [
             "猎所接的都是私人委托，比猎者联盟的悬赏酬金高，但也更危险。",
             "追踪妖魔、调查异常、护送要人……什么都做。前提是你活得到交任务那天。",
@@ -10969,6 +10970,7 @@ level: 18,
         },
         black_church_warn: {
           id: "black_church_warn",
+          oneTime: true,
           texts: [
             "博城那场灾难不是偶然。黑教廷在魔都也有布局，而且渗透得比你想象的深。",
             "他们的目标可能是地圣泉——你身上带着的东西，对他们来说是大补之物。",
@@ -10981,6 +10983,7 @@ level: 18,
         },
         about_lingling: {
           id: "about_lingling",
+          oneTime: true,
           texts: [
             "那丫头……从小就聪明，十二岁就过了猎人大师考试。",
             "她爸妈都是猎人，在一次任务中牺牲了。我把她带大，教她分析情报。",
@@ -10993,6 +10996,7 @@ level: 18,
         },
         mentor_advice: {
           id: "mentor_advice",
+          oneTime: true,
           texts: [
             "你雷火双系，爆发力够了，但生存能力差。暗影系的遁影要多练，那是保命的本事。",
             "中阶法师之间的战斗，比的是谁先露出破绽。别急着放中阶魔法，先用初阶试探。",
