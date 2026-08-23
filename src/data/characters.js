@@ -5299,6 +5299,7 @@ export const DataCharacters = {
         },
         who_are_you: {
           id: "who_are_you",
+          oneTime: true,
           texts: [
             "我是谁？... 我也不知道。",
             "我只是一个流浪的法师，到处走走，看看。",
@@ -5317,6 +5318,7 @@ export const DataCharacters = {
         },
         what_secrets: {
           id: "what_secrets",
+          oneTime: true,
           texts: [
             "秘密？... 这个世界上的秘密可多了去了。",
             "比如... 你知道黑教廷吗？",
@@ -5341,6 +5343,7 @@ export const DataCharacters = {
         },
         about_black_church: {
           id: "about_black_church",
+          oneTime: true,
           texts: [
             "黑教廷啊... 那是一个非常古老的组织。",
             "他们信奉黑暗，追求力量，为了达到目的不择手段。",
@@ -5362,6 +5365,7 @@ export const DataCharacters = {
         },
         teach_magic: {
           id: "teach_magic",
+          oneTime: true,
           texts: [
             "教你魔法？... 你确定？",
             "我会的魔法，可不是什么正经的魔法。",
@@ -5385,6 +5389,7 @@ export const DataCharacters = {
         },
         learn_dark_magic: {
           id: "learn_dark_magic",
+          oneTime: true,
           texts: [
             "好！有胆量！我果然没看错你。",
             "暗影系魔法的精髓，在于隐藏和偷袭。",
