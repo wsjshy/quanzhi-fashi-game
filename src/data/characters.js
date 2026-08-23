@@ -4278,6 +4278,7 @@ export const DataCharacters = {
         },
         casual_chat: {
           id: "casual_chat",
+          oneTime: true,
           texts: [
             "你说现在的学生啊，修炼都太拼命了，药水卖得特别好。",
             "我这小店开了十几年了，什么人没见过。",
@@ -4295,6 +4296,7 @@ export const DataCharacters = {
         },
         news: {
           id: "news",
+          oneTime: true,
           texts: [
             "消息啊...最近雪峰山那边好像不太平，你去的时候小心点。",
             "听说城里来了几个陌生的法师，不知道是干什么的。",
@@ -4351,6 +4353,7 @@ export const DataCharacters = {
         },
         demon_news_1: {
           id: "demon_news_1",
+          oneTime: true,
           texts: [
             "具体我也不清楚，就是最近去山里打猎的，好几个都受伤回来了。",
             "说妖魔比以前多了，而且更凶了。",
@@ -4368,6 +4371,7 @@ export const DataCharacters = {
         },
         price_news: {
           id: "price_news",
+          oneTime: true,
           texts: [
             "还能为啥，进山采药的人少了呗。",
             "以前一天能采十几株，现在去的人少了，货就少了。",
@@ -4385,6 +4389,7 @@ export const DataCharacters = {
         },
         more_news: {
           id: "more_news",
+          oneTime: true,
           texts: [
             "别的啊...我跟你说，你可别往外传。",
             "酒馆里的猎魔任务最近多了一倍，赏金也涨了不少。",
