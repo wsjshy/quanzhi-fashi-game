@@ -1837,7 +1837,8 @@ export const DataCharacters = {
               text: "一起去历练？",
               next: "default",
               action: "start_quest",
-              actionData: { questId: "quest_zhangxiaohou_training" }
+              actionData: { questId: "quest_zhangxiaohou_training" },
+              condition: { notHasQuest: "quest_zhangxiaohou_training" }
             },
             {
               id: "farewell_xiaohou",

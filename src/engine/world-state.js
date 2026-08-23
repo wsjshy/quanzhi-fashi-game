@@ -817,6 +817,12 @@ export const WorldState = {
             }
         }
 
+        if (conditions.notHasQuest) {
+            if (Player.getActiveQuest(conditions.notHasQuest)) {
+                return false;
+            }
+        }
+
         if (conditions.completedQuest) {
             if (!Player.isQuestComplete(conditions.completedQuest)) {
                 return false;
