@@ -9211,24 +9211,28 @@ level: 7,
         },
         about_self: {
           id: "about_self",
+          oneTime: true,
           texts: ["没错，我是穆卓云的养子。", "冰系，已经掌握冰蔓·凝结。", "同龄人中，没几个是我的对手——因为他们把时间浪费在玩乐上，而我在修炼。", "一天不修炼，我就浑身不舒服。"],
           effects: { familiarity: 3 },
           choices: [{ text: "难怪大家叫你修炼疯子", next: "about_crazy" }]
         },
         about_crazy: {
           id: "about_crazy",
+          oneTime: true,
           texts: ["疯子？哼，那是弱者对强者的嫉妒。", "穆氏家族那么多子弟，星尘魔器就那些，要轮流使用。", "但我每年能获得大半年的使用时间——因为我值得。", "父亲的命令，我绝对服从。包括...除掉某些人。"],
           effects: { familiarity: 5, trust: -2 },
           choices: [{ text: "...我先走了", next: "default", action: "close" }]
         },
         about_duel: {
           id: "about_duel",
+          oneTime: true,
           texts: ["父亲安排我在成年礼上和一个叫莫凡的人决斗。", "本来觉得没意思，但听说他有点实力。", "希望他别让我失望。"],
           effects: { familiarity: 5 },
           choices: [{ text: "拭目以待", next: "default" }]
         },
         about_mofan: {
           id: "about_mofan",
+          oneTime: true,
           texts: [
             "莫凡？",
             "（宇昂停下修炼，嘴角勾起一丝不屑的笑。）",
@@ -9247,6 +9251,7 @@ level: 7,
         },
         mofan_defend: {
           id: "mofan_defend",
+          oneTime: true,
           texts: [
             "（宇昂冷冷地看了你一眼。）",
             "哦？你倒是挺维护他。",
@@ -9262,6 +9267,7 @@ level: 7,
         },
         about_training: {
           id: "about_training",
+          oneTime: true,
           texts: [
             "教你修炼？",
             "（宇昂上下打量了你一番，露出轻蔑的表情。）",
@@ -9282,6 +9288,7 @@ level: 7,
         },
         training_arrogant: {
           id: "training_arrogant",
+          oneTime: true,
           texts: [
             "傲慢？",
             "（宇昂停下修炼，第一次认真看你。）",
@@ -9299,6 +9306,7 @@ level: 7,
         },
         about_origin: {
           id: "about_origin",
+          oneTime: true,
           texts: [
             "（他的眼神冷了一瞬。）",
             "亲生？我没有父母。穆家收养了我，给了我名字和资源。",
@@ -9314,6 +9322,7 @@ level: 7,
         },
         about_power: {
           id: "about_power",
+          oneTime: true,
           texts: [
             "（他停下修炼，第一次认真看你。）",
             "为什么？因为这个世界是弱肉强食的。",
@@ -9331,6 +9340,7 @@ level: 7,
         },
         power_hint: {
           id: "power_hint",
+          oneTime: true,
           texts: [
             "（他看了你一眼，嘴角勾起一丝冷笑。）",
             "没什么。回去修炼吧，别在这浪费时间。",
@@ -9343,6 +9353,7 @@ level: 7,
         },
         disaster_whereabouts: {
           id: "disaster_whereabouts",
+          oneTime: true,
           texts: [
             "（他的表情没有任何波澜，仿佛那场灾难与他无关。）",
             "灾难？我在穆家地下室修炼，结界挡住了一切。",
@@ -9357,6 +9368,7 @@ level: 7,
         },
         night_training_response: {
           id: "night_training_response",
+          oneTime: true,
           texts: [
             "（宇昂的眼神瞬间变得锐利。）",
             "我的修炼时间，需要向你汇报吗？",
@@ -9371,6 +9383,7 @@ level: 7,
         },
         night_training_location: {
           id: "night_training_location",
+          oneTime: true,
           texts: [
             "（宇昂沉默了一会儿。）",
             "……老城区那边，人少，适合修炼。",
@@ -9385,6 +9398,7 @@ level: 7,
         },
         magic_gear_response: {
           id: "magic_gear_response",
+          oneTime: true,
           texts: [
             "（宇昂低头看了一眼脚上的魔具。）",
             "地波履？父亲给的修炼辅助工具罢了。",
@@ -9399,6 +9413,7 @@ level: 7,
         },
         magic_gear_press: {
           id: "magic_gear_press",
+          oneTime: true,
           texts: [
             "（宇昂的表情微微一变。）",
             "你懂什么？世家的修炼资源，不是你能想象的。",
