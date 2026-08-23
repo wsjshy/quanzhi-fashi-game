@@ -4514,6 +4514,7 @@ export const DataCharacters = {
         },
         hunting_tips: {
           id: "hunting_tips",
+          oneTime: true,
           texts: [
             "猎魔的技巧？这个嘛，说简单也简单，说难也难。",
             "最重要的一点，就是要了解你的对手。每种妖魔都有自己的弱点，找到弱点，一击致命。",
@@ -4533,6 +4534,7 @@ export const DataCharacters = {
         },
         mountain_situation: {
           id: "mountain_situation",
+          oneTime: true,
           texts: [
             "山里的情况啊... 不太妙。最近妖魔活动越来越频繁了，而且种类也越来越多。",
             "以前山里主要就是些幽狼兽、暗影怪之类的，现在连石怪、雷兽都出现了。",
@@ -4556,6 +4558,7 @@ export const DataCharacters = {
         },
         mountain_warning: {
           id: "mountain_warning",
+          oneTime: true,
           texts: [
             "可不是嘛！最近公会里的猎魔任务多了一倍，赏金也涨了不少。",
             "而且啊，我听说有几个资深猎人进山之后，就再也没出来过...",
@@ -4576,6 +4579,7 @@ export const DataCharacters = {
         },
         hunt_quest: {
           id: "hunt_quest",
+          oneTime: true,
           texts: [
             "猎魔任务？有啊！最近狼群闹得厉害，公会悬赏猎杀幽狼兽。",
             "怎么样，要不要试试？虽然有点危险，但赏金不少。",
@@ -4602,6 +4606,7 @@ export const DataCharacters = {
         },
         accept_quest: {
           id: "accept_quest",
+          oneTime: true,
           texts: [
             "好样的！有胆量！",
             "这个任务是猎杀 3 只幽狼兽，完成之后回来找我领赏。",
@@ -4624,6 +4629,7 @@ export const DataCharacters = {
         },
         casual_chat: {
           id: "casual_chat",
+          oneTime: true,
           texts: [
             "随便聊啊... 那我跟你说说我年轻时候的事吧。",
             "想当年，我可是猎魔者公会里的一把好手，什么妖魔没见过？",
@@ -4783,6 +4789,7 @@ export const DataCharacters = {
         },
         book_recommend: {
           id: "book_recommend",
+          oneTime: true,
           texts: [
             "魔法书籍啊... 那可就多了。",
             "如果你是初学者的话，我推荐《魔法基础理论》，这本书讲得很详细。",
@@ -4802,6 +4809,7 @@ export const DataCharacters = {
         },
         secret_knowledge: {
           id: "secret_knowledge",
+          oneTime: true,
           texts: [
             "秘闻？哈哈，我确实知道一些。",
             "毕竟开了这么多年书店，来来往往的人多了，听到的事情自然也就多了。",
@@ -4831,6 +4839,7 @@ export const DataCharacters = {
         },
         demon_secrets: {
           id: "demon_secrets",
+          oneTime: true,
           texts: [
             "妖魔的秘闻啊... 这个可就有点吓人了。",
             "我听说啊，妖魔其实是有组织的，它们也有自己的社会结构。",
@@ -4852,6 +4861,7 @@ export const DataCharacters = {
         },
         mu_family_secrets: {
           id: "mu_family_secrets",
+          oneTime: true,
           texts: [
             "穆氏家族的秘闻啊... 这个可就有点敏感了。",
             "穆家可是博城的一大家族，势力大得很。",
@@ -4873,6 +4883,7 @@ export const DataCharacters = {
         },
         latest_news: {
           id: "latest_news",
+          oneTime: true,
           texts: [
             "新鲜事啊... 让我想想。",
             "最近啊，山里好像不太太平，好多猎人都不敢进山了。",
@@ -4893,6 +4904,7 @@ export const DataCharacters = {
         },
         casual_chat: {
           id: "casual_chat",
+          oneTime: true,
           texts: [
             "随便聊啊... 那我跟你说说我年轻时候的事吧。",
             "想当年，我也是个魔法学徒，梦想着成为一名伟大的法师。",
@@ -4918,6 +4930,7 @@ export const DataCharacters = {
         },
         encourage: {
           id: "encourage",
+          oneTime: true,
           texts: [
             "好！有志气！",
             "我果然没看错你，你将来一定能成大器！",
