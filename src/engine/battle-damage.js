@@ -1071,6 +1071,12 @@ export function applyDamage(target, damage, attacker) {
                     this.applyDamage(attacker, { amount: counterDmg, element: 'earth', isCrit: false, isMiss: false }, this.player);
                     this.addLog(`🪨 岩甲反击！造成 ${counterDmg} 点土伤！`, 'counter');
                     this.showDamageNumber('enemy', counterDmg, 'normal');
+                    // v3.1.0: 反击回血（counterHeal，反击流Lv7延伸）
+                    if (te.counterHeal) {
+                        const healAmount = Math.floor(this.player.maxHp * te.counterHeal);
+                        this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
+                        this.addLog(`🪨 反击回血！恢复 ${healAmount} 点生命！`, 'heal');
+                    }
                     // 反击眩晕（counterStunChance）
                     if (te.counterStunChance && Math.random() < te.counterStunChance) {
                         this.addStatusEffect(attacker, { type: 'stun', name: '岩击眩晕', duration: 1 });

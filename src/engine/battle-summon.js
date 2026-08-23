@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 战斗系统 - 召唤兽攻击模块
  * 
  * 从battle.js拆分出的独立召唤兽攻击模块
@@ -125,6 +125,16 @@ export function summonAttack() {
         let critChance = summon.critRate || 0.05;
         let critMult = summon.critDamage || 1.5;
         critChance += (chosenSkill.critBonus || 0);
+
+        // v3.1.0: 契约满层时召唤兽暴击率加成（contractCritBonus，强攻流Lv7延伸）
+        if (this.player.talentEffects?.contractCritBonus && this.player._contractStacks) {
+            const te = this.player.talentEffects;
+            const maxContract = te.contractMax || 3;
+            if (this.player._contractStacks >= maxContract) {
+                critChance += te.contractCritBonus;
+                this.addLog(`📜 契约满层！${summon.name} 暴击率+${Math.floor(te.contractCritBonus * 100)}%！`, 'buff');
+            }
+        }
 
         // v0.8.27: 召唤兽狂暴（低HP增伤）
         let enrageMult = 1;
