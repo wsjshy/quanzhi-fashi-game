@@ -5069,6 +5069,7 @@ export const DataCharacters = {
         },
         magic_advice: {
           id: "magic_advice",
+          oneTime: true,
           texts: [
             "魔法修炼啊... 这个话题可就大了。",
             "魔法修炼，最重要的是基础。基础打牢了，后面才能走得更远。",
@@ -5089,6 +5090,7 @@ export const DataCharacters = {
         },
         city_news: {
           id: "city_news",
+          oneTime: true,
           texts: [
             "城里的大事啊... 最近确实不太太平。",
             "山里的妖魔活动越来越频繁了，猎魔任务也多了不少。",
@@ -5113,6 +5115,7 @@ export const DataCharacters = {
         },
         city_warning: {
           id: "city_warning",
+          oneTime: true,
           texts: [
             "嗯，情况确实不太乐观。",
             "我已经向上面汇报了，相信很快就会有结果。",
@@ -5134,6 +5137,7 @@ export const DataCharacters = {
         },
         join_association: {
           id: "join_association",
+          oneTime: true,
           texts: [
             "想加入魔法协会？有志气！",
             "不过啊，魔法协会可不是那么好进的。想要加入，必须通过我们的考核。",
@@ -5154,6 +5158,7 @@ export const DataCharacters = {
         },
         casual_chat: {
           id: "casual_chat",
+          oneTime: true,
           texts: [
             "随便聊啊... 那我跟你说说我年轻时候的事吧。",
             "想当年，我也像你一样，是个意气风发的年轻人，梦想着成为最强大的法师。",
@@ -5179,6 +5184,7 @@ export const DataCharacters = {
         },
         encourage: {
           id: "encourage",
+          oneTime: true,
           texts: [
             "好！有你这句话，我就放心了。",
             "我果然没看错你，你将来一定能成大器！",
