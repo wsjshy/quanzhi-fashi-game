@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 战斗系统 - 状态效果更新模块
  * 
  * 从battle.js拆分出的独立状态效果更新模块
@@ -144,6 +144,12 @@ export function tickStatusEffects(target, isPlayer) {
                 }
                 if (effect.type !== 'shield') {
                     this.addLog(`${targetName} 的 ${effect.name} 效果消失了`, 'system');
+                }
+                // v3.1.0: 守护结束回血（guardEndHeal，召唤系防御流Lv7延伸）
+                if (effect.type === 'summon_guard' && isPlayer && this.player.talentEffects?.guardEndHeal) {
+                    const healAmount = Math.floor(this.player.maxHp * this.player.talentEffects.guardEndHeal);
+                    this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
+                    this.addLog(`🛡️ 契约守护结束！恢复 ${healAmount} 点生命！`, 'heal');
                 }
                 removedEffects.push({ effect, reason: 'expired' });
                 return false;
