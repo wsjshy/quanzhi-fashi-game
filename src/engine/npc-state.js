@@ -228,6 +228,13 @@ export const NPCStateSystem = {
             // 记忆系统
             memories: [],
             
+            // v3.1.0: 对话历史记录系统
+            visitedDialogueNodes: [],    // 已访问的对话节点ID
+            dialogueHistory: [],         // 对话历史记录（总结后的关键信息）
+            lastDialogueTime: null,      // 上次对话时间
+            hasNewDialogue: false,       // 是否有新对话
+            hasNewQuest: false,          // 是否有新可接取任务
+            
             // 个人标记
             flags: {
                 has_met_player: false
@@ -236,6 +243,130 @@ export const NPCStateSystem = {
             // 已知的玩家信息
             knownPlayerInfo: []
         };
+    },
+
+    // ========== v3.1.0: 对话历史记录系统 ==========
+
+    /**
+     * 记录对话节点访问
+     */
+    recordDialogueNodeVisit(npcId, nodeId, summary = '') {
+        const state = this.getNPCState(npcId);
+        if (!state.visitedDialogueNodes.includes(nodeId)) {
+            state.visitedDialogueNodes.push(nodeId);
+        }
+        state.lastDialogueTime = Date.now();
+        state.hasNewDialogue = false;
+
+        // 如果有总结，添加到对话历史
+        if (summary && !state.dialogueHistory.find(h => h.nodeId === nodeId)) {
+            state.dialogueHistory.push({
+                nodeId,
+                summary,
+                time: Date.now()
+            });
+            // 限制历史记录数量，最多保留20条
+            if (state.dialogueHistory.length > 20) {
+                state.dialogueHistory.shift();
+            }
+        }
+        this._save();
+    },
+
+    /**
+     * 检查对话节点是否已访问
+     */
+    isDialogueNodeVisited(npcId, nodeId) {
+        const state = this.getNPCState(npcId);
+        return state.visitedDialogueNodes.includes(nodeId);
+    },
+
+    /**
+     * 获取对话历史记录
+     */
+    getDialogueHistory(npcId) {
+        const state = this.getNPCState(npcId);
+        return state.dialogueHistory || [];
+    },
+
+    /**
+     * 检查NPC是否有新内容（新对话/新任务）
+     */
+    checkNewContent(npcId) {
+        const state = this.getNPCState(npcId);
+        const npcData = DataManager.getCharacter(npcId);
+        if (!npcData || !npcData.dialogueTree) return { hasNew: false, newNodes: [], newQuests: [] };
+
+        const newNodes = [];
+        const nodes = npcData.dialogueTree.nodes || {};
+
+        // 检查default节点的choices中是否有未访问的节点
+        const defaultNode = nodes.default;
+        if (defaultNode && defaultNode.choices) {
+            for (const choice of defaultNode.choices) {
+                if (choice.next && choice.next !== 'default' && !state.visitedDialogueNodes.includes(choice.next)) {
+                    // 检查条件是否满足
+                    if (this._checkChoiceCondition(choice, npcId)) {
+                        newNodes.push(choice.next);
+                    }
+                }
+            }
+        }
+
+        state.hasNewDialogue = newNodes.length > 0;
+        this._save();
+
+        return {
+            hasNew: newNodes.length > 0,
+            newNodes,
+            newQuests: []
+        };
+    },
+
+    /**
+     * 检查对话选项条件是否满足
+     */
+    _checkChoiceCondition(choice, npcId) {
+        if (!choice.condition && !choice.conditions) return true;
+        const cond = choice.condition || choice.conditions;
+
+        // 检查minOpinion
+        if (cond.minOpinion !== undefined) {
+            const state = this.getNPCState(npcId);
+            if ((state.opinion || 0) < cond.minOpinion) return false;
+        }
+
+        // 检查hasFlag
+        if (cond.hasFlag !== undefined) {
+            if (typeof Player !== 'undefined' && Player.flags && !Player.flags[cond.hasFlag]) return false;
+        }
+
+        // 检查element
+        if (cond.element !== undefined) {
+            if (typeof Player !== 'undefined' && Player.elements && !Player.elements.includes(cond.element)) return false;
+        }
+
+        // 检查minLevel
+        if (cond.minLevel !== undefined) {
+            if (typeof Player !== 'undefined' && (Player.level || 0) < cond.minLevel) return false;
+        }
+
+        return true;
+    },
+
+    /**
+     * 批量检查所有NPC的新内容
+     */
+    checkAllNPCNewContent() {
+        const allChars = DataManager.getAllCharacters ? DataManager.getAllCharacters() : {};
+        const results = {};
+        for (const npcId of Object.keys(allChars)) {
+            const result = this.checkNewContent(npcId);
+            if (result.hasNew) {
+                results[npcId] = result;
+            }
+        }
+        return results;
     },
 
     // ========== v0.27.0: NPC自主成长系统 ==========

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 游戏主流程 - NPC列表模块
  * 
  * 从game.js拆分出的独立NPC列表模块
@@ -78,6 +78,10 @@ export function showNPCList(npcs, unavailableNpcs = []) {
             const availableQuests = QuestSystem.getAvailableQuestsForNPC(npc.id);
             const hasQuest = availableQuests.length > 0;
             
+            // v3.1.0: 检查是否有新对话
+            const newContent = NPCStateSystem.checkNewContent(npc.id);
+            const hasNewDialogue = newContent.hasNew;
+            
             // v2.9.3: 获取NPC当前等级和元素系（含成长）
             let npcLevel = 0;
             let npcElements = [];
@@ -105,11 +109,13 @@ export function showNPCList(npcs, unavailableNpcs = []) {
             }).join('');
             
             if (canTalk) {
+                const borderColor = hasQuest ? '#ffcc00' : (hasNewDialogue ? '#44dd88' : '#444477');
+                const hoverColor = hasQuest ? '#ffdd44' : (hasNewDialogue ? '#66ffaa' : '#7777bb');
                 return `
                     <div onclick="talkToNPC('${npc.id}')" style="
                         padding: 15px 20px;
                         background: rgba(40, 40, 80, 0.8);
-                        border: 2px solid ${hasQuest ? '#ffcc00' : '#444477'};
+                        border: 2px solid ${borderColor};
                         border-radius: 10px;
                         color: #e0e0ff;
                         cursor: pointer;
@@ -117,18 +123,20 @@ export function showNPCList(npcs, unavailableNpcs = []) {
                         transition: all 0.3s;
                         font-size: 16px;
                         position: relative;
-                    " onmouseover="this.style.borderColor='${hasQuest ? '#ffdd44' : '#7777bb'}'; this.style.background='rgba(60, 60, 120, 0.8)'" onmouseout="this.style.borderColor='${hasQuest ? '#ffcc00' : '#444477'}'; this.style.background='rgba(40, 40, 80, 0.8)'">
+                    " onmouseover="this.style.borderColor='${hoverColor}'; this.style.background='rgba(60, 60, 120, 0.8)'" onmouseout="this.style.borderColor='${borderColor}'; this.style.background='rgba(40, 40, 80, 0.8)'">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                             <div style="flex: 1;">
                                 <div style="font-weight: bold; font-size: 17px;">
                                     ${npc.name}
                                     ${hasQuest ? '<span style="color: #ffcc00; font-size: 20px; margin-left: 8px;">❗</span>' : ''}
+                                    ${hasNewDialogue && !hasQuest ? '<span style="color: #44dd88; font-size: 18px; margin-left: 8px;">💬</span>' : ''}
                                     ${hasCombat ? `<span style="color: #ffd700; font-size: 13px; margin-left: 10px; background: rgba(255,215,0,0.1); padding: 2px 8px; border-radius: 8px;">${npcLevelDisplay}</span>` : ''}
                                 </div>
                                 <div style="font-size: 13px; color: #999; margin-top: 3px;">
                                     ${npc.title || ''}
                                     ${hasCombat && elementsIcons ? `<span style="margin-left: 10px;">${elementsIcons}</span>` : ''}
                                     ${hasQuest ? '<span style="color: #ffcc00; margin-left: 8px;">有任务可接</span>' : ''}
+                                    ${hasNewDialogue && !hasQuest ? '<span style="color: #44dd88; margin-left: 8px;">有新对话</span>' : ''}
                                 </div>
                             </div>
                             ${hasCombat ? `

@@ -275,6 +275,12 @@ export const DialogueTree = {
             };
         });
 
+        // v3.1.0: 记录节点访问到NPC状态系统（非default节点）
+        if (this.currentNode !== 'default' && typeof NPCStateSystem !== 'undefined') {
+            const nodeSummary = node.description || node.name || text.substring(0, 50);
+            NPCStateSystem.recordDialogueNodeVisit(this.currentNPC, this.currentNode, nodeSummary);
+        }
+
         return {
             npcId: this.currentNPC,
             nodeId: this.currentNode,
