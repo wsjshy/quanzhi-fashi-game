@@ -7728,18 +7728,21 @@ level: 15,
         },
         about_training: {
           id: "about_training",
+          oneTime: true,
           texts: ["历练？哼，你们这群温室里的花朵。", "完成悬赏就全部A，完不成就全部不合格。", "别觉得我苛刻，野外的妖魔可不会跟你讲道理。"],
           effects: { familiarity: 3 },
           choices: [{ text: "我们会完成的。", next: "default" }]
         },
         about_demon: {
           id: "about_demon",
+          oneTime: true,
           texts: ["多少？记不清了。", "奴仆级的蝼蚁不算数，战将级的倒是有几十只。", "年轻人，想杀妖魔，先活下来再说。"],
           effects: { opinion: 2 },
           choices: [{ text: "受教了。", next: "default" }]
         },
         about_battle: {
           id: "about_battle",
+          oneTime: true,
           texts: [
             "（斩空看了你一眼，似乎在评估你的实力。）",
             "战斗经验？记住三点。",
@@ -7757,6 +7760,7 @@ level: 15,
         },
         about_discipline: {
           id: "about_discipline",
+          oneTime: true,
           texts: [
             "纪律？",
             "（斩空冷哼一声。）",
@@ -7776,6 +7780,7 @@ level: 15,
         },
         discipline_debate: {
           id: "discipline_debate",
+          oneTime: true,
           texts: [
             "变通？",
             "（斩空盯着你看了几秒，忽然笑了。）",
@@ -7795,6 +7800,7 @@ level: 15,
         },
         about_tang_yue: {
           id: "about_tang_yue",
+          oneTime: true,
           texts: [
             "（斩空的动作明显顿了一下。）",
             "唐月？",
@@ -7814,6 +7820,7 @@ level: 15,
         },
         about_anomaly: {
           id: "about_anomaly",
+          oneTime: true,
           texts: [
             "（斩空的动作顿了一下，抬眼看你。）",
             "……你也看到了？",
@@ -7832,6 +7839,7 @@ level: 15,
         },
         farewell_node: {
           id: "farewell_node",
+          oneTime: true,
           texts: [
             "（斩空放下手中的酒壶，看了你一眼。）",
             "要走了？明珠学府？",
@@ -7856,6 +7864,7 @@ level: 15,
         // v1.3.1: 真相追寻者结局 - 黑教廷话题
         about_black_church: {
           id: "about_black_church",
+          oneTime: true,
           texts: [
             "（斩空的手猛地握紧了酒壶，指节发白。）",
             "……你还记着那件事。",
@@ -7876,6 +7885,7 @@ level: 15,
         },
         about_black_church_future: {
           id: "about_black_church_future",
+          oneTime: true,
           texts: [
             "（斩空盯着你看了几秒，忽然笑了。）",
             "年轻人，有冲劲是好事。但别送死。",
@@ -7892,6 +7902,7 @@ level: 15,
         // v1.3.1: 军方盟友结局 - 军方任务入口
         about_military_task: {
           id: "about_military_task",
+          oneTime: true,
           texts: [
             "（斩空挑了挑眉。）",
             "哦？这么快就有事找我了？",
@@ -7910,6 +7921,7 @@ level: 15,
         },
         about_military_task_detail: {
           id: "about_military_task_detail",
+          oneTime: true,
           texts: [
             "（斩空想了想。）",
             "暂时没有适合你的。你现在的实力，去了也是送死。",
