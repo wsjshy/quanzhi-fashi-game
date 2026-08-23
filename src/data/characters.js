@@ -6490,6 +6490,7 @@ export const DataCharacters = {
         },
         about_guild: {
           id: "about_guild",
+          oneTime: true,
           texts: [
             "猎魔者公会是专门负责猎魔任务的组织哦。",
             "我们接受各种猎魔委托，从清除低级妖魔到调查异常事件都有。",
@@ -6508,6 +6509,7 @@ export const DataCharacters = {
         },
         intro: {
           id: "intro",
+          oneTime: true,
           texts: [
             "我叫小雨，是公会的接待员。",
             "我在这里工作已经两年了，每天都能见到各种各样的猎人。",
@@ -6534,6 +6536,7 @@ export const DataCharacters = {
         },
         chat: {
           id: "chat",
+          oneTime: true,
           texts: [
             "很高兴认识你！",
             "以后常来公会玩哦，我给你打折！",
@@ -6694,6 +6697,7 @@ export const DataCharacters = {
         },
         about_master: {
           id: "about_master",
+          oneTime: true,
           texts: [
             "家主大人平时很忙，一般不见外客。",
             "如果您有什么事，可以先跟我说，我会转达给家主。",
@@ -6712,6 +6716,7 @@ export const DataCharacters = {
         },
         about_ningxue: {
           id: "about_ningxue",
+          oneTime: true,
           texts: [
             "宁雪小姐是穆家的天才，从小就很厉害。",
             "小姐性格比较冷淡，但人其实很好的。",
@@ -6731,6 +6736,7 @@ export const DataCharacters = {
         },
         about_demons: {
           id: "about_demons",
+          oneTime: true,
           texts: [
             "山里的事...我也听说了一些。",
             "穆家已经加强了防备，应该不会有问题的。",
@@ -6820,24 +6826,28 @@ export const DataCharacters = {
         },
         about_bullies: {
           id: "about_bullies",
+          oneTime: true,
           texts: ["没...没有的，你不要担心。", "你已经帮我赶走那些坏人了，他们不敢再来了。"],
           effects: { opinion: 3, trust: 5 },
           choices: [{ text: "有事一定要告诉我。", next: "default", action: "back" }]
         },
         about_aunt: {
           id: "about_aunt",
+          oneTime: true,
           texts: ["姑姑身体还是老样子，在医院后勤部工作。", "她总是念叨让你好好学习，成为初阶魔法师就光宗耀祖了。"],
           effects: { familiarity: 3 },
           choices: [{ text: "我会努力的。", next: "default", action: "back" }]
         },
         about_research: {
           id: "about_research",
+          oneTime: true,
           texts: ["我在看一些药剂学的书...", "虽然我不能修炼，但我想以自己的方式帮助大家。", "哥哥总是一个人承担太多，我想替他分担一些。"],
           effects: { opinion: 3, trust: 3 },
           choices: [{ text: "你一定可以的", next: "default", action: "back" }]
         },
         about_help: {
           id: "about_help",
+          oneTime: true,
           texts: ["（心夏眼睛亮了一下）真的吗？", "我...我在研究一些药剂，想帮哥哥减轻负担。", "但是我腿脚不方便，没法去野外采集草药..."],
           choices: [
             { text: "我帮你采集草药", next: "default", action: "start_quest", actionData: { questId: "quest_yexinxia_herbs" } },
@@ -6930,18 +6940,21 @@ export const DataCharacters = {
         },
         about_exam: {
           id: "about_exam",
+          oneTime: true,
           texts: ["年度考核是公正的，不合格的学生自然会被请离学校。", "学校资源有限，必须留给有天赋的学生。"],
           effects: { opinion: -2 },
           choices: [{ text: "我明白了。", next: "default" }]
         },
         about_ningxue: {
           id: "about_ningxue",
+          oneTime: true,
           texts: ["宁雪是我们穆氏的骄傲，博城的旗帜。", "她今天会来观看年度考核，你们好好表现。"],
           effects: { familiarity: 2 },
           choices: [{ text: "多谢告知。", next: "default" }]
         },
         about_security: {
           id: "about_security",
+          oneTime: true,
           texts: [
             "（他眼睛一亮，但很快恢复了常态。）",
             "安全？哼，学校的防御法阵是穆氏出资修建的，固若金汤。",
@@ -6956,6 +6969,7 @@ export const DataCharacters = {
         },
         mu_he_stranger: {
           id: "mu_he_stranger",
+          oneTime: true,
           texts: [
             "（他的表情瞬间冷了下来，但随即哈哈大笑。）",
             "灰衣人？你看错了吧。学校里人来人往的，我每天要见多少人。",
@@ -8309,24 +8323,28 @@ level: 10,
         },
         about_summon: {
           id: "about_summon",
+          oneTime: true,
           texts: ["召唤系可以召唤异世界的生物为己所用。", "召唤师与召唤兽心灵感应，共享感知。", "召唤兽死亡，召唤师也会受到严重的精神创伤。"],
           effects: { familiarity: 3, intelligence: 5 },
           choices: [{ text: "原来如此。", next: "default", action: "back" }]
         },
         about_wolf: {
           id: "about_wolf",
+          oneTime: true,
           texts: ["幽狼兽是奴仆级召唤兽，绿色汗毛，锯齿獠牙。", "比普通独眼魔狼要强一些，速度很快。", "但它受强刺激会发狂，眼睛变红，战斗力翻倍。"],
           effects: { familiarity: 3 },
           choices: [{ text: "发狂了怎么办？", next: "about_rage" }]
         },
         about_rage: {
           id: "about_rage",
+          oneTime: true,
           texts: ["发狂的召唤兽很难控制，连我也可能被攻击。", "最好的办法是用环境限制它，或者一击重创。", "钟乳石洞穴那种地形，就很适合用智商碾压。"],
           effects: { familiarity: 5, intelligence: 10 },
           choices: [{ text: "受教了。", next: "default", action: "back" }]
         },
         about_training: {
           id: "about_training",
+          oneTime: true,
           texts: ["这次历练是斩空老师设计的，表面上没有老师保护。", "实际上我们都在暗中跟随，计分并随时准备救援。", "释放魔法得A，打伤召唤兽得S，加油吧。"],
           effects: { familiarity: 5 },
           choices: [{ text: "明白了。", next: "default", action: "back" }]
@@ -10535,6 +10553,7 @@ level: 18,
         },
         hunt_info: {
           id: "hunt_info",
+          oneTime: true,
           texts: [
             "猎魔任务都在公告板上，自己看。不过……最近有个追踪黑教廷的任务，你感兴趣的话我可以帮你留意。",
             "你实力还行，比那些只会耍嘴皮子的猎人强。有合适的任务我会通知你。",
@@ -10547,6 +10566,7 @@ level: 18,
         },
         demon_intel: {
           id: "demon_intel",
+          oneTime: true,
           texts: [
             "根据我收集的数据，最近主校区附近暗影系妖魔活动频繁。不只是普通妖魔——有组织的痕迹。",
             "黑教廷在明珠有眼线，你小心点。他们的目标可能是地圣泉。",
@@ -10560,6 +10580,7 @@ level: 18,
         },
         age_talk: {
           id: "age_talk",
+          oneTime: true,
           texts: [
             "……12。怎么，有意见？",
             "别用那种眼神看我。智商和年龄没关系，你这种肌肉脑不会懂的。",
@@ -10572,6 +10593,7 @@ level: 18,
         },
         age_defense: {
           id: "age_defense",
+          oneTime: true,
           texts: [
             "猎人认证看的是实绩不是年龄。我分析过的妖魔案例比你吃过的饭还多。",
             "……算了，跟你说这些干嘛。"
@@ -10582,6 +10604,7 @@ level: 18,
         },
         casual_chat: {
           id: "casual_chat",
+          oneTime: true,
           texts: [
             "你知道吗，猎人联盟里大部分人都是蠢货。明明数据摆在眼前还要硬来。",
             "爷爷总说我太冷漠。但分析妖魔的时候，感情只会影响判断。",
@@ -10593,6 +10616,7 @@ level: 18,
         },
         parasite_case: {
           id: "parasite_case",
+          oneTime: true,
           texts: [
             "寄生妖魔的案子我查过资料。那东西叫鳞皮妖母，战将级，能通过寄生繁殖。",
             "被寄生的人白天正常，晚上蜕皮变妖。杀了妖母，被寄生的人就能恢复。",
@@ -10606,6 +10630,7 @@ level: 18,
         },
         xu_zhaoting_mourn: {
           id: "xu_zhaoting_mourn",
+          oneTime: true,
           texts: [
             "……许昭霆的事，我知道了。",
             "他传递的情报很有价值。神侍者的名字……我会继续追查。",
@@ -10620,6 +10645,7 @@ level: 18,
         },
         black_church_hierarchy: {
           id: "black_church_hierarchy",
+          oneTime: true,
           texts: [
             "黑教廷的等级：最顶层是撒朗，下面是神侍者，再下面是教士，最底层是灰衣人。",
             "宇昂不过是个教士。真正危险的是神侍者——能直接接触撒朗的人。",
