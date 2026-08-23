@@ -5855,6 +5855,7 @@ export const DataCharacters = {
         },
         study_advice: {
           id: "study_advice",
+          oneTime: true,
           texts: [
             "学习魔法，基础最重要。",
             "不要好高骛远，先把基础打牢。",
@@ -5875,6 +5876,7 @@ export const DataCharacters = {
         },
         class_news: {
           id: "class_news",
+          oneTime: true,
           texts: [
             "班里啊... 最近大家都挺努力的。",
             "穆宁雪还是那么优秀，冰系魔法用得越来越好了。",
@@ -5895,6 +5897,7 @@ export const DataCharacters = {
         },
         exam_info: {
           id: "exam_info",
+          oneTime: true,
           texts: [
             "考核的事啊... 你想知道什么？",
             "入学考核主要考基础魔法的运用，只要你认真修炼了，应该没问题。",
@@ -5919,6 +5922,7 @@ export const DataCharacters = {
         },
         annual_exam_info: {
           id: "annual_exam_info",
+          oneTime: true,
           texts: [
             "年度考核啊……这是学校最重要的考核，每年一次，所有新生都要参加。",
             "考核分两项：第一项是星感石测试，每人三次机会取最好成绩，测试你对元素的感知能力。",
@@ -5946,6 +5950,7 @@ export const DataCharacters = {
         },
         star_sense_tips: {
           id: "star_sense_tips",
+          oneTime: true,
           texts: [
             "星感石测试的技巧？嗯……其实也没什么特别的技巧，主要是看你平时对元素的感知积累。",
             "你注意到训练场前端那块星感石了吗？它看上去有点像黑色的鹅卵石，西瓜那么大，被石墩托着。",
@@ -5969,6 +5974,7 @@ export const DataCharacters = {
         },
         demon_warning: {
           id: "demon_warning",
+          oneTime: true,
           texts: [
             "雪峰山的事... 你也听说了？",
             "确实，最近山里有点不太平，妖魔活动比平时频繁了。",
