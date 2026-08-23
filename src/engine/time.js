@@ -147,6 +147,11 @@ export const TimeSystem = {
         const newPeriod = this.getCurrentPeriod();
         Player.timeOfDay = newPeriod;
         
+        // v3.2.0修复：跨天后重置每日行动次数（原逻辑在advanceDay中检查timeOfDay==='morning'，但timeOfDay此时还未更新，导致重置不触发）
+        if (oldDay !== Player.day && typeof Player.resetDailyActions === 'function') {
+            Player.resetDailyActions();
+        }
+        
         // 如果时段变了，添加事件
         if (oldPeriod !== newPeriod) {
             events.push({ type: 'period_change', period: newPeriod });
@@ -385,10 +390,6 @@ export const TimeSystem = {
         // 每天早上恢复满体力
         if (Player.timeOfDay === 'morning') {
             Player.fullRestoreStamina();
-            // v0.99.0: 重置每日行动次数（替代体力系统）
-            if (typeof Player.resetDailyActions === 'function') {
-                Player.resetDailyActions();
-            }
         }
         
         // 检查是否有大事件
