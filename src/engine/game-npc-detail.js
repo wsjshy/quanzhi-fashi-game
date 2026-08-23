@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 游戏主流程 - NPC详情模块
  * 
  * 从game.js拆分出的独立NPC详情模块
@@ -73,6 +73,14 @@ export function showNPCDetail(npcId) {
             familiarity: npcState.familiarity || 0,
         } : { opinion: 0, trust: 0, familiarity: 0 };
         const relState = typeof NPCStateSystem !== 'undefined' ? NPCStateSystem.getRelationshipState('player', npcId) : { label: '陌生人' };
+
+        // v3.1.0: 对话历史记录
+        const dialogueHistory = typeof NPCStateSystem !== 'undefined' ? NPCStateSystem.getDialogueHistory(npcId) : [];
+        const dialogueHistoryHtml = dialogueHistory.length > 0 ? dialogueHistory.map(h => `
+            <div style="padding: 8px 12px; background: rgba(60, 80, 120, 0.3); border-left: 3px solid #66aaff; border-radius: 4px; margin-bottom: 6px;">
+                <div style="color: #aaccff; font-size: 12px; margin-bottom: 3px;">${h.summary || '已读对话'}</div>
+            </div>
+        `).join('') : '<div style="color: #666; font-size: 13px; padding: 10px; text-align: center;">暂无对话记录</div>';
 
         // 关系条
         const relBar = (label, value, color) => `
@@ -209,6 +217,16 @@ export function showNPCDetail(npcId) {
                 ${relBar('好感度', rel.opinion, '#ff88aa')}
                 ${relBar('信任度', rel.trust, '#88aaff')}
                 ${relBar('熟悉度', rel.familiarity, '#88ddaa')}
+            </div>
+
+            <!-- v3.1.0: 对话历史记录 -->
+            <div style="margin-bottom: 10px;">
+                <div style="font-size: 15px; font-weight: bold; color: #88ccff; margin-bottom: 10px; border-bottom: 1px solid #444466; padding-bottom: 5px;">
+                    💬 对话历史 <span style="font-size: 12px; color: #666; font-weight: normal;">(${dialogueHistory.length}条)</span>
+                </div>
+                <div style="max-height: 200px; overflow-y: auto;">
+                    ${dialogueHistoryHtml}
+                </div>
             </div>
 
             <div style="text-align: center; margin-top: 15px;">
