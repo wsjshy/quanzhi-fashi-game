@@ -2096,9 +2096,13 @@ export const Player = {
         if (this.activeQuests.find(q => q.questId === questId)) return false;
         if (this.completedQuests.includes(questId)) return false;
         
+        // v3.1.0修复：progress必须初始化为与目标数量相同的0数组，否则updateProgress无法正确更新
+        const quest = typeof DataQuests !== 'undefined' ? DataQuests[questId] : null;
+        const objectiveCount = quest?.objectives?.length || 0;
+        
         this.activeQuests.push({
             questId: questId,
-            progress: [],
+            progress: objectiveCount > 0 ? new Array(objectiveCount).fill(0) : [],
             startTime: this.day
         });
         return true;
