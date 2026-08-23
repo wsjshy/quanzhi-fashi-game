@@ -81,6 +81,13 @@
 - **重新构建**：修改代码后运行 `npm run build:copy`，会自动构建并复制到根目录，然后双击index.html即可运行
 - **一键构建并运行**：`npm run play` 或双击 `build-and-play.bat`
 
+**部署到GitHub Pages**：
+- **分支模式**：master开发分支 + gh-pages部署分支（GitHub Pages）
+- **自动化部署脚本**（推荐）：`.\tools\deploy.ps1 -Version "v3.1.0" -Message "版本描述"`
+- **部署地址**：https://wsjshy.github.io/quanzhi-fashi-game/
+- **详细部署流程和踩坑经验**：见 [docs/部署经验总结.md](docs/部署经验总结.md)
+- ⚠️ **部署前必须确保master分支工作区干净**，否则切换分支会失败
+
 ---
 
 ## 三、文档导航
