@@ -2339,6 +2339,7 @@ export const DataCharacters = {
         },
         mo_fan_power: {
           id: "mo_fan_power",
+          oneTime: true,
           texts: [
             "那还用说！莫凡可是我们班最强的几个之一，雷系魔法用得那叫一个溜！",
             "虽然他才刚觉醒没多久，但进步速度快得吓人，我都怀疑他是不是开了挂。",
@@ -2357,6 +2358,7 @@ export const DataCharacters = {
         },
         mo_fan_history: {
           id: "mo_fan_history",
+          oneTime: true,
           texts: [
             "我们是在学校认识的，一开始我还挺看不起他的，毕竟他就是个穷小子。",
             "但是后来发生了一些事，我发现莫凡这个人特别仗义，为了朋友可以两肋插刀。",
@@ -2375,6 +2377,7 @@ export const DataCharacters = {
         },
         about_family: {
           id: "about_family",
+          oneTime: true,
           texts: [
             "哈哈，你也听说了？我们赵家确实有点小钱，不过也就一般般啦。",
             "我爸是做魔法器材生意的，家里条件确实还不错，所以我从小就没缺过钱花。",
@@ -2396,6 +2399,7 @@ export const DataCharacters = {
         },
         borrow_money: {
           id: "borrow_money",
+          oneTime: true,
           texts: [
             "借钱？这个嘛... 不是我不借，只是我最近手头也有点紧...",
             "哈哈，开个玩笑！要多少？尽管说，兄弟之间谈钱伤感情！",
@@ -2415,6 +2419,7 @@ export const DataCharacters = {
         },
         training_tips: {
           id: "training_tips",
+          oneTime: true,
           texts: [
             "修炼心得吗？我觉得吧，修炼这种事，最重要的是天赋，其次就是资源。",
             "像我这样，家里有钱，想买什么魔法器材就买什么，修炼速度自然就快了。",
@@ -2462,6 +2467,7 @@ export const DataCharacters = {
         },
         mountain_news: {
           id: "mountain_news",
+          oneTime: true,
           texts: [
             "我也是听别人说的，好像最近山里的妖魔变多了，好多猎人都不敢去了。",
             "具体我也不太清楚，你可以去问问王老板，他消息灵通得很。",
@@ -2480,6 +2486,7 @@ export const DataCharacters = {
         },
         about_mu_ningxue: {
           id: "about_mu_ningxue",
+          oneTime: true,
           texts: [
             "穆宁雪你都不知道？她可是我们学校的风云人物啊！穆氏家族的千金，冰系天才。",
             "长得又漂亮，实力又强，好多男生都暗恋她呢。不过她性格太高冷了，一般人都接近不了。",
@@ -2521,6 +2528,7 @@ export const DataCharacters = {
         },
         become_friends: {
           id: "become_friends",
+          oneTime: true,
           texts: [
             "真的吗？你真的这么想？",
             "太好了！从今天起，你就是我赵满延的好兄弟了！",
