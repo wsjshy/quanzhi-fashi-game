@@ -55,6 +55,15 @@ export function tickStatusEffects(target, isPlayer) {
                 this.applyDamage(target, damage, null);
                 this.addLog(`${targetName} 受到 ${effect.name} 伤害 ${damage.amount} 点（${stacks}层）${burnIsCrit ? ' 暴击！' : ''}`, 'damage');
 
+                // v3.2.0: 燃烧暴击时触发爆炸（burnCritExplode，火系烈焰之魂燃尽流Lv10终极）
+                if (effect.type === 'burn' && !isPlayer && burnIsCrit && this.player.talentEffects?.burnCritExplode) {
+                    const te = this.player.talentEffects;
+                    const critExplodeDmg = Math.floor(this.player.attack * (te.burnCritExplodeDamage || 0.5));
+                    this.applyDamage(this.enemy, { amount: critExplodeDmg, element: 'fire', isCrit: true, isMiss: false }, this.player);
+                    this.addLog(`🔥💥 燃烧暴击触发爆炸！造成 ${critExplodeDmg} 点伤害！`, 'crit');
+                    this.showDamageNumber('enemy', critExplodeDmg, 'crit');
+                }
+
                 // 天赋：燃烧爆炸 - 燃烧层数满时爆炸
                 if (effect.type === 'burn' && !isPlayer && this.player.talentEffects) {
                     const te = this.player.talentEffects;
