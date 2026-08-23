@@ -392,6 +392,7 @@ export const DataTalents = {
     element: "ice",
     rarity: "epic",
     type: "growth",
+    mechanism: "form",
     description: "追求寒冰的极致，冻结一切，包括时间本身。",
     maxLevel: 10,
     evolutions: [
@@ -529,6 +530,7 @@ export const DataTalents = {
     element: "thunder",
     rarity: "uncommon",
     type: "growth",
+    mechanism: "state",
     description: "掌控雷电的麻痹之力，让敌人在雷霆面前颤抖。",
     maxLevel: 10,
     evolutions: [
@@ -604,6 +606,7 @@ export const DataTalents = {
     element: "thunder",
     rarity: "epic",
     type: "growth",
+    mechanism: "resource",
     description: "引动九天雷霆，天威不可犯。",
     maxLevel: 10,
     evolutions: [
@@ -730,6 +733,7 @@ export const DataTalents = {
     element: "earth",
     rarity: "uncommon",
     type: "growth",
+    mechanism: "state",
     description: "心与大地相连，从大地中汲取无穷力量。",
     maxLevel: 10,
     evolutions: [
@@ -767,6 +771,7 @@ export const DataTalents = {
     element: "earth",
     rarity: "rare",
     type: "growth",
+    mechanism: "form",
     description: "以大地为盾，坚不可摧。",
     maxLevel: 10,
     evolutions: [
@@ -804,6 +809,7 @@ export const DataTalents = {
     element: "earth",
     rarity: "epic",
     type: "growth",
+    mechanism: "trigger",
     description: "山崩地裂，大地在我脚下颤抖。",
     maxLevel: 10,
     evolutions: [
@@ -930,6 +936,7 @@ export const DataTalents = {
     element: "wind",
     rarity: "uncommon",
     type: "growth",
+    mechanism: "state",
     description: "心与风灵相通，如风般自由，如风般锐利。",
     maxLevel: 10,
     evolutions: [
@@ -967,6 +974,7 @@ export const DataTalents = {
     element: "wind",
     rarity: "rare",
     type: "growth",
+    mechanism: "trigger",
     description: "如风般迅捷，一击不中，再击必中。",
     maxLevel: 10,
     evolutions: [
@@ -1004,6 +1012,7 @@ export const DataTalents = {
     element: "wind",
     rarity: "epic",
     type: "growth",
+    mechanism: "resource",
     description: "掌控风暴之力，所过之处，寸草不生。",
     maxLevel: 10,
     evolutions: [
@@ -1168,6 +1177,7 @@ export const DataTalents = {
     element: "water",
     rarity: "rare",
     type: "growth",
+    mechanism: "state",
     description: "润物细无声，在持续中积累胜势。",
     maxLevel: 10,
     evolutions: [
@@ -1205,6 +1215,7 @@ export const DataTalents = {
     element: "water",
     rarity: "epic",
     type: "growth",
+    mechanism: "form",
     description: "掌控潮汐之力，潮起潮落，皆在我心。",
     maxLevel: 10,
     evolutions: [
@@ -1339,6 +1350,7 @@ export const DataTalents = {
     element: "light",
     rarity: "uncommon",
     type: "growth",
+    mechanism: "state",
     description: "心怀圣光，驱散一切黑暗。",
     maxLevel: 10,
     evolutions: [
@@ -1414,6 +1426,7 @@ export const DataTalents = {
     element: "light",
     rarity: "epic",
     type: "growth",
+    mechanism: "resource",
     description: "神圣不可侵犯，天威之下，万物俯首。",
     maxLevel: 10,
     evolutions: [
@@ -1548,6 +1561,7 @@ export const DataTalents = {
     element: "dark",
     rarity: "uncommon",
     type: "growth",
+    mechanism: "state",
     description: "心向黑暗，在阴影中汲取力量。",
     maxLevel: 10,
     evolutions: [
@@ -1585,6 +1599,7 @@ export const DataTalents = {
     element: "dark",
     rarity: "rare",
     type: "growth",
+    mechanism: "form",
     description: "藏于暗影，一击必杀。",
     maxLevel: 10,
     evolutions: [
@@ -1748,6 +1763,7 @@ export const DataTalents = {
     element: "heal",
     rarity: "uncommon",
     type: "growth",
+    mechanism: "state",
     description: "以生命之力祝福同伴。",
     maxLevel: 10,
     evolutions: [
@@ -1823,6 +1839,7 @@ export const DataTalents = {
     element: "heal",
     rarity: "epic",
     type: "growth",
+    mechanism: "resource",
     description: "生命之泉永不干涸，治愈之力源源不断。",
     maxLevel: 10,
     evolutions: [
@@ -2236,6 +2253,7 @@ export const DataTalents = {
     element: "plant",
     rarity: "rare",
     type: "growth",
+    mechanism: "summon",
     description: "与植物建立共生关系，从自然中汲取生命力。越战越勇，生生不息。",
     maxLevel: 10,
     evolutions: [
@@ -2291,6 +2309,7 @@ export const DataTalents = {
     element: "plant",
     rarity: "epic",
     type: "growth",
+    mechanism: "resource",
     description: "被森林认可的领主，战斗时召唤森林领域，万物生长，敌人在自然之怒下颤抖。",
     maxLevel: 10,
     evolutions: [
