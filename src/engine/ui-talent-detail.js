@@ -1,4 +1,4 @@
-﻿/**
+/**
  * UI 天赋详情弹窗模块
  * 
  * 从ui.js拆分出的独立天赋详情弹窗模块
@@ -619,6 +619,20 @@ export function showTalentDetail(elem) {
                     <div style="margin-bottom:15px;padding:10px 12px;background:${mech.color}11;border:1px solid ${mech.color}44;border-radius:8px;">
                         <div style="color:${mech.color};font-size:12px;font-weight:bold;margin-bottom:4px;">${mech.icon} ${mech.name}机制</div>
                         <div style="color:#bbb;font-size:11px;line-height:1.5;">${mech.desc}</div>
+                    </div>
+                    ` : ''}
+
+                    <!-- 天赋主动技能（与魔法技能区分，天赋专属） -->
+                    ${talent.activeSkill ? `
+                    <div style="margin-bottom:15px;padding:10px 12px;background:#ffaa4411;border:1px solid #ffaa4444;border-radius:8px;">
+                        <div style="color:#ffaa44;font-size:12px;font-weight:bold;margin-bottom:6px;">⚡ 天赋主动技能（Lv5解锁，与魔法技能独立）</div>
+                        <div style="color:#fff;font-size:13px;font-weight:bold;margin-bottom:4px;">${talent.activeSkill.name}</div>
+                        <div style="color:#bbb;font-size:11px;line-height:1.5;margin-bottom:6px;">${talent.activeSkill.description}</div>
+                        <div style="display:flex;gap:12px;font-size:10px;color:#888;">
+                            ${talent.activeSkill.cooldown ? `<span>⏱️ 冷却：${talent.activeSkill.cooldown}回合</span>` : ''}
+                            ${talent.activeSkill.cost ? `<span>💧 消耗：${talent.activeSkill.cost}</span>` : '<span>💧 无消耗</span>'}
+                            <span style="color:#ffaa44;">※ 天赋专属技能，不占用魔法技能栏</span>
+                        </div>
                     </div>
                     ` : ''}
 
