@@ -31,6 +31,10 @@ function loadDataFile(filename) {
     // export const / const声明的变量不会成为vm context属性，替换为var
     code = code.replace(/^export\s+const\s+(\w+)\s*=/gm, 'var $1 =');
     code = code.replace(/^const\s+(\w+)\s*=/gm, 'var $1 =');
+    // export function 替换为 function
+    code = code.replace(/^export\s+function\s+(\w+)/gm, 'function $1');
+    // export { ... } 移除
+    code = code.replace(/^export\s+\{[\s\S]*?\};?\s*$/gm, '');
     // 移除window挂载代码
     code = code.replace(/if\s*\(typeof\s+window\s*!==\s*'undefined'\)[\s\S]*?\}/g, '');
     const sandbox = {};
