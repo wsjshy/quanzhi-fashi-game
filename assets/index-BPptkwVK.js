@@ -2850,7 +2850,7 @@ ${n}
                         </div>
                         <span style="color: #88aaff; font-size: 12px; min-width: 50px;">${Player.mp}/${Player.maxMp}</span>
                     </div>
-                    <span style="color: #888; font-size: 11px; opacity: 0.6;" title="全职法师网页游戏 当前版本">v3.0.0</span>
+                    <span style="color: #888; font-size: 11px; opacity: 0.6;" title="全职法师网页游戏 当前版本">v3.2.0</span>
                     ${(()=>{const o=Player.dailyActions||{cultivate:0,study:0,hunt:0},l=p=>p<1?{text:"高效",color:"#88ff88"}:p<3?{text:"70%",color:"#ffcc66"}:{text:"50%",color:"#ff8866"},c=l(o.cultivate),d=l(o.study),u=l(o.hunt);return`
                             <span style="font-size: 11px; ${o.cultivate>=1||o.study>=1||o.hunt>=1?"background: rgba(255,150,50,0.15); padding: 3px 8px; border-radius: 8px; border: 1px solid rgba(255,150,50,0.3);":""}" 
                                 title="每日首次修炼/学习/猎魔100%收益，第2-3次70%，第4次后50%。探索完全自由，无次数限制。">
