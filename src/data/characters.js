@@ -10238,6 +10238,7 @@ level: 18,
         },
         small_talk: {
           id: "small_talk",
+          oneTime: true,
           texts: [
             "我不太擅长闲聊。如果你想切磋，我可以奉陪。",
             "艾图图又拉着你说话了？她就是话多。",
@@ -10249,6 +10250,7 @@ level: 18,
         },
         training_advice: {
           id: "training_advice",
+          oneTime: true,
           texts: [
             "修炼没有捷径，但有方法。星子的连接不是靠蛮力，是靠感知。",
             "你雷系速度很快，但控制力不足。试试在引导时放慢速度，感受每一颗星子的律动。",
@@ -10260,6 +10262,7 @@ level: 18,
         },
         duel_response: {
           id: "duel_response",
+          oneTime: true,
           texts: [
             "好。我也想看看，你到底有多少实力。",
             "希望你比白藏锋强一点。",
@@ -10271,6 +10274,7 @@ level: 18,
         },
         plant_magic: {
           id: "plant_magic",
+          oneTime: true,
           texts: [
             "植物系不只是攻击，更重要的是控制。藤条缠绕、荆棘束缚，能为队友创造机会。",
             "我见过你战斗，你太依赖雷系的爆发。真正的战斗，控制比伤害更重要。",
@@ -10285,6 +10289,7 @@ level: 18,
         },
         spirit_seed_reveal: {
           id: "spirit_seed_reveal",
+          oneTime: true,
           texts: [
             "果然……我就觉得不对。灵级雷种，难怪白藏锋挡不住。",
             "你放心，我不会告诉别人。每个人都有自己的机缘。",
@@ -10296,6 +10301,7 @@ level: 18,
         },
         secret_kept: {
           id: "secret_kept",
+          oneTime: true,
           texts: [
             "……也罢。谁都有秘密。",
             "不想说就算了。"
@@ -10306,6 +10312,7 @@ level: 18,
         },
         rematch_talk: {
           id: "rematch_talk",
+          oneTime: true,
           texts: [
             "那场战斗……我输得心服口服。你的霹雳夜叉，我挡不住。",
             "但下次就不一定了。我也在进步。",
