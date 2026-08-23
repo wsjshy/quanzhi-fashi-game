@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 战斗系统 - 玩家攻击模块
  * 
  * 从battle.js拆分出的独立玩家攻击模块
@@ -25,6 +25,7 @@ export function playerAttack() {
         // v2.2.0: 火系强化流 - 消耗燃点强化普攻
         let fireEnhanceBonus = 0;
         let fireEnhanceCrit = false;
+        let fireEnhanceActive = false;
         const te = this.player.talentEffects || {};
         if (te.fireEnhanceAttack && typeof TalentCombatSystem !== 'undefined') {
             const cost = te.fireEnhanceCost || 3;
@@ -32,7 +33,13 @@ export function playerAttack() {
                 TalentCombatSystem.consumeEnergy('fire', cost);
                 fireEnhanceBonus = te.fireEnhanceBonus || 0.80;
                 fireEnhanceCrit = te.fireEnhanceCrit || false;
+                fireEnhanceActive = true;
                 this.addLog(`🔥 燃点强化！普攻伤害+${Math.floor(fireEnhanceBonus * 100)}%${fireEnhanceCrit ? '，必定暴击' : ''}！`, 'buff');
+                // v3.1.0: 强化普攻后获得连击状态（fireEnhanceCombo，Lv7延伸）
+                if (te.fireEnhanceCombo) {
+                    this.addStatusEffect(this.player, { type: 'combo', name: '炎怒连击', duration: 1, attackBonus: 0.30 });
+                    this.addLog(`🔥 炎怒连击！下回合攻击+30%！`, 'buff');
+                }
             }
         }
 
