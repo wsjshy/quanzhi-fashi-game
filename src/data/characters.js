@@ -9719,6 +9719,9 @@ level: 18,
           choices: [
             { text: "请教修炼心得", next: "about_training", action: "talk" },
             { text: "问问学校的情况", next: "about_school", action: "talk" },
+            { text: "年度考核是什么？", next: "about_exam", action: "talk" },
+            { text: "穆氏世家怎么样？", next: "about_mu_family", condition: { minOpinion: 10 }, action: "talk" },
+            { text: "博城最近安全吗？", next: "about_safety", condition: { minOpinion: 15 }, action: "talk" },
             { text: "学校有委托任务吗？", next: "default", action: "start_quest", actionData: { questId: "quest_zhuprincipal_school_quest" } },
             { text: "告辞", next: "default", action: "back" }
           ]
@@ -9727,13 +9730,76 @@ level: 18,
           id: "about_training",
           texts: ["修炼一途，天赋重要，努力更重要。", "光靠冥修是不够的，实战才能真正提升实力。", "记住，审时度势，别做无意义的事。"],
           effects: { intelligence: 10, familiarity: 5 },
-          choices: [{ text: "受教了", next: "default", action: "back" }]
+          choices: [
+            { text: "怎么才能快速提升？", next: "about_fast_training" },
+            { text: "受教了", next: "default", action: "back" }
+          ]
+        },
+        about_fast_training: {
+          id: "about_fast_training",
+          texts: ["快速提升？没有捷径。", "但地圣泉那种灵泉，可以让修炼速度翻倍。", "还有星尘魔器，辅助修炼效果也不错。不过这些都需要机缘。"],
+          effects: { intelligence: 5, familiarity: 3 },
+          choices: [{ text: "我明白了", next: "default", action: "back" }]
         },
         about_school: {
           id: "about_school",
           texts: ["天澜魔法高中是博城最好的公立学校。", "我们培养了很多优秀的魔法师，他们出身平凡，却成就非凡。", "学校会尽力为每一个学生提供公平的机会。"],
           effects: { familiarity: 5 },
-          choices: [{ text: "明白了", next: "default", action: "back" }]
+          choices: [
+            { text: "学校和穆氏有矛盾吗？", next: "about_school_mu_conflict" },
+            { text: "明白了", next: "default", action: "back" }
+          ]
+        },
+        about_school_mu_conflict: {
+          id: "about_school_mu_conflict",
+          texts: ["穆氏世家是博城的老牌势力，资源丰富。", "他们总想控制学校，把好资源都给自家子弟。", "但我朱某人还在一天，就不会让他们乱来。普通学生的机会，一个都不能少。"],
+          effects: { familiarity: 5, opinion: 3 },
+          choices: [{ text: "校长真有担当", next: "default", action: "back" }]
+        },
+        about_exam: {
+          id: "about_exam",
+          texts: ["年度考核是检验学生修炼成果的重要考试。", "分为星感石测试和释放考核两部分，综合评分。", "评级高的学生，可以获得地圣泉修炼资格等奖励。"],
+          effects: { familiarity: 5, intelligence: 5 },
+          choices: [
+            { text: "怎么才能拿高分？", next: "about_exam_tips" },
+            { text: "我会好好准备的", next: "default", action: "back" }
+          ]
+        },
+        about_exam_tips: {
+          id: "about_exam_tips",
+          texts: ["星感石测试看精神力和元素亲和度。", "释放考核看魔法的控制力和威力。", "平时多修炼，考试时放松心态，正常发挥就好。"],
+          effects: { intelligence: 5 },
+          choices: [{ text: "谢谢校长", next: "default", action: "back" }]
+        },
+        about_mu_family: {
+          id: "about_mu_family",
+          texts: ["穆氏世家...博城的土皇帝。", "他们家大业大，连市政厅都要给三分面子。", "但世家也有世家的规矩，不会太过分。你只要不主动惹事，他们也不会找你麻烦。"],
+          effects: { familiarity: 3 },
+          choices: [
+            { text: "穆卓云是什么样的人？", next: "about_mu_zhuoyun" },
+            { text: "我记住了", next: "default", action: "back" }
+          ]
+        },
+        about_mu_zhuoyun: {
+          id: "about_mu_zhuoyun",
+          texts: ["穆卓云？穆氏的家主，性格暴躁，护短得很。", "他为了自家子弟，可以不择手段。", "但他也不是完全不讲理，只要你有实力，他也会高看你一眼。"],
+          effects: { familiarity: 3, intelligence: 3 },
+          choices: [{ text: "原来如此", next: "default", action: "back" }]
+        },
+        about_safety: {
+          id: "about_safety",
+          texts: ["...你也感觉到了？", "博城最近不太太平，妖魔活动频繁，军部已经加强警戒了。", "具体情况我不能多说，但你自己要小心，晚上不要乱跑。"],
+          effects: { familiarity: 5, opinion: 3 },
+          choices: [
+            { text: "会有大灾难吗？", next: "about_disaster" },
+            { text: "我会小心的", next: "default", action: "back" }
+          ]
+        },
+        about_disaster: {
+          id: "about_disaster",
+          texts: ["希望不会。但博城三面环山，历史上多次遭遇妖魔潮。", "学校已经做好了应急预案，真到那时候，会保护学生的。", "这件事不要到处说，免得引起恐慌。"],
+          effects: { familiarity: 3, trust: 5 },
+          choices: [{ text: "我明白", next: "default", action: "back" }]
         }
       }
     }
