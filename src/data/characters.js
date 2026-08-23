@@ -9925,7 +9925,11 @@ level: 18,
           choices: [
             { text: "问问猎者联盟的情况", next: "about_guild", action: "talk" },
             { text: "请教猎妖经验", next: "about_hunting", action: "talk" },
+            { text: "怎么加入猎者联盟？", next: "about_join", action: "talk" },
+            { text: "雷系魔法怎么练？", next: "about_thunder", condition: { element: "thunder", minOpinion: 10 }, action: "talk" },
             { text: "您认识穆卓云族长吗？", next: "about_mu", action: "talk" },
+            { text: "博城最近安全吗？", next: "about_safety", condition: { minOpinion: 15 }, action: "talk" },
+            { text: "朱校长是个什么样的人？", next: "about_zhu", condition: { minOpinion: 10 }, action: "talk" },
             { text: "告辞", next: "default", action: "back" }
           ]
         },
@@ -9933,18 +9937,96 @@ level: 18,
           id: "about_guild",
           texts: ["猎者联盟是魔法师们自发组成的组织。", "我们接受各种猎妖任务，保护城市的安全。", "加入猎者联盟，不仅能获得报酬，还能提升实力。"],
           effects: { familiarity: 5 },
-          choices: [{ text: "明白了", next: "default", action: "back" }]
+          choices: [
+            { text: "猎者联盟和城市猎妖队有什么区别？", next: "about_guild_vs_hunters" },
+            { text: "明白了", next: "default", action: "back" }
+          ]
+        },
+        about_guild_vs_hunters: {
+          id: "about_guild_vs_hunters",
+          texts: ["城市猎妖队是官方组织，负责城市内的妖魔事件。", "猎者联盟更自由，可以接野外任务，报酬也更高。", "但风险也更大，没有官方保障，全靠自己。"],
+          effects: { familiarity: 3, intelligence: 5 },
+          choices: [{ text: "原来如此", next: "default", action: "back" }]
         },
         about_hunting: {
           id: "about_hunting",
           texts: ["猎妖可不是闹着玩的，随时都可能丢性命。", "光有实力不够，还要有经验和智慧。", "记住，活着回来才是最重要的。"],
           effects: { intelligence: 8, familiarity: 5 },
-          choices: [{ text: "受教了", next: "default", action: "back" }]
+          choices: [
+            { text: "有什么猎妖技巧吗？", next: "about_hunting_tips" },
+            { text: "受教了", next: "default", action: "back" }
+          ]
+        },
+        about_hunting_tips: {
+          id: "about_hunting_tips",
+          texts: ["第一，了解你的对手，妖魔的特性比实力更重要。", "第二，善用地形，以弱胜强的关键就是环境。", "第三，打不过就跑，留得青山在不怕没柴烧。"],
+          effects: { intelligence: 10, familiarity: 3 },
+          choices: [{ text: "我记住了", next: "default", action: "back" }]
+        },
+        about_join: {
+          id: "about_join",
+          texts: ["想加入猎者联盟？不难。", "只要通过基础考核，就能成为见习猎者。", "考核内容很简单：单独击败一只奴仆级妖魔。怎么样，敢试试吗？"],
+          effects: { familiarity: 3 },
+          choices: [
+            { text: "我想试试", next: "about_join_accept" },
+            { text: "我再考虑考虑", next: "default", action: "back" }
+          ]
+        },
+        about_join_accept: {
+          id: "about_join_accept",
+          texts: ["好！有胆量。", "这样，你先去东郊击败一只独眼魔狼，把魔狼皮带回来给我。", "完成后，你就是猎者联盟的见习猎者了。"],
+          effects: { familiarity: 5, opinion: 3 },
+          choices: [{ text: "我这就去", next: "default", action: "back" }]
+        },
+        about_thunder: {
+          id: "about_thunder",
+          texts: ["雷系？好！雷系是攻击最强的元素之一。", "雷印的麻痹效果，在猎妖时非常有用。", "记住，雷系的关键是'快'和'准'，一击制敌。"],
+          effects: { familiarity: 5, intelligence: 10 },
+          choices: [
+            { text: "雷系有什么进阶技巧？", next: "about_thunder_advanced" },
+            { text: "受教了", next: "default", action: "back" }
+          ]
+        },
+        about_thunder_advanced: {
+          id: "about_thunder_advanced",
+          texts: ["雷系中阶有霹雳，范围大，威力强。", "但最厉害的是雷系的灵种，比如'夜叉'，可以召唤雷兽。", "不过灵种可遇不可求，要看机缘。"],
+          effects: { intelligence: 5, familiarity: 3 },
+          choices: [{ text: "原来如此", next: "default", action: "back" }]
         },
         about_mu: {
           id: "about_mu",
           texts: ["卓云啊，老相识了。实力确实强，冰系高阶在博城没几个对手。", "就是脾气大了点，有时候控制不住情绪。上次在学校差点出事，还是我挡下来的。", "年轻人，在博城混，最好不要得罪穆氏世家。"],
-          choices: [{ text: "多谢提醒。", next: "default", action: "back" }]
+          choices: [
+            { text: "穆氏世家很厉害吗？", next: "about_mu_power" },
+            { text: "多谢提醒。", next: "default", action: "back" }
+          ]
+        },
+        about_mu_power: {
+          id: "about_mu_power",
+          texts: ["穆氏是博城的老牌世家，传承了几百年。", "他们家的冰系魔法，在整个南方都有名。", "不过穆卓云虽然护短，但也不是不讲理的人。你有实力，他也会高看你一眼。"],
+          effects: { familiarity: 3, intelligence: 3 },
+          choices: [{ text: "我明白了", next: "default", action: "back" }]
+        },
+        about_safety: {
+          id: "about_safety",
+          texts: ["...你也察觉到了？", "博城最近不太太平，妖魔活动频繁，猎者联盟的任务量翻了一倍。", "具体原因我也不清楚，但总觉得要出大事。你自己要小心。"],
+          effects: { familiarity: 5, opinion: 3 },
+          choices: [
+            { text: "会有大灾难吗？", next: "about_disaster" },
+            { text: "我会小心的", next: "default", action: "back" }
+          ]
+        },
+        about_disaster: {
+          id: "about_disaster",
+          texts: ["希望不会。但博城三面环山，历史上多次遭遇妖魔潮。", "猎者联盟已经做好了准备，真到那时候，我们会顶在前面。", "这件事不要到处说，免得引起恐慌。"],
+          effects: { familiarity: 3, trust: 5 },
+          choices: [{ text: "我明白", next: "default", action: "back" }]
+        },
+        about_zhu: {
+          id: "about_zhu",
+          texts: ["朱校长？我的老战友了。", "我们当年一起猎妖，他救过我的命，我也救过他的。", "他这个人，看似温和，实则刚硬。为了保护学生，可以和穆氏翻脸。"],
+          effects: { familiarity: 5, opinion: 3 },
+          choices: [{ text: "原来如此", next: "default", action: "back" }]
         }
       }
     }
