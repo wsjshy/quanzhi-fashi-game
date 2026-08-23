@@ -75,8 +75,9 @@ export const EventSystem = {
      * 触发随机事件
      * @param {string} trigger - 触发类型
      * @param {number} chance - 基础概率（0-1）
+     * @param {string} actionId - 当前行动ID（用于行动类型过滤，v3.2.0新增）
      */
-    triggerRandomEvent(trigger, chance = 0.1) {
+    triggerRandomEvent(trigger, chance = 0.1, actionId = '') {
         // v0.42.1修复：概率门控 - chance参数之前被忽略，导致几乎100%触发事件
         if (Math.random() > chance) return null;
 
@@ -91,6 +92,17 @@ export const EventSystem = {
         const isSchool = currentLocId === 'tianlan_school' || currentLocName.includes('学校') || currentLocName.includes('高中');
         const isStreet = currentLocId === 'city_street' || currentLocName.includes('街') || currentLocName.includes('市');
         const isMountain = currentLocId === 'xuefeng_mountain' || currentLocId === 'xuefeng_deep' || currentLocName.includes('山') || currentLocName.includes('谷');
+
+        // v3.2.0: 行动类型推断 - 根据actionId判断当前行动类型
+        // 用于过滤不合理的事件（如上课时触发买秘籍）
+        const actionType = this._inferActionType(actionId);
+        // isTraining: 上课/修炼/冥想等学习类行动
+        // isExploring: 探索/闲逛/旅行等探索类行动
+        // isHunting: 猎魔/战斗等战斗类行动
+        // isResting: 休息/睡觉等休息类行动（通常不触发事件）
+        const isTrainingAction = actionType === 'training';
+        const isExploringAction = actionType === 'exploring';
+        const isHuntingAction = actionType === 'hunting';
 
         // 过滤掉已触发的一次性事件
         const availableEvents = events.filter(e => {
@@ -119,6 +131,20 @@ export const EventSystem = {
             if (locType === 'school' && !isSchool) return false;
             if (locType === 'street' && !isStreet) return false;
             if (locType === 'mountain' && !isMountain) return false;
+            
+            // v3.2.0: 行动类型过滤 - 确保事件与当前行动类型匹配
+            // 上课/修炼时不触发买秘籍、街头事件等不合理事件
+            if (isTrainingAction) {
+                // 学习类行动只允许school和general类型事件
+                // 不允许street（买秘籍/商人/小偷等）和mountain（草药/宝箱/妖魔等）
+                if (locType === 'street' || locType === 'mountain') return false;
+            }
+            if (isHuntingAction) {
+                // 猎魔类行动只允许mountain、street（城市猎妖）和general类型事件
+                // 不允许school（同学搭话/老师批评等）
+                if (locType === 'school') return false;
+            }
+            // 探索类行动允许所有类型事件，不做额外过滤
             
             // v0.92.0: 默认条件 - 没有conditions的事件根据trigger类型添加默认等级要求
             if (!e.conditions || e.conditions.length === 0) {
@@ -151,6 +177,41 @@ export const EventSystem = {
         }
 
         return null;
+    },
+
+    /**
+     * v3.2.0: 根据actionId推断行动类型
+     * 用于随机事件的行动类型过滤
+     * @param {string} actionId - 行动ID
+     * @returns {string} 行动类型: training/exploring/hunting/resting/unknown
+     */
+    _inferActionType(actionId) {
+        if (!actionId) return 'unknown';
+        
+        const id = actionId.toLowerCase();
+        
+        // 学习类行动：上课、修炼、冥想、突破、觉醒等
+        if (/class|lesson|study|learn|train|cultivate|meditate|breakthrough|awaken|practice|练习|修炼|上课|学习|冥想|突破|觉醒/.test(id)) {
+            return 'training';
+        }
+        
+        // 猎魔类行动：猎魔、战斗、探索妖魔等
+        if (/hunt|demon|battle|fight|kill|combat|猎魔|战斗|猎杀|除妖/.test(id)) {
+            return 'hunting';
+        }
+        
+        // 休息类行动：休息、睡觉、等待等
+        if (/rest|sleep|wait|heal|休息|睡觉|等待|恢复/.test(id)) {
+            return 'resting';
+        }
+        
+        // 探索类行动：探索、闲逛、旅行、调查等
+        if (/explore|travel|wander|investigate|search|探索|旅行|闲逛|调查|搜索/.test(id)) {
+            return 'exploring';
+        }
+        
+        // 默认：未知类型，不做额外过滤
+        return 'unknown';
     },
 
     /**
