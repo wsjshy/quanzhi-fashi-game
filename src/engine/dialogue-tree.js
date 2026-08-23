@@ -293,6 +293,7 @@ export const DialogueTree = {
     /**
      * 过滤选项（根据条件）
      * v3.1.0: 添加一次性对话过滤，已访问的oneTime节点不再显示
+     * v3.1.0: 当父节点的所有oneTime子选项都被访问后，父节点本身也自动隐藏
      */
     _filterChoices(choices) {
         return choices.filter(choice => {
@@ -310,6 +311,32 @@ export const DialogueTree = {
                     // 一次性对话，检查是否已访问
                     if (NPCStateSystem.isDialogueNodeVisited(this.currentNPC, nextNodeId)) {
                         return false; // 已访问，过滤掉
+                    }
+                }
+
+                // v3.1.0: 检查父节点的所有子选项是否都是oneTime且都被访问
+                if (nextNode && nextNode.choices && nextNode.choices.length > 0) {
+                    const childChoices = nextNode.choices;
+                    // 过滤掉返回/关闭类选项（next为null或default或action为back/close）
+                    const meaningfulChoices = childChoices.filter(c => {
+                        const childNext = c.next || c.nextNode;
+                        return childNext && childNext !== 'default' && c.action !== 'back' && c.action !== 'close';
+                    });
+                    // 如果所有有意义的子选项都是oneTime
+                    if (meaningfulChoices.length > 0 && meaningfulChoices.every(c => {
+                        const childNext = c.next || c.nextNode;
+                        if (!childNext) return false;
+                        const childNode = dialogueData.nodes[childNext];
+                        return childNode && childNode.oneTime;
+                    })) {
+                        // 检查是否所有oneTime子选项都被访问
+                        const allVisited = meaningfulChoices.every(c => {
+                            const childNext = c.next || c.nextNode;
+                            return NPCStateSystem.isDialogueNodeVisited(this.currentNPC, childNext);
+                        });
+                        if (allVisited) {
+                            return false; // 所有子选项都已访问，隐藏父节点
+                        }
                     }
                 }
             }
