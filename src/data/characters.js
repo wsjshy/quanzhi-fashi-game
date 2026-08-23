@@ -8917,6 +8917,9 @@ level: 18,
           choices: [
             { text: "请教中阶魔法", next: "about_mid_magic", action: "talk" },
             { text: "询问魔法协会", next: "about_association", action: "talk" },
+            { text: "博城最近安全吗？", next: "about_safety", action: "talk" },
+            { text: "城市猎妖队在做什么？", next: "about_hunters", condition: { minOpinion: 5 }, action: "talk" },
+            { text: "听说有黑衣人在活动？", next: "about_black_church", condition: { hasFlag: "black_church_clue", minOpinion: 15 }, action: "talk" },
             { text: "能给我布置修炼任务吗？", next: "default", action: "start_quest", actionData: { questId: "quest_yangzuohe_mid_guidance" } },
             { text: "告辞", next: "default", action: "back" }
           ]
@@ -8925,13 +8928,58 @@ level: 18,
           id: "about_mid_magic",
           texts: ["中阶魔法需要星云级别的精神力。", "初阶是星尘，中阶是星云，完全不同的层次。", "暴浪·驱逐可以淹没整条街道，这就是中阶的威力。", "你还需要继续努力。"],
           effects: { familiarity: 5, intelligence: 10 },
-          choices: [{ text: "受教了", next: "default", action: "back" }]
+          choices: [
+            { text: "怎么才能突破到中阶？", next: "about_breakthrough" },
+            { text: "受教了", next: "default", action: "back" }
+          ]
+        },
+        about_breakthrough: {
+          id: "about_breakthrough",
+          texts: ["突破中阶需要星尘魔器辅助，或者地圣泉那种灵泉。", "精神力达到瓶颈后，需要外力刺激才能蜕变。", "博城每年只有少数人能突破中阶，你要做好准备。"],
+          effects: { familiarity: 3, intelligence: 5 },
+          choices: [{ text: "我会努力的", next: "default", action: "back" }]
         },
         about_association: {
           id: "about_association",
           texts: ["魔法协会负责管理城市内的魔法师和妖魔事件。", "我们和猎者联盟、城市猎妖队合作。", "如果你足够强，可以申请加入魔法协会。"],
           effects: { familiarity: 3 },
-          choices: [{ text: "明白了", next: "default", action: "back" }]
+          choices: [
+            { text: "加入魔法协会有什么要求？", next: "about_join_requirement" },
+            { text: "明白了", next: "default", action: "back" }
+          ]
+        },
+        about_join_requirement: {
+          id: "about_join_requirement",
+          texts: ["至少中阶修为，通过协会的考核。", "还要有良好的品行和责任心。", "魔法师不是只会战斗，还要保护普通人。"],
+          effects: { familiarity: 3 },
+          choices: [{ text: "我记住了", next: "default", action: "back" }]
+        },
+        about_safety: {
+          id: "about_safety",
+          texts: ["博城最近不太太平。", "东郊的妖魔活动频繁，城市猎妖队已经加强巡逻了。", "你晚上尽量不要去偏僻的地方。"],
+          effects: { familiarity: 3 },
+          choices: [
+            { text: "是什么妖魔在闹事？", next: "about_demon_activity" },
+            { text: "我会小心的", next: "default", action: "back" }
+          ]
+        },
+        about_demon_activity: {
+          id: "about_demon_activity",
+          texts: ["主要是独眼魔狼和巨眼猩鼠。", "但最近发现一些异常，妖魔的行为变得很狂躁。", "像是被什么东西刺激了...我们正在调查。"],
+          effects: { familiarity: 3, discoverClue: "clue_demon_mania" },
+          choices: [{ text: "需要我帮忙吗？", next: "default", action: "back" }]
+        },
+        about_hunters: {
+          id: "about_hunters",
+          texts: ["城市猎妖队由徐大荒队长带领，都是经验丰富的法师。", "他们负责处理城市内的妖魔事件，我们协会提供支援。", "最近他们在调查东郊的魔狼聚集事件。"],
+          effects: { familiarity: 3 },
+          choices: [{ text: "原来如此", next: "default", action: "back" }]
+        },
+        about_black_church: {
+          id: "about_black_church",
+          texts: ["...你也听说了？", "博城确实有一些可疑的人在活动，穿着黑色长袍。", "协会已经在秘密调查了，但还没有确凿证据。你要小心，不要单独行动。"],
+          effects: { familiarity: 5, opinion: 3 },
+          choices: [{ text: "我会警惕的", next: "default", action: "back" }]
         }
       }
     }
