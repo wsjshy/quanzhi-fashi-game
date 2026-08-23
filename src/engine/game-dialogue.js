@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 游戏主流程 - 对话界面模块
  * 
  * 从game.js拆分出的独立对话界面模块
@@ -322,6 +322,29 @@ export function _showDialogueScreen(npc, dialogueData, isFirstDialogue = false) 
                         }
                         return '';
                     })()}
+                    ${(() => {
+                        // v3.1.0: 历史对话按钮（只在有历史记录时显示）
+                        if (typeof NPCStateSystem !== 'undefined') {
+                            const history = NPCStateSystem.getDialogueHistory(npc.id);
+                            if (history && history.length > 0) {
+                                return `<div onclick="showDialogueHistory('${npc.id}')" style="
+                                    padding: 12px 20px;
+                                    background: rgba(50, 50, 70, 0.8);
+                                    border: 2px solid #777799;
+                                    border-radius: 8px;
+                                    color: #ccccdd;
+                                    cursor: pointer;
+                                    text-align: center;
+                                    transition: all 0.3s;
+                                    font-size: 15px;
+                                    margin-top: 8px;
+                                " onmouseover="this.style.borderColor='#9999bb'; this.style.background='rgba(70, 70, 100, 0.9)'" onmouseout="this.style.borderColor='#777799'; this.style.background='rgba(50, 50, 70, 0.8)'">
+                                    📜 历史对话（${history.length}条）
+                                </div>`;
+                            }
+                        }
+                        return '';
+                    })()}
                 </div>
             </div>
             </div>
@@ -339,7 +362,8 @@ export function _showDialogueScreen(npc, dialogueData, isFirstDialogue = false) 
 
 // 导出模块集合
 export const GameDialogue = {
-    _showDialogueScreen
+    _showDialogueScreen,
+    showDialogueHistory
 };
 
 export default GameDialogue;
@@ -347,4 +371,102 @@ export default GameDialogue;
 // 向后兼容：挂载到window
 if (typeof window !== 'undefined') {
     window.GameDialogue = GameDialogue;
+    // v3.1.0: 历史对话显示方法
+    window.showDialogueHistory = showDialogueHistory;
+}
+
+/**
+ * v3.1.0: 显示NPC的对话历史记录
+ */
+function showDialogueHistory(npcId) {
+    if (typeof NPCStateSystem === 'undefined') {
+        UI.showMessage('对话历史系统未初始化');
+        return;
+    }
+
+    const history = NPCStateSystem.getDialogueHistory(npcId);
+    if (!history || history.length === 0) {
+        UI.showMessage('暂无对话历史记录');
+        return;
+    }
+
+    const npcData = DataManager.getCharacter(npcId);
+    const npcName = npcData?.name || 'NPC';
+
+    // 按时间倒序排列（最新的在前）
+    const sortedHistory = [...history].sort((a, b) => b.time - a.time);
+
+    const historyHTML = sortedHistory.map((item, index) => {
+        const date = new Date(item.time);
+        const timeStr = `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+        return `
+            <div style="
+                padding: 10px 14px;
+                background: rgba(40, 40, 60, 0.6);
+                border-left: 3px solid #6666aa;
+                border-radius: 4px;
+                margin-bottom: 8px;
+            ">
+                <div style="color: #aaaacc; font-size: 12px; margin-bottom: 4px;">
+                    #${sortedHistory.length - index} · ${timeStr}
+                </div>
+                <div style="color: #ddddee; font-size: 14px; line-height: 1.5;">
+                    ${item.summary || '（无摘要）'}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    const dialog = document.createElement('div');
+    dialog.id = 'dialogue-history-modal';
+    dialog.style.cssText = `
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 20000;
+    `;
+    dialog.innerHTML = `
+        <div style="
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 2px solid #444477;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        ">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="color: #aaccff; margin: 0; font-size: 18px;">📜 ${npcName}的对话历史</h3>
+                <span onclick="document.getElementById('dialogue-history-modal').remove()" style="
+                    color: #888; cursor: pointer; font-size: 20px; padding: 5px 10px;
+                " onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#888'">✕</span>
+            </div>
+            <div style="color: #888; font-size: 13px; margin-bottom: 12px;">
+                共 ${history.length} 条已读对话记录
+            </div>
+            ${historyHTML}
+            <div onclick="document.getElementById('dialogue-history-modal').remove()" style="
+                margin-top: 15px;
+                padding: 10px;
+                background: rgba(60, 60, 90, 0.6);
+                border: 1px solid #555588;
+                border-radius: 6px;
+                color: #bbb;
+                text-align: center;
+                cursor: pointer;
+                font-size: 14px;
+            " onmouseover="this.style.background='rgba(80, 80, 120, 0.7)'" onmouseout="this.style.background='rgba(60, 60, 90, 0.6)'">
+                关闭
+            </div>
+        </div>
+    `;
+    dialog.onclick = (e) => {
+        if (e.target === dialog) dialog.remove();
+    };
+    document.body.appendChild(dialog);
 }
