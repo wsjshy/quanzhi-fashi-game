@@ -8416,6 +8416,7 @@ level: 12,
         },
         join_team_lei: {
           id: "join_team_lei",
+          oneTime: true,
           texts: ["雷系？好！雷系法师在猎妖队可是香饽饽。", "麻痹效果对妖魔太有用了。", "行，你就算见习成员了。先从低级任务做起，有任务我会通知你。"],
           effects: { familiarity: 10, trust: 5 },
           flags: { hunter_team_member: true, hunter_rank: "apprentice" },
@@ -8423,6 +8424,7 @@ level: 12,
         },
         join_team_check: {
           id: "join_team_check",
+          oneTime: true,
           texts: ["等级够了，但猎妖队要看实力。", "这样，你去和训练傀儡打一场，评级B以上就算通过。", "不过...看你挺有诚意的，先收你当见习成员，任务中再考察你。"],
           effects: { familiarity: 5 },
           flags: { hunter_team_member: true, hunter_rank: "apprentice" },
@@ -8430,12 +8432,14 @@ level: 12,
         },
         about_combat: {
           id: "about_combat",
+          oneTime: true,
           texts: ["战斗不是打靶，妖魔不会站着等你。", "我的火滋练到第三级爆裂，就是为了对付灵活的妖魔。", "记住，团队配合比个人英雄主义重要。"],
           effects: { familiarity: 5, intelligence: 10 },
           choices: [{ text: "受教了", next: "default", action: "back" }]
         },
         about_team: {
           id: "about_team",
+          oneTime: true,
           texts: ["城市猎妖队专门处理城市内的妖魔事件。", "我们比野外猎者安全，但责任更重。", "保护市民是我们的职责，不容有失。"],
           effects: { familiarity: 3 },
           choices: [{ text: "明白了", next: "default", action: "back" }]
@@ -8450,6 +8454,7 @@ level: 12,
         },
         about_disaster_worry: {
           id: "about_disaster_worry",
+          oneTime: true,
           texts: ["希望不会。但做我们这行的，不能抱侥幸心理。", "博城三面环山，一旦妖魔潮涌进来...", "不说这些不吉利的。真到那时候，我们猎妖队会顶在前面。"],
           effects: { opinion: 3, trust: 2 },
           choices: [
@@ -8467,12 +8472,14 @@ level: 12,
         },
         about_pressure_response: {
           id: "about_pressure_response",
+          oneTime: true,
           texts: ["（徐大荒拍了拍你的肩膀）小子，有你这句话就够了。", "干我们这行的，不怕死，就怕怕死。", "你好好修炼，将来也许能帮上忙。"],
           effects: { opinion: 5, trust: 3 },
           choices: [{ text: "我会努力的", next: "default", action: "back" }]
         },
         about_why_captain: {
           id: "about_why_captain",
+          oneTime: true,
           texts: ["因为我能打啊！哈哈，开个玩笑。", "当年我也是个愣头青，跟着老队长出生入死。", "老队长走了，这担子总得有人挑。我不挑，谁挑？"],
           effects: { opinion: 2, trust: 2 },
           choices: [
@@ -8482,12 +8489,14 @@ level: 12,
         },
         about_old_captain: {
           id: "about_old_captain",
+          oneTime: true,
           texts: ["（徐大荒的眼神暗了一下）三年前的事了。", "一只鳞皮妖母偷袭，老队长为了掩护我们撤退...", "不说了。你只要记住，猎妖队的每个人，都是可以把后背交给对方的兄弟。"],
           effects: { opinion: 3, trust: 5 },
           choices: [{ text: "我记住了", next: "default", action: "back" }]
         },
         about_rookie: {
           id: "about_rookie",
+          oneTime: true,
           texts: ["新手啊？别逞强，别落单，别小看任何一只妖魔。", "很多新手觉得自己觉醒了魔法就了不起，结果第一次出任务就吓尿了。", "妖魔不是木桩，它们会躲、会跑、会设陷阱。活着，比什么都重要。"],
           effects: { intelligence: 10 },
           choices: [{ text: "受教了", next: "default", action: "back" }]
