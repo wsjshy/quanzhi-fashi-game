@@ -54,6 +54,7 @@ import './engine/map.js';            // MapSystem
 import './engine/battle-ai.js';      // BattleAI
 import './engine/battle-effect.js';  // EffectRegistry
 import './engine/battle-event.js';   // BattleEventBus, BattleEvents
+import './engine/battle-animation.js'; // BattleAnimation（v3.3.0战斗动画系统）
 import './engine/battle.js';         // BattleSystem（核心战斗）
 import './engine/achievement-handler.js'; // AchievementHandler
 import './engine/world-state.js';    // WorldState

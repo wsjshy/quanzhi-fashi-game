@@ -377,6 +377,161 @@
             }
         }
 
+        /* ========== v3.3.0 战斗动画系统 ========== */
+        /* 角色立绘容器 */
+        .battle-character {
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        /* 待机呼吸动画 */
+        @keyframes battleIdle {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.02); }
+        }
+        .battle-idle {
+            animation: battleIdle 2.5s ease-in-out infinite;
+        }
+
+        /* 攻击动画（前冲） */
+        @keyframes battleAttack {
+            0% { transform: translateX(0) scale(1); }
+            20% { transform: translateX(-30px) scale(0.95); }
+            40% { transform: translateX(50px) scale(1.1); }
+            60% { transform: translateX(30px) scale(1.05); }
+            100% { transform: translateX(0) scale(1); }
+        }
+        .battle-attack {
+            animation: battleAttack 0.6s ease-out;
+        }
+
+        /* 敌人攻击动画（反向） */
+        @keyframes battleAttackEnemy {
+            0% { transform: translateX(0) scale(1); }
+            20% { transform: translateX(30px) scale(0.95); }
+            40% { transform: translateX(-50px) scale(1.1); }
+            60% { transform: translateX(-30px) scale(1.05); }
+            100% { transform: translateX(0) scale(1); }
+        }
+        .battle-attack-enemy {
+            animation: battleAttackEnemy 0.6s ease-out;
+        }
+
+        /* 受击动画 */
+        @keyframes battleHurt {
+            0% { transform: translateX(0); filter: brightness(1); }
+            10% { transform: translateX(-15px); filter: brightness(2) hue-rotate(-30deg); }
+            20% { transform: translateX(15px); filter: brightness(1.5); }
+            30% { transform: translateX(-10px); filter: brightness(1.8); }
+            40% { transform: translateX(10px); filter: brightness(1.3); }
+            50% { transform: translateX(-5px); filter: brightness(1.5); }
+            100% { transform: translateX(0); filter: brightness(1); }
+        }
+        .battle-hurt {
+            animation: battleHurt 0.5s ease-in-out;
+        }
+
+        /* 施法动画 */
+        @keyframes battleCast {
+            0% { transform: scale(1); filter: brightness(1); }
+            30% { transform: scale(1.1); filter: brightness(1.5) drop-shadow(0 0 20px currentColor); }
+            60% { transform: scale(1.15); filter: brightness(2) drop-shadow(0 0 40px currentColor); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+        .battle-cast {
+            animation: battleCast 0.8s ease-in-out;
+        }
+
+        /* 死亡动画 */
+        @keyframes battleDead {
+            0% { transform: rotate(0) translateY(0); opacity: 1; }
+            50% { transform: rotate(15deg) translateY(10px); opacity: 0.7; }
+            100% { transform: rotate(45deg) translateY(50px); opacity: 0; }
+        }
+        .battle-dead {
+            animation: battleDead 1s ease-in forwards;
+        }
+
+        /* 胜利动画 */
+        @keyframes battleVictory {
+            0% { transform: translateY(0) scale(1); }
+            25% { transform: translateY(-30px) scale(1.1); }
+            50% { transform: translateY(0) scale(1); }
+            75% { transform: translateY(-15px) scale(1.05); }
+            100% { transform: translateY(0) scale(1); }
+        }
+        .battle-victory {
+            animation: battleVictory 1s ease-in-out;
+        }
+
+        /* 技能释放全屏闪光 */
+        @keyframes skillFlash {
+            0% { opacity: 0; }
+            20% { opacity: 0.8; }
+            50% { opacity: 0.4; }
+            100% { opacity: 0; }
+        }
+        .skill-flash {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9990;
+            animation: skillFlash 0.5s ease-out forwards;
+        }
+
+        /* 伤害数字飘字 */
+        @keyframes damageFloat {
+            0% { opacity: 1; transform: translateY(0) scale(0.5); }
+            20% { transform: translateY(-20px) scale(1.3); }
+            50% { transform: translateY(-40px) scale(1); }
+            100% { opacity: 0; transform: translateY(-80px) scale(0.8); }
+        }
+        .damage-float {
+            position: absolute;
+            font-size: 32px;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 9991;
+            animation: damageFloat 1.2s ease-out forwards;
+            text-shadow: 0 0 10px currentColor, 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        .damage-crit {
+            font-size: 48px;
+            color: #ff4444 !important;
+        }
+        .damage-heal {
+            color: #44ff44 !important;
+        }
+        .damage-miss {
+            color: #aaaaaa !important;
+            font-size: 24px;
+        }
+
+        /* 元素光环 */
+        @keyframes elementAura {
+            0%, 100% { box-shadow: 0 0 15px currentColor, inset 0 0 10px currentColor; }
+            50% { box-shadow: 0 0 30px currentColor, inset 0 0 20px currentColor; }
+        }
+        .element-aura {
+            animation: elementAura 1.5s ease-in-out infinite;
+        }
+
+        /* 粒子效果容器 */
+        .battle-particles {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
         /* 加载提示 */
         #loading-screen {
             position: fixed;
@@ -409,8 +564,9 @@
 
 
 
+
 
-  <script src="./assets/index-DRHUvVBx.js"></script>
+  <script src="./assets/index-DEE8eIJq.js"></script>
 </head>
 <body>
     <div id="loading-screen">

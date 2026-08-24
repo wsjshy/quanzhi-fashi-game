@@ -142,8 +142,7 @@ export function renderBattleScreen() {
                         align-items: center;
                         justify-content: center;
                         font-size: ${isPortrait ? 42 : 56}px;
-                        animation: float 3s ease-in-out infinite;
-                    " id="player-sprite" class="battle-sprite">🧙</div>
+                    " id="player-sprite" class="battle-sprite battle-idle">🧙</div>
                     <div style="font-size: 18px; font-weight: bold; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
                         ${state.player.name}
                         <span style="font-size: 14px; color: #66ccff;">Lv.${state.player.level}</span>
@@ -292,9 +291,7 @@ export function renderBattleScreen() {
                         align-items: center;
                         justify-content: center;
                         font-size: ${isPortrait ? 42 : 56}px;
-                        animation: float 3s ease-in-out infinite;
-                        animation-delay: 0.5s;
-                    " id="enemy-sprite" class="battle-sprite">${state.enemy.icon || '👹'}</div>
+                    " id="enemy-sprite" class="battle-sprite battle-idle">${state.enemy.icon || '👹'}</div>
                     <div style="font-size: 18px; font-weight: bold; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); cursor:pointer;" onclick="UI.showEnemyDetail('${state.enemy.id || ''}')" title="点击查看敌人详情">
                         ${state.enemy.name}
                         <span style="font-size: 14px; color: #ffcc66;">Lv.${state.enemy.level}</span>
