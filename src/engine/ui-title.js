@@ -24,13 +24,13 @@ export function renderTitleScreen(hasSave) {
             position: relative;
             overflow: hidden;
         ">
-            <!-- 背景装饰 -->
+            <!-- 背景装饰（v3.3.0：用CSS渐变替代缺失的图片） -->
             <div style="
                 position: absolute;
                 top: 0; left: 0;
                 width: 100%; height: 100%;
-                background: url('assets/images/effects/thunder_magic.jpg') center/cover;
-                opacity: 0.15;
+                background: linear-gradient(135deg, #1a002e 0%, #330055 30%, #550088 60%, #1a002e 100%);
+                opacity: 0.4;
                 filter: blur(3px);
                 pointer-events: none;
             "></div>

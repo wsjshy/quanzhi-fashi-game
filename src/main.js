@@ -61,6 +61,7 @@ import './engine/npc-state.js';      // NPCStateSystem
 import './engine/npc-growth.js';     // NPCGrowthService
 import './engine/dialogue-tree.js';  // DialogueTree
 import './engine/encounter.js';      // EncounterSystem
+import './engine/ui-assets.js';      // UIAssets（美术资源管理，v3.3.0）
 import './engine/ui.js';             // UI（渲染层，依赖所有系统）
 import './engine/game.js';           // Game（主控制器，最后加载）
 import './engine/debug.js';          // DebugPanel（开发工具）

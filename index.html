@@ -5,6 +5,215 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全职法师 - 魔法觉醒</title>
     <style>
+        /* ========== v3.3.0 美术资源管理体系 ========== */
+        /* 11系魔法主题色系 */
+        :root {
+            --fire-primary: #ff4400;
+            --fire-secondary: #ff8800;
+            --fire-glow: #ffaa00;
+            --ice-primary: #00aaff;
+            --ice-secondary: #88ddff;
+            --ice-glow: #aaeeff;
+            --thunder-primary: #aa00ff;
+            --thunder-secondary: #cc44ff;
+            --thunder-glow: #dd88ff;
+            --water-primary: #0066ff;
+            --water-secondary: #4488ff;
+            --water-glow: #66aaff;
+            --wind-primary: #00ff88;
+            --wind-secondary: #44ffaa;
+            --wind-glow: #88ffcc;
+            --earth-primary: #aa8800;
+            --earth-secondary: #ccaa44;
+            --earth-glow: #ddcc88;
+            --light-primary: #ffdd00;
+            --light-secondary: #ffee88;
+            --light-glow: #ffffaa;
+            --dark-primary: #660066;
+            --dark-secondary: #880088;
+            --dark-glow: #aa44aa;
+            --summon-primary: #00aaaa;
+            --summon-secondary: #44cccc;
+            --summon-glow: #88dddd;
+            --space-primary: #8800aa;
+            --space-secondary: #aa44cc;
+            --space-glow: #cc88ee;
+            --chaos-primary: #444444;
+            --chaos-secondary: #666666;
+            --chaos-glow: #888888;
+        }
+
+        /* 11系魔法渐变背景类（图片缺失时的占位） */
+        .bg-fire { background: linear-gradient(135deg, #1a0500 0%, #3d1500 30%, #662200 60%, #1a0500 100%); }
+        .bg-ice { background: linear-gradient(135deg, #001a2e 0%, #003355 30%, #005588 60%, #001a2e 100%); }
+        .bg-thunder { background: linear-gradient(135deg, #1a002e 0%, #330055 30%, #550088 60%, #1a002e 100%); }
+        .bg-water { background: linear-gradient(135deg, #000d2e 0%, #001a55 30%, #002288 60%, #000d2e 100%); }
+        .bg-wind { background: linear-gradient(135deg, #002e1a 0%, #005533 30%, #008855 60%, #002e1a 100%); }
+        .bg-earth { background: linear-gradient(135deg, #2e2200 0%, #554400 30%, #886600 60%, #2e2200 100%); }
+        .bg-light { background: linear-gradient(135deg, #2e2800 0%, #554a00 30%, #887700 60%, #2e2800 100%); }
+        .bg-dark { background: linear-gradient(135deg, #1a001a 0%, #2e002e 30%, #440044 60%, #1a001a 100%); }
+        .bg-summon { background: linear-gradient(135deg, #002e2e 0%, #005555 30%, #008888 60%, #002e2e 100%); }
+        .bg-space { background: linear-gradient(135deg, #1a002e 0%, #2e0055 30%, #440088 60%, #1a002e 100%); }
+        .bg-chaos { background: linear-gradient(135deg, #1a1a1a 0%, #2e2e2e 30%, #444444 60%, #1a1a1a 100%); }
+        .bg-bocity { background: linear-gradient(135deg, #0a0a2a 0%, #1a1a4a 30%, #2a2a6a 60%, #0a0a2a 100%); }
+        .bg-xuefeng { background: linear-gradient(135deg, #0a1a2a 0%, #1a3a5a 30%, #2a5a8a 60%, #0a1a2a 100%); }
+
+        /* 魔法粒子纹理叠加 */
+        .magic-texture {
+            position: relative;
+        }
+        .magic-texture::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255,255,255,0.02) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.01) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* ========== 基础CSS动画 ========== */
+        /* 按钮悬浮效果 */
+        .btn-hover {
+            transition: all 0.2s ease;
+        }
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(100, 150, 255, 0.3);
+        }
+        .btn-hover:active {
+            transform: translateY(0);
+        }
+
+        /* 面板入场动画 */
+        @keyframes panelIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .panel-in {
+            animation: panelIn 0.3s ease-out forwards;
+        }
+
+        /* 面板出场动画 */
+        @keyframes panelOut {
+            from { opacity: 1; transform: translateY(0) scale(1); }
+            to { opacity: 0; transform: translateY(-20px) scale(0.98); }
+        }
+        .panel-out {
+            animation: panelOut 0.2s ease-in forwards;
+        }
+
+        /* 伤害数字浮动 */
+        @keyframes damageFloat {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            50% { opacity: 1; transform: translateY(-30px) scale(1.2); }
+            100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+        }
+        .damage-number {
+            animation: damageFloat 1.2s ease-out forwards;
+            pointer-events: none;
+            font-weight: bold;
+            text-shadow: 0 0 10px currentColor, 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* 元素脉冲发光 */
+        @keyframes elementPulse {
+            0%, 100% { box-shadow: 0 0 5px var(--element-glow, rgba(100,150,255,0.5)); }
+            50% { box-shadow: 0 0 20px var(--element-glow, rgba(100,150,255,0.8)), 0 0 30px var(--element-glow, rgba(100,150,255,0.3)); }
+        }
+        .element-pulse {
+            animation: elementPulse 2s ease-in-out infinite;
+        }
+
+        /* 受击抖动 */
+        @keyframes hitShake {
+            0%, 100% { transform: translateX(0); }
+            10% { transform: translateX(-8px); }
+            20% { transform: translateX(8px); }
+            30% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            50% { transform: translateX(-4px); }
+            60% { transform: translateX(4px); }
+            70% { transform: translateX(-2px); }
+            80% { transform: translateX(2px); }
+        }
+        .hit-shake {
+            animation: hitShake 0.4s ease-in-out;
+        }
+
+        /* 受击闪光 */
+        @keyframes hitFlash {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(2) saturate(0.5); }
+        }
+        .hit-flash {
+            animation: hitFlash 0.3s ease-in-out;
+        }
+
+        /* 技能冷却旋转 */
+        @keyframes cooldownRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 淡入 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        /* 滑入（从左） */
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .slide-in-left {
+            animation: slideInLeft 0.3s ease-out forwards;
+        }
+
+        /* 滑入（从右） */
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .slide-in-right {
+            animation: slideInRight 0.3s ease-out forwards;
+        }
+
+        /* 呼吸动画 */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .breathe {
+            animation: breathe 3s ease-in-out infinite;
+        }
+
+        /* 新内容提示闪烁 */
+        @keyframes newContentGlow {
+            0%, 100% { box-shadow: 0 0 5px rgba(0, 255, 100, 0.5); }
+            50% { box-shadow: 0 0 15px rgba(0, 255, 100, 0.8), 0 0 25px rgba(0, 255, 100, 0.4); }
+        }
+        .new-content {
+            animation: newContentGlow 1.5s ease-in-out infinite;
+        }
+
+        /* NPC头像占位样式 */
+        .npc-avatar-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(100,100,150,0.3), rgba(50,50,100,0.5));
+            border: 2px solid rgba(150,150,200,0.3);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
@@ -199,8 +408,9 @@
 
 
 
+
 
-  <script src="./assets/index-CaQAi1eL.js"></script>
+  <script src="./assets/index-D3ZlnQCh.js"></script>
 </head>
 <body>
     <div id="loading-screen">

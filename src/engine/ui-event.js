@@ -1,4 +1,4 @@
-/**
+﻿/**
  * UI 事件界面模块
  * 
  * 从ui.js拆分出的独立事件界面渲染模块
@@ -30,7 +30,7 @@ export function renderEventScreen(event) {
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
-                    background: url('assets/images/effects/thunder_magic.jpg') center/cover;
+                    background: linear-gradient(135deg, #1a002e 0%, #330055 30%, #550088 60%, #1a002e 100%);
                     opacity: 0.1;
                     filter: blur(3px);
                     z-index: 0;
@@ -241,7 +241,7 @@ export function renderBigEventNarrativePhase(phase, hasNextPhase, autoMode = fal
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
-                    background: url('assets/images/effects/thunder_magic.jpg') center/cover;
+                    background: linear-gradient(135deg, #1a002e 0%, #330055 30%, #550088 60%, #1a002e 100%);
                     opacity: 0.08;
                     filter: blur(3px);
                     z-index: 0;
@@ -330,7 +330,7 @@ export function renderBigEventChoicePhase(phase, choices) {
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
-                    background: url('assets/images/effects/thunder_magic.jpg') center/cover;
+                    background: linear-gradient(135deg, #1a002e 0%, #330055 30%, #550088 60%, #1a002e 100%);
                     opacity: 0.08;
                     filter: blur(3px);
                     z-index: 0;

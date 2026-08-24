@@ -60,12 +60,19 @@ export function renderMapScreen() {
     const stats = Player.getTotalStats();
     const isPortrait = UI.isPortrait();
     
-    // 根据地点选择背景图片
-    let bgImage = '';
+    // 根据地点选择背景（v3.3.0：用CSS渐变替代缺失的图片）
+    let bgGradient = '';
     const locId = location?.id || '';
-    if (locId === 'bo_city_street') {
-        bgImage = 'assets/images/backgrounds/bo_city_view.jpg';
-    }
+    const locBgMap = {
+        bo_city_street: 'linear-gradient(135deg, #0a0a2a 0%, #1a1a4a 30%, #2a2a6a 60%, #0a0a2a 100%)',
+        tianlan_school: 'linear-gradient(135deg, #0a1a2a 0%, #1a3a5a 30%, #2a5a8a 60%, #0a1a2a 100%)',
+        xuefeng_mountain: 'linear-gradient(135deg, #0a1a2a 0%, #1a3a5a 30%, #2a5a8a 60%, #0a1a2a 100%)',
+        library: 'linear-gradient(135deg, #2a1a0a 0%, #4a3a1a 30%, #6a5a2a 60%, #2a1a0a 100%)',
+        shop: 'linear-gradient(135deg, #2a2a0a 0%, #4a4a1a 30%, #6a6a2a 60%, #2a2a0a 100%)',
+        disheng_spring: 'linear-gradient(135deg, #0a2a1a 0%, #1a5a3a 30%, #2a8a5a 60%, #0a2a1a 100%)',
+        mountain_hunting: 'linear-gradient(135deg, #1a2a1a 0%, #2a4a2a 30%, #3a6a3a 60%, #1a2a1a 100%)',
+    };
+    bgGradient = locBgMap[locId] || locBgMap.bo_city_street;
     
     // v0.92.9: 强制恢复点击，防止全局点击拦截器导致界面无法点击
     this._restoreClicks();
@@ -77,19 +84,17 @@ export function renderMapScreen() {
     this.elements.gameContainer.innerHTML = `
         <div style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; background: ${location?.backgroundColor || '#1a1a3a'}; position: relative; padding-bottom: 110px; overflow-x: hidden; pointer-events: auto; z-index: 1;">
             
-            <!-- 背景图片 -->
-            ${bgImage ? `
+            <!-- 背景渐变（v3.3.0） -->
             <div style="
                 position: absolute;
                 top: 0; left: 0;
                 width: 100%; height: 100%;
-                background: url('${bgImage}') center/cover;
-                opacity: 0.1;
+                background: ${bgGradient};
+                opacity: 0.5;
                 filter: blur(2px);
                 z-index: 0;
                 pointer-events: none;
             "></div>
-            ` : ''}
             
             <!-- 顶部状态栏 -->
             <div class="mobile-top-bar" style="
