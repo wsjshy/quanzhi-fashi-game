@@ -32,7 +32,7 @@ export function renderIntelScreen() {
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
-                    background: linear-gradient(135deg, #1a002e 0%, #330055 30%, #550088 60%, #1a002e 100%);
+                    background: url('assets/images/effects/thunder_magic.jpg') center/cover;
                     opacity: 0.06;
                     filter: blur(3px);
                     z-index: 0;

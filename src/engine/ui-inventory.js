@@ -17,7 +17,7 @@ export function renderInventoryScreen() {
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
-                    background: linear-gradient(135deg, #1a0500 0%, #3d1500 30%, #662200 60%, #1a0500 100%);
+                    background: url('assets/images/effects/fire_magic.jpg') center/cover;
                     opacity: 0.08;
                     filter: blur(3px);
                     z-index: 0;

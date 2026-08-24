@@ -15,19 +15,21 @@ export function renderBattleScreen() {
     const skillCols = isPortrait ? 3 : 5;
     const spriteW = isPortrait ? 70 : 100;
     const spriteH = isPortrait ? 100 : 140;
-    // 战斗背景动态切换 - v3.3.0：用CSS渐变替代缺失的图片
+    // 战斗背景动态切换 - v3.3.0：使用AI生成的11系魔法特效图
     const elemBgMap = {
-        fire: 'linear-gradient(135deg, #1a0500 0%, #3d1500 30%, #662200 60%, #1a0500 100%)',
-        thunder: 'linear-gradient(135deg, #1a002e 0%, #330055 30%, #550088 60%, #1a002e 100%)',
-        ice: 'linear-gradient(135deg, #001a2e 0%, #003355 30%, #005588 60%, #001a2e 100%)',
-        dark: 'linear-gradient(135deg, #1a001a 0%, #2e002e 30%, #440044 60%, #1a001a 100%)',
-        earth: 'linear-gradient(135deg, #2e2200 0%, #554400 30%, #886600 60%, #2e2200 100%)',
-        wind: 'linear-gradient(135deg, #002e1a 0%, #005533 30%, #008855 60%, #002e1a 100%)',
-        water: 'linear-gradient(135deg, #000d2e 0%, #001a55 30%, #002288 60%, #000d2e 100%)',
-        light: 'linear-gradient(135deg, #2e2800 0%, #554a00 30%, #887700 60%, #2e2800 100%)',
-        plant: 'linear-gradient(135deg, #0a2e0a 0%, #1a551a 30%, #2a882a 60%, #0a2e0a 100%)',
-        heal: 'linear-gradient(135deg, #002e22 0%, #005544 30%, #008866 60%, #002e22 100%)',
-        summon: 'linear-gradient(135deg, #002e2e 0%, #005555 30%, #008888 60%, #002e2e 100%)'
+        fire: 'assets/images/effects/fire_magic.jpg',
+        thunder: 'assets/images/effects/thunder_magic.jpg',
+        ice: 'assets/images/effects/ice_magic.jpg',
+        dark: 'assets/images/effects/dark_magic.jpg',
+        earth: 'assets/images/effects/earth_magic.jpg',
+        wind: 'assets/images/effects/wind_magic.jpg',
+        water: 'assets/images/effects/water_magic.jpg',
+        light: 'assets/images/effects/light_magic.jpg',
+        plant: 'assets/images/effects/wind_magic.jpg',
+        heal: 'assets/images/effects/light_magic.jpg',
+        summon: 'assets/images/effects/summon_magic.jpg',
+        space: 'assets/images/effects/space_magic.jpg',
+        chaos: 'assets/images/effects/chaos_magic.jpg'
     };
     const enemyElem = state.enemy?.elements?.[0] || 'dark';
     const battleBg = elemBgMap[enemyElem] || elemBgMap.fire;
@@ -45,13 +47,13 @@ export function renderBattleScreen() {
     this.elements.gameContainer.innerHTML = `
         <div id="battle-screen" style="width: 100%; height: 100vh; display: flex; flex-direction: column; background: linear-gradient(to bottom, #1a1a3a, #2a2a5a); position: relative;">
             
-            <!-- 战斗背景层（v3.3.0：CSS渐变） -->
+            <!-- 战斗背景层（v3.3.0：AI生成魔法特效图） -->
             <div id="battle-bg-layer" style="
                 position: absolute;
                 top: 0; left: 0;
                 width: 100%; height: 100%;
-                background: ${battleBg};
-                opacity: 0.6;
+                background: url('${battleBg}') center/cover;
+                opacity: 0.4;
                 filter: blur(2px) saturate(1.1);
                 z-index: 0;
                 pointer-events: none;

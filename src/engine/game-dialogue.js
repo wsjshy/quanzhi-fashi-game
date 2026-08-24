@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 游戏主流程 - 对话界面模块
  * 
  * 从game.js拆分出的独立对话界面模块
@@ -105,7 +105,7 @@ export function _showDialogueScreen(npc, dialogueData, isFirstDialogue = false) 
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #0a0a2a 0%, #1a1a4a 30%, #2a2a6a 60%, #0a0a2a 100%);
+            background: url('assets/images/effects/dark_magic.jpg') center/cover;
             opacity: 0.3;
             filter: blur(5px);
             z-index: 0;
