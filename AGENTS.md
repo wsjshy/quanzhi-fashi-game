@@ -3,7 +3,7 @@
 > **这是唯一入口。** 读这一份就知道：项目是什么、方向在哪、怎么做、遇到问题看哪个文档。
 > 具体任务看 [TODO.md](TODO.md)，版本历史看 [CHANGELOG.md](CHANGELOG.md)，详细设计看 [docs/](docs/)。
 >
-> 当前版本：**v3.2.0** | 最后更新：2026-08-23
+> 当前版本：**v3.2.0** | 最后更新：2026-08-24
 
 ---
 
@@ -83,7 +83,7 @@
 
 **部署到GitHub Pages**：
 - **分支模式**：master开发分支 + gh-pages部署分支（GitHub Pages）
-- **自动化部署脚本**（推荐）：`.\tools\deploy.ps1 -Version "v3.1.0" -Message "版本描述"`
+- **自动化部署脚本**（推荐）：`.\tools\deploy.ps1 -Version "v3.2.0" -Message "版本描述"`
 - **部署地址**：https://wsjshy.github.io/quanzhi-fashi-game/
 - **详细部署流程和踩坑经验**：见 [docs/部署经验总结.md](docs/部署经验总结.md)
 - ⚠️ **部署前必须确保master分支工作区干净**，否则切换分支会失败
@@ -146,10 +146,10 @@
 ### 文档目录
 | 目录 | 内容 |
 |------|------|
-| [docs/version-design/](docs/version-design/) | 各版本设计文档（v0.48.0_*.md等，32个） |
-| [docs/test-reports/](docs/test-reports/) | 黑盒测试报告、回归测试报告（18个） |
+| [docs/version-design/](docs/version-design/) | 各版本设计文档（v0.48.0_*.md等，66个） |
+| [docs/test-reports/](docs/test-reports/) | 黑盒测试报告、回归测试报告（27个） |
 | [docs/reference/](docs/reference/) | 攻略、规划、状态记录等参考资料（14个） |
-| [docs/小说拆解/](docs/小说拆解/) | 小说逐章拆解内容 |
+| [docs/小说拆解/](docs/小说拆解/) | 小说逐章拆解内容（按篇章重组：博城篇+明珠篇） |
 | [docs/archive/](docs/archive/) | 废弃文档（保留历史） |
 
 ---
@@ -161,17 +161,30 @@
 |------|------|
 | 全职法师.txt | **小说原文**（项目根目录，22.85MB），涉及小说内容必须先Grep搜索验证，不凭记忆编造 |
 
-### 数据文件（v3.0.0起迁移到src/data/）
+### 数据文件（v3.0.0起迁移到src/data/，共21个模块）
 | 文件 | 作用 |
 |------|------|
-| src/data/chapters.js | 章节数据 |
-| src/data/characters.js | NPC对话/关系 |
-| src/data/quests.js | 任务 |
-| src/data/locations.js | 地点/动作 |
-| src/data/events.js | 随机事件 |
-| src/data/big-events.js | 大事件 |
-| src/data/skills.js / enemies.js / items.js | 技能/妖魔/物品 |
 | src/data/index.js | 数据统一出口（GameData + 27个全局变量） |
+| src/data/skills.js | 技能数据（222个，11系初阶/中阶/高阶） |
+| src/data/enemies.js | 妖魔数据（75个，奴仆/战将/统领级） |
+| src/data/items.js | 物品数据（158个，消耗品/装备/材料/魔具） |
+| src/data/characters.js | NPC对话/关系（49个有对话树） |
+| src/data/quests.js | 任务数据（182个，主线/支线/日常/事件） |
+| src/data/locations.js | 地点/动作（13个地点） |
+| src/data/events.js | 随机事件（239个，探索/修炼/猎魔/社交） |
+| src/data/big-events.js | 大事件（9个，博城灾难等） |
+| src/data/talents.js | 系别天赋（55个，6种机制类型） |
+| src/data/innate-talents.js | 天生天赋（27个，5种分类） |
+| src/data/spirit-seeds.js | 灵种/魂种（46个） |
+| src/data/star-dust-artifacts.js | 星尘魔器 |
+| src/data/summon-beasts.js | 召唤兽及进化 |
+| src/data/achievements.js | 成就（44个） |
+| src/data/chapters.js | 章节数据 |
+| src/data/shops.js | 商店数据 |
+| src/data/maps.js | 地图数据 |
+| src/data/clues.js | 线索数据 |
+| src/data/demon-traits.js | 妖魔特性（机制型） |
+| src/data/world.js | 势力/情报（8个势力） |
 
 ### 引擎文件（v3.0.0起迁移到src/engine/，v3.0.1核心文件拆分）
 | 文件 | 作用 |
