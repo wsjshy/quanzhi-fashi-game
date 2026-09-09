@@ -520,7 +520,7 @@ export const MapSystem = {
         // 有概率遇到多只敌人（20%概率2只）
         const enemyCount = Math.random() < 0.2 ? 2 : 1;
         if (enemyCount > 1) {
-            // TODO: 多敌人战斗，暂时先单只
+            // TODO: 多敌人战斗，暂时先单只（需战斗系统效果注册表架构改造，见TODO长期规划）
         }
 
         return { enemy: battleEnemy, isElite: false };

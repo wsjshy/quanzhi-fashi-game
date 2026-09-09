@@ -61,19 +61,6 @@ export function performAction(actionId) {
             return;
         }
         
-        // DEBUG: 把调用栈显示在页面上（已注释，需要时再打开）
-        // try {
-        //     const err = new Error();
-        //     const stack = err.stack || '';
-        //     const debugDiv = document.getElementById('debug-error');
-        //     if (debugDiv) {
-        //         debugDiv.style.display = 'block';
-        //         debugDiv.style.background = '#006600';
-        //         debugDiv.textContent = `[DEBUG] 执行行动: ${actionId}\n时间: ${Player.day}天 ${Player.hour}点\n消息弹窗: ${UI._isMessageShowing}\n冷却: ${this._actionCooldown}\n间隔: ${now - this._lastActionTime}ms\n消息关闭后: ${typeof UI !== 'undefined' && UI._lastMessageCloseTime ? now - UI._lastMessageCloseTime + 'ms' : 'N/A'}\n\n调用栈:\n${stack}`;
-        //     }
-        // } catch (e) {
-        //     console.error('DEBUG显示失败', e);
-        // }
         
         // v2.8.4: 修炼时间固定为2小时，移除四档选择减少玩家决策压力，留更多时间探索
         if (actionId === 'train') {
