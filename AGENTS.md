@@ -90,6 +90,32 @@
 
 ---
 
+## 二点五、新agent学习路径
+
+> 第一次接触本项目？按以下顺序阅读，30分钟即可上手开发。
+
+### 入门必读（3个文档，15分钟）
+1. **本文件（AGENTS.md）** — 项目定位、9大核心原则、11步开发流程、文档导航
+2. **[docs/架构说明.md](docs/架构说明.md)** — 代码结构、数据层/引擎层划分、模块组织
+3. **[docs/数据格式规范.md](docs/数据格式规范.md)** — 所有数据格式，加内容前必读
+
+### 按任务类型快速路径（选读）
+| 你要做什么 | 读哪3个文档 |
+|-----------|------------|
+| 加妖魔/技能/物品 | 数据格式规范 → 对应data文件 → L1测试(`node tests/run.js`) |
+| 加NPC对话 | [NPC性格与AI设计.md](docs/NPC性格与AI设计.md) → [对话树与剧情连锁系统设计.md](docs/对话树与剧情连锁系统设计.md) → characters.js |
+| 加新系统 | 本文件开发流程 → 设计文档模板 → 架构说明 |
+| 扩展小说篇章 | [篇章扩展标准流程.md](docs/篇章扩展标准流程.md) → [篇章级小说拆解方法论.md](docs/篇章级小说拆解方法论.md) → [小说内容转化指南.md](docs/小说内容转化指南.md) |
+| 改UI | UIUX设计规范 → ui-assets.js → 对应ui-*.js模块 |
+| 改战斗逻辑 | [战斗系统扩展与元素反应设计方法论.md](docs/战斗系统扩展与元素反应设计方法论.md) → battle子模块 → L2测试 |
+| 修bug | [开发踩坑记录与通用经验.md](docs/开发踩坑记录与通用经验.md) → 测试方法论 → 对应模块 |
+
+### 深入按需（不强制）
+- 各系统设计文档（天赋/战斗/大事件/剧情等）
+- 测试用例与发布检查清单
+- 部署经验总结
+- 项目批判与审视方法论
+
 ## 三、文档导航
 
 > 📖 [docs/README.md](docs/README.md) — 文档总览，含目录结构和维护规则
@@ -125,6 +151,10 @@
 | NPC成长系统（剧情阶段驱动） | [docs/NPC成长系统设计文档.md](docs/NPC成长系统设计文档.md) |
 | 实力体系/数值公式 | [docs/实力体系设计文档.md](docs/实力体系设计文档.md) |
 | 装备词缀系统 | [docs/装备词缀系统设计文档.md](docs/装备词缀系统设计文档.md) |
+| 锻造系统（v3.9+v3.10深化） | [docs/version-design/v3.9.0_锻造系统设计.md](docs/version-design/v3.9.0_锻造系统设计.md) |
+| 闭关修炼系统（v3.11） | [docs/version-design/v3.11.0_闭关修炼系统设计.md](docs/version-design/v3.11.0_闭关修炼系统设计.md) |
+| 猎魔悬赏系统（v3.12） | [docs/version-design/v3.12.0_猎魔悬赏系统深化设计.md](docs/version-design/v3.12.0_猎魔悬赏系统深化设计.md) |
+| 年度魔法考核事件（v3.13） | [docs/version-design/v3.13.0_年度魔法考核事件设计.md](docs/version-design/v3.13.0_年度魔法考核事件设计.md) |
 | 项目整体架构 | [docs/架构说明.md](docs/架构说明.md) |
 
 ### 方法论文档（怎么做）
@@ -148,7 +178,7 @@
 ### 文档目录
 | 目录 | 内容 |
 |------|------|
-| [docs/version-design/](docs/version-design/) | 各版本设计文档（v0.48.0_*.md等，66个） |
+| [docs/version-design/](docs/version-design/) | 各版本设计文档（v0.48.0_*.md等，76个） |
 | [docs/test-reports/](docs/test-reports/) | 黑盒测试报告、回归测试报告（27个） |
 | [docs/reference/](docs/reference/) | 攻略、规划、状态记录等参考资料（14个） |
 | [docs/小说拆解/](docs/小说拆解/) | 小说逐章拆解内容（按篇章重组：博城篇+明珠篇） |
@@ -163,13 +193,13 @@
 |------|------|
 | 全职法师.txt | **小说原文**（项目根目录，22.85MB），涉及小说内容必须先Grep搜索验证，不凭记忆编造 |
 
-### 数据文件（v3.0.0起迁移到src/data/，共21个模块）
+### 数据文件（v3.0.0起迁移到src/data/，共25个模块）
 | 文件 | 作用 |
 |------|------|
 | src/data/index.js | 数据统一出口（GameData + 27个全局变量） |
 | src/data/skills.js | 技能数据（222个，11系初阶/中阶/高阶） |
 | src/data/enemies.js | 妖魔数据（75个，奴仆/战将/统领级） |
-| src/data/items.js | 物品数据（158个，消耗品/装备/材料/魔具） |
+| src/data/items.js | 物品数据（161个，消耗品/装备/材料/魔具） |
 | src/data/characters.js | NPC对话/关系（49个有对话树） |
 | src/data/quests.js | 任务数据（182个，主线/支线/日常/事件） |
 | src/data/locations.js | 地点/动作（13个地点） |
@@ -187,8 +217,12 @@
 | src/data/clues.js | 线索数据 |
 | src/data/demon-traits.js | 妖魔特性（机制型） |
 | src/data/world.js | 势力/情报（8个势力） |
+| src/data/affixes.js | 装备词缀配置（6前缀+6后缀+4档品质） |
+| src/data/forge-recipes.js | 锻造配方（9个配方，基础/中级/高级） |
+| src/data/bounties.js | 猎魔悬赏配置（11个任务，奴仆/战将/统领） |
+| src/data/annual-exam.js | 年度魔法考核配置（策略/评分/奖励/对话） |
 
-### 引擎文件（v3.0.0起迁移到src/engine/，v3.0.1核心文件拆分）
+### 引擎文件（v3.0.0起迁移到src/engine/，v3.0.1核心文件拆分，共111个模块）
 | 文件 | 作用 |
 |------|------|
 | src/engine/game.js | 游戏主流程（已拆分13个子模块，约3100行） |
@@ -198,10 +232,15 @@
 | src/engine/game-state.js | 集中式状态管理与存档（v3.0.2，声明式schema+版本迁移链） |
 | src/engine/npc-state.js | NPC状态/记忆/关系网络 |
 | src/engine/dialogue-tree.js | 对话树引擎 |
+| src/engine/inventory.js | 背包/装备系统 |
+| src/engine/forge.js | 锻造系统（v3.9） |
+| src/engine/retreat.js | 闭关修炼系统（v3.11） |
+| src/engine/bounty.js | 猎魔悬赏系统（v3.12） |
+| src/engine/annual-exam.js | 年度考核系统（v3.13） |
 | **UI子模块** | ui-title/ui-help/ui-bestiary/ui-daily/ui-dialogue/ui-event/ui-achievement/ui-character/ui-map/ui-battle/ui-shop/ui-talent-detail/ui-inventory/ui-message/ui-intel/ui-skill-detail/ui-quest/ui-enemy-detail/ui-scheduled-event/ui-damage-number/ui-element-selection/ui-reputation/ui-character-create/ui-primary-secondary/ui-daily-summary |
 | **战斗子模块** | battle-utils/battle-start/battle-skill/battle-enemy-turn/battle-player-attack/battle-damage/battle-end-enemy-turn/battle-summon/battle-status/battle-rewards/battle-help/battle-magic-tool/battle-status-modifiers/battle-traits/battle-add-status/battle-check-end/battle-apply-status/battle-spirit-seed/battle-talent-active/battle-ai-burst/battle-end/battle-ai-tactical/battle-player-item |
 | **游戏子模块** | game-end-battle/game-dialogue/game-npc-list/game-npc-detail/game-travel/game-awaken/game-breakthrough/game-cultivate/game-talent-select/game-quick-heal/game-artifact-upgrade/game-perform-cultivate/game-perform-action |
-| src/main.js | 模块化入口（import 97个模块） |
+| src/main.js | 模块化入口（import 70+个模块） |
 
 > 📖 详细架构见 [docs/架构说明.md](docs/架构说明.md)，拆分设计见 [docs/version-design/v3.0.1_核心文件拆分设计.md](docs/version-design/v3.0.1_核心文件拆分设计.md)
 
