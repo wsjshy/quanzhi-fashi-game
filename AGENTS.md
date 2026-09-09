@@ -151,9 +151,9 @@
 | NPC成长系统（剧情阶段驱动） | [docs/NPC成长系统设计文档.md](docs/NPC成长系统设计文档.md) |
 | 实力体系/数值公式 | [docs/实力体系设计文档.md](docs/实力体系设计文档.md) |
 | 装备词缀系统 | [docs/装备词缀系统设计文档.md](docs/装备词缀系统设计文档.md) |
-| 锻造系统（v3.9+v3.10深化） | [docs/version-design/v3.9.0_锻造系统设计.md](docs/version-design/v3.9.0_锻造系统设计.md) |
+| 锻造系统（v3.9+v3.10深化） | [docs/锻造系统设计文档.md](docs/锻造系统设计文档.md) |
 | 闭关修炼系统（v3.11） | [docs/version-design/v3.11.0_闭关修炼系统设计.md](docs/version-design/v3.11.0_闭关修炼系统设计.md) |
-| 猎魔悬赏系统（v3.12） | [docs/version-design/v3.12.0_猎魔悬赏系统深化设计.md](docs/version-design/v3.12.0_猎魔悬赏系统深化设计.md) |
+| 猎魔悬赏系统（v3.12） | [docs/猎魔悬赏系统设计文档.md](docs/猎魔悬赏系统设计文档.md) |
 | 年度魔法考核事件（v3.13） | [docs/version-design/v3.13.0_年度魔法考核事件设计.md](docs/version-design/v3.13.0_年度魔法考核事件设计.md) |
 | 项目整体架构 | [docs/架构说明.md](docs/架构说明.md) |
 
