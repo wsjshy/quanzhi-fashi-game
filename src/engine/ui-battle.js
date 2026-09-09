@@ -9,35 +9,50 @@
  * 渲染战斗界面
  * 绑定到UI对象调用：UIBattle.renderBattleScreen.call(UI)
  */
+import { getMagicGradient } from './ui-assets.js';
+
+// v3.7.0: 状态效果渲染公共函数（消除玩家/敌人重复代码）
+const STATUS_ICONS = { burn: '🔥', freeze: '❄️', frozen: '❄️', stun: '⚡', wet: '💧', shield: '🛡️', curse: '💀', slow: '🐌', defense_up: '🛡️', speed_up: '💨', evasion_up: '💨', dodge_up: '💨', attack_up: '⚔️', attack_down: '📉', defense_down: '🛡️⬇️', accuracy_down: '🎯', regen: '💚', electrified: '⚡', mud: '🟤', steam: '💨', poison: '☠️', bind: '🔗', silence: '🔇', fear: '😱', bleed: '🩸', superconduct: '❄️⚡', paralysis: '⚡', petrify: '🪨', stone: '🪨' };
+const STATUS_COLORS = { burn: '#ff6644', freeze: '#66aaff', frozen: '#66ddff', stun: '#ffdd44', wet: '#66bbff', shield: '#44ddcc', curse: '#aa66ff', slow: '#999', defense_up: '#66ff66', speed_up: '#88ff88', evasion_up: '#88ffaa', dodge_up: '#88ffcc', attack_up: '#ff8844', attack_down: '#aaaaaa', defense_down: '#ff8888', accuracy_down: '#ffcc44', regen: '#66ffaa', electrified: '#ffff44', mud: '#aa8844', steam: '#ccc', poison: '#88ff44', bind: '#aa88ff', silence: '#8888ff', fear: '#ff4488', bleed: '#ff4444', superconduct: '#88ddff', paralysis: '#ffee44', petrify: '#aa9988', stone: '#aa9988' };
+const STATUS_DESCS = { burn: '每回合受到火焰伤害', freeze: '冰冻，无法行动', frozen: '冰冻，无法行动', stun: '眩晕，无法行动', wet: '湿润，可与雷/火/土触发反应', shield: '护盾，吸收伤害', curse: '诅咒，全属性降低', slow: '减速，速度降低', defense_up: '防御提升', speed_up: '速度提升', evasion_up: '闪避提升', dodge_up: '闪避提升', attack_up: '攻击提升', attack_down: '攻击降低', defense_down: '防御降低', accuracy_down: '命中降低', regen: '每回合恢复HP', electrified: '感电，持续受到伤害', mud: '泥泞，速度降低', steam: '蒸汽，命中率降低', poison: '中毒，每回合受到伤害', bind: '束缚，无法行动', silence: '沉默，无法使用魔法', fear: '恐惧，攻击降低', bleed: '流血，每回合受到伤害', superconduct: '超导，防御降低', paralysis: '麻痹，有概率无法行动', petrify: '石化，无法行动', stone: '石化，无法行动' };
+
+function renderStatusEffects(effects, maxWidth, showReactionHint) {
+    if (!effects || effects.length === 0) return '';
+    return effects.map(effect => {
+        const icon = STATUS_ICONS[effect.type] || '✨';
+        const color = STATUS_COLORS[effect.type] || '#fff';
+        const desc = STATUS_DESCS[effect.type] || '';
+        const stacks = effect.stacks ? '×' + effect.stacks : '';
+        const value = effect.shieldAmount ? ' ' + effect.shieldAmount : (effect.value ? ' ' + effect.value : '');
+        const duration = effect.type === 'shield' ? '' : (effect.duration ? ' (' + effect.duration + '回合)' : '');
+        let reactionHint = '';
+        if (showReactionHint) {
+            try {
+                const reactions = BattleSystem.getReactionsForStatus(effect.type);
+                if (reactions && reactions.length > 0) {
+                    const elemNames = { fire: '火', ice: '冰', thunder: '雷', earth: '土', wind: '风', water: '水' };
+                    reactionHint = '\\n---\\n可触发：' + reactions.map(r => r.icon + r.name + '(' + (elemNames[r.element] || r.element) + '系)').join('、');
+                }
+            } catch(e) {}
+        }
+        return '<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ' + color + '; border-radius: 4px; color: ' + color + ';" title="' + effect.name + (effect.type === 'shield' ? ' (' + effect.shieldAmount + '护盾)' : duration) + (desc ? '\\n' + desc : '') + reactionHint + '">' + icon + stacks + value + '</span>';
+    }).join('');
+}
+
 export function renderBattleScreen() {
     const state = BattleSystem.getState();
     const isPortrait = UI.isPortrait();
     const skillCols = isPortrait ? 3 : 5;
     const spriteW = isPortrait ? 70 : 100;
     const spriteH = isPortrait ? 100 : 140;
-    // 战斗背景动态切换 - v3.3.0：使用AI生成的11系魔法特效图
-    const elemBgMap = {
-        fire: 'assets/images/effects/fire_magic.jpg',
-        thunder: 'assets/images/effects/thunder_magic.jpg',
-        ice: 'assets/images/effects/ice_magic.jpg',
-        dark: 'assets/images/effects/dark_magic.jpg',
-        earth: 'assets/images/effects/earth_magic.jpg',
-        wind: 'assets/images/effects/wind_magic.jpg',
-        water: 'assets/images/effects/water_magic.jpg',
-        light: 'assets/images/effects/light_magic.jpg',
-        plant: 'assets/images/effects/wind_magic.jpg',
-        heal: 'assets/images/effects/light_magic.jpg',
-        summon: 'assets/images/effects/summon_magic.jpg',
-        space: 'assets/images/effects/space_magic.jpg',
-        chaos: 'assets/images/effects/chaos_magic.jpg'
-    };
+    // 战斗背景动态切换 - v3.3.0：使用11系魔法渐变（后续可替换为AI生成图）
     const enemyElem = state.enemy?.elements?.[0] || 'dark';
-    const battleBg = elemBgMap[enemyElem] || elemBgMap.fire;
+    const battleBgGradient = getMagicGradient(enemyElem);
     // 技能展开时横版面板高度增加，避免滚动
     const skillsExpanded = !!this._expandedBattleElement;
     const panelH = isPortrait ? 'auto' : (skillsExpanded ? '300px' : '220px');
     const logW = isPortrait ? 'calc(100% - 20px)' : '340px';
-    const logMaxH = isPortrait ? '90px' : '280px';
+    const logMaxH = isPortrait ? '90px' : '340px';
     const logPos = isPortrait ? 'position:relative; top:auto; left:auto; margin:5px 10px; flex-shrink:0; height:90px;' : 'position: absolute; top: 20px; left: 20px;';
     const playerPos = isPortrait ? 'position:relative; bottom:auto; left:auto; margin:5px auto; order:2;' : 'position: absolute; bottom: 60px; left: 15%;';
     const enemyPos = isPortrait ? 'position:relative; top:auto; right:auto; margin:5px auto; order:1;' : '';
@@ -52,7 +67,7 @@ export function renderBattleScreen() {
                 position: absolute;
                 top: 0; left: 0;
                 width: 100%; height: 100%;
-                background: url('${battleBg}') center/cover;
+                background: ${battleBgGradient};
                 opacity: 0.4;
                 filter: blur(2px) saturate(1.1);
                 z-index: 0;
@@ -118,7 +133,11 @@ export function renderBattleScreen() {
                     ${state.log.map(log => {
                         const logIcons = { damage: '⚔️', magic: '✨', heal: '💚', crit: '💥', system: '📢', buff: '⬆️', debuff: '⬇️', counter: '🔥', weakness: '❄️', flee: '🏃', item: '🎒', defend: '🛡️', interrupt: '⚡', summon: '🐺', soul: '💎', evolution: '🔮' };
                         const icon = logIcons[log.type] || '';
-                        return `<p style="margin-bottom: 5px; color: ${this.getLogColor(log.type)}; padding: 2px 4px; border-radius: 3px;">${icon ? icon + ' ' : ''}${log.text}</p>`;
+                        // v3.2.1: 重要事件高亮背景
+                        const highlightTypes = ['crit', 'interrupt', 'system', 'evolution'];
+                        const isImportant = highlightTypes.includes(log.type);
+                        const bgStyle = isImportant ? 'background: rgba(255,200,50,0.12); border-left: 3px solid #ffcc44;' : '';
+                        return `<p style="margin-bottom: 5px; color: ${this.getLogColor(log.type)}; padding: 3px 6px; border-radius: 3px; ${bgStyle} font-weight: ${isImportant ? 'bold' : 'normal'};">${icon ? icon + ' ' : ''}${log.text}</p>`;
                     }).join('')}
                 </div>
                 
@@ -203,18 +222,7 @@ export function renderBattleScreen() {
                     <!-- 玩家状态效果 -->
                     ${state.player.statusEffects && state.player.statusEffects.length > 0 ? `
                         <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; max-width: 140px;">
-                            ${state.player.statusEffects.map(effect => {
-                                const icons = { burn: '🔥', freeze: '❄️', frozen: '❄️', stun: '⚡', wet: '💧', shield: '🛡️', curse: '💀', slow: '🐌', defense_up: '🛡️', speed_up: '💨', evasion_up: '💨', dodge_up: '💨', attack_up: '⚔️', attack_down: '📉', defense_down: '🛡️⬇️', accuracy_down: '🎯', regen: '💚', electrified: '⚡', mud: '🟤', steam: '💨', poison: '☠️', bind: '🔗', silence: '🔇', fear: '😱', bleed: '🩸' };
-                                const colors = { burn: '#ff6644', freeze: '#66aaff', frozen: '#66ddff', stun: '#ffdd44', wet: '#66bbff', shield: '#44ddcc', curse: '#aa66ff', slow: '#999', defense_up: '#66ff66', speed_up: '#88ff88', evasion_up: '#88ffaa', dodge_up: '#88ffcc', attack_up: '#ff8844', attack_down: '#aaaaaa', defense_down: '#ff8888', accuracy_down: '#ffcc44', regen: '#66ffaa', electrified: '#ffff44', mud: '#aa8844', steam: '#ccc', poison: '#88ff44', bind: '#aa88ff', silence: '#8888ff', fear: '#ff4488', bleed: '#ff4444' };
-                                const descriptions = { burn: '每回合受到火焰伤害', freeze: '冰冻，无法行动', frozen: '冰冻，无法行动', stun: '眩晕，无法行动', wet: '湿润，雷系伤害增加', shield: '护盾，吸收伤害', curse: '诅咒，全属性降低', slow: '减速，速度降低', defense_up: '防御提升', speed_up: '速度提升', evasion_up: '闪避提升', dodge_up: '闪避提升', attack_up: '攻击提升', attack_down: '攻击降低', defense_down: '防御降低', accuracy_down: '命中降低', regen: '每回合恢复HP', electrified: '麻痹，有概率无法行动', mud: '泥沼，速度降低', steam: '雾气，闪避提升', poison: '中毒，每回合受到伤害', bind: '束缚，无法行动', silence: '沉默，无法使用魔法', fear: '恐惧，攻击降低', bleed: '流血，每回合受到伤害' };
-                                const icon = icons[effect.type] || '✨';
-                                const color = colors[effect.type] || '#fff';
-                                const desc = descriptions[effect.type] || '';
-                                const stacks = effect.stacks ? `×${effect.stacks}` : '';
-                                const value = effect.shieldAmount ? ` ${effect.shieldAmount}` : (effect.value ? ` ${effect.value}` : '');
-                                const duration = effect.type === 'shield' ? '' : (effect.duration ? ` (${effect.duration}回合)` : '');
-                                return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}${effect.type === 'shield' ? ' (' + effect.shieldAmount + '护盾)' : duration}${desc ? '\\n' + desc : ''}">${icon}${stacks}${value}</span>`;
-                            }).join('')}
+                            ${renderStatusEffects(state.player.statusEffects, 140, false)}
                         </div>
                     ` : ''}
                     
@@ -384,18 +392,7 @@ export function renderBattleScreen() {
                     <!-- 敌人状态效果 -->
                     ${state.enemy.statusEffects && state.enemy.statusEffects.length > 0 ? `
                         <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; max-width: 150px;">
-                            ${state.enemy.statusEffects.map(effect => {
-                                const icons = { burn: '🔥', freeze: '❄️', frozen: '❄️', stun: '⚡', wet: '💧', shield: '🛡️', curse: '💀', slow: '🐌', defense_up: '🛡️', speed_up: '💨', evasion_up: '💨', dodge_up: '💨', attack_up: '⚔️', attack_down: '📉', defense_down: '🛡️⬇️', accuracy_down: '🎯', regen: '💚', electrified: '⚡', mud: '🟤', steam: '💨', poison: '☠️', bind: '🔗', silence: '🔇', fear: '😱', bleed: '🩸' };
-                                const colors = { burn: '#ff6644', freeze: '#66aaff', frozen: '#66ddff', stun: '#ffdd44', wet: '#66bbff', shield: '#44ddcc', curse: '#aa66ff', slow: '#999', defense_up: '#66ff66', speed_up: '#88ff88', evasion_up: '#88ffaa', dodge_up: '#88ffcc', attack_up: '#ff8844', attack_down: '#aaaaaa', defense_down: '#ff8888', accuracy_down: '#ffcc44', regen: '#66ffaa', electrified: '#ffff44', mud: '#aa8844', steam: '#ccc', poison: '#88ff44', bind: '#aa88ff', silence: '#8888ff', fear: '#ff4488', bleed: '#ff4444' };
-                                const descriptions = { burn: '每回合受到火焰伤害', freeze: '冰冻，无法行动', frozen: '冰冻，无法行动', stun: '眩晕，无法行动', wet: '湿润，雷系伤害增加', shield: '护盾，吸收伤害', curse: '诅咒，全属性降低', slow: '减速，速度降低', defense_up: '防御提升', speed_up: '速度提升', evasion_up: '闪避提升', dodge_up: '闪避提升', attack_up: '攻击提升', attack_down: '攻击降低', defense_down: '防御降低', accuracy_down: '命中降低', regen: '每回合恢复HP', electrified: '麻痹，有概率无法行动', mud: '泥沼，速度降低', steam: '雾气，闪避提升', poison: '中毒，每回合受到伤害', bind: '束缚，无法行动', silence: '沉默，无法使用魔法', fear: '恐惧，攻击降低', bleed: '流血，每回合受到伤害' };
-                                const icon = icons[effect.type] || '✨';
-                                const color = colors[effect.type] || '#fff';
-                                const desc = descriptions[effect.type] || '';
-                                const stacks = effect.stacks ? `×${effect.stacks}` : '';
-                                const value = effect.shieldAmount ? ` ${effect.shieldAmount}` : (effect.value ? ` ${effect.value}` : '');
-                                const duration = effect.type === 'shield' ? '' : (effect.duration ? ` (${effect.duration}回合)` : '');
-                                return `<span style="font-size: 11px; padding: 2px 5px; background: rgba(0,0,0,0.5); border: 1px solid ${color}; border-radius: 4px; color: ${color};" title="${effect.name}${effect.type === 'shield' ? ' (' + effect.shieldAmount + '护盾)' : duration}${desc ? '\\n' + desc : ''}">${icon}${stacks}${value}</span>`;
-                            }).join('')}
+                            ${renderStatusEffects(state.enemy.statusEffects, 150, true)}
                         </div>
                     ` : ''}
                     
@@ -628,9 +625,10 @@ export function renderBattleScreen() {
                                                 cursor:${(canUse && !isCd) ? 'pointer' : 'not-allowed'};
                                                 text-align:left;
                                                 opacity:${(canUse && !isCd) ? 1 : 0.4};
-                                                transition:all 0.2s;
+                                                transition:all 0.15s;
                                                 width:100%;
-                                            ">
+                                            "
+                                            ${(canUse && !isCd) ? `onmouseover="this.style.transform='scale(1.03)';this.style.boxShadow='0 0 12px ${info.color}88';" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none';"` : ''}>
                                             <div style="font-size:14px; font-weight:bold; margin-bottom:3px; padding-right:20px;">${info.icon} ${skill.name}</div>
                                             <div style="font-size:11px; color:#ccc; margin-bottom:3px;">${skill.description.substring(0, 25)}${skill.description.length > 25 ? '...' : ''}</div>
                                             <div style="font-size:11px; display:flex; justify-content:space-between; align-items:center;">

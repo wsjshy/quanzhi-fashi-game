@@ -1,3 +1,5 @@
+import { getMagicGradient } from './ui-assets.js';
+
 ﻿/**
  * UI渲染 - 任务界面模块
  * 
@@ -18,7 +20,7 @@ export function renderQuestScreen() {
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
-                    background: url('assets/images/effects/thunder_magic.jpg') center/cover;
+                    background: ${getMagicGradient('thunder')}
                     opacity: 0.08;
                     filter: blur(3px);
                     z-index: 0;

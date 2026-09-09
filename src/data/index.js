@@ -23,6 +23,7 @@ import { DataChapters } from './chapters.js';
 import { DataClues } from './clues.js';
 import { DataMaps } from './maps.js';
 import { DemonTraits } from './demon-traits.js';
+import { AFFIX_QUALITIES, PREFIX_AFFIXES, SUFFIX_AFFIXES, generateAffixes, rollQuality, getAffixDisplay } from './affixes.js';
 
 export const GameData = {
     skills: DataSkills,
@@ -48,6 +49,12 @@ export const GameData = {
     clues: DataClues,
     maps: DataMaps,
     demonTraits: DemonTraits,
+    affixQualities: AFFIX_QUALITIES,
+    prefixAffixes: PREFIX_AFFIXES,
+    suffixAffixes: SUFFIX_AFFIXES,
+    generateAffixes,
+    rollQuality,
+    getAffixDisplay
 };
 
 export {

@@ -307,10 +307,20 @@ export const DialogueTree = {
         return choices.filter(choice => {
             // 检查条件
             if (choice.condition) {
-                if (!this._checkCondition(choice.condition)) return false;
+                if (!this._checkCondition(choice.condition)) {
+                    // v3.3.1: notMemoryTags不满足（已表达态度）的选项，标记为visited而不是过滤
+                    // 让玩家看到"已选择"状态，而不是选项凭空消失
+                    if (choice.condition.notMemoryTags) {
+                        choice.visited = true;
+                        choice.visitedReason = 'attitude_chosen';
+                        return true;
+                    }
+                    // 其他条件不满足（如好感度不够、等级不够），仍然过滤
+                    return false;
+                }
             }
 
-            // v3.1.0: 过滤已访问的一次性对话节点
+            // v3.1.0: 已访问的一次性对话节点 → v3.3.1改为标记visited而不是过滤
             const nextNodeId = choice.next || choice.nextNode;
             if (nextNodeId && nextNodeId !== 'default') {
                 const dialogueData = this.getDialogueData(this.currentNPC);
@@ -318,11 +328,14 @@ export const DialogueTree = {
                 if (nextNode && nextNode.oneTime) {
                     // 一次性对话，检查是否已访问
                     if (NPCStateSystem.isDialogueNodeVisited(this.currentNPC, nextNodeId)) {
-                        return false; // 已访问，过滤掉
+                        choice.visited = true;
+                        choice.visitedReason = 'oneTime_visited';
+                        return true; // 保留，但标记为已访问
                     }
                 }
 
                 // v3.1.0: 检查父节点的所有子选项是否都是oneTime且都被访问
+                // v3.3.1: 改为标记visited而不是过滤
                 if (nextNode && nextNode.choices && nextNode.choices.length > 0) {
                     const childChoices = nextNode.choices;
                     // 过滤掉返回/关闭类选项（next为null或default或action为back/close）
@@ -343,7 +356,9 @@ export const DialogueTree = {
                             return NPCStateSystem.isDialogueNodeVisited(this.currentNPC, childNext);
                         });
                         if (allVisited) {
-                            return false; // 所有子选项都已访问，隐藏父节点
+                            choice.visited = true;
+                            choice.visitedReason = 'all_children_visited';
+                            return true; // 保留，但标记为已访问
                         }
                     }
                 }
@@ -466,8 +481,17 @@ export const DialogueTree = {
         let choice = availableChoices.find(c => c.id === choiceId);
         if (!choice) return null;
 
-        // v2.9.3: 记录已读选项（使用选项实际的id作为唯一标识）
-        this.markChoiceRead(this.currentNPC, this.currentNode, choice.id);
+        // v3.3.1: 已表达态度的选项（attitude_chosen）不可重复选择，直接返回当前节点
+        if (choice.visited && choice.visitedReason === 'attitude_chosen') {
+            return this.getCurrentNodeData();
+        }
+
+        const isVisited = choice.visited === true;
+
+        // v2.9.3: 记录已读选项（已访问的不重复记录）
+        if (!isVisited) {
+            this.markChoiceRead(this.currentNPC, this.currentNode, choice.id);
+        }
 
         // 记录历史
         this.dialogueHistory.push({
@@ -476,8 +500,10 @@ export const DialogueTree = {
             timestamp: Date.now()
         });
 
-        // 应用效果
-        this._applyEffects(choice.effects || {});
+        // 应用效果（已访问的oneTime选项不重复应用，避免重复加好感/熟悉度）
+        if (!isVisited) {
+            this._applyEffects(choice.effects || {});
+        }
 
         // 执行特殊动作
         if (choice.action) {
@@ -768,6 +794,63 @@ export const DialogueTree = {
 
         this.currentNode = topicId;
         return this.getCurrentNodeData();
+    },
+
+    /**
+     * v3.4.0: 获取NPC对话进度
+     * 统计已访问的oneTime节点数和已选择的态度选项数
+     * @param {string} npcId - NPC ID
+     * @returns {Object} {visited, total, percentage}
+     */
+    getDialogueProgress(npcId) {
+        const dialogueData = this.getDialogueData(npcId);
+        if (!dialogueData || !dialogueData.nodes) {
+            return { visited: 0, total: 0, percentage: 0 };
+        }
+
+        let total = 0;
+        let visited = 0;
+
+        // 遍历所有节点的所有选项
+        for (const nodeId in dialogueData.nodes) {
+            const node = dialogueData.nodes[nodeId];
+            if (!node.choices) continue;
+
+            for (const choice of node.choices) {
+                // 统计oneTime选项
+                if (choice.oneTime === true) {
+                    total++;
+                    const isVisited = this.isChoiceRead(npcId, nodeId, choice.id);
+                    if (isVisited) visited++;
+                }
+                // 统计态度选项（有notMemoryTags条件且effects含addMemory的player_attitude类型）
+                if (choice.condition && choice.condition.notMemoryTags &&
+                    choice.effects && choice.effects.addMemory &&
+                    choice.effects.addMemory.type === 'player_attitude') {
+                    total++;
+                    // 检查是否已选择（memory tag是否存在）
+                    const npcState = this._getNPCState(npcId);
+                    const memoryTags = choice.condition.notMemoryTags;
+                    const hasTag = memoryTags.some(tag =>
+                        npcState && npcState.memories && npcState.memories.some(m => m.tags && m.tags.includes(tag))
+                    );
+                    if (hasTag) visited++;
+                }
+            }
+        }
+
+        const percentage = total > 0 ? Math.round((visited / total) * 100) : 0;
+        return { visited, total, percentage };
+    },
+
+    /**
+     * v3.4.0: 获取NPC状态（内部方法）
+     */
+    _getNPCState(npcId) {
+        if (typeof NPCState !== 'undefined' && NPCState.getNPC) {
+            return NPCState.getNPC(npcId);
+        }
+        return null;
     }
 };
 

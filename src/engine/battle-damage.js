@@ -752,6 +752,17 @@ export function applyDamage(target, damage, attacker) {
 
         target.hp = Math.max(0, target.hp - amount);
 
+        // v3.2.1: 受击视觉反馈（抖动+闪白）
+        if (amount > 0 && typeof window !== 'undefined' && window.BattleVisualFeedback) {
+            const hitTarget = target === this.player ? 'player' : 'enemy';
+            const intensity = damage.isCrit ? 3 : (amount > target.maxHp * 0.2 ? 2 : 1);
+            window.BattleVisualFeedback.playHitEffect(hitTarget, intensity);
+            // 暴击时触发综合暴击特效
+            if (damage.isCrit) {
+                window.BattleVisualFeedback.playCritEffect(hitTarget);
+            }
+        }
+
         // 天赋：雷系斩杀 - 敌人HP低于阈值时概率直接击杀
         if (target === this.enemy && target.hp > 0 && attacker === this.player && this.player.talentEffects) {
             const te = this.player.talentEffects;

@@ -289,7 +289,7 @@ export const Player = {
             if (itemId) {
                 const item = Inventory.getItem(itemId);
                 if (item && item.equipStats) {
-                    const enhanceLevel = this.enhanceLevels[slot] || 0;
+                    const enhanceLevel = (this.enhanceLevels && this.enhanceLevels[slot]) || 0;
                     const enhanceMultiplier = 1 + enhanceLevel * 0.1; // 每级强化+10%属性
                     Object.keys(item.equipStats).forEach(key => {
                         const baseVal = item.equipStats[key];
@@ -307,6 +307,16 @@ export const Player = {
                         }
                         stats[key] = (stats[key] || 0) + enhancedVal;
                     });
+                    // v3.8.0: 优先使用装备实例词缀（equipmentAffixes），否则使用静态词缀
+                    const slotAffixes = this.equipmentAffixes ? this.equipmentAffixes[slot] : null;
+                    const affixes = (slotAffixes && slotAffixes.affixes) ? slotAffixes.affixes : (item.affixes || []);
+                    if (affixes && Array.isArray(affixes)) {
+                        affixes.forEach(affix => {
+                            if (affix.stat && affix.value !== undefined) {
+                                stats[affix.stat] = (stats[affix.stat] || 0) + affix.value;
+                            }
+                        });
+                    }
                 }
             }
         });

@@ -1,3 +1,5 @@
+import { getMagicGradient } from './ui-assets.js';
+
 ﻿/**
  * UI 帮助界面模块
  * 
@@ -18,7 +20,7 @@ export function renderHelpScreen() {
                 position: absolute;
                 top: 0; left: 0;
                 width: 100%; height: 100%;
-                background: url('assets/images/effects/fire_magic.jpg') center/cover;
+                background: ${getMagicGradient('fire')}
                 opacity: 0.06;
                 filter: blur(3px);
                 z-index: 0;
@@ -93,6 +95,17 @@ export function renderHelpScreen() {
                             <li><strong>星子引导</strong>：魔法不是瞬发，需要引导时间，引导中可以被打断</li>
                             <li><strong>元素克制</strong>：每个元素有独特的战斗风格和克制关系</li>
                             <li><strong>状态效果</strong>：灼烧、冻结、麻痹、减速、中毒等</li>
+                            <li><strong>元素反应</strong>：不同元素状态组合触发反应，造成额外伤害！
+                                <ul style="margin-top:4px; padding-left:16px; font-size:13px; color:#aabbcc;">
+                                    <li>⚡感电(雷+水)：1.0x伤害，持续电击</li>
+                                    <li>🔥融化(火+冰)：1.5x伤害，火伤+50%</li>
+                                    <li>💨蒸汽(火+水)：0.8x伤害，命中-30%</li>
+                                    <li>🪨泥泞(土+水)：0.6x伤害，速度-50%</li>
+                                    <li>❄️超导(冰+雷)：1.2x伤害，防御-30%</li>
+                                    <li>⚡静电(雷+冰)：1.0x伤害，解除冻结+麻痹</li>
+                                    <li>💥爆裂(火+石化)：2.0x伤害，巨额伤害</li>
+                                </ul>
+                            </li>
                             <li><strong>精英怪</strong>：10%概率遇到精英怪，属性提升50%，奖励翻倍</li>
                             <li><strong>死亡惩罚</strong>：掉10%经验、掉20%金币、30%概率掉一个物品</li>
                         </ul>

@@ -142,7 +142,7 @@ export const DataCharacters = {
               id: "tease_mofan",
               text: "（嘲笑）双系天赋？听起来也没多厉害嘛",
               condition: {
-                notMemoryTags: ["player_teased", "player_encouraged", "player_asked_magic"]
+                notMemoryTags: ["player_teased"]
               },
               effects: {
                 opinion: -3,
@@ -160,7 +160,7 @@ export const DataCharacters = {
               id: "encourage_mofan",
               text: "（鼓励）双系天赋很厉害，继续加油",
               condition: {
-                notMemoryTags: ["player_teased", "player_encouraged", "player_asked_magic"]
+                notMemoryTags: ["player_encouraged"]
               },
               effects: {
                 opinion: 3,
@@ -178,7 +178,7 @@ export const DataCharacters = {
               id: "ask_magic_understanding",
               text: "（请教）你对双系魔法有什么理解？",
               condition: {
-                notMemoryTags: ["player_teased", "player_encouraged", "player_asked_magic"]
+                notMemoryTags: ["player_asked_magic"]
               },
               effects: {
                 opinion: 2,

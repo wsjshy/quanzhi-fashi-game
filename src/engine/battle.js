@@ -26,6 +26,7 @@ import { enemyAIBurst as enemyAIBurstImpl } from './battle-ai-burst.js';
 import { endBattle as endBattleImpl } from './battle-end.js';
 import { enemyAITactical as enemyAITacticalImpl } from './battle-ai-tactical.js';
 import { playerUseItem as playerUseItemImpl } from './battle-player-item.js';
+import { checkElementReactions as checkElementReactionsImpl, ELEMENT_REACTIONS, getReactionsForStatus, getAvailableReactions } from './battle-element-reactions.js';
 
 export const BattleSystem = {
     // 战斗状态
@@ -1646,54 +1647,30 @@ export const BattleSystem = {
      * 两种元素状态相遇时产生特殊效果
      */
     checkElementReactions(target, newEffect, isPlayerTarget) {
-        const targetName = isPlayerTarget ? '你' : this.enemy.name;
-        const effects = target.statusEffects;
+        // v3.6.0: 使用独立的元素反应模块
+        // 推断施法者：目标是玩家→施法者是敌人，反之亦然
+        const caster = isPlayerTarget ? this.enemy : this.player;
+        const reactionKey = checkElementReactionsImpl(this, target, newEffect, isPlayerTarget, caster);
 
-        // 雷 + 湿润 = 感电
-        if (newEffect.type === 'paralysis' || newEffect.element === 'thunder') {
-            const wet = effects.find(e => e.type === 'wet');
-            if (wet) {
-                wet.type = 'electrified';
-                wet.name = '感电';
-                wet.dotDamage = (wet.dotDamage || 0) + 15;
-                wet.duration = Math.max(wet.duration, 2);
-                this.addLog(`⚡ 感电反应！${targetName} 全身通电，持续受到伤害！`, 'magic');
+        // v3.7.0: 首次触发反应时显示教程提示（仅玩家施法时）
+        if (reactionKey && !isPlayerTarget && caster === this.player) {
+            if (!this.player.learnedReactions) this.player.learnedReactions = [];
+            if (!this.player.learnedReactions.includes(reactionKey)) {
+                this.player.learnedReactions.push(reactionKey);
+                const reaction = ELEMENT_REACTIONS[reactionKey];
+                if (reaction) {
+                    this.addLog(`📖 首次发现【${reaction.icon}${reaction.name}】反应！查看帮助了解更多元素组合`, 'system');
+                }
             }
         }
+    },
 
-        // 火 + 冻结 = 融化
-        if ((newEffect.type === 'burn' || newEffect.element === 'fire') && newEffect.type !== 'freeze') {
-            const frozen = effects.find(e => e.type === 'frozen');
-            if (frozen) {
-                target.statusEffects = target.statusEffects.filter(e => e.type !== 'frozen');
-                this.addLog(`🔥 融化反应！冻结被解除，火系伤害提升！`, 'magic');
-                // 标记本回合火系伤害加成
-                target._meltBonus = 1.5;
-            }
-        }
-
-        // 火 + 湿润 = 蒸汽（命中率降低）
-        if ((newEffect.type === 'burn' || newEffect.element === 'fire') && newEffect.type !== 'wet') {
-            const wet = effects.find(e => e.type === 'wet');
-            if (wet && wet.type === 'wet') {
-                target.statusEffects = target.statusEffects.filter(e => e.type !== 'wet');
-                const steam = { type: 'steam', name: '蒸汽', duration: 2, hitRateMod: -0.3 };
-                target.statusEffects.push(steam);
-                this.addLog(`💨 蒸汽反应！${targetName} 被蒸汽笼罩，命中率降低！`, 'magic');
-            }
-        }
-
-        // 土 + 湿润 = 泥泞（速度降低）
-        if (newEffect.element === 'earth' || newEffect.type === 'mud') {
-            const wet = effects.find(e => e.type === 'wet');
-            if (wet) {
-                wet.type = 'mud';
-                wet.name = '泥泞';
-                wet.speedMod = -0.5;
-                wet.duration = Math.max(wet.duration, 2);
-                this.addLog(`🪨 泥泞反应！${targetName} 陷入泥泞，速度大减！`, 'magic');
-            }
-        }
+    // v3.7.0: 元素反应工具函数（供UI tooltip使用）
+    getReactionsForStatus(statusType) {
+        return getReactionsForStatus(statusType);
+    },
+    getAvailableReactions(targetEffects, element) {
+        return getAvailableReactions(targetEffects, element);
     },
 
     /**

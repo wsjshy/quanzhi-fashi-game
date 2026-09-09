@@ -1,3 +1,5 @@
+import { getMagicGradient } from './ui-assets.js';
+
 ﻿/**
  * UI 事件界面模块
  * 
@@ -30,7 +32,7 @@ export function renderEventScreen(event) {
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
-                    background: url('assets/images/effects/thunder_magic.jpg') center/cover;
+                    background: ${getMagicGradient('thunder')}
                     opacity: 0.1;
                     filter: blur(3px);
                     z-index: 0;
@@ -241,7 +243,7 @@ export function renderBigEventNarrativePhase(phase, hasNextPhase, autoMode = fal
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
-                    background: url('assets/images/effects/thunder_magic.jpg') center/cover;
+                    background: ${getMagicGradient('thunder')}
                     opacity: 0.08;
                     filter: blur(3px);
                     z-index: 0;
@@ -330,7 +332,7 @@ export function renderBigEventChoicePhase(phase, choices) {
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
-                    background: url('assets/images/effects/thunder_magic.jpg') center/cover;
+                    background: ${getMagicGradient('thunder')}
                     opacity: 0.08;
                     filter: blur(3px);
                     z-index: 0;

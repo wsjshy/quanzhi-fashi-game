@@ -1,3 +1,5 @@
+import { getMagicGradient } from './ui-assets.js';
+
 ﻿/**
  * UI 背包界面模块
  * 
@@ -17,7 +19,7 @@ export function renderInventoryScreen() {
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
-                    background: url('assets/images/effects/fire_magic.jpg') center/cover;
+                    background: ${getMagicGradient('fire')}
                     opacity: 0.08;
                     filter: blur(3px);
                     z-index: 0;
@@ -101,6 +103,22 @@ export function renderInventoryScreen() {
                                                     return `${statNames[k] || k}: +${enhancedValue}${enhanceLevel > 0 ? ` <span style="color:#66ff88;">(基础${v})</span>` : ''}`;
                                                 }
                                             }).join(' | ')}
+                                        </div>
+                                        ${item.affixes && item.affixes.length > 0 ? `
+                                        <div style="margin-top: 6px; padding: 6px 10px; background: rgba(80, 50, 120, 0.3); border-radius: 6px; border-left: 3px solid #aa66ff;">
+                                            <div style="font-size: 11px; color: #cc99ff; margin-bottom: 3px;">✨ 词缀：</div>
+                                            ${item.affixes.map(affix => {
+                                                const statNames = { attack: '攻击', defense: '防御', magic: '魔法', speed: '速度', maxHp: '最大HP', maxMp: '最大MP', critRate: '暴击率', defensePenetration: '防御穿透', lifesteal: '吸血', thorns: '反伤' };
+                                                const statName = statNames[affix.stat] || affix.stat;
+                                                const percentStats = ['critRate', 'defensePenetration', 'lifesteal'];
+                                                const isRealPercent = percentStats.includes(affix.stat);
+                                                const valueText = isRealPercent ? (affix.value * 100).toFixed(0) + '%' : '+' + affix.value;
+                                                return '<div style="font-size: 12px; color: #ddaaff;">' + affix.name + '：' + statName + ' ' + valueText + '</div>';
+                                            }).join('')}
+                                        </div>
+                                        ` : ''}
+                                        <div style="font-size: 11px; color: #88ccff; margin-top: 6px; padding: 4px 8px; background: rgba(50, 80, 120, 0.3); border-radius: 4px; border-left: 3px solid #66aaff;">
+                                            🔒 强化等级永久保留（更换装备不丢失，当前槽位+${enhanceLevel}）
                                         </div>
                                         <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
                                             <div onclick="Game.unequipItem('${slot}')" style="
@@ -301,6 +319,24 @@ export function renderInventoryScreen() {
                                     `;
                                 }
                                 
+                                // v3.8.0: 装备词缀显示（实例词缀）
+                                let affixesDisplay = '';
+                                if (isEquip && itemData.affixes && itemData.affixes.length > 0) {
+                                    const qualityColors = { normal: '#aaaaaa', fine: '#66ff66', rare: '#6699ff', epic: '#cc66ff' };
+                                    const qualityNames = { normal: '普通', fine: '优秀', rare: '稀有', epic: '史诗' };
+                                    const qColor = qualityColors[itemData.quality] || '#aaaaaa';
+                                    affixesDisplay = `
+                                        <div style="font-size: 10px; color: ${qColor}; margin-top: 4px; padding: 4px 6px; background: rgba(0,0,0,0.3); border-radius: 4px; border-left: 2px solid ${qColor};">
+                                            <span style="font-weight: bold;">[${qualityNames[itemData.quality] || '普通'}]</span>
+                                            ${itemData.affixes.map(a => {
+                                                const statNames = { attack: '攻击', defense: '防御', speed: '速度', maxHp: '生命', maxMp: '魔法', critRate: '暴击', hitRate: '命中', defensePenetration: '穿透', lifesteal: '吸血' };
+                                                const displayVal = (a.isPercent || a.stat === 'critRate' || a.stat === 'hitRate' || a.stat === 'defensePenetration' || a.stat === 'lifesteal') ? `${a.value > 0 ? '+' : ''}${a.value}%` : `${a.value > 0 ? '+' : ''}${a.value}`;
+                                                return `${a.name || a.id} ${statNames[a.stat] || a.stat} ${displayVal}`;
+                                            }).join(' | ')}
+                                        </div>
+                                    `;
+                                }
+                                
                                 return `
                                     <div style="
                                         padding: 12px;
@@ -318,6 +354,7 @@ export function renderInventoryScreen() {
                                             ${itemData.description}${(itemData.dynamicLore || []).filter(d => WorldState.getFlag(d.flag)).map(d => `<span style="color: #88aacc;">${d.text}</span>`).join('')}
                                         </div>
                                         ${equipStatsDisplay}
+                                        ${affixesDisplay}
                                         ${equipCompare}
                                         <div style="display: flex; gap: 8px; margin-top: 8px;">
                                             ${canUse ? `
@@ -334,7 +371,7 @@ export function renderInventoryScreen() {
                                                 ">使用</div>
                                             ` : ''}
                                             ${isEquip ? `
-                                                <div onclick="Game.equipItem('${item.itemId}')" style="
+                                                <div onclick="Game.equipItem('${item.itemId}', ${item.index})" style="
                                                     flex: 1;
                                                     padding: 5px;
                                                     background: #445533;
@@ -345,6 +382,17 @@ export function renderInventoryScreen() {
                                                     font-size: 12px;
                                                     text-align: center;
                                                 ">装备</div>
+                                                <div onclick="UIForge.showReforgeConfirm(${item.index})" style="
+                                                    flex: 1;
+                                                    padding: 5px;
+                                                    background: #554433;
+                                                    border: 1px solid #997755;
+                                                    border-radius: 5px;
+                                                    color: #ffddaa;
+                                                    cursor: pointer;
+                                                    font-size: 12px;
+                                                    text-align: center;
+                                                ">重铸</div>
                                             ` : ''}
                                         </div>
                                     </div>

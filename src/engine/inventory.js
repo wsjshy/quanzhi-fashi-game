@@ -37,7 +37,7 @@ export const Inventory = {
     /**
      * 添加物品
      */
-    addItem(itemId, count = 1) {
+    addItem(itemId, count = 1, options = {}) {
         const item = this.getItem(itemId);
         if (!item) return false;
 
@@ -50,9 +50,17 @@ export const Inventory = {
                 this.items.push({ itemId, count });
             }
         } else {
-            // 不可堆叠物品，逐个添加
+            // 不可堆叠物品，逐个添加（v3.8.0: 支持实例级词缀）
+            const isEquipment = item.equipStats || item.slot || ['weapon', 'armor', 'accessory', 'equipment'].includes(item.type);
             for (let i = 0; i < count; i++) {
-                this.items.push({ itemId, count: 1 });
+                const instance = { itemId, count: 1 };
+                // v3.8.0: 装备实例携带词缀数据
+                if (isEquipment) {
+                    instance.instanceId = 'inst_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    instance.quality = options.quality || item.quality || 'normal';
+                    instance.affixes = options.affixes || item.affixes || [];
+                }
+                this.items.push(instance);
             }
         }
 
@@ -396,7 +404,7 @@ export const Inventory = {
     /**
      * 装备物品
      */
-    equipItem(itemId) {
+    equipItem(itemId, instanceIndex = -1) {
         const item = this.getItem(itemId);
         if (!item) return { success: false, message: '物品不存在' };
 
@@ -421,14 +429,31 @@ export const Inventory = {
             return { success: false, message: `「${item.name}」需要${elemNames[item.requireElement] || item.requireElement}系法师才能装备` };
         }
 
-        // 卸下旧装备
+        // 卸下旧装备（v3.8.0: 保留词缀）
         const oldItemId = Player.equipment[slot];
         if (oldItemId) {
-            this.addItem(oldItemId, 1);
+            const oldAffixes = Player.equipmentAffixes ? Player.equipmentAffixes[slot] : null;
+            this.addItem(oldItemId, 1, oldAffixes ? { quality: oldAffixes.quality, affixes: oldAffixes.affixes } : {});
+        }
+
+        // v3.8.0: 获取装备实例的词缀
+        let instanceAffixes = null;
+        if (instanceIndex >= 0 && this.items[instanceIndex] && this.items[instanceIndex].itemId === itemId) {
+            const inst = this.items[instanceIndex];
+            instanceAffixes = { quality: inst.quality || 'normal', affixes: inst.affixes || [] };
+        } else {
+            // 兼容：没传index时，找第一个匹配的实例
+            const idx = this.items.findIndex(i => i.itemId === itemId);
+            if (idx >= 0 && this.items[idx].affixes) {
+                instanceAffixes = { quality: this.items[idx].quality || 'normal', affixes: this.items[idx].affixes };
+            }
         }
 
         // 装备新物品
         Player.equipment[slot] = itemId;
+        // v3.8.0: 存储词缀到equipmentAffixes
+        if (!Player.equipmentAffixes) Player.equipmentAffixes = {};
+        Player.equipmentAffixes[slot] = instanceAffixes || { quality: item.quality || 'normal', affixes: item.affixes || [] };
         this.removeItem(itemId, 1);
         
         // 魔具成就检查
@@ -481,10 +506,22 @@ export const Inventory = {
      * 获取背包所有物品（带详情）
      */
     getAllItems() {
-        return this.items.map(item => {
+        return this.items.map((item, index) => {
             const data = this.getItem(item.itemId);
+            if (data) {
+                // v3.8.0: 合并装备实例词缀到data中（优先使用实例词缀）
+                const isEquipment = data.equipStats || data.slot || ['weapon', 'armor', 'accessory', 'equipment'].includes(data.type);
+                if (isEquipment && item.affixes) {
+                    return {
+                        ...item,
+                        index: index,
+                        data: { ...data, quality: item.quality || data.quality, affixes: item.affixes }
+                    };
+                }
+            }
             return {
                 ...item,
+                index: index,
                 data: data
             };
         });
@@ -509,7 +546,23 @@ export const Inventory = {
         const result = {};
         ['weapon', 'armor', 'accessory'].forEach(slot => {
             const itemId = Player.equipment[slot];
-            result[slot] = itemId ? this.getItem(itemId) : null;
+            if (itemId) {
+                const item = this.getItem(itemId);
+                if (item) {
+                    // v3.8.0: 合并装备实例词缀（优先使用实例词缀）
+                    const slotAffixes = Player.equipmentAffixes ? Player.equipmentAffixes[slot] : null;
+                    if (slotAffixes) {
+                        // 创建副本，避免修改静态数据
+                        result[slot] = { ...item, quality: slotAffixes.quality || item.quality, affixes: slotAffixes.affixes || item.affixes || [] };
+                    } else {
+                        result[slot] = item;
+                    }
+                } else {
+                    result[slot] = null;
+                }
+            } else {
+                result[slot] = null;
+            }
         });
         return result;
     },

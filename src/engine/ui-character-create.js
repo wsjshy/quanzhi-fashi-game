@@ -1,3 +1,5 @@
+import { getMagicGradient } from './ui-assets.js';
+
 ﻿/**
  * UI系统 - 角色创建界面模块
  * 
@@ -47,7 +49,7 @@ export function renderCharacterCreate() {
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
-                    background: url('assets/images/effects/thunder_magic.jpg') center/cover;
+                    background: ${getMagicGradient('thunder')}
                     opacity: 0.12;
                     filter: blur(3px);
                     z-index: 0;

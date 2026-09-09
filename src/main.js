@@ -26,6 +26,9 @@ import './data/achievements.js';
 import './data/star-dust-artifacts.js';
 import './data/summon-beasts.js';
 import './data/clues.js';
+import './data/forge-recipes.js'; // v3.9.0锻造配方
+import './data/bounties.js';        // v3.12.0悬赏任务配置
+import './data/annual-exam.js';     // v3.13.0年度考核配置
 import { GameData } from './data/index.js';
 
 // ========== 引擎层（按依赖顺序） ==========
@@ -50,11 +53,16 @@ import './engine/event.js';          // EventSystem
 import './engine/big-event.js';      // BigEventSystem
 import './engine/story-chapter.js';  // StoryChapterSystem
 import './engine/shop.js';           // ShopSystem
+import './engine/forge.js';          // ForgeSystem（v3.9.0锻造系统）
+import './engine/retreat.js';        // RetreatSystem（v3.11.0闭关修炼系统）
+import './engine/bounty.js';         // BountySystem（v3.12.0悬赏系统）
+import './engine/annual-exam.js';    // AnnualExamSystem（v3.13.0年度考核）
 import './engine/map.js';            // MapSystem
 import './engine/battle-ai.js';      // BattleAI
 import './engine/battle-effect.js';  // EffectRegistry
 import './engine/battle-event.js';   // BattleEventBus, BattleEvents
 import './engine/battle-animation.js'; // BattleAnimation（v3.3.0战斗动画系统）
+import './engine/battle-visual-feedback.js'; // BattleVisualFeedback (v3.2.1)
 import './engine/battle.js';         // BattleSystem（核心战斗）
 import './engine/achievement-handler.js'; // AchievementHandler
 import './engine/world-state.js';    // WorldState
@@ -64,6 +72,10 @@ import './engine/dialogue-tree.js';  // DialogueTree
 import './engine/encounter.js';      // EncounterSystem
 import './engine/ui-assets.js';      // UIAssets（美术资源管理，v3.3.0）
 import './engine/ui.js';             // UI（渲染层，依赖所有系统）
+import './engine/ui-forge.js';       // UIForge（v3.9.0锻造UI）
+import './engine/ui-retreat.js';      // UIRetreat（v3.11.0闭关修炼UI）
+import './engine/ui-bounty.js';       // UIBounty（v3.12.0悬赏板UI）
+import './engine/ui-annual-exam.js';  // UIAnnualExam（v3.13.0年度考核UI）
 import './engine/game.js';           // Game（主控制器，最后加载）
 import './engine/debug.js';          // DebugPanel（开发工具）
 

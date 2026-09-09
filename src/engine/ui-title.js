@@ -9,6 +9,8 @@
  * 渲染标题界面
  * 绑定到UI对象调用：UITitle.renderTitleScreen.call(UI, hasSave)
  */
+import { getMagicGradient } from './ui-assets.js';
+
 export function renderTitleScreen(hasSave) {
     const container = this.elements.gameContainer;
     
@@ -29,7 +31,7 @@ export function renderTitleScreen(hasSave) {
                 position: absolute;
                 top: 0; left: 0;
                 width: 100%; height: 100%;
-                background: url('assets/images/effects/thunder_magic.jpg') center/cover;
+                background: ${getMagicGradient('thunder')}
                 opacity: 0.3;
                 filter: blur(3px);
                 pointer-events: none;
@@ -101,7 +103,7 @@ export function renderTitleScreen(hasSave) {
                 right: 20px;
                 font-size: 14px;
                 color: #555;
-            ">v3.2.0 · 博城篇完美扎实化</div>
+            ">v3.13.0 · 年度考核</div>
         </div>
     `;
 

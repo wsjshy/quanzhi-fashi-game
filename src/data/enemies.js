@@ -739,8 +739,7 @@ export const DataEnemies = {
         chance: 0.3,
         min: 1,
         max: 2
-      }
-    ],
+      }],
     locations: [
       "xuefeng_deep"
     ]
@@ -792,8 +791,7 @@ export const DataEnemies = {
         chance: 0.4,
         min: 1,
         max: 3
-      }
-    ],
+      }],
     locations: [
       "xuefeng_deep"
     ]
@@ -1087,8 +1085,7 @@ export const DataEnemies = {
       { itemId: "demon_core", chance: 0.8, min: 1, max: 2 },
       { itemId: "wolf_fang", chance: 0.6, min: 1, max: 2 },
       { itemId: "soul_fragment", chance: 0.15, min: 1, max: 1 },
-      { itemId: "elite_soul", chance: 0.05, min: 1, max: 1 }
-    ],
+      { itemId: "elite_soul", chance: 0.05, min: 1, max: 1 }],
     locations: ["old_banyan_district"]
   },
   yu_ang_duel: {
@@ -1174,8 +1171,7 @@ export const DataEnemies = {
       { itemId: "demon_core", chance: 0.6, min: 1, max: 1 },
       { itemId: "wolf_fang", chance: 0.8, min: 2, max: 4 },
       { itemId: "bone_spike", chance: 0.5, min: 1, max: 2 },
-      { itemId: "elite_soul", chance: 0.1, min: 1, max: 1 }
-    ],
+      { itemId: "elite_soul", chance: 0.1, min: 1, max: 1 }],
     locations: ["xuefeng_mountain", "bo_city"]
   },
   student_rival: {
@@ -1226,8 +1222,7 @@ export const DataEnemies = {
       { itemId: "demon_core", chance: 1, min: 3, max: 5 },
       { itemId: "magic_stone", chance: 0.9, min: 2, max: 6 },
       { itemId: "super_health_potion", chance: 0.4, min: 1, max: 2 },
-      { itemId: "elite_soul", chance: 0.15, min: 1, max: 1 }
-    ],
+      { itemId: "elite_soul", chance: 0.15, min: 1, max: 1 }],
     locations: ["bo_city", "earth_spring"]
   },
   black_beast: {
@@ -1289,8 +1284,10 @@ export const DataEnemies = {
       { itemId: "super_mana_potion", chance: 1, min: 3, max: 5 },
       { itemId: "elite_soul", chance: 0.5, min: 1, max: 3 },
       { itemId: "commander_soul", chance: 0.1, min: 1, max: 1 },
-      { itemId: "wolf_king_fang", chance: 0.3, min: 1, max: 1 }
-    ],
+      { itemId: "wolf_king_fang", chance: 0.3, min: 1, max: 1 },
+      { itemId: "mingli_shield", chance: 0.03, min: 1, max: 1 },
+      { itemId: "flame_blade", chance: 0.02, min: 1, max: 1 },
+      { itemId: "wind_boots", chance: 0.05, min: 1, max: 1 }],
     locations: ["bo_city"]
   },
   
@@ -2623,8 +2620,8 @@ export const DataEnemies = {
     dropItems: [
       { itemId: "wolf_bone_spike", chance: 0.5, min: 1, max: 2 },
       { itemId: "demon_core", chance: 0.6, min: 1, max: 1 },
-      { itemId: "elite_core", chance: 0.1, min: 1, max: 1 }
-    ]
+      { itemId: "elite_core", chance: 0.1, min: 1, max: 1 },
+      { itemId: "flame_blade", chance: 0.03, min: 1, max: 1 }]
   },
 
   // ========== 博城灾难精英妖魔（仅使用博城灾难及之前出现的妖魔）==========

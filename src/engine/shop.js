@@ -102,8 +102,18 @@ export const ShopSystem = {
             shopItem.stock -= count;
         }
 
-        // 添加物品
-        Inventory.addItem(itemId, count);
+        // 添加物品（v3.8.0: 装备购买时随机生成品质和词缀，符合原著中商店售卖魔具的设定）
+        const isEquipment = item && (item.equipStats || item.slot || ['weapon', 'armor', 'accessory', 'equipment'].includes(item.type));
+        if (isEquipment) {
+            // 装备逐个购买，每个独立生成词缀
+            for (let i = 0; i < count; i++) {
+                const quality = rollQuality();
+                const affixes = generateAffixes(quality);
+                Inventory.addItem(itemId, 1, { quality, affixes });
+            }
+        } else {
+            Inventory.addItem(itemId, count);
+        }
 
         return {
             success: true,

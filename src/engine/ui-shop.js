@@ -1,3 +1,5 @@
+import { getMagicGradient } from './ui-assets.js';
+
 ﻿/**
  * UI 商店界面模块
  * 
@@ -21,7 +23,7 @@ export function renderShopScreen() {
                 position: absolute;
                 top: 0; left: 0;
                 width: 100%; height: 100%;
-                background: url('assets/images/effects/dark_magic.jpg') center/cover;
+                background: ${getMagicGradient('dark')}
                 opacity: 0.08;
                 filter: blur(2px);
                 z-index: -1;

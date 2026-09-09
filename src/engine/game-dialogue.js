@@ -1,9 +1,65 @@
+import { getMagicGradient } from './ui-assets.js';
+
 ﻿/**
  * 游戏主流程 - 对话界面模块
  * 
  * 从game.js拆分出的独立对话界面模块
  * 包含：显示对话界面（_showDialogueScreen）
  */
+
+/**
+ * v3.3.1: 公共对话选项渲染函数
+ * 消除_showDialogueScreen和_updateDialogueScreen中的重复渲染逻辑
+ * 所有选项样式、已访问标记、任务提示统一在此处管理
+ */
+export function renderDialogueChoicesHTML(choices, npcId) {
+    return choices.map((choice, index) => {
+        // v2.9.3: 检查是否已读（分支完成度）
+        const isRead = DialogueTree.isChoiceRead(npcId, DialogueTree.currentNode, choice.id);
+        // v3.3.1: 检查是否已访问（oneTime已聊过/态度已选择/所有子选项已访问）
+        const isVisited = choice.visited === true;
+        const visitedReason = choice.visitedReason || '';
+        // v2.9.3: 检查是否可接任务
+        const hasQuest = choice.effects && (choice.effects.triggerQuest || choice.effects.acceptQuest || choice.effects.startQuest || choice.effects.questId);
+        // v3.3.1: 已访问选项样式 - 灰色半透明+明确标记
+        let readStyle = isRead ? 'opacity: 0.5;' : '';
+        let visitedLabel = '';
+        if (isVisited) {
+            readStyle = 'opacity: 0.45; background: rgba(45, 45, 55, 0.7); border-color: #555566;';
+            if (visitedReason === 'attitude_chosen') {
+                visitedLabel = '<span style="color: #999; margin-left: 10px; font-size: 13px;">✓ 已表达态度</span>';
+            } else if (visitedReason === 'all_children_visited') {
+                visitedLabel = '<span style="color: #999; margin-left: 10px; font-size: 13px;">✓ 已聊完</span>';
+            } else {
+                visitedLabel = '<span style="color: #999; margin-left: 10px; font-size: 13px;">✓ 已聊过</span>';
+            }
+        }
+        const questBorder = hasQuest ? 'border-color: #55aa55; background: rgba(50, 80, 50, 0.6);' : '';
+        return `
+        <div onclick="Game.selectDialogueChoice('${choice.id}')" style="
+            padding: 14px 22px;
+            background: rgba(40, 40, 80, 0.8);
+            border: 2px solid #444477;
+            border-radius: 10px;
+            color: #e0e0ff;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s;
+            font-size: 17px;
+            ${readStyle}
+            ${questBorder}
+        " onmouseover="this.style.borderColor='${hasQuest ? '#77cc77' : '#7777bb'}'; this.style.background='${hasQuest ? 'rgba(70, 100, 70, 0.7)' : 'rgba(60, 60, 120, 0.8)'}'
+        " onmouseout="this.style.borderColor='${hasQuest ? '#55aa55' : '#444477'}'; this.style.background='${hasQuest ? 'rgba(50, 80, 50, 0.6)' : 'rgba(40, 40, 80, 0.8)'}'
+        ">
+            <span style="color: #ffd700; margin-right: 12px; font-weight: bold;">${index + 1}.</span>
+            ${choice.text}
+            ${hasQuest ? '<span style="color: #88ff88; margin-left: 10px; font-size: 14px;">📜 可接任务</span>' : ''}
+            ${isRead && !isVisited ? '<span style="color: #888; margin-left: 10px; font-size: 13px;">（已读）</span>' : ''}
+            ${visitedLabel}
+        </div>
+    `;
+    }).join('');
+}
 
 export function _showDialogueScreen(npc, dialogueData, isFirstDialogue = false) {
         try {
@@ -105,7 +161,7 @@ export function _showDialogueScreen(npc, dialogueData, isFirstDialogue = false) 
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('assets/images/effects/dark_magic.jpg') center/cover;
+            background: ${getMagicGradient('dark')}
             opacity: 0.3;
             filter: blur(5px);
             z-index: 0;
@@ -233,35 +289,7 @@ export function _showDialogueScreen(npc, dialogueData, isFirstDialogue = false) 
 
                 <!-- 选项列表（v2.9.3优化：已读置灰、任务提示、大字体） -->
                 <div id="dialogue-choices" style="display: flex; flex-direction: column; gap: 10px;">
-                    ${dialogueData.choices.map((choice, index) => {
-                        // v2.9.3: 检查是否已读
-                        const isRead = DialogueTree.isChoiceRead(npc.id, DialogueTree.currentNode, choice.id);
-                        // v2.9.3: 检查是否可接任务
-                        const hasQuest = choice.effects && (choice.effects.triggerQuest || choice.effects.acceptQuest || choice.effects.startQuest || choice.effects.questId);
-                        const readStyle = isRead ? 'opacity: 0.5;' : '';
-                        const questBorder = hasQuest ? 'border-color: #55aa55; background: rgba(50, 80, 50, 0.6);' : '';
-                        return `
-                        <div onclick="Game.selectDialogueChoice('${choice.id}')" style="
-                            padding: 14px 22px;
-                            background: rgba(40, 40, 80, 0.8);
-                            border: 2px solid #444477;
-                            border-radius: 10px;
-                            color: #e0e0ff;
-                            cursor: pointer;
-                            text-align: left;
-                            transition: all 0.3s;
-                            font-size: 17px;
-                            ${readStyle}
-                            ${questBorder}
-                        " onmouseover="this.style.borderColor='${hasQuest ? '#77cc77' : '#7777bb'}'; this.style.background='${hasQuest ? 'rgba(70, 100, 70, 0.7)' : 'rgba(60, 60, 120, 0.8)'}'
-                        " onmouseout="this.style.borderColor='${hasQuest ? '#55aa55' : '#444477'}'; this.style.background='${hasQuest ? 'rgba(50, 80, 50, 0.6)' : 'rgba(40, 40, 80, 0.8)'}'
-                        ">
-                            <span style="color: #ffd700; margin-right: 12px; font-weight: bold;">${index + 1}.</span>
-                            ${choice.text}
-                            ${hasQuest ? '<span style="color: #88ff88; margin-left: 10px; font-size: 14px;">📜 可接任务</span>' : ''}
-                            ${isRead ? '<span style="color: #888; margin-left: 10px; font-size: 13px;">（已读）</span>' : ''}
-                        </div>
-                    `}).join('')}
+                    ${renderDialogueChoicesHTML(dialogueData.choices, npc.id)}
                     ${(() => {
                         // v2.9.3: 非默认节点添加返回上一级选项
                         if (DialogueTree.currentNode !== 'default' && DialogueTree.dialogueHistory.length > 0) {

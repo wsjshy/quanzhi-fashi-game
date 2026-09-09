@@ -171,8 +171,23 @@ export function endBattle() {
                 if (rewards.ratingBonus) message += ` (评价+${Math.floor(rewards.ratingBonus * 100)}%)`;
                 message += '\n';
                 if (rewards.items.length > 0) {
+                    const qualityNames = { normal: '普通', fine: '优秀', rare: '稀有', epic: '史诗' };
+                    const qualityColors = { normal: '⚪', fine: '🟢', rare: '🔵', epic: '🟣' };
                     rewards.items.forEach(item => {
                         message += `${item.name}：x${item.count}\n`;
+                        // v3.8.0: 装备掉落显示品质和词缀
+                        if (item.isEquipment && item.instances) {
+                            item.instances.forEach((inst, idx) => {
+                                const qName = qualityNames[inst.quality] || '普通';
+                                const qColor = qualityColors[inst.quality] || '⚪';
+                                message += `  ${qColor}[${qName}]`;
+                                if (inst.affixes && inst.affixes.length > 0) {
+                                    const affixNames = inst.affixes.map(a => a.name).join('、');
+                                    message += ` ${affixNames}`;
+                                }
+                                message += '\n';
+                            });
+                        }
                     });
                 }
                 // v0.9.0: 战后恢复显示

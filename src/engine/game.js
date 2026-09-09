@@ -4,7 +4,7 @@
  */
 
 import { endBattle as endBattleImpl } from './game-end-battle.js';
-import { _showDialogueScreen as showDialogueScreenImpl } from './game-dialogue.js';
+import { _showDialogueScreen as showDialogueScreenImpl, renderDialogueChoicesHTML } from './game-dialogue.js';
 import { showNPCList as showNPCListImpl } from './game-npc-list.js';
 import { showNPCDetail as showNPCDetailImpl } from './game-npc-detail.js';
 import { travelTo as travelToImpl } from './game-travel.js';
@@ -137,8 +137,7 @@ export const Game = {
         // 初始化大事件系统
         BigEventSystem.init();
 
-        // 初始化章节系统
-        StoryChapterSystem.init();
+        // v3.3.1: 章节初始化延迟到天赋选择完成后（confirmTalent中），避免天赋选择界面弹出任务提示
 
         // 觉醒仪式在创建角色时已完成（玩家已选择元素）
         Player.flags['awakening_ceremony_done'] = true;
@@ -185,6 +184,85 @@ export const Game = {
     // 执行行动（已拆分到game-perform-action.js）
     performAction(actionId) {
         return performActionImpl.call(this, actionId);
+    },
+
+    // v3.4.0: 显示闭关修炼时长选择界面
+    _showRetreatDialog() {
+        const html = `
+            <div class="mobile-popup-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:1000;display:flex;align-items:center;justify-content:center;">
+                <div class="mobile-popup" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:2px solid #4a4a8a;border-radius:16px;padding:30px;max-width:420px;width:90%;color:#fff;">
+                    <h2 style="text-align:center;color:#ffd700;margin-bottom:20px;">🧘 闭关修炼</h2>
+                    <p style="color:#aaa;text-align:center;margin-bottom:20px;font-size:14px;">长时间专注修炼，效率翻倍，突破概率更高</p>
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <div onclick="Game._performRetreat(1)" style="padding:16px;background:rgba(40,40,80,0.8);border:2px solid #444477;border-radius:10px;cursor:pointer;text-align:left;transition:all 0.3s;" onmouseover="this.style.borderColor='#7777bb'" onmouseout="this.style.borderColor='#444477'">
+                            <div style="font-weight:bold;font-size:16px;">📅 闭关 1 天</div>
+                            <div style="font-size:13px;color:#999;margin-top:4px;">获得 240 经验 · 突破概率 5% · 消耗全部HP/MP</div>
+                        </div>
+                        <div onclick="Game._performRetreat(3)" style="padding:16px;background:rgba(40,40,80,0.8);border:2px solid #444477;border-radius:10px;cursor:pointer;text-align:left;transition:all 0.3s;" onmouseover="this.style.borderColor='#7777bb'" onmouseout="this.style.borderColor='#444477'">
+                            <div style="font-weight:bold;font-size:16px;">📅 闭关 3 天</div>
+                            <div style="font-size:13px;color:#999;margin-top:4px;">获得 720 经验 · 突破概率 15% · 消耗全部HP/MP</div>
+                        </div>
+                        <div onclick="Game._performRetreat(7)" style="padding:16px;background:rgba(40,40,80,0.8);border:2px solid #444477;border-radius:10px;cursor:pointer;text-align:left;transition:all 0.3s;" onmouseover="this.style.borderColor='#7777bb'" onmouseout="this.style.borderColor='#444477'">
+                            <div style="font-weight:bold;font-size:16px;">📅 闭关 7 天</div>
+                            <div style="font-size:13px;color:#999;margin-top:4px;">获得 1680 经验 · 突破概率 30% · 消耗全部HP/MP</div>
+                        </div>
+                        <div onclick="Game._closeRetreatDialog()" style="padding:12px;background:rgba(60,60,60,0.6);border:2px solid #666;border-radius:10px;cursor:pointer;text-align:center;color:#aaa;margin-top:8px;">取消</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        const div = document.createElement('div');
+        div.id = 'retreat-dialog';
+        div.innerHTML = html;
+        document.body.appendChild(div);
+        document.body.classList.add('message-showing');
+    },
+
+    // v3.4.0: 关闭闭关修炼界面
+    _closeRetreatDialog() {
+        const dialog = document.getElementById('retreat-dialog');
+        if (dialog) dialog.remove();
+        document.body.classList.remove('message-showing');
+    },
+
+    // v3.4.0: 执行闭关修炼
+    _performRetreat(days) {
+        this._closeRetreatDialog();
+
+        const expGain = days * 240;
+        const breakthroughChance = days === 1 ? 0.05 : days === 3 ? 0.15 : 0.30;
+        const hours = days * 24;
+
+        // 消耗HP/MP
+        Player.hp = Math.max(1, Math.floor(Player.maxHp * 0.1));
+        Player.mp = Math.max(0, Math.floor(Player.maxMp * 0.1));
+
+        // 跳过时间
+        TimeSystem.advanceTime(hours);
+
+        // 获得经验
+        Player.gainExp(expGain);
+
+        // 检查突破
+        let breakthroughMsg = '';
+        if (Math.random() < breakthroughChance) {
+            const oldLevel = Player.level;
+            Player.levelUp();
+            if (Player.level > oldLevel) {
+                breakthroughMsg = '\n\n✨ 突破成功！等级 ' + oldLevel + ' → ' + Player.level + '，所有属性提升！';
+            } else {
+                breakthroughMsg = '\n\n💫 修炼中有所感悟，获得额外经验！';
+                Player.gainExp(100);
+            }
+        }
+
+        // 显示结果
+        UI.showMessage('🧘 闭关 ' + days + ' 天完成！\n\n📚 获得经验：+' + expGain + breakthroughMsg + '\n\n⏱️ 时间已推进 ' + days + ' 天');
+
+        // 更新UI
+        if (typeof UI !== 'undefined' && UI.updateUI) {
+            UI.updateUI();
+        }
     },
     
     // 显示修炼时长选择菜单
@@ -1457,6 +1535,30 @@ export const Game = {
         UI.renderShopScreen();
     },
 
+    // ========== v3.9.0 锻造界面 ==========
+    openForge() {
+        this.state = 'forge';
+        UI.renderForgeScreen();
+    },
+
+    // ========== v3.11.0 闭关修炼界面 ==========
+    openRetreat() {
+        this.state = 'retreat';
+        UIRetreat.renderRetreatScreen();
+    },
+
+    // ========== v3.12.0 悬赏板界面 ==========
+    openBounty() {
+        this.state = 'bounty';
+        UIBounty.renderBountyScreen();
+    },
+
+    // ========== v3.13.0 年度考核界面 ==========
+    openAnnualExam() {
+        this.state = 'annual_exam';
+        UIAnnualExam.renderAnnualExamScreen();
+    },
+
     // 购买物品
     buyItem(itemId, count = 1) {
         try {
@@ -1772,35 +1874,7 @@ export const Game = {
 
         if (choicesEl) {
             const npc = DataManager.getCharacter(this._currentDialogueNPC);
-            const html = dialogueData.choices.map((choice, index) => {
-                // v2.9.3: 检查是否已读（传入nodeId参数）
-                const isRead = DialogueTree.isChoiceRead(npc.id, DialogueTree.currentNode, choice.id);
-                // v2.9.3: 检查是否可接任务
-                const hasQuest = choice.effects && (choice.effects.triggerQuest || choice.effects.acceptQuest || choice.effects.startQuest || choice.effects.questId);
-                const readStyle = isRead ? 'opacity: 0.5;' : '';
-                const questBorder = hasQuest ? 'border-color: #55aa55; background: rgba(50, 80, 50, 0.6);' : '';
-                return `
-                <div onclick="Game.selectDialogueChoice('${choice.id}')" style="
-                    padding: 14px 22px;
-                    background: rgba(40, 40, 80, 0.8);
-                    border: 2px solid #444477;
-                    border-radius: 10px;
-                    color: #e0e0ff;
-                    cursor: pointer;
-                    text-align: left;
-                    transition: all 0.3s;
-                    font-size: 17px;
-                    ${readStyle}
-                    ${questBorder}
-                " onmouseover="this.style.borderColor='${hasQuest ? '#77cc77' : '#7777bb'}'; this.style.background='${hasQuest ? 'rgba(70, 100, 70, 0.7)' : 'rgba(60, 60, 120, 0.8)'}'
-                " onmouseout="this.style.borderColor='${hasQuest ? '#55aa55' : '#444477'}'; this.style.background='${hasQuest ? 'rgba(50, 80, 50, 0.6)' : 'rgba(40, 40, 80, 0.8)'}'
-                ">
-                    <span style="color: #ffd700; margin-right: 12px; font-weight: bold;">${index + 1}.</span>
-                    ${choice.text}
-                    ${hasQuest ? '<span style="color: #88ff88; margin-left: 10px; font-size: 14px;">📜 可接任务</span>' : ''}
-                    ${isRead ? '<span style="color: #888; margin-left: 10px; font-size: 13px;">（已读）</span>' : ''}
-                </div>
-            `}).join('') + (() => {
+            const html = renderDialogueChoicesHTML(dialogueData.choices, npc.id) + (() => {
                 // v2.9.3: 非默认节点添加返回上一级选项
                 if (DialogueTree.currentNode !== 'default' && DialogueTree.dialogueHistory.length > 0) {
                     return `
@@ -2245,8 +2319,8 @@ export const Game = {
     },
 
     // 装备物品
-    equipItem(itemId) {
-        const result = Inventory.equipItem(itemId);
+    equipItem(itemId, instanceIndex = -1) {
+        const result = Inventory.equipItem(itemId, instanceIndex);
         UI.showMessage(result.message);
         UI.updateInventoryScreen();
         Player.save();
@@ -2765,6 +2839,8 @@ export const Game = {
         // 如果是新游戏创建流程，进入地图并显示开场剧情
         if (this._pendingNewGame) {
             this._pendingNewGame = false;
+            // v3.3.1: 天赋选择完成后才初始化章节系统，此时玩家正式进入游戏
+            StoryChapterSystem.init();
             this.state = 'map';
             UI.renderMapScreen();
             // 开场剧情用第一系

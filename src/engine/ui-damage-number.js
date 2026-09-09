@@ -50,12 +50,24 @@ export function showDamageNumber(amount, type, isPlayer) {
         
         const colors = {
             normal: '#ffffff',
-            crit: '#ffdd44',
+            crit: '#ff4444',
             magic: '#ffcc66',
             counter: '#ff6644',
             weakness: '#ff44ff',
             heal: '#66ff66',
-            real: '#ff88ff'
+            real: '#ff88ff',
+            // v3.2.1: 11系元素伤害颜色
+            fire: '#ff6644',
+            ice: '#66ccff',
+            thunder: '#ffee44',
+            wind: '#88ffcc',
+            earth: '#ddaa66',
+            water: '#6699ff',
+            light: '#ffffcc',
+            dark: '#cc88ff',
+            plant: '#66dd44',
+            summon: '#cc9966',
+            heal_element: '#66ffaa'
         };
         const color = colors[type] || colors.normal;
         
@@ -65,6 +77,13 @@ export function showDamageNumber(amount, type, isPlayer) {
         if (type === 'weakness') prefix = '✨';
         if (type === 'heal') prefix = '💚';
         if (type === 'real') prefix = '💎';
+        // v3.2.1: 元素伤害前缀图标
+        const elemPrefixes = {
+            fire: '🔥', ice: '❄️', thunder: '⚡', wind: '🌪️',
+            earth: '🪨', water: '💧', light: '✨', dark: '🌑',
+            plant: '🌿', summon: '🐺'
+        };
+        if (elemPrefixes[type]) prefix = elemPrefixes[type];
         
         const fontSize = type === 'crit' ? (isPortrait ? '32px' : '36px') : (isPortrait ? '22px' : '28px');
         
@@ -80,7 +99,7 @@ export function showDamageNumber(amount, type, isPlayer) {
             pointer-events: none;
             z-index: 100;
             transform: translateX(-50%);
-            animation: ${type === 'crit' ? 'critFloat' : 'damageFloat'} 1.5s ease-out forwards;
+            animation: ${type === 'crit' ? 'critPop' : 'damageFloat'} 1.4s ease-out forwards;
         `;
         
         if (!document.getElementById('damage-number-style')) {
@@ -97,6 +116,13 @@ export function showDamageNumber(amount, type, isPlayer) {
                     15% { opacity: 1; transform: translateX(-50%) translateY(-10px) scale(1.5) rotate(5deg); }
                     30% { transform: translateX(-50%) translateY(-20px) scale(1.3) rotate(-3deg); }
                     100% { opacity: 0; transform: translateX(-50%) translateY(-80px) scale(1.1) rotate(0deg); }
+                }
+                @keyframes critPop {
+                    0% { opacity: 0; transform: translateX(-50%) scale(0.3) rotate(-15deg); }
+                    15% { opacity: 1; transform: translateX(-50%) scale(1.7) rotate(5deg); text-shadow: 0 0 20px #ff4444, 0 0 40px #ff4444; }
+                    30% { transform: translateX(-50%) scale(1.4) rotate(-3deg); }
+                    45% { transform: translateX(-50%) scale(1.55) rotate(2deg); }
+                    100% { opacity: 0; transform: translateX(-50%) translateY(-90px) scale(1.2) rotate(0deg); }
                 }
                 @keyframes hitShake {
                     0%, 100% { transform: translateX(0); }

@@ -103,6 +103,30 @@ export function performAction(actionId) {
         // v2.9.3优化：课程提示移到行动执行成功后，避免与对话/商店等弹窗同时显示导致遮挡
         // 利用UI.showMessage的消息队列机制，弹窗打开时消息会排队，等弹窗关闭后再显示
 
+        // v3.11.0: 闭关修炼特殊处理 - 打开闭关系统界面
+        if (action && action.isRetreat) {
+            this.openRetreat();
+            return;
+        }
+
+        // v3.9.0: 锻造特殊处理 - 打开锻造界面
+        if (action && action.isForge) {
+            this.openForge();
+            return;
+        }
+
+        // v3.12.0: 悬赏板特殊处理 - 打开悬赏界面
+        if (action && action.isBounty) {
+            this.openBounty();
+            return;
+        }
+
+        // v3.13.0: 年度考核特殊处理 - 打开考核界面
+        if (action && action.isAnnualExam) {
+            this.openAnnualExam();
+            return;
+        }
+
         const result = MapSystem.performAction(actionId);
         
         if (!result.success) {
@@ -433,12 +457,6 @@ export function performAction(actionId) {
 
 // 导出模块集合
 export const GamePerformAction = {
-    performAction
+    performAction,
+
 };
-
-export default GamePerformAction;
-
-// 向后兼容：挂载到window
-if (typeof window !== 'undefined') {
-    window.GamePerformAction = GamePerformAction;
-}

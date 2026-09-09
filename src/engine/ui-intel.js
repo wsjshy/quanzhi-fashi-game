@@ -1,3 +1,5 @@
+import { getMagicGradient } from './ui-assets.js';
+
 ﻿/**
  * UI渲染 - 情报界面模块
  * 
@@ -32,7 +34,7 @@ export function renderIntelScreen() {
                     position: absolute;
                     top: 0; left: 0;
                     width: 100%; height: 100%;
-                    background: url('assets/images/effects/thunder_magic.jpg') center/cover;
+                    background: ${getMagicGradient('thunder')}
                     opacity: 0.06;
                     filter: blur(3px);
                     z-index: 0;

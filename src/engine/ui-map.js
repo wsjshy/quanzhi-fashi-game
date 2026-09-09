@@ -133,7 +133,7 @@ export function renderMapScreen() {
                         </div>
                         <span style="color: #88aaff; font-size: 12px; min-width: 50px;">${Player.mp}/${Player.maxMp}</span>
                     </div>
-                    <span style="color: #888; font-size: 11px; opacity: 0.6;" title="全职法师网页游戏 当前版本">v3.2.0</span>
+                    <span style="color: #888; font-size: 11px; opacity: 0.6;" title="全职法师网页游戏 当前版本">v3.13.0</span>
                     ${(() => {
                         const da = Player.dailyActions || { cultivate: 0, study: 0, hunt: 0 };
                         const getEffLabel = (count) => {

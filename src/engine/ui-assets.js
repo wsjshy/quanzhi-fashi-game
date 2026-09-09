@@ -30,15 +30,15 @@ const ELEMENT_COLORS = {
 
 // 地点背景配置
 const LOCATION_BACKGROUNDS = {
-    tianlan_school: { gradient: 'linear-gradient(135deg, #0a1a2a 0%, #1a3a5a 50%, #0a1a2a 100%)', image: 'assets/images/backgrounds/tianlan_school.webp' },
-    bo_city: { gradient: 'linear-gradient(135deg, #0a0a2a 0%, #1a1a4a 50%, #0a0a2a 100%)', image: 'assets/images/backgrounds/bo_city_view.webp' },
-    xuefeng: { gradient: 'linear-gradient(135deg, #0a1a2a 0%, #1a3a5a 30%, #2a5a8a 60%, #0a1a2a 100%)', image: 'assets/images/battle-bg/xuefeng.webp' },
-    bocheng_disaster: { gradient: 'linear-gradient(135deg, #2a0a0a 0%, #5a1a1a 50%, #2a0a0a 100%)', image: 'assets/images/battle-bg/bocheng_disaster.webp' },
-    disheng_spring: { gradient: 'linear-gradient(135deg, #0a2a1a 0%, #1a5a3a 50%, #0a2a1a 100%)', image: 'assets/images/backgrounds/disheng_spring.webp' },
-    street: { gradient: 'linear-gradient(135deg, #1a1a2a 0%, #2a2a4a 50%, #1a1a2a 100%)', image: 'assets/images/backgrounds/street.webp' },
-    library: { gradient: 'linear-gradient(135deg, #2a1a0a 0%, #4a3a1a 50%, #2a1a0a 100%)', image: 'assets/images/backgrounds/library.webp' },
-    shop: { gradient: 'linear-gradient(135deg, #2a2a0a 0%, #4a4a1a 50%, #2a2a0a 100%)', image: 'assets/images/backgrounds/shop.webp' },
-    mountain: { gradient: 'linear-gradient(135deg, #1a2a1a 0%, #2a4a2a 50%, #1a2a1a 100%)', image: 'assets/images/backgrounds/mountain.webp' },
+    tianlan_school: { gradient: 'linear-gradient(135deg, #0a1a2a 0%, #1a3a5a 50%, #0a1a2a 100%)', image: 'assets/images/battle-bg/tianlan_school.jpg' },
+    bo_city: { gradient: 'linear-gradient(135deg, #0a0a2a 0%, #1a1a4a 50%, #0a0a2a 100%)', image: 'assets/images/battle-bg/bo_city_street.jpg' },
+    xuefeng: { gradient: 'linear-gradient(135deg, #0a1a2a 0%, #1a3a5a 30%, #2a5a8a 60%, #0a1a2a 100%)', image: 'assets/images/battle-bg/xuefeng.jpg' },
+    bocheng_disaster: { gradient: 'linear-gradient(135deg, #2a0a0a 0%, #5a1a1a 50%, #2a0a0a 100%)', image: 'assets/images/battle-bg/bocheng_disaster.jpg' },
+    disheng_spring: { gradient: 'linear-gradient(135deg, #0a2a1a 0%, #1a5a3a 50%, #0a2a1a 100%)', image: 'assets/images/battle-bg/disheng_spring.jpg' },
+    street: { gradient: 'linear-gradient(135deg, #1a1a2a 0%, #2a2a4a 50%, #1a1a2a 100%)', image: 'assets/images/battle-bg/bo_city_street.jpg' },
+    library: { gradient: 'linear-gradient(135deg, #2a1a0a 0%, #4a3a1a 50%, #2a1a0a 100%)', image: null },
+    shop: { gradient: 'linear-gradient(135deg, #2a2a0a 0%, #4a4a1a 50%, #2a2a0a 100%)', image: null },
+    mountain: { gradient: 'linear-gradient(135deg, #1a2a1a 0%, #2a4a2a 50%, #1a2a1a 100%)', image: 'assets/images/battle-bg/xuefeng.jpg' },
 };
 
 /**
@@ -75,11 +75,20 @@ export function getElementName(element) {
  * @param {number} opacity - 背景透明度（0-1）
  * @returns {string} CSS background样式
  */
-export function getMagicBackground(element, opacity = 1) {
+/**
+ * 获取魔法特效渐变（仅gradient字符串，用于内联background）
+ * @param {string} element - 元素类型
+ * @returns {string} CSS gradient字符串
+ */
+export function getMagicGradient(element) {
+    // v3.3.0: 优先使用AI生成的魔法特效图，图片缺失时fallback到CSS渐变
     const color = getElementColor(element);
-    // 使用CSS渐变作为背景（当前图片缺失，后续有图片可改为优先图片）
     const gradient = `linear-gradient(135deg, ${adjustColor(color.primary, -60)} 0%, ${adjustColor(color.primary, -30)} 30%, ${color.primary} 60%, ${adjustColor(color.primary, -60)} 100%)`;
-    return `background: ${gradient}; opacity: ${opacity};`;
+    return `url('assets/images/effects/${element}_magic.jpg') center/cover, ${gradient}`;
+}
+
+export function getMagicBackground(element, opacity = 1) {
+    return `background: ${getMagicGradient(element)}; opacity: ${opacity};`;
 }
 
 /**
@@ -98,12 +107,10 @@ export function getBattleBackground(element) {
  * @returns {string} CSS background样式
  */
 export function getLocationBackground(locationId, opacity = 1) {
-    const loc = LOCATION_BACKGROUNDS[locationId];
-    if (loc) {
-        return `background: ${loc.gradient}; opacity: ${opacity};`;
-    }
-    // 默认博城背景
-    return `background: ${LOCATION_BACKGROUNDS.bo_city.gradient}; opacity: ${opacity};`;
+    const loc = LOCATION_BACKGROUNDS[locationId] || LOCATION_BACKGROUNDS.bo_city;
+    // v3.3.0: 优先使用真实背景图，图片缺失时fallback到CSS渐变
+    const bg = loc.image ? `url('${loc.image}') center/cover, ${loc.gradient}` : loc.gradient;
+    return `background: ${bg}; opacity: ${opacity};`;
 }
 
 /**
@@ -248,6 +255,7 @@ if (typeof window !== 'undefined') {
         getElementColor,
         getElementEmoji,
         getElementName,
+        getMagicGradient,
         getMagicBackground,
         getBattleBackground,
         getLocationBackground,

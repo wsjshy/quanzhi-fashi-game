@@ -70,6 +70,11 @@ export function endBattle() {
             if (battleStats.length > 0) {
                 this.addLog(`📊 战斗统计：${battleStats.join('，')}`, 'system');
             }
+
+            // v3.12.0: 更新悬赏击杀进度
+            if (typeof BountySystem !== 'undefined' && this.enemy && this.enemy.id) {
+                BountySystem.updateKillProgress(this.enemy.id);
+            }
         }
 
         // v0.15.0: 战斗胜利时记录技能记忆（对该妖魔最后使用的技能）

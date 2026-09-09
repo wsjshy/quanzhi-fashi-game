@@ -82,6 +82,14 @@ export function showNPCList(npcs, unavailableNpcs = []) {
             const newContent = NPCStateSystem.checkNewContent(npc.id);
             const hasNewDialogue = newContent.hasNew;
             
+            // v3.4.0: 对话进度
+            const dialogueProgress = DialogueTree.getDialogueProgress(npc.id);
+            const dialogueProgressText = dialogueProgress.total > 0
+                ? (dialogueProgress.percentage >= 100
+                    ? '<span style="color: #888; margin-left: 8px;">✓ 对话已完成</span>'
+                    : `<span style="color: #66aaff; margin-left: 8px;">💬 ${dialogueProgress.visited}/${dialogueProgress.total}</span>`)
+                : '';
+            
             // v2.9.3: 获取NPC当前等级和元素系（含成长）
             let npcLevel = 0;
             let npcElements = [];
@@ -137,6 +145,7 @@ export function showNPCList(npcs, unavailableNpcs = []) {
                                     ${hasCombat && elementsIcons ? `<span style="margin-left: 10px;">${elementsIcons}</span>` : ''}
                                     ${hasQuest ? '<span style="color: #ffcc00; margin-left: 8px;">有任务可接</span>' : ''}
                                     ${hasNewDialogue && !hasQuest ? '<span style="color: #44dd88; margin-left: 8px;">有新对话</span>' : ''}
+                                    ${dialogueProgressText}
                                 </div>
                             </div>
                             ${hasCombat ? `

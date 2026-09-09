@@ -75,6 +75,18 @@ export function castSkillImmediate(skill, caster, skipTurnEnd = false, skipInter
             }
         }
 
+        // v3.2.1: 统一元素闪光反馈（所有阶级魔法，初阶轻量/中阶中等/高阶已有特效）
+        if (skill.element && skill.tier && typeof window !== 'undefined' && window.BattleVisualFeedback) {
+            // 高阶已有triggerHighTierEffect全屏特效，这里只补初阶和中阶的统一闪光
+            if (skill.tier === '初阶' || skill.tier === '中阶') {
+                window.BattleVisualFeedback.playElementFlash(skill.element, skill.tier);
+            }
+            // 施法蓄力动画
+            if (isPlayer) {
+                window.BattleVisualFeedback.playCastPulse('player');
+            }
+        }
+
         // 消耗MP
         // 消耗MP（天赋可减少消耗；引导完成时mpCostRatio=0.5，只扣剩余部分）
         let actualMpCost = skill.mpCost;

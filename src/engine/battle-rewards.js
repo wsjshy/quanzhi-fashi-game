@@ -5,6 +5,8 @@
  * 包含：计算战斗奖励（calculateRewards）
  */
 
+import { rollQuality, generateAffixes } from '../data/affixes.js';
+
 export function calculateRewards() {
         const rewards = {
             exp: 0,
@@ -86,18 +88,43 @@ export function calculateRewards() {
             rewards.goldCrit = true;
         }
 
-        // 掉落物品
+        // 掉落物品（v3.8.0: 装备掉落随机生成品质和词缀）
         if (this.enemy.dropItems) {
             this.enemy.dropItems.forEach(drop => {
                 if (Math.random() < drop.chance) {
                     const count = drop.min + Math.floor(Math.random() * (drop.max - drop.min + 1));
-                    Inventory.addItem(drop.itemId, count);
                     const item = Inventory.getItem(drop.itemId);
-                    rewards.items.push({
+                    const isEquipment = item && (item.equipStats || item.slot || ['weapon', 'armor', 'accessory', 'equipment'].includes(item.type));
+                    
+                    // v3.8.0: 记录掉落装备的品质和词缀（用于结算界面显示）
+                    const droppedInstances = [];
+                    
+                    // 逐个添加装备实例（每个实例独立生成词缀）
+                    for (let i = 0; i < count; i++) {
+                        let options = {};
+                        if (isEquipment) {
+                            // v3.8.0: 随机生成品质和词缀
+                            // 精英怪品质提升一档
+                            let quality = rollQuality();
+                            if (this.enemy.isElite && quality === 'normal') quality = 'fine';
+                            const affixes = generateAffixes(quality);
+                            options = { quality, affixes };
+                            droppedInstances.push({ quality, affixes });
+                        }
+                        Inventory.addItem(drop.itemId, 1, options);
+                    }
+                    
+                    const rewardItem = {
                         itemId: drop.itemId,
                         name: item?.name || drop.itemId,
                         count: count
-                    });
+                    };
+                    // v3.8.0: 装备掉落记录实例信息
+                    if (isEquipment && droppedInstances.length > 0) {
+                        rewardItem.isEquipment = true;
+                        rewardItem.instances = droppedInstances;
+                    }
+                    rewards.items.push(rewardItem);
                 }
             });
         }

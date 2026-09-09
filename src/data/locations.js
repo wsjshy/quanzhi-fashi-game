@@ -141,6 +141,18 @@ export const DataLocations = {
         ]
       },
       {
+        id: "retreat",
+        name: "闭关修炼",
+        description: "长周期闭关修炼（1/3/7/30天），高收益高风险，可能顿悟或走火入魔",
+        icon: "🧘",
+        timeCost: 0,
+        staminaCost: 0,
+        effects: {},
+        isRetreat: true,
+        opensRetreat: true
+      },
+
+      {
         id: "rest",
         name: "宿舍休息",
         description: "在宿舍舒适休息（1小时），大量恢复 HP、MP 和体力（比原地休息效果好）",
@@ -353,6 +365,15 @@ export const DataLocations = {
         timeCost: 0,
         staminaCost: 0,
         shopId: "magic_shop"
+      },
+      {
+        id: "forge",
+        name: "铁匠铺",
+        description: "用妖魔材料锻造魔具装备，锻造时随机生成品质和词缀",
+        icon: "🔨",
+        timeCost: 0,
+        staminaCost: 0,
+        isForge: true
       },
       {
         id: "tavern",

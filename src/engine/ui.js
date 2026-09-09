@@ -643,6 +643,46 @@ export const UI = {
         return renderMapScreenImpl.call(this);
     },
 
+    // v3.9.0: 锻造界面
+    renderForgeScreen() {
+        if (typeof UIForge !== 'undefined') {
+            return UIForge.renderForgeScreen();
+        }
+        return '';
+    },
+
+    // v3.9.0: 更新锻造界面
+    updateForgeScreen() {
+        const app = document.getElementById('app');
+        if (app && Game.state === 'forge') {
+            app.innerHTML = this.renderForgeScreen();
+        }
+    },
+
+    // v3.11.0: 闭关修炼界面
+    renderRetreatScreen() {
+        if (typeof UIRetreat !== 'undefined') {
+            return UIRetreat.renderRetreatScreen();
+        }
+        return '';
+    },
+
+    // v3.12.0: 悬赏板界面
+    renderBountyScreen() {
+        if (typeof UIBounty !== 'undefined') {
+            return UIBounty.renderBountyScreen();
+        }
+        return '';
+    },
+
+    // v3.13.0: 年度考核界面
+    renderAnnualExamScreen() {
+        if (typeof UIAnnualExam !== 'undefined') {
+            return UIAnnualExam.renderAnnualExamScreen();
+        }
+        return '';
+    },
+
     // v0.81.3: 全功能菜单面板（手机端访问所有功能）
     showFullMenu() {
         const menuItems = [
