@@ -557,6 +557,125 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* ========== v3.3.0 CSS动画体系 ========== */
+        
+        /* 面板入场动画 */
+        @keyframes panelFadeIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .panel-enter { animation: panelFadeIn 0.3s ease-out; }
+        
+        /* 弹窗入场 */
+        @keyframes modalPopIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            70% { transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .modal-enter { animation: modalPopIn 0.25s ease-out; }
+        
+        /* 按钮悬浮效果 */
+        .btn-hover {
+            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+        }
+        .btn-hover:hover {
+            transform: translateY(-2px) scale(1.02);
+            filter: brightness(1.15);
+        }
+        .btn-hover:active {
+            transform: translateY(0) scale(0.98);
+        }
+        
+        /* 血条/蓝条平滑变化 */
+        .bar-smooth {
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* 脉冲发光 */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 5px currentColor; }
+            50% { box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
+        }
+        .pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
+        
+        /* 淡入 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+        
+        /* 从左滑入 */
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .slide-in-left { animation: slideInLeft 0.3s ease-out; }
+        
+        /* 从右滑入 */
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .slide-in-right { animation: slideInRight 0.3s ease-out; }
+        
+        /* 弹跳入场 */
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .bounce-in { animation: bounceIn 0.4s ease-out; }
+        
+        /* 闪烁高亮（新内容提示） */
+        @keyframes highlightFlash {
+            0%, 100% { background-color: transparent; }
+            50% { background-color: rgba(255, 215, 0, 0.2); }
+        }
+        .highlight-flash { animation: highlightFlash 1s ease-in-out 3; }
+        
+        /* 旋转加载 */
+        @keyframes rotateSpin {
+            to { transform: rotate(360deg); }
+        }
+        .spin { animation: rotateSpin 1s linear infinite; }
+        
+        /* 呼吸效果 */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+        .breathe { animation: breathe 3s ease-in-out infinite; }
+        
+        /* 低血量警告闪烁 */
+        @keyframes lowHpWarning {
+            0%, 100% { color: #ff4444; }
+            50% { color: #ff8888; text-shadow: 0 0 10px #ff4444; }
+        }
+        .low-hp-warning { animation: lowHpWarning 1s ease-in-out infinite; }
+        
+        /* 经验条获得动画 */
+        @keyframes expGain {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(1.5); }
+            100% { filter: brightness(1); }
+        }
+        .exp-gain { animation: expGain 0.5s ease-out; }
+        
+        /* 物品获得闪光 */
+        @keyframes itemObtained {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            60% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .item-obtained { animation: itemObtained 0.5s ease-out; }
+        
+        /* 通用过渡 */
+        .transition-all { transition: all 0.2s ease; }
+        .transition-transform { transition: transform 0.2s ease; }
+        .transition-opacity { transition: opacity 0.2s ease; }
     </style>
 
 
@@ -565,8 +684,9 @@
 
 
 
+
 
-  <script src="./assets/index-DEE8eIJq.js"></script>
+  <script src="./assets/index-BcP_0haQ.js"></script>
 </head>
 <body>
     <div id="loading-screen">
