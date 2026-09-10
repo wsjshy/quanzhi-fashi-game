@@ -1454,7 +1454,18 @@ export const DemonTraits = {
                 }
             },
             {
-                id: "terror_screech",
+                id: "artery_slash",
+                name: "动脉切割",
+                description: "能准确找到生物的动脉，普通攻击70%概率触发流血（每回合10点，持续4回合）",
+                type: "on_hit",
+                effects: {
+                    bleedChance: 0.7,
+                    bleedDamage: 10,
+                    bleedDuration: 4
+                }
+            },
+            {
+id: "terror_screech",
                 name: "恐惧尖啸",
                 description: "每3回合发出尖啸，造成伤害+恐惧（攻击-20%）",
                 type: "mechanic",
