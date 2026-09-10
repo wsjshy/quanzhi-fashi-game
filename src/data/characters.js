@@ -6,6 +6,18 @@
 export const DataCharacters = {
   mo_fan: {
     id: "mo_fan",
+    baseTier: "core",
+    activeStages: {
+        stage_1: { priority: 10, hasNewContent: true },
+        stage_2: { priority: 10, hasNewContent: true },
+        stage_3: { priority: 9, hasNewContent: true },
+        stage_4: { priority: 9, hasNewContent: true },
+        stage_5: { priority: 8, hasNewContent: false },
+        stage_6: { priority: 8, hasNewContent: false },
+        stage_7: { priority: 9, hasNewContent: true },
+        stage_8: { priority: 8, hasNewContent: false }
+    },
+
     name: "莫凡",
     title: "天生双系",
     description: "从另一个世界穿越而来的少年，拥有天生双系的天赋。雷系与火系兼修，性格桀骜不驯。",
@@ -1161,6 +1173,18 @@ export const DataCharacters = {
   },
   mo_jiaxing: {
     id: "mo_jiaxing",
+    baseTier: "core",
+    activeStages: {
+        stage_1: { priority: 6, hasNewContent: true },
+        stage_2: { priority: 6, hasNewContent: true },
+        stage_3: { priority: 5, hasNewContent: true },
+        stage_4: { priority: 5, hasNewContent: true },
+        stage_5: { priority: 4, hasNewContent: false },
+        stage_6: { priority: 4, hasNewContent: false },
+        stage_7: { priority: 5, hasNewContent: true },
+        stage_8: { priority: 4, hasNewContent: false }
+    },
+
     name: "莫家兴",
     title: "莫凡的父亲",
     description: "莫凡的父亲，脸色蜡黄的中年男子，原本给穆家老爷开车，后来调到后勤做采购。憨厚老实，为了儿子可以低声下气求人，把房子都卖了供莫凡上魔法高中。",
@@ -1243,6 +1267,18 @@ export const DataCharacters = {
   },
   mu_bai: {
     id: "mu_bai",
+    baseTier: "core",
+    activeStages: {
+        stage_1: { priority: 8, hasNewContent: true },
+        stage_2: { priority: 8, hasNewContent: true },
+        stage_3: { priority: 7, hasNewContent: true },
+        stage_4: { priority: 7, hasNewContent: true },
+        stage_5: { priority: 6, hasNewContent: false },
+        stage_6: { priority: 6, hasNewContent: false },
+        stage_7: { priority: 7, hasNewContent: true },
+        stage_8: { priority: 6, hasNewContent: false }
+    },
+
     name: "穆白",
     title: "穆家旁系子弟",
     description: "穆氏世家旁系子弟，高一8班1号学生。发型身高长相都堪称男神，表面谦逊有礼，内心却极其高傲阴暗，是个典型的绿茶男。寒冰系天赋出众，觉醒时冻结了觉醒石。看不起莫凡，认为他只是杂役的儿子。",
@@ -1577,7 +1613,22 @@ export const DataCharacters = {
     }
   },
   zhao_kunsan: {
-    id: "zhao_kunsan",
+    ambientLines: {
+        stage_1: [
+            { text: "穆白哥可是我们穆家的天才，某些人就别想比了。", condition: {"location":"tianlan_school"} },
+            { text: "哼，走后门进来的也配和我们一起上课？", condition: {"location":"tianlan_school"} },
+            { text: "穆白哥觉醒的可是寒冰系，你们这些人能比吗？", condition: {"location":"tianlan_school","time":["morning","afternoon"]} },
+        ],
+        stage_2: [
+            { text: "穆白哥已经把控3颗星子了，某些人连一颗都不行吧。", condition: {"location":"tianlan_school"} },
+            { text: "火系有什么了不起的，穆白哥的寒冰系才是最强的。", condition: {"location":"tianlan_school"} },
+        ],
+        default: [
+            { text: "跟着穆白哥混，准没错！", condition: {"location":"tianlan_school"} },
+        ],
+    },
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "赵坤三",
     title: "穆白的跟班",
     description: "满脸麻子的少年，穆白的忠实跟班，高一8班学生。风系法师，性格狗腿，爱仗势欺人，经常替穆白出面挑衅莫凡。",
@@ -1673,6 +1724,18 @@ export const DataCharacters = {
   },
   zhang_xiaohou: {
     id: "zhang_xiaohou",
+    baseTier: "core",
+    activeStages: {
+        stage_1: { priority: 8, hasNewContent: true },
+        stage_2: { priority: 8, hasNewContent: true },
+        stage_3: { priority: 7, hasNewContent: true },
+        stage_4: { priority: 7, hasNewContent: true },
+        stage_5: { priority: 6, hasNewContent: false },
+        stage_6: { priority: 6, hasNewContent: false },
+        stage_7: { priority: 7, hasNewContent: true },
+        stage_8: { priority: 6, hasNewContent: false }
+    },
+
     name: "张小侯",
     title: "风系学生",
     description: "跟泥猴子一样的少年，莫凡的邻居和发小，高一8班学生。风系法师，速度很快。性格活泼热心，消息灵通，极其崇拜莫凡，叫他\"莫凡哥\"，关键时刻很护短。",
@@ -2186,6 +2249,18 @@ export const DataCharacters = {
   },
   zhao_manyan: {
     id: "zhao_manyan",
+    baseTier: "core",
+    activeStages: {
+        stage_1: { priority: 7, hasNewContent: true },
+        stage_2: { priority: 7, hasNewContent: true },
+        stage_3: { priority: 6, hasNewContent: true },
+        stage_4: { priority: 6, hasNewContent: true },
+        stage_5: { priority: 5, hasNewContent: false },
+        stage_6: { priority: 5, hasNewContent: false },
+        stage_7: { priority: 6, hasNewContent: true },
+        stage_8: { priority: 5, hasNewContent: false }
+    },
+
     name: "赵满延",
     title: "光系初阶法师",
     description: "赵氏家族的少爷，光系法师。看似花花公子，实则防御极强，有点小贪财，但非常讲义气。博城篇时为天澜魔法高中学生，初阶法师。",
@@ -2592,6 +2667,18 @@ export const DataCharacters = {
   },
   mu_ningxue: {
     id: "mu_ningxue",
+    baseTier: "core",
+    activeStages: {
+        stage_1: { priority: 9, hasNewContent: true },
+        stage_2: { priority: 9, hasNewContent: true },
+        stage_3: { priority: 8, hasNewContent: true },
+        stage_4: { priority: 8, hasNewContent: true },
+        stage_5: { priority: 7, hasNewContent: false },
+        stage_6: { priority: 7, hasNewContent: false },
+        stage_7: { priority: 8, hasNewContent: true },
+        stage_8: { priority: 7, hasNewContent: false }
+    },
+
     name: "穆宁雪",
     title: "冰系天才",
     description: "穆氏家族的千金，冰系天赋极高，性格高冷，是学校里的风云人物。",
@@ -3253,6 +3340,18 @@ export const DataCharacters = {
   },
   tang_yue: {
     id: "tang_yue",
+    baseTier: "core",
+    activeStages: {
+        stage_1: { priority: 9, hasNewContent: true },
+        stage_2: { priority: 9, hasNewContent: true },
+        stage_3: { priority: 8, hasNewContent: true },
+        stage_4: { priority: 8, hasNewContent: true },
+        stage_5: { priority: 7, hasNewContent: false },
+        stage_6: { priority: 7, hasNewContent: false },
+        stage_7: { priority: 8, hasNewContent: true },
+        stage_8: { priority: 7, hasNewContent: false }
+    },
+
     name: "唐月",
     title: "魔法实践课老师",
     description: "天澜魔法高中的魔法实践课老师，成熟明媚，火系法师，教学风格生动。表面上是普通老师，实际身份是魔法协会审判会的审判员，在博城暗中调查黑教廷的动向。对学生很照顾，但偶尔会流露出超越普通教师的冷静和锐利。",
@@ -4186,6 +4285,10 @@ export const DataCharacters = {
   },
   shop_keeper: {
     id: "shop_keeper",
+    baseTier: "functional",
+    ambientLines: {},
+    autoTrigger: { enabled: false, chance: 0.2, cooldown: 3, priority: 3 },
+
     name: "王老板",
     title: "小卖部老板",
     description: "学校小卖部的老板，什么都卖，价格公道。",
@@ -4410,6 +4513,10 @@ export const DataCharacters = {
   },
   hunter_li: {
     id: "hunter_li",
+    baseTier: "functional",
+    ambientLines: {},
+    autoTrigger: { enabled: false, chance: 0.2, cooldown: 3, priority: 3 },
+
     name: "老李",
     title: "资深猎人",
     description: "猎魔者公会的资深猎人，经验丰富，见过各种妖魔。性格豪爽，喜欢喝酒。",
@@ -4682,6 +4789,10 @@ export const DataCharacters = {
   },
   book_shop_owner: {
     id: "book_shop_owner",
+    baseTier: "functional",
+    ambientLines: {},
+    autoTrigger: { enabled: false, chance: 0.2, cooldown: 3, priority: 3 },
+
     name: "陈老板",
     isCombatant: false,
     combatUnknown: true,
@@ -4960,6 +5071,10 @@ export const DataCharacters = {
   },
   magic_association_chairman: {
     id: "magic_association_chairman",
+    baseTier: "functional",
+    ambientLines: {},
+    autoTrigger: { enabled: false, chance: 0.2, cooldown: 3, priority: 3 },
+
     name: "周会长",
     title: "魔法协会会长",
     description: "博城魔法协会的会长，实力强大，德高望重。性格严肃，做事公正。",
@@ -5212,6 +5327,10 @@ export const DataCharacters = {
   },
   mysterious_mage: {
     id: "mysterious_mage",
+    baseTier: "functional",
+    ambientLines: {},
+    autoTrigger: { enabled: false, chance: 0.2, cooldown: 3, priority: 3 },
+
     name: "神秘人",
     isCombatant: false,
     combatUnknown: true,
@@ -5427,6 +5546,10 @@ export const DataCharacters = {
   },
   xiao_principal: {
     id: "xiao_principal",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "萧院长",
     title: "天澜魔法高中院长",
     description: "天澜魔法高中的院长，一位德高望重的老法师，修为深不可测，培养了无数优秀的法师。博城篇前期其实力未明确展现，故不设具体战斗数据。",
@@ -5733,6 +5856,18 @@ export const DataCharacters = {
   },
   xue_musheng: {
     id: "xue_musheng",
+    baseTier: "core",
+    activeStages: {
+        stage_1: { priority: 7, hasNewContent: true },
+        stage_2: { priority: 7, hasNewContent: true },
+        stage_3: { priority: 6, hasNewContent: true },
+        stage_4: { priority: 6, hasNewContent: true },
+        stage_5: { priority: 5, hasNewContent: false },
+        stage_6: { priority: 5, hasNewContent: false },
+        stage_7: { priority: 6, hasNewContent: true },
+        stage_8: { priority: 5, hasNewContent: false }
+    },
+
     name: "薛木生",
     title: "天澜魔法高中班主任",
     description: "莫凡所在班级的班主任，火系法师，教学严格但关心学生。",
@@ -6012,7 +6147,21 @@ export const DataCharacters = {
     }
   },
   he_yu: {
-    id: "he_yu",
+    ambientLines: {
+        stage_1: [
+            { text: "水系初阶虽然弱，但中阶以后就厉害了。", condition: {"location":"tianlan_school"} },
+            { text: "大家别灰心，每个系都有自己的优势。", condition: {"location":"tianlan_school"} },
+        ],
+        stage_2: [
+            { text: "水御的防御虽然不如土系，但胜在灵活。", condition: {"location":"tianlan_school"} },
+            { text: "修炼要循序渐进，不能急于求成。", condition: {"location":"tianlan_school"} },
+        ],
+        default: [
+            { text: "今天天气真好，适合修炼。", condition: {"location":"tianlan_school"} },
+        ],
+    },
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "何雨",
     title: "天澜魔法高中学生",
     description: "莫凡的同班同学，水系法师，性格温柔善良，乐于助人，治疗魔法很有天赋。",
@@ -6378,6 +6527,10 @@ export const DataCharacters = {
   },
   hunter_receptionist: {
     id: "hunter_receptionist",
+    baseTier: "functional",
+    ambientLines: {},
+    autoTrigger: { enabled: false, chance: 0.2, cooldown: 3, priority: 3 },
+
     name: "小雨",
     isCombatant: false,
     combatUnknown: true,
@@ -6594,6 +6747,10 @@ export const DataCharacters = {
   },
   mu_butler: {
     id: "mu_butler",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "福伯",
     isCombatant: false,
     combatUnknown: true,
@@ -6793,6 +6950,18 @@ export const DataCharacters = {
   },
   ye_xinxia: {
     id: "ye_xinxia",
+    baseTier: "core",
+    activeStages: {
+        stage_1: { priority: 8, hasNewContent: true },
+        stage_2: { priority: 8, hasNewContent: true },
+        stage_3: { priority: 7, hasNewContent: true },
+        stage_4: { priority: 7, hasNewContent: true },
+        stage_5: { priority: 6, hasNewContent: false },
+        stage_6: { priority: 6, hasNewContent: false },
+        stage_7: { priority: 7, hasNewContent: true },
+        stage_8: { priority: 6, hasNewContent: false }
+    },
+
     name: "叶心夏",
     title: "温柔的邻家妹妹",
     description: "莫凡没有血缘关系的妹妹，寄养在姑姑莫青家。双腿残疾需要坐轮椅，但性格温柔乖巧、懂事体贴，是莫凡最重要的亲人。后文觉醒治愈系。",
@@ -6893,7 +7062,17 @@ export const DataCharacters = {
     }
   },
   mu_he: {
-    id: "mu_he",
+    ambientLines: {
+        stage_1: [
+            { text: "穆家的事，还轮不到外人插嘴。", condition: {"location":"mu_family_estate"} },
+            { text: "天澜魔法高中的事，我这个董事长还是能说上几句话的。", condition: {"location":"mu_family_estate"} },
+        ],
+        default: [
+            { text: "穆家的威严，不容挑衅。", condition: {"location":"mu_family_estate"} },
+        ],
+    },
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "穆贺",
     title: "天澜高中校董",
     description: "穆白的叔叔，天澜魔法高中校董，穆氏世家旁系成员。表面慷慨激昂，实则势利阴险，看不起平民，认为穷和无能世代相传。博城灾难的关键人物。",
@@ -7024,7 +7203,21 @@ export const DataCharacters = {
     }
   },
   zhou_min: {
-    id: "zhou_min",
+    ambientLines: {
+        stage_1: [
+            { text: "火系可是最难觉醒的系之一，我一定会好好修炼的。", condition: {"location":"tianlan_school"} },
+            { text: "别以为女生就不能学战斗系，火系的威力可不是闹着玩的。", condition: {"location":"tianlan_school","time":["afternoon"]} },
+        ],
+        stage_2: [
+            { text: "把控星子真的好难啊，不过我不会放弃的。", condition: {"location":"tianlan_school"} },
+            { text: "莫凡那家伙看起来不声不响的，修炼倒是挺努力。", condition: {"location":"tianlan_school"} },
+        ],
+        default: [
+            { text: "今天也要加油修炼！", condition: {"location":"tianlan_school"} },
+        ],
+    },
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "周敏",
     title: "火系尖子生",
     description: "天澜高中学生，火系天赋很好的女孩，脸上带着英气。性格好强不服输，看不起不上进的人，崇拜强者。一开始看不起莫凡，后来态度可能转变。",
@@ -7211,7 +7404,21 @@ export const DataCharacters = {
     }
   },
   xu_zhaoting: {
-    id: "xu_zhaoting",
+    ambientLines: {
+        stage_1: [
+            { text: "雷系是最强的初阶系，这一点毫无疑问。", condition: {"location":"tianlan_school"} },
+            { text: "全校只有我一个雷系，这就是天赋的差距。", condition: {"location":"tianlan_school","time":["morning"]} },
+        ],
+        stage_2: [
+            { text: "我已经把控4颗雷系星子了，年底前一定能学会雷印。", condition: {"location":"tianlan_school"} },
+            { text: "雷系星子虽然活跃，但只要掌握方法，也不是不能控制。", condition: {"location":"tianlan_school"} },
+        ],
+        default: [
+            { text: "强者，就应该有强者的样子。", condition: {"location":"tianlan_school"} },
+        ],
+    },
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "许昭霆",
     title: "七班雷系学神",
     description: "天澜高中七班学生，雷系天赋很高，被张建国老师炫耀为得意门生。修为与穆白齐平，是莫凡的潜在竞争对手。自信傲冷。",
@@ -7395,6 +7602,10 @@ export const DataCharacters = {
   },
   mo_qing: {
     id: "mo_qing",
+    baseTier: "functional",
+    ambientLines: {},
+    autoTrigger: { enabled: false, chance: 0.2, cooldown: 3, priority: 3 },
+
     name: "莫青",
     title: "莫凡的小姑",
     description: "莫凡的小姑，在医院后勤部工作。身瘦面黄，人很好，爱听八卦。知道很多医院里的奇闻异事，包括妖魔潜伏的消息。",
@@ -7476,6 +7687,10 @@ export const DataCharacters = {
   },
   xu_bing: {
     id: "xu_bing",
+    baseTier: "functional",
+    ambientLines: {},
+    autoTrigger: { enabled: false, chance: 0.2, cooldown: 3, priority: 3 },
+
     name: "徐兵",
     title: "青熊帮头目",
     description: "广池区地痞组织青熊帮的头目，脖子有青色纹身，穿短夹克。给附近富家少女做打手，看谁不顺眼就踩。曾骚扰叶心夏，被莫凡用雷印教训。",
@@ -7557,6 +7772,10 @@ export const DataCharacters = {
   },
   mu_zhuoyun: {
     id: "mu_zhuoyun",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "穆卓云",
     title: "穆氏族长",
     description: "穆氏世家族长，穆宁雪的父亲，冰系高阶魔法师。发鬓白色，中年英气十足，身材魁梧高大。跺跺脚能让整个博城震一震的人物，博城的土皇帝。势利但爱才，三年前打压过莫凡家，年度考核后想招纳莫凡被拒，暴怒时仅凭气息冻结整个操场。",
@@ -7636,6 +7855,10 @@ level: 18,
   },
   zhan_kong: {
     id: "zhan_kong",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "斩空",
     title: "雪峰山驿站总教官",
     description: "雪峰山驿站总教官，胡渣大叔，火系强者，驿站屠妖魔数最高的人。性格散漫又严厉，军法师出身，与妖魔厮杀后的气息让学生不敢造次。天澜高中历练的总教官，给出了'完成悬赏否则全部不合格'的不可能任务。",
@@ -7941,6 +8164,10 @@ level: 15,
   },
   luo_yunbo: {
     id: "luo_yunbo",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "罗云波",
     title: "猎者小队队长",
     description: "三组猎者小队队长，皮肤黝黑英俊，雪峰山驿站的带队教官之一。经验丰富，负责带领学生在野外历练。",
@@ -8018,6 +8245,10 @@ level: 9,
   },
   pan_lijun: {
     id: "pan_lijun",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "潘丽君",
     title: "女副教官",
     description: "雪峰山驿站的女副教官，皮肤黝黑精悍，性格干练。崇拜斩空总教官，对学生要求严格。",
@@ -8094,7 +8325,21 @@ level: 8,
     }
   },
   wang_sanpang: {
-    id: "wang_sanpang",
+    ambientLines: {
+        stage_1: [
+            { text: "觉醒什么系都行，只要不是光系就好。", condition: {"location":"tianlan_school"} },
+            { text: "听说光系初阶最弱，希望我别那么倒霉。", condition: {"location":"tianlan_school"} },
+        ],
+        stage_2: [
+            { text: "修炼真的好累啊，什么时候才能学会第一个技能啊。", condition: {"location":"tianlan_school"} },
+            { text: "莫凡那家伙最近总是一个人修炼，也不知道在搞什么。", condition: {"location":"tianlan_school"} },
+        ],
+        default: [
+            { text: "今天食堂的菜还不错。", condition: {"location":"tianlan_school"} },
+        ],
+    },
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "王三胖",
     title: "天澜高中学生",
     description: "天澜魔法高中尖子班学生，体型偏胖，口无遮拦，经常说一些不合时宜的话。历练时质疑教官实力，被潘丽君冷笑回应。",
@@ -8253,6 +8498,10 @@ level: 2,
   },
   er_tuzi: {
     id: "er_tuzi",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "二秃子",
     title: "驿站小贩",
     description: "雪峰山驿站的小贩，光头，在主道摆摊卖魔法师战斗修炼用品。专卖履魔具，用奔妖后肢皮制作，附魔风轨法纹，风石提供能量。",
@@ -8307,6 +8556,10 @@ level: 2,
   },
   bai_yang: {
     id: "bai_yang",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "白阳",
     title: "召唤系法师",
     description: "天澜魔法高中的召唤系老师，幽狼兽的召唤师。在雪峰山历练中负责留守巢穴，召唤兽失控后精神受到重创。",
@@ -8401,6 +8654,10 @@ level: 10,
   },
   xu_dahuang: {
     id: "xu_dahuang",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "徐大荒",
     title: "城市猎妖队队长",
     description: "博城城市猎妖队队长，火系法师，性格豪爽霸道，作战经验丰富，身上常带着新伤（脑袋上总缠着纱布）。将火滋修炼到第三级爆裂境界，一招火滋·爆裂威力惊人。对队员要求严格，是个负责任的队长。",
@@ -8579,6 +8836,10 @@ level: 12,
   },
   guo_caitang: {
     id: "guo_caitang",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "郭彩棠",
     title: "城市猎妖队副队长",
     description: "博城城市猎妖队副队长，冰系法师，与穆氏家族有沾亲带故的关系。性格傲娇，难以相处，但实力不俗。被莫凡（梵墨）救过一命后态度有所转变。",
@@ -8717,6 +8978,10 @@ level: 10,
   },
   xiao_ke: {
     id: "xiao_ke",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "小可",
     title: "城市猎妖队成员",
     description: "博城城市猎妖队成员，水系法师，性格温柔可爱，有两颗小虎牙。掌握水系防御技能水御·化解，是队伍中唯一的防御型法师。战斗中容易紧张，但一直在努力成长。",
@@ -8843,6 +9108,10 @@ level: 8,
   },
   li_wenjie: {
     id: "li_wenjie",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "黎文杰",
     title: "城市猎妖队成员",
     description: "博城城市猎妖队成员，风系法师，留着飘逸长发，性格潇洒自信。掌握风轨·闪步，可以快速变换方位，是队伍中的机动输出。面对妖魔从容不迫，实力不俗。",
@@ -8915,6 +9184,10 @@ level: 9,
   },
   fei_shi: {
     id: "fei_shi",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "肥石",
     title: "城市猎妖队成员",
     description: "博城城市猎妖队成员，土系法师，圆润脸庞，总是戴着蓓蕾帽，性格随和爱笑。掌握土系位移技能地波，可以快速移动位置。经验老道，是队伍中的老大哥。",
@@ -8989,6 +9262,10 @@ level: 11,
   },
   yang_zuohe: {
     id: "yang_zuohe",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "杨作河",
     title: "魔法协会中阶法师",
     description: "博城魔法协会的中阶水系法师，同时掌握风系，实力强大。负责博城市区的妖魔巡逻和突发事件处理，经验丰富。",
@@ -9118,6 +9395,10 @@ level: 18,
   },
   yu_ang: {
     id: "yu_ang",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "宇昂",
     title: "穆氏养子 / 冰系修炼疯子",
     description: "穆卓云的养子，冰系法师，穆氏世家有名的修炼疯子——大家一提到这个人都不由浑身发冷。一年三百六十五天几乎都在修炼，长期使用星尘魔器，已掌握冰蔓·凝结。对穆卓云唯命是从，就算让他直接杀人也不会犹豫。穆卓云安排他在成年礼上与莫凡决斗。性格阴沉冷漠，除了修炼对一切都不感兴趣。",
@@ -9431,6 +9712,10 @@ level: 7,
   },
   liang_bin: {
     id: "liang_bin",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "梁斌",
     title: "地圣泉守卫长 / 中阶土系法师",
     description: "地圣泉的守卫长，中阶土系法师，沉稳可靠，负责守护博城最重要的修炼圣地。进入过地圣泉修炼，实力不俗。",
@@ -9504,6 +9789,10 @@ level: 15,
   },
   lin_yuxin: {
     id: "lin_yuxin",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "林雨欣",
     title: "地圣泉副卫长 / 水系法师",
     description: "地圣泉的副卫长，英姿飒爽的水系魔法师。妹妹一年前失踪，一直在寻找真相。敏锐细心，察觉到了地圣泉的异常。",
@@ -9646,6 +9935,10 @@ level: 12,
   },
   wan_duanfeng: {
     id: "wan_duanfeng",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "万断风",
     title: "千人团军长 / 中阶土系法师",
     description: "博城军部千人团军长，中阶土系法师，论防守整个博城没人比他更出色。驻守雪峰山驿站北面关卡，是博城北方的屏障。",
@@ -9780,6 +10073,10 @@ level: 18,
   },
   zhu_principal: {
     id: "zhu_principal",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "朱校长",
     title: "天澜魔法高中校长",
     description: "天澜魔法高中的大校长，在学生和家长们心中威望极高。他颇有半隐士的意味，可大事情依旧会出来主持。朱校长始终站在普通学生们这边，宁愿在世家、家族的压力下也保护普通学生，培养了很多并没有什么背景的出色魔法师。",
@@ -9967,6 +10264,10 @@ level: 18,
   },
   deng_kai: {
     id: "deng_kai",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "邓凯",
     title: "猎者联盟大长老 / 校董",
     description: "博城猎者联盟的大长老，同时也是天澜魔法高中的校董，算是所有校董之中修为最高、实力最强的人。地位超然，实力还在那位叫做杨作河的中阶魔法师之上。正义感强，在穆卓云暴怒时站出来挡在学生面前，保护没有防御能力的学生。完全站在学生这一边，很看重有潜力的年轻魔法师。",
@@ -10203,6 +10504,10 @@ level: 18,
 
   mu_nujiao: {
     id: "mu_nujiao",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "牧奴娇",
     title: "明珠女神",
     description: "牧家大小姐，全校公认的女神。天仙之姿，却嗜战如魔。风系+植物系双系中阶法师，战斗经验丰富。",
@@ -10376,6 +10681,10 @@ level: 18,
   },
   ai_tutu: {
     id: "ai_tutu",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "艾图图",
     isCombatant: false,
     combatUnknown: true,
@@ -10570,6 +10879,10 @@ level: 18,
 
   lingling: {
     id: "lingling",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "灵灵",
     title: "猎人大师",
     description: "包老头的孙女，年仅12岁却是猎人大师。智商极高，擅长分析和情报，是莫凡猎人搭档。",
@@ -10742,6 +11055,10 @@ level: 18,
 
   luo_song: {
     id: "luo_song",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "罗宋",
     title: "土冰双系中阶",
     description: "富家子弟，土系+冰系双系中阶法师。为人傲慢，与莫凡有竞争关系。",
@@ -10807,6 +11124,10 @@ level: 18,
 
   bai_cangfeng: {
     id: "bai_cangfeng",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "白藏锋",
     title: "白家子弟",
     description: "魔都四大家族白家的子弟，光系中阶法师，光系系主任白眉的侄子。为人高傲多话，自认天才，视莫凡为眼中钉。主校区考核中被莫凡一霹雳秒杀。",
@@ -10949,6 +11270,10 @@ level: 18,
 
   bao_laotou: {
     id: "bao_laotou",
+    baseTier: "background",
+    ambientLines: {},
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
     name: "包老头",
     title: "青天猎所所长",
     description: "青天猎所的创办者，灵灵的爷爷。看似普通的老头，实则深藏不露，是猎者联盟中德高望重的人物。对黑教廷有深入了解，暗中保护莫凡。",
@@ -11062,7 +11387,105 @@ level: 18,
         }
       }
     }
-  }
+  },
+
+  zhang_yinglu: {
+    ambientLines: {
+        stage_1: [
+            { text: "今天天气不错，适合修炼。", condition: {"location":"tianlan_school"} },
+            { text: "风系魔法的关键在于速度，你们要多加练习。", condition: {"location":"tianlan_school"} },
+        ],
+        stage_7: [
+            { text: "大家跟紧我，不要掉队！", condition: {"location":"mingyuan_residential"} },
+            { text: "前面好像有动静，我去看看。", condition: {"location":"mingyuan_residential"} },
+        ],
+        default: [
+            { text: "注意安全，妖魔随时可能出现。", condition: {"location":"tianlan_school"} },
+        ],
+    },
+    autoTrigger: { enabled: true, chance: 0.3, cooldown: 3, priority: 5 },
+
+    name: "张英璐",
+    title: "天澜高中学生",
+    description: "天澜魔法高中学生，风系法师，性格细心谨慎。博城灾难时作为先锋小队成员负责探路，在明园小区被巨眼猩鼠偷袭牺牲。",
+    avatar: "",
+    location: "tianlan_school",
+    element: "wind",
+    elements: ["wind"],
+    level: 2,
+    personality: ["细心", "谨慎", "负责", "勇敢"],
+    baseStats: { hp: 70, mp: 60, attack: 9, defense: 5, speed: 12 },
+    skills: ["basic_attack", "wind_boost", "wind_step"],
+    talents: [],
+    relationships: {
+      xue_musheng: { opinion: 60, trust: 50, type: "teacher", label: "班主任" },
+      zhang_xiaohou: { opinion: 50, trust: 40, type: "friend", label: "风系同学" },
+    },
+    growth: {
+      growthRate: 75,
+      base: {
+        level: 2,
+        elements: ["wind"],
+        skills: ["basic_attack","wind_boost"],
+        title: "天澜高中学生",
+        growthType: "mage",
+      },
+    },
+    giftPreferences: {
+      loved: ["wind_spirit", "speed_potion"],
+      liked: ["health_potion", "mana_potion"],
+      disliked: [],
+      baseOpinionGain: 5,
+      lovedMultiplier: 2,
+      likedMultiplier: 1.5,
+      dislikedMultiplier: 0.5,
+      dailyGiftLimit: 3
+    },
+    dialogueTree: {
+      npcId: "zhang_yinglu",
+      nodes: {
+        default: {
+          id: "default",
+          texts: [
+            "你好，我是张英璐，风系的。",
+            "修炼要循序渐进，不能急于求成。",
+            "风系魔法的优势在于速度，要善加利用。"
+          ],
+          choices: [
+            { text: "风系魔法怎么修炼？", nextNode: "wind_training" },
+            { text: "博城灾难那天你还好吗？", nextNode: "after_disaster", condition: { hasFlags: ["bocheng_disaster_happened"] } },
+            { text: "告辞。", nextNode: null }
+          ]
+        },
+        wind_training: {
+          id: "wind_training",
+          texts: [
+            "风系魔法的关键在于星子的连接速度，要不断练习星轨的形成。",
+            "初阶风系有三个等级：疾行、闪步、还有更高阶的。",
+            "我现在也只是刚学会闪步，还要继续努力。"
+          ],
+          choices: [
+            { text: "谢谢你的指点。", nextNode: "default", effects: { opinion: 5 } },
+            { text: "告辞。", nextNode: null }
+          ]
+        },
+        after_disaster: {
+          id: "after_disaster",
+          texts: [
+            "那天...太可怕了。",
+            "我本来在前面探路，突然一只巨眼猩鼠从侧面扑过来...",
+            "如果不是薛老师及时用光耀·失明，我可能就..."
+          ],
+          choices: [
+            { text: "都过去了，你安全就好。", nextNode: "default", effects: { opinion: 10, trust: 5 } },
+            { text: "巨眼猩鼠太可恶了。", nextNode: "default", effects: { opinion: 5 } },
+            { text: "告辞。", nextNode: null }
+          ]
+        }
+      }
+    }
+  },
+
 };
 
 export default DataCharacters;

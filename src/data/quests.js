@@ -4385,6 +4385,75 @@ export const DataQuests = {
     }
   },
 
+
+  // ========== 博城灾难·学校撤离 ==========
+  quest_bocheng_evacuation: {
+    id: "quest_bocheng_evacuation",
+    name: "博城灾难·学校撤离",
+    description: "血色警戒触发！博城遭遇上千只妖魔入侵。天澜魔法高中紧急集合，先锋小队先头探路，大部队随后撤离到安全结界。",
+    giver: "xue_musheng",
+    type: "story",
+    objectives: [
+      { type: "talk", npcId: "xue_musheng", count: 1, description: "与薛木生老师对话，了解撤离计划" },
+      { type: "reach", locationId: "mingyuan_residential", count: 1, description: "跟随先锋小队穿越明园小区" },
+      { type: "reach", locationId: "meixin_viaduct", count: 1, description: "通过美鑫高架桥" },
+      { type: "reach", locationId: "safe_zone", count: 1, description: "到达安全结界" }
+    ],
+    rewards: {
+      exp: 500,
+      gold: 200,
+      reputation: { school: 20 },
+      achievements: ["bocheng_guardian"]
+    },
+    prerequisites: ["bocheng_disaster_triggered"],
+    nextQuest: "quest_rescue_yexinxia",
+    isMainQuest: true,
+    dialogueStart: "血色警戒！全体师生注意！立即到操场集合！先锋小队跟我来！我们10人先头探路，大部队随后跟进！目标：安全结界，距离3公里！",
+    dialogueInProgress: "大家跟紧我，不要掉队！前面就是明园小区，小心妖魔偷袭！",
+    dialogueComplete: "学校撤离完成！1700学生+100导师安全到达安全结界！但博城灾难还未结束...先锋小队即将执行更危险的任务：前往铭文区，救援被困的叶心夏！"
+  },
+
+  quest_vanguard_join: {
+    id: "quest_vanguard_join",
+    name: "加入先锋小队",
+    description: "薛木生老师组建先锋小队先头探路。你可以选择加入先锋小队（高风险高回报），或跟随大部队撤离（安全但体验较少）。",
+    giver: "xue_musheng",
+    type: "choice",
+    objectives: [
+      { type: "talk", npcId: "xue_musheng", count: 1, description: "与薛木生老师对话，做出选择" }
+    ],
+    rewards: {
+      exp: 100,
+      vanguard_member: true
+    },
+    prerequisites: ["quest_bocheng_evacuation"],
+    isMainQuest: false,
+    dialogueStart: "先锋小队需要勇敢的人。你愿意加入我们吗？加入先锋小队风险更高，但你的影响力也会更大。",
+    dialogueInProgress: "想好了吗？加入先锋小队，还是跟随大部队？",
+    dialogueComplete: "好！欢迎加入先锋小队！我们一起为大家探路！"
+  },
+
+  quest_zhang_yinglu_sacrifice: {
+    id: "quest_zhang_yinglu_sacrifice",
+    name: "明园小区·张英璐牺牲",
+    description: "先锋小队穿越明园小区时，张英璐在探路时被巨眼猩鼠偷袭牺牲。这是先锋小队的第一次伤亡。",
+    giver: "xue_musheng",
+    type: "story",
+    objectives: [
+      { type: "event", eventId: "zhang_yinglu_sacrifice", count: 1, description: "见证张英璐牺牲" }
+    ],
+    rewards: {
+      exp: 200,
+      composure: 10,
+      morale_change: -20
+    },
+    prerequisites: ["quest_vanguard_join"],
+    isMainQuest: false,
+    dialogueStart: "张英璐！小心！...太迟了...巨眼猩鼠从侧面偷袭了她...",
+    dialogueInProgress: "她...她还这么年轻...我们不能让她白死！继续前进！",
+    dialogueComplete: "张英璐牺牲了。先锋小队士气下降。但我们必须继续前进，为了更多人的安全。"
+  },
+
 };
 
 export default DataQuests;

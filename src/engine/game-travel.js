@@ -20,6 +20,15 @@ export function travelTo(locationId) {
             // 日常追踪：访问地点
             DailySystem.trackActivity('visit', 1, locationId);
 
+            // v3.14.0: 环境对话触发（进入地点时，背景NPC自动说台词）
+            if (typeof AmbientDialogueSystem !== 'undefined') {
+                try {
+                    AmbientDialogueSystem.checkLocationTriggers(locationId);
+                } catch (e) {
+                    console.warn('[AmbientDialogue] 触发失败:', e);
+                }
+            }
+
             // v0.9.0: 首次探索奖励（鼓励玩家探索新地点）
             let firstExploreReward = null;
             if (!Player.exploredLocations.includes(locationId)) {

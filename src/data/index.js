@@ -24,6 +24,9 @@ import { DataClues } from './clues.js';
 import { DataMaps } from './maps.js';
 import { DemonTraits } from './demon-traits.js';
 import { AFFIX_QUALITIES, PREFIX_AFFIXES, SUFFIX_AFFIXES, generateAffixes, rollQuality, getAffixDisplay } from './affixes.js';
+import { AlertLevels, AlertLevelRules, LightSignal } from './alert-levels.js';
+import { VanguardTeam } from './vanguard-team.js';
+import { DataAwakening } from './awakening.js';
 
 export const GameData = {
     skills: DataSkills,
@@ -111,6 +114,7 @@ if (typeof window !== 'undefined') {
     window.DataChapters = DataChapters;
     window.DataClues = DataClues;
     window.DataMaps = DataMaps;
+    window.DataAwakening = DataAwakening;
     window.DemonTraits = DemonTraits;
     window.GameData = GameData;
     // 额外配置常量

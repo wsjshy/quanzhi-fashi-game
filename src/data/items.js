@@ -2910,5 +2910,165 @@ export const DataItems = {
     lore: "常见的净化草药，在博城郊外的清澈水源旁可以采集到。"
   },
 
+
+  // v3.20.0: 战斗攻击道具
+  fire_stone: {
+    id: "fire_stone",
+    name: "火焰石",
+    description: "蕴含火系能量的石头，战斗中使用造成80点火系伤害，30%概率燃烧",
+    type: "consumable",
+    icon: "🔥",
+    price: 50,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    battleUse: {
+      type: "damage",
+      element: "fire",
+      damage: 80,
+      statusEffect: { type: "burn", name: "燃烧", duration: 3, chance: 0.3 }
+    }
+  },
+  thunder_orb: {
+    id: "thunder_orb",
+    name: "雷电珠",
+    description: "蕴含雷系能量的珠子，战斗中使用造成90点雷系伤害，30%概率麻痹",
+    type: "consumable",
+    icon: "⚡",
+    price: 60,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    battleUse: {
+      type: "damage",
+      element: "thunder",
+      damage: 90,
+      statusEffect: { type: "paralyze", name: "麻痹", duration: 3, chance: 0.3 }
+    }
+  },
+  ice_crystal: {
+    id: "ice_crystal",
+    name: "冰霜结晶",
+    description: "蕴含冰系能量的结晶，战斗中使用造成70点冰系伤害，30%概率冻结",
+    type: "consumable",
+    icon: "❄️",
+    price: 55,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    battleUse: {
+      type: "damage",
+      element: "ice",
+      damage: 70,
+      statusEffect: { type: "frozen", name: "冻结", duration: 2, chance: 0.3 }
+    }
+  },
+  earth_shard: {
+    id: "earth_shard",
+    name: "岩石碎片",
+    description: "蕴含土系能量的碎片，战斗中使用造成100点土系伤害，30%概率减速",
+    type: "consumable",
+    icon: "🪨",
+    price: 45,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    battleUse: {
+      type: "damage",
+      element: "earth",
+      damage: 100,
+      statusEffect: { type: "slow", name: "减速", duration: 3, chance: 0.3 }
+    }
+  },
+  // v3.20.0: 战斗辅助道具
+  strength_potion: {
+    id: "strength_potion",
+    name: "力量药剂",
+    description: "提升攻击力20%，持续3回合",
+    type: "consumable",
+    icon: "💪",
+    price: 80,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    battleUse: {
+      type: "buff",
+      statModifiers: { attack: 0.2 },
+      duration: 3
+    }
+  },
+  defense_potion: {
+    id: "defense_potion",
+    name: "防御药剂",
+    description: "提升防御力20%，持续3回合",
+    type: "consumable",
+    icon: "🛡️",
+    price: 80,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    battleUse: {
+      type: "buff",
+      statModifiers: { defense: 0.2 },
+      duration: 3
+    }
+  },
+  speed_potion: {
+    id: "speed_potion",
+    name: "速度药剂",
+    description: "提升速度20%，持续3回合",
+    type: "consumable",
+    icon: "👟",
+    price: 80,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: false,
+    battleUse: {
+      type: "buff",
+      statModifiers: { speed: 0.2 },
+      duration: 3
+    }
+  },
+  spirit_potion: {
+    id: "spirit_potion",
+    name: "精神力药剂",
+    description: "恢复50点魔法值，并提升精神力",
+    type: "consumable",
+    icon: "🧠",
+    price: 100,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: true,
+    effects: {
+      mp: 50
+    },
+    battleUse: {
+      type: "heal",
+      mp: 50
+    }
+  },
+  status_cure: {
+    id: "status_cure",
+    name: "状态恢复剂",
+    description: "解除所有负面状态（麻痹/冻结/燃烧/中毒/减速等）",
+    type: "consumable",
+    icon: "✨",
+    price: 120,
+    stackable: true,
+    maxStack: 99,
+    usableInBattle: true,
+    usableOutOfBattle: true,
+    battleUse: {
+      type: "cleanse"
+    }
+  },
 };
 export default DataItems;

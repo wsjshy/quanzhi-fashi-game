@@ -68,6 +68,12 @@ import './engine/achievement-handler.js'; // AchievementHandler
 import './engine/world-state.js';    // WorldState
 import './engine/npc-state.js';      // NPCStateSystem
 import './engine/npc-growth.js';     // NPCGrowthService
+import './engine/story-stage.js';     // StoryStageSystem（v3.14.0剧情阶段管理）
+import './engine/npc-tier.js';        // NpcTierSystem（v3.14.0 NPC动态分层）
+import './engine/ambient-dialogue.js'; // AmbientDialogueSystem（v3.14.0环境对话系统）
+import './engine/alert-system.js';      // AlertSystem（v3.15.0警戒等级系统）
+import './engine/vanguard-team.js';     // VanguardTeamSystem（v3.15.0先锋小队系统）
+import './engine/awakening.js';         // AwakeningSystem（v3.15.0觉醒系统重构）
 import './engine/dialogue-tree.js';  // DialogueTree
 import './engine/encounter.js';      // EncounterSystem
 import './engine/ui-assets.js';      // UIAssets（美术资源管理，v3.3.0）

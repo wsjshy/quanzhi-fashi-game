@@ -26,7 +26,7 @@ export function renderTitleScreen(hasSave) {
             position: relative;
             overflow: hidden;
         ">
-            <!-- 背景装饰（v3.3.0：AI生成雷系魔法特效图） -->
+            <!-- 背景装饰（v3.15.0：AI生成雷系魔法特效图） -->
             <div style="
                 position: absolute;
                 top: 0; left: 0;
@@ -103,7 +103,7 @@ export function renderTitleScreen(hasSave) {
                 right: 20px;
                 font-size: 14px;
                 color: #555;
-            ">v3.13.0 · 年度考核</div>
+            ">v3.15.0 · NPC分层</div>
         </div>
     `;
 

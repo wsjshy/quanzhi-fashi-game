@@ -71,8 +71,20 @@ export function showNPCList(npcs, unavailableNpcs = []) {
             box-shadow: 0 0 40px rgba(100, 100, 255, 0.3);
         `;
         
+        // v3.14.0: 按tier分组（core/background/functional）
+        const npcsByTier = { core: [], background: [], functional: [] };
+        npcs.forEach(npc => {
+            const tier = npc.baseTier || npc.tier || 'background';
+            if (npcsByTier[tier]) {
+                npcsByTier[tier].push(npc);
+            } else {
+                npcsByTier.background.push(npc);
+            }
+        });
+
+        // v3.14.0: 生成单个NPC的HTML（通用函数）
+        const generateNpcHtml = (npc) => {
         // 生成可用NPC的HTML
-        const availableNpcsHtml = npcs.map(npc => {
             const canTalk = NPCStateSystem.canTalkTo(npc.id);
             const hint = NPCStateSystem.getDialogueRequirementHint(npc.id);
             const availableQuests = QuestSystem.getAvailableQuestsForNPC(npc.id);
@@ -114,7 +126,8 @@ export function showNPCList(npcs, unavailableNpcs = []) {
             const elementsIcons = npcElements.slice(0, 3).map(el => {
                 const info = this._getElementInfo(el);
                 return `<span style="color: ${info.color}; font-size: 14px;" title="${info.name}">${info.icon}</span>`;
-            }).join('');
+        }).join('');
+
             
             if (canTalk) {
                 const borderColor = hasQuest ? '#ffcc00' : (hasNewDialogue ? '#44dd88' : '#444477');
@@ -193,7 +206,25 @@ export function showNPCList(npcs, unavailableNpcs = []) {
                     </button>
                 `;
             }
-        }).join('');
+        };
+
+        // v3.14.0: 生成各分组的HTML
+        const generateTierHtml = (tierNpcs, tierName, tierColor, tierIcon) => {
+            if (tierNpcs.length === 0) return '';
+            const npcsHtml = tierNpcs.map(npc => generateNpcHtml(npc)).join('');
+            return `
+                <div style="font-size: 15px; color: ${tierColor}; margin-top: 10px; margin-bottom: 8px; font-weight: bold; border-bottom: 1px solid ${tierColor}; padding-bottom: 5px;">
+                    ${tierIcon} ${tierName}（${tierNpcs.length}）
+                </div>
+                ${npcsHtml}
+            `;
+        };
+
+        const coreHtml = generateTierHtml(npcsByTier.core, '核心人物', '#ffd700', '⭐');
+        const backgroundHtml = generateTierHtml(npcsByTier.background, '其他人', '#88aaff', '👥');
+        const functionalHtml = generateTierHtml(npcsByTier.functional, '功能', '#88ff88', '🔧');
+        
+        const availableNpcsHtml = coreHtml + backgroundHtml + functionalHtml;
         
         // 生成不可用NPC的HTML（因为时间不对而不在的）
         const periodNames = {

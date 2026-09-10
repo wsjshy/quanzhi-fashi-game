@@ -78,6 +78,9 @@ export const STATE_SCHEMA = {
     // === 影响力与剧情 ===
     influence: { default: 0, category: 'player' },
     changedStoryNodes: { default: [], category: 'player' },
+    storyStage: { default: 1, category: 'player' },
+    storyStageHistory: { default: [], category: 'player' },
+    ambientCooldowns: { default: {}, category: 'player' },
 
     // === 任务 ===
     activeQuests: { default: [], category: 'player' },

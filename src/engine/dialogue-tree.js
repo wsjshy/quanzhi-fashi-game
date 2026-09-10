@@ -250,6 +250,17 @@ export const DialogueTree = {
         const node = dialogueData.nodes[this.currentNode];
         if (!node) return null;
 
+        // v3.14.0: 节点级 unlockCondition 检查
+        // 如果当前节点不满足解锁条件，自动回退到 default 节点
+        if (this.currentNode !== 'default' && node.unlockCondition) {
+            if (!this._checkCondition(node.unlockCondition)) {
+                console.log('[DialogueTree] 节点 ' + this.currentNode + ' 不满足 unlockCondition，回退到 default');
+                this.currentNode = 'default';
+                node = dialogueData.nodes['default'];
+                if (!node) return null;
+            }
+        }
+
         // 随机选一条文本
         let texts = node.texts || ['...'];
 
@@ -442,7 +453,27 @@ export const DialogueTree = {
             return false;
         }
 
-        return true;
+                // v3.14.0: 剧情阶段（stage）条件
+        if (condition.minStage || condition.maxStage || condition.stage) {
+            let currentStage = 1;
+            if (typeof StoryStageSystem !== 'undefined') {
+                currentStage = StoryStageSystem.getCurrentStage();
+            } else if (typeof Player !== 'undefined' && Player.storyStage) {
+                currentStage = Player.storyStage;
+            }
+            
+            if (condition.stage && currentStage !== condition.stage) {
+                return false;
+            }
+            if (condition.minStage && currentStage < condition.minStage) {
+                return false;
+            }
+            if (condition.maxStage && currentStage > condition.maxStage) {
+                return false;
+            }
+        }
+
+return true;
     },
 
     /**

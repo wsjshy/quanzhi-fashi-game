@@ -60,7 +60,7 @@ export function renderMapScreen() {
     const stats = Player.getTotalStats();
     const isPortrait = UI.isPortrait();
     
-    // 根据地点选择背景（v3.3.0：用CSS渐变替代缺失的图片）
+    // 根据地点选择背景（v3.15.0：用CSS渐变替代缺失的图片）
     let bgGradient = '';
     const locId = location?.id || '';
     const locBgMap = {
@@ -84,7 +84,7 @@ export function renderMapScreen() {
     this.elements.gameContainer.innerHTML = `
         <div style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; background: ${location?.backgroundColor || '#1a1a3a'}; position: relative; padding-bottom: 110px; overflow-x: hidden; pointer-events: auto; z-index: 1;">
             
-            <!-- 背景渐变（v3.3.0） -->
+            <!-- 背景渐变（v3.15.0） -->
             <div style="
                 position: absolute;
                 top: 0; left: 0;
@@ -133,7 +133,7 @@ export function renderMapScreen() {
                         </div>
                         <span style="color: #88aaff; font-size: 12px; min-width: 50px;">${Player.mp}/${Player.maxMp}</span>
                     </div>
-                    <span style="color: #888; font-size: 11px; opacity: 0.6;" title="全职法师网页游戏 当前版本">v3.13.0</span>
+                    <span style="color: #888; font-size: 11px; opacity: 0.6;" title="全职法师网页游戏 当前版本">v3.15.0</span>
                     ${(() => {
                         const da = Player.dailyActions || { cultivate: 0, study: 0, hunt: 0 };
                         const getEffLabel = (count) => {
