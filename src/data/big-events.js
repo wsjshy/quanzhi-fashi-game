@@ -286,7 +286,7 @@ export const DataBigEvents = {
         name: "第二波攻势",
         description: "你击退了第一波妖魔，但很快，更强的第二波攻势来了。这次，甚至有高级妖魔出现！\n\n就在你感到绝望时，一道强大的魔法光芒从天而降——是城市的高阶法师们出手了！",
         type: "narrative",
-        nextPhase: "phase_5_discovery",
+        nextPhase: "phase_5_meet_baiyang",
         effects: {
           exp: 150
         }
@@ -298,12 +298,155 @@ export const DataBigEvents = {
         name: "被救",
         description: "你体力不支，倒在了战场上。就在一只妖魔要扑向你时，一道魔法光束击中了它。\n\n是唐月老师！她及时赶到，救了你一命。\"坚持住，孩子，我们一定会赢的！\"",
         type: "narrative",
-        nextPhase: "phase_5_discovery",
+        nextPhase: "phase_5_meet_baiyang",
         effects: {
           hp: -30,
           flags: {
             "rescued_by_teacher": true
           }
+        }
+      },
+
+      // 第五阶段B-1：遇到白阳教官（v3.21.0原著剧情）
+      {
+        id: "phase_5_meet_baiyang",
+        name: "白阳教官",
+        description: "逃亡途中，你们遇到了雪峰山驿站的召唤系教官白阳。他看上去和煦俊俏，令人安心。\n\n\"孩子们，跟我来，我带你们去安全的地方。\"白阳微笑着说。\n\n薛木生老师松了一口气：\"白教官，太好了，我们正需要帮助。\"\n\n你跟在队伍后面，总觉得哪里不太对劲——白阳教官的笑容，似乎太完美了一些。",
+        type: "narrative",
+        nextPhase: "phase_5_baiyang_betrayal",
+        effects: {
+          flags: { "met_bai_yang": true }
+        }
+      },
+
+      // 第五阶段B-2：白阳叛变（v3.21.0原著剧情）
+      {
+        id: "phase_5_baiyang_betrayal",
+        name: "突变，叛徒！",
+        description: "走到一座石桥上时，白阳突然停下脚步，转过身来。\n\n\"对了，\"白阳的笑容变得诡异，\"地圣泉在你们谁手里？交给我吧，我会好好保管的。\"\n\n薛木生老师脸色一变：\"白教官，你这是什么意思？\"\n\n\"意思就是……\"白阳的眼神变得阴冷，\"地圣泉，是黑教廷的了。\"\n\n他抬手一挥，一只巨大的幽狼兽从阴影中走出！同时，两只浑身漆黑的怪物从桥边飞窜而出——黑畜妖！\n\n\"白阳！你这个叛徒！\"薛木生老师怒吼着释放光耀。",
+        type: "choice",
+        choices: [
+          {
+            text: "迎战白阳！保护同学们！",
+            nextPhase: "phase_5_baiyang_battle",
+            effects: {
+              flags: { "fought_bai_yang": true }
+            }
+          },
+          {
+            text: "保护何雨和张小侯撤退",
+            nextPhase: "phase_5_heyu_sacrifice",
+            effects: {
+              flags: { "protected_students": true }
+            }
+          }
+        ]
+      },
+
+      // 第五阶段B-3：白阳BOSS战（v3.21.0）
+      {
+        id: "phase_5_baiyang_battle",
+        name: "激战白阳",
+        description: "你冲向白阳，与他展开激战！幽狼兽和两只黑畜妖围攻上来，薛木生老师和穆白也加入战斗。\n\n白阳的召唤兽配合默契，黑畜妖速度极快，不断试图切割你们的动脉。战斗陷入胶着……",
+        type: "battle",
+        enemyId: "bai_yang_duel",
+        winPhase: "phase_5_heyu_sacrifice",
+        losePhase: "phase_5_heyu_sacrifice"
+      },
+
+      // 第五阶段B-4：何雨牺牲（可避免，v3.21.0原著剧情）
+      {
+        id: "phase_5_heyu_sacrifice",
+        name: "毫无征兆的死亡",
+        description: "混乱中，一只黑畜妖扑向了张小侯！\n\n就在这千钧一发之际，一道水蓝色的光芒亮起——是何雨！她释放了水域，挡在了张小侯面前！\n\n\"何雨！\"张小侯惊呼。\n\n但是，另一只黑畜妖从侧面袭来，锋利的爪子切开了何雨的动脉！鲜血喷涌而出，怎么也止不住……\n\n何雨倒在张小侯怀里，脸色苍白，但嘴角却带着一丝微笑。\n\n\"小侯……历练的时候……你救过我……现在……轮到我了……\"",
+        type: "choice",
+        choices: [
+          {
+            text: "冲上去推开何雨！（需要关系≥50，速度≥30）",
+            nextPhase: "phase_5_heyu_saved",
+            conditions: {
+              minRelation: { "he_yu": 50 },
+              minSpeed: 30
+            },
+            effects: {
+              hp: -50,
+              flags: { "saved_he_yu": true },
+              relation: { "he_yu": 30 }
+            }
+          },
+          {
+            text: "冲上去！但速度不够……",
+            nextPhase: "phase_5_heyu_sacrificed_try",
+            conditions: {
+              minRelation: { "he_yu": 30 }
+            },
+            effects: {
+              hp: -20,
+              flags: { "tried_save_he_yu": true }
+            }
+          },
+          {
+            text: "被薛老师拉住了……",
+            nextPhase: "phase_5_heyu_sacrificed",
+            effects: {
+              flags: { "he_yu_sacrificed": true }
+            }
+          }
+        ]
+      },
+
+      // 第五阶段B-4a：何雨被救（v3.21.0可避免分支）
+      {
+        id: "phase_5_heyu_saved",
+        name: "英雄救美",
+        description: "你用尽全身力气冲了上去，一把推开了何雨！\n\n黑畜妖的爪子划过你的肩膀，鲜血直流，但你顾不上疼痛。\n\n何雨愣愣地看着你，眼泪夺眶而出：\"你……你为什么要救我……\"\n\n\"因为我们是同学。\"你咬着牙说。\n\n薛木生老师趁机释放光耀，逼退了黑畜妖。何雨虽然受了惊吓，但活了下来。",
+        type: "narrative",
+        nextPhase: "phase_5_mubai_slay",
+        effects: {
+          exp: 200,
+          reputation: { "school": 20 },
+          flags: { "he_yu_alive": true, "hero_saved_he_yu": true }
+        }
+      },
+
+      // 第五阶段B-4b：尽力救何雨但失败（v3.21.0）
+      {
+        id: "phase_5_heyu_sacrificed_try",
+        name: "尽力而为",
+        description: "你冲了上去，但速度还是慢了一步……\n\n黑畜妖的爪子切开了何雨的动脉，你只来得及扶住她倒下的身体。\n\n何雨看着你，眼中带着感激：\"谢谢你……至少……有人愿意为我冲上来……\"\n\n她的声音越来越弱，最后在你怀里停止了呼吸。\n\n张小侯跪在旁边，泪水奔涌：\"何雨！何雨！\"\n\n你紧紧握着拳头，指甲嵌入掌心。如果……如果你的速度再快一点……",
+        type: "narrative",
+        nextPhase: "phase_5_mubai_slay",
+        effects: {
+          exp: 100,
+          flags: { "he_yu_sacrificed": true, "tried_save_he_yu": true }
+        }
+      },
+
+      // 第五阶段B-4c：何雨牺牲（原著剧情）
+      {
+        id: "phase_5_heyu_sacrificed",
+        name: "当水喝了",
+        description: "薛木生老师一把拉住了你：\"不要冲动！\"\n\n你只能眼睁睁地看着何雨倒在血泊中。\n\n何雨在生命的最后一刻，脸上带着复杂的表情——有欣慰，有安然，也有眷恋。\n\n\"终于……像薛老师说的那样……保护住了一个人的生命……\"\n\n她的手垂了下去。\n\n张小侯抱着何雨的尸体，哭得撕心裂肺。你站在旁边，心中充满了无力感。\n\n这就是战争吗？这就是魔法师的世界吗？",
+        type: "narrative",
+        nextPhase: "phase_5_mubai_slay",
+        effects: {
+          exp: 50,
+          flags: { "he_yu_sacrificed": true }
+        }
+      },
+
+      // 第五阶段B-5：穆白斩魔具（v3.21.0原著剧情）
+      {
+        id: "phase_5_mubai_slay",
+        name: "我想要变强",
+        description: "就在战斗陷入绝境时，穆白突然站了出来！\n\n他的手中浮现出一把巨大的冰蓝色斩刀——斩魔具！\n\n\"我叔叔在我十八岁生日那天送我的斩魔具……\"穆白的声音在颤抖，但眼神坚定，\"总算派上用场了！\"\n\n他怒吼着冲向白阳，斩魔具爆发出耀眼的光芒！\n\n一道巨大的冰蓝色斩击划过天际，白阳甚至来不及反应，左肩脖颈以上的部位就被彻底切开！\n\n白阳的尸体倒在地上，两只黑畜妖发出凄厉的尖叫，身体开始化作黑色雾气消散——它们和主人灵魂相连，主人死亡，它们也跟着毁灭。\n\n战斗结束了。穆白瘫坐在地上，大口喘着气，但眼中闪烁着前所未有的光芒。\n\n\"我想要变强。\"穆白低声说，\"强到可以保护自己想保护的人。\"",
+        type: "narrative",
+        nextPhase: "phase_5_discovery",
+        effects: {
+          exp: 300,
+          gold: 200,
+          reputation: { "school": 30, "military": 10 },
+          flags: { "bai_yang_defeated": true, "mubai_used_slay_tool": true }
         }
       },
 
