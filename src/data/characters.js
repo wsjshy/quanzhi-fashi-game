@@ -6353,6 +6353,14 @@ export const DataCharacters = {
               next: "after_disaster"
             },
             {
+              id: "after_disaster_saved_heyu",
+              text: "那天...谢谢你救了我",
+              condition: {
+                hasFlag: "saved_he_yu"
+              },
+              next: "after_disaster_saved"
+            },
+            {
               text: "再见",
               next: null,
               action: "close"
@@ -6518,6 +6526,44 @@ export const DataCharacters = {
             {
               text: "我们一起变强",
               effects: { opinion: 5, trust: 5 },
+              next: "default"
+            }
+          ]
+        },
+        after_disaster_saved: {
+          id: "after_disaster_saved",
+          oneTime: true,
+          texts: [
+            "（何雨看到你，脸一下子红了，低下头小声说。）",
+            "那天... 谢谢你。如果不是你冲上来推开我，我现在已经...",
+            "（她抬起头，眼睛里有泪光，但嘴角带着微笑。）",
+            "我当时真的很害怕，但看到你冲上来的那一刻，我突然就不害怕了。",
+            "你知道吗？我一直觉得自己很弱，水系魔法攻击力不强，只能做辅助。",
+            "但那天我释放水域保护小侯的时候，我突然明白了——温柔也是一种力量。",
+            "（她认真地看着你。）",
+            "以后... 以后如果遇到危险，我也会像你保护我一样保护大家。我们一起变强，好吗？"
+          ],
+          mood: "emotional",
+          effects: {
+            opinion: 15,
+            trust: 12,
+            familiarity: 15,
+            exp: 80
+          },
+          choices: [
+            {
+              text: "好，我们一起变强",
+              effects: { opinion: 8, trust: 8 },
+              next: "default"
+            },
+            {
+              text: "那天我只是做了应该做的事",
+              effects: { opinion: 5, trust: 5 },
+              next: "default"
+            },
+            {
+              text: "你那天也很勇敢，保护了张小侯",
+              effects: { opinion: 8, trust: 6 },
               next: "default"
             }
           ]
