@@ -670,7 +670,7 @@ export const DebugPanel = {
                             <button onclick="DebugPanel.setFlag(false)" style="background: #884444; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">清除</button>
                         </div>
                         <div style="font-size: 11px; color: #888; line-height: 1.6;">
-                            常用flag：bocheng_disaster_happened, saw_tang_yue_roof, witnessed_demon_migration, found_ancient_cave, saw_mu_he_stranger, heard_spring_whisper
+                            常用flag：bocheng_disaster_happened, saw_tang_yue_roof, witnessed_demon_migration, found_ancient_cave, saw_mu_he_stranger, heard_spring_whisper, met_bai_yang, fought_bai_yang, saved_he_yu, he_yu_sacrificed, bai_yang_defeated, mubai_used_slay_tool
                         </div>
                     </div>
 
@@ -682,6 +682,21 @@ export const DebugPanel = {
                             <button onclick="DebugPanel.storyPhase('before_disaster')" style="background: #664444; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;">灾难前夕</button>
                             <button onclick="DebugPanel.storyPhase('after_disaster')" style="background: #884422; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;">博城灾难后</button>
                             <button onclick="DebugPanel.storyPhase('leave')" style="background: #446644; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;">离开博城</button>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ff8844; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">博城灾难v3.21.0快捷设置</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px;">
+                            <button onclick="DebugPanel.setFlagById('met_bai_yang', true)" style="background: #664422; color: #fff; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">遇到白阳</button>
+                            <button onclick="DebugPanel.setFlagById('fought_bai_yang', true)" style="background: #664422; color: #fff; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">激战白阳</button>
+                            <button onclick="DebugPanel.setFlagById('saved_he_yu', true)" style="background: #448844; color: #fff; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">拯救何雨</button>
+                            <button onclick="DebugPanel.setFlagById('he_yu_sacrificed', true)" style="background: #884444; color: #fff; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">何雨牺牲</button>
+                            <button onclick="DebugPanel.setFlagById('bai_yang_defeated', true)" style="background: #664488; color: #fff; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">白阳被击败</button>
+                            <button onclick="DebugPanel.setFlagById('mubai_used_slay_tool', true)" style="background: #446688; color: #fff; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">穆白斩魔具</button>
+                        </div>
+                        <div style="font-size: 11px; color: #888; line-height: 1.6;">
+                            v3.21.0新增flag：met_bai_yang(遇到白阳), fought_bai_yang(激战白阳), saved_he_yu(拯救何雨), he_yu_sacrificed(何雨牺牲), bai_yang_defeated(白阳被击败), mubai_used_slay_tool(穆白斩魔具)
                         </div>
                     </div>
 
