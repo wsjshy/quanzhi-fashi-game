@@ -32,7 +32,17 @@ export function checkBattleEnd() {
             return true;
         }
 
-        if (this.enemy.hp <= 0 || (this.battleOptions.winHpPercent > 0 && this.enemy.hp <= this.enemy.maxHp * this.battleOptions.winHpPercent)) {
+        // v3.22.0: 多敌人战斗结束判断
+        let allEnemiesDead = false;
+        if (this.isMultiEnemy && this.isMultiEnemy()) {
+            // 多敌人模式：检查所有敌人是否都死亡
+            allEnemiesDead = this.enemies.every(e => e.hp <= 0);
+        } else {
+            // 单敌人模式（向后兼容）
+            allEnemiesDead = this.enemy.hp <= 0 || (this.battleOptions.winHpPercent > 0 && this.enemy.hp <= this.enemy.maxHp * this.battleOptions.winHpPercent);
+        }
+        
+        if (allEnemiesDead) {
             this.result = 'win';
             this.active = false;
 

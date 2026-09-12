@@ -88,13 +88,32 @@ export function startBattle(enemyData, options = {}) {
             Player.lastBattleDay = Player.day;
         }
 
-        // 复制敌人数据，避免修改原数据
-        this.enemy = JSON.parse(JSON.stringify(enemyData));
-        this.enemy.hp = this.enemy.maxHp;
-        this.enemy.mp = this.enemy.maxMp || 50;
-        this.enemy.buffs = [];
-        this.enemy.statusEffects = [];
-        this.enemy.isDefending = false;
+        // v3.22.0: 多敌人战斗支持
+        if (enemyData.enemies && Array.isArray(enemyData.enemies) && enemyData.enemies.length > 0) {
+            // 多敌人模式
+            this.enemies = enemyData.enemies.map(e => {
+                const enemy = JSON.parse(JSON.stringify(e));
+                enemy.hp = enemy.maxHp;
+                enemy.mp = enemy.maxMp || 50;
+                enemy.buffs = [];
+                enemy.statusEffects = [];
+                enemy.isDefending = false;
+                return enemy;
+            });
+            this.currentEnemyIndex = 0;
+            this.selectedEnemyIndex = 0;
+            this.enemy = this.enemies[0];
+            console.log('[Battle] 多敌人战斗初始化:', this.enemies.length, '个敌人');
+        } else {
+            // 单敌人模式（向后兼容）
+            this.enemy = JSON.parse(JSON.stringify(enemyData));
+            this.enemy.hp = this.enemy.maxHp;
+            this.enemy.mp = this.enemy.maxMp || 50;
+            this.enemy.buffs = [];
+            this.enemy.statusEffects = [];
+            this.enemy.isDefending = false;
+            this.enemies = [this.enemy];
+        }
         
         // 玩家战斗状态（必须在使用this.player之前初始化）
         this.player = {

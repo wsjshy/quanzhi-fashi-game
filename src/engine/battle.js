@@ -32,7 +32,10 @@ export const BattleSystem = {
     // 战斗状态
     active: false,
     player: null,
-    enemy: null,
+    enemy: null,           // 当前选中的敌人（兼容现有代码）
+    enemies: [],           // v3.22.0: 所有敌人数组（多敌人战斗）
+    currentEnemyIndex: 0,  // v3.22.0: 当前行动的敌人索引
+    selectedEnemyIndex: 0, // v3.22.0: 玩家选中的攻击目标索引
     turn: 0,
     log: [],
     isPlayerTurn: true,
@@ -395,6 +398,49 @@ export const BattleSystem = {
      * 开始战斗
      */
     // 开始战斗（已拆分到battle-start.js）
+    
+    // v3.22.0: 多敌人辅助方法
+    isMultiEnemy() {
+        return this.enemies && this.enemies.length > 1;
+    },
+    
+    getAliveEnemies() {
+        return this.enemies.filter(e => e.hp > 0);
+    },
+    
+    getCurrentEnemy() {
+        if (this.isMultiEnemy()) {
+            return this.enemies[this.currentEnemyIndex] || this.enemies[0];
+        }
+        return this.enemy;
+    },
+    
+    getSelectedEnemy() {
+        if (this.isMultiEnemy()) {
+            return this.enemies[this.selectedEnemyIndex] || this.enemies[0];
+        }
+        return this.enemy;
+    },
+    
+    selectEnemy(index) {
+        if (index >= 0 && index < this.enemies.length && this.enemies[index].hp > 0) {
+            this.selectedEnemyIndex = index;
+            this.enemy = this.enemies[index];
+            return true;
+        }
+        return false;
+    },
+    
+    nextAliveEnemy() {
+        for (let i = 0; i < this.enemies.length; i++) {
+            if (this.enemies[i].hp > 0) {
+                this.currentEnemyIndex = i;
+                this.enemy = this.enemies[i];
+                return this.enemies[i];
+            }
+        }
+        return null;
+    },
     startBattle(enemyData, options = {}) {
         return startBattleImpl.call(this, enemyData, options);
     },
