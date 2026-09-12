@@ -13,6 +13,55 @@ export function enemyTurn() {
             this.allyTurn();
             return; // allyTurn结束后会调用enemyTurn
         }
+        
+        // v3.22.0: 多敌人轮流行动
+        if (this.isMultiEnemy && this.isMultiEnemy()) {
+            this._multiEnemyTurnIndex = this._multiEnemyTurnIndex || 0;
+            
+            // 找到下一个活着的敌人
+            let nextEnemy = null;
+            for (let i = this._multiEnemyTurnIndex; i < this.enemies.length; i++) {
+                if (this.enemies[i].hp > 0) {
+                    nextEnemy = this.enemies[i];
+                    this._multiEnemyTurnIndex = i;
+                    break;
+                }
+            }
+            
+            if (nextEnemy) {
+                // 设置当前行动的敌人
+                this.enemy = nextEnemy;
+                this.currentEnemyIndex = this._multiEnemyTurnIndex;
+                
+                // 检查眩晕/冻结/麻痹状态，跳过回合
+                if (this.isStunned(this.enemy)) {
+                    const stunEffect = this.enemy.statusEffects.find(e => 
+                        e.type === 'stun' || e.type === 'frozen' || e.type === 'paralyze' || e.skipTurn === true
+                    );
+                    const effectName = stunEffect ? stunEffect.name : '控制';
+                    this.addLog(this.enemy.name + ' 被' + effectName + '，无法行动！', 'system');
+                    
+                    // 移动到下一个敌人
+                    this._multiEnemyTurnIndex++;
+                    if (this._multiEnemyTurnIndex < this.enemies.length) {
+                        // 还有敌人，继续行动
+                        this.enemyTurn();
+                    } else {
+                        // 所有敌人行动完毕，结束敌人回合
+                        this._multiEnemyTurnIndex = 0;
+                        this.endEnemyTurn();
+                    }
+                    return;
+                }
+                
+                // 敌人行动（继续执行下面的逻辑）
+            } else {
+                // 没有活着的敌人，结束敌人回合
+                this._multiEnemyTurnIndex = 0;
+                this.endEnemyTurn();
+                return;
+            }
+        }
 
         // 检查眩晕/冻结/麻痹状态，跳过回合
         if (this.isStunned(this.enemy)) {

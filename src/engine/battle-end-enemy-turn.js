@@ -7,6 +7,33 @@
 
 export function endEnemyTurn() {
         // 检查战斗是否结束
+        
+        // v3.22.0: 多敌人轮流行动 - 检查是否还有下一个敌人
+        if (this.isMultiEnemy && this.isMultiEnemy() && this._multiEnemyTurnIndex !== undefined) {
+            // 移动到下一个敌人
+            this._multiEnemyTurnIndex++;
+            
+            // 找到下一个活着的敌人
+            let nextEnemy = null;
+            for (let i = this._multiEnemyTurnIndex; i < this.enemies.length; i++) {
+                if (this.enemies[i].hp > 0) {
+                    nextEnemy = this.enemies[i];
+                    this._multiEnemyTurnIndex = i;
+                    break;
+                }
+            }
+            
+            if (nextEnemy) {
+                // 还有敌人，继续行动
+                this.enemy = nextEnemy;
+                this.currentEnemyIndex = this._multiEnemyTurnIndex;
+                this.enemyTurn();
+                return;
+            } else {
+                // 所有敌人行动完毕，重置索引，继续执行下面的逻辑（切换到玩家回合）
+                this._multiEnemyTurnIndex = 0;
+            }
+        }
         if (this.checkBattleEnd()) {
             this._onBattleEndDuringTurn();
             return;
