@@ -350,6 +350,8 @@ export const DataBigEvents = {
         description: "你冲向白阳，与他展开激战！幽狼兽和两只黑畜妖围攻上来，薛木生老师和穆白也加入战斗。\n\n白阳的召唤兽配合默契，黑畜妖速度极快，不断试图切割你们的动脉。战斗陷入胶着……",
         type: "battle",
         enemyId: "bai_yang_duel",
+        // v3.22.0: 多敌人战斗（幽狼兽+两只黑畜妖）
+        enemies: ["demon_wolf", "black_beast", "black_beast"],
         winPhase: "phase_5_heyu_sacrifice",
         losePhase: "phase_5_heyu_sacrifice"
       },

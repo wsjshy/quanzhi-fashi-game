@@ -268,8 +268,24 @@ export const BigEventSystem = {
         }
         
         // 触发战斗
-        if (phase.enemyId) {
-            const enemy = DataManager.getEnemy(phase.enemyId);
+        if (phase.enemyId || phase.enemies) {
+            // v3.22.0: 支持多敌人战斗（phase.enemies数组）
+            let enemy;
+            if (phase.enemies && Array.isArray(phase.enemies) && phase.enemies.length > 0) {
+                // 多敌人模式
+                const enemies = phase.enemies.map(eid => DataManager.getEnemy(eid)).filter(e => e);
+                if (enemies.length > 0) {
+                    enemy = {
+                        id: phase.enemyId || 'multi_enemy_battle',
+                        name: enemies[0].name + '等',
+                        enemies: enemies
+                    };
+                    console.log('[大事件] 多敌人战斗初始化:', enemies.length, '个敌人');
+                }
+            } else {
+                // 单敌人模式（向后兼容）
+                enemy = DataManager.getEnemy(phase.enemyId);
+            }
             if (enemy) {
                 // v1.6.0: 支持battleOptions传递（恐惧等级、环境等）
                 const battleOptions = phase.battleOptions || {};
