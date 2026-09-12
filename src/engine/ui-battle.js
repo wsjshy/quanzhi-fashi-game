@@ -403,6 +403,57 @@ export function renderBattleScreen() {
                     ` : ''}
                 </div>
                 
+                <!-- v3.23.0: 多敌人选择栏 -->
+                ${(state.enemies && state.enemies.length > 1) ? `
+                    <div style="
+                        ${isPortrait ? 'position:relative; margin:5px auto; order:2;' : 'position: absolute; bottom: 10px; right: 5%; left: 5%;'}
+                        display: flex;
+                        gap: 8px;
+                        justify-content: center;
+                        flex-wrap: wrap;
+                        padding: 8px;
+                        background: rgba(0,0,0,0.5);
+                        border-radius: 10px;
+                        border: 1px solid rgba(255,255,255,0.2);
+                    ">
+                        ${state.enemies.map((enemy, idx) => {
+                            const isSelected = idx === state.selectedEnemyIndex;
+                            const isDead = enemy.hp <= 0;
+                            const hpPercent = Math.max(0, (enemy.hp / enemy.maxHp * 100)).toFixed(1);
+                            const hpColor = hpPercent > 50 ? '#44ff44' : hpPercent > 25 ? '#ffaa00' : '#ff2222';
+                            return `
+                                <div onclick="${isDead ? '' : 'BattleSystem.selectEnemy(' + idx + '); UI.updateBattleScreen();'}" 
+                                    style="
+                                        cursor: ${isDead ? 'not-allowed' : 'pointer'};
+                                        padding: 6px 10px;
+                                        border-radius: 8px;
+                                        border: 2px solid ${isSelected ? '#ffcc00' : 'rgba(255,255,255,0.3)'};
+                                        background: ${isSelected ? 'rgba(255,204,0,0.2)' : 'rgba(0,0,0,0.3)'};
+                                        opacity: ${isDead ? '0.4' : '1'};
+                                        min-width: 100px;
+                                        text-align: center;
+                                        transition: all 0.2s;
+                                    ">
+                                    <div style="font-size: 12px; color: #fff; font-weight: bold; margin-bottom: 3px;">
+                                        ${isDead ? '💀 ' : ''}${enemy.name}
+                                        ${isSelected ? ' ⭐' : ''}
+                                    </div>
+                                    <div style="height: 6px; background: #333; border-radius: 3px; overflow: hidden;">
+                                        <div style="height: 100%; width: ${hpPercent}%; background: ${hpColor}; transition: width 0.3s;"></div>
+                                    </div>
+                                    <div style="font-size: 10px; color: #aaa; margin-top: 2px;">
+                                        ${enemy.hp}/${enemy.maxHp}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div style="font-size: 11px; color: #ffcc66; text-align: center; margin-top: 4px;">
+                        点击敌人选择攻击目标（当前：${state.enemies[state.selectedEnemyIndex]?.name || '未知'}）
+                    </div>
+                ` : ''}
+                
+
                 <!-- 回合指示 -->
                 <div style="
                     ${isPortrait ? 'position:relative; top:auto; right:auto; display:flex; justify-content:space-between; align-items:center; margin:5px 10px; order:0;' : 'position: absolute; top: 20px; right: 20px;'}
