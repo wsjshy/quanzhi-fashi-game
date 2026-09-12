@@ -470,6 +470,110 @@ function runBattleLogicTests() {
         result.fail('calculateInterruptChance函数不存在');
     }
 
+
+    // ===== 7. v3.22.0 多敌人战斗系统测试 =====
+    console.log('\n7️⃣  多敌人战斗系统（v3.22.0）');
+    console.log('─'.repeat(40));
+
+    // 7.1 测试isMultiEnemy方法存在
+    if (typeof BattleSystem.isMultiEnemy === 'function') {
+        result.pass('isMultiEnemy方法存在');
+    } else {
+        result.fail('isMultiEnemy方法不存在');
+    }
+
+    // 7.2 测试getAliveEnemies方法存在
+    if (typeof BattleSystem.getAliveEnemies === 'function') {
+        result.pass('getAliveEnemies方法存在');
+    } else {
+        result.fail('getAliveEnemies方法不存在');
+    }
+
+    // 7.3 测试getSelectedEnemy方法存在
+    if (typeof BattleSystem.getSelectedEnemy === 'function') {
+        result.pass('getSelectedEnemy方法存在');
+    } else {
+        result.fail('getSelectedEnemy方法不存在');
+    }
+
+    // 7.4 测试selectEnemy方法存在
+    if (typeof BattleSystem.selectEnemy === 'function') {
+        result.pass('selectEnemy方法存在');
+    } else {
+        result.fail('selectEnemy方法不存在');
+    }
+
+    // 7.5 测试nextAliveEnemy方法存在
+    if (typeof BattleSystem.nextAliveEnemy === 'function') {
+        result.pass('nextAliveEnemy方法存在');
+    } else {
+        result.fail('nextAliveEnemy方法不存在');
+    }
+
+    // 7.6 测试单敌人模式下isMultiEnemy返回false
+    BattleSystem.enemies = [{ id: 'test1', hp: 100, maxHp: 100 }];
+    BattleSystem.enemy = BattleSystem.enemies[0];
+    if (BattleSystem.isMultiEnemy() === false) {
+        result.pass('单敌人模式下isMultiEnemy返回false');
+    } else {
+        result.fail('单敌人模式下isMultiEnemy应返回false');
+    }
+
+    // 7.7 测试多敌人模式下isMultiEnemy返回true
+    BattleSystem.enemies = [
+        { id: 'test1', hp: 100, maxHp: 100 },
+        { id: 'test2', hp: 80, maxHp: 100 },
+        { id: 'test3', hp: 0, maxHp: 100 }
+    ];
+    BattleSystem.enemy = BattleSystem.enemies[0];
+    if (BattleSystem.isMultiEnemy() === true) {
+        result.pass('多敌人模式下isMultiEnemy返回true');
+    } else {
+        result.fail('多敌人模式下isMultiEnemy应返回true');
+    }
+
+    // 7.8 测试getAliveEnemies返回正确数量
+    const aliveEnemies = BattleSystem.getAliveEnemies();
+    if (aliveEnemies.length === 2) {
+        result.pass('getAliveEnemies返回2个活着的敌人');
+    } else {
+        result.fail('getAliveEnemies应返回2个活着的敌人，实际=' + aliveEnemies.length);
+    }
+
+    // 7.9 测试selectEnemy选择正确的敌人
+    BattleSystem.selectedEnemyIndex = 0;
+    const selectResult = BattleSystem.selectEnemy(1);
+    if (selectResult === true && BattleSystem.selectedEnemyIndex === 1 && BattleSystem.enemy.id === 'test2') {
+        result.pass('selectEnemy(1)成功选择第二个敌人');
+    } else {
+        result.fail('selectEnemy(1)应成功选择第二个敌人');
+    }
+
+    // 7.10 测试selectEnemy不能选择已死亡的敌人
+    const selectDeadResult = BattleSystem.selectEnemy(2);
+    if (selectDeadResult === false) {
+        result.pass('selectEnemy(2)不能选择已死亡的敌人');
+    } else {
+        result.fail('selectEnemy(2)应不能选择已死亡的敌人');
+    }
+
+    // 7.11 测试getSelectedEnemy返回正确的敌人
+    const selectedEnemy = BattleSystem.getSelectedEnemy();
+    if (selectedEnemy.id === 'test2') {
+        result.pass('getSelectedEnemy返回当前选中的敌人（test2）');
+    } else {
+        result.fail('getSelectedEnemy应返回test2，实际=' + selectedEnemy.id);
+    }
+
+    // 7.12 测试nextAliveEnemy返回第一个活着的敌人
+    BattleSystem.currentEnemyIndex = 0;
+    const nextEnemy = BattleSystem.nextAliveEnemy();
+    if (nextEnemy.id === 'test1') {
+        result.pass('nextAliveEnemy返回第一个活着的敌人（test1）');
+    } else {
+        result.fail('nextAliveEnemy应返回test1，实际=' + nextEnemy.id);
+    }
+
     return result.report();
 }
 
