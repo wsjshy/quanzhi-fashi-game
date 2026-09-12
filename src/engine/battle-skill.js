@@ -9,6 +9,21 @@
      */
 export function castSkillImmediate(skill, caster, skipTurnEnd = false, skipInterruptCheck = false, mpCostRatio = 1.0) {
         const isPlayer = caster === 'player';
+        
+        // v3.22.0: 多敌人战斗 - 确保玩家攻击选中的敌人
+        if (isPlayer && this.isMultiEnemy && this.isMultiEnemy()) {
+            const selectedEnemy = this.getSelectedEnemy();
+            if (selectedEnemy && selectedEnemy.hp > 0) {
+                this.enemy = selectedEnemy;
+            } else {
+                // 选中的敌人已死亡，自动选择第一个活着的敌人
+                const firstAlive = this.getAliveEnemies()[0];
+                if (firstAlive) {
+                    this.enemy = firstAlive;
+                    this.selectedEnemyIndex = this.enemies.indexOf(firstAlive);
+                }
+            }
+        }
         const casterData = isPlayer ? this.player : this.enemy;
         const targetData = isPlayer ? this.enemy : this.player;
 
