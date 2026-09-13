@@ -1887,6 +1887,10 @@ export const BattleSystem = {
             turn: this.turn,
             player: this.player,
             enemy: this.enemy,
+            enemies: this.enemies || [this.enemy], // v3.22.0: 多敌人数组
+            currentEnemyIndex: this.currentEnemyIndex || 0, // v3.22.0: 当前行动的敌人索引
+            selectedEnemyIndex: this.selectedEnemyIndex || 0, // v3.22.0: 当前选中的攻击目标索引
+            isMultiEnemy: this.isMultiEnemy ? this.isMultiEnemy() : false, // v3.22.0: 是否是多敌人战斗
             allies: this.allies || [], // v1.8.1: 队友列表
             isPlayerTurn: this.isPlayerTurn,
             playerCasting: this.playerCasting,
