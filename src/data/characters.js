@@ -1720,6 +1720,235 @@ export const DataCharacters = {
           title: "风系法师",
         }
       ],
+    },
+    dialogueTree: {
+      npcId: "zhao_kun_san",
+      nodes: {
+        default: {
+          id: "default",
+          texts: [
+            "（上下打量你）你谁啊？有事找穆白哥先跟我说。",
+            "（斜眼看着你）怎么，找我有事？",
+            "（不耐烦地）有话快说，我还要跟着穆白哥呢。"
+          ],
+          mood: "arrogant",
+          choices: [
+            {
+              id: "ask_mubai",
+              text: "穆白最近怎么样？",
+              condition: { notNpcFlags: ["asked_mubai_zhao"] },
+              effects: {
+                opinion: 2,
+                npcFlags: { asked_mubai_zhao: true }
+              },
+              nextNode: "ask_mubai_response"
+            },
+            {
+              id: "challenge",
+              text: "（挑衅）就你也配当穆白的跟班？",
+              condition: { notNpcFlags: ["challenged_zhao"] },
+              effects: {
+                opinion: -5,
+                npcFlags: { challenged_zhao: true }
+              },
+              nextNode: "challenge_response"
+            },
+            {
+              id: "friendly",
+              text: "（友好）你好，我是新来的同学",
+              condition: { notNpcFlags: ["friendly_zhao"] },
+              effects: {
+                opinion: 3,
+                npcFlags: { friendly_zhao: true }
+              },
+              nextNode: "friendly_response"
+            },
+            {
+              id: "leave",
+              text: "没什么事，先走了",
+              effects: {},
+              nextNode: "end"
+            }
+          ]
+        },
+        ask_mubai_response: {
+          id: "ask_mubai_response",
+          texts: [
+            "（得意地）穆白哥那可是我们班的天才！冰系法师，未来不可限量！",
+            "穆白哥最近修炼很努力，马上就要突破中阶了！",
+            "（骄傲地）跟着穆白哥混，以后肯定有出息！"
+          ],
+          mood: "proud",
+          choices: [
+            {
+              id: "ask_more",
+              text: "穆白有什么厉害的地方？",
+              effects: { opinion: 1, exp: 5 },
+              nextNode: "mubai_more"
+            },
+            {
+              id: "back",
+              text: "知道了，谢谢",
+              effects: {},
+              nextNode: "end"
+            }
+          ]
+        },
+        mubai_more: {
+          id: "mubai_more",
+          texts: [
+            "（兴奋地）穆白哥的冰系魔法可厉害了！上次实战课，他一个人冻住了三个对手！",
+            "穆白哥不仅魔法厉害，人也长得帅，很多女生都喜欢他呢！",
+            "（神秘地）告诉你，穆白哥家里可是名门望族，背景深着呢！"
+          ],
+          mood: "excited",
+          choices: [
+            {
+              id: "back",
+              text: "原来如此，我还有事先走了",
+              effects: {},
+              nextNode: "end"
+            }
+          ]
+        },
+        challenge_response: {
+          id: "challenge_response",
+          texts: [
+            "（愤怒地）你说什么？！信不信我揍你！",
+            "（咬牙切齿）你给我等着，我让穆白哥收拾你！",
+            "（不屑地）就你？也不看看自己什么水平，还敢挑衅我？"
+          ],
+          mood: "angry",
+          choices: [
+            {
+              id: "apologize",
+              text: "（道歉）抱歉，我刚才说错话了",
+              condition: { minOpinion: -10 },
+              effects: { opinion: 2 },
+              nextNode: "apologize_response"
+            },
+            {
+              id: "insist",
+              text: "（坚持）我说错了吗？",
+              effects: { opinion: -3 },
+              nextNode: "insist_response"
+            },
+            {
+              id: "leave",
+              text: "（离开）算了，不跟你一般见识",
+              effects: {},
+              nextNode: "end"
+            }
+          ]
+        },
+        apologize_response: {
+          id: "apologize_response",
+          texts: [
+            "（哼）算你识相，这次就饶了你。",
+            "（摆摆手）下次注意点，别乱说话。",
+            "（得意地）知道错就好，以后跟着穆白哥混，保你不吃亏。"
+          ],
+          mood: "smug",
+          choices: [
+            {
+              id: "back",
+              text: "知道了，我先走了",
+              effects: {},
+              nextNode: "end"
+            }
+          ]
+        },
+        insist_response: {
+          id: "insist_response",
+          texts: [
+            "（暴怒）你！你给我等着！",
+            "（气得发抖）好，好得很，你给我记住今天！",
+            "（冷笑）行，你有种，以后别落在我手里。"
+          ],
+          mood: "furious",
+          choices: [
+            {
+              id: "leave",
+              text: "（离开）",
+              effects: {},
+              nextNode: "end"
+            }
+          ]
+        },
+        friendly_response: {
+          id: "friendly_response",
+          texts: [
+            "（稍微缓和）哦，新来的啊。我叫赵坤三，风系的。",
+            "（打量你）新来的？哪个系的？实力怎么样？",
+            "（点点头）嗯，新来的要多跟学长学习，知道吗？"
+          ],
+          mood: "neutral",
+          choices: [
+            {
+              id: "introduce",
+              text: "我是XX系的，请多指教",
+              effects: { opinion: 2, exp: 5 },
+              nextNode: "introduce_response"
+            },
+            {
+              id: "ask_advice",
+              text: "学长有什么建议吗？",
+              effects: { opinion: 3, exp: 10 },
+              nextNode: "advice_response"
+            },
+            {
+              id: "leave",
+              text: "谢谢学长，我先走了",
+              effects: {},
+              nextNode: "end"
+            }
+          ]
+        },
+        introduce_response: {
+          id: "introduce_response",
+          texts: [
+            "（点点头）嗯，不错，好好修炼，以后有前途。",
+            "（拍拍你肩膀）跟着穆白哥混，保你在学校没人敢欺负。",
+            "（认真地）在学校，实力最重要，你要努力啊。"
+          ],
+          mood: "friendly",
+          choices: [
+            {
+              id: "back",
+              text: "谢谢学长，我会努力的",
+              effects: {},
+              nextNode: "end"
+            }
+          ]
+        },
+        advice_response: {
+          id: "advice_response",
+          texts: [
+            "（认真地）建议啊...首先，要跟对人。在学校，跟对人比什么都重要。",
+            "（神秘地）其次，要多结交朋友，多个朋友多条路嘛。",
+            "（严肃地）最后，实力才是硬道理。没有实力，说什么都没用。"
+          ],
+          mood: "serious",
+          choices: [
+            {
+              id: "back",
+              text: "受教了，谢谢学长",
+              effects: {},
+              nextNode: "end"
+            }
+          ]
+        },
+        end: {
+          id: "end",
+          texts: [
+            "（摆摆手）走吧走吧。",
+            "（不耐烦地）没事就别烦我。",
+            "（转身离开）..."
+          ],
+          mood: "casual",
+          choices: []
+        }
+      }
     }
   },
   zhang_xiaohou: {
