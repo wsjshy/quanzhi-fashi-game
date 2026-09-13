@@ -698,6 +698,18 @@ export const DebugPanel = {
                         <div style="font-size: 11px; color: #888; line-height: 1.6;">
                             v3.21.0新增flag：met_bai_yang(遇到白阳), fought_bai_yang(激战白阳), saved_he_yu(拯救何雨), he_yu_sacrificed(何雨牺牲), bai_yang_defeated(白阳被击败), mubai_used_slay_tool(穆白斩魔具)
                         </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #ffaa00; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #333;">v3.22.0 多敌人战斗快捷设置</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px;">
+                            <button onclick="DebugPanel.triggerBigEvent('big_event_bocheng_disaster')" style="background: #aa4444; color: #fff; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">💥 触发博城灾难</button>
+                            <button onclick="DebugPanel.setFlagById('met_bai_yang', true); DebugPanel.setFlagById('fought_bai_yang', true); alert('已设置：遇到白阳+激战白阳，继续推进大事件即可进入白阳BOSS战（多敌人战斗）')" style="background: #aa6622; color: #fff; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">⚔️ 快速进入白阳BOSS战</button>
+                            <button onclick="alert('多敌人战斗说明：\n1. 白阳BOSS战为幽狼兽+两只黑畜妖同时出现\n2. 战斗界面下方显示敌人选择栏\n3. 点击敌人可以选择攻击目标\n4. 敌人回合时多个敌人轮流行动\n5. 所有敌人死亡才战斗胜利')" style="background: #446688; color: #fff; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">📖 多敌人战斗说明</button>
+                        </div>
+                        <div style="font-size: 11px; color: #888; line-height: 1.6;">
+                            v3.22.0多敌人战斗：白阳BOSS战为幽狼兽+两只黑畜妖同时出现，支持点击选择攻击目标，敌人轮流行动
+                        </div>
+                    </div>
                     </div>
 
                     <div style="margin-bottom: 15px;">
