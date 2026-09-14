@@ -92,6 +92,8 @@ export const STATE_SCHEMA = {
     hour: { default: 8, category: 'player' },
     timeOfDay: { default: 'morning', category: 'player' },
     flags: { default: {}, category: 'player' },
+    // v3.15.2: 大事件状态（修复刷新后大事件进度丢失的问题）
+    bigEventState: { default: { currentEvent: null, currentPhase: null, choiceHistory: [] }, category: 'player' },
     investigation: { default: { demon: 0, black_church: 0, yu_ang: 0, earth_spring: 0, discoveredClues: [], yuAngSuspicion: 0 }, category: 'player' },
     bestiary: { default: {}, category: 'player' },
     dailyData: { default: null, category: 'player' },
@@ -492,6 +494,8 @@ export const GameState = {
         Player.hour = data.hour ?? 8;
         Player.timeOfDay = data.timeOfDay ?? 'morning';
         Player.flags = data.flags ?? {};
+        // v3.15.2: 大事件状态（修复刷新后大事件进度丢失的问题）
+        Player.bigEventState = data.bigEventState ?? { currentEvent: null, currentPhase: null, choiceHistory: [] };
         Player.investigation = data.investigation ?? { demon: 0, black_church: 0, yu_ang: 0, earth_spring: 0, discoveredClues: [], yuAngSuspicion: 0 };
         Player.bestiary = data.bestiary ?? {};
         Player.dailyData = data.dailyData ?? null;
