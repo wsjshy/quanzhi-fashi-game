@@ -645,6 +645,25 @@ export const NPCStateSystem = {
     },
 
     /**
+     * v3.15.1: 统一关系改变接口（大事件系统调用）
+     * 支持数字（改变好感度）或对象（改变多个维度）
+     */
+    changeRelation(npcId, value, reason = '') {
+        if (typeof value === 'number') {
+            return this.changeOpinion(npcId, value, reason);
+        }
+        if (typeof value === 'object' && value !== null) {
+            if (value.opinion !== undefined) this.changeOpinion(npcId, value.opinion, reason);
+            if (value.trust !== undefined) this.changeTrust(npcId, value.trust, reason);
+            if (value.respect !== undefined) this.changeRespect(npcId, value.respect, reason);
+            if (value.fear !== undefined) this.changeFear(npcId, value.fear, reason);
+            return this.getNPCState(npcId);
+        }
+        console.warn('[NPCStateSystem] changeRelation: 无效的value类型', typeof value);
+        return null;
+    },
+
+    /**
      * 改变信任度
      */
     changeTrust(npcId, amount, reason = '') {

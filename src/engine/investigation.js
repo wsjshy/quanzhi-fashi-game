@@ -65,6 +65,9 @@ export const InvestigationSystem = {
       return { success: false, message: '已经发现过这个线索', alreadyKnown: true };
     }
 
+    // 初始化结果对象
+    const result = {};
+
     // 添加到已发现列表
     data.discoveredClues.push(clueId);
 
@@ -107,7 +110,8 @@ export const InvestigationSystem = {
       progressGain: clue.progress || 10,
       newProgress: data[type],
       level: level,
-      levelUp: level.min > oldProgress // 简化判断
+      levelUp: level.min > oldProgress, // 简化判断
+      ...result // 合并特殊处理结果
     };
   },
 

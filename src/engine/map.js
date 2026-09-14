@@ -15,14 +15,17 @@ export const MapSystem = {
     },
 
     /**
-     * 加载地点
+     * 加载地点（支持数字ID和字符串ID）
      */
     loadLocation(locationId) {
-        const location = DataManager.getLocation(locationId);
+        // 规范化ID（支持数字ID和字符串ID互转）
+        const normalizedId = this.normalizeLocationId ? this.normalizeLocationId(locationId) : locationId;
+        const location = DataManager.getLocation(normalizedId) || DataManager.getLocation(locationId);
         if (!location) return false;
 
         this.currentLocation = location;
-        Player.currentLocation = locationId;
+        // 使用地点对象内部的id（字符串ID）作为Player.currentLocation
+        Player.currentLocation = location.id || normalizedId;
         return true;
     },
 
@@ -254,15 +257,42 @@ export const MapSystem = {
     },
 
     /**
+     * 转换地点ID（支持数字ID和字符串ID互转）
+     * 注意：DataManager._locations的键是字符串ID，getAllLocations()返回的键是数字ID
+     */
+    normalizeLocationId(locationId) {
+        const allLocations = DataManager.getAllLocations();
+        // 如果是数字ID，查找对应的字符串ID
+        if (/^\d+$/.test(locationId)) {
+            const loc = allLocations[locationId];
+            if (loc && loc.id) return loc.id;
+            return locationId;
+        }
+        // 如果是字符串ID，直接返回（getLocation支持字符串ID）
+        return locationId;
+    },
+
+    /**
+     * 检查地点是否已解锁（支持两种ID格式）
+     */
+    isLocationUnlocked(locationId) {
+        if (Player.unlockedLocations.includes(locationId)) return true;
+        const normalizedId = this.normalizeLocationId(locationId);
+        return Player.unlockedLocations.includes(normalizedId);
+    },
+
+    /**
      * 移动到地点
      */
     travelTo(locationId) {
         // 检查是否已解锁
-        if (!Player.unlockedLocations.includes(locationId)) {
+        if (!this.isLocationUnlocked(locationId)) {
             return { success: false, message: '这个地方还没有解锁' };
         }
 
-        const location = DataManager.getLocation(locationId);
+        const normalizedId = this.normalizeLocationId(locationId);
+
+        const location = DataManager.getLocation(normalizedId) || DataManager.getLocation(locationId);
         if (!location) {
             return { success: false, message: '地点不存在' };
         }
@@ -275,7 +305,7 @@ export const MapSystem = {
         const timeEvents = TimeSystem.advanceTime(travelTime);
 
         // 加载新地点
-        this.loadLocation(locationId);
+        this.loadLocation(normalizedId);
 
         // 旅行随机事件
         let travelEvent = null;

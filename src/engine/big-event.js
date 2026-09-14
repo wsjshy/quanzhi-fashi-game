@@ -829,16 +829,24 @@ export const BigEventSystem = {
                 UI.renderBigEventEnding(event, ending);
             } catch (e) {
                 console.error('[大事件] 渲染结局界面失败:', e);
-                // 渲染失败时直接回到地图
+                // 渲染失败时直接回到地图并清除状态
+                this.currentEvent = null;
+                this.currentPhase = null;
+                this.choiceHistory = [];
+                this.saveState();
                 Game.returnToMap();
             }
         } else {
-            // 没有结局，直接回到地图
+            // 没有结局，直接回到地图并清除状态
+            this.currentEvent = null;
+            this.currentPhase = null;
+            this.choiceHistory = [];
+            this.saveState();
             Game.returnToMap();
         }
         
         // 清除当前状态（在显示结局之后，因为UI还需要用到）
-        // 不清除，等用户点击继续后再清除
+        // 不清除，等用户点击继续后再清除（closeBigEventEnding会清除）
     },
     
     /**

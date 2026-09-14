@@ -1031,7 +1031,8 @@ export const Player = {
 
         this[config.stat] += config.amount;
         if (config.also) {
-            this[config.also] += config.amount;
+            // v3.15.2: 分配体力/精神时，将当前HP/MP设置为新的最大值，而不是增加，避免超过最大值
+            this[config.also] = this[config.stat];
         }
         if (config.extra) {
             this[config.extra.stat] += config.extra.amount;

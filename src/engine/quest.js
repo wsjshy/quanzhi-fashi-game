@@ -395,7 +395,7 @@ export const QuestSystem = {
             message: `任务完成：${quest.name}`,
             rewards: rewardMessages,
             nextQuest: quest.nextQuest || null,
-            nextQuestAccepted: nextQuestAccepted
+            nextQuestAvailable: nextQuestAvailable
         };
     },
 
