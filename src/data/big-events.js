@@ -460,7 +460,7 @@ export const DataBigEvents = {
         type: "choice",
         choices: [
           {
-            text: "我早就怀疑宇昂了（阴谋调查）",
+            text: "我早就怀疑宇昂了，跟上去并通知唐月老师（探索型·有准备）",
             nextPhase: "phase_5_chase_yuang_prepared",
             conditions: {
               requiredFlags: ["yu_ang_suspicion_triggered"]
@@ -470,28 +470,53 @@ export const DataBigEvents = {
             }
           },
           {
-            text: "追上去看看",
+            text: "独自追击宇昂，亲手揭开黑教廷真相（战斗型·高风险高回报）",
             nextPhase: "phase_5_chase_yuang",
             conditions: { minLevel: 7 },
             effects: { flags: { "chased_yu_ang": true } }
           },
           {
-            text: "先告诉斩空教官",
+            text: "报告斩空教官，借助军方力量处理（社交型·谨慎稳妥）",
             nextPhase: "phase_5_report_zhankong",
             effects: { flags: { "reported_yu_ang": true } }
           },
           {
-            text: "地圣泉可能有危险，我去守护（v1.9.0）",
+            text: "地圣泉可能有危险，我去守护阻止更大灾难（守护型·大局为重）",
             nextPhase: "phase_5_earth_spring_guard",
             conditions: { minLevel: 7 },
             effects: { flags: { "guarded_earth_spring": true } }
           },
           {
-            text: "现在战斗更重要，先不管",
-            nextPhase: "phase_6_final",
-            effects: {}
+            text: "专注前线战斗，保护同学们撤退（战士型·坚守岗位）",
+            nextPhase: "phase_5_frontline_hero",
+            effects: { flags: { "stayed_frontline": true } }
           }
         ]
+      },
+
+      // v3.15.3: 前线英雄 - 专注战斗保护同学
+      {
+        id: "phase_5_frontline_hero",
+        name: "前线坚守",
+        description: "你选择留在前线，继续战斗保护同学们撤退。\n\n妖魔一波接一波地涌来，幽狼兽的嚎叫在夜空中回荡。你握紧法杖，站在撤退队伍的最后方。\n\n\"大家快走！我来断后！\"你大声喊道。\n\n一只幽狼兽扑了上来，你侧身躲开，反手释放魔法将它击退。又一只妖魔从侧面袭来，你勉强格挡，手臂被利爪划伤，但你没有后退一步。\n\n不知道战斗了多久，直到天边泛起鱼肚白，妖魔终于撤退了。\n\n你浑身是伤，法杖上的宝石都黯淡了，但你保护的同学们都安全撤退了。\n\n薛木生老师找到你时，看着你满身的伤痕，眼眶有些湿润：\"你做到了...谢谢你。\"\n\n斩空教官得知后，郑重地拍了拍你的肩膀：\"好小子。真正的英雄，不是追着真相跑的人，而是守住身边人的人。\"",
+        type: "narrative",
+        nextPhase: "phase_6_final",
+        effects: {
+          exp: 200,
+          gold: 100,
+          reputation: {
+            "military": 20,
+            "school": 30
+          },
+          flags: {
+            "stayed_frontline": true,
+            "frontline_hero": true,
+            "protected_classmates": true
+          },
+          items: [
+            { itemId: "basic_healing_potion", count: 3 }
+          ]
+        }
       },
 
       // 追击宇昂
@@ -679,6 +704,8 @@ export const DataBigEvents = {
             { flags: { defeated_yu_ang: true }, minLevel: 6, nextPhase: "ending_truth_seeker" },
             // 优先级2：报告斩空 + Lv6+ → 军方盟友
             { flags: { reported_yu_ang_to_zhankong: true }, minLevel: 6, nextPhase: "ending_military_ally" },
+            // 优先级2.5：前线坚守 + Lv7+ → 前线英雄（v3.15.3新增）
+            { flags: { frontline_hero: true }, minLevel: 7, nextPhase: "ending_frontline_hero" },
             // 优先级3：Lv8+ → 博城英雄（等级碾压）
             { minLevel: 8, nextPhase: "ending_hero" },
             // 优先级4：Lv6+ → 幸存者
@@ -748,6 +775,30 @@ export const DataBigEvents = {
             "military": 60,
             "school": 15
           },
+
+      // v3.15.3新增：前线英雄（专注战斗保护同学）
+      frontline_hero: {
+        id: "frontline_hero",
+        name: "前线英雄",
+        description: "你在博城灾难中选择留在前线，用自己的身躯为同学们筑起一道防线。\n\n虽然你没有亲手揭开黑教廷的真相，也没有守护地圣泉，但你保护了身边最重要的人。\n\n薛木生老师在事后的表彰会上说：\"真正的英雄，不是那些追逐光环的人，而是在危难时刻守住身边人的人。\"\n\n斩空教官授予你\"前线勇士\"称号，学校也为你颁发了特别贡献奖。你的名字，将被天澜魔法高中的学弟学妹们铭记。",
+        effects: {
+          exp: 450,
+          gold: 350,
+          reputation: {
+            "military": 40,
+            "school": 50
+          },
+          flags: {
+            "frontline_hero": true,
+            "frontline_warrior_title": true,
+            "school_special_award": true
+          },
+          items: [
+            { itemId: "frontline_warrior_badge", count: 1 },
+            { itemId: "basic_healing_potion", count: 5 }
+          ]
+        }
+      },
           flags: {
             "military_ally": true
           },

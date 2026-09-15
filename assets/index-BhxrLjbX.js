@@ -629,7 +629,21 @@ HP+50，赵满延好感+5，学校声望+3`},{text:"我还撑得住，不过谢�
 
 你认出了那个背影——是宇昂。他不是应该在前线战斗吗？为什么往后山去？
 
-你想起了之前听到的关于黑教廷的传闻……`,type:"choice",choices:[{text:"我早就怀疑宇昂了（阴谋调查）",nextPhase:"phase_5_chase_yuang_prepared",conditions:{requiredFlags:["yu_ang_suspicion_triggered"]},effects:{flags:{chased_yu_ang:!0,yu_ang_prepared:!0}}},{text:"追上去看看",nextPhase:"phase_5_chase_yuang",conditions:{minLevel:7},effects:{flags:{chased_yu_ang:!0}}},{text:"先告诉斩空教官",nextPhase:"phase_5_report_zhankong",effects:{flags:{reported_yu_ang:!0}}},{text:"地圣泉可能有危险，我去守护（v1.9.0）",nextPhase:"phase_5_earth_spring_guard",conditions:{minLevel:7},effects:{flags:{guarded_earth_spring:!0}}},{text:"现在战斗更重要，先不管",nextPhase:"phase_6_final",effects:{}}]},{id:"phase_5_chase_yuang",name:"追击",description:`你悄悄跟了上去。
+你想起了之前听到的关于黑教廷的传闻……`,type:"choice",choices:[{text:"我早就怀疑宇昂了，跟上去并通知唐月老师（探索型·有准备）",nextPhase:"phase_5_chase_yuang_prepared",conditions:{requiredFlags:["yu_ang_suspicion_triggered"]},effects:{flags:{chased_yu_ang:!0,yu_ang_prepared:!0}}},{text:"独自追击宇昂，亲手揭开黑教廷真相（战斗型·高风险高回报）",nextPhase:"phase_5_chase_yuang",conditions:{minLevel:7},effects:{flags:{chased_yu_ang:!0}}},{text:"报告斩空教官，借助军方力量处理（社交型·谨慎稳妥）",nextPhase:"phase_5_report_zhankong",effects:{flags:{reported_yu_ang:!0}}},{text:"地圣泉可能有危险，我去守护阻止更大灾难（守护型·大局为重）",nextPhase:"phase_5_earth_spring_guard",conditions:{minLevel:7},effects:{flags:{guarded_earth_spring:!0}}},{text:"专注前线战斗，保护同学们撤退（战士型·坚守岗位）",nextPhase:"phase_5_frontline_hero",effects:{flags:{stayed_frontline:!0}}}]},{id:"phase_5_frontline_hero",name:"前线坚守",description:`你选择留在前线，继续战斗保护同学们撤退。
+
+妖魔一波接一波地涌来，幽狼兽的嚎叫在夜空中回荡。你握紧法杖，站在撤退队伍的最后方。
+
+"大家快走！我来断后！"你大声喊道。
+
+一只幽狼兽扑了上来，你侧身躲开，反手释放魔法将它击退。又一只妖魔从侧面袭来，你勉强格挡，手臂被利爪划伤，但你没有后退一步。
+
+不知道战斗了多久，直到天边泛起鱼肚白，妖魔终于撤退了。
+
+你浑身是伤，法杖上的宝石都黯淡了，但你保护的同学们都安全撤退了。
+
+薛木生老师找到你时，看着你满身的伤痕，眼眶有些湿润："你做到了...谢谢你。"
+
+斩空教官得知后，郑重地拍了拍你的肩膀："好小子。真正的英雄，不是追着真相跑的人，而是守住身边人的人。"`,type:"narrative",nextPhase:"phase_6_final",effects:{exp:200,gold:100,reputation:{military:20,school:30},flags:{stayed_frontline:!0,frontline_hero:!0,protected_classmates:!0},items:[{itemId:"basic_healing_potion",count:3}]}},{id:"phase_5_chase_yuang",name:"追击",description:`你悄悄跟了上去。
 
 在后山的一片树林中，你看到宇昂正站在一个奇怪的阵法前——那阵法散发着不祥的黑光，中央是一个倒十字的标记。
 
@@ -725,7 +739,7 @@ HP+50，赵满延好感+5，学校声望+3`},{text:"我还撑得住，不过谢�
 
 虽然城市遭受了很大的损失，但在所有人的努力下，大部分人都活了下来。
 
-你站在废墟中，望着初升的太阳，心中充满了复杂的感情。这是你第一次经历真正的战争，也是你成长的开始。`,type:"auto",effects:{flags:{bo_city_disaster_completed:!0}},autoCheck:{conditions:[{flags:{earth_spring_guarded:!0},minLevel:7,nextPhase:"ending_earth_spring_guardian"},{flags:{defeated_yu_ang:!0},minLevel:6,nextPhase:"ending_truth_seeker"},{flags:{reported_yu_ang_to_zhankong:!0},minLevel:6,nextPhase:"ending_military_ally"},{minLevel:8,nextPhase:"ending_hero"},{minLevel:6,nextPhase:"ending_survivor"},{minLevel:1,nextPhase:"ending_survived"}]}}],endings:{earth_spring_guardian:{id:"earth_spring_guardian",name:"地圣泉守护者",description:`你在博城灾难中选择守护地圣泉，击败了黑教廷执事，阻止了地圣泉温泽的释放。
+你站在废墟中，望着初升的太阳，心中充满了复杂的感情。这是你第一次经历真正的战争，也是你成长的开始。`,type:"auto",effects:{flags:{bo_city_disaster_completed:!0}},autoCheck:{conditions:[{flags:{earth_spring_guarded:!0},minLevel:7,nextPhase:"ending_earth_spring_guardian"},{flags:{defeated_yu_ang:!0},minLevel:6,nextPhase:"ending_truth_seeker"},{flags:{reported_yu_ang_to_zhankong:!0},minLevel:6,nextPhase:"ending_military_ally"},{flags:{frontline_hero:!0},minLevel:7,nextPhase:"ending_frontline_hero"},{minLevel:8,nextPhase:"ending_hero"},{minLevel:6,nextPhase:"ending_survivor"},{minLevel:1,nextPhase:"ending_survived"}]}}],endings:{earth_spring_guardian:{id:"earth_spring_guardian",name:"地圣泉守护者",description:`你在博城灾难中选择守护地圣泉，击败了黑教廷执事，阻止了地圣泉温泽的释放。
 
 因为你的行动，博城避免了更大的灾难，无数人因此活了下来。斩空教官授予你地圣泉一周的修炼资格，唐月老师对你刮目相看。
 
@@ -735,7 +749,13 @@ HP+50，赵满延好感+5，学校声望+3`},{text:"我还撑得住，不过谢�
 
 黑教廷的徽章在你手中微微发烫，仿佛在预示着未来的风暴。`,effects:{exp:400,gold:300,reputation:{military:30,school:20},flags:{black_church_aware:!0,has_black_church_badge:!0},items:[{itemId:"black_church_badge",count:1}]}},military_ally:{id:"military_ally",name:"军方盟友",description:`你及时向斩空教官报告了宇昂的异常，虽然没有亲手揭开真相，但你的警觉让军方避免了更大的损失。
 
-斩空教官拍了拍你的肩膀："小子，不错。以后有什么事，可以来找我。"`,effects:{exp:350,gold:250,reputation:{military:60,school:15},flags:{military_ally:!0},items:[{itemId:"zhankong_recommendation",count:1}]}},hero:{id:"hero",name:"博城英雄",description:"你在博城灾难中表现英勇，拯救了许多人的生命，成为了博城的英雄。",effects:{exp:500,gold:500,reputation:{military:50,school:50,city:100},items:[{itemId:"flame_staff",count:1}]}},survivor:{id:"survivor",name:"幸存者",description:"你在灾难中活了下来，虽然没有立下大功，但也尽了自己的一份力。",effects:{exp:300,gold:200,reputation:{military:20,school:20}}},survived:{id:"survived",name:"艰难求生",description:"你艰难地在灾难中活了下来，这次经历让你明白了实力的重要性。",effects:{exp:150,gold:50}}}},big_event_xuefeng_training:{id:"big_event_xuefeng_training",name:"雪峰山历练",description:"天澜魔法高中一年一度的野外历练，尖子生们将在雪峰山面对真正的妖魔...",type:"training",autoTrigger:!1,conditions:{minLevel:3,requiredQuests:[]},phases:[{id:"phase_1_gather",name:"集结出发",description:`清晨，天澜魔法高中的操场上聚集了100名尖子生。教官罗云波和潘丽君正在讲解历练规则。
+斩空教官拍了拍你的肩膀："小子，不错。以后有什么事，可以来找我。"`,effects:{exp:350,gold:250,reputation:{military:60,school:15},frontline_hero:{id:"frontline_hero",name:"前线英雄",description:`你在博城灾难中选择留在前线，用自己的身躯为同学们筑起一道防线。
+
+虽然你没有亲手揭开黑教廷的真相，也没有守护地圣泉，但你保护了身边最重要的人。
+
+薛木生老师在事后的表彰会上说："真正的英雄，不是那些追逐光环的人，而是在危难时刻守住身边人的人。"
+
+斩空教官授予你"前线勇士"称号，学校也为你颁发了特别贡献奖。你的名字，将被天澜魔法高中的学弟学妹们铭记。`,effects:{exp:450,gold:350,reputation:{military:40,school:50},flags:{frontline_hero:!0,frontline_warrior_title:!0,school_special_award:!0},items:[{itemId:"frontline_warrior_badge",count:1},{itemId:"basic_healing_potion",count:5}]}},flags:{military_ally:!0},items:[{itemId:"zhankong_recommendation",count:1}]}},hero:{id:"hero",name:"博城英雄",description:"你在博城灾难中表现英勇，拯救了许多人的生命，成为了博城的英雄。",effects:{exp:500,gold:500,reputation:{military:50,school:50,city:100},items:[{itemId:"flame_staff",count:1}]}},survivor:{id:"survivor",name:"幸存者",description:"你在灾难中活了下来，虽然没有立下大功，但也尽了自己的一份力。",effects:{exp:300,gold:200,reputation:{military:20,school:20}}},survived:{id:"survived",name:"艰难求生",description:"你艰难地在灾难中活了下来，这次经历让你明白了实力的重要性。",effects:{exp:150,gold:50}}}},big_event_xuefeng_training:{id:"big_event_xuefeng_training",name:"雪峰山历练",description:"天澜魔法高中一年一度的野外历练，尖子生们将在雪峰山面对真正的妖魔...",type:"training",autoTrigger:!1,conditions:{minLevel:3,requiredQuests:[]},phases:[{id:"phase_1_gather",name:"集结出发",description:`清晨，天澜魔法高中的操场上聚集了100名尖子生。教官罗云波和潘丽君正在讲解历练规则。
 
 "这次历练，你们将分成5组，每组20人，没有老师带队！"罗云波教官的声音洪亮，"目的地是雪峰山百草谷，任务是采集指定的草药。但要记住，那里是真正的野外，有妖魔出没！"
 
