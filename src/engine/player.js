@@ -259,6 +259,10 @@ export const Player = {
             };
             if (starterSkills[element]) {
                 this.skills.push(starterSkills[element]);
+                // v3.15.4: 水系额外给攻击技能water_chain，改善前期战斗体验
+                if (element === 'water' && !this.skills.includes('water_chain')) {
+                    this.skills.push('water_chain');
+                }
             }
             
             // 初始化天生天赋
@@ -2340,6 +2344,8 @@ export const Player = {
                 const starterSkills = { fire: 'fire_bolt', ice: 'ice_spike', thunder: 'thunder_bolt', earth: 'earth_spike', wind: 'wind_blade', water: 'water_heal', light: 'light_ray', dark: 'dark_bolt', heal: 'heal_light', summon: 'summon_beast' };
                 const starter = starterSkills[elem];
                 if (starter && !this.skills.includes(starter)) this.skills.push(starter);
+                // v3.15.4: 水系额外给攻击技能water_chain
+                if (elem === 'water' && !this.skills.includes('water_chain')) this.skills.push('water_chain');
             });
             this.save();
             return true;
