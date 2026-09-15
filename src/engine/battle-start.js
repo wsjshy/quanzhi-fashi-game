@@ -40,6 +40,22 @@ export function startBattle(enemyData, options = {}) {
             };
         }
 
+        // v3.16.0: 从地点数据加载战场环境配置
+        this.battleEnvironment = null;
+        const locationId = options.locationId || (typeof Player !== 'undefined' ? Player.location : null);
+        if (locationId) {
+            const locationsData = (typeof GameData !== 'undefined' && GameData.locations) || 
+                                  (typeof DataLocations !== 'undefined' ? DataLocations : null) ||
+                                  (typeof DataManager !== 'undefined' && DataManager.locations ? DataManager.locations : null);
+            if (locationsData) {
+                const location = locationsData[locationId];
+                if (location && location.battleEnvironment) {
+                    this.battleEnvironment = location.battleEnvironment;
+                    console.log(`[战斗环境] 加载环境: ${this.battleEnvironment.name}`);
+                }
+            }
+        }
+
         // v2.2.0: 初始化天赋战斗状态系统
         if (typeof TalentCombatSystem !== 'undefined') {
             TalentCombatSystem.init(this.player);

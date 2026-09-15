@@ -94,6 +94,15 @@ export function renderBattleScreen() {
                     pointer-events: none;
                 "></div>
                 
+                <!-- v3.16.0: 战场环境显示 -->
+                ${state.battleEnvironment ? `
+                <div style="position: absolute; top: 10px; left: 20px; z-index: 10; background: rgba(0,0,0,0.7); border: 1px solid #66aaff; border-radius: 8px; padding: 6px 12px; font-size: 12px; color: #fff;" title="${state.battleEnvironment.effects.map(e => e.desc).join('\n')}">
+                    <span style="font-size: 16px; margin-right: 5px;">${state.battleEnvironment.icon || '🌍'}</span>
+                    <span style="font-weight: bold; color: #88ccff;">${state.battleEnvironment.name}</span>
+                    <span style="margin-left: 8px; font-size: 10px; color: #aaa;">(悬停查看效果)</span>
+                </div>
+                ` : ''}
+                
                 <!-- 队友状态条 -->
                 ${state.allies && state.allies.length > 0 ? `
                 <div style="position: absolute; top: 10px; right: 20px; z-index: 10; display: flex; flex-direction: column; gap: 6px; max-width: 200px;">

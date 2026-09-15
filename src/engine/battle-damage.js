@@ -578,6 +578,23 @@ export function calculateDamage(attack, defense, multiplier, critRate, hitRate, 
             damage *= critMult;
         }
 
+
+        // v3.16.0: 战场环境伤害修正
+        if (this.battleEnvironment && this.battleEnvironment.effects && element) {
+            for (const effect of this.battleEnvironment.effects) {
+                if (effect.type === 'element_boost') {
+                    if (effect.element === 'all' || effect.element === element) {
+                        damage *= effect.value;
+                    }
+                }
+                if (effect.type === 'element_weaken') {
+                    if (effect.element === 'all' || effect.element === element) {
+                        damage *= effect.value;
+                    }
+                }
+            }
+        }
+
         result.amount = Math.floor(damage);
         return result;
     }

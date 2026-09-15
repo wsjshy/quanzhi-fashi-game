@@ -1904,7 +1904,8 @@ export const BattleSystem = {
             options: this.battleOptions, // 战斗模式选项
             magicTools: this.magicTools, // 魔具技能
             environment: this.environment, // v3.1.0: 战斗环境
-            environmentState: this.environmentState // v3.1.0: 环境互动状态
+            environmentState: this.environmentState, // v3.1.0: 环境互动状态
+            battleEnvironment: this.battleEnvironment // v3.16.0: 战场环境配置
         };
     },
 

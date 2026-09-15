@@ -13,6 +13,17 @@ export const DataLocations = {
     mapX: 50,
     mapY: 42,
     mapIcon: "🏫",
+    battleEnvironment: {
+      "id": "school_ground",
+      "name": "学校操场",
+      "icon": "🏫",
+      "effects": [
+        {
+          "type": "balance",
+          "desc": "平衡环境，无特殊效果"
+        }
+      ]
+    },
     classSchedule: {
       morning: {
         "0": null,
@@ -241,6 +252,24 @@ export const DataLocations = {
     mapX: 55,
     mapY: 28,
     mapIcon: "🗼",
+    battleEnvironment: {
+      "id": "three_step_tower",
+      "name": "三步塔",
+      "icon": "🗼",
+      "effects": [
+        {
+          "type": "element_boost",
+          "element": "all",
+          "value": 1.1,
+          "desc": "全元素伤害+10%"
+        },
+        {
+          "type": "mp_regen",
+          "value": 3,
+          "desc": "每回合MP恢复+3"
+        }
+      ]
+    },
     description: "明珠学府的修炼圣地。塔内星子异常活跃，修炼速度是外界的数倍。塔身三层，越往上星子越活跃，但消耗也越大。",
     backgroundColor: "#1a1a3a",
     unlocked: false,
@@ -333,6 +362,17 @@ export const DataLocations = {
     mapX: 30,
     mapY: 48,
     mapIcon: "🏙️",
+    battleEnvironment: {
+      "id": "city_street",
+      "name": "城市街道",
+      "icon": "🏙️",
+      "effects": [
+        {
+          "type": "balance",
+          "desc": "城市环境，无特殊效果"
+        }
+      ]
+    },
     description: "博城的主要街道，人来人往，有各种商店。",
     backgroundColor: "#3a2a4a",
     unlocked: true,
@@ -441,6 +481,31 @@ export const DataLocations = {
     mapX: 80,
     mapY: 28,
     mapIcon: "⛰️",
+    battleEnvironment: {
+      "id": "snow_mountain",
+      "name": "雪山环境",
+      "icon": "❄️",
+      "effects": [
+        {
+          "type": "element_boost",
+          "element": "ice",
+          "value": 1.3,
+          "desc": "冰系伤害+30%"
+        },
+        {
+          "type": "element_weaken",
+          "element": "fire",
+          "value": 0.8,
+          "desc": "火系伤害-20%"
+        },
+        {
+          "type": "status_chance",
+          "status": "frozen",
+          "value": 1.5,
+          "desc": "冰冻概率+50%"
+        }
+      ]
+    },
     description: "博城郊外的山脉，有妖魔出没，是猎者们常去的地方。",
     backgroundColor: "#1a3a4a",
     unlocked: true,
@@ -571,6 +636,36 @@ export const DataLocations = {
     mapX: 92,
     mapY: 18,
     mapIcon: "🏔️",
+    battleEnvironment: {
+      "id": "snow_forest",
+      "name": "雪山密林",
+      "icon": "🌲",
+      "effects": [
+        {
+          "type": "element_boost",
+          "element": "ice",
+          "value": 1.2,
+          "desc": "冰系伤害+20%"
+        },
+        {
+          "type": "element_boost",
+          "element": "wind",
+          "value": 1.15,
+          "desc": "风系伤害+15%"
+        },
+        {
+          "type": "element_weaken",
+          "element": "fire",
+          "value": 0.85,
+          "desc": "火系伤害-15%"
+        },
+        {
+          "type": "speed_mod",
+          "value": 0.9,
+          "desc": "移动速度-10%"
+        }
+      ]
+    },
     description: "雪峰山的深处，妖魔横行，危险重重，但也蕴藏着珍贵的资源。",
     backgroundColor: "#0a1a2a",
     unlocked: false,
@@ -693,6 +788,17 @@ export const DataLocations = {
     mapX: 42,
     mapY: 62,
     mapIcon: "🏠",
+    battleEnvironment: {
+      "id": "indoor",
+      "name": "室内环境",
+      "icon": "🏠",
+      "effects": [
+        {
+          "type": "balance",
+          "desc": "室内环境，无特殊效果"
+        }
+      ]
+    },
     description: "围绕半城山而建的住宅区最角落，矮矮一小栋，一层半高，外漆斑驳露出红砖，周围堆着杂物。街坊邻居都是三层半的装修新房，这里显得格外寒酸老旧。但家徒四壁的屋子里，却有着最温暖的亲情。",
     backgroundColor: "#3a2a1a",
     unlocked: false,
@@ -808,6 +914,24 @@ export const DataLocations = {
     mapX: 18,
     mapY: 35,
     mapIcon: "🏰",
+    battleEnvironment: {
+      "id": "mansion_arena",
+      "name": "庄园决斗场",
+      "icon": "🏛️",
+      "effects": [
+        {
+          "type": "element_boost",
+          "element": "all",
+          "value": 1.05,
+          "desc": "全元素伤害+5%"
+        },
+        {
+          "type": "crit_chance",
+          "value": 0.05,
+          "desc": "暴击概率+5%"
+        }
+      ]
+    },
     description: "博城穆氏家族的庄园，富丽堂皇，气势恢宏。",
     backgroundColor: "#2a2a4a",
     unlocked: false,
@@ -893,6 +1017,17 @@ export const DataLocations = {
     mapX: 50,
     mapY: 12,
     mapIcon: "🚪",
+    battleEnvironment: {
+      "id": "city_gate",
+      "name": "城门战场",
+      "icon": "🚪",
+      "effects": [
+        {
+          "type": "balance",
+          "desc": "开阔地形，无特殊效果"
+        }
+      ]
+    },
     description: "博城的北城门，通往外面的世界。城门守卫森严，平时有士兵把守。",
     backgroundColor: "#3a4a3a",
     unlocked: false,
@@ -994,6 +1129,23 @@ export const DataLocations = {
     mapX: 68,
     mapY: 35,
     mapIcon: "🚂",
+    battleEnvironment: {
+      "id": "mountain_station",
+      "name": "雪峰山驿站",
+      "icon": "⛺",
+      "effects": [
+        {
+          "type": "element_boost",
+          "element": "ice",
+          "value": 1.1,
+          "desc": "冰系伤害+10%"
+        },
+        {
+          "type": "balance",
+          "desc": "驿站环境，效果较弱"
+        }
+      ]
+    },
     description: "猎者联盟猎者与博城物资联系的重要小寨，建在雪峰山与雷雨山屏之间的山谷中。不是简陋村庄，两边百米陡峭山崖形成天然壁障，前后两大巨石之门锁住，是卡在山谷中的堡垒小镇。守护石门由博城有名土系魔法师兼建造师张玉恒所做，中阶以下魔法无法撼动，坚固不逊钢铁。驿站是安全区域边界，驿站外妖魔可能出没，没足够能力别走出安界。",
     backgroundColor: "#2a3a2a",
     unlocked: false,
@@ -1098,6 +1250,35 @@ export const DataLocations = {
     mapX: 12,
     mapY: 58,
     mapIcon: "🌿",
+    battleEnvironment: {
+      "id": "forest_valley",
+      "name": "百草谷",
+      "icon": "🌿",
+      "effects": [
+        {
+          "type": "element_boost",
+          "element": "wind",
+          "value": 1.2,
+          "desc": "风系伤害+20%"
+        },
+        {
+          "type": "element_boost",
+          "element": "plant",
+          "value": 1.25,
+          "desc": "植物系伤害+25%"
+        },
+        {
+          "type": "speed_mod",
+          "value": 0.9,
+          "desc": "移动速度-10%"
+        },
+        {
+          "type": "hp_regen",
+          "value": 2,
+          "desc": "每回合HP恢复+2"
+        }
+      ]
+    },
     description: "雪峰山深处的山谷，因形似掌状的湖泊而得名，北面山口是历练最终关卡。谷中生长着大量魔法草药，也潜伏着妖藤等植物系妖魔。",
     backgroundColor: "#1a3a1a",
     unlocked: false,
@@ -1210,6 +1391,17 @@ export const DataLocations = {
     mapX: 68,
     mapY: 58,
     mapIcon: "🏫",
+    battleEnvironment: {
+      "id": "school_ground_2",
+      "name": "明雯女校",
+      "icon": "🏫",
+      "effects": [
+        {
+          "type": "balance",
+          "desc": "学校环境，无特殊效果"
+        }
+      ]
+    },
     description: "博城著名的贵族女子中学，校园宽敞豪华。暑假期间学生稀少，但近期发生了女生失踪事件，每到深夜食堂会出现莫名其妙的颤震（人称'食堂震门'），传出奇怪的腐臭气味。城市猎妖队已介入调查。",
     icon: "🏫",
     backgroundColor: "#4a3a5a",
@@ -1275,6 +1467,25 @@ export const DataLocations = {
     mapX: 32,
     mapY: 72,
     mapIcon: "🌳",
+    battleEnvironment: {
+      "id": "old_district",
+      "name": "老城区",
+      "icon": "🏚️",
+      "effects": [
+        {
+          "type": "element_boost",
+          "element": "dark",
+          "value": 1.1,
+          "desc": "暗影系伤害+10%"
+        },
+        {
+          "type": "element_boost",
+          "element": "earth",
+          "value": 1.1,
+          "desc": "土系伤害+10%"
+        }
+      ]
+    },
     description: "博城老城区，因投资方资金短缺成为一片拆迁废墟，烂尾楼和半拆房屋遍布。传闻夜里有奇怪震动，流浪汉频繁失踪。",
     icon: "🏚️",
     backgroundColor: "#3a3a2a",
@@ -1350,6 +1561,29 @@ export const DataLocations = {
     mapX: 50,
     mapY: 85,
     mapIcon: "💧",
+    battleEnvironment: {
+      "id": "earth_spring",
+      "name": "地圣泉",
+      "icon": "💧",
+      "effects": [
+        {
+          "type": "element_boost",
+          "element": "all",
+          "value": 1.15,
+          "desc": "全元素伤害+15%"
+        },
+        {
+          "type": "mp_regen",
+          "value": 5,
+          "desc": "每回合MP恢复+5"
+        },
+        {
+          "type": "hp_regen",
+          "value": 3,
+          "desc": "每回合HP恢复+3"
+        }
+      ]
+    },
     description: "博城最珍贵的修炼圣地，位于银贸大厦地下十五层。地圣泉是天地灵泉，修炼一小时顶外面三天，无数魔法师梦寐以求。",
     backgroundColor: "#1a3a3a",
     unlocked: false,
