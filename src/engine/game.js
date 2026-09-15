@@ -186,6 +186,34 @@ export const Game = {
         return performActionImpl.call(this, actionId);
     },
 
+    /**
+     * v3.15.6: 显示行动冷却提示（防频繁提示，3秒内只显示一次）
+     */
+    _showActionCooldownHint(message) {
+        const now = Date.now();
+        if (!this._lastCooldownHintTime || now - this._lastCooldownHintTime > 3000) {
+            this._lastCooldownHintTime = now;
+            // v3.15.6: 直接创建toast提示元素
+            try {
+                let toast = document.getElementById('action-cooldown-toast');
+                if (!toast) {
+                    toast = document.createElement('div');
+                    toast.id = 'action-cooldown-toast';
+                    toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;z-index:99999;pointer-events:none;transition:opacity 0.3s;';
+                    document.body.appendChild(toast);
+                }
+                toast.textContent = message;
+                toast.style.opacity = '1';
+                clearTimeout(this._cooldownToastTimer);
+                this._cooldownToastTimer = setTimeout(() => {
+                    toast.style.opacity = '0';
+                }, 1500);
+            } catch (e) {
+                console.log('[行动冷却]', message);
+            }
+        }
+    },
+
     // v3.4.0: 显示闭关修炼时长选择界面
     _showRetreatDialog() {
         const html = `

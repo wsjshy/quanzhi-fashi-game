@@ -5,11 +5,30 @@
  * 包含：执行行动（performAction）
  */
 
+
+/**
+ * v3.15.6: 显示行动冷却提示（防频繁提示，3秒内只显示一次）
+ */
+export function showActionCooldownHint(message) {
+    const now = Date.now();
+    if (!this._lastCooldownHintTime || now - this._lastCooldownHintTime > 3000) {
+        this._lastCooldownHintTime = now;
+        // 使用toast提示
+        if (typeof UI !== 'undefined' && UI.showToast) {
+            UI.showToast(message, 1500);
+        } else {
+            console.log('[行动冷却]', message);
+        }
+    }
+}
+
 export function performAction(actionId) {
         try {
         // 防护0：时间间隔防护 - 两次行动间隔小于1秒则取消，防止点击穿透/延迟触发
         const now = Date.now();
         if (now - this._lastActionTime < 1000) {
+            // v3.15.6: 行动冷却提示
+            this._showActionCooldownHint && this._showActionCooldownHint('操作过于频繁，请稍候');
             return;
         }
         this._lastActionTime = now;
@@ -36,6 +55,8 @@ export function performAction(actionId) {
         if (typeof UI !== 'undefined' && UI._lastMessageCloseTime) {
             const timeSinceMessageClose = now - UI._lastMessageCloseTime;
             if (timeSinceMessageClose < 2000) {
+                // v3.15.6: 消息冷却提示
+                this._showActionCooldownHint && this._showActionCooldownHint('消息刚关闭，请稍候');
                 return;
             }
         }
@@ -47,6 +68,8 @@ export function performAction(actionId) {
         
         // 防护2：如果在行动冷却期，不执行行动
         if (this._actionCooldown) {
+            // v3.15.6: 行动冷却提示
+            this._showActionCooldownHint && this._showActionCooldownHint('请稍候...');
             return;
         }
         
